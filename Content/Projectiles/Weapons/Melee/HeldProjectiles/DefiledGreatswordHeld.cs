@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string Texture => CWRConstant.Placeholder;
         private bool oldChargeSet;
         private int oldItemType;
+        private float MaxCarge => (Item.type == ModContent.ItemType<BlightedCleaver>() || Item.type == ModContent.ItemType<BlightedCleaverEcType>()) ? BlightedCleaverEcType.BlightedCleaverMaxRageEnergy : DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 11;
             Projectile.penetrate = -1;
@@ -76,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Item item = Main.player[Projectile.owner].GetItem();
             if (item != null && item.type > ItemID.None) {
                 DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]
-                    , item.CWR().MeleeCharge, DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy);
+                    , item.CWR().MeleeCharge / MaxCarge);
             }
 
             return false;

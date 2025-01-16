@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
         public override void AI() => Projectile.Center = Owner.GetPlayerStabilityCenter();
         public override bool PreDraw(ref Color lightColor) {
-            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Owner, 255, Projectile.timeLeft, 300);
+            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Owner, 255, Projectile.timeLeft / 300f);
             return false;
         }
     }

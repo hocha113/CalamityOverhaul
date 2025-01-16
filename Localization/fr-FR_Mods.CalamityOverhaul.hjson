@@ -3252,6 +3252,9 @@ Projectiles: {
 	// AstralPikeHeld.DisplayName: Astral Pike Held
 	// SoulSearchScythe.DisplayName: Soul Search Scythe
 	// SpanDMBall.DisplayName: Span DM Ball
+	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
+	// RageKillerImpact.DisplayName: Rage Killer Impact
+	// TerrorBladeSwing.DisplayName: Terror Blade Swing
 }
 
 Configs: {

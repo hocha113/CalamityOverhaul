@@ -95,12 +95,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                     if (rageEnergy < 0) {
                         rageEnergy = 0;
                     }
-                    float adjustedItemScale = Owner.GetAdjustedItemScale(Item);
-                    Projectile.NewProjectile(Source, Owner.GetPlayerStabilityCenter()
-                        , ShootVelocity, ModContent.ProjectileType<BlazingPhantomBlade>()
-                        , (int)(Projectile.damage * 0.75), Projectile.knockBack * 0.5f, Owner.whoAmI
-                        , Owner.direction * Owner.gravDir, 32f, adjustedItemScale);
-                    NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Owner.whoAmI);
+                    Projectile.NewProjectile(Source, Owner.GetPlayerStabilityCenter(), ShootVelocity
+                        , ModContent.ProjectileType<RageKillerImpact>(), (int)(Projectile.damage * 0.75)
+                        , Projectile.knockBack * 0.5f, Owner.whoAmI);
                 }
             }
 

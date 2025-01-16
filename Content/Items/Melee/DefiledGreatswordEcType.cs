@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetKnifeHeld<DefiledGreatswordSwing>();
         }
 
-        public static void DrawFrightEnergyChargeBar(Player player, float alp, float charge) {
+        public static void DrawRageEnergyChargeBar(Player player, float alp, float charge) {
             Item item = player.GetItem();
             if (item.IsAir) {
                 return;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
 
-            Main.EntitySpriteDraw(rageEnergyBar, drawPos + new Vector2(8, 6) * slp, backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(rageEnergyBar, drawPos + new Vector2(10, 12) * slp, backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
         }
     }
 
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Projectile_Melee + "RageKillerImpact";
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
 
@@ -106,10 +106,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
         }
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3() * 1.75f * Main.essScale);
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
 
             Projectile.ai[1]++;
         }
@@ -125,6 +127,18 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
                 float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
+            }
+
+            Texture2D glow = CWRUtils.GetT2DValue(Texture + "Glow");
+            Vector2 drawOrigin2 = glow.Size() / 2;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
+                Color color = Projectile.GetAlpha(Color.Lerp(Color.White, Color.Gold, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
+                if (Projectile.ai[1] > 160) {
+                    color.A = 0;
+                }
+                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(glow, drawPos, null, color, Projectile.rotation, drawOrigin2, Projectile.scale * slp, SpriteEffects.None, 0);
             }
             return false;
         }
@@ -185,22 +199,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 if (rageEnergy == 0) {
-                    float adjustedItemScale = player.GetAdjustedItemScale(Item);
-                    float ai1 = 40;
-                    float velocityMultiplier = 2;
-                    Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter(), ShootVelocity * velocityMultiplier
-                        , ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                        , Projectile.knockBack * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
+                    Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter(), ShootVelocity
+                        , ModContent.ProjectileType<RageKillerImpact>(), (int)(damage * 0.75)
+                        , Projectile.knockBack * 0.5f, player.whoAmI);
                 }
                 else {
-                    float adjustedItemScale = player.GetAdjustedItemScale(Item);
                     for (int i = 0; i < 3; i++) {
-                        float ai1 = 40 + i * 8;
-                        float velocityMultiplier = 1f - i / (float)3;
-                        Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter()
-                            , ShootVelocity.RotatedByRandom(MathHelper.TwoPi) * velocityMultiplier
-                            , ModContent.ProjectileType<BlazingPhantomBlade>(), damage
-                            , Projectile.knockBack * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
+                        Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter(), ShootVelocity.RotatedBy((-1 + i) * 0.2f)
+                        , ModContent.ProjectileType<RageKillerImpact>(), damage, Projectile.knockBack, player.whoAmI);
                     }
                 }
             }
