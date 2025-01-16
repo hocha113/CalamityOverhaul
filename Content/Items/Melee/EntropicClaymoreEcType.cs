@@ -74,6 +74,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
+                
                 PRT_Line_FormPlayer spark2 = new PRT_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen) {
                     Owner = Owner
                 };

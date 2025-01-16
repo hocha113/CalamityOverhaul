@@ -36,6 +36,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<ExcelsusHeld>();
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            if (Item.type == ModContent.ItemType<Excelsus>()) {
+                Item.EasySetLocalTextNameOverride("ExcelsusEcType");
+            }
         }
 
         public override bool AltFunctionUse(Player player) => true;

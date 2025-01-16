@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Particles
             Color = InitialColor = color;
         }
         public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            //PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }
         public override void AI() {
