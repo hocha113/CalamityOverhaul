@@ -196,11 +196,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: Deathhail Staff
-		Tooltip: Raining hail of death from the sky
-	}
-
 	ExcelsusEcType: {
 		DisplayName: Excelsus
 		Tooltip:
@@ -2817,7 +2812,7 @@ Projectiles: {
 	WaningMoonLight.DisplayName: Waning Moon Light
 	AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	AbominateSpirit.DisplayName: Abominate Spirit
-	AegisBladeProj.DisplayName: Aegis Blade Proj
+	AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	AstralBall.DisplayName: Astral Ball
 	AstralPikeBeam.DisplayName: Astral Pike Beam
 	BalefulBall.DisplayName: Baleful Ball

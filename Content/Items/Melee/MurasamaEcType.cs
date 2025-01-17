@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 {11, 1600 },
                 {12, 1900 },
                 {13, 2400 },
-                {14, 8000 }
+                {14, 4000 }
             };
             BladeVolumeRatioDictionary = new Dictionary<int, float>(){
                 {0, 0.6f },

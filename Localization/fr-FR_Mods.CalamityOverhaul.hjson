@@ -206,15 +206,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: Grêle de Mort
-		Tooltip:
-			'''
-			Faire tomber une quantité massive de grêlons de mort du ciel
-			"Même dans l'univers, il peut y avoir de la grêle ? C'est peut-être une pluie de météores destructrice"
-			'''
-	}
-
 	ExcelsusEcType: {
 		DisplayName: Lame d'Énergie Cosmique
 		Tooltip:
@@ -2800,7 +2791,7 @@ Projectiles: {
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	// AstralBall.DisplayName: Astral Ball
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// BalefulBall.DisplayName: Baleful Ball

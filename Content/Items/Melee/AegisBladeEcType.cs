@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool AltFunctionUse(Player player) => true;
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AegisBladeProj>()] <= 0;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<AegisBladeGuardian>()] <= 0;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return ShootFunc(ref Level, player, source, position, velocity, type, damage, knockback);
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static bool ShootFunc(ref int Level, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.76f }, player.Center);
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<AegisBladeProj>(), damage, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<AegisBladeGuardian>(), damage, knockback, player.whoAmI);
                 return false;
             }
             int num = 0;

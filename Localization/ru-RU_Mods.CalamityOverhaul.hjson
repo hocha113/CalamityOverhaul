@@ -206,15 +206,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: Посох смертельного града
-		Tooltip:
-			'''
-			Пусть с небес обрушится масса смертельного града
-			"Бывает ли град в космосе? Это, возможно, разрушительный метеоритный дождь"
-			'''
-	}
-
 	ExcelsusEcType: {
 		DisplayName: Эксельсус
 		Tooltip:
@@ -2825,7 +2816,7 @@ Projectiles: {
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	// AstralBall.DisplayName: Astral Ball
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// BalefulBall.DisplayName: Baleful Ball

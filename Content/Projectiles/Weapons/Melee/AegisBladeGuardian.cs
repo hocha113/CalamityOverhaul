@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class AegisBladeProj : ModProjectile
+    internal class AegisBladeGuardian : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
         public override void SetStaticDefaults() {

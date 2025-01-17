@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             FiringDefaultSound = false;
+            BowstringData.DeductRectangle = new Rectangle(4, 24, 10, 30);
         }
 
         public override void BowShoot() {

@@ -205,15 +205,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: 死亡冰雹
-		Tooltip:
-			'''
-			令大量的死亡冰雹从天而降
-			"宇宙中也会下冰雹吗？这或许是一场毁灭性的彗星雨"
-			'''
-	}
-
 	ExcelsusEcType: {
 		DisplayName: 宙宇波能刃
 		Tooltip:
@@ -2804,7 +2795,7 @@ Projectiles: {
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	// AstralBall.DisplayName: Astral Ball
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// BalefulBall.DisplayName: Baleful Ball

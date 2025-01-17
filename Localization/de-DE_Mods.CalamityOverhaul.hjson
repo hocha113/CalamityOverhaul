@@ -206,15 +206,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: Todeshagel
-		Tooltip:
-			'''
-			Lässt eine Menge Todeshagel vom Himmel fallen
-			"Fällt auch Hagel im Universum? Vielleicht ist es ein zerstörerischer Kometenregen"
-			'''
-	}
-
 	ExcelsusEcType: {
 		DisplayName: Kosmische Energieklinge
 		Tooltip:
@@ -2798,7 +2789,7 @@ Projectiles: {
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	// AstralBall.DisplayName: Astral Ball
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// BalefulBall.DisplayName: Baleful Ball

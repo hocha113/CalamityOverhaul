@@ -205,15 +205,6 @@ Items: {
 			'''
 	}
 
-	DeathhailStaffEcType: {
-		DisplayName: Vara de Granizo Mortífero
-		Tooltip:
-			'''
-			Hace que caigan grandes cantidades de granizo mortal del cielo.
-			"¿También caerá granizo en el universo? Tal vez sea una lluvia de cometas destructiva."
-			'''
-	}
-
 	ExcelsusEcType: {
 		DisplayName: Cuchilla de Energía Cósmica
 		Tooltip:
@@ -2832,7 +2823,7 @@ Projectiles: {
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
 	// AstralBall.DisplayName: Astral Ball
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// BalefulBall.DisplayName: Baleful Ball

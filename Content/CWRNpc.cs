@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Content.Buffs;
@@ -277,18 +278,24 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) => TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
+        public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
+            TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
+            if (npc.type == NPCID.TombCrawlerHead) {
+                npcLoot.RemoveWhere(rule => true);
+                npcLoot.Add(3380, 1, 2, 6);
+            }
+        }
 
         public override void ModifyShop(NPCShop shop) {
-            foreach (AbstractNPCShop.Entry i in shop.Entries) {
-                Item item = i.Item;
-                if (item?.type != ItemID.None) {
-                    Item item2 = new Item(item.type);
-                    item2.SetDefaults(item.type);
-                    CWRItems cwr = item2.CWR();
-                    if (cwr.HasCartridgeHolder || cwr.heldProjType > 0 || cwr.isHeldItem) {
-                        item.SetDefaults(item.type);
-                    }
+            foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
+                Item item = shopEntity.Item;
+                if (item == null || item.type <= ItemID.None) {
+                    continue;
+                }
+                Item newItem = new Item(item.type);
+                CWRItems cwrItem = newItem.CWR();
+                if (cwrItem.HasCartridgeHolder || cwrItem.heldProjType > 0 || cwrItem.isHeldItem) {
+                    item.SetDefaults(item.type);
                 }
             }
         }
