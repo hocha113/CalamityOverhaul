@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     BowstringData.TopBowOffset = BowstringData.BottomBowOffset = new Vector2(BowstringData.DeductRectangle.Left, BowstringData.DeductRectangle.Top - 2);
                 }
             }
-            
+
             // 如果任意弓弦的偏移量（顶部、底部、核心）被设置，或者设置了矩形裁切，允许弓弦绘制
             if (BowstringData.TopBowOffset != default || BowstringData.BottomBowOffset != default || BowstringData.CoreOffset != default || BowstringData.CanDeduct) {
                 BowstringData.CanDraw = true;
@@ -333,7 +333,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (overNoFireCeahks()) {
                 SpanProj();
             }
-            
+
             Time++;
         }
 

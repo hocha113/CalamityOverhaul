@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                         , ModContent.ProjectileType<SeasonalKunaiProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 }
             }
-            
+
             SoundEngine.PlaySound(SoundID.Item39, Owner.Center);
             Projectile.soundDelay = 10;
             Projectile.Kill();

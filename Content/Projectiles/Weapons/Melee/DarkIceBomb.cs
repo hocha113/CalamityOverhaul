@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.Explode(192, SoundID.Item27);
                 SpanIceEffect();
             }
-            
+
             Projectile.Kill();
         }
 

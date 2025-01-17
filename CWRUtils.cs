@@ -7,13 +7,11 @@ using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json.Linq;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -23,9 +21,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 using Terraria.ObjectData;
-using tModPorter;
 using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul
@@ -738,7 +734,7 @@ namespace CalamityOverhaul
             if (ModGanged.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK
                 return true;
             }
-            
+
             return !CombinedHooks.CanConsumeAmmo(player, weapon, ammoItem);
         }
 

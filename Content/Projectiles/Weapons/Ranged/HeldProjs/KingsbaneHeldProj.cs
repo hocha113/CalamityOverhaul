@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     else {
                         Projectile.frame++;
                     }
-                        
+
                     if (upNeedsSengs > 0) {
                         upNeedsSengs--;
                     }

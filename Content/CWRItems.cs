@@ -4,7 +4,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
                     else {
                         ContainerRight.Item.stack++;
                     }
-                    
+
                     if (NextConversion != null && !ArrowLock.IsLock) {
                         if (NextConversion.ContainerLeft.Item.type != ContainerRight.Item.type && ContainerRight.Item.type > ItemID.None) {
                             NextConversion.ContainerLeft.Item = ContainerRight.Item.Clone();

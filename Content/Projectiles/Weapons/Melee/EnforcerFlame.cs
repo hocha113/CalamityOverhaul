@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.ai[0] == 0) {
                 Projectile.velocity = toOwner.UnitVector() * projDistance;
             }
-                
+
             Projectile.rotation += Projectile.velocity.X * 0.03f;
             if (Projectile.rotation > MathHelper.ToRadians(12)) {
                 Projectile.rotation = MathHelper.ToRadians(12);

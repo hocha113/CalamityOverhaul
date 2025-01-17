@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Terraria;
 using Terraria.DataStructures;

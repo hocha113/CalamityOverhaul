@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged

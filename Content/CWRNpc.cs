@@ -1,14 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
-using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;

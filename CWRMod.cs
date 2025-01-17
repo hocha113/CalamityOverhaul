@@ -1,6 +1,5 @@
 global using InnoVault;
 global using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;

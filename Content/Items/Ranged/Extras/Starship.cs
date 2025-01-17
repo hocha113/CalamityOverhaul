@@ -262,10 +262,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                     }
                     else {
                         Projectile.frame++;
-                    }  
+                    }
                     if (upNeedsSengs > 0) {
                         upNeedsSengs--;
-                    } 
+                    }
                     Projectile.frameCounter = 0;
                 }
 

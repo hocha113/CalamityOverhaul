@@ -9,7 +9,6 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -225,7 +224,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 return false;
             }
 
-            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed 
+            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed
                 && CurrentAmountIsZero() && !ModOwner.uiMouseInterface && kreloadTimeValue <= 0) {
                 HandleEmptyAmmoEjection();
             }
@@ -234,7 +233,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 && (!IsKreload || RepeatedCartridgeChange)
                 && BulletNum < ModItem.AmmoCapacity
                 && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
-            
+
             if (Projectile.IsOwnedByLocalPlayer() && canReload) {
                 ManualReloadStart = CWRKeySystem.KreLoad_Key.JustPressed;
                 if (ManualReloadStart != old_ManualReloadDown) {
@@ -806,7 +805,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 BulletNum = 0;
                 return;
             }
-            
+
             if (BulletNum > 0) {
                 BulletNum--;
             }

@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Common
 
         private static string ModNotLoadedMessage => VaultUtils.Translation("未加载模组", "The mod is not loaded");
 
-        private static void LogFailedLoad(string value1, string value2) 
+        private static void LogFailedLoad(string value1, string value2)
             => CWRMod.Instance.Logger.Info($"{FailedLoadMessage} {value1} {VerificationMessage} {value2} {ChangeStatusMessage}");
 
         private static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
@@ -496,8 +496,7 @@ namespace CalamityOverhaul.Common
                 if (ammoItem.stack >= rangerAmmo) {
                     return true;
                 }
-            }
-            catch {
+            } catch {
                 return false;
             }
 

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulTheBible

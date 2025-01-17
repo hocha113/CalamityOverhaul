@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void Update() {
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 64, 64);
             borderedHeight = borderedWidth = 64;
-            
+
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, borderedWidth, borderedHeight);
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
             hoverInMainPage = mouseRec.Intersects(UIHitBox) && mouseRec.Intersects(UIHandleLoader.GetUIHandleInstance<RecipeSidebarListViewUI>().UIHitBox);

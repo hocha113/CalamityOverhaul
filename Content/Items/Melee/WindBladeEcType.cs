@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 4.2f
                     , phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             }
-            
+
             return base.PreInOwnerUpdate();
         }
     }

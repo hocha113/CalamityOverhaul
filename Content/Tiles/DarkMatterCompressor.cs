@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
 using CalamityOverhaul.Content.UIs.CompressorUIs;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;

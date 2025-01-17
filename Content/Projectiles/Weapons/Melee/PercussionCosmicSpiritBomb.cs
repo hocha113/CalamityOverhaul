@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.ai[0] == 0) {
                 Projectile.velocity = toOwner.UnitVector() * projDistance;
             }
-                
+
             Projectile.rotation += Projectile.velocity.X * 0.03f;
         }
 

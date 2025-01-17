@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
         internal bool DrawBool;
-        internal bool uiIsActive => DrawBool &&!SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
+        internal bool uiIsActive => DrawBool && !SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
         void ICWRLoader.LoadAsset() => MainValueInCell = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValueInCell");
         void ICWRLoader.UnLoadData() {
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 SupertableUI.Instance.onInputP =
                 SupertableUI.Instance.onCloseP = false;
             }
-            
+
             Vector2 offset = new Vector2(90, 100);
             Item[] items = new Item[OmigaSnyContent.Length];
             Item targetItem = SupertableUI.InStrGetItem(OmigaSnyContent[^1], true);

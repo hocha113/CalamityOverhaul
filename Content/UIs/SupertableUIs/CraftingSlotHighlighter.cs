@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return SupertableUI.Instance.Active;
             }
         }
-        
+
         public bool eyEBool;
 
         void ICWRLoader.LoadAsset() => eyeAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye");

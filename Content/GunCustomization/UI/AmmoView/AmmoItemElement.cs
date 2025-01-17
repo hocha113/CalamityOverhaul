@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.UIs.CompressorUIs;
 using InnoVault.UIHandles;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;

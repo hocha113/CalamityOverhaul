@@ -4,7 +4,6 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static CalamityOverhaul.CWRUtils;
 using static CalamityOverhaul.CWRUtils.AnimationCurvePart;
 

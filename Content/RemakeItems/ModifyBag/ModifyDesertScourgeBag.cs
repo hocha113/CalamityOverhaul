@@ -1,8 +1,8 @@
-﻿using CalamityMod.Items.TreasureBags;
+﻿using CalamityMod;
+using CalamityMod.Items.TreasureBags;
 using CalamityMod.Items.Weapons.Melee;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {

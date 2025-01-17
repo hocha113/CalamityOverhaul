@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;

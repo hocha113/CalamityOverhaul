@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.OverhaulTheBible;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -29,7 +28,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
             rollerValue -= scrollWheelDelta;
-            rollerValue = MathHelper.Clamp(rollerValue, 64, recipeTargetElmts.Count * 64  - 64 * 4);
+            rollerValue = MathHelper.Clamp(rollerValue, 64, recipeTargetElmts.Count * 64 - 64 * 4);
             rollerValue = ((int)rollerValue / 64) * 64;
             oldMouseState = currentMouseState;
             rollerSengs = (rollerValue / recipeTargetElmts.Count * 64) * siderHeight;

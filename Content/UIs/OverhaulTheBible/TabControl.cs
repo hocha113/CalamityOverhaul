@@ -1,14 +1,9 @@
-﻿using CalamityMod.NPCs.TownNPCs;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 using Terraria;
-using Terraria.ModLoader;
-using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityMod;
 using Terraria.Audio;
 using Terraria.ID;
-using Newtonsoft.Json.Linq;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 {

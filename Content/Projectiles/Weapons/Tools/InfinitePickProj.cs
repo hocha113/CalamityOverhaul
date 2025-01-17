@@ -1,10 +1,8 @@
 ﻿using CalamityMod.Particles;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using InnoVault.PRT;
 using System.Collections.Generic;
 using Terraria;
@@ -141,7 +139,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                     if (Projectile.ai[0] != 1) {
                         spanPos = InMousePos;
                     }
-                    
+
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, Vector2.Zero, ModContent.ProjectileType<SpanDMBall>(), 0, 0, Projectile.owner, ai1: Projectile.ai[0]);
                     Projectile projectile = Main.projectile[proj];
                     if (projectile.ModProjectile is SpanDMBall span) {

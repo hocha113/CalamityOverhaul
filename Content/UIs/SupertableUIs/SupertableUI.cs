@@ -594,7 +594,7 @@ End:;
             if (onitem.type == ItemID.None && holdItem.type == ItemID.None) {
                 return;
             }
-            
+
             // 捡起物品逻辑
             if (onitem.type != ItemID.None && holdItem.type == ItemID.None) {
                 PlayGrabSound();

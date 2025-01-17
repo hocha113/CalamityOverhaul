@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
@@ -122,7 +121,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, spanPos, AbsolutelyShootVelocity.RotatedBy(sengs - sengs * i)
                     , ModContent.ProjectileType<AstralPikeBeam>(), Projectile.damage, Projectile.knockBack * 0.25f, Projectile.owner, targetPos.X, targetPos.Y);
-            }   
+            }
         }
 
         public override void MeleeEffect() {

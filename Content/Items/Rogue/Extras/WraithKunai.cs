@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
-using CalamityMod.Items.Armor.Bloodflare;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
