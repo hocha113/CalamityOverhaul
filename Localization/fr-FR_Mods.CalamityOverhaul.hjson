@@ -462,13 +462,24 @@ Items: {
 	}
 
 	GreatswordofJudgementEcType: {
-		DisplayName: Grande Épée du Jugement
-		Tooltip: ""
+		DisplayName: Épée du Jugement
+		Tooltip:
+			'''
+			Tire une lame précieuse qui poursuit les ennemis et se divise en trois boules de feu du jugement après impact.
+			Une longue épée blanche de la Terre de l'Oubli.
+			Vous pouvez entendre un faible murmure apaisant émanant de cette épée.
+			"Peu importe où tu es, tu ne seras jamais seul, je serai toujours à tes côtés, mon roi."
+			'''
 	}
 
 	OrderbringerEcType: {
-		DisplayName: Porteur de l'Ordre
-		Tooltip: ""
+		DisplayName: Porteur d'Ordre
+		Tooltip:
+			'''
+			Tire un projectile prismatique d'énergie multicolore qui poursuit les ennemis. 
+			Après dix attaques consécutives sur un même ennemi, invoque une gigantesque épée du jugement.  
+			"Peu importe où tu es, tu ne seras jamais seul, je serai toujours à tes côtés, mon roi."  
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3246,6 +3257,7 @@ Projectiles: {
 	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

@@ -455,12 +455,22 @@ Items: {
 
 	GreatswordofJudgementEcType: {
 		DisplayName: Санкциями
-		Tooltip: ""
+		Tooltip:
+			'''
+			Выпускает драгоценный клинок, преследующий врагов, который распадается на три огненных шара правосудия после попадания.
+			Белый длинный меч Земли Забвения.
+			Вы можете услышать слабый и успокаивающий шепот, исходящий от этого меча.
+			"Где бы ты ни был, ты никогда не будешь одинок, я всегда буду рядом, мой король."
+			'''
 	}
 
 	OrderbringerEcType: {
-		DisplayName: Лезвие с последовательной последовательности
-		Tooltip: ""
+		DisplayName: Несущий порядок
+		Tooltip:
+			'''
+			Выпускает разноцветный энергетический призматический снаряд, который преследует врагов. После десяти атак на одного врага призывает огромный меч правосудия.
+			"Где бы ты ни был, ты никогда не будешь одинок, я всегда буду рядом, мой король."
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3271,6 +3281,7 @@ Projectiles: {
 	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

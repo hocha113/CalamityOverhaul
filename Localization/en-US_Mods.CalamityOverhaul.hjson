@@ -446,13 +446,24 @@ Items: {
 	}
 
 	GreatswordofJudgementEcType: {
-		DisplayName: Greatswordof Judgement
-		Tooltip: ""
+		DisplayName: Greatsword of Judgment
+		Tooltip:
+			'''
+			Fires a gem blade that tracks enemies and splits into three judgment fireballs upon hit.
+			A white longsword from the Land of Forgetting.
+			You can hear a faint and soothing whisper emanating from this sword.
+			"Wherever you are, you will never be alone, I will always be by your side, my king."
+			'''
 	}
 
 	OrderbringerEcType: {
 		DisplayName: Orderbringer
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a multicolored prismatic energy projectile that tracks enemies. 
+			After ten consecutive attacks on a single enemy, summons a massive judgment sword spirit.  
+			"Wherever you are, you will never be alone, I will always be by your side, my king."  
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3267,6 +3278,7 @@ Projectiles: {
 	DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	RageKillerImpact.DisplayName: Rage Killer Impact
 	TerrorBladeSwing.DisplayName: Terror Blade Swing
+	StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

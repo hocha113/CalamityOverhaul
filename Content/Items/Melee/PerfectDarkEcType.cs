@@ -38,8 +38,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.width = Projectile.height = 40;
             drawTrailHighlight = false;
             canDrawSlashTrail = true;
-            SwingData.starArg = 74;
-            SwingData.baseSwingSpeed = 5f;
+            SwingData.starArg = 54;
+            SwingData.baseSwingSpeed = 4f;
             drawTrailBtommWidth = 30;
             distanceToOwner = 14;
             drawTrailTopWidth = 20;

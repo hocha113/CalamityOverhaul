@@ -469,13 +469,24 @@ Items: {
 	}
 
 	GreatswordofJudgementEcType: {
-		DisplayName: Gran Espada del Juicio
-		Tooltip: ""
+		DisplayName: Espada de la Justicia
+		Tooltip:
+			'''
+			Lanza una hoja de gema que persigue a los enemigos, dividiéndose en tres bolas de fuego del juicio tras impactar.
+			Una espada larga blanca de la Tierra del Olvido.
+			Puedes escuchar un susurro débil y tranquilizador que emana de esta espada.
+			"Donde sea que estés, nunca estarás solo, siempre estaré contigo, mi rey."
+			'''
 	}
 
 	OrderbringerEcType: {
-		DisplayName: Espada Portadora del Orden
-		Tooltip: ""
+		DisplayName: Portador del Orden
+		Tooltip:
+			'''
+			Lanza un proyectil prismático de energía multicolor que persigue a los enemigos. 
+			Tras atacar diez veces consecutivas a un mismo enemigo, invoca una gran espada del juicio.  
+			"Donde sea que estés, nunca estarás solo, siempre estaré contigo, mi rey."  
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3278,6 +3289,7 @@ Projectiles: {
 	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

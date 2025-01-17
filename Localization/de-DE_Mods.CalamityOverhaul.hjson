@@ -463,13 +463,24 @@ Items: {
 	}
 
 	GreatswordofJudgementEcType: {
-		DisplayName: Schwert des Urteils
-		Tooltip: ""
+		DisplayName: Schwert des Gerichts
+		Tooltip:
+			'''
+			Feuert eine Edelsteinklinge ab, die Feinde verfolgt und sich nach dem Treffer in drei Feuerbälle des Gerichts aufteilt.
+			Ein weißes Langschwert aus dem Land des Vergessens.
+			Du kannst ein schwaches, beruhigendes Flüstern hören, das von diesem Schwert ausgeht.
+			"Wo immer du bist, du wirst niemals allein sein, ich werde immer bei dir sein, mein König."
+			'''
 	}
 
 	OrderbringerEcType: {
 		DisplayName: Ordnungsbringer
-		Tooltip: ""
+		Tooltip:
+			'''
+			Feuert ein buntes prismatisches Energieprojektil ab, das Feinde verfolgt. 
+			Nach zehn aufeinanderfolgenden Angriffen auf einen Feind wird ein riesiger Schwertgeist des Gerichts beschworen.  
+			"Wo immer du bist, du wirst niemals allein sein, ich werde immer bei dir sein, mein König."  
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3244,6 +3255,7 @@ Projectiles: {
 	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

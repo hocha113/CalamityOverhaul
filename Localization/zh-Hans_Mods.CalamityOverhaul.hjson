@@ -464,12 +464,22 @@ Items: {
 
 	GreatswordofJudgementEcType: {
 		DisplayName: 制裁大剑
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射一个追踪敌人的宝石刃，命中后会分裂成三颗审判火球。
+			遗忘之土的白色长剑。
+			         你可以听到这把剑传出的虚弱而带安抚的耳语。
+			         “无论何处，卿永不孤寂，吾当长伴卿侧，吾之君王”
+			'''
 	}
 
 	OrderbringerEcType: {
 		DisplayName: 携序之刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射追踪敌人的彩色棱晶能量，连续攻击一个敌人十次后会召唤一个巨大的审判剑灵。
+			“无论何处，卿永不孤寂，吾当长伴卿侧，吾之君王”
+			'''
 	}
 
 	NeutronStarIngot: {
@@ -3250,6 +3260,7 @@ Projectiles: {
 	// DefiledGreatswordSwing.DisplayName: Defiled Greatsword Swing
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
+	// StarnightLanceHeld.DisplayName: Starnight Lance Held
 }
 
 Configs: {

@@ -3,16 +3,11 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -32,29 +27,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         internal static int index;
         public override void SetStaticDefaults() => ItemID.Sets.Spears[Item.type] = true;
         public override void SetDefaults() {
-            Item.width = 44;
-            Item.damage = 90;
-            Item.DamageType = DamageClass.Melee;
-            Item.noMelee = true;
-            Item.useTurn = true;
-            Item.noUseGraphic = true;
-            Item.useAnimation = 13;
-            Item.useStyle = ItemUseStyleID.Shoot;
-            Item.useTime = 13;
-            Item.knockBack = 8.5f;
-            Item.UseSound = SoundID.Item1;
-            Item.autoReuse = true;
-            Item.height = 50;
-            Item.value = CalamityGlobalItem.RarityCyanBuyPrice;
-            Item.rare = ItemRarityID.Cyan;
-            Item.shoot = ModContent.ProjectileType<AstralPikeHeld>();
-            Item.shootSpeed = 13f;
-
+            Item.SetItemCopySD<AstralPike>();
+            Item.SetKnifeHeld<AstralPikeHeld>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 25;
-
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
         public static bool ShootFunc(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -76,29 +53,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<AstralPike>();
         public override int ProtogenesisID => ModContent.ItemType<AstralPikeEcType>();
         public override string TargetToolTipItemName => "AstralPikeEcType";
-        public override void SetDefaults(Item item) {
-            item.width = 44;
-            item.damage = 90;
-            item.DamageType = DamageClass.Melee;
-            item.noMelee = true;
-            item.useTurn = true;
-            item.noUseGraphic = true;
-            item.useAnimation = 13;
-            item.useStyle = ItemUseStyleID.Shoot;
-            item.useTime = 13;
-            item.knockBack = 8.5f;
-            item.UseSound = SoundID.Item1;
-            item.autoReuse = true;
-            item.height = 50;
-            item.value = CalamityGlobalItem.RarityCyanBuyPrice;
-            item.rare = ItemRarityID.Cyan;
-            item.shoot = ModContent.ProjectileType<AstralPikeHeld>();
-            item.shootSpeed = 13f;
-        }
-
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<AstralPikeHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return BansheeHookEcType.ShootFunc(item, player, source, position, velocity, type, damage, knockback);
+            return AstralPikeEcType.ShootFunc(item, player, source, position, velocity, type, damage, knockback);
         }
     }
 

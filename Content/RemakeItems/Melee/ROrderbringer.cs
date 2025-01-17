@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<Orderbringer>();
         public override int ProtogenesisID => ModContent.ItemType<OrderbringerEcType>();
+        public override string TargetToolTipItemName => "OrderbringerEcType";
         public override void SetDefaults(Item item) => OrderbringerEcType.SetDefaultsFunc(item);
     }
 }
