@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Common
         /// <returns></returns>
         public static bool CheckHookStatus() {
             int hookDownNum = 0;
-            foreach (var hook in Hooks.Values) {
+            foreach (var hook in _hooks.Values) {
                 if (!hook.IsApplied) {
                     CWRMod.Instance.Logger.Info((hook + VaultUtils.Translation("挂载失效", "Mount failure")));
                     hookDownNum++;
