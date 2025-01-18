@@ -31,9 +31,17 @@ namespace CalamityOverhaul.Content
         /// 瘟疫命中锚点
         /// </summary>
         public Player CreateHitPlayer;
+        /// <summary>
+        /// 瘟疫攻击计数
+        /// </summary>
         public byte ContagionOnHitNum = 0;
+        /// <summary>
+        /// 磷光拳套攻击计数
+        /// </summary>
         public byte PhosphorescentGauntletOnHitNum = 0;
-        public byte TerratomereBoltOnHitNum = 0;
+        /// <summary>
+        /// 携序之刃攻击计数
+        /// </summary>
         public byte OrderbringerOnHitNum = 0;
         public bool TheEndSunOnHitNum;
         public byte WhipHitNum = 0;
@@ -85,7 +93,6 @@ namespace CalamityOverhaul.Content
             cwr.CreateHitPlayer = CreateHitPlayer;
             cwr.ContagionOnHitNum = ContagionOnHitNum;
             cwr.PhosphorescentGauntletOnHitNum = PhosphorescentGauntletOnHitNum;
-            cwr.TerratomereBoltOnHitNum = TerratomereBoltOnHitNum;
             cwr.OrderbringerOnHitNum = OrderbringerOnHitNum;
             cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
