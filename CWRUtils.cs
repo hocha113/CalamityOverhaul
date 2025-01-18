@@ -75,11 +75,11 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 将 Item 数组的信息写入指定路径的文件中
-        /// </summary>
-        /// <param name="items">要导出的 Item 数组</param>
-        /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
+        ///// <summary>
+        ///// 将 Item 数组的信息写入指定路径的文件中
+        ///// </summary>
+        ///// <param name="items">要导出的 Item 数组</param>
+        ///// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
         //    try {
         //        int columnIndex = 0;
@@ -111,6 +111,7 @@ namespace CalamityOverhaul
         //    }
         //}
 
+        
         public static int GetTileDorp(Tile tile) {
             int stye = TileObjectData.GetTileStyle(tile);
             if (stye == -1) {
