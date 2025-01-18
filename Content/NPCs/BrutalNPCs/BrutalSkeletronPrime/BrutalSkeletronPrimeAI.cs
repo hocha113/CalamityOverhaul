@@ -1239,7 +1239,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             Texture2D mainValue = HandAsset.Value;
-            Texture2D mainValue2 = HandAssetGlow.Value;
+            Texture2D glowValue = HandAssetGlow.Value;
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frame, 12);
             Vector2 orig = rectangle.Size() / 2;
 
@@ -1247,7 +1247,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
                 , drawColor, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, rectangle
+            Main.EntitySpriteDraw(glowValue, npc.Center - Main.screenPosition, rectangle
                 , Color.White, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
 
             if (player != null && noEye && npc.ai[0] == 3) {
