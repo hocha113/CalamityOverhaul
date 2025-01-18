@@ -1,7 +1,5 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -11,25 +9,12 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class SubmarineShockerEcType : EctypeItem
     {
         public override string Texture => "CalamityMod/Items/Weapons/Melee/SubmarineShocker";
+        internal static bool canShoot;
         public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
-            Item.noMelee = true;
-            Item.noUseGraphic = true;
-            Item.autoReuse = true;
-            Item.useStyle = ItemUseStyleID.Rapier;
-            Item.damage = 90;
-            Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 10;
-            Item.shoot = ModContent.ProjectileType<RSubmarineShockerProj>();
-            Item.shootSpeed = 2f;
-            Item.knockBack = 7f;
-            Item.UseSound = SoundID.Item1;
-            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
-            Item.rare = ItemRarityID.Pink;
-
+            Item.SetItemCopySD<SubmarineShocker>();
+            Item.shootSpeed = 8;
+            Item.SetKnifeHeld<SubmarineShockerHeld>();
         }
-
         public override bool MeleePrefix() => true;
     }
 }

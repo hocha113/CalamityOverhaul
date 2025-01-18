@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
     internal class LigSpark : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+        private HashSet<NPC> onHitNPCs = [];
         public override void SetDefaults() {
             Projectile.width = 6;
             Projectile.height = 12;
@@ -18,9 +20,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15 * Projectile.MaxUpdates;
             Projectile.DamageType = DamageClass.Melee;
+            onHitNPCs = [];
         }
 
-        public override void AI() {
+        private void SpanElectric() {
             int sparky = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
             Main.dust[sparky].scale += Main.rand.Next(50) * 0.01f;
             Main.dust[sparky].noGravity = true;
@@ -33,11 +36,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             if (Main.rand.NextBool(13)) {
                 Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.Electric, Projectile.velocity.X, Projectile.velocity.Y);
             }
-            Projectile.velocity.Y += 0.01f;
-            Projectile.velocity.X *= 0.99f;
+        }
+
+        public override void AI() {
+            // 1. 计算方向向量
+            Vector2 direction = Projectile.velocity;
+
+            NPC target = VaultUtils.FindClosestNPC(Projectile.Center, 600, false, false, onHitNPCs);
+            if (target != null) {
+                direction = Projectile.Center.To(target.Center);
+            }
+
+            // 电弧球的速度向量
+            Vector2 velocity = Projectile.velocity;
+
+            // 2. 加入随机扰动（制造不规则性）
+            float randomFactorX = Main.rand.NextFloat(-1f, 1f) * 111.1f; // X方向随机扰动
+            float randomFactorY = Main.rand.NextFloat(-1f, 1f) * 111.1f; // Y方向随机扰动
+            direction.X += randomFactorX;
+            direction.Y += randomFactorY;
+
+            direction.Normalize();
+            float speed = 2.5f; // 电弧球的基础速度
+            velocity += direction * speed * 0.1f; // 逐步调整速度
+
+            velocity *= 0.98f;
+
+            float maxSpeed = 10f;
+            if (velocity.Length() > maxSpeed) {
+                velocity = Vector2.Normalize(velocity) * maxSpeed;
+            }
+
+            Projectile.velocity = velocity;
+
+            SpanElectric();
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (!onHitNPCs.Contains(target)) {
+                onHitNPCs.Add(target);
+            }
             Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Main.rand.NextVector2Unit() * Main.rand.Next(3, 5)
                     , ModContent.ProjectileType<SparkLightning>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
             proj.timeLeft = 10;

@@ -403,7 +403,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <param name="minLength">刺击长度的最小值</param>
         /// <param name="maxLength">刺击长度的最大值</param>
         public void StabBehavior(
-            int initialLength = 60,
+            float initialLength = float.MaxValue,
             float initialSpeedFactor = 0.4f,
             float speedDecayRate = 0.015f,
             int lifetime = 26,
@@ -411,12 +411,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             float scaleFactorDenominator = 510f,
             int minLength = 60,
             int maxLength = 90,
-            bool canDrawSlashTrail = true
+            bool canDrawSlashTrail = false,
+            bool ignoreUpdateCount = false
         ) {
             // 刺击行为的初始化逻辑
             if (Time == 0) {
                 this.canDrawSlashTrail = canDrawSlashTrail;
-                Length = initialLength;
+                if (initialLength != float.MaxValue) {
+                    Length = initialLength;
+                }
                 startVector = RodingToVer(1, Projectile.velocity.ToRotation()); // 初始化方向向量
                 speed = 1 + initialSpeedFactor / updateCount / SwingMultiplication; // 初始化速度因子
             }
@@ -431,7 +434,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             float distanceToOwner = Projectile.Center.To(Owner.Center).Length();
             Projectile.scale = initialScale + distanceToOwner / scaleFactorDenominator;
-            if (Time % updateCount == updateCount - 1) {
+            if (Time % updateCount == updateCount - 1 || ignoreUpdateCount) {
                 Length = MathHelper.Clamp(Length, minLength, maxLength);
             }
         }

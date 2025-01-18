@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] == 0) {
-                StabBehavior(scaleFactorDenominator: 400f, minLength: 20, maxLength: 120);
+                StabBehavior(initialLength: 60, scaleFactorDenominator: 400f, minLength: 20, maxLength: 120, canDrawSlashTrail:true);
                 return false;
             }
 
