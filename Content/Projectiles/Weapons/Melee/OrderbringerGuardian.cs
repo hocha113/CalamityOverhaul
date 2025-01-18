@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class OrderbringerProj : ModProjectile
+    internal class OrderbringerGuardian : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Orderbringer";
         public NPC Owner => Main.npc[(int)Projectile.ai[2]];
@@ -120,15 +120,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 float radius = radiusStep * angle;
                 float x = centerX + radius * (float)Math.Cos(angle);
                 float y = centerY + radius * (float)Math.Sin(angle);
-
-                // 在(x, y)处生成粒子或执行其他操作
-                BasePRT energyLeak = new PRT_Light(new Vector2(x, y), Vector2.Zero
-                        , 1.5f, VaultUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
+                Vector2 ver = (new Vector2(x, y)).To(Projectile.Center).UnitVector() * 64;
+                Color color = VaultUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White);
+                BasePRT energyLeak = new PRT_Light(new Vector2(x, y), ver, 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f);
                 PRTLoader.AddParticle(energyLeak);
             }
 
             Projectile.Explode(300);
-            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 30f, 6f, 20, 1000f, FullName);
+            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat()
+                * ((float)Math.PI * 2f)).ToRotationVector2(), 30f, 6f, 20, 1000f, FullName);
             Main.instance.CameraModifiers.Add(modifier);
         }
 

@@ -1,13 +1,11 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.Particles;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class OrderbringerBeams2 : ModProjectile
+    internal class RulingPrismCore : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
         public Color ProjColor;
@@ -51,11 +49,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
-            if (!VaultUtils.isServer) {
-                BasePRT energyLeak = new PRT_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3), Projectile.velocity * 0.25f
-                                , Main.rand.NextFloat(0.3f, 0.5f), ProjColor, 50, 1, 1.5f, hueShift: 0.0f);
-                PRTLoader.AddParticle(energyLeak);
-            }
             CalamityUtils.HomeInOnNPC(Projectile, true, 200f, 18f, 20f);
         }
 

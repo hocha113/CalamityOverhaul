@@ -468,8 +468,8 @@ Items: {
 			'''
 			发射一个追踪敌人的宝石刃，命中后会分裂成三颗审判火球。
 			遗忘之土的白色长剑。
-			         你可以听到这把剑传出的虚弱而带安抚的耳语。
-			         “无论何处，卿永不孤寂，吾当长伴卿侧，吾之君王”
+			你可以听到这把剑传出的虚弱而带安抚的耳语。
+			“无论何处，卿永不孤寂，吾当长伴卿侧，吾之君王”
 			'''
 	}
 
@@ -2877,9 +2877,9 @@ Projectiles: {
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Alt
 	// NeutronsOrb.DisplayName: Neutrons Orb
-	// OrderbringerBeams.DisplayName: Orderbringer Beams
-	// OrderbringerBeams2.DisplayName: Orderbringer Beams2
-	// OrderbringerProj.DisplayName: Orderbringer Proj
+	// RulingPrism.DisplayName: Ruling Prism
+	// RulingPrismCore.DisplayName: Ruling Prism Core
+	// OrderbringerGuardian.DisplayName: Orderbringer Guardian
 	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
 	// PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
 	// PGDeriveProj.DisplayName: PG Derive Proj

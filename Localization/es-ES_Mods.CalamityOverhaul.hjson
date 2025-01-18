@@ -2906,9 +2906,9 @@ Projectiles: {
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Alt
 	// NeutronsOrb.DisplayName: Neutrons Orb
-	// OrderbringerBeams.DisplayName: Orderbringer Beams
-	// OrderbringerBeams2.DisplayName: Orderbringer Beams2
-	// OrderbringerProj.DisplayName: Orderbringer Proj
+	// RulingPrism.DisplayName: Ruling Prism
+	// RulingPrismCore.DisplayName: Ruling Prism Core
+	// OrderbringerGuardian.DisplayName: Orderbringer Guardian
 	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
 	// PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
 	// PGDeriveProj.DisplayName: PG Derive Proj

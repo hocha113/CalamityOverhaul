@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
-            Item.shoot = ModContent.ProjectileType<OrderbringerBeams>();
+            Item.shoot = ModContent.ProjectileType<RulingPrism>();
             Item.shootSpeed = 6f;
             Item.SetKnifeHeld<OrderbringerHeld>();
         }
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<OrderbringerBeams>(), Projectile.damage
+                , ModContent.ProjectileType<RulingPrism>(), Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class OrderbringerBeams : ModProjectile
+    internal class RulingPrism : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
         public override void SetStaticDefaults() {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             for (int i = 0; i < 3; i++) {
                 Vector2 pos = Projectile.Center + Projectile.velocity.GetNormalVector() * Main.rand.Next(-160, 160);
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * 10;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vr, ModContent.ProjectileType<OrderbringerBeams2>()
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vr, ModContent.ProjectileType<RulingPrismCore>()
                     , (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 0f, 0f);
             }
         }
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.numHits == 0) {
                 target.CWR().OrderbringerOnHitNum += 1;
                 if (target.CWR().OrderbringerOnHitNum > 13) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<OrderbringerProj>()
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<OrderbringerGuardian>()
                     , Projectile.damage * 3, Projectile.knockBack, Projectile.owner, 0f, 0f, target.whoAmI);
                     target.CWR().OrderbringerOnHitNum = 0;
                 }
