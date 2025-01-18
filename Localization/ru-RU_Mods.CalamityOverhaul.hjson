@@ -2918,9 +2918,9 @@ Projectiles: {
 	// OrderbringerGuardian.DisplayName: Orderbringer Guardian
 	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
 	// PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
-	// PGDeriveProj.DisplayName: PG Derive Proj
-	// PGProj.DisplayName: PG Proj
-	// SupPGProj.DisplayName: Sup PG
+	GauntletDerive.DisplayName: Gauntlet Derive
+	GauntletInAltShoot.DisplayName: Gauntlet
+	EXGauntlet.DisplayName: EX Gauntlet
 	// GouldBee.DisplayName: Gould Bee
 	// PlagueBee.DisplayName: Plague Bee
 	// PlagueBeeWave.DisplayName: Plague Bee Wave
