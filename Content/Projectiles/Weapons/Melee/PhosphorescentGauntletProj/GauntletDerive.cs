@@ -5,10 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
-    internal class PGDeriveProj : PGProj
+    internal class GauntletDerive : GauntletInAltShoot
     {
         private int CanDamageTime;
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 3;
@@ -23,9 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             CanDamageTime = Main.rand.Next(13);
         }
 
-        public override bool? CanDamage() {
-            return CanDamageTime > 0 ? false : base.CanDamage();
-        }
+        public override bool? CanDamage() => CanDamageTime > 0 ? false : base.CanDamage();
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
@@ -38,18 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 }
             }
             CanDamageTime--;
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-
-        }
-
-        public override void OnKill(int timeLeft) {
-
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            return base.OnTileCollide(oldVelocity);
         }
 
         public override bool PreDraw(ref Color lightColor) {

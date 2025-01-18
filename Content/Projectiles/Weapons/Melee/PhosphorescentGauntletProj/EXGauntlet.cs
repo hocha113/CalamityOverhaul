@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
-    internal class SupPGProj : PGProj
+    internal class EXGauntlet : GauntletInAltShoot
     {
         public Vector2 TargetPos {
             get => new Vector2(Projectile.ai[0], Projectile.ai[1]);

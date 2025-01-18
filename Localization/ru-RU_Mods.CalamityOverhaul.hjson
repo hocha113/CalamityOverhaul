@@ -2666,6 +2666,21 @@ Items: {
 		// DisplayName: Wraith Kunai
 		// Tooltip: ""
 	}
+
+	CalSelfPortrait: {
+		// DisplayName: The Forgotten Photo
+		/* Tooltip:
+			'''
+			The Forgotten Photo
+			[legend]
+			''' */
+		// Legend: The Forgotten Photo
+	}
+
+	WUTIVSelfPortrait: {
+		// DisplayName: Thank you, WUTIV
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

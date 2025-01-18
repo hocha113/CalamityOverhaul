@@ -1,4 +1,5 @@
 ﻿using CalamityMod.DataStructures;
+using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,12 +10,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
-    internal class PGProj : ModProjectile
+    internal class GauntletInAltShoot : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
-
         private int Time;
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             if (!VaultUtils.isServer) {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3, Projectile.width);
 
-                PGGlow glow = new PGGlow(pos, Projectile.velocity, Projectile.scale * Main.rand.NextFloat(1, 1.2f), Main.rand.Next(15, 22), 1);
+                PRT_Gauntlet glow = new PRT_Gauntlet(pos, Projectile.velocity, Projectile.scale * Main.rand.NextFloat(1, 1.2f), Main.rand.Next(15, 22), 1);
                 PRTLoader.AddParticle(glow);
                 SpanDust(pos);
             }
@@ -78,14 +77,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            SoundStyle sound = SoundID.Item88 with {
-                Volume = 3
-            };
+            SoundStyle sound = SoundID.Item88;
+            sound.Volume = 3;
             SoundEngine.PlaySound(sound, Projectile.position);
             SpanDust(Projectile, 2);
             CWRNpc cwrNPC = target.CWR();
             cwrNPC.PhosphorescentGauntletOnHitNum++;
-            int type = ModContent.ProjectileType<SupPGProj>();
+            int type = ModContent.ProjectileType<EXGauntlet>();
             if (cwrNPC.PhosphorescentGauntletOnHitNum > 6 && Main.player[Projectile.owner].ownedProjectileCounts[type] <= 0) {
                 Vector2 randomRotVr = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2();
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center + randomRotVr * 1600
@@ -101,18 +99,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 float random = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 6; i++) {
                     float rot = MathHelper.TwoPi / 6 * i + random;
-                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, rot.ToRotationVector2() * 15, ModContent.ProjectileType<PGDeriveProj>(), Projectile.damage / 2, 2, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, rot.ToRotationVector2() * 15
+                        , ModContent.ProjectileType<GauntletDerive>(), Projectile.damage / 2, 2, Projectile.owner);
                 }
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            return Projectile.timeLeft > 60 ? false : base.OnTileCollide(oldVelocity);
-        }
+        public override bool OnTileCollide(Vector2 oldVelocity) => Projectile.timeLeft <= 60 && base.OnTileCollide(oldVelocity);
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.PiOver4 + MathHelper.Pi + (Projectile.velocity.X > 0 ? MathHelper.PiOver2 : 0)
+            float drawRot = Projectile.rotation + MathHelper.PiOver4 + MathHelper.Pi + (Projectile.velocity.X > 0 ? MathHelper.PiOver2 : 0);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, drawRot
                 , value.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }

@@ -3,10 +3,12 @@ using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Painting;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -224,6 +226,13 @@ namespace CalamityOverhaul.Content
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                     }
                 }
+
+                if (Main.rand.NextBool(1000)) {
+                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
+                    if (!VaultUtils.isSinglePlayer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                    }
+                }
             }
 
             if (npc.type == CWRLoad.PrimordialWyrmHead && !DownedBossSystem.downedPrimordialWyrm) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
@@ -288,6 +297,9 @@ namespace CalamityOverhaul.Content
             if (npc.type == NPCID.TombCrawlerHead) {
                 npcLoot.RemoveWhere(rule => true);
                 npcLoot.Add(3380, 1, 2, 6);
+            }
+            else if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
+                npcLoot.Add(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
             }
         }
 

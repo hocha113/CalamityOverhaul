@@ -2645,6 +2645,21 @@ Items: {
 		DisplayName: 幽魂苦无
 		Tooltip: ""
 	}
+
+	CalSelfPortrait: {
+		DisplayName: 被遗忘的照片
+		Tooltip:
+			'''
+			一张被遗忘的照片
+			[legend]
+			'''
+		Legend:"你还想看什么呢？:)"
+	}
+
+	WUTIVSelfPortrait: {
+		DisplayName: 谢谢你雾梯
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2653,7 +2668,7 @@ Projectiles: {
 	MuraBreakerSlash.DisplayName: 升龙半月
 	MuraExecutionCut.DisplayName: 次元斩-终
 	MuraExecutionCutOnSpan.DisplayName: 次元斩-始
-	MuraGroundSmash.DisplayName: 坠地
+	MuraGroundSmash.DisplayName: 落樱
 	EndSkillEffectStart.DisplayName: 次元斩-始
 	EndSkillMakeDamage.DisplayName: 次元斩-终
 	RebelBladeFlyAttcke.DisplayName: 叛逆之刃
@@ -3338,7 +3353,7 @@ Configs: {
 
 		ActivateGunRecoil: {
 			Label: 枪械后坐力[c/06e33f:(实验性)]
-			Tooltip:开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
+			Tooltip: 开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
 		}
 
 		MagazineSystem: {
