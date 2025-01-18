@@ -3337,12 +3337,8 @@ Configs: {
 		}
 
 		ActivateGunRecoil: {
-			Label: 枪械后坐力
-			Tooltip:
-				'''
-				开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
-				默认开启，禁用后可能会让一些游戏内容失去意义
-				'''
+			Label: 枪械后坐力[c/06e33f:(实验性)]
+			Tooltip:开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
 		}
 
 		MagazineSystem: {

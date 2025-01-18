@@ -3331,12 +3331,8 @@ Configs: {
 		}
 
 		ActivateGunRecoil: {
-			Label: Schusswaffen-Rückstoß
-			Tooltip:
-				'''
-				Wenn aktiviert, haben Schusswaffen Rückstoßeffekte beim Schießen, deaktivieren Sie dies, um diese Effekte auszuschalten
-				Standardmäßig aktiviert, das Deaktivieren kann einige Spielinhalte sinnlos machen
-				'''
+			Label: Schusswaffen-Rückstoß [c/06e33f:(Experimentell)]
+			Tooltip: Nach der Aktivierung haben Schusswaffen einen Rückstoßeffekt beim Feuern. Deaktivieren Sie es, um diese Effekte auszuschalten.
 		}
 
 		MagazineSystem: {

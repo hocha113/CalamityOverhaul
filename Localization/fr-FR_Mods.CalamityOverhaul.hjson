@@ -3334,12 +3334,8 @@ Configs: {
 		}
 
 		ActivateGunRecoil: {
-			Label: Recul des armes à feu
-			Tooltip:
-				'''
-				Lorsqu'activé, le tir des armes à feu aura un effet de recul, désactivez-le pour désactiver ces effets
-				Activé par défaut, la désactivation pourrait rendre certains contenus de jeu moins significatifs
-				'''
+			Label: Recul des armes à feu [c/06e33f:(expérimental)]
+			Tooltip: Une fois activé, les armes à feu auront un effet de recul lors du tir. Désactivez-le pour supprimer ces effets.
 		}
 
 		MagazineSystem: {

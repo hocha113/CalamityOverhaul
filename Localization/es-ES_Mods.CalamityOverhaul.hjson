@@ -3366,12 +3366,8 @@ Configs: {
 		}
 
 		ActivateGunRecoil: {
-			Label: Retroceso de armas
-			Tooltip:
-				'''
-				Al activarlo, el fuego de armas tendrá efectos de retroceso; desactívelo para cerrar estos efectos.
-				Activado por defecto; desactivarlo puede hacer que algunos contenidos del juego pierdan sentido.
-				'''
+			Label: Retroceso de armas[c/06e33f:(experimental)]
+			Tooltip: Al activarlo, las armas de fuego tendrán un efecto de retroceso al disparar. Desactívalo para deshabilitar estos efectos.
 		}
 
 		MagazineSystem: {
