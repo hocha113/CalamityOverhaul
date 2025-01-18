@@ -2653,7 +2653,7 @@ Items: {
 			一张被遗忘的照片
 			[legend]
 			'''
-		Legend:"你还想看什么呢？:)"
+		Legend: 你还想看什么呢？:)
 	}
 
 	WUTIVSelfPortrait: {

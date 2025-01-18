@@ -6,26 +6,29 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
-    internal class EXGauntlet : GauntletInAltShoot
+    internal class EXGauntlet : ModProjectile
     {
+        public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public Vector2 TargetPos {
             get => new Vector2(Projectile.ai[0], Projectile.ai[1]);
-            set {
-                Projectile.ai[0] = value.X;
-                Projectile.ai[1] = value.Y;
-            }
+            set { Projectile.ai[0] = value.X; Projectile.ai[1] = value.Y; }
         }
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 13;
         }
 
         public override void SetDefaults() {
-            base.SetDefaults();
+            Projectile.width = Projectile.height = 122;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = false;
             Projectile.MaxUpdates = 5;
             Projectile.scale = 5;
             Projectile.tileCollide = false;
@@ -40,13 +43,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             }
         }
 
-        public override bool? CanDamage() {
-            return Projectile.numHits > 0 ? false : base.CanDamage();
-        }
+        public override bool? CanDamage() => Projectile.numHits > 0 ? false : base.CanDamage();
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(Supernova.ExplosionSound, Projectile.Center);
-            SpanDust(Projectile, 3);
+            GauntletInAltShoot.SpanDust(Projectile, 3);
 
             Vector2 normVr = Projectile.velocity.GetNormalVector();
 
@@ -57,7 +58,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 sulphurousAcid.noGravity = true;
                 sulphurousAcid.scale = Main.rand.NextFloat(1, 2.2f);
             }
-            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
+            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center
+                , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
             Main.instance.CameraModifiers.Add(modifier);
         }
 

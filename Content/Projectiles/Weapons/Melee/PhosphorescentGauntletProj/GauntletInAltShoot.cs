@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
     internal class GauntletInAltShoot : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
-        private int Time;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -33,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3() * 3);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            if (Time == 0) {
+            if (Projectile.ai[0] == 0) {
                 SpanDust(Projectile, 1);
             }
             if (!VaultUtils.isServer) {
@@ -44,10 +43,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 SpanDust(pos);
             }
 
-            Time++;
+            Projectile.ai[0]++;
         }
 
         public void SpanDust(Vector2 origPos) {
+            if (Main.dedServ) {
+                return;
+            }
             for (int i = 0; i < 12; i++) {
                 Vector2 offset = Vector2.UnitX * (0f - Projectile.width) / 2f;
                 offset += -Vector2.UnitY.RotatedBy(i * CWRUtils.PiOver6) * new Vector2(8f, 16f);
@@ -62,17 +64,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public static void SpanDust(Projectile projectile, float salce) {
-            if (!Main.dedServ) {
-                Vector2 vr = projectile.velocity.UnitVector();
-                Vector2 topLeft = projectile.Center + vr.RotatedBy(-MathHelper.PiOver2) * 40f * salce;
-                Vector2 top = projectile.Center + vr * 70f * salce;
-                Vector2 topRight = projectile.Center + vr.RotatedBy(MathHelper.PiOver2) * 40f * salce;
-                foreach (Vector2 spawnPosition in new BezierCurve(topLeft, top, topRight).GetPoints(50)) {
-                    Dust sulphurousAcid = Dust.NewDustPerfect(spawnPosition + vr * 16f, DustID.JungleTorch);
-                    sulphurousAcid.velocity = vr * 4f;
-                    sulphurousAcid.noGravity = true;
-                    sulphurousAcid.scale = 1.2f * salce;
-                }
+            if (Main.dedServ) {
+                return;
+            }
+            Vector2 vr = projectile.velocity.UnitVector();
+            Vector2 topLeft = projectile.Center + vr.RotatedBy(-MathHelper.PiOver2) * 40f * salce;
+            Vector2 top = projectile.Center + vr * 70f * salce;
+            Vector2 topRight = projectile.Center + vr.RotatedBy(MathHelper.PiOver2) * 40f * salce;
+            foreach (Vector2 spawnPosition in new BezierCurve(topLeft, top, topRight).GetPoints(50)) {
+                Dust sulphurousAcid = Dust.NewDustPerfect(spawnPosition + vr * 16f, DustID.JungleTorch);
+                sulphurousAcid.velocity = vr * 4f;
+                sulphurousAcid.noGravity = true;
+                sulphurousAcid.scale = 1.2f * salce;
             }
         }
 
@@ -92,15 +95,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                     , randomRotVr * 15, type, Projectile.damage * 2, 0, Projectile.owner, target.Center.X, target.Center.Y);
                 cwrNPC.PhosphorescentGauntletOnHitNum = 0;
             }
-        }
-
-        public override void OnKill(int timeLeft) {
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            else {
                 float random = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 6; i++) {
                     float rot = MathHelper.TwoPi / 6 * i + random;
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, rot.ToRotationVector2() * 15
-                        , ModContent.ProjectileType<GauntletDerive>(), Projectile.damage / 2, 2, Projectile.owner);
+                        , ModContent.ProjectileType<GauntletDerive>(), Projectile.damage / 2, 2, Projectile.owner, ai2: target.whoAmI);
                 }
             }
         }

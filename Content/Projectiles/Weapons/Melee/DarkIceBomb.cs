@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            Lighting.AddLight(Projectile.Center, InnerColor.ToVector3() * 0.2f);
+            Lighting.AddLight(Projectile.Center, Color.AliceBlue.ToVector3() * 0.2f);
             Player Owner = Main.player[Projectile.owner];
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             if (Projectile.timeLeft % 2 == 0 && Time > 5f && targetDist < 1400f) {
-                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 10, 1.7f, InnerColor);
+                LineParticle spark2 = new(Projectile.Center, -Projectile.velocity * 0.05f, false, 10, 1.7f, Color.AliceBlue);
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
 

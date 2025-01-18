@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,12 +20,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetItemCopySD<PhosphorescentGauntlet>();
             Item.damage = 1205;
         }
-
+        public override void HoldItem(Player player) => HoldItemFunc(player);
+        public static void HoldItemFunc(Player player) {
+            if (!player.PressKey()) {
+                return;
+            }
+            player.direction = Math.Sign(player.Center.To(Main.MouseWorld).X);
+        }
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
         public override bool AltFunctionUse(Player player) => true;
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
-        public override bool? UseItem(Player player) => UseItemFunc(player, Item);
-        public static bool? UseItemFunc(Player player, Item Item) {
+        public override bool CanUseItem(Player player) => CanUseItemFunc(player, Item);
+        public static bool CanUseItemFunc(Player player, Item Item) {
             Item.useAnimation = Item.useTime = 20;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.shootSpeed = 15;
@@ -33,8 +39,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Item.useStyle = ItemUseStyleID.Swing;
                 Item.shootSpeed = 1;
             }
-
-            return null;
+            
+            return player.ownedProjectileCounts[Item.shoot] <= 0;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

@@ -112,68 +112,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void MeleeEffect() {
-            Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
-        }
+        public override void MeleeEffect() => Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.ai[0] != 1) {
+            if (Projectile.ai[0] != 1 || Projectile.numHits > 0) {
                 return;
             }
-            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(10)) {
-                return;
-            }
-            SpawnFlares(Item, Owner, Item.knockBack, Item.damage, hit.Crit);
+
+            SpawnFlares(target);
+            Projectile.numHits++;
         }
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            SpawnFlares(Item, Owner, Item.knockBack, Item.damage, false);
-        }
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) => SpawnFlares(target);
 
-        public static void SpawnFlares(Item item, Player player, float knockback, int damage, bool crit) {
-            IEntitySource source = player.GetSource_ItemUse(item);
-            _ = SoundEngine.PlaySound(SoundID.Item88, player.Center);
-            int i = Main.myPlayer;
-            float cometSpeed = item.shootSpeed;
-            Vector2 realPlayerPos = player.RotatedRelativePoint(player.MountedCenter, true);
-            float mouseXDist = Main.mouseX + Main.screenPosition.X - realPlayerPos.X;
-            float mouseYDist = Main.mouseY + Main.screenPosition.Y - realPlayerPos.Y;
-            if (player.gravDir == -1f) {
-                mouseYDist = Main.screenPosition.Y + Main.screenHeight - Main.mouseY - realPlayerPos.Y;
-            }
-            float mouseDistance = (float)Math.Sqrt((double)((mouseXDist * mouseXDist) + (mouseYDist * mouseYDist)));
-            _ = (float.IsNaN(mouseXDist) && float.IsNaN(mouseYDist)) || (mouseXDist == 0f && mouseYDist == 0f)
-                ? player.direction
-                : cometSpeed / mouseDistance;
-
-            if (crit) {
-                damage /= 2;
-            }
-
-            for (int j = 0; j < 2; j++) {
-                realPlayerPos = new Vector2(player.Center.X + (float)(Main.rand.Next(201) * -(float)player.direction)
-                    + (Main.mouseX + Main.screenPosition.X - player.position.X), player.MountedCenter.Y - 600f);
-                realPlayerPos.X = ((realPlayerPos.X + player.Center.X) / 2f) + Main.rand.Next(-200, 201);
-                realPlayerPos.Y -= 100 * j;
-                mouseXDist = Main.mouseX + Main.screenPosition.X - realPlayerPos.X + (Main.rand.Next(-40, 41) * 0.03f);
-                mouseYDist = Main.mouseY + Main.screenPosition.Y - realPlayerPos.Y;
-                if (mouseYDist < 0f) {
-                    mouseYDist *= -1f;
-                }
-                if (mouseYDist < 20f) {
-                    mouseYDist = 20f;
-                }
-                mouseDistance = (float)Math.Sqrt((double)((mouseXDist * mouseXDist) + (mouseYDist * mouseYDist)));
-                mouseDistance = cometSpeed / mouseDistance;
-                mouseXDist *= mouseDistance;
-                mouseYDist *= mouseDistance;
-                float speedX = mouseXDist;
-                float speedY = mouseYDist + (Main.rand.Next(-80, 81) * 0.02f);
-                int proj = Projectile.NewProjectile(source, realPlayerPos.X, realPlayerPos.Y, speedX, speedY
-                    , ProjectileID.LunarFlare, (int)(damage * 0.5), knockback, i, 0f, Main.rand.Next(3));
-                if (proj.WithinBounds(Main.maxProjectiles)) {
-                    Main.projectile[proj].DamageType = DamageClass.Melee;
-                }
+        public void SpawnFlares(Entity target) {
+            SoundEngine.PlaySound(SoundID.Item88, Owner.Center);
+            for (int i = 0; i < 6; i++) {
+                Vector2 spanPos = target.Center + new Vector2(Main.rand.Next(-900, 900), Main.rand.Next(-700, 600));
+                Vector2 ver = spanPos.To(target.Center + new Vector2(Main.rand.Next(-target.width, target.width), Main.rand.Next(-target.height, target.height)));
+                ver = ver.UnitVector() * 13;
+                Projectile.NewProjectile(Source, spanPos, ver
+                , ModContent.ProjectileType<StellarStrikerBeam>(), Projectile.damage / 2
+                , Projectile.knockBack, Owner.whoAmI, 0f, 0f, 1);
             }
         }
     }
