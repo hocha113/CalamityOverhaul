@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 float radius = radiusStep * angle;
                 float x = centerX + radius * (float)Math.Cos(angle);
                 float y = centerY + radius * (float)Math.Sin(angle);
-                Vector2 ver = (new Vector2(x, y)).To(Projectile.Center).UnitVector() * 64;
+                Vector2 ver = (new Vector2(x, y)).To(Projectile.Center).UnitVector() * 46;
                 Color color = VaultUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White);
                 BasePRT energyLeak = new PRT_Light(new Vector2(x, y), ver, 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f);
                 PRTLoader.AddParticle(energyLeak);

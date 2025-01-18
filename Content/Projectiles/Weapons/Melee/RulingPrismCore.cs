@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
@@ -49,6 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
+            Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
+                , DustID.UltraBrightTorch, Projectile.velocity.X, Projectile.velocity.Y, 155, ProjColor, 1);
+            dust.noGravity = true;
+            dust.color = ProjColor;
             CalamityUtils.HomeInOnNPC(Projectile, true, 200f, 18f, 20f);
         }
 

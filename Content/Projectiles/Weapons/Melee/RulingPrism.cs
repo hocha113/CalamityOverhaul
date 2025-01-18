@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public void SpanProj() {
             for (int i = 0; i < 3; i++) {
                 Vector2 pos = Projectile.Center + Projectile.velocity.GetNormalVector() * Main.rand.Next(-160, 160);
-                Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * 10;
+                Vector2 vr = pos.To(Projectile.Center + Projectile.velocity.UnitVector() * 600).UnitVector() * 10;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vr, ModContent.ProjectileType<RulingPrismCore>()
                     , (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 0f, 0f);
             }
