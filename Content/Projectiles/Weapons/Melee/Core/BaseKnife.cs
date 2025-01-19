@@ -168,12 +168,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 OtherMeleeSize = initialMeleeSize;
             }
 
-            if (SwingAIType == SwingAITypeEnum.UpAndDown) {
-                if (SwingIndex == 1) {
-                    phase0SwingSpeed *= -1;
-                    phase1SwingSpeed *= -1;
-                    phase2SwingSpeed *= -1;
-                }
+            if (SwingAIType == SwingAITypeEnum.UpAndDown && SwingIndex == 1) {
+                phase0SwingSpeed *= -1;
+                phase1SwingSpeed *= -1;
+                phase2SwingSpeed *= -1;
             }
 
             // 计算当前挥击速度比例

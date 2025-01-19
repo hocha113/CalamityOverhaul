@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
         public override void SetThrowable() {
             Projectile.DamageType = CWRLoad.RogueDamageClass;
-            HandOnTwringMode = -50;
+            HandOnTwringMode = -36;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
             OffsetRoting = MathHelper.PiOver4;

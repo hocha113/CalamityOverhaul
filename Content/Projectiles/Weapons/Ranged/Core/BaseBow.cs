@@ -451,12 +451,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Vector2 bowPos = Projectile.Center - toProjRot * (TextureValue.Width / 2 - 1) + Owner.CWR().SpecialDrawPositionOffset;
             bowPos += toProjRot * BowstringData.CoreOffset.X;
             bowPos += toProjRot.GetNormalVector() * BowstringData.CoreOffset.Y * DirSign;
-
             Vector2 posTop = bowPos + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
             Vector2 posBottom = bowPos + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.BottomBowOffset.Y) + toProjRot * BowstringData.BottomBowOffset.X;
 
             float lengsOFstValue = Projectile.ai[1] / Item.useTime * 16;
-            BowstringData.Points[1] = bowPos - toProjRot * lengsOFstValue;
+            lengsOFstValue -= (BowstringData.TopBowOffset.X + BowstringData.BottomBowOffset.X) / 2;
 
             if (DirSign < 0) {
                 posTop = bowPos + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
@@ -464,6 +463,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             BowstringData.Points[0] = posTop;
+            BowstringData.Points[1] = bowPos - toProjRot * lengsOFstValue;
             BowstringData.Points[2] = posBottom;
 
             if (BowstringData.DoEffect == null) {

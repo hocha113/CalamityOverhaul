@@ -69,7 +69,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override string Texture => CWRConstant.Item_Melee + "FlawlessHeld";
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Flawless_Bar";
-        private int Time2;
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             drawTrailHighlight = false;
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             unitOffsetDrawZkMode = 0;
             Projectile.width = Projectile.height = 186;
             distanceToOwner = -60;
-            SwingData.starArg = 30;
+            SwingData.starArg = -30;
             SwingData.ler1_UpLengthSengs = 0.05f;
             SwingData.minClampLength = 200;
             SwingData.maxClampLength = 210;
@@ -90,64 +89,44 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             autoSetShoot = true;
         }
 
-        private void stab() {
-            if (Time == 0) {
-                Length = 80;
-                startVector = RodingToVer(1, Projectile.velocity.ToRotation());
-                speed = 1 + 0.6f / updateCount / SwingMultiplication;
-            }
-
-            if (Time < 6 * updateCount) {
-                Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length;
-                BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 2.26f, Color.AliceBlue, Owner);
-                PRTLoader.AddParticle(spark);
-            }
-
-            Length *= speed;
-            vector = startVector * Length * SwingMultiplication;
-            speed -= 0.015f / updateCount;
-
-            if (Time >= 26 * updateCount * SwingMultiplication) {
-                Projectile.Kill();
-            }
-            float toTargetSengs = Projectile.Center.To(Owner.Center).Length();
-            Projectile.scale = 0.8f + toTargetSengs / 520f;
-            if (Time % updateCount == updateCount - 1) {
-                Length = MathHelper.Clamp(Length, 60, 160);
-            }
-        }
-
         public override bool PreSwingAI() {
-            Projectile.ai[0] = 1;
-            if (Projectile.ai[0] == 0) {
-                SwingAIType = SwingAITypeEnum.None;
-                ExecuteAdaptiveSwing(
-                phase0SwingSpeed: -0.6f,
-                phase1SwingSpeed: 12.2f,
-                phase2SwingSpeed: 2f,
-                swingSound: SoundID.Item1 with { Pitch = -0.6f });
-            }
-            else if (Projectile.ai[0] == 1) {
-                stab();
+            if (Projectile.ai[0] == 1) {
+                StabBehavior(initialLength: 100, lifetime: 26, scaleFactorDenominator: 520f, minLength: 100, maxLength: 220);
+                if (Time < 6 * updateCount) {
+                    Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length / 2;
+                    BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 2.26f, Color.AliceBlue, Owner);
+                    PRTLoader.AddParticle(spark);
+                }
                 return false;
             }
             else if (Projectile.ai[0] == 2) {
-                SwingAIType = SwingAITypeEnum.UpAndDown;
-                ExecuteAdaptiveSwing(
-                phase0SwingSpeed: -0.6f,
-                phase1SwingSpeed: 12.2f,
-                phase2SwingSpeed: 2f,
-                swingSound: SoundID.Item1 with { Pitch = -0.6f });
-            }
-            else if (Projectile.ai[0] == 3) {
-                stab();
+                ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: -1.3f
+                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0.002f, phase2MeleeSizeIncrement: -0.008f);
+                SwingBehavior(SwingData);
                 return false;
             }
-            return true;
+            else if (Projectile.ai[0] == 3) {
+                StabBehavior(initialLength: 160, lifetime: 16, scaleFactorDenominator: 320f, minLength: 160, maxLength: 220);
+                if (Time < 6 * updateCount) {
+                    Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length / 2;
+                    BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 2.26f, Color.AliceBlue, Owner);
+                    PRTLoader.AddParticle(spark);
+                }
+                return false;
+            }
+            SwingAIType = SwingAITypeEnum.UpAndDown;
+            SwingIndex = 1;
+            SwingData.starArg = -160;
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: -2.3f
+                , phase1SwingSpeed: 12.2f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0.004f);
+            SwingBehavior(SwingData);
+            return false;
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.KnifeHitNPC(target, hit, damageDone);
+            
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
