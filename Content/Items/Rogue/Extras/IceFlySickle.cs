@@ -69,11 +69,6 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             return VaultUtils.CircleIntersectsRectangle(Projectile.Center, 75, targetHitbox);
         }
 
-        public override void OnThrowing() {
-            SetDirection();
-            base.OnThrowing();
-        }
-
         public override bool PreThrowOut() {
             outFive = true;
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.2f }, Owner.Center);

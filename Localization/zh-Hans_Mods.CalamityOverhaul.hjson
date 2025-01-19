@@ -760,7 +760,7 @@ Items: {
 		DisplayName: 地炎长矛
 		Tooltip:
 			'''
-			发射数个大地碎片，有一定概率额外发射一个地炎巨石
+			发射数个大地碎片
 			右键可以将武器投掷出去
 			"嘿！你得捡回来！"
 			'''
@@ -2660,6 +2660,16 @@ Items: {
 		DisplayName: 谢谢你雾梯
 		Tooltip: ""
 	}
+
+	StarnightLanceEcType: {
+		// DisplayName: Starnight Lance
+		// Tooltip: ""
+	}
+
+	DragoonDrizzlefishEcType: {
+		// DisplayName: Dragoon Drizzlefish
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3276,6 +3286,9 @@ Projectiles: {
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
 	// StarnightLanceHeld.DisplayName: Starnight Lance Held
+	// VulcaniteLanceHeld.DisplayName: Vulcanite Lance Held
+	// EarthenPikeHeld.DisplayName: Earthen Pike Held
+	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
 }
 
 Configs: {

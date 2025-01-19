@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             item.rare = ModContent.RarityType<Turquoise>();
             item.SetKnifeHeld<TerratomereHeld>();
-            CWRUtils.EasySetLocalTextNameOverride(item, "TerratomereEcType");
         }
     }
 }

@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 是否湮灭，在设置<see cref="isInfiniteItem"/>为<see langword="true"/>后启用，决定无尽物品是否湮灭
         /// </summary>
-        internal bool noDestruct;
+        internal bool NoDestruct;
         /// <summary>
         /// 湮灭倒计时间
         /// </summary>
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content
             cwr.Scope = Scope;
             cwr.AmmoProjectileReturn = AmmoProjectileReturn;
             cwr.isInfiniteItem = isInfiniteItem;
-            cwr.noDestruct = noDestruct;
+            cwr.NoDestruct = NoDestruct;
             cwr.destructTime = destructTime;
             cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.DrawOmigaSnyUIBool = DrawOmigaSnyUIBool;
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
-            tag.Add("_noDestruct", noDestruct);
+            tag.Add("_NoDestruct", NoDestruct);
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
                     Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转
@@ -260,8 +260,13 @@ namespace CalamityOverhaul.Content
         }
 
         public override void LoadData(Item item, TagCompound tag) {
-            MeleeCharge = tag.GetFloat("_MeleeCharge");
-            noDestruct = tag.GetBool("_noDestruct");
+            if (!tag.TryGet("_MeleeCharge", out MeleeCharge)) {
+                MeleeCharge = 0;
+            }
+            if (!tag.TryGet("_NoDestruct", out NoDestruct)) {
+                NoDestruct = false;
+            }
+
             if (HasCartridgeHolder) {
                 if (tag.ContainsKey("_MagazineContents")) {
                     Item[] magazineContents = tag.Get<Item[]>("_MagazineContents");
@@ -300,8 +305,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-
-            OwnerByDir(item, player);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -408,17 +411,6 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-        }
-
-        private void OwnerByDir(Item item, Player player) {
-            if ((player.PressKey() || player.PressKey(false)) && player.whoAmI == Main.myPlayer) {
-                if (item.type > ItemID.None && item.useStyle == ItemUseStyleID.Swing
-                    && (item.createTile == -1 && item.createWall == -1)
-                    && item.CWR().heldProjType == 0
-                    && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled) {
-                    player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
-                }
-            }
         }
 
         public override bool CanUseItem(Item item, Player player) {

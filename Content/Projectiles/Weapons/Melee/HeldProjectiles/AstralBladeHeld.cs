@@ -28,27 +28,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void Shoot() {
-            if (Projectile.numHits > 0) {
-                return;
-            }
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f))
-                , ModContent.ProjectileType<AstralBall>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack, Owner.whoAmI);
-        }
-
-        public Dust MeleeDustHelper(Player player, int dustType, float chancePerFrame, float minDistance
-            , float maxDistance, float minRandRot = -0.2f, float maxRandRot = 0.2f, float minSpeed = 0.9f, float maxSpeed = 1.1f) {
-            if (Main.rand.NextFloat(1f) < chancePerFrame) {
-                float distance = Main.rand.NextFloat(minDistance, maxDistance);
-                Vector2 offset = (safeInSwingUnit.ToRotation() - (MathHelper.PiOver4 * player.direction)
-                    + Main.rand.NextFloat(minRandRot, maxRandRot)).ToRotationVector2() * distance * player.direction;
-                Vector2 pos = player.Center + offset;
-                Vector2 vec = pos - player.Center;
-                Dust d = Dust.NewDustPerfect(pos, dustType);
-                vec.Normalize();
-                d.velocity = vec * Main.rand.NextFloat(minSpeed, maxSpeed);
-                return d;
-            }
-            return null;
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<AstralBall>()
+                , (int)(Projectile.damage * 0.75f), Projectile.knockBack, Owner.whoAmI);
         }
 
         public override bool PreInOwnerUpdate() {

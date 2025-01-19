@@ -29,11 +29,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             return VaultUtils.CircleIntersectsRectangle(Projectile.Center, 75, targetHitbox);
         }
 
-        public override void OnThrowing() {
-            SetDirection();
-            base.OnThrowing();
-        }
-
         public override bool PreThrowOut() {
             SoundEngine.PlaySound(SoundID.Item45, Owner.Center);
             SoundEngine.PlaySound(SoundID.Item71, Owner.Center);

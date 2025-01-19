@@ -39,7 +39,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 9;
             item.CWR().Scope = true;
-            CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifleEcType");
         }
     }
 }

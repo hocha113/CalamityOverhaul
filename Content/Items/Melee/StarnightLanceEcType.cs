@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RStarnightLance : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<StarnightLance>();
+        public override int ProtogenesisID => ModContent.ItemType<StarnightLanceEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<StarnightLanceHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return true;
             }
 
-            StabBehavior(initialLength: 60, scaleFactorDenominator: 220f, minLength: 40, maxLength: 100, canDrawSlashTrail:true);
+            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 40, maxLength: 100, canDrawSlashTrail:true);
             return false;
         }
 
@@ -87,7 +88,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] == 0) {
                 return;
             }
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), ShootSpanPos, AbsolutelyShootVelocity * 3,
+            Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 3,
                 ModContent.ProjectileType<StarnightBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             target.AddBuff(BuffID.Frostburn2, 120);
             if (Projectile.ai[0] == 0 && Projectile.numHits == 0) {
                 for (int i = 0; i < 5; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), ShootSpanPos, AbsolutelyShootVelocity.RotatedBy(MathHelper.TwoPi / 5f * i) / 6,
+                    Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity.RotatedBy(MathHelper.TwoPi / 5f * i) / 6,
                     ModContent.ProjectileType<StarnightBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
                 }
                 Projectile.numHits++;

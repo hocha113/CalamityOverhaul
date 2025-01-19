@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.SetKnifeHeld<SubmarineShockerHeld>();
             item.shootSpeed = 8;
-            item.EasySetLocalTextNameOverride("SubmarineShockerEcType");
         }
     }
 }

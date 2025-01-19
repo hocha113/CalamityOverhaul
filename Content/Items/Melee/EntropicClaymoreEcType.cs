@@ -39,7 +39,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Cyan;
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<EntropicClaymoreHeld>();
-            Item.EasySetLocalTextNameOverride("EntropicClaymoreEcType");
         }
     }
 

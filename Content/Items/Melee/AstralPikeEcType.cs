@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] == 0) {
-                StabBehavior(initialLength:60, scaleFactorDenominator: 520f, minLength: 20, maxLength: 120, canDrawSlashTrail:true);
+                StabBehavior(initialLength:60, lifetime: 26, scaleFactorDenominator: 520f, minLength: 20, maxLength: 120, canDrawSlashTrail:true);
                 return false;
             }
 
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
-            if (hit.Crit) {
+            if (Projectile.ai[0] != 3) {
                 for (int i = 0; i < 3; i++) {
                     if (Projectile.owner == Main.myPlayer) {
                         Projectile star = CalamityUtils.ProjectileBarrage(Source, Projectile.Center, target.Center, Main.rand.NextBool()

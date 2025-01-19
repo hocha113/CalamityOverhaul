@@ -1,8 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -57,8 +59,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             canDrawSlashTrail = true;
             drawTrailHighlight = false;
             distanceToOwner = 20;
-            drawTrailBtommWidth = 50;
-            drawTrailTopWidth = 20;
+            drawTrailBtommWidth = 40;
+            drawTrailTopWidth = 10;
             drawTrailCount = 16;
             Length = 52;
             SwingData.baseSwingSpeed = 6;
@@ -71,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     OtherMeleeSize = 1.4f;
                 }
 
-                SwingData.baseSwingSpeed = 10;
+                SwingData.baseSwingSpeed = 14;
                 SwingAIType = SwingAITypeEnum.Down;
 
                 if (Time < maxSwingTime / 3) {
@@ -80,10 +82,19 @@ namespace CalamityOverhaul.Content.Items.Melee
                 else {
                     OtherMeleeSize -= 0.005f / SwingMultiplication;
                 }
+
+                bool Smoketype = Main.rand.NextBool();
+                Vector2 smokePos = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f);
+                Vector2 smokeVel = AbsolutelyShootVelocity.UnitVector() * Main.rand.NextFloat(0.2f, 2f) * MathHelper.Clamp(Projectile.height * 0.1f, 1f, 10f);
+                Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 50, 50), Color.DimGray
+                    , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
+                GeneralParticleHandler.SpawnParticle(smoke);
                 return true;
             }
-
-            StabBehavior(initialLength: 60, scaleFactorDenominator: 220f, minLength: 40, maxLength: 100, canDrawSlashTrail: true);
+            if (Time % (2 * updateCount) == 0 && Time < maxSwingTime / 2) {
+                canShoot = true;
+            }
+            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 60, maxLength: 120, canDrawSlashTrail: true);
             return false;
         }
 
@@ -91,17 +102,20 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] == 0) {
                 return;
             }
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), ShootSpanPos, AbsolutelyShootVelocity * 3,
-                ModContent.ProjectileType<StarnightBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+            SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
+            int projType = ModContent.ProjectileType<BrimstoneFireFriendly>();
+            Projectile projectile = Projectile.NewProjectileDirect(Source, ShootSpanPos, AbsolutelyShootVelocity.RotatedByRandom(0.2f)
+                , projType, (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+            projectile.DamageType = DamageClass.Melee;
         }
 
         public override void MeleeEffect() {
             Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                , DustID.WaterCandle, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                , DustID.Flare, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+            target.AddBuff(BuffID.OnFire3, 240);
         }
     }
 }

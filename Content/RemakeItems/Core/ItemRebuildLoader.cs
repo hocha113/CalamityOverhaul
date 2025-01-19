@@ -1,12 +1,14 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.RemakeItems.Core.BaseRItem;
@@ -484,7 +486,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void SetDefaults(Item entity) {
-            ProcessRemakeAction(entity, (inds) => inds.SetDefaults(entity));
+            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(entity.type, out BaseRItem ritem)) {
+                ritem.SetDefaults(entity);
+                if (ritem.TargetToolTipItemName != "" && !Main.GameModeInfo.IsJourneyMode) {
+                    string langKey = $"Mods.CalamityOverhaul.Items.{ritem.TargetToolTipItemName}.DisplayName";
+                    string newName = Language.GetTextValue(langKey);
+                    if (newName != langKey) {
+                        entity.SetNameOverride(newName);
+                    }
+                }
+            }
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

@@ -2689,6 +2689,16 @@ Items: {
 		// DisplayName: Thank you, WUTIV
 		// Tooltip: ""
 	}
+
+	StarnightLanceEcType: {
+		// DisplayName: Starnight Lance
+		// Tooltip: ""
+	}
+
+	DragoonDrizzlefishEcType: {
+		// DisplayName: Dragoon Drizzlefish
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3305,6 +3315,9 @@ Projectiles: {
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// TerrorBladeSwing.DisplayName: Terror Blade Swing
 	// StarnightLanceHeld.DisplayName: Starnight Lance Held
+	// VulcaniteLanceHeld.DisplayName: Vulcanite Lance Held
+	// EarthenPikeHeld.DisplayName: Earthen Pike Held
+	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
 }
 
 Configs: {

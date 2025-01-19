@@ -1,9 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
+using CalamityMod.Particles;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -29,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
             Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 300;
             Projectile.penetrate = 1;
-            Projectile.extraUpdates = 2;
+            Projectile.extraUpdates = 6;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 7 * Projectile.MaxUpdates;
             Projectile.tileCollide = false;
@@ -44,6 +47,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
             Projectile.rotation = Projectile.velocity.ToRotation();
             CWRUtils.ClockFrame(ref Projectile.frame, 4, 2);
             Lighting.AddLight(Projectile.Center, Color.LightYellow.ToVector3());
+            LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1.7f, Color.Goldenrod);
+            GeneralParticleHandler.SpawnParticle(spark2);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -104,7 +109,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 1);
+            Projectile.DrawStarTrail(Color.Coral, Color.White);
+            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor, 12);
             return false;
         }
     }

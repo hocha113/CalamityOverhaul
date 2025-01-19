@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         }
 
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
-            item.CWR().noDestruct = true;
+            item.CWR().NoDestruct = true;
             SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pewatermagic"));
         }
     }

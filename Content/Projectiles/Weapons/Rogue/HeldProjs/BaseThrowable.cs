@@ -154,6 +154,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
 
         public virtual void OnThrowing() {
+            SetDirection();
             float armRotation = ArmAnticipationMovement.Invoke() * Owner.direction;
             Owner.heldProj = Projectile.whoAmI;
             Projectile.Center = OnThrowingGetCenter.Invoke(armRotation);

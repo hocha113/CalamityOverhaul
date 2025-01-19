@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             float initialLength = float.MaxValue,
             float initialSpeedFactor = 0.4f,
             float speedDecayRate = 0.015f,
-            int lifetime = 26,
+            int lifetime = 0,
             float initialScale = 1,
             float scaleFactorDenominator = 510f,
             int minLength = 60,
@@ -414,6 +414,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             bool canDrawSlashTrail = false,
             bool ignoreUpdateCount = false
         ) {
+            if (lifetime == 0) {
+                lifetime = maxSwingTime;
+            }
+
             // 刺击行为的初始化逻辑
             if (Time == 0) {
                 this.canDrawSlashTrail = canDrawSlashTrail;

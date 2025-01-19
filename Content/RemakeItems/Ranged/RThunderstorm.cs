@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RThunderstorm : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.Thunderstorm>();
+        public override int TargetID => ModContent.ItemType<Thunderstorm>();
         public override int ProtogenesisID => ModContent.ItemType<ThunderstormEcType>();
         public override string TargetToolTipItemName => "ThunderstormEcType";
         public override void SetDefaults(Item item) {
@@ -36,7 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<ThunderstormHeldProj>();
             item.CWR().Scope = true;
-            CWRUtils.EasySetLocalTextNameOverride(item, "ThunderstormEcType");
         }
     }
 }

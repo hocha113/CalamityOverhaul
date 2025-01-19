@@ -35,9 +35,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<MeleeFossilShard>();
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<AftershockHeld>();
-            if (Item.type == ModContent.ItemType<Aftershock>()) {
-                Item.EasySetLocalTextNameOverride("AftershockEcType");
-            }
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

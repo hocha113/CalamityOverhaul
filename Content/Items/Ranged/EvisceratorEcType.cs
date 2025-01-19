@@ -8,6 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
+    /// <summary>
+    /// 开膛者
+    /// </summary>
     internal class EvisceratorEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Eviscerator";
@@ -23,10 +26,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override int ProtogenesisID => ModContent.ItemType<EvisceratorEcType>();
         public override string TargetToolTipItemName => "EvisceratorEcType";
-        public override void SetDefaults(Item item) {
-            item.EasySetLocalTextNameOverride("EvisceratorEcType");
-            EvisceratorEcType.SetDefaultsFunc(item);
-        }
+        public override void SetDefaults(Item item) => EvisceratorEcType.SetDefaultsFunc(item);
     }
 
     internal class EvisceratorHeld : BaseFeederGun
