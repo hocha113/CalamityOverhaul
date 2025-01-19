@@ -46,10 +46,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetKnifeHeld<BalefulHarvesterHeld>();
         }
 
-        public override bool CanUseItem(Player player)
-            => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldThrow>()] == 0;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldThrow>()] == 0;
 
-        public override bool AltFunctionUse(Player player) {
+        public override bool AltFunctionUse(Player player) => AltFunctionUseFunc(Item);
+
+        public static bool AltFunctionUseFunc(Item Item) {
             Item.initialize();
             return Item.CWR().ai[0] <= 0;
         }
@@ -69,7 +70,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
             => ShootFunc(Item, player, source, position, velocity, type, damage, knockback);
 
-        public override void HoldItem(Player player) {
+        public override void HoldItem(Player player) => HoldItemFunc(Item);
+
+        public static void HoldItemFunc(Item Item) {
             Item.initialize();
             if (Item.CWR().ai[0] > 0) {
                 Item.CWR().ai[0]--;

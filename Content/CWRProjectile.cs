@@ -733,11 +733,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            //我不得不说，冰刺的绘制堪称天才，但是原版对暗影背景的处理出现了小小的问题，这会导致弹幕底部出现一个相对不起眼的黑点，下面这段代码试图解决这个问题
-            if (projectile.type == 961) {
-                Projectile_961_DeBug(projectile, lightColor);
-                return false;
-            }
             //drawProjName(projectile);
             return base.PreDraw(projectile, ref lightColor);
         }
@@ -749,78 +744,6 @@ namespace CalamityOverhaul.Content
                 name = projectile.ModProjectile.FullName;
             }
             Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-        }
-
-        private void Projectile_961_DeBug(Projectile projectile, Color lightColor) {
-            Vector2 drawPos = projectile.Center;
-            drawPos.X -= Main.screenPosition.X;
-            drawPos.Y -= Main.screenPosition.Y;
-            drawPos.Y += projectile.gfxOffY;
-            Texture2D value = TextureAssets.Projectile[961].Value;
-            Rectangle rec = value.Frame(1, 5, 0, projectile.frame);
-            Vector2 origin12 = new(16f, rec.Height / 2);
-            Color projectileColor = Lighting.GetColor((int)(projectile.position.X + (projectile.width * 0.5)) / 16, (int)((projectile.position.Y + (projectile.height * 0.5)) / 16.0));
-            Color alpha5 = projectile.GetAlpha(projectileColor);
-            Vector2 vector39 = new(projectile.scale);
-            float lerpValue5 = Utils.GetLerpValue(30f, 25f, projectile.ai[0], clamped: true);
-            vector39.Y *= lerpValue5;
-            Vector4 vector40 = projectileColor.ToVector4();
-            Vector4 vector41 = new Color(67, 17, 17).ToVector4();
-            vector41 *= vector40;
-            /*问题源自这个暗影背景的绘制，它的形状难以容纳，故而注释
-             Main.EntitySpriteDraw(TextureAssets.Extra[98].Value, drawPos - (projectile.velocity * projectile.scale * 0.9f)
-            , null, projectile.GetAlpha(new Color(vector41.X, vector41.Y, vector41.Z, vector41.W)) * 1f, projectile.rotation + ((float)Math.PI / 2f)
-            , TextureAssets.Extra[98].Value.Size() / 2f, projectile.scale * 0.9f, SpriteEffects.None);
-             */
-            Color color49 = projectile.GetAlpha(Color.White) * Utils.Remap(projectile.ai[0], 0f, 20f, 0.5f, 0f);
-            color49.A = 0;
-            for (int num194 = 0; num194 < 4; num194++) {
-                Main.EntitySpriteDraw(value, drawPos + (projectile.rotation.ToRotationVector2().RotatedBy((float)Math.PI / 2f * num194) * 2f * vector39)
-                    , rec, color49, projectile.rotation, origin12, vector39, SpriteEffects.None);
-            }
-            Main.EntitySpriteDraw(value, drawPos, rec, alpha5, projectile.rotation, origin12, vector39, SpriteEffects.None);
-        }
-
-        private bool ThanatosLaserDrawDeBug(Projectile projectile, ref Color lightColor) {
-            ThanatosLaser thanatosLaser = projectile.ModProjectile as ThanatosLaser;
-            if (thanatosLaser.TelegraphDelay >= ThanatosLaser.TelegraphTotalTime) {
-                lightColor.R = (byte)(255 * projectile.Opacity);
-                lightColor.G = (byte)(255 * projectile.Opacity);
-                lightColor.B = (byte)(255 * projectile.Opacity);
-                Vector2 drawOffset = projectile.velocity.SafeNormalize(Vector2.Zero) * -30f;
-                projectile.Center += drawOffset;
-                if (projectile.type.ValidateIndex(Main.maxProjectiles)) {
-                    CalamityUtils.DrawAfterimagesCentered(projectile, ProjectileID.Sets.TrailingMode[projectile.type], lightColor, 1);
-                }
-
-                projectile.Center -= drawOffset;
-                return false;
-            }
-
-            Texture2D laserTelegraph = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/LaserWallTelegraphBeam").Value;
-
-            float yScale = 2f;
-            if (thanatosLaser.TelegraphDelay < ThanatosLaser.TelegraphFadeTime) {
-                yScale = MathHelper.Lerp(0f, 2f, thanatosLaser.TelegraphDelay / 15f);
-            }
-
-            if (thanatosLaser.TelegraphDelay > ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime) {
-                yScale = MathHelper.Lerp(2f, 0f, (thanatosLaser.TelegraphDelay - (ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime)) / 15f);
-            }
-
-            Vector2 scaleInner = new(ThanatosLaser.TelegraphWidth / laserTelegraph.Width, yScale);
-            Vector2 origin = laserTelegraph.Size() * new Vector2(0f, 0.5f);
-            Vector2 scaleOuter = scaleInner * new Vector2(1f, 2.2f);
-
-            Color colorOuter = Color.Lerp(Color.Red, Color.Crimson, thanatosLaser.TelegraphDelay / ThanatosLaser.TelegraphTotalTime * 2f % 1f);
-            Color colorInner = Color.Lerp(colorOuter, Color.White, 0.75f);
-
-            colorOuter *= 0.6f;
-            colorInner *= 0.6f;
-
-            Main.EntitySpriteDraw(laserTelegraph, projectile.Center - Main.screenPosition, null, colorInner, thanatosLaser.Velocity.ToRotation(), origin, scaleInner, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(laserTelegraph, projectile.Center - Main.screenPosition, null, colorOuter, thanatosLaser.Velocity.ToRotation(), origin, scaleOuter, SpriteEffects.None, 0);
-            return true;
         }
     }
 }

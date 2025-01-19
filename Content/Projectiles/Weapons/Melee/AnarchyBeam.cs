@@ -7,7 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class AnarchyBeam : ModProjectile
     {

@@ -5,25 +5,22 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class BalefulHarvesterHeldThrow : ModProjectile
+    internal class BalefulHarvesterHeldThrow : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
         public const float MaxChargeTime = 20f;
-
-        private Player Owner => Main.player[Projectile.owner];
-
         private Item balefulHarvester => Owner.GetItem();
-
         private Item IndsItem;
         private int Dir;
-
+        private const float gravity = 0.22f;  // 重力加速度
+        private const float airResistance = 0.015f;  // 空气阻力
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -39,25 +36,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.MaxUpdates = 3;
         }
 
-        public override bool ShouldUpdatePosition() {
-            return Projectile.ai[2] != 0;
+        public override bool ShouldUpdatePosition() => Projectile.ai[2] != 0;
+
+        public override bool ExtraPreSet() {
+            if (Owner is null || Owner.dead) {
+                Projectile.Kill();
+                return false;
+            }
+            return true;
         }
 
         public override void AI() {
-            if (Owner is null || Owner.dead) {
-                Projectile.Kill();
-                return;
-            }
-
             if (Projectile.ai[2] == 0) {
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     InOwner();
                 }
             }
             if (Projectile.ai[2] == 1) {
-                const float gravity = 0.22f;  // 重力加速度
-                const float airResistance = 0.015f;  // 空气阻力
-
                 if (Projectile.ai[1] == 0) {
                     Projectile.velocity = Owner.Center.To(Main.MouseWorld).UnitVector() * 16;
                 }
@@ -98,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public void InOwner() {
-            if (Owner.PressKey(false)) {
+            if (DownRight) {
                 if (CWRServerConfig.Instance.WeaponOverhaul) {
                     if (balefulHarvester.type != ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>()) {
                         Projectile.Kill();
@@ -141,8 +136,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 balefulHarvester.TurnToAir(true);
             }
             Projectile.timeLeft = 600;
-            Vector2 toRot = Projectile.rotation.ToRotationVector2();
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + (toRot * 42);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + (Projectile.rotation.ToRotationVector2() * 42);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -171,16 +165,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
         }
 
-        public override bool? CanDamage() {
-            return Projectile.numHits > 8 ? false : base.CanDamage();
-        }
+        public override bool? CanDamage() => Projectile.numHits > 8 ? false : base.CanDamage();
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Projectile.damage -= 5;
-        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => Projectile.damage -= 5;
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = Request<Texture2D>(Texture).Value;
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             float rot = Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0) + MathHelper.ToRadians(30);
             if (Projectile.ai[2] == 1) {
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
