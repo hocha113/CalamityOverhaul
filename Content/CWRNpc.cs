@@ -4,6 +4,7 @@ using CalamityMod.Items;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
@@ -142,6 +143,8 @@ namespace CalamityOverhaul.Content
         public override void ResetEffects(NPC npc) {
             IceParclose = false;
             VoidErosionBool = false;
+            HellfireExplosion = false;
+            SoulfireExplosion = false;
             FrozenActivity = false;
         }
         public override void SetDefaults(NPC npc) {
