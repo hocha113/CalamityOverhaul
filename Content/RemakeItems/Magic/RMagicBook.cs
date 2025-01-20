@@ -101,6 +101,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class FrigidflashBoltHeld : BaseMagicBook<FrigidflashBolt> { }
     internal class FrigidflashBoltRItem : RMagicBook<FrigidflashBolt> { }
 
+    internal class EternityHeld : BaseMagicBook<Eternity> { }
+    internal class EternityRItem : RMagicBook<Eternity> { }
+
     internal class EldritchTomeHeld : BaseMagicBook<EldritchTome> { }
     internal class EldritchTomeRItem : RMagicBook<EldritchTome> { }
 
