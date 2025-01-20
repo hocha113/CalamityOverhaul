@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems
     internal class RRustyMedallion : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<RustyMedallion>();
+        public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => false;
         public override bool On_UpdateAccessory(Item item, Player player, bool hideVisual) {
             player.CWR().RustyMedallion_Value = true;

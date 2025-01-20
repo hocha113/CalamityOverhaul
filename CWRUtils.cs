@@ -1244,22 +1244,6 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
         /// <summary>
-        /// 设置裁切效果
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="deductRec"></param>
-        /// <returns></returns>
-        public static Effect SetDeductEffect(Texture2D value, Rectangle deductRec) {
-            Effect effect = GetEffectValue("DeductDraw");
-            effect.CurrentTechnique.Passes[0].Apply();
-            effect.Parameters["topLeft"].SetValue(deductRec.TopLeft());
-            effect.Parameters["width"].SetValue(deductRec.Width);
-            effect.Parameters["height"].SetValue(deductRec.Height);
-            effect.Parameters["textureSize"].SetValue(value.Size());
-            return effect;
-        }
-
-        /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>
         /// <param name="p"></param>
