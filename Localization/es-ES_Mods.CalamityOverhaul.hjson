@@ -3318,6 +3318,55 @@ Projectiles: {
 	// VulcaniteLanceHeld.DisplayName: Vulcanite Lance Held
 	// EarthenPikeHeld.DisplayName: Earthen Pike Held
 	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
+	// DivineRetributionHeld.DisplayName: Divine Retribution Held
+	// ArtAttackHeld.DisplayName: Art Attack Held
+	// AsteroidStaffHeld.DisplayName: Asteroid Staff Held
+	// AstralachneaStaffHeld.DisplayName: Astralachnea Staff Held
+	// AstralStaffHeld.DisplayName: Astral Staff Held
+	// AtlantisHeld.DisplayName: Atlantis Held
+	// BloodBathHeld.DisplayName: Blood Bath Held
+	// BrimroseStaffHeld.DisplayName: Brimrose Staff Held
+	// ClamorNoctusHeld.DisplayName: Clamor Noctus Held
+	// DeathhailStaffHeld.DisplayName: Deathhail Staff Held
+	// DownpourHeld.DisplayName: Downpour Held
+	// EidolonStaffHeld.DisplayName: Eidolon Staff Held
+	// ElementalRayHeld.DisplayName: Elemental Ray Held
+	// FabstaffHeld.DisplayName: Fabstaff Held
+	// GleamingMagnoliaHeld.DisplayName: Gleaming Magnolia Held
+	// HeliumFlashHeld.DisplayName: Helium Flash Held
+	// HellwingStaffHeld.DisplayName: Hellwing Staff Held
+	// HematemesisHeld.DisplayName: Hematemesis Held
+	// HyphaeRodHeld.DisplayName: Hyphae Rod Held
+	// IceBarrageHeld.DisplayName: Ice Barrage Held
+	// IcicleTridentHeld.DisplayName: Icicle Trident Held
+	// InfernalRiftHeld.DisplayName: Infernal Rift Held
+	// KeelhaulHeld.DisplayName: Keelhaul Held
+	// MiasmaHeld.DisplayName: Miasma Held
+	// MistlestormHeld.DisplayName: Mistlestorm Held
+	// NightsRayHeld.DisplayName: Nights Ray Held
+	// ParasiticSceptorHeld.DisplayName: Parasitic Sceptor Held
+	// PhantasmalFuryHeld.DisplayName: Phantasmal Fury Held
+	// PhotosynthesisHeld.DisplayName: Photosynthesis Held
+	// PlagueStaffHeld.DisplayName: Plague Staff Held
+	// SanguineFlareHeld.DisplayName: Sanguine Flare Held
+	// ShaderainStaffHeld.DisplayName: Shaderain Staff Held
+	// ShadowboltStaffHeld.DisplayName: Shadowbolt Staff Held
+	// ShiftingSandsHeld.DisplayName: Shifting Sands Held
+	// SnowstormStaffHeld.DisplayName: Snowstorm Staff Held
+	// SoulPiercerHeld.DisplayName: Soul Piercer Held
+	// StaffofBlushieHeld.DisplayName: Staffof Blushie Held
+	// TacticiansTrumpCardHeld.DisplayName: Tacticians Trump Card Held
+	// TeslastaffHeld.DisplayName: Teslastaff Held
+	// TheWandHeld.DisplayName: The Wand Held
+	// ThornBlossomHeld.DisplayName: Thorn Blossom Held
+	// UltraLiquidatorHeld.DisplayName: Ultra Liquidator Held
+	// UndinesRetributionHeld.DisplayName: Undines Retribution Held
+	// ValkyrieRayHeld.DisplayName: Valkyrie Ray Held
+	// VehemenceHeld.DisplayName: Vehemence Held
+	// VenusianTridentHeld.DisplayName: Venusian Trident Held
+	// VisceraHeld.DisplayName: Viscera Held
+	// VitriolicViperHeld.DisplayName: Vitriolic Viper Held
+	// WyvernsCallHeld.DisplayName: Wyverns Call Held
 }
 
 Configs: {

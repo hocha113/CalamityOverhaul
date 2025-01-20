@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual bool FormulaSubstitution => !IsVanilla;
         /// <summary>
-        /// 该重置节点是否会加载进图鉴中，默认为true
+        /// 该重置节点是否会加载进图鉴中，默认为<see langword="true"/>
         /// </summary>
         public virtual bool DrawingInfo => true;
 
