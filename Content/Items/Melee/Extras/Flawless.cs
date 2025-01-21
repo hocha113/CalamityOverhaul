@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

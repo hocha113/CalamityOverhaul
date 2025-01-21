@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Time == 0) {
                 SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
             }
-            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 60, maxLength: 100, ignoreUpdateCount:true);
+            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 60, maxLength: 100, ignoreUpdateCount: true);
             return false;
         }
 

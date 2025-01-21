@@ -4,7 +4,6 @@ using CalamityMod.Items;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;

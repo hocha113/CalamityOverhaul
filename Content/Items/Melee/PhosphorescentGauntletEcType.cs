@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Item.useStyle = ItemUseStyleID.Swing;
                 Item.shootSpeed = 1;
             }
-            
+
             return player.ownedProjectileCounts[Item.shoot] <= 0;
         }
 

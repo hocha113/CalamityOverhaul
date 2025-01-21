@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 
     internal class EvergladeSprayHeld : BaseMagicBook<EvergladeSpray> { }
     internal class EvergladeSprayRItem : RMagicBook<EvergladeSpray> { }
-    
+
     internal class FrostBoltHeld : BaseMagicBook<FrostBolt> { }
     internal class FrostBoltRItem : RMagicBook<FrostBolt> { }
 

@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] == 0) {
-                StabBehavior(initialLength:60, lifetime: 26, scaleFactorDenominator: 520f, minLength: 20, maxLength: 120, canDrawSlashTrail:true);
+                StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 520f, minLength: 20, maxLength: 120, canDrawSlashTrail: true);
                 return false;
             }
 

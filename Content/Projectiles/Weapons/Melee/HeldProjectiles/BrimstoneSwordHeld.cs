@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override bool PreSwingAI() {
-            StabBehavior(initialLength:40, lifetime:maxSwingTime, scaleFactorDenominator: 220f, minLength: 40, maxLength: 60, ignoreUpdateCount:true);
+            StabBehavior(initialLength: 40, lifetime: maxSwingTime, scaleFactorDenominator: 220f, minLength: 40, maxLength: 60, ignoreUpdateCount: true);
             return false;
         }
 

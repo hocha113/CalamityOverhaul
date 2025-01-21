@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return true;
             }
 
-            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 40, maxLength: 100, canDrawSlashTrail:true);
+            StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 40, maxLength: 100, canDrawSlashTrail: true);
             return false;
         }
 

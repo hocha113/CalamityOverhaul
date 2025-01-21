@@ -1,12 +1,12 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.Audio;
-using CalamityMod.Items.Weapons.Magic;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {

@@ -1,10 +1,7 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using System;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

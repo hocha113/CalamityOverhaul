@@ -220,6 +220,94 @@ namespace CalamityOverhaul.Content
             //}
         }
 
+        /// <summary>
+        /// 装填弹匣，该行为不考虑弹匣上限问题，使用默认添加数量可以自动计算装填数量
+        /// </summary>
+        /// <param name="addAmmo"></param>
+        /// <param name="addStack"></param>
+        public void LoadenMagazine(Item addAmmo, int addStack = 0) {
+            bool isUnlimited = CWRUtils.IsAmmunitionUnlimited(addAmmo);
+
+            if (addStack == 0) {
+                CalculateNumberBullet();
+                addStack = AmmoCapacity - NumberBullets;
+                if (addStack > addAmmo.stack && !isUnlimited) {
+                    addStack = addAmmo.stack;
+                }
+            }
+
+            if (!isUnlimited) {
+                addAmmo.stack -= addStack;
+            }
+
+            Item newAmmo;
+            if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(addAmmo.shoot, out int trueAmmoType)) {
+                newAmmo = new Item(trueAmmoType);
+            }
+            else {
+                newAmmo = addAmmo.Clone();
+            }
+
+            newAmmo.stack = addStack;
+            newAmmo.CWR().AmmoProjectileReturn = !isUnlimited;
+
+            List<Item> newMagazine = MagazineContents.ToList();
+            bool onAdds = false;
+            foreach (var item in newMagazine) {
+                if (item.type == newAmmo.type && item.stack < item.maxStack) {
+                    item.stack += newAmmo.stack;
+                    onAdds = true;
+                }
+            }
+            if (!onAdds) {
+                newMagazine.Add(newAmmo);
+            }
+
+            SetMagazine(newMagazine);
+        }
+
+        /// <summary>
+        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制
+        /// </summary>
+        /// <param name="magazineList"></param>
+        public void SetMagazine(List<Item> magazineList) {
+            magazineList.RemoveAll(item => item.stack <= 0 || item.type == ItemID.None);
+            MagazineContents = magazineList.ToArray();
+            if (MagazineContents.Length > 0) {
+                CalculateNumberBullet();
+                AmmoViewUI.Instance.LoadAmmos(this);
+            }
+            else {
+                InitializeMagazine();
+            }
+        }
+
+        /// <summary>
+        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制
+        /// </summary>
+        /// <param name="magazineList"></param>
+        public void SetMagazine(Item[] magazineArray) {
+            MagazineContents = magazineArray;
+            if (MagazineContents.Length > 0) {
+                CalculateNumberBullet();
+                AmmoViewUI.Instance.LoadAmmos(this);
+            }
+            else {
+                InitializeMagazine();
+            }
+        }
+
+        public void CalculateNumberBullet() {
+            int ammoCount = 0;
+            foreach (var ammo in MagazineContents) {
+                if (ammo.type == ItemID.None || ammo.stack <= 0) {
+                    continue;
+                }
+                ammoCount += ammo.stack;
+            }
+            NumberBullets = ammoCount;
+        }
+
         public void InitializeMagazine() {
             AmmoProjectileReturn = true;
             IsKreload = false;

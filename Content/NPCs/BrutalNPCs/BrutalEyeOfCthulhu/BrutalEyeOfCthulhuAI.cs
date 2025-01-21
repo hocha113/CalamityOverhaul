@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
     {
         public override int TargetID => NPCID.EyeofCthulhu;
         public override void SetProperty() {
-            
+
         }
 
         public override bool CanLoad() {

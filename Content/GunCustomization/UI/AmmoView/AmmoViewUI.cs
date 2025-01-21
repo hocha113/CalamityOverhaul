@@ -49,9 +49,8 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
 
             _sengs = MathHelper.Clamp(_sengs, 0, 1f);
 
-            Item handItem = player.GetItem();
-            if (ammoItemElements.Count <= 0 && handItem.type > ItemID.None) {
-                LoadAmmos(handItem.CWR());
+            if (ammoItemElements.Count <= 0 && CartridgeHolderUI.cwrWeapon != null) {
+                LoadAmmos(CartridgeHolderUI.cwrWeapon);
             }
 
             ItemVsActive = false;

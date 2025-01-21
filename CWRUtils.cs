@@ -111,7 +111,7 @@ namespace CalamityOverhaul
         //    }
         //}
 
-        
+
         public static int GetTileDorp(Tile tile) {
             int stye = TileObjectData.GetTileStyle(tile);
             if (stye == -1) {

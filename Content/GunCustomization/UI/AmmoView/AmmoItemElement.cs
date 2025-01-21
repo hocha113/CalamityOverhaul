@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -28,15 +29,15 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
                 player.mouseInterface = true;
                 AmmoViewUI.Instance.ItemVsActive = true;
 
-                bool mr2 = true;
+                bool leisure = true;
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     if (gun.SafeMousetStart2) {
-                        mr2 = false;
+                        leisure = false;
                     }
                 }
 
-                if (keyRightPressState == KeyPressState.Pressed && mr2) {
-                    CWRItems cwrItem = player.GetItem().CWR();
+                if (keyRightPressState == KeyPressState.Pressed && leisure) {
+                    CWRItems cwrItem = CartridgeHolderUI.cwrWeapon;
                     SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
 
                     List<Item> newMagazine = [];
@@ -46,18 +47,12 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
                         }
                         newMagazine.Add(ammo);
                     }
-                    cwrItem.MagazineContents = newMagazine.ToArray();
 
                     if (Ammo.CWR().AmmoProjectileReturn) {
                         player.QuickSpawnItem(player.FromObjectGetParent(), Ammo);
                     }
 
-                    if (cwrItem.MagazineContents.Length > 0) {
-                        AmmoViewUI.Instance.LoadAmmos(cwrItem);
-                    }
-                    else {
-                        cwrItem.InitializeMagazine();
-                    }
+                    cwrItem.SetMagazine(newMagazine);
                 }
             }
             else {
@@ -69,6 +64,13 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
             _sengs = MathHelper.Clamp(_sengs, 0, 1f);
         }
 
+        public void PostDraw(SpriteBatch spriteBatch) {
+            if (hoverInMainPage) {
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
+                    , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (Ammo.type <= ItemID.None) {
                 return;
@@ -78,10 +80,12 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
             if (hoverInMainPage) {
                 text = $"{Ammo.Name} {CWRLocText.GetTextValue("CartridgeHolderUI_Text2")}: {Ammo.stack}";
             }
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text);
+
+            Color barkColor = Color.Lerp(Color.AliceBlue, Color.Goldenrod, _sengs);
+            Color centerColor = Color.Lerp(Color.Azure, Color.WhiteSmoke, _sengs);
 
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 2, DrawPosition
-                , Weith + (int)(_sengs * textSize.X), Height, Color.AliceBlue * 0.8f, Color.Azure * 0.2f, 1);
+                , Weith + (int)(_sengs * 40), Height, barkColor * 0.8f, centerColor * 0.2f, 1);
 
             float drawSize = VaultUtils.GetDrawItemSize(Ammo, Weith) * 1;
             Vector2 drawPos = DrawPosition + new Vector2(Weith, Height) / 2;
@@ -90,11 +94,6 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
 
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawPos.X + 18, drawPos.Y - 8
                 , Ammo.CWR().AmmoProjectileReturn ? Color.White : Color.Goldenrod, Color.Black, new Vector2(0.2f), 0.8f);
-
-            if (hoverInMainPage) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
-                    , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
-            }
         }
     }
 }

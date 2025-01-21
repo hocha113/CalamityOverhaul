@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
@@ -12,7 +11,6 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using Terraria;

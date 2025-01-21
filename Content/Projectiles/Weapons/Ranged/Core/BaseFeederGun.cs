@@ -417,13 +417,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
                 if (BulletNum < ModItem.AmmoCapacity) {
-                    if (BulletNum == 0) {
-                        BulletReturn();
-                    }
-                    LoadingQuantity = BulletNum + 1;
-                    LoadBulletsIntoMagazine();
                     LoadingQuantity = 1;
-                    ExpendedAmmunition();
+                    LoadBulletsIntoMagazine();
                     if (CanFire && InShotgun_FireForcedReloadInterruption) {
                         SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f * loadingAA_VolumeValue, Pitch = -0.1f }, Projectile.Center);
                         ShootCoolingValue = 30;
@@ -608,11 +603,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
                     if (PreConsumeAmmoEvent() && Get_LoadingAmmoAnimation_PreConsumeAmmo()) {
-                        BulletReturn();
                         LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
-                        if (BulletConsumption) {
-                            ExpendedAmmunition();
-                        }
                     }
 
                     OnKreload = false;
@@ -686,89 +677,36 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
         /// <summary>
-        /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
+        /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            CWRItems cwrItem = ModItem;//获取模组物品实例
-            List<Item> loadedItems = [];
-            int magazineCapacity = cwrItem.AmmoCapacity;
+            int magazineCapacity = ModItem.AmmoCapacity;
             if (LoadingQuantity > 0) {
                 magazineCapacity = LoadingQuantity;
             }
-            int accumulatedAmount = 0;
 
             if (CWRMod.Suitableversion_improveGame) {
                 // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
                 var ammoChain = Item.GetQotAmmoChain();
                 if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
                     , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
-                    cwrItem.MagazineContents = pushedAmmo.ToArray();
-                    AmmoState.CurrentAmount = ammoCount;
+                    ModItem.SetMagazine(pushedAmmo);
                     return;
                 }
             }
 
-            foreach (Item ammoItem in AmmoState.CurrentItems) {
-                int stack = ammoItem.stack;
-
-                if (stack > magazineCapacity - accumulatedAmount) {
-                    stack = magazineCapacity - accumulatedAmount;
-                }
-
-                if (CWRUtils.IsAmmunitionUnlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
-                    int newAmmoType = ammoItem.type;
-                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
-                        newAmmoType = value2;
+            ModItem.CalculateNumberBullet();
+            if (BulletNum < ModItem.AmmoCapacity) {
+                AmmoState = Owner.GetAmmoState(Item.useAmmo);
+                foreach (var ammo in AmmoState.CurrentItems) {
+                    ModItem.LoadenMagazine(ammo);
+                    if (BulletNum >= ModItem.AmmoCapacity) {
+                        break;
                     }
-                    Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
-                    newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还
-                    loadedItems.Add(newAmmoItem);
-                    accumulatedAmount = magazineCapacity;
-                    AmmoState.CurrentAmount = magazineCapacity;
-                    break;
-                }
-                if (ammoItem.type > ItemID.None && stack > 0) {
-                    loadedItems.Add(new Item(ammoItem.type, stack));
-                }
-                accumulatedAmount += stack;
-
-                if (accumulatedAmount >= magazineCapacity) {
-                    break;
-                }
-            }
-
-            cwrItem.MagazineContents = loadedItems.ToArray();
-            AmmoViewUI.Instance.LoadAmmos(cwrItem);
-        }
-        /// <summary>
-        /// 在压入弹药后执行，用于处理消耗逻辑
-        /// </summary>
-        public void ExpendedAmmunition() {
-            int ammo = 0;
-            int maxAmmo = ModItem.AmmoCapacity;
-            if (LoadingQuantity > 0) {
-                maxAmmo = LoadingQuantity;
-            }
-            foreach (Item inds in AmmoState.CurrentItems) {
-                if (ammo >= maxAmmo) {
-                    break;
-                }
-                if (inds.stack <= 0) {
-                    continue;
-                }
-                if (CWRUtils.IsAmmunitionUnlimited(inds)) {
-                    break;
-                }
-                if (inds.stack >= maxAmmo) {
-                    inds.stack -= maxAmmo - ammo;
-                    ammo += maxAmmo;
-                }
-                else {
-                    ammo += inds.stack;
-                    inds.stack = 0;
                 }
             }
         }
+
         /// <summary>
         /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
         /// </summary>

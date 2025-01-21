@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? CanUseItem(Item item, Player player) => player.altFunctionUse != 2;
         public override bool? On_UseItem(Item item, Player player) => false;
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position
-            , ref Vector2 velocity, ref int type, ref int damage, ref float knockback) 
+            , ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
             => type = ModContent.ProjectileType<BrimstoneSwordHeld>();
         public override bool? On_UseAnimation(Item item, Player player) => false;
     }

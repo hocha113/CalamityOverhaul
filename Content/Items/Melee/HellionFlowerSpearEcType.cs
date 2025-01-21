@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool PreSwingAI() {
             if (Projectile.ai[0] == 0) {
-                StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 520f, maxLength: 80, canDrawSlashTrail:true);
+                StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 520f, maxLength: 80, canDrawSlashTrail: true);
                 if (Time < 6 * updateCount) {
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length / 2;
                     BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 1.26f, Color.GreenYellow, Owner);

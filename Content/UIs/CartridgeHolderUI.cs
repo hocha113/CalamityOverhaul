@@ -15,41 +15,92 @@ namespace CalamityOverhaul.Content.UIs
         public static CartridgeHolderUI Instance => UIHandleLoader.GetUIHandleOfType<CartridgeHolderUI>();
         public static Texture2D TextureValue;
         public static float JARSengs;
-        private Item weapon => player.GetItem();
-        private int bulletNum => weapon.CWR().NumberBullets;
+        public static CWRItems cwrWeapon;
+        public static Item targetWeapon;
+        private Item heldItem => player.GetItem();
         private float otherPotData;
         internal int Weith;
         internal int Height;
-        public override bool Active => CWRServerConfig.Instance.MagazineSystem && CWRLoad.ItemHasCartridgeHolder[weapon.type];
-
+        private int rightHeldTime;
+        public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[heldItem.type] || IsAmmo());
+        public bool IsAmmo() => heldItem.ammo != AmmoID.None;
         public override void Update() {
-            CWRItems cwrItem = weapon.CWR();
+            if (CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
+                targetWeapon = heldItem;
+                cwrWeapon = targetWeapon.CWR();
+            }
+            //如果是最开始，没有手持枪械但是拿着子弹时，手动搜索玩家背包里面的枪
+            if (targetWeapon == null || cwrWeapon == null || IsAmmo()) {
+                foreach (var item in player.inventory) {
+                    if (!CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
+                        continue;
+                    }
+                    targetWeapon = item;
+                    cwrWeapon = targetWeapon.CWR();
+                }
+            }
+
+            if (cwrWeapon == null) {
+                return;
+            }
+
             if (TextureValue != null) {
                 UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
-                if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines)
+                if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
                     UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height / 6);
+                }
                 hoverInMainPage = UIHitBox.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             }
+
             if (hoverInMainPage) {
-                bool mr2 = true;
-                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    if (gun.SafeMousetStart2) {
-                        mr2 = false;
-                    }
+                if (keyRightPressState == KeyPressState.Held) {
+                    rightHeldTime++;
+                }
+                else {
+                    rightHeldTime = 0;
                 }
 
-                if (keyRightPressState == KeyPressState.Pressed && mr2) {
-                    SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
-                    foreach (Item ammo in cwrItem.MagazineContents) {
-                        if (ammo.type == ItemID.None || ammo.stack <= 0) {
-                            continue;
-                        }
-                        if (!ammo.CWR().AmmoProjectileReturn) {
-                            continue;
-                        }
-                        player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ammo.type), ammo.stack);
+                if (IsAmmo()) {
+                    player.mouseInterface = true;
+                    bool canContrl = false;
+                    int addStact = 1;
+                    if (keyRightPressState == KeyPressState.Pressed || rightHeldTime > 20) {
+                        canContrl = true;
                     }
-                    cwrItem.InitializeMagazine();
+                    else if (keyLeftPressState == KeyPressState.Pressed) {
+                        canContrl = true;
+                        addStact = 0;
+                    }
+
+                    if (canContrl) {
+                        if (cwrWeapon.NumberBullets < cwrWeapon.AmmoCapacity) {
+                            SoundEngine.PlaySound(CWRSound.Gun_Clipin);
+                            cwrWeapon.LoadenMagazine(heldItem, addStact);
+                        }
+                        else {
+                            SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked);
+                        }
+                    }
+                }
+                else {
+                    bool leisure = true;
+                    if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun) && gun.SafeMousetStart2) {
+                        leisure = false;
+                    }
+
+                    if (keyRightPressState == KeyPressState.Pressed && leisure) {
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
+                        foreach (Item ammo in cwrWeapon.MagazineContents) {
+                            if (ammo.type == ItemID.None || ammo.stack <= 0) {
+                                continue;
+                            }
+                            if (!ammo.CWR().AmmoProjectileReturn) {
+                                continue;
+                            }
+                            player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ammo.type), ammo.stack);
+                        }
+                        cwrWeapon.InitializeMagazine();
+                    }
                 }
             }
 
@@ -64,33 +115,32 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public void Initialize() {
-            CWRItems cwrItem = weapon.CWR();
-            if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 DrawPosition = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
                 string key2 = "";
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
+                if (cwrWeapon.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
                     key2 = "_napalmBomb";
                 }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
+                if (cwrWeapon.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     key2 = "_armourPiercer";
                 }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                if (cwrWeapon.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     key2 = "_highExplosive";
                 }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                if (cwrWeapon.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     key2 = "_dragonBreath";
                 }
-                if (weapon.useAmmo == AmmoID.Rocket) {
+                if (heldItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }
-            if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines) {
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/Magazines");
             }
-            if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.JAR) {
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");
             }
@@ -101,7 +151,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         private void DrawToolp(SpriteBatch spriteBatch, CWRItems cwrItem) {
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrWeapon.NumberBullets.ToString()
                 , DrawPosition.X + Weith + 2, DrawPosition.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
                 , DrawPosition.X + Weith + 2, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
@@ -109,60 +159,58 @@ namespace CalamityOverhaul.Content.UIs
                 , DrawPosition.X + Weith + 32 + 2, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
         }
 
-        private string DrawAmmoDataToolp(SpriteBatch spriteBatch, CWRItems cwrItem, out int value) {
-            string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
-            value = 0;
-            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
-                foreach (Item ammo in cwrItem.MagazineContents) {
-                    if (ammo == null) {
-                        continue;
-                    }
-                    if (ammo.type != ItemID.None && ammo.ammo != AmmoID.None) {
-                        text += $"{ammo.Name} {CWRLocText.GetTextValue("CartridgeHolderUI_Text2")}: {ammo.stack}\n";
-                        value++;
-                    }
-                }
-            }
-            if (value == 0) {
-                text += CWRLocText.GetTextValue("CartridgeHolderUI_Text3");
-                value = 1;
-            }
-            return text;
-        }
-
         public override void Draw(SpriteBatch spriteBatch) {
+            if (cwrWeapon == null || targetWeapon == null) {
+                return;
+            }
+
             Initialize();
 
             if (AmmoViewUI.Instance.Active) {
-                AmmoViewUI.Instance.Draw(spriteBatch);
+                foreach (AmmoItemElement ammoItem in AmmoViewUI.Instance.ammoItemElements) {
+                    ammoItem.Draw(spriteBatch);
+                }
             }
 
-            CWRItems cwrItem = weapon.CWR();
-            if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
-                DrawToolp(spriteBatch, cwrItem);
+                DrawToolp(spriteBatch, cwrWeapon);
             }
-            if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines) {
-                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
+
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
+                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - cwrWeapon.NumberBullets, 7);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
-                DrawToolp(spriteBatch, cwrItem);
+                DrawToolp(spriteBatch, cwrWeapon);
             }
-            if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
+
+            if (cwrWeapon.CartridgeType == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");
                 Texture2D ctb = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_CTB");
-                JARSengs = MathHelper.Lerp(JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);
+                JARSengs = MathHelper.Lerp(JARSengs, cwrWeapon.NumberBullets / (float)cwrWeapon.AmmoCapacity, 0.05f);
                 float sengs = jar2.Height * (1 - JARSengs);
                 Rectangle rectangle = new(0, (int)sengs, jar2.Width, (int)(jar2.Height - sengs) + 1);
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(jar2, DrawPosition + new Vector2(4, sengs + 6), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(ctb, DrawPosition + new Vector2(4, 6), null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
+
+            //如果是拿着弹药进行选择性装填，这里就绘制出目标枪体
+            if (IsAmmo()) {
+                float slp = VaultUtils.GetDrawItemSize(targetWeapon, 64);
+                Vector2 drawPos = DrawPosition + new Vector2(0, Height);
+                VaultUtils.SimpleDrawItem(spriteBatch, targetWeapon.type, drawPos, slp, 0, Color.White, new Vector2(0.001f));
+            }
+
             if (hoverInMainPage) {
-                //Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, DrawAmmoDataToolp(spriteBatch, cwrItem, out int value)
-                //    , MousePosition.X + 0, MousePosition.Y - 40 - value * 24, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
+            }
+
+            if (AmmoViewUI.Instance.Active) {
+                foreach (AmmoItemElement ammoItem in AmmoViewUI.Instance.ammoItemElements) {
+                    ammoItem.PostDraw(spriteBatch);
+                }
             }
         }
     }

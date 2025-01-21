@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override bool? On_CanUseItem(Item item, Player player) => PhosphorescentGauntletEcType.CanUseItemFunc(player, item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) 
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
             => PhosphorescentGauntletEcType.ShootFunc(player, source, position, velocity, type, damage, knockback);
     }
 }
