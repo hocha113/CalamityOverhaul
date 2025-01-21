@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -141,8 +142,9 @@ public static class QotUtils
 
                 foreach (var item in instances) {
                     int ammoType = item.type;
-                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
+                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
                         ammoType = actualAmmo;
+                    }
 
                     // 不消耗的独立处理
                     // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了

@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.UIs
                     }
 
                     if (canContrl) {
-                        if (cwrWeapon.NumberBullets < cwrWeapon.AmmoCapacity) {
+                        if (cwrWeapon.NumberBullets < cwrWeapon.AmmoCapacity && targetWeapon.useAmmo == heldItem.ammo) {
                             SoundEngine.PlaySound(CWRSound.Gun_Clipin);
                             cwrWeapon.LoadenMagazine(heldItem, addStact);
                         }

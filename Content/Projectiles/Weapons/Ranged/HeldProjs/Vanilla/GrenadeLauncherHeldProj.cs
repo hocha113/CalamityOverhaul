@@ -54,10 +54,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
         public override void FiringShoot() {
             Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.RocketI) {

@@ -3359,6 +3359,7 @@ Projectiles: {
 	// VisceraHeld.DisplayName: Viscera Held
 	// VitriolicViperHeld.DisplayName: Vitriolic Viper Held
 	// WyvernsCallHeld.DisplayName: Wyverns Call Held
+	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
 }
 
 Configs: {

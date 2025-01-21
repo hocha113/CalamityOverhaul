@@ -196,6 +196,12 @@ namespace CalamityOverhaul.Content
             else if (type == ItemID.Zenith) {
                 item.damage = 105;
             }
+            else if (type == ItemID.FallenStar) {
+                item.shootSpeed = 13;
+                item.damage = 6;
+                item.knockBack = 2;
+                item.useStyle = ItemUseStyleID.Swing;
+            }
         }
 
         public override void SetDefaults(Item item) {
@@ -214,10 +220,6 @@ namespace CalamityOverhaul.Content
             if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
                 item.maxStack = 64;
             }
-            //TODO:我忘了为什么要加这个，猜测是当时要禁止切枪用的一个属性，但已经用另一个方法实现了，所以这段处理是无用的，暂时注释掉试试
-            //if (CWRLoad.OnLoadContentBool && CWRLoad.ItemIsRanged[item.type]) {
-            //    item.noUseGraphic = true;
-            //}
         }
 
         /// <summary>

@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         internal AmmoState AmmoState;
         /// <summary>
-        /// 换弹是否消耗弹药
-        /// </summary>
-        internal bool BulletConsumption = true;
-        /// <summary>
         /// 是否自动在一次单次射击后调用弹匣更新函数，这负责弹药消耗逻辑
         /// ，如果设置为<see langword="false"/>就需要手动调用<see cref="UpdateMagazineContents"/>以正常执行弹药逻辑
         /// </summary>
@@ -608,32 +604,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                     OnKreload = false;
                     IsKreload = true;
-
-                    if (Item.type != ItemID.None) {
-                        ModItem.IsKreload = true;
-                    }
+                    ModItem.IsKreload = true;
                     kreloadTimeValue = 0;
                     //通常不希望在装完弹后就立马开火，这会导致一个因为更新顺序所产生的动画位置和射弹位置的错位，即使只有一帧但也会影响玩家的视觉体验和流畅感。
                     //所以这里在完成换弹后给开火冷却设置为1，充当一个延迟帧的效果，让枪体来得及从换弹动画中切换过来
                     ShootCoolingValue = 1;
 
-                    bool result2 = KreLoadFulfill();
-                    if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
-                        result2 = Get_LoadingAmmoAnimation_KreLoadFulfill();
-                    }
-
-                    if (result2) {
-                        int value = AmmoState.CurrentAmount;
-                        if (value > ModItem.AmmoCapacity) {
-                            value = ModItem.AmmoCapacity;
-                        }
-                        if (LoadingQuantity > 0) {
-                            value = LoadingQuantity;
-                        }
-                        BulletNum += value;
-                        if (BulletNum > ModItem.AmmoCapacity) {
-                            BulletNum = ModItem.AmmoCapacity;
-                        }
+                    if (KreLoadFulfill() && Get_LoadingAmmoAnimation_KreLoadFulfill()) {
                         ModItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                     }
                 }
@@ -661,35 +638,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         /// <summary>
-        /// 退还弹匣内非空子弹
-        /// </summary>
-        public void BulletReturn() {
-            if (ModItem.MagazineContents != null && ModItem.MagazineContents.Length > 0 && ReturnRemainingBullets
-                && Projectile.IsOwnedByLocalPlayer()/*这个操作只能在弹幕主人身上来完成，否则会导致多次给予子弹*/) {
-                foreach (Item i in ModItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
-                    if (i.stack <= 0 || i.type == ItemID.None) {
-                        continue;
-                    }
-                    if (i.CWR().AmmoProjectileReturn) {
-                        Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
-                    }
-                }
-            }
-        }
-        /// <summary>
         /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            int magazineCapacity = ModItem.AmmoCapacity;
-            if (LoadingQuantity > 0) {
-                magazineCapacity = LoadingQuantity;
-            }
-
             if (CWRMod.Suitableversion_improveGame) {
                 // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
                 var ammoChain = Item.GetQotAmmoChain();
                 if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
-                    , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
+                    , LoadingQuantity > 0 ? LoadingQuantity : ModItem.AmmoCapacity, out var pushedAmmo, out int ammoCount)) {
                     ModItem.SetMagazine(pushedAmmo);
                     return;
                 }
@@ -699,7 +655,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (BulletNum < ModItem.AmmoCapacity) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
                 foreach (var ammo in AmmoState.CurrentItems) {
-                    ModItem.LoadenMagazine(ammo);
+                    ModItem.LoadenMagazine(ammo, LoadingQuantity);
                     if (BulletNum >= ModItem.AmmoCapacity) {
                         break;
                     }
@@ -796,43 +752,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     Projectile.rotation = oldSetRoting = ToMouseA;
                 }
 
-                //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
-                if (AmmoTypeAffectedByMagazine && MagazineSystem
-                    && ModItem.MagazineContents.Length > 0 && Projectile.IsOwnedByLocalPlayer()) {
-                    //要考虑到弹匣内有弹药但背包中已经无弹药的情况，因为WeaponDamage根据弹药计算伤害，
-                    //所以这里需要进行一个伤害弥补，虽然仍旧会有误差，但至少能减小影响
-                    //补充：
-                    //在FeederGunLoader类中已经添加了一个修改ChooseAmmo函数的钩子，
-                    //这个问题的本质是伤害的弹药部分不考虑弹匣供弹所造成的
-                    //在修改了ChooseAmmo后该问题便被解决，包括钱币枪的空弹无伤害问题也顺带解决，
-                    //所以注释掉这部分代码，因为已经无作用
-                    /*
-                    if (ModItem.MagazineContents[0] == null) {
-                        ModItem.MagazineContents[0] = new Item();
-                    }
-                    AmmoTypes = ModItem.MagazineContents[0].shoot;
-
-                    if (!HaveAmmo) {
-                        WeaponDamage += (int)(ModItem.MagazineContents[0].damage * Owner.GetDamage<RangedDamageClass>().Additive);
-                    }
-                    */
-                    if (AmmoTypes == 0) {
-                        AmmoTypes = ProjectileID.Bullet;
-                    }
+                if (AmmoTypes == ProjectileID.None) {
+                    AmmoTypes = ProjectileID.Bullet;
                 }
 
-                bool canShoot = BulletNum > 0;
-                if (!CWRServerConfig.Instance.MagazineSystem) {
-                    if (AmmoTypes == ProjectileID.None && Item.useAmmo != AmmoID.None) {
-                        if (LoadingReminder) {
-                            HandleEmptyAmmoEjection();
-                            LoadingReminder = false;
-                        }
-                        canShoot = false;
-                    }
-                }
-
-                if (canShoot) {
+                if (BulletNum > 0) {
                     //在生成射弹前再执行一次 SetGunBodyInFire，以防止因为更新顺序所导致的延迟帧情况
                     SetGunBodyInFire();
 
@@ -881,6 +805,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     }
                     PostFiringShoot();
                 }
+
                 if (CanUpdateMagazineContentsInShootBool) {
                     //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents
                     if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {

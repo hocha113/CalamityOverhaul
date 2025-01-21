@@ -32,6 +32,7 @@ using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using System;
@@ -462,6 +463,7 @@ namespace CalamityOverhaul
                 ItemType<Elderberry>(),
                 ItemType<Dragonfruit>(),
                 ItemType<LoreCynosure>(),
+                ItemID.BloodMoonStarter,
             ];
             #endregion
 
@@ -642,6 +644,9 @@ namespace CalamityOverhaul
             }
             else if (ammoItem.type == ItemID.MiniNukeII) {
                 ammoTypes = ProjectileID.MiniNukeRocketII;
+            }
+            else if (ammoItem.type == ItemID.TungstenBullet) {
+                ammoTypes = ProjectileType<TungstenBulletProj>();
             }
         }
     }
