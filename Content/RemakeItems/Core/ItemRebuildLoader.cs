@@ -656,7 +656,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRItems.OverModifyTool(item, tooltips);
+            CWRItems.OverModifyTooltip(item, tooltips);
             ProcessRemakeAction(item, (inds) => inds.ModifyTooltips(item, tooltips));
         }
 

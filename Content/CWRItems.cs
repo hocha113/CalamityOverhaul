@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public static void OverModifyTool(Item item, List<TooltipLine> tooltips) {
+        public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {
             bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
 
             if (CWRLoad.ItemIsGun[item.type]) {
