@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             float armRotSengsBack = Projectile.hide ? 110 : 110 + MathF.Sin(Time * CWRUtils.atoR * 45) * 50;
 
-            Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign * safeGravDir);
+            Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign * safeGravDir) + Owner.fullRotation;
 
             if (onFireR) {//玩家按下右键触发这些技能，同时需要避免在左键按下的时候触发
                 Owner.direction = Math.Sign(ToMouse.X);
