@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -8,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     internal class PrimeCannonOnSpan : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile + "DeathLaser";
+        public override string Texture => CWRConstant.Masking + "MaskLaserLine";
         private int scaleTimer = 0;
         private int scaleIndex = 0;
         private bool formeNPC;
@@ -21,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 60;
+            Projectile.timeLeft = 50;
             Projectile.alpha = 0;
         }
 
@@ -59,7 +61,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 scaleIndex = 1;
             }
             if (scaleIndex > 0) {
-                scaleTimer--;
+                if (--scaleTimer <= 0) {
+                    Projectile.Kill();
+                }
             }
 
             Projectile.localAI[0]++;
@@ -74,14 +78,20 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (scaleTimer >= 0) {
-                Texture2D tex = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
-                Color drawColor = Color.White;
-                drawColor.A = 0;
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, drawColor
-                    , Projectile.rotation, new Vector2(0, tex.Height / 2f), new Vector2(1000, scaleTimer * 0.04f), SpriteEffects.None, 0);
+            if (scaleTimer < 0) {
+                return false;
             }
+
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Color drawColor = Color.White;
+            drawColor.A = 0;
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, drawColor
+                , Projectile.rotation, new Vector2(0, tex.Height / 2f), new Vector2(1000, scaleTimer * 0.02f), SpriteEffects.None, 0);
+
             return false;
         }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs
+            , List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
     }
 }

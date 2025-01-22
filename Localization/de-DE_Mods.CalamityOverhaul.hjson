@@ -3334,6 +3334,7 @@ Projectiles: {
 	// VitriolicViperHeld.DisplayName: Vitriolic Viper Held
 	// WyvernsCallHeld.DisplayName: Wyverns Call Held
 	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
+	// SausageMakerHeld.DisplayName: Sausage Maker Held
 }
 
 Configs: {

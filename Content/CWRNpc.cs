@@ -1,7 +1,18 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
+using CalamityMod.Items.Accessories;
+using CalamityMod.Items.Armor.Vanity;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables.Furniture.DevPaintings;
+using CalamityMod.Items.TreasureBags.MiscGrabBags;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Items.Weapons.Rogue;
+using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
@@ -16,8 +27,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static CalamityMod.DropHelper;
+using Terraria.ModLoader.IO;
+using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Items.Rogue.Extras;
 
 namespace CalamityOverhaul.Content
 {
@@ -189,7 +205,7 @@ namespace CalamityOverhaul.Content
         public override bool PreAI(NPC npc) {
             UpdateOverBeatBack(npc);
             bool? tungstenset = TungstenRiot.Instance.UpdateNPCPreAISet(npc);
-            return tungstenset.HasValue ? tungstenset.Value : base.PreAI(npc);
+            return tungstenset ?? base.PreAI(npc);
         }
 
         public override void PostAI(NPC npc) {
@@ -302,6 +318,14 @@ namespace CalamityOverhaul.Content
             }
             else if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
                 npcLoot.Add(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
+            }
+            else if (npc.type == ModContent.NPCType<DesertScourgeHead>()) {
+                IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
+                LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
+                rule.Add(ModContent.ItemType<WastelandFang>(), 6);
+                rule.Add(ModContent.ItemType<SandDagger>(), 6);
+                rule.Add(ModContent.ItemType<BurntSienna>(), 10);
+                npcLoot.Add(rule);
             }
         }
 

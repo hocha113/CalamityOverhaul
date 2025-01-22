@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float rot = pCOverride.ai[9] * 0.1f + MathHelper.TwoPi / 4 * type;
             Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
             float origeRot = head.Center.To(arm.Center).ToRotation();
-            arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.2f);
+            arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.5f);
             arm.rotation = origeRot - MathHelper.PiOver2;
             arm.velocity = Vector2.Zero;
             arm.position += head.velocity;

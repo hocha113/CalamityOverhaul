@@ -9,6 +9,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
+    /// <summary>
+    /// 星夜长枪
+    /// </summary>
     internal class StarnightLanceEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StarnightLance";

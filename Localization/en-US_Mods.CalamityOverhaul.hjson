@@ -761,11 +761,7 @@ Items: {
 
 	SausageMakerEcType: {
 		DisplayName: Sausage Maker
-		Tooltip:
-			'''
-			Every fifth swing will launch out a blood bomb that sticks onto the floor, exploding when an enemy makes contact with it or dying after a short while.
-			True Melee strikes will cause homing blood to track enemies nearby and inflict Boiling Blood
-			'''
+		Tooltip: Launch polyp ball, real melee hit enemy can heal yourself
 	}
 
 	PestilenceIngot: {
@@ -3357,6 +3353,7 @@ Projectiles: {
 	VitriolicViperHeld.DisplayName: Vitriolic Viper Held
 	WyvernsCallHeld.DisplayName: Wyverns Call Held
 	TungstenBulletProj.DisplayName: Tungsten Bullet Proj
+	SausageMakerHeld.DisplayName: Sausage Maker Held
 }
 
 Configs: {

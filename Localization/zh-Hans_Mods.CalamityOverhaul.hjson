@@ -773,11 +773,7 @@ Items: {
 
 	SausageMakerEcType: {
 		DisplayName: 香肠矛
-		Tooltip:
-			'''
-			每刺出5次发射出一颗血肉炸弹
-			真近战击中后发射追踪血珠
-			'''
+		Tooltip: 发射息肉球，真近战命中敌人可以治疗自己
 	}
 
 	PestilenceIngot: {
@@ -3339,6 +3335,7 @@ Projectiles: {
 	// VitriolicViperHeld.DisplayName: Vitriolic Viper Held
 	// WyvernsCallHeld.DisplayName: Wyverns Call Held
 	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
+	// SausageMakerHeld.DisplayName: Sausage Maker Held
 }
 
 Configs: {
