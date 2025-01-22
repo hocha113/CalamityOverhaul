@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
             Item.rare = ItemRarityID.LightPurple;
+            Item.maxStack = 64;
             Item.SetHeldProj<HghExplosiveHeld>();
         }
 

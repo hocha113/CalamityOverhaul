@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
             Item.rare = ItemRarityID.Yellow;
+            Item.maxStack = 64;
             Item.SetHeldProj<DragonBreathHeld>();
         }
 
