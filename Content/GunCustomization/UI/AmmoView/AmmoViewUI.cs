@@ -67,5 +67,11 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
                 ammoItem.Draw(spriteBatch);
             }
         }
+
+        public void PostDraw(SpriteBatch spriteBatch) {
+            foreach (AmmoItemElement ammoItem in ammoItemElements) {
+                ammoItem.PostDraw(spriteBatch);
+            }
+        }
     }
 }

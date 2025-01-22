@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
         public void DrawSkillIntroduction(SpriteBatch spriteBatch) {
             Color backColor = Color.Gold * 0.2f;
-            Vector2 drawPos = PiscicultureUI.Dialogbox.borderedDrawPos
+            Vector2 drawPos = PiscicultureUI.Dialogbox.DrawPosition
                 - new Vector2(borderedWidth * 4 + 22, 0);
 
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value

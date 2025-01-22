@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             }
 
             DrawPosition =
-                new Vector2(PiscicultureUI.Dialogbox.borderedDrawPos.X + PiscicultureUI.Dialogbox.borderedWidth
-                , PiscicultureUI.Dialogbox.borderedDrawPos.Y);
+                new Vector2(PiscicultureUI.Dialogbox.DrawPosition.X + PiscicultureUI.Dialogbox.borderedWidth
+                , PiscicultureUI.Dialogbox.DrawPosition.Y);
 
             float currentXOffset = 0; // 当前列的X偏移量
             float currentYOffset = 0; // 当前列的Y偏移量

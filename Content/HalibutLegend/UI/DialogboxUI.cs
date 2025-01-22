@@ -8,8 +8,6 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
     internal class DialogboxUI : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
-        public Rectangle HitBox;
-        public Vector2 borderedDrawPos;
         public int borderedWidth;
         public int borderedHeight;
         public float bordered_sengs;
@@ -45,11 +43,11 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
             borderedWidth = (int)(400 * bordered_sengs);
             borderedHeight = (int)(300 * bordered_sengs);
-            borderedDrawPos = new Vector2((Main.screenWidth - borderedWidth) / 2, Main.screenHeight - 300);
+            DrawPosition = new Vector2((Main.screenWidth - borderedWidth) / 2, Main.screenHeight - 300);
 
-            HitBox = new Rectangle((int)(borderedDrawPos.X), (int)(borderedDrawPos.Y), borderedWidth, borderedHeight);
+            UIHitBox = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), borderedWidth, borderedHeight);
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            hoverInMainPage = mouseRec.Intersects(HitBox);
+            hoverInMainPage = mouseRec.Intersects(UIHitBox);
         }
         /// <summary>
         /// 管理对话框尺寸
@@ -69,19 +67,17 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         /// 管理对话数据，根据用户的输入切换对话进度
         /// </summary>
         private void HanderGreetingData() {
-            if (hoverInMainPage) {
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    if (sessionText_sengs < 1f) {
-                        sessionText_sengs = 1f;
-                        return;
+            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
+                if (sessionText_sengs < 1f) {
+                    sessionText_sengs = 1f;
+                    return;
+                }
+                if (sessionText_sengs >= 1f) {
+                    if (++GreetingIndex > MaxGreetingCount) {
+                        GreetingIndex = 0;
                     }
-                    if (sessionText_sengs >= 1f) {
-                        if (++GreetingIndex > MaxGreetingCount) {
-                            GreetingIndex = 0;
-                        }
-                        sessionText_sengs = 0;
-                        HanderFishItem.HanderPressed();
-                    }
+                    sessionText_sengs = 0;
+                    HanderFishItem.HanderPressed();
                 }
             }
         }
@@ -121,12 +117,12 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (piscicultureUI_MainBox_sengs >= 1) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, borderedDrawPos, borderedWidth, borderedHeight
+                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, borderedWidth, borderedHeight
                     , Color.BlueViolet * 0.8f * piscicultureUI_MainBox_sengs, Color.Azure * 0.2f * piscicultureUI_MainBox_sengs, borderedSize);
             }
             if (bordered_sengs >= 1) {
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, DialogTextContent
-                        , borderedDrawPos.X + 20, borderedDrawPos.Y + 20, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                        , DrawPosition.X + 20, DrawPosition.Y + 20, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
             }
         }
     }

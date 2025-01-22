@@ -3955,6 +3955,9 @@ TextContent: {
 		CartridgeHolderUI_Text2: 剩余
 		CartridgeHolderUI_Text3: 空
 		CartridgeHolderUI_Text4: 右键卸弹
+		CartridgeHolderUI_Text5: 左键点击全部装填，右键点击装填入一颗
+		CartridgeHolderUI_Text6: 该武器不能使用此弹药!
+		CartridgeHolderUI_Text7: 弹匣已满!
 		Wap_SDMG_Text:
 			'''
 			以极快的速度发射子弹

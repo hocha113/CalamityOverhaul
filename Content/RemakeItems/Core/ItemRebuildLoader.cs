@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -82,10 +83,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onMeleePrefixMethod = itemLoaderType.GetMethod("MeleePrefix", BindingFlags.NonPublic | BindingFlags.Static);
             onRangedPrefixMethod = itemLoaderType.GetMethod("RangedPrefix", BindingFlags.NonPublic | BindingFlags.Static);
 
-            if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
-                //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
-                //CWRHook.Add(onSetDefaultsMethod, OnSetDefaultsHook);
-            }
+            //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
+            //if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
+            //    CWRHook.Add(onSetDefaultsMethod, OnSetDefaultsHook);
+            //}
             if (onShootMethod != null) {
                 CWRHook.Add(onShootMethod, OnShootHook);
             }
@@ -484,17 +485,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return result;
         }
 
-        public override void SetDefaults(Item entity) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(entity.type, out BaseRItem ritem)) {
-                ritem.SetDefaults(entity);
-                if (ritem.TargetToolTipItemName != "" && !Main.GameModeInfo.IsJourneyMode) {
-                    string langKey = $"Mods.CalamityOverhaul.Items.{ritem.TargetToolTipItemName}.DisplayName";
-                    string newName = Language.GetTextValue(langKey);
-                    if (newName != langKey) {
-                        entity.SetNameOverride(newName);
-                    }
-                }
-            }
+        public override void SetDefaults(Item item) {
+            ProcessRemakeAction(item, (inds) => inds.SetDefaults(item));
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

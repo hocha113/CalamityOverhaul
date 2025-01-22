@@ -41,9 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual bool DrawingInfo => true;
 
-        public virtual bool CanLoad() {
-            return true;
-        }
+        public virtual bool CanLoad() => true;
 
         /// <summary>
         /// 加入配方，当关闭了强制内容替换设置时进行调用
@@ -59,25 +57,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
         }
         /// <summary>
-        /// 移除配方，当开启了强制内容替换设置时进行调用
+        /// 设置静态数据，在修改副本被加载时设置一次
         /// </summary>
-        [Obsolete("配方会在重载模组时被自动卸载，因此该函数不再具有使用价值")]
-        public virtual void UnLoadItemRecipe() {
-            int recipeTargetType = ProtogenesisID;
-            if (ProtogenesisID == 0) {
-                return;
-            }
-            for (int i = 0; i < Recipe.numRecipes; i++) {
-                Recipe recipe = Main.recipe[i];
-                if (recipe.HasResult(recipeTargetType)) {
-                    recipe.DisableRecipe();
-                }
-            }
-        }
-
-        public virtual void SetStaticDefaults() {
-
-        }
+        public virtual void SetStaticDefaults() { }
         /// <summary>
         /// 进行背包中的物品绘制，这个函数会执行在Draw之后
         /// </summary>

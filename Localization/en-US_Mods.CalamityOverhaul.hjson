@@ -3985,6 +3985,9 @@ TextContent: {
 		CartridgeHolderUI_Text2: Residue
 		CartridgeHolderUI_Text3: Empty
 		CartridgeHolderUI_Text4: Right-click discharge
+		CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
+		CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
+		CartridgeHolderUI_Text7: The Magazine Is Full!
 		Wap_SDMG_Text:
 			'''
 			Firing bullets at great speed

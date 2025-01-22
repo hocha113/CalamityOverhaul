@@ -167,9 +167,7 @@ namespace CalamityOverhaul.Content.UIs
             Initialize();
 
             if (AmmoViewUI.Instance.Active) {
-                foreach (AmmoItemElement ammoItem in AmmoViewUI.Instance.ammoItemElements) {
-                    ammoItem.Draw(spriteBatch);
-                }
+                AmmoViewUI.Instance.Draw(spriteBatch);
             }
 
             if (cwrWeapon.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
@@ -203,14 +201,26 @@ namespace CalamityOverhaul.Content.UIs
             }
 
             if (hoverInMainPage) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
+                string textContent;
+                if (IsAmmo()) {
+                    textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text5");
+                    if (cwrWeapon.NumberBullets >= cwrWeapon.AmmoCapacity) {
+                        textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text7");
+                    }
+                    if (targetWeapon.useAmmo != heldItem.ammo) {
+                        textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text6");
+                    }
+                }
+                else {
+                    textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text4");
+                }
+                
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
             }
 
             if (AmmoViewUI.Instance.Active) {
-                foreach (AmmoItemElement ammoItem in AmmoViewUI.Instance.ammoItemElements) {
-                    ammoItem.PostDraw(spriteBatch);
-                }
+                AmmoViewUI.Instance.PostDraw(spriteBatch);
             }
         }
     }

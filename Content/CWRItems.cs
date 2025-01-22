@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -407,8 +408,20 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public static void SetNameOverride(BaseRItem rItem, Item setItem) {
+            if (rItem.TargetToolTipItemName == "") {
+                return;
+            }
+            string langKey = $"Mods.CalamityOverhaul.Items.{rItem.TargetToolTipItemName}.DisplayName";
+            string newName = Language.GetTextValue(langKey);
+            if (newName != langKey) {
+                setItem.SetNameOverride(newName);
+            }
+        }
+
         public static void OverModifyTool(Item item, List<TooltipLine> tooltips) {
             bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
+
             if (CWRLoad.ItemIsGun[item.type]) {
                 if (CWRLoad.ItemIsGunAndMustConsumeAmmunition[item.type] && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
