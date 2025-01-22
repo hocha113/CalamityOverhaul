@@ -1,10 +1,8 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.UIs;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -42,13 +40,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 是否已经装好了弹药
         /// </summary>
-        protected bool IsKreload;
+        protected bool IsKreload {
+            get {
+                if (ModItem == null) {
+                    return false;
+                }
+                return ModItem.IsKreload;
+            }
+            set {
+                if (ModItem != null) {
+                    ModItem.IsKreload = value;
+                }
+            }
+        }
         /// <summary>
         /// 换弹时是否退还剩余子弹
         /// </summary>
         protected bool ReturnRemainingBullets = true;
         /// <summary>
-        /// 单次弹药装填最小数量，默认为一发
+        /// 单次弹药装填最小数量，默认为1
         /// </summary>
         protected int MinimumAmmoPerReload = 1;
         /// <summary>
@@ -159,13 +169,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         private static float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
 
         #endregion
-        /// <summary>
-        /// 用于外部获得枪械的装填装填
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool GunIsKreLoad() {
-            return IsKreload;
-        }
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
         /// </summary>
@@ -291,8 +294,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void Initialize() {
-            InitializeMagazine();
-            AmmoViewUI.Instance.LoadAmmos(ModItem);
+            ModItem.SetMagazine(ModItem.MagazineContents);
+            AmmoState = Owner.GetAmmoState(Item.useAmmo);
         }
 
         /// <summary>
@@ -300,15 +303,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected void InitializeMagazine() {
             if (ModItem.MagazineContents == null) {
-                AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
+                
                 ModItem.MagazineContents = new Item[ModItem.AmmoCapacity];
                 for (int i = 0; i < ModItem.MagazineContents.Length; i++) {
                     ModItem.MagazineContents[i] = new Item();
                 }
-            }
-            IsKreload = ModItem.IsKreload;
-            if (!MagazineSystem) {
-                IsKreload = true;
             }
         }
         /// <summary>
@@ -487,13 +486,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void FiringIncident() {
-
+            //继承后的闲置函数
         }
 
         public sealed override void InOwner() {
             Projectile.timeLeft = 2;
             SetHeld();
-            InitializeMagazine();
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
 
@@ -508,6 +506,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 SetWeaponOccupancyStatus();
                 ShootCoolingValue--;
             }
+
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
             }
@@ -554,7 +553,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (WhetherStartChangingAmmunition()) {
-                    AmmoState = Owner.GetAmmoState(Item.useAmmo);//在装填时更新弹药状态
                     if (AmmoState.CurrentAmount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
                         OnKreload = true;
                         kreloadTimeValue = kreloadMaxTime;
@@ -651,7 +649,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
             }
 
-            ModItem.CalculateNumberBullet();
             if (BulletNum < ModItem.AmmoCapacity) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
                 foreach (var ammo in AmmoState.CurrentItems) {
@@ -671,37 +668,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 UpdateConsumeAmmo();
                 return;
             }
-            CWRItems cwrItem = ModItem;
-            if (cwrItem.MagazineContents.Length <= 0) {
-                cwrItem.MagazineContents = [new Item()];
-                IsKreload = false;
-                BulletNum = 0;
-            }
-            //注意这里的调用顺序
-            if (cwrItem.MagazineContents[0] == null) {
-                cwrItem.MagazineContents[0] = new Item();
-            }
-            cwrItem.MagazineContents[0].stack--;
 
-            if (cwrItem.MagazineContents[0].stack <= 0) {
-                cwrItem.MagazineContents[0] = new Item();
-                List<Item> items = [];
-                foreach (Item i in cwrItem.MagazineContents) {
-                    if (i.type != ItemID.None && i.stack > 0) {
-                        items.Add(i);
-                    }
-                }
-                cwrItem.MagazineContents = items.ToArray();
-                AmmoViewUI.Instance.LoadAmmos(cwrItem);
-            }
-            if (cwrItem.MagazineContents.Length <= 0) {
+            if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
+                ModItem.InitializeMagazine();
                 IsKreload = false;
-                BulletNum = 0;
                 return;
             }
 
-            if (BulletNum > 0) {
-                BulletNum--;
+            Item targetAmmo = ModItem.GetSelectedBullets();
+            targetAmmo.stack--;
+
+            if (targetAmmo.stack <= 0) {//自己设置一下，这样可以利用SetMagazine函数的清理机制自动排除空位
+                ModItem.SetMagazine(ModItem.MagazineContents);
+            }
+
+            if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
+                ModItem.InitializeMagazine();
+                IsKreload = false;
+                return;
             }
         }
         /// <summary>
@@ -815,7 +799,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (MagazineSystem && BulletNum <= 0) {
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
-                    SetEmptyMagazine();
+                    LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
+                    IsKreload = false;
+                    BulletNum = 0;
                 }
 
                 automaticPolishingInShootStartFarg = true;
@@ -826,17 +812,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     NetUpdate();
                 }
             }
-        }
-        /// <summary>
-        /// 设置弹匣打空的后续状态，但如果想完整的将枪械设置为空弹，还需要设置<see cref="CWRItems.MagazineContents"/>的内容
-        /// </summary>
-        public void SetEmptyMagazine() {
-            LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-            IsKreload = false;
-            if (Item.type != ItemID.None) {
-                ModItem.IsKreload = false;
-            }
-            BulletNum = 0;
         }
 
         public override BitsByte SandBitsByte(BitsByte flags) {
@@ -864,32 +839,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             writer.Write(BulletNum);
         }
 
-        #region Utils
-        /// <summary>
-        /// 截取弹匣的内容，并将弹匣更新为指定的截取内容
-        /// </summary>
-        /// <param name="cutOutNum"></param>
-        public void CutOutMagazine(int cutOutNum) {
-            int cumulativeQuantity = 0;
-            List<Item> list = [];
-            foreach (Item i in ModItem.MagazineContents) {
-                if (cumulativeQuantity >= cutOutNum || i == null) {
-                    break;
-                }
-                if (i.type == ItemID.None || i.stack <= 0) {
-                    continue;
-                }
-                int stack = i.stack;
-                if (stack > cutOutNum - cumulativeQuantity) {
-                    stack = cutOutNum - cumulativeQuantity;
-                }
-                Item ammo = new Item(i.type, stack);
-                cumulativeQuantity += stack;
-                list.Add(ammo);
-            }
-            ModItem.MagazineContents = list.ToArray();
-            AmmoViewUI.Instance.LoadAmmos(ModItem);
-        }
         /// <summary>
         /// 一个通用的装弹动作逻辑，一般在<see cref="PostInOwnerUpdate"/>中调用
         /// </summary>
@@ -902,22 +851,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir);
             }
         }
-        /// <summary>
-        /// 安全获取选定的弹匣弹药内容
-        /// </summary>
-        /// <returns></returns>
-        public Item GetSelectedBullets() {
-            if (ModItem.MagazineContents == null) {
-                return new Item();
-            }
-            if (ModItem.MagazineContents.Length <= 0) {
-                return new Item();
-            }
-            if (ModItem.MagazineContents[0] == null) {
-                return new Item();
-            }
-            return ModItem.MagazineContents[0];
-        }
-        #endregion
     }
 }

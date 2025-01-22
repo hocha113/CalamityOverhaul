@@ -33,21 +33,9 @@ namespace CalamityOverhaul.Content.GunCustomization
             Item ammo = null;
             //这个部分用于修复弹匣系统的伤害判定，原版只考虑背包内的弹药，所以这里需要进行拦截修改使其考虑到弹匣供弹
             if (CWRServerConfig.Instance.MagazineSystem) {
-                foreach (var proj in Main.ActiveProjectiles) {
-                    if (proj.type != cwrItem.heldProjType || proj.owner != Main.myPlayer) {
-                        continue;
-                    }
-
-                    if (proj.ModProjectile is BaseFeederGun gun) {
-                        if (!gun.GunIsKreLoad()) {
-                            break;
-                        }
-                        Item newAmmo = gun.GetSelectedBullets();
-                        if (newAmmo.type > ItemID.None) {
-                            ammo = newAmmo;
-                            break;
-                        }
-                    }
+                Item newAmmo = cwrItem.GetSelectedBullets();
+                if (newAmmo.type > ItemID.None) {
+                    ammo = newAmmo;
                 }
             }
 

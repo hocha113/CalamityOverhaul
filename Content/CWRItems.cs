@@ -223,16 +223,29 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        #region Magazine
+        /// <summary>
+        /// 安全获取选定的弹匣弹药内容
+        /// </summary>
+        /// <returns></returns>
+        public Item GetSelectedBullets() {
+            if (MagazineContents == null || MagazineContents.Length <= 0 || MagazineContents[0] == null) {
+                InitializeMagazine();
+            }
+            return MagazineContents[0];
+        }
+
         /// <summary>
         /// 装填弹匣，该行为不考虑弹匣上限问题，使用默认添加数量可以自动计算装填数量
         /// </summary>
         /// <param name="addAmmo"></param>
         /// <param name="addStack"></param>
         public void LoadenMagazine(Item addAmmo, int addStack = 0) {
+            CalculateNumberBullet();
+
             bool isUnlimited = CWRUtils.IsAmmunitionUnlimited(addAmmo);
 
             if (addStack == 0) {
-                CalculateNumberBullet();
                 addStack = AmmoCapacity - NumberBullets;
                 if (addStack > addAmmo.stack && !isUnlimited) {
                     addStack = addAmmo.stack;
@@ -270,11 +283,29 @@ namespace CalamityOverhaul.Content
         }
 
         /// <summary>
-        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制
+        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制，如果输入非法的值，将直接初始化弹匣
+        /// </summary>
+        /// <param name="magazineArray"></param>
+        public void SetMagazine(Item[] magazineArray) {
+            if (magazineArray == null || magazineArray.Length <= 0 || magazineArray[0] == null) {
+                InitializeMagazine();//如果输入的是非法的弹匣内容，直接初始化弹匣，并返回
+                return;
+            }
+
+            SetMagazine(magazineArray.ToList());
+        }
+
+        /// <summary>
+        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制，如果输入非法的值，将直接初始化弹匣
         /// </summary>
         /// <param name="magazineList"></param>
         public void SetMagazine(List<Item> magazineList) {
-            magazineList.RemoveAll(item => item.stack <= 0 || item.type == ItemID.None);
+            if (magazineList == null || magazineList.Count <= 0 || magazineList[0] == null) {
+                InitializeMagazine();//如果输入的是非法的弹匣内容，直接初始化弹匣，并返回
+                return;
+            }
+
+            magazineList.RemoveAll(ammo => ammo == null || ammo.type == ItemID.None || ammo.stack <= 0);
             MagazineContents = magazineList.ToArray();
             if (MagazineContents.Length > 0) {
                 CalculateNumberBullet();
@@ -286,20 +317,8 @@ namespace CalamityOverhaul.Content
         }
 
         /// <summary>
-        /// 设置弹匣内容，自动处理冗余内容、UI更新、剩余子弹数量等机制
+        /// 计算并更新弹匣剩余子弹的数量
         /// </summary>
-        /// <param name="magazineList"></param>
-        public void SetMagazine(Item[] magazineArray) {
-            MagazineContents = magazineArray;
-            if (MagazineContents.Length > 0) {
-                CalculateNumberBullet();
-                AmmoViewUI.Instance.LoadAmmos(this);
-            }
-            else {
-                InitializeMagazine();
-            }
-        }
-
         public void CalculateNumberBullet() {
             int ammoCount = 0;
             foreach (var ammo in MagazineContents) {
@@ -311,6 +330,9 @@ namespace CalamityOverhaul.Content
             NumberBullets = ammoCount;
         }
 
+        /// <summary>
+        /// 将枪械的弹匣数据初始化
+        /// </summary>
         public void InitializeMagazine() {
             AmmoProjectileReturn = true;
             IsKreload = false;
@@ -326,6 +348,7 @@ namespace CalamityOverhaul.Content
             SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
             AmmoViewUI.Instance.LoadAmmos(this);
         }
+        #endregion
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
@@ -513,7 +536,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-
         }
 
         public override bool CanUseItem(Item item, Player player) {
