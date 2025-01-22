@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void SetShootAttribute() {
             AmmoTypes = ProjectileID.RocketSnowmanI;
-            int ammoItemType = GetSelectedBullets().type;
+            int ammoItemType = ModItem.GetSelectedBullets().type;
             if (VaultUtils.SnowmanCannonAmmoMap.ContainsKey(ammoItemType)) {
                 AmmoTypes = VaultUtils.SnowmanCannonAmmoMap[ammoItemType];
             }

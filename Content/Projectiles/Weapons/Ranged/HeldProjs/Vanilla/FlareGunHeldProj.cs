@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public static int GetFlareDustID(BaseFeederGun gun) {
             int dustType = DustID.Flare;
-            Item ammo = gun.GetSelectedBullets();
+            Item ammo = gun.ModItem.GetSelectedBullets();
 
             if (ammo == null || ammo.type == ItemID.None) {
                 return DustID.Flare;

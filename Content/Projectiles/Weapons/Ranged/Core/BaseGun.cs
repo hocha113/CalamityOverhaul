@@ -82,9 +82,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool FiringDefaultSound = true;
         /// <summary>
-        /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为20f
+        /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为12f
         /// </summary>
-        public float AngleFirearmRest = 20f;
+        public float AngleFirearmRest = 12f;
         /// <summary>
         /// 枪压，决定开火时的上抬力度，默认为0
         /// </summary>
@@ -281,7 +281,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
-            return Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX + new Vector2(0, HandFireDistanceY) + OffsetPos;
+            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * HandFireDistanceX;
+            Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
+            return Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + OffsetPos;
         }
 
         /// <summary>
@@ -289,15 +291,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public virtual float GetGunBodyRot() {
-            return Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
+            float art = AngleFirearmRest;
+            if (SafeGravDir < 0) {
+                art = 360 - AngleFirearmRest;
+            }
+            float fullRotation = MathHelper.ToDegrees(Owner.fullRotation) * Owner.direction;
+            float value = art + fullRotation;
+            return Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
         }
         /// <summary>
         /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPos() {
-            return Owner.GetPlayerStabilityCenter()
-                + new Vector2(DirSign * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir) * SafeGravDir;
+            Vector2 handOffset = new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir);
+            return Owner.GetPlayerStabilityCenter() + handOffset.RotatedBy(Owner.fullRotation);
         }
         /// <summary>
         /// 在开火时被调用，在适当的时机下调用这个函数

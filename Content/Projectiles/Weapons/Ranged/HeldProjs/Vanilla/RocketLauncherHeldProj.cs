@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ModOwner.SetScreenShake(3);
             //火箭弹药特判
             float newDamg = WeaponDamage;
-            Item ammoItem = GetSelectedBullets();
+            Item ammoItem = ModItem.GetSelectedBullets();
             AmmoTypes = ProjectileID.RocketI;
             if (ammoItem.type == ItemID.RocketII) {
                 AmmoTypes = ProjectileID.RocketII;

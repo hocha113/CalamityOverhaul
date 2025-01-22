@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override Vector2 GetGunInFirePos() {
-            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistanceX + 5);
+            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * HandFireDistanceX;
             Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
             Vector2 motHeldPos = Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + OffsetPos;
             if (LoadingAmmoAnimation_AlwaysSetInFireRoding) {
@@ -280,17 +280,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override float GetGunBodyRot() {
-            int art = 10;
+            float art = AngleFirearmRest;
             if (SafeGravDir < 0) {
-                art = 350;
+                art = 360 - AngleFirearmRest;
             }
-            int value = (int)(art + FeederOffsetRot);
+            float fullRotation = MathHelper.ToDegrees(Owner.fullRotation) * Owner.direction;
+            float value = art + fullRotation + FeederOffsetRot;
             return Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
         }
 
         public override Vector2 GetGunBodyPos() {
             Vector2 handOffset = new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir);
-            return Owner.GetPlayerStabilityCenter() + FeederOffsetPos + handOffset;
+            return Owner.GetPlayerStabilityCenter() + (FeederOffsetPos + handOffset).RotatedBy(Owner.fullRotation);
         }
 
         public override void Initialize() {
@@ -639,11 +640,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
+            int quantity = LoadingQuantity > 0 ? LoadingQuantity : ModItem.AmmoCapacity;
             if (CWRMod.Suitableversion_improveGame) {
                 // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
                 var ammoChain = Item.GetQotAmmoChain();
                 if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
-                    , LoadingQuantity > 0 ? LoadingQuantity : ModItem.AmmoCapacity, out var pushedAmmo, out int ammoCount)) {
+                    , quantity, out var pushedAmmo, out int ammoCount)) {
                     ModItem.SetMagazine(pushedAmmo);
                     return;
                 }
@@ -653,7 +655,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
                 foreach (var ammo in AmmoState.CurrentItems) {
                     ModItem.LoadenMagazine(ammo, LoadingQuantity);
-                    if (BulletNum >= ModItem.AmmoCapacity) {
+                    if (BulletNum >= quantity) {
                         break;
                     }
                 }
@@ -680,6 +682,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             if (targetAmmo.stack <= 0) {//自己设置一下，这样可以利用SetMagazine函数的清理机制自动排除空位
                 ModItem.SetMagazine(ModItem.MagazineContents);
+            }
+            else {
+                ModItem.CalculateNumberBullet();
             }
 
             if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了

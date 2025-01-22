@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             //火箭弹药特判，感应雷特判
-            Item ammoItem = GetSelectedBullets();
+            Item ammoItem = ModItem.GetSelectedBullets();
             if (ammoItem.type == ItemID.RocketI) {
                 AmmoTypes = ProjectileID.ProximityMineI;
             }

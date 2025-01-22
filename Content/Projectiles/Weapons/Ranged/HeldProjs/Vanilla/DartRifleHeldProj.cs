@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            Item ammoItem = GetSelectedBullets();
+            Item ammoItem = ModItem.GetSelectedBullets();
             if (ammoItem.type == ItemID.CursedDart) {
                 AmmoTypes = ModContent.ProjectileType<CursedDartRemake>();
             }

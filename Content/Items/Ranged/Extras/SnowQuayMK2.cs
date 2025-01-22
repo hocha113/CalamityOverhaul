@@ -43,7 +43,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             HandIdleDistanceY = 0;
             HandFireDistanceX = 40;
             HandFireDistanceY = -2;
-            AngleFirearmRest = -1;
             ShootPosNorlLengValue = -6;
             ShootPosToMouLengValue = 22;
             RecoilRetroForceMagnitude = 5;
