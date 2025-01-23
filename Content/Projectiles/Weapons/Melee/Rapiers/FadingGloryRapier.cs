@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                         Vector2 impactPoint = Vector2.Lerp(Projectile.Center, npc.Center, 0.65f);
                         Vector2 bloodSpawnPosition = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 0.04f;
                         Vector2 splatterDirection = (Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
-                        if (!CWRLoad.NPCValue.ISTheofSteel(npc.type)) {
+                        if (!CWRLoad.NPCValue.ISTheofSteel(npc)) {
                             for (int i = 0; i < 6; i++) {
                                 int bloodLifetime = Main.rand.Next(22, 36);
                                 float bloodScale = Main.rand.NextFloat(0.6f, 0.8f);

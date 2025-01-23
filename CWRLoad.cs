@@ -19,6 +19,7 @@ using CalamityMod.NPCs.Perforator;
 using CalamityMod.NPCs.PlaguebringerGoliath;
 using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.PrimordialWyrm;
+using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
@@ -90,9 +91,17 @@ namespace CalamityOverhaul
         /// </summary>
         public static int Polterghast;
         /// <summary>
+        /// 亵渎天神
+        /// </summary>
+        public static int Providence;
+        /// <summary>
         /// 丛林龙
         /// </summary>
         public static int Yharon;
+        /// <summary>
+        /// 吞噬兽
+        /// </summary>
+        public static int ScornEater;
         /// <summary>
         /// 灾坟虫
         /// </summary>
@@ -300,21 +309,19 @@ namespace CalamityOverhaul
         public static class NPCValue
         {
             /// <summary>
-            /// 是否是一个金属性质的存在
-            /// </summary>
-            public static Dictionary<int, bool> TheofSteel = [];
-            /// <summary>
             /// 是否免疫冻结
             /// </summary>
             public static Dictionary<int, bool> ImmuneFrozen = [];
-            public static bool ISTheofSteel(int type) {
-                if (type == NPCID.Spazmatism && SpazmatismAI.Accompany) {
-                    return true;
+            public static bool ISTheofSteel(NPC npc) {
+                if ((npc.HitSound != SoundID.NPCHit4 && npc.HitSound != SoundID.NPCHit41 && npc.HitSound != SoundID.NPCHit2 &&
+                npc.HitSound != SoundID.NPCHit5 && npc.HitSound != SoundID.NPCHit11 && npc.HitSound != SoundID.NPCHit30 &&
+                npc.HitSound != SoundID.NPCHit34 && npc.HitSound != SoundID.NPCHit36 && npc.HitSound != SoundID.NPCHit42 &&
+                npc.HitSound != SoundID.NPCHit49 && npc.HitSound != SoundID.NPCHit52 && npc.HitSound != SoundID.NPCHit53 &&
+                npc.HitSound != SoundID.NPCHit54 && npc.HitSound != null) 
+                || npc.type == Providence || npc.type == ScornEater || npc.type == Yharon) {
+                    return false;
                 }
-                if (type == NPCID.Retinazer && RetinazerAI.Accompany) {
-                    return true;
-                }
-                return TheofSteel[type];
+                return true;
             }
         }
 
@@ -342,7 +349,9 @@ namespace CalamityOverhaul
 
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();
+            Providence = NPCType<Providence>();
             Yharon = NPCType<Yharon>();
+            ScornEater = NPCType<ScornEater>();
             PlaguebringerGoliath = NPCType<PlaguebringerGoliath>();
 
             PerforatorHive = NPCType<PerforatorHive>();
@@ -537,19 +546,6 @@ namespace CalamityOverhaul
             for (int i = 0; i < NPCLoader.NPCCount; i++) {
                 NPC npc = new NPC();
                 npc.SetDefaults(i);
-                bool isSteel = false;
-                if (npc.HitSound == SoundID.NPCHit2
-                    || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4
-                    || npc.HitSound == SoundID.NPCHit41 || npc.HitSound == SoundID.NPCHit42
-                    || targetNpcTypes10.Contains(npc.type) || targetNpcTypes15.Contains(npc.type)
-                    || targetNpcTypes7.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
-                    || targetNpcTypes6.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
-                    || npc.type == AstrumAureus) {
-                    isSteel = true;
-                }
-
-                NPCValue.TheofSteel.TryAdd(i, isSteel);
-
                 NPCValue.ImmuneFrozen.TryAdd(i, false);
             }
 
@@ -572,7 +568,6 @@ namespace CalamityOverhaul
             ItemIsGunAndMustConsumeAmmunition?.Clear();
             ItemIsGunAndGetRecoilValue?.Clear();
             ItemIsGunAndGetRecoilLocKey?.Clear();
-            NPCValue.TheofSteel?.Clear();
             ProjValue.ImmuneFrozen?.Clear();
         }
 

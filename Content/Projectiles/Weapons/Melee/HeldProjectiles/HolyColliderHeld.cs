@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target.type));
+            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target));
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
