@@ -3346,6 +3346,23 @@ Projectiles: {
 	// WyvernsCallHeld.DisplayName: Wyverns Call Held
 	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
 	// SausageMakerHeld.DisplayName: Sausage Maker Held
+	// MagicStaff_726: Mods.CalamityOverhaul.Projectiles.MagicStaff_726
+	// MagicStaff_3377: Mods.CalamityOverhaul.Projectiles.MagicStaff_3377
+	// MagicStaff_181: Mods.CalamityOverhaul.Projectiles.MagicStaff_181
+	// MagicStaff_1931: Mods.CalamityOverhaul.Projectiles.MagicStaff_1931
+	// MagicBook_1313: Mods.CalamityOverhaul.Projectiles.MagicBook_1313
+	// MagicStaff_3014: Mods.CalamityOverhaul.Projectiles.MagicStaff_3014
+	// MagicStaff_744: Mods.CalamityOverhaul.Projectiles.MagicStaff_744
+	// MagicStaff_742: Mods.CalamityOverhaul.Projectiles.MagicStaff_742
+	// MagicStaff_2750: Mods.CalamityOverhaul.Projectiles.MagicStaff_2750
+	// MagicStaff_1308: Mods.CalamityOverhaul.Projectiles.MagicStaff_1308
+	// MagicStaff_743: Mods.CalamityOverhaul.Projectiles.MagicStaff_743
+	// MagicStaff_741: Mods.CalamityOverhaul.Projectiles.MagicStaff_741
+	// MagicStaff_1444: Mods.CalamityOverhaul.Projectiles.MagicStaff_1444
+	// MagicStaff_1446: Mods.CalamityOverhaul.Projectiles.MagicStaff_1446
+	// MagicStaff_740: Mods.CalamityOverhaul.Projectiles.MagicStaff_740
+	// MagicStaff_2188: Mods.CalamityOverhaul.Projectiles.MagicStaff_2188
+	// MagicBook_165: Mods.CalamityOverhaul.Projectiles.MagicBook_165
 }
 
 Configs: {

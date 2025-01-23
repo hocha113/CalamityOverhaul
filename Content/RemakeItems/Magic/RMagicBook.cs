@@ -3,8 +3,10 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -19,13 +21,35 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
     }
 
-    internal abstract class BaseMagicBook<TItem> : BaseMagicGun where TItem : ModItem
+    internal abstract class RMagicBook : BaseRItem
+    {
+        public override bool DrawingInfo => false;
+        public override bool FormulaSubstitution => true;
+        public override int TargetID => ItemID.None;
+        public virtual string HeldProjName => "";
+        public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
+    }
+
+    internal abstract class BaseMagicBook<TItem> : BaseMagicBookAction where TItem : ModItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<TItem>();
         public override int targetCayItem => ModContent.ItemType<TItem>();
         public override int targetCWRItem => CWRServerConfig.Instance.WeaponOverhaul
             ? ItemID.None : CWRMod.Instance.Find<ModItem>(typeof(TItem).Name + "EcType").Type;
+    }
+
+    internal abstract class BaseMagicBook : BaseMagicBookAction
+    {
+        public override string Texture => CWRConstant.Placeholder3;
+        public override Texture2D TextureValue => TextureAssets.Item[targetCayItem].Value;
+        public override LocalizedText DisplayName => Language.GetOrRegister("Mods.CalamityOverhaul.Projectiles.MagicBook_" + targetCayItem);
+        public override int targetCayItem => ItemID.None;
+        public override int targetCWRItem => targetCayItem;
+    }
+
+    internal abstract class BaseMagicBookAction : BaseMagicGun
+    {
         private int useAnimation;
         public sealed override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
@@ -199,4 +223,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 
     internal class WrathoftheAncientsHeld : BaseMagicBook<WrathoftheAncients> { }
     internal class WrathoftheAncientsRItem : RMagicBook<WrathoftheAncients> { }
+
+    internal class BookofSkullsHeld() : BaseMagicBook { public override int targetCayItem => ItemID.BookofSkulls; }
+    internal class BookofSkullsRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.BookofSkulls;
+        public override string HeldProjName => "BookofSkulls";
+    }
+
+    internal class WaterBoltHeld() : BaseMagicBook { public override int targetCayItem => ItemID.WaterBolt; }
+    internal class WaterBoltRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.WaterBolt;
+        public override string HeldProjName => "WaterBolt";
+    }
 }
