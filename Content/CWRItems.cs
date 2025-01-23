@@ -500,7 +500,7 @@ namespace CalamityOverhaul.Content
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
             CWRPlayer modPlayer = player.CWR();
-            if (modPlayer.LoadMuzzleBrake) {
+            if (modPlayer.LoadMuzzleBrakeLevel > 0) {
                 if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
                         crit += 5;
@@ -518,26 +518,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            CWRPlayer modPlayer = player.CWR();
-            if (modPlayer.LoadMuzzleBrake) {
-                if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
-                    if (modPlayer.LoadMuzzleBrakeLevel == 1) {
-                        damage *= 0.85f;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
-                        damage *= 0.9f;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
-                        damage *= 0.95f;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
-                        damage *= 2;
-                    }
-                }
-            }
-        }
-
         public override bool CanUseItem(Item item, Player player) {
             if (IsShootCountCorlUse) {
                 return player.ownedProjectileCounts[item.shoot] <= 0;
@@ -548,17 +528,10 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
-        internal static void drawIconSmall() {
-            Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
-                , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
-        }
-
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.WeaponOverhaul
-                && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
-                if (baseRItem.DrawingInfo) {
-                    drawIconSmall();
-                }
+            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem) && baseRItem.DrawingInfo) {
+                Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
+                    , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }
         }
     }

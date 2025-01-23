@@ -106,9 +106,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public float HandFireDistanceX = 20;
         /// <summary>
-        /// 手持距离，生效于开火状态下，默认为-3
+        /// 手持距离，生效于开火状态下，默认为-4
         /// </summary>
-        public float HandFireDistanceY = -3;
+        public float HandFireDistanceY = -4;
         /// <summary>
         /// 应力范围，默认为10
         /// </summary>
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
                 PostFiringShoot();
                 automaticPolishingInShootStartFarg = true;
-                ShootCoolingValue += Item.useTime;
+                ShootCoolingValue += MathHelper.Max((int)(Item.useTime / AttackSpeed), 1f);
                 onFireR = onFire = false;
             }
         }

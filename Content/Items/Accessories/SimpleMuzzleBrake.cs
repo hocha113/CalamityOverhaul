@@ -11,15 +11,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
-            Item.value = Terraria.Item.buyPrice(0, 1, 15, 0);
+            Item.value = Item.buyPrice(0, 1, 15, 0);
             Item.rare = ItemRarityID.Lime;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             CWRPlayer modplayer = player.CWR();
-            modplayer.LoadMuzzleBrake = true;
             modplayer.LoadMuzzleBrakeLevel = 1;
             modplayer.PressureIncrease -= 0.4f;
+            player.GetDamage<RangedDamageClass>() -= 0.15f;
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {

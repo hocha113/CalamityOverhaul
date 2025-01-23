@@ -810,7 +810,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 automaticPolishingInShootStartFarg = true;
-                ShootCoolingValue += FireTime + 1;
+                ShootCoolingValue += MathHelper.Max((int)((FireTime + 1) / AttackSpeed), 1f);
                 onFire = false;
 
                 if (Projectile.IsOwnedByLocalPlayer()) {

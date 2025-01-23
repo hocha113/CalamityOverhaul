@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content
             if (!projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
                 if (projectile.DamageType == DamageClass.Ranged) {
-                    if (modPlayer.LoadMuzzleBrake && modPlayer.LoadMuzzleBrakeLevel == 4) {
+                    if (modPlayer.LoadMuzzleBrakeLevel == 4) {
                         projectile.extraUpdates += 2;
                         if (Main.rand.NextBool(5)) {
                             projectile.scale *= 2.25f;

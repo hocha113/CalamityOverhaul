@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             CWRPlayer modplayer = player.CWR();
-            modplayer.LoadMuzzleBrake = true;
             modplayer.LoadMuzzleBrakeLevel = 4;
             modplayer.PressureIncrease = 0;
             CalamityPlayer calPlayer = player.Calamity();
@@ -42,6 +41,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             calPlayer.eleResist = true;
             player.moveSpeed += 0.25f;
             player.magicQuiver = true;
+            player.GetDamage<RangedDamageClass>() += 1f;
 
             calPlayer.voidField = true;
             if (player.whoAmI == Main.myPlayer) {

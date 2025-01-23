@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             CWRPlayer modplayer = player.CWR();
-            modplayer.LoadMuzzleBrake = true;
             modplayer.LoadMuzzleBrakeLevel = 3;
             modplayer.PressureIncrease -= 0.65f;
+            player.GetDamage<RangedDamageClass>() -= 0.05f;
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {

@@ -171,10 +171,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         #endregion
 
         public void SetArmInFire() {
-            ShootCoolingValue++;
+            ShootCoolingValue += AttackSpeed;
             if (ShootCoolingValue > HandRotStartTime && CanFireMotion) {
                 float backArmRotation = Projectile.rotation * SafeGravDir + MathHelper.PiOver2 + MathHelper.Pi * DirSign;
-                float amountValue = 1 - Projectile.ai[1] / (Item.useTime - HandRotStartTime);
+                float amountValue = 1 - ShootCoolingValue / (Item.useTime - HandRotStartTime);
                 Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
                 Owner.SetCompositeArmFront(true, stretch, backArmRotation);
@@ -266,8 +266,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             ModItem.IsBow = IsBow;
 
             if (!onFire && !onFireR) {
-                if (Projectile.ai[1] > 0) {
-                    Projectile.ai[1] = 0;
+                if (ShootCoolingValue > 0) {
+                    ShootCoolingValue = 0;
                 }
             }
 
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
+            if (ShootCoolingValue > Item.useTime && (onFire || onFireR)) {
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Vector2 posTop = bowPos + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
             Vector2 posBottom = bowPos + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.BottomBowOffset.Y) + toProjRot * BowstringData.BottomBowOffset.X;
 
-            float lengsOFstValue = Projectile.ai[1] / Item.useTime * 16;
+            float lengsOFstValue = ShootCoolingValue / Item.useTime * 16;
             lengsOFstValue -= (BowstringData.TopBowOffset.X + BowstringData.BottomBowOffset.X) / 2;
 
             if (DirSign < 0) {
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 cooltime = Item.useTime / 3;
             }
 
-            if (CanFire && Projectile.ai[1] > cooltime) {
+            if (CanFire && ShootCoolingValue > cooltime) {
                 int useAmmoItemType = UseAmmoItemType;
                 if (useAmmoItemType == ItemID.None) {
                     return;
@@ -523,7 +523,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
-                float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
+                float chordCoefficient = 1 - ShootCoolingValue / Item.useTime;
 
                 float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();

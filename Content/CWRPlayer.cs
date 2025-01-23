@@ -29,11 +29,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int TheRelicLuxor = 0;
         /// <summary>
-        /// 是否装备制动器
-        /// </summary>
-        public bool LoadMuzzleBrake;
-        /// <summary>
-        /// 装备的制动器等级
+        /// 装备的制动器等级，0则不装备
         /// </summary>
         public int LoadMuzzleBrakeLevel;
         /// <summary>
@@ -194,7 +190,6 @@ namespace CalamityOverhaul.Content
             PressureIncrease = 1;
             HeldStyle = -1;
             OnHit = false;
-            LoadMuzzleBrake = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;

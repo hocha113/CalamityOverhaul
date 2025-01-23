@@ -82,6 +82,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public float WeaponKnockback;
         /// <summary>
+        /// 获取远程攻速加成系数
+        /// </summary>
+        public float AttackSpeed => Owner.GetAttackSpeed<RangedDamageClass>() + Item.GetPrefixState().shootSpeedMult - 1f;
+        /// <summary>
         /// 是否启用手持开关
         /// </summary>
         public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
