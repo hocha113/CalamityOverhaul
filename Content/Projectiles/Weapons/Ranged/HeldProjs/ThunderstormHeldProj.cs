@@ -1,4 +1,5 @@
-﻿using CalamityMod.Particles;
+﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ThunderstormHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Thunderstorm";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.Thunderstorm>();
+        public override int targetCayItem => ModContent.ItemType<Thunderstorm>();
         public override int targetCWRItem => ModContent.ItemType<ThunderstormEcType>();
         public override void SetRangedProperty() {
             Projectile.DamageType = DamageClass.Magic;

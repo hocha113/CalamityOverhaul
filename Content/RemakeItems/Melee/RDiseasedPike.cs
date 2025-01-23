@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
@@ -13,12 +14,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RDiseasedPike : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DiseasedPike>();
+        public override int TargetID => ModContent.ItemType<DiseasedPike>();
         public override int ProtogenesisID => ModContent.ItemType<DiseasedPikeEcType>();
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
-        }
         public override string TargetToolTipItemName => "DiseasedPikeEcType";
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
 
         public override void SetDefaults(Item item) {
             item.width = 62;

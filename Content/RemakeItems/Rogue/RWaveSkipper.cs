@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Projectiles.Rogue;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
@@ -13,10 +14,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
     internal class RWaveSkipper : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Rogue.WaveSkipper>();
+        public override int TargetID => ModContent.ItemType<WaveSkipper>();
         public override int ProtogenesisID => ModContent.ItemType<WaveSkipperEcType>();
         public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Rogue.WaveSkipper>()] = true;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WaveSkipper>()] = true;
         }
         public override string TargetToolTipItemName => "WaveSkipperEcType";
 

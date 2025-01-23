@@ -1,5 +1,8 @@
 ﻿using CalamityMod.Items.Accessories;
+using CalamityMod.Items.Armor.Plaguebringer;
 using CalamityMod.Items.DraedonMisc;
+using CalamityMod.Items.Fishing.BrimstoneCragCatches;
+using CalamityMod.Items.Fishing.SunkenSeaCatches;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
 using CalamityMod.Items.Weapons.Magic;
@@ -231,19 +234,19 @@ namespace CalamityOverhaul.Content
                     recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
                 }
                 //瘟疫胸甲
-                if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerCarapace>())) {
+                if (recipe.HasResult(ItemType<PlaguebringerCarapace>())) {
                     recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
                     recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
                     recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
                 }
                 //瘟疫头盔
-                if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerVisor>())) {
+                if (recipe.HasResult(ItemType<PlaguebringerVisor>())) {
                     recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
                     recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
                     recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
                 }
                 //瘟疫护腿
-                if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerPistons>())) {
+                if (recipe.HasResult(ItemType<PlaguebringerPistons>())) {
                     recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
                     recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
                     recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
@@ -397,7 +400,7 @@ namespace CalamityOverhaul.Content
             }
             //添加闪光皇后鱼的配方
             {
-                Recipe.Create(ItemType<CalamityMod.Items.Fishing.SunkenSeaCatches.SparklingEmpress>())
+                Recipe.Create(ItemType<SparklingEmpress>())
                     .AddRecipeGroup(FishGroup)
                     .AddIngredient(ItemType<SeaPrism>(), 15)
                     .AddIngredient(ItemType<PearlShard>(), 5)
@@ -406,7 +409,7 @@ namespace CalamityOverhaul.Content
             }
             //添加硫火鱼的配方
             {
-                Recipe.Create(ItemType<CalamityMod.Items.Fishing.BrimstoneCragCatches.DragoonDrizzlefish>())
+                Recipe.Create(ItemType<DragoonDrizzlefish>())
                     .AddRecipeGroup(FishGroup)
                     .AddIngredient(ItemID.Hellstone, 15)
                     .AddIngredient(ItemType<PearlShard>(), 5)
@@ -463,7 +466,7 @@ namespace CalamityOverhaul.Content
             }
             //添加卢克索礼物的合成
             {
-                Recipe.Create(ItemType<CalamityMod.Items.Accessories.LuxorsGift>())
+                Recipe.Create(ItemType<LuxorsGift>())
                     .AddIngredient(ItemID.FossilOre, 5)
                     .AddIngredient(ItemType<PearlShard>(), 12)
                     .AddTile(TileID.Anvils)

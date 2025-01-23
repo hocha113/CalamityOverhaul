@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RStellarStriker : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.StellarStriker>();
+        public override int TargetID => ModContent.ItemType<StellarStriker>();
         public override int ProtogenesisID => ModContent.ItemType<StellarStrikerEcType>();
         public override string TargetToolTipItemName => "StellarStrikerEcType";
         public override bool? AltFunctionUse(Item item, Player player) => true;

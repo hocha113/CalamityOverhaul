@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
     internal class RFatesReveal : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.FatesReveal>();
+        public override int TargetID => ModContent.ItemType<FatesReveal>();
         public override int ProtogenesisID => ModContent.ItemType<FatesRevealEcType>();
         public override string TargetToolTipItemName => "FatesRevealEcType";
         public override void SetDefaults(Item item) {
