@@ -457,7 +457,7 @@ namespace CalamityOverhaul.Content
                     string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
                 }
-                if (CWRServerConfig.Instance.ActivateGunRecoil) {
+                if (CWRServerConfig.Instance.ActivateGunRecoil && CWRLoad.ItemIsGunAndGetRecoilValue[item.type] > 0) {
                     string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(CWRLoad.ItemIsGunAndGetRecoilLocKey[item.type]));
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
                 }
