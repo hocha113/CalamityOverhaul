@@ -2665,6 +2665,16 @@ Items: {
 		// DisplayName: Dragoon Drizzlefish
 		// Tooltip: ""
 	}
+
+	HandmadeDoll: {
+		// DisplayName: Handmade Doll
+		/* Tooltip:
+			'''
+			Used in hell to summon the Wall Of Flesh
+			If the Guide survives, it is sacrificed when used
+			"Made by hand without the knowledge of the Guide."
+			''' */
+	}
 }
 
 Projectiles: {

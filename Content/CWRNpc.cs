@@ -34,6 +34,7 @@ using static CalamityMod.DropHelper;
 using Terraria.ModLoader.IO;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Tools;
 
 namespace CalamityOverhaul.Content
 {
@@ -330,6 +331,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyShop(NPCShop shop) {
+            if (shop.NpcType == NPCID.Clothier) {//裁缝将会售卖娃娃
+                shop.Add(ModContent.ItemType<HandmadeDoll>());
+            }
+            if (shop.NpcType == NPCID.Merchant) {//商人会在多人模式下售卖传送药水
+                shop.Add(ItemID.WormholePotion, Condition.Multiplayer);
+            }
             foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
                 Item item = shopEntity.Item;
                 if (item == null || item.type <= ItemID.None) {

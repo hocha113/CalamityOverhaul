@@ -2666,6 +2666,16 @@ Items: {
 		// DisplayName: Dragoon Drizzlefish
 		// Tooltip: ""
 	}
+
+	HandmadeDoll: {
+		DisplayName: 手工缝制玩偶
+		Tooltip:
+			'''
+			在地狱使用以召唤血肉之墙
+			如果向导存活，则使用时会被献祭
+			"纯手工制作，向导并不知情"
+			'''
+	}
 }
 
 Projectiles: {
