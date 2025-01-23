@@ -649,14 +649,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (Accompany && IsCCK(npc, ai)) {
-                Main.instance.LoadNPC(npc.type);
-                Texture2D mainValue = TextureAssets.Npc[npc.type].Value;
-                Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frameIndex, 6)
-                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+            Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/Spazmatism");
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
+            SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float drawRot = npc.rotation + MathHelper.PiOver2;
+            if ((Accompany && IsCCK(npc, ai))) {
+                mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/SpazmatismAlt");
+                rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
+                Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
+                , Color.White, drawRot, rectangle.Size() / 2, npc.scale, spriteEffects, 0);
                 return false;
             }
-            return true;
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
+            , Color.White, drawRot, rectangle.Size() / 2, npc.scale, spriteEffects, 0);
+            return false;
         }
     }
 }
