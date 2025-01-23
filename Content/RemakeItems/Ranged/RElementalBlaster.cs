@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RElementalBlaster : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
+        public override int TargetID => ModContent.ItemType<ElementalBlaster>();
         public override int ProtogenesisID => ModContent.ItemType<ElementalBlasterEcType>();
         public override string TargetToolTipItemName => "ElementalBlasterEcType";
         public override void SetDefaults(Item item) {

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAngelicShotgun : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AngelicShotgun>();
+        public override int TargetID => ModContent.ItemType<AngelicShotgun>();
         public override int ProtogenesisID => ModContent.ItemType<AngelicShotgunEcType>();
         public override string TargetToolTipItemName => "AngelicShotgunEcType";
         public override void SetDefaults(Item item) {

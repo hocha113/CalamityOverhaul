@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RCoralCannon : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CoralCannon>();
+        public override int TargetID => ModContent.ItemType<CoralCannon>();
         public override int ProtogenesisID => ModContent.ItemType<CoralCannonEcType>();
         public override string TargetToolTipItemName => "CoralCannonEcType";
         public override void SetDefaults(Item item) {

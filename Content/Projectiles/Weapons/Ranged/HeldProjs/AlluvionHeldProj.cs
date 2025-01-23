@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AlluvionHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Alluvion";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Alluvion>();
+        public override int targetCayItem => ModContent.ItemType<Alluvion>();
         public override int targetCWRItem => ModContent.ItemType<AlluvionEcType>();
         private SlotId accumulator;
         public override void SetRangedProperty() {
@@ -22,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 5;
             DrawArrowMode = -30;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
-            ToTargetAmmo = ModContent.ProjectileType<Voidragon>();
+            ToTargetAmmo = ModContent.ProjectileType<CalamityMod.Projectiles.Ranged.Voidragon>();
         }
 
         public override void PostInOwner() {
@@ -52,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShoot() {
-            if (AmmoTypes == ModContent.ProjectileType<Voidragon>()) {
+            if (AmmoTypes == ModContent.ProjectileType<CalamityMod.Projectiles.Ranged.Voidragon>()) {
                 AmmoTypes = ModContent.ProjectileType<TorrentialArrow>();
                 for (int i = 0; i < 5; i++) {
                     int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 12

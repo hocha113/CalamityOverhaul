@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ScorchedEarthHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ScorchedEarth>();
+        public override int targetCayItem => ModContent.ItemType<ScorchedEarth>();
         public override int targetCWRItem => ModContent.ItemType<ScorchedEarthEcType>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

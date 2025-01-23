@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -9,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NettlevineGreatbowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NettlevineGreatbow";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.NettlevineGreatbow>();
+        public override int targetCayItem => ModContent.ItemType<NettlevineGreatbow>();
         public override int targetCWRItem => ModContent.ItemType<NettlevineGreatbowEcType>();
         private int nettlevineIndex;
         public override void SetRangedProperty() {

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -8,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DisseminatorHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Disseminator";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Disseminator>();
+        public override int targetCayItem => ModContent.ItemType<Disseminator>();
         public override int targetCWRItem => ModContent.ItemType<DisseminatorEcType>();
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;

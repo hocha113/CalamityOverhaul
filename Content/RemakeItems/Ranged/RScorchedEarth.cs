@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RScorchedEarth : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ScorchedEarth>();
+        public override int TargetID => ModContent.ItemType<ScorchedEarth>();
         public override int ProtogenesisID => ModContent.ItemType<ScorchedEarthEcType>();
         public override string TargetToolTipItemName => "ScorchedEarthEcType";
         public override void SetDefaults(Item item) {

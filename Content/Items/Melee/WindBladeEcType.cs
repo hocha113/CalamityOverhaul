@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void KnifeInitialize() {
             if (Projectile.ai[0] != 0) {
                 drawTrailCount = 60;
-                drawTrailCount *= updateCount;
+                drawTrailCount *= UpdateRate;
                 oldRotate = new float[drawTrailCount];
                 oldDistanceToOwner = new float[drawTrailCount];
                 oldLength = new float[drawTrailCount];

@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 GeneralParticleHandler.SpawnParticle(smoke);
                 return true;
             }
-            if (Time % (2 * updateCount) == 0 && Time < maxSwingTime / 2) {
+            if (Time % (2 * UpdateRate) == 0 && Time < maxSwingTime / 2) {
                 canShoot = true;
             }
             StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 60, maxLength: 120, canDrawSlashTrail: true);

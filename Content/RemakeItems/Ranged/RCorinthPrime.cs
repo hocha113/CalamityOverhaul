@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RCorinthPrime : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CorinthPrime>();
+        public override int TargetID => ModContent.ItemType<CorinthPrime>();
         public override int ProtogenesisID => ModContent.ItemType<CorinthPrimeEcType>();
         public override string TargetToolTipItemName => "CorinthPrimeEcType";
         public override void SetDefaults(Item item) {

@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -9,18 +10,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class HelstormHeldProj : BaseFeederGun
     {
-        public override bool? CanDamage() {
-            return (onFire || onFireR) && IsKreload ? null : base.CanDamage();
-        }
-
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Helstorm";
+        public override int targetCayItem => ModContent.ItemType<Helstorm>();
+        public override int targetCWRItem => ModContent.ItemType<HelstormEcType>();
+        public override bool? CanDamage() => (onFire || onFireR) && IsKreload ? null : base.CanDamage();
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 360);
             HellbornHeldProj.HitFunc(Owner, target);
         }
-
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Helstorm";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Helstorm>();
-        public override int targetCWRItem => ModContent.ItemType<HelstormEcType>();
 
         public override void SetRangedProperty() {
             FireTime = 20;

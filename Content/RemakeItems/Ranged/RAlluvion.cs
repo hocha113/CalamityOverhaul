@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAlluvion : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Alluvion>();
+        public override int TargetID => ModContent.ItemType<Alluvion>();
         public override int ProtogenesisID => ModContent.ItemType<AlluvionEcType>();
         public override string TargetToolTipItemName => "AlluvionEcType";
         public override void SetDefaults(Item item) {

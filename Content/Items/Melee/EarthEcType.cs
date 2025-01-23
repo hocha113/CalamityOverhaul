@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Time % (10 * updateCount) == 0) {
+            if (Time % (10 * UpdateRate) == 0) {
                 canShoot = true;
             }
             return base.PreInOwnerUpdate();

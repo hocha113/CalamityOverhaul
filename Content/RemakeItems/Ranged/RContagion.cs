@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RContagion : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Contagion>();
+        public override int TargetID => ModContent.ItemType<Contagion>();
         public override int ProtogenesisID => ModContent.ItemType<ContagionEcType>();
         public override string TargetToolTipItemName => "ContagionEcType";
         public override void SetDefaults(Item item) {

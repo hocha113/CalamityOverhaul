@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitFunc(Owner, target);
 
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Hellborn>();
+        public override int targetCayItem => ModContent.ItemType<Hellborn>();
         public override int targetCWRItem => ModContent.ItemType<HellbornEcType>();
         public override void SetRangedProperty() {
             FireTime = 20;

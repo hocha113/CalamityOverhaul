@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PlanetaryAnnihilationHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlanetaryAnnihilation";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.PlanetaryAnnihilation>();
+        public override int targetCayItem => ModContent.ItemType<PlanetaryAnnihilation>();
         public override int targetCWRItem => ModContent.ItemType<PlanetaryAnnihilationEcType>();
         public override void PostInOwner() {
             if (onFire) {

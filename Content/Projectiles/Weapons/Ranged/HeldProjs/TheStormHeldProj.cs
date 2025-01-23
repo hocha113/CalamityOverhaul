@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TheStormHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheStorm";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheStorm>();
+        public override int targetCayItem => ModContent.ItemType<TheStorm>();
         public override int targetCWRItem => ModContent.ItemType<TheStormEcType>();
 
         public override void PostInOwner() {

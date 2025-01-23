@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RSeasSearing : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.SeasSearing>();
+        public override int TargetID => ModContent.ItemType<SeasSearing>();
         public override int ProtogenesisID => ModContent.ItemType<SeasSearingEcType>();
         public override string TargetToolTipItemName => "SeasSearingEcType";
         public override void SetDefaults(Item item) {

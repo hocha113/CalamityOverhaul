@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Main.rand.NextBool(3 * updateCount)) {
+            if (Main.rand.NextBool(3 * UpdateRate)) {
                 int dustType = Main.rand.NextBool() ? DustID.GreenFairy : DustID.Venom;
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, 0f, 0f, 100, default, Main.rand.NextFloat(1.8f, 2.4f));
                 Main.dust[dust].noGravity = true;

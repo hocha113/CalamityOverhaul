@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected int Time;
         /// <summary>
-        /// 弧光的采样点数，默认为15 * <see cref="updateCount"/>
+        /// 弧光的采样点数，默认为15 * <see cref="UpdateRate"/>
         /// </summary>
         protected int drawTrailCount = 15;
         /// <summary>
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 更新率，值为<see cref="Projectile.extraUpdates"/>+1，使用之前请注意<see cref="Projectile.extraUpdates"/>是否已经被正确设置
         /// </summary>
-        internal int updateCount => Projectile.extraUpdates + 1;
+        internal int UpdateRate => Projectile.extraUpdates + 1;
         //不要直接设置这个
         private bool _canDrawSlashTrail;
         /// <summary>
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         #region Utils
         public void LoadTrailCountData() {
-            drawTrailCount *= updateCount;
+            drawTrailCount *= UpdateRate;
             oldRotate = new float[drawTrailCount];
             oldDistanceToOwner = new float[drawTrailCount];
             oldLength = new float[drawTrailCount];
@@ -425,20 +425,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     Length = initialLength;
                 }
                 startVector = RodingToVer(1, Projectile.velocity.ToRotation()); // 初始化方向向量
-                speed = 1 + initialSpeedFactor / updateCount / SwingMultiplication; // 初始化速度因子
+                speed = 1 + initialSpeedFactor / UpdateRate / SwingMultiplication; // 初始化速度因子
             }
 
             Length *= speed;
             vector = startVector * Length * SwingMultiplication; // 更新当前刺击的方向向量
-            speed -= speedDecayRate / updateCount; // 减小速度因子，模拟速度衰减效果
+            speed -= speedDecayRate / UpdateRate; // 减小速度因子，模拟速度衰减效果
 
-            if (Time >= lifetime * updateCount * SwingMultiplication) {
+            if (Time >= lifetime * UpdateRate * SwingMultiplication) {
                 Projectile.Kill();
             }
 
             float distanceToOwner = Projectile.Center.To(Owner.Center).Length();
             Projectile.scale = initialScale + distanceToOwner / scaleFactorDenominator;
-            if (Time % updateCount == updateCount - 1 || ignoreUpdateCount) {
+            if (Time % UpdateRate == UpdateRate - 1 || ignoreUpdateCount) {
                 Length = MathHelper.Clamp(Length, minLength, maxLength);
             }
         }
@@ -469,23 +469,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 speed = MathHelper.ToRadians(baseSwingSpeed) / speedUp;
             }
             if (Time < ler1Time * speedUp) {
-                Length *= 1 + ler1_UpLengthSengs / updateCount;
+                Length *= 1 + ler1_UpLengthSengs / UpdateRate;
                 Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 + ler1_UpSpeedSengs / updateCount;
+                speed *= 1 + ler1_UpSpeedSengs / UpdateRate;
                 vector = startVector.RotatedBy(Rotation) * Length;
                 Projectile.scale += ler1_UpSizeSengs;
             }
             else {
-                Length *= 1 - ler2_DownLengthSengs / updateCount;
+                Length *= 1 - ler2_DownLengthSengs / UpdateRate;
                 Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 - ler2_DownSpeedSengs / updateCount / speedUp;
+                speed *= 1 - ler2_DownSpeedSengs / UpdateRate / speedUp;
                 vector = startVector.RotatedBy(Rotation) * Length;
                 Projectile.scale -= ler2_DownSizeSengs;
             }
-            if (Time >= maxSwingTime * updateCount * speedUp) {
+            if (Time >= maxSwingTime * UpdateRate * speedUp) {
                 Projectile.Kill();
             }
-            if (Time % updateCount == updateCount - 1) {
+            if (Time % UpdateRate == UpdateRate - 1) {
                 Length = MathHelper.Clamp(Length, minClampLength, maxClampLength);
             }
         }
@@ -567,7 +567,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <returns></returns>
         public sealed override bool PreUpdate() {
             SwingMultiplication = SetSwingSpeed(1f);
-            canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * updateCount);
+            canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * UpdateRate);
             if (!isInitialize) {
                 _meleeSize = 1f;
                 if (Item.type != ItemID.None) {

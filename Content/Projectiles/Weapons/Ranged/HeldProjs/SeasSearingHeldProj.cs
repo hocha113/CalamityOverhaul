@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SeasSearingHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SeasSearing";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.SeasSearing>();
+        public override int targetCayItem => ModContent.ItemType<SeasSearing>();
         public override int targetCWRItem => ModContent.ItemType<SeasSearingEcType>();
         private const int maxFireCount = 7;
         private int indexFire;

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ID;
@@ -9,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MarksmanBowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MarksmanBow";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.MarksmanBow>();
+        public override int targetCayItem => ModContent.ItemType<MarksmanBow>();
         public override int targetCWRItem => ModContent.ItemType<MarksmanBowEcType>();
         public override void SetRangedProperty() {
             DrawArrowMode = -26;

@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DrataliornusHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Drataliornus";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Drataliornus>();
+        public override int targetCayItem => ModContent.ItemType<Drataliornus>();
         public override int targetCWRItem => ModContent.ItemType<DrataliornusEcType>();
 
         private int chargeIndex = 35;

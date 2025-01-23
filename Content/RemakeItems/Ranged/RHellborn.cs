@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RHellborn : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Hellborn>();
+        public override int TargetID => ModContent.ItemType<Hellborn>();
         public override int ProtogenesisID => ModContent.ItemType<HellbornEcType>();
         public override string TargetToolTipItemName => "HellbornEcType";
         public override void SetDefaults(Item item) {

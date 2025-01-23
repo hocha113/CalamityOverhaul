@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                 speed = MathHelper.ToRadians(5);
             }
-            if (Time == 10 * updateCount && Projectile.IsOwnedByLocalPlayer()) {
+            if (Time == 10 * UpdateRate && Projectile.IsOwnedByLocalPlayer()) {
                 float meleeSpeedAf = SwingMultiplication;
                 float count = 12 / meleeSpeedAf;
                 SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
@@ -46,25 +46,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             if (Time < 10) {
-                Length *= 1 + 0.1f / updateCount;
+                Length *= 1 + 0.1f / UpdateRate;
                 Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 + 0.2f / updateCount;
+                speed *= 1 + 0.2f / UpdateRate;
                 vector = startVector.RotatedBy(Rotation) * Length;
                 Projectile.scale += 0.06f;
             }
             else {
-                Length *= 1 - 0.01f / updateCount;
+                Length *= 1 - 0.01f / UpdateRate;
                 Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 - 0.2f / updateCount;
+                speed *= 1 - 0.2f / UpdateRate;
                 vector = startVector.RotatedBy(Rotation) * Length;
                 if (Projectile.scale > 1f) {
                     Projectile.scale -= 0.01f;
                 }
             }
-            if (Time >= 22 * updateCount) {
+            if (Time >= 22 * UpdateRate) {
                 Projectile.Kill();
             }
-            if (Time % updateCount == updateCount - 1) {
+            if (Time % UpdateRate == UpdateRate - 1) {
                 Length = MathHelper.Clamp(Length, 120, 160);
             }
         }

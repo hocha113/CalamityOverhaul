@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AquashardShotgunHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AquashardShotgun";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AquashardShotgun>();
+        public override int targetCayItem => ModContent.ItemType<AquashardShotgun>();
         public override int targetCWRItem => ModContent.ItemType<AquashardShotgunEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;

@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RTheStorm : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheStorm>();
+        public override int TargetID => ModContent.ItemType<TheStorm>();
         public override int ProtogenesisID => ModContent.ItemType<TheStormEcType>();
         public override string TargetToolTipItemName => "TheStormEcType";
         public override void SetDefaults(Item item) {

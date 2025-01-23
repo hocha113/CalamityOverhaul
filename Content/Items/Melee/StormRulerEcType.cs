@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Main.rand.NextBool(5 * updateCount)) {
+            if (Main.rand.NextBool(5 * UpdateRate)) {
                 int swingDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.Flare_Blue, Owner.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;

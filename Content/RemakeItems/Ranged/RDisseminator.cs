@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RDisseminator : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Disseminator>();
+        public override int TargetID => ModContent.ItemType<Disseminator>();
         public override int ProtogenesisID => ModContent.ItemType<DisseminatorEcType>();
         public override string TargetToolTipItemName => "DisseminatorEcType";
         public override void SetDefaults(Item item) {

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RDeathwind : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>();
+        public override int TargetID => ModContent.ItemType<Deathwind>();
         public override int ProtogenesisID => ModContent.ItemType<DeathwindEcType>();
         public override string TargetToolTipItemName => "DeathwindEcType";
         public override void SetDefaults(Item item) {

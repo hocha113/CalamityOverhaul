@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RDaemonsFlame : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.DaemonsFlame>();
+        public override int TargetID => ModContent.ItemType<DaemonsFlame>();
         public override int ProtogenesisID => ModContent.ItemType<DaemonsFlameEcType>();
         public override string TargetToolTipItemName => "DaemonsFlameEcType";
 

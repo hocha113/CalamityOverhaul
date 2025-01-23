@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(3)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.YellowTorch);
             }
-            if (Time % (10 * updateCount) == 0) {
+            if (Time % (10 * UpdateRate) == 0) {
                 canShoot = true;
             }
             return base.PreInOwnerUpdate();

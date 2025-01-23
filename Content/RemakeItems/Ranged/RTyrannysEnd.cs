@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RTyrannysEnd : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
+        public override int TargetID => ModContent.ItemType<TyrannysEnd>();
         public override int ProtogenesisID => ModContent.ItemType<TyrannysEndEcType>();
         public override string TargetToolTipItemName => "TyrannysEndEcType";
         public override void SetDefaults(Item item) {

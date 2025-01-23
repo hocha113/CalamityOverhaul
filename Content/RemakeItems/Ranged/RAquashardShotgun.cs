@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RAquashardShotgun : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AquashardShotgun>();
+        public override int TargetID => ModContent.ItemType<AquashardShotgun>();
         public override int ProtogenesisID => ModContent.ItemType<AquashardShotgunEcType>();
         public override string TargetToolTipItemName => "AquashardShotgunEcType";
         public override void SetDefaults(Item item) {

@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override bool PreSwingAI() {
             if (Projectile.ai[0] == 1) {
                 StabBehavior(initialLength: 100, lifetime: 26, scaleFactorDenominator: 520f, minLength: 100, maxLength: 220);
-                if (Time < 6 * updateCount) {
+                if (Time < 6 * UpdateRate) {
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length / 2;
                     BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 2.26f, Color.AliceBlue, Owner);
                     PRTLoader.AddParticle(spark);
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             }
             else if (Projectile.ai[0] == 3) {
                 StabBehavior(initialLength: 160, lifetime: 16, scaleFactorDenominator: 320f, minLength: 160, maxLength: 220);
-                if (Time < 6 * updateCount) {
+                if (Time < 6 * UpdateRate) {
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length / 2;
                     BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 4, 2.26f, Color.AliceBlue, Owner);
                     PRTLoader.AddParticle(spark);

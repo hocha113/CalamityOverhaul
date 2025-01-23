@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Projectile.extraUpdates = 4;
             ownerOrientationLock = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 14 * updateCount;
+            Projectile.localNPCHitCooldown = 14 * UpdateRate;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             SetKnifeProperty();
             CWRUtils.SafeLoadItem(TargetID);
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public sealed override void NoServUpdate() {
-            if (Time % updateCount == 0) {
+            if (Time % UpdateRate == 0) {
                 MeleeEffect();
             }
         }
@@ -178,8 +178,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             float swingSpeedMultiplier = SwingMultiplication;
 
             // 计算各阶段的结束时间
-            int phase1EndTime = (int)(maxSwingTime * phase1Ratio * updateCount * swingSpeedMultiplier);
-            int phase2EndTime = (int)(maxSwingTime * phase2Ratio * updateCount * swingSpeedMultiplier);
+            int phase1EndTime = (int)(maxSwingTime * phase1Ratio * UpdateRate * swingSpeedMultiplier);
+            int phase2EndTime = (int)(maxSwingTime * phase2Ratio * UpdateRate * swingSpeedMultiplier);
 
             // 第二阶段逻辑：主挥击阶段
             if (Time > phase1EndTime) {

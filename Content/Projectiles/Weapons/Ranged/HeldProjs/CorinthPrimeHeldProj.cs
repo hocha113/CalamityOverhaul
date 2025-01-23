@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -9,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CorinthPrimeHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CorinthPrime";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CorinthPrime>();
+        public override int targetCayItem => ModContent.ItemType<CorinthPrime>();
         public override int targetCWRItem => ModContent.ItemType<CorinthPrimeEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
