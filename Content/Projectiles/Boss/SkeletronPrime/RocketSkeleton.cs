@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
-using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.extraUpdates += 1;
                 Projectile.tileCollide = false;
             }
-            
+
             CooldownSlot = ImmunityCooldownID.Bosses;
         }
 

@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.UIs
                 else {
                     textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text4");
                 }
-                
+
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
             }

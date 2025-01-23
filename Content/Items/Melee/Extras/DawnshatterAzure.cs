@@ -1,6 +1,6 @@
-﻿using CalamityMod.Items.Materials;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items;
 using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
 using CalamityOverhaul.Content.Tiles;

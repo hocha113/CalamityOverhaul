@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -33,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            
+
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

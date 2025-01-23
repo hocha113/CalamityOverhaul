@@ -1,13 +1,9 @@
-﻿using CalamityMod;
-using CalamityMod.Balancing;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items;
+﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

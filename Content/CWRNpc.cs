@@ -1,16 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
-using CalamityMod.Items.Accessories;
-using CalamityMod.Items.Armor.Vanity;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.Furniture.DevPaintings;
-using CalamityMod.Items.TreasureBags.MiscGrabBags;
-using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.NormalNPCs;
@@ -18,6 +9,9 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
+using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Painting;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -31,10 +25,6 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static CalamityMod.DropHelper;
-using Terraria.ModLoader.IO;
-using CalamityOverhaul.Content.Items.Melee.Extras;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
-using CalamityOverhaul.Content.Items.Tools;
 
 namespace CalamityOverhaul.Content
 {

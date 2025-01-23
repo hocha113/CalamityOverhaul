@@ -31,7 +31,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -317,7 +316,7 @@ namespace CalamityOverhaul
                 npc.HitSound != SoundID.NPCHit5 && npc.HitSound != SoundID.NPCHit11 && npc.HitSound != SoundID.NPCHit30 &&
                 npc.HitSound != SoundID.NPCHit34 && npc.HitSound != SoundID.NPCHit36 && npc.HitSound != SoundID.NPCHit42 &&
                 npc.HitSound != SoundID.NPCHit49 && npc.HitSound != SoundID.NPCHit52 && npc.HitSound != SoundID.NPCHit53 &&
-                npc.HitSound != SoundID.NPCHit54 && npc.HitSound != null) 
+                npc.HitSound != SoundID.NPCHit54 && npc.HitSound != null)
                 || npc.type == Providence || npc.type == ScornEater || npc.type == Yharon) {
                     return false;
                 }

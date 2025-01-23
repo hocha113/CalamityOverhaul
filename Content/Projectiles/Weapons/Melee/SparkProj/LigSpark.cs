@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
                     Projectile.netUpdate = true;
                 }
             }
-            
+
             direction.X += Projectile.localAI[0];
             direction.Y += Projectile.localAI[1];
 

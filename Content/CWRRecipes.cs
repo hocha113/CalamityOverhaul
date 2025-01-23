@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Accessories;
+﻿using CalamityMod.Items.Accessories;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
@@ -11,9 +10,7 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

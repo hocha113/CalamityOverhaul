@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected void InitializeMagazine() {
             if (ModItem.MagazineContents == null) {
-                
+
                 ModItem.MagazineContents = new Item[ModItem.AmmoCapacity];
                 for (int i = 0; i < ModItem.MagazineContents.Length; i++) {
                     ModItem.MagazineContents[i] = new Item();
