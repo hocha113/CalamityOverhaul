@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
-        private int frameIndex = 1;
         private static Asset<Texture2D> tileAsset;
         private static Asset<Texture2D> tileGlowAsset;
         void ICWRLoader.LoadAsset() {

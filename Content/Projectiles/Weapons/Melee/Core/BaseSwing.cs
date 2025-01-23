@@ -552,7 +552,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual bool PreInOwnerUpdate() { return true; }
         public virtual void PostInOwnerUpdate() { }
-        public virtual void Initialize() { }
         public virtual void UpdateFrame() {
             if (AnimationMaxFrme > 1) {
                 CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);

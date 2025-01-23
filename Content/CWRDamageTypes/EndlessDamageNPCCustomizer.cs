@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.CWRDamageTypes
         }
 
         public override bool On_OnHitByProjectile_IfSpan(Projectile proj) {
-            return proj.DamageType != EndlessDamageClass.Instance ? false : !nihilityProjs.Contains(proj.type);
+            return proj.DamageType == EndlessDamageClass.Instance && !nihilityProjs.Contains(proj.type);
         }
 
         public override bool? On_OnHitByProjectile(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone) {

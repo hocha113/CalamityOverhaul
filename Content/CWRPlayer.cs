@@ -485,8 +485,7 @@ namespace CalamityOverhaul.Content
                 }
                 if (p.ModProjectile as T != null) {
                     Player.heldProj = p.whoAmI;
-                    T instance = p.ModProjectile as T;
-                    if (instance != null) {
+                    if (p.ModProjectile is T instance) {
                         result = instance;
                         return true;
                     }

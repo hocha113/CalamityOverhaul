@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content
             ];
         }
 
-        public void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
+        public static void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
             foreach (var gemstone in Gemstones) {
                 if (gemstone == gemstonesID) {
                     continue;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public void LoadenEmblemsRecipe(int emblemID) {
+        public static void LoadenEmblemsRecipe(int emblemID) {
             foreach (var emblem in Emblems) {
                 if (emblem == emblemID) {
                     continue;

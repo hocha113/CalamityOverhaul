@@ -58,7 +58,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class SaltationSend : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj + "Boss/DesertScourgeSpit";
-        private Vector2 origVer;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

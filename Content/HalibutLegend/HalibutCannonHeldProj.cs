@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.HalibutLegend
     internal class HalibutCannonHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.HalibutCannon>();
+        public override int targetCayItem => ModContent.ItemType<HalibutCannon>();
         public override int targetCWRItem => ModContent.ItemType<HalibutCannonEcType>();
         private int level => HalibutCannonEcType.Level;
         public override void SetRangedProperty() {

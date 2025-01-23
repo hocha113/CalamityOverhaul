@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
@@ -40,8 +41,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<AuricBar>(5).
-                AddIngredient<CalamityMod.Items.Weapons.Melee.Terratomere>().
-                AddIngredient<CalamityMod.Items.Weapons.Melee.Excelsus>().
+                AddIngredient<Terratomere>().
+                AddIngredient<Excelsus>().
                 AddTile(ModContent.TileType<CosmicAnvil>()).
                 Register();
         }

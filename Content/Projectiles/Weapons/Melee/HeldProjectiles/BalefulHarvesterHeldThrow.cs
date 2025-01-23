@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public void InOwner() {
             if (DownRight) {
                 if (CWRServerConfig.Instance.WeaponOverhaul) {
-                    if (balefulHarvester.type != ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>()) {
+                    if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
                         Projectile.Kill();
                     }
                 }

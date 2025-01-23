@@ -1,4 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using System.Collections.Generic;
@@ -47,8 +49,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
-                .AddIngredient<CalamityMod.Items.Weapons.Melee.StormRuler>()
-                .AddIngredient<CalamityMod.Items.Weapons.Rogue.StormfrontRazor>()
+                .AddIngredient<StormRuler>()
+                .AddIngredient<StormfrontRazor>()
                 .AddIngredient<StormlionMandible>(5)
                 .AddIngredient(ItemID.LunarBar, 15)
                 .AddTile(TileID.LunarCraftingStation)

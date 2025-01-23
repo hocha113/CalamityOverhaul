@@ -1,6 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj;
@@ -52,9 +54,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                .AddIngredient<CalamityMod.Items.Weapons.Ranged.Deathwind>()
-                .AddIngredient<CalamityMod.Items.Weapons.Ranged.Alluvion>()
-                .AddIngredient<CalamityMod.Items.Weapons.Magic.Apotheosis>()
+                .AddIngredient<Deathwind>()
+                .AddIngredient<Alluvion>()
+                .AddIngredient<Apotheosis>()
                 .AddIngredient<Rock>()
                 .AddIngredient<CosmiliteBar>(11)//宇宙锭
                 .AddIngredient<ShadowspecBar>(16)

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Buffs
             BuffID.Sets.LongerExpertDebuff[Type] = true;
         }
 
-        private void SpanFire(Entity entity) {
+        private static void SpanFire(Entity entity) {
             bool LowVel = Main.rand.NextBool() ? false : true;
             FlameParticle ballFire = new FlameParticle(entity.Center + CWRUtils.randVr(entity.width / 2)
                 , Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed) {

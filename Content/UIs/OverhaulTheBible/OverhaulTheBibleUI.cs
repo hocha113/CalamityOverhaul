@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         private bool _active;
         internal float _sengs;
         private Vector2 dragOffset;
-        private Vector2 topOffset;
         internal int boxWeith = 400;
         internal int boxHeight = 300;
         internal List<ItemVidous> itemVidousList;

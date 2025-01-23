@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public void DebuffSet(int lifeRegenSet, int damageSet, ref int lifeRegen, ref int damage) {
+        public static void DebuffSet(int lifeRegenSet, int damageSet, ref int lifeRegen, ref int damage) {
             if (lifeRegen > 0) {
                 lifeRegen = 0;
             }

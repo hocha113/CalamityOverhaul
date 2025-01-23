@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee;
@@ -69,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     return;
                 }
                 if (diseasedPike == null || diseasedPike?.type != ModContent.ItemType<DiseasedPikeEcType>()
-                    && diseasedPike.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DiseasedPike>()) {
+                    && diseasedPike.type != ModContent.ItemType<DiseasedPike>()) {
                     Projectile.Kill();
                     return;
                 }//因为需要替换原模组的内容，所以这里放弃了直接访问类型来获取属性，作为补救，禁止其余物品发射该弹幕，即使这种情况不应该出现

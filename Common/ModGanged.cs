@@ -489,9 +489,7 @@ namespace CalamityOverhaul.Common
             }
 
             try {
-                if (LuiAFKConfig_ConfigInstance == null) {
-                    LuiAFKConfig_ConfigInstance = CWRMod.Instance.luiafk.Find<ModConfig>("LuiAFKConfig");
-                }//懒加载一下
+                LuiAFKConfig_ConfigInstance ??= CWRMod.Instance.luiafk.Find<ModConfig>("LuiAFKConfig");//懒加载一下
                 int rangerAmmo = (int)LuiAFKConfig_RangerAmmoInfo.GetValue(LuiAFKConfig_ConfigInstance);
                 if (ammoItem.stack >= rangerAmmo) {
                     return true;
@@ -546,7 +544,7 @@ namespace CalamityOverhaul.Common
         }
 
         private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
-            int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(), };
+            int[] noEffect = [ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(),];
             return noEffect.Contains(item.type) ? false : orig.Invoke(obj, item);
         }
 

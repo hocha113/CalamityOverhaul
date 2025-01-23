@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
@@ -61,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 initialize = true;
             }
 
-            bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
+            bool heldBool1 = murasama.type != ModContent.ItemType<Murasama>();
             bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaEcType>();
             if (CWRServerConfig.Instance.WeaponOverhaul) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品

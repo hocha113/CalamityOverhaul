@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal RecipeData recipeData;
         private int borderedWidth;
         private int borderedHeight;
-        private int borderedSize;
-        private float borderedSizeF;
+        private float borderedSize;
         private Color backColor = Color.Azure * 0.2f;
         private static RecipeSidebarListViewUI recipeSidebarListView => UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
         public override void Update() {
@@ -66,17 +65,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
 
             backColor = Color.Lerp(backColor, targetColor, 0.1f);
-            borderedSizeF = MathHelper.Lerp(borderedSizeF, targetSize, 0.1f);
-            borderedSizeF = MathHelper.Clamp(borderedSizeF, 1, 1.2f);
+            borderedSize = MathHelper.Lerp(borderedSize, targetSize, 0.1f);
+            borderedSize = MathHelper.Clamp(borderedSize, 1, 1.2f);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, borderedWidth, borderedHeight
-                    , Color.AliceBlue * 0.8f * SupertableUI.Instance._sengs, backColor * SupertableUI.Instance._sengs, borderedSizeF);
+                    , Color.AliceBlue * 0.8f * SupertableUI.Instance._sengs, backColor * SupertableUI.Instance._sengs, borderedSize);
             Item item = new Item(recipeData.Target);
 
             if (item.type > ItemID.None) {
-                float drawSize = VaultUtils.GetDrawItemSize(item, borderedWidth) * borderedSizeF;
+                float drawSize = VaultUtils.GetDrawItemSize(item, borderedWidth) * borderedSize;
                 Vector2 drawPos = DrawPosition + new Vector2(borderedWidth, borderedHeight) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, item.type, drawPos, drawSize, 0
                     , Color.White * SupertableUI.Instance._sengs);

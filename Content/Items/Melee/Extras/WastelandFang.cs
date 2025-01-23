@@ -41,8 +41,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class WastelandFangProj : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "WastelandFang";
-        public int finalDamage;
-        private Vector2 origVer;
         private bool canTueSob;
         private static Asset<Texture2D> chain;
         private static Asset<Texture2D> chainAlt;

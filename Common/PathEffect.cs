@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Common
     public class PathEffect
     {
         #region Data
-        private int SmoothingLevel;
-        private BasicEffect BaseEffect;
+        private readonly BasicEffect BaseEffect;
         private Vector2 StickPoint = Vector2.Zero;
         private Vector2[] ControlPoints;
         public TrailThicknessCalculator ThicknessEvaluator;
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Common
             // straightnessFactor: 控制直线和曲线的平衡，0完全曲线，1完全直线
             straightnessFactor = MathHelper.Clamp(straightnessFactor, 0f, 1f);
             float perStep = 1f / totalPoints;
-            List<Vector2> points = new List<Vector2>();
+            List<Vector2> points = new();
             for (float step = 0f; step <= 1f; step += perStep) {
                 // 使用直线和贝塞尔曲线的加权插值
                 Vector2 bezierPoint = Evaluate(ControlPoints, MathHelper.Clamp(step, 0f, 1f));
@@ -227,10 +226,8 @@ namespace CalamityOverhaul.Common
             if (adjustedPoints.Count < 2) {
                 return adjustedPoints;
             }
-
-            int effectivePointCount = SmoothingLevel > 0 ? totalPoints * SmoothingLevel : totalPoints;
-            ControlPoints = adjustedPoints.Where((_, i) => SmoothingLevel <= 0 || i % SmoothingLevel == 0).ToArray();
-            return GetPoints(effectivePointCount);
+            ControlPoints = adjustedPoints.ToArray();
+            return GetPoints(totalPoints);
         }
 
         /// <summary>

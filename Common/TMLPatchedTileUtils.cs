@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Common
         private static bool GetInvisibleBlock(this Tile tile) => tile.IsTileInvisible;
 
         public static void DoErrorTile(Point tilePos, Tile tile) {
-            string errorT = "";
+            string errorT;
             string path = "steamapps\\common\\tModLoader\\tModLoader-Logs";
             string errorT_CN = $"格式化图格发生异常，位于地图坐标[{tilePos.X}, {tilePos.Y}]，如果需要寻求帮助，请附带上 {path} 文件夹下的client.log文件";
             string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{tilePos.X}, {tilePos.Y}] {path} subfolder 'client.log' File";

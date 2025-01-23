@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.TileModules
         internal CompressorUI compressorUIInstance;
         private const int maxleng = 120;
         private float snegs;
-        private int Time;
         private bool mouseOnTile;
         internal bool drawGlow;
         internal Color gloaColor;

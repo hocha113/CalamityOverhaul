@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
@@ -201,9 +203,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                .AddIngredient<CalamityMod.Items.Weapons.Ranged.Drataliornus>()
-                .AddIngredient<CalamityMod.Items.Weapons.Ranged.HeavenlyGale>()
-                .AddIngredient<CalamityMod.Items.Weapons.Magic.Eternity>()
+                .AddIngredient<Drataliornus>()
+                .AddIngredient<HeavenlyGale>()
+                .AddIngredient<Eternity>()
                 .AddIngredient<DarkMatterBall>(7)
                 .AddIngredient<InfiniteIngot>(19)
                 .AddBlockingSynthesisEvent()

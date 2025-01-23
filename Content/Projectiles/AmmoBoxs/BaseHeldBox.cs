@@ -14,10 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     internal abstract class BaseHeldBox : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
-        public Item Item;
         public CWRItems ModItem;
-        public Player Player;
         public Vector2 DrawBoxOffsetPos;
         public int TargetItemID;
         /// <summary>
@@ -67,8 +64,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public override bool PreUpdate() {
-            Player = Main.player[Projectile.owner];
-            Item = Player.GetItem();
             if (Item.type > ItemID.None) {
                 ModItem = Item.CWR();
             }
@@ -97,10 +92,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void InOwner() {
-            uiMouseInterface = Owner.CWR().uiMouseInterface;
+            uiMouseInterface = base.Owner.CWR().uiMouseInterface;
             ArmRotSengsFront = 60 * CWRUtils.atoR;
             ArmRotSengsBack = 110 * CWRUtils.atoR;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY);
+            Projectile.Center = base.Owner.GetPlayerStabilityCenter() + new Vector2(base.DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
 
@@ -114,8 +109,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             }
 
             if (OnHandheldDisplayBool) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                base.Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -base.DirSign);
+                base.Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -base.DirSign);
             }
         }
 
@@ -137,12 +132,12 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 return false;
             }
 
-            return !Owner.CWR().uiMouseInterface && noCanUseTime <= 0;
+            return !base.Owner.CWR().uiMouseInterface && noCanUseTime <= 0;
         }
 
         public virtual void OnUse() {
-            if (Owner.ownedProjectileCounts[Item.shoot] >= 25) {
-                CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
+            if (base.Owner.ownedProjectileCounts[Item.shoot] >= 25) {
+                CombatText.NewText(base.Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
                 noCanUseTime += 60;
                 return;
             }
@@ -156,12 +151,12 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         ExtraGeneration();
                         Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
-                        int proj = Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, AmmoBoxID, 0, 0, Owner.whoAmI);
+                        int proj = Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, AmmoBoxID, 0, 0, base.Owner.whoAmI);
                         BaseAmmoBox baseAmmoBox = Main.projectile[proj].ModProjectile as BaseAmmoBox;
                         if (baseAmmoBox != null) {
                             baseAmmoBox.FromeThisTImeID = TargetItemID;
                         }
-                        Projectile proj2 = Projectile.NewProjectileDirect(Item.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<SuccessfullyDeployedEffct>(), 0, 0, Owner.whoAmI);
+                        Projectile proj2 = Projectile.NewProjectileDirect(Item.GetSource_FromThis(), base.Owner.Center, Vector2.Zero, ModContent.ProjectileType<SuccessfullyDeployedEffct>(), 0, 0, base.Owner.whoAmI);
                         SuccessfullyDeployedEffct successfullyDeployedEffct = proj2.ModProjectile as SuccessfullyDeployedEffct;
                         if (successfullyDeployedEffct != null) {
                             successfullyDeployedEffct.text = CWRUtils.SafeGetItemName(TargetItemID) + CWRLocText.GetTextValue("AmmoBox_Text3");
@@ -191,8 +186,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Color drawColor = lightColor;
             SpriteEffects spriteEffects = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             if (Charge <= 0) {
-                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos + Owner.CWR().SpecialDrawPositionOffset
-                    , null, drawColor, rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+                Main.EntitySpriteDraw(base.TextureValue, drawBoxPos + DrawBoxOffsetPos + base.Owner.CWR().SpecialDrawPositionOffset
+                    , null, drawColor, rotation, base.TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             }
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -210,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
                     float barScale = 2f;
                     Vector2 barOrigin = barBG.Size() * 0.5f;
-                    Vector2 drawPos = Owner.GetPlayerStabilityCenter() + Vector2.UnitY * 250 - Main.screenPosition;
+                    Vector2 drawPos = base.Owner.GetPlayerStabilityCenter() + Vector2.UnitY * 250 - Main.screenPosition;
                     Rectangle frameCrop = new Rectangle(0, 0, (int)(Charge / (float)MaxCharge * barFG.Width), barFG.Height);
                     Color color = Color.White;
                     Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, barScale, 0, 0f);
