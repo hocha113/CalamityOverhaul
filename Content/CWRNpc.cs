@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
 
-                if (Main.rand.NextBool(1000)) {
+                if (Main.rand.NextBool(4000)) {
                     int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
                     if (!VaultUtils.isSinglePlayer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -18,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             Projectile.MaxUpdates = 3;
             Projectile.timeLeft = 160 * Projectile.MaxUpdates;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15 * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.DamageType = DamageClass.Melee;
             onHitNPCs = [];
         }
@@ -38,6 +39,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             }
         }
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(Projectile.localAI[0]);
+            writer.Write(Projectile.localAI[1]);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            Projectile.localAI[0] = reader.ReadSingle();
+            Projectile.localAI[1] = reader.ReadSingle();
+        }
+
         public override void AI() {
             // 1. 计算方向向量
             Vector2 direction = Projectile.velocity;
@@ -51,10 +62,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             Vector2 velocity = Projectile.velocity;
 
             // 2. 加入随机扰动（制造不规则性）
-            float randomFactorX = Main.rand.NextFloat(-1f, 1f) * 111.1f; // X方向随机扰动
-            float randomFactorY = Main.rand.NextFloat(-1f, 1f) * 111.1f; // Y方向随机扰动
-            direction.X += randomFactorX;
-            direction.Y += randomFactorY;
+            if (!VaultUtils.isClient) {//只在服务端运行随机值，然后广播给客户端
+                Projectile.localAI[0] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // X方向随机扰动
+                Projectile.localAI[1] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // Y方向随机扰动
+                if (!VaultUtils.isSinglePlayer) {
+                    Projectile.netUpdate = true;
+                }
+            }
+            
+            direction.X += Projectile.localAI[0];
+            direction.Y += Projectile.localAI[1];
 
             direction.Normalize();
             float speed = 2.5f; // 电弧球的基础速度

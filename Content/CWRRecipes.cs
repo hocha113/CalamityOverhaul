@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Accessories;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
@@ -30,6 +31,54 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup GodDWGroup;
         public static RecipeGroup FishGroup;
         public static RecipeGroup AdamantiteBarGroup;
+        public static int[] Gemstones;
+        public static int[] Emblems;
+
+        public override void SetupContent() {
+            Gemstones = [
+                ItemID.Sapphire,//蓝玉
+                ItemID.Ruby,//红宝石
+                ItemID.Emerald,//翡翠
+                ItemID.Topaz,//黄宝石
+                ItemID.Amethyst,//紫水晶
+                ItemID.Diamond,//钻石
+            ];
+            Emblems = [
+                ItemID.SorcererEmblem,//法师
+                ItemID.WarriorEmblem,//战士
+                ItemID.RangerEmblem,//射手
+                ItemID.SummonerEmblem,//召唤师
+                ItemType<RogueEmblem>()//盗贼
+            ];
+        }
+
+        public void LoadenGemstoneRecipe(int gemstonesID, int dyeID) {
+            foreach (var gemstone in Gemstones) {
+                if (gemstone == gemstonesID) {
+                    continue;
+                }
+                Recipe.Create(gemstonesID)
+                    .AddIngredient(gemstone)
+                    .AddIngredient(dyeID)
+                    .AddTile(TileID.DyeVat)
+                    .Register();
+            }
+        }
+
+        public void LoadenEmblemsRecipe(int emblemID) {
+            foreach (var emblem in Emblems) {
+                if (emblem == emblemID) {
+                    continue;
+                }
+                Recipe.Create(emblemID)
+                    .AddIngredient(emblem)
+                    .AddIngredient(ItemID.SoulofLight, 2)
+                    .AddIngredient(ItemID.SoulofNight, 2)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
+            }
+        }
+
         public static void MS_Error_Set() {
             if (ModGanged.Has_MS_Config_recursionCraftingDepth(out ModConfig modConfig)) {
                 string errorText = "检测到异常的合成任务调用，已经将RecursionCraftingDepth设置为0，该防御性改动是临时的，" +
@@ -75,6 +124,8 @@ namespace CalamityOverhaul.Content
             GodDWGroup = null;
             FishGroup = null;
             AdamantiteBarGroup = null;
+            Gemstones = null;
+            Emblems = null;
         }
 
         private void ModifyResultContent(Recipe recipe) {
@@ -210,6 +261,21 @@ namespace CalamityOverhaul.Content
         }
 
         private void AddResultContent() {
+            //添加宝石的合成
+            {
+                LoadenGemstoneRecipe(ItemID.Sapphire, ItemID.BlueDye);
+                LoadenGemstoneRecipe(ItemID.Ruby, ItemID.RedDye);
+                LoadenGemstoneRecipe(ItemID.Emerald, ItemID.GreenDye);
+                LoadenGemstoneRecipe(ItemID.Topaz, ItemID.YellowDye);
+                LoadenGemstoneRecipe(ItemID.Amethyst, ItemID.PurpleDye);
+                LoadenGemstoneRecipe(ItemID.Diamond, ItemID.SkyBlueDye);
+            }
+            //添加勋章的合成
+            {
+                foreach (var emblem in Emblems) {
+                    LoadenEmblemsRecipe(emblem);
+                }
+            }
             //添加热线枪的合成
             {
                 Recipe.Create(ItemID.HeatRay)
@@ -279,7 +345,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            //修改瘟疫系列的合成
+            //添加瘟疫系列的合成
             {
                 //添加瘟疫长矛的合成
                 Recipe.Create(ItemType<DiseasedPike>())
@@ -404,21 +470,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemID.FossilOre, 5)
                     .AddIngredient(ItemType<PearlShard>(), 12)
                     .AddTile(TileID.Anvils)
-                    .Register();
-            }
-            //添加苍穹破晓合成
-            {
-                Recipe.Create(ItemType<DawnshatterAzure>())
-                    .AddIngredient<Rock>(1)
-                    .AddIngredient(ItemID.FragmentSolar, 16)
-                    .AddIngredient(ItemID.DayBreak, 1)
-                    .AddIngredient<RedSun>(1)
-                    .AddIngredient<DraconicDestruction>(1)
-                    .AddIngredient<DragonPow>(1)
-                    .AddIngredient<DragonRage>(1)
-                    .AddIngredient<ShadowspecBar>(3)
-                    .AddBlockingSynthesisEvent()
-                    .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
             }
             //添加雪球炮的合成

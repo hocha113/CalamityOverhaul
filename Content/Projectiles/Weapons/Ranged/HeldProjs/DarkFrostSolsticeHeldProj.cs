@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolsticeHeld";
         public override int targetCayItem => ModContent.ItemType<DarkFrostSolstice>();
         public override int targetCWRItem => ModContent.ItemType<DarkFrostSolstice>();
-
         private int fireIndex;
         private int fireIndex2;
         private int onFireTime;
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.3f;
             FireTime = 20;
             GunPressure = 0;
-            HandIdleDistanceX = 70;
+            HandIdleDistanceX = 60;
             HandIdleDistanceY = 0;
             HandFireDistanceX = 70;
             HandFireDistanceY = -15;
@@ -37,7 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
             HandheldDisplay = false;
-            LoadingAA_None.gunBodyY = 50;
+            LoadingAA_None.gunBodyY = 0;
+            LoadingAA_None.Roting = -10;
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;
             SpwanGunDustMngsData.dustID3 = 76;

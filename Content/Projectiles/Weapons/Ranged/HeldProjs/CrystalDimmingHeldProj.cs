@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimmingHeld";
         public override int targetCayItem => ModContent.ItemType<CrystalDimming>();
         public override int targetCWRItem => ModContent.ItemType<CrystalDimming>();
-
         private int fireIndex;
         private int fireIndex2;
         private int onFireTime;
@@ -26,8 +25,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.3f;
             FireTime = 20;
             GunPressure = 0;
-            HandIdleDistanceX = 35;
-            HandIdleDistanceY = 5;
+            HandIdleDistanceX = 36;
+            HandIdleDistanceY = -10;
             HandFireDistanceX = 35;
             HandFireDistanceY = -8;
             AngleFirearmRest = -11;
