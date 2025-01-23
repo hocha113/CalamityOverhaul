@@ -3609,6 +3609,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Solo en el mundo de Zenith
 		Event_TungstenRiot_Name: Revuelta de tungsteno
 		Event_TungstenRiot_Text_1: ¡Una gran cantidad de criaturas de tungsteno están invadiendo!
@@ -3620,24 +3621,6 @@ TextContent: {
 		VoidDamageNameText: Daño vacío
 		Drop_Hell_RuleText: Caído tras derrotar en el infierno
 		Drop_GlodDragonDrop_RuleText: Caído tras la segunda derrota del dragón de la jungla
-		Murasama_TextDictionary_Content:
-			'''
-			Hey, recluta, hay una criatura llamada el "gordo azul" adelante, o los bichos en las profundidades del desierto, y ese cangrejo zombi en la cueva de setas. Demuestra tu valía, este es tu primer paso.
-			La noche cae, esa gran esfera ocular aparece, ¡explótala! O la concha del fondo del mar en el desierto, ¡no tengas piedad!
-			Es hora de derribar ese cerebro en el suelo, o ese largo gusano morado. Quiero ver tu cuchillo danzar en el caos.
-			Hay algo en la puerta de la mazmorras, deshazte de ello. Y esos herejes corrompidos, haz que se callen para siempre.
-			¿Recuerdas esa baba azul? Es hora de acabar con su jefe.
-			La aberración que gobierna el hielo y el fuego, o esos mecánicos malignos, o esos grandes gusanos corrompidos, ¡córtalos!
-			Esa gran esfera ocular de azufre por la noche, o la gran sirena del océano, y ese hombre de piedra, ¡explótalos todos!
-			Las aberraciones que propagan la corrupción y sus crías vagando por la jungla, o esa estatua de carne, y el gran gusano que vaga en el espacio estelar, ¡córtalos todos!
-			Los apóstoles del dios sol vagando, ya sea en lo sagrado o en el infierno, o ese tonto pájaro en la jungla, elige uno para eliminar.
-			No elijas pocos, recluta, el dios sol, los apóstoles del universo, o los rezagados en la mazmorras, ¡vamos a conocerlos!
-			¡Acaba con ese arrogante gusano! O simplemente corta esa pez altamente corrompido por la corrupción.
-			Aberraciones que escupen fuego, ¡no tengas piedad, córtalos!
-			Ve a lidiar con la herejía de la religión mecánica, o la bruja caída, ¡acaba con esas crías herejes!
-			El dragón demoníaco aparece, y estaremos en un conflicto total con las aberraciones, con esa piedra que obtuvimos del abismo. Recluta, ¡esta es la última batalla!
-			¡Buen trabajo, recluta!
-			'''
 		Murasama_Text_Lang_0: Prueba:
 		Murasama_Text_Lang_End: Completada
 		Murasama_TextDictionary_Content_0:

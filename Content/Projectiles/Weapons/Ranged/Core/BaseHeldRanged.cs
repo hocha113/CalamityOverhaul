@@ -2,6 +2,7 @@
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -187,6 +188,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         private bool _safeMouseInterfaceValue;
         private bool _old_safeMouseInterfaceValue;
         public bool SafeMouseInterfaceValue => _safeMouseInterfaceValue;
+        /// <summary>
+        /// 获得原射击方法信息
+        /// </summary>
+        public readonly MethodInfo ItemCheck_Shoot_Method = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
         #endregion
 
         /// <summary>
@@ -346,10 +351,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void OrigItemShoot() {
-            if (!CombinedHooks.Shoot(Owner, Item, Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
-                return;
-            }
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
         }
 
         public void SetWeaponOccupancyStatus() {

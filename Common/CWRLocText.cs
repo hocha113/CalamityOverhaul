@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Common
         public string LocalizationCategory => "TextContent";
         //不要被吓到，这些只是必须的
         #region 字段内容
+        public LocalizedText DontUseMagicConch { get; private set; }
         public LocalizedText OnlyZenith { get; private set; }
         public LocalizedText Event_TungstenRiot_Name { get; private set; }
         public LocalizedText Event_TungstenRiot_Text_1 { get; private set; }
@@ -20,7 +21,6 @@ namespace CalamityOverhaul.Common
         public LocalizedText VoidDamageNameText { get; private set; }
         public LocalizedText Drop_Hell_RuleText { get; private set; }
         public LocalizedText Drop_GlodDragonDrop_RuleText { get; private set; }
-        public LocalizedText Murasama_TextDictionary_Content { get; private set; }
         public LocalizedText Murasama_Text_Lang_0 { get; private set; }
         public LocalizedText Murasama_Text_Lang_End { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_0 { get; private set; }

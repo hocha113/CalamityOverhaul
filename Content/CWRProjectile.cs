@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
+using Mono.Cecil;
 using System;
 using System.Linq;
 using Terraria;
@@ -388,9 +389,10 @@ namespace CalamityOverhaul.Content
 
                 case SpanTypesEnum.Phantom: {
                     if (projectile.numHits == 0) {
-                        int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
-                            , projectile.Center.To(target.Center).UnitVector() * 13, ModContent.ProjectileType<PhantasmArrow>()
-                            , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                        Vector2 spanPos = player.position + player.Size * Utils.RandomVector2(Main.rand, 0f, 1f);
+                        Vector2 ver = target.DirectionFrom(spanPos) * 8f;
+                        int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), spanPos, ver, ProjectileID.PhantasmArrow
+                            , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, target.whoAmI, Main.rand.Next(30));
                         Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() - MathHelper.PiOver2;
                     }
                     break;

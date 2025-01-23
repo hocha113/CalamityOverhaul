@@ -3574,6 +3574,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Nur in der Zenith-Welt
 		Event_TungstenRiot_Name: Wolfram-Aufstand
 		Event_TungstenRiot_Text_1: Eine große Anzahl von Wolfram-Kreaturen fällt ein!
@@ -3585,24 +3586,6 @@ TextContent: {
 		VoidDamageNameText: Leere Schaden
 		Drop_Hell_RuleText: Nach dem Sieg in der Hölle fallen lassen
 		Drop_GlodDragonDrop_RuleText: Nach dem zweiten Sieg über den Dschungeldrachen fallen lassen
-		Murasama_TextDictionary_Content:
-			'''
-			Hey, Rekrut, da vorne ist ein klebriges Monster namens Blauer Fatty oder Wüstenwurm, und der Zombiekrebs im Pilzkeller. Beweise dich, das ist dein erster Schritt
-			In der Nacht, wenn das große Auge auftaucht, stich es auf! Oder die Muschel unter der Wüste, zöger nicht
-			Es ist Zeit, diese Gehirnblume oder den violetten Langwurm zu fällen. Ich will sehen, wie dein Schwert im Chaos fliegt
-			Da ist etwas am Eingang des Verlieses, beseitige es. Und diese korrupten Ketzer, lass sie für immer ruhig sein
-			Erinnerst du dich an den blauen Schleimklumpen? Es ist Zeit, seinen Anführer zu töten
-			Zerschlage die Gestalten des Eises und des Feuers, oder diese mechanischen Übeltäter, oder die durch Verderbnis verdorbene Meerwurm, schneide sie alle in Stücke!
-			Nachts, der Schwefelbrandriesenauge, oder der riesige Meeresgeist, oder der Steingolem, stich sie alle nieder
-			Die sich ausbreitende Verderbnisform und ihre Nachkommen streifen im Dschungel herum, oder diese fleischigen Statuen, oder der große Wurm, der am Sternenhimmel herumtreibt, zerschmetter sie alle!
-			Die Boten des falschen Sonnengottes, heilig oder in der Hölle wandelnd, oder die dummen Vögel im Dschungel, du wählst einen aus, um sie zu lösen
-			Wähle weise, Rekrut, den falschen Sonnengott, die Boten aus dem Kosmos oder die Überbleibsel der Subraum aus dem Verlies, lass uns sie treffen.
-			Töte diesen arroganten Wurm! Oder hacke direkt den hochgradig verderbten Fisch
-			Feuerspuckende Kreaturen, sei nicht zimperlich, hack sie in Stücke!
-			Geh und treffe den Ketzer des mechanischen Glaubens oder die verdorbene Hexe, beseitige diese Ketzerkinder!
-			Der Dämonendrache erscheint, und wir werden uns in einem umfassenden Konflikt mit den bösen Mächten messen, unterstützt durch diesen Stein aus dem Graben. Rekrut, das ist der letzte Kampf!
-			Gut gemacht, Rekrut
-			'''
 		Murasama_Text_Lang_0: Prüfung:
 		Murasama_Text_Lang_End: Bereits durch die
 		Murasama_TextDictionary_Content_0:

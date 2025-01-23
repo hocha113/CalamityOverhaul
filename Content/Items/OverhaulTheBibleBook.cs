@@ -65,6 +65,7 @@ namespace CalamityOverhaul.Content.Items
             CreateRecipe()
                 .AddIngredient(ItemID.Wood, 5)
                 .AddIngredient(ItemID.CopperCoin, 5)
+                .AddTile(TileID.WorkBenches)
                 .Register();
         }
     }

@@ -3577,6 +3577,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Uniquement dans le monde de Zenith
 		Event_TungstenRiot_Name: Émeute de tungstène
 		Event_TungstenRiot_Text_1: Une grande quantité de créatures en tungstène envahissent !
@@ -3588,24 +3589,6 @@ TextContent: {
 		VoidDamageNameText: Dommages du vide
 		Drop_Hell_RuleText: Obtenu après avoir vaincu l'Enfer
 		Drop_GlodDragonDrop_RuleText: Obtenu après avoir vaincu le dragon jungle pour la deuxième fois
-		Murasama_TextDictionary_Content:
-			'''
-			Hey, nouvelle recrue, il y a un gros blob bleu nommé Gros Bleu, ou des résidus de monstres marins sous le désert, ou encore des crabes zombies dans les grottes de champignons. Montre ce que tu vaux, c'est ta première étape.
-			La nuit tombe, cet énorme globe oculaire apparaît dans les cieux, perce-le ! Ou bien le grand coquillage sous le sable du désert, ne prends pas de gants.
-			Il est temps de couper cette touffe de fleurs cervelle, ou ce long ver violet. Je veux voir ta lame danser dans le chaos.
-			Il y a quelque chose près de l'entrée du donjon, règle ça. Et ces hérétiques corrompus, assure-toi qu'ils restent tranquilles.
-			Tu te souviens de ce gros tas de boue bleue ? Maintenant, c'est le moment de détruire son chef.
-			Ces formes étranges de glace et de feu, ou ces abominations mécaniques, ou ces gros vers marins corrompus, réduis-les en miettes !
-			L'œil de feu de soufre de la nuit, ou les géants des mers, ou encore les hommes de pierre, détruis-les tous.
-			Des formes corrompues qui se propagent et leurs petits se baladent dans la jungle, ou ces statues de chair et de sang, ou encore les grands vers qui errent dans le ciel étoilé, écrase-les tous !
-			Les apôtres du faux dieu du soleil, qui errent dans la terre sainte ou dans l'enfer, ou les idiots dans la jungle, tu choisis celui que tu veux résoudre.
-			Il y a beaucoup à choisir, nouvelle recrue, les faux dieux du soleil, les envoyés venus de l'univers, ou les restes de l'espace dans le donjon, rencontrons-les.
-			Tue ce prétentieux ver ! Ou écrase directement ce poisson gravement corrompu par la saleté.
-			Les formes étranges qui crachent le feu, ne sois pas tendre, écrase-les !
-			Va rencontrer l'hérétique du culte mécanique, ou la sorcière déchue, élimine ces petits hérétiques !
-			Le dragon démoniaque apparaît, nous entrons en conflit total avec les démons, armés de la pierre obtenue des abysses. Nouvelle recrue, c'est le dernier combat !
-			Bon travail, nouvelle recrue.
-			'''
 		Murasama_Text_Lang_0: Épreuves :
 		Murasama_Text_Lang_End: A été adopté
 		Murasama_TextDictionary_Content_0:

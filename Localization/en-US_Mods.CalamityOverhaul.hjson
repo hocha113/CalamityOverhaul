@@ -3231,7 +3231,6 @@ Projectiles: {
 	NurgleSoul.DisplayName: Nurgle Soul
 	NurgleTheOfBall.DisplayName: Nurgle The Of Ball
 	PestilentDefilerHeldProj.DisplayName: Pestilent Defiler
-	PhantasmArrow.DisplayName: Phantasm Arrow
 	PlanetaryArrow.DisplayName: Planetary Arrow
 	RVoidTentacle.DisplayName: R Void Tentacle
 	SandnadoOnSpan.DisplayName: Sandnado On Span
@@ -3595,6 +3594,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Only in Zenith World
 		Event_TungstenRiot_Name: Tungsten Riot
 		Event_TungstenRiot_Text_1: A large number of tungsten creatures are invading!
@@ -3606,24 +3606,6 @@ TextContent: {
 		VoidDamageNameText: Void Damage
 		Drop_Hell_RuleText: Fall after being defeated in Hell
 		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
-		Murasama_TextDictionary_Content:
-			'''
-			Hey, rookie, there's a slimy blue blob up ahead, or bugs deep in the desert, and that zombie crab in the mushroom cave. Your mission is to prove yourself; this is your first step.
-			As night falls, that big eyeball shows up. Pop it! Or the seafloor shells in the desert—don't be soft.
-			It's time to chop down that blob of brain flowers or that purple long bug. I want to see your blade dancing in the chaos.
-			There's something at the dungeon entrance, take care of it. And those corrupted heretics, make sure they're completely quiet.
-			Remember that blob of blue slime? Now it's time to take down its boss.
-			The ones wielding ice and fire, or that mechanical heretic, or the heavily corrupted sea creature—cut them down!
-			The sulphur fire eyeball at night, or giant sea monsters, and that stone golem—stab them all.
-			Take down the spreading corrupted ones and their offspring wandering in the jungle, or that fleshy statue, or the giant worm roaming the stars—cut them all!
-			The disciples of the pseudo-sun god, wandering in sacred places or hell, or that silly bird in the jungle—pick one and deal with it.
-			Plenty of choices, rookie. The pseudo-sun god, the cosmic disciples, or the extradimensional remnants in the dungeon. Let's meet them.
-			Kill that arrogant worm! Or just chop up the highly corrupted fish
-			The fire-playing aberration, don't be soft—smash it!
-			Go meet the mechanical heretic or the fallen witch, and take care of these heretic offspring!
-			The dragon ahead, smash it, or go straight into battle!
-			Well done, rookie.
-			'''
 		Murasama_Text_Lang_0: Trial:
 		Murasama_Text_Lang_End: Already passed
 		Murasama_TextDictionary_Content_0:

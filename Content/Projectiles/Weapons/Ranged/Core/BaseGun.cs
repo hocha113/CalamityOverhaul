@@ -263,10 +263,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override void OrigItemShoot() {
             GlobalItemBehavior = false;
-            if (!CombinedHooks.Shoot(Owner, Item, Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
-                return;
-            }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
         }
 
         /// <summary>
