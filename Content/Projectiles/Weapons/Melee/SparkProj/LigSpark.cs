@@ -62,12 +62,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             Vector2 velocity = Projectile.velocity;
 
             // 2. 加入随机扰动（制造不规则性）
-            if (!VaultUtils.isClient) {//只在服务端运行随机值，然后广播给客户端
+            if (Projectile.IsOwnedByLocalPlayer()) {//只在主人端运行随机值，然后广播给其他客户端
                 Projectile.localAI[0] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // X方向随机扰动
                 Projectile.localAI[1] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // Y方向随机扰动
-                if (!VaultUtils.isSinglePlayer) {
-                    Projectile.netUpdate = true;
-                }
+                Projectile.netUpdate = true;
             }
 
             direction.X += Projectile.localAI[0];
