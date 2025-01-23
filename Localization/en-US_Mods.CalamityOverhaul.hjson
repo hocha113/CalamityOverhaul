@@ -3380,6 +3380,27 @@ Projectiles: {
 	MagicStaff_740: Mods.CalamityOverhaul.Projectiles.MagicStaff_740
 	MagicStaff_2188: Mods.CalamityOverhaul.Projectiles.MagicStaff_2188
 	MagicBook_165: Mods.CalamityOverhaul.Projectiles.MagicBook_165
+	MagicStaff_739: Mods.CalamityOverhaul.Projectiles.MagicStaff_739
+	MagicStaff_3870: Mods.CalamityOverhaul.Projectiles.MagicStaff_3870
+	MagicStaff_157: Mods.CalamityOverhaul.Projectiles.MagicStaff_157
+	MagicStaff_1801: Mods.CalamityOverhaul.Projectiles.MagicStaff_1801
+	MagicStaff_3209: Mods.CalamityOverhaul.Projectiles.MagicStaff_3209
+	MagicBook_518: Mods.CalamityOverhaul.Projectiles.MagicBook_518
+	MagicStaff_3051: Mods.CalamityOverhaul.Projectiles.MagicStaff_3051
+	MagicBook_519: Mods.CalamityOverhaul.Projectiles.MagicBook_519
+	MagicBook_272: Mods.CalamityOverhaul.Projectiles.MagicBook_272
+	MagicBook_1336: Mods.CalamityOverhaul.Projectiles.MagicBook_1336
+	MagicStaff_1445: Mods.CalamityOverhaul.Projectiles.MagicStaff_1445
+	MagicBook_3570: Mods.CalamityOverhaul.Projectiles.MagicBook_3570
+	MagicBook_1266: Mods.CalamityOverhaul.Projectiles.MagicBook_1266
+	MagicStaff_788: Mods.CalamityOverhaul.Projectiles.MagicStaff_788
+	MagicBook_2622: Mods.CalamityOverhaul.Projectiles.MagicBook_2622
+	MagicStaff_1930: Mods.CalamityOverhaul.Projectiles.MagicStaff_1930
+	MagicStaff_3006: Mods.CalamityOverhaul.Projectiles.MagicStaff_3006
+	MagicStaff_1296: Mods.CalamityOverhaul.Projectiles.MagicStaff_1296
+	MagicStaff_4062: Mods.CalamityOverhaul.Projectiles.MagicStaff_4062
+	MagicStaff_683: Mods.CalamityOverhaul.Projectiles.MagicStaff_683
+	MagicStaff_64: Mods.CalamityOverhaul.Projectiles.MagicStaff_64
 }
 
 Configs: {

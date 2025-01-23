@@ -237,4 +237,53 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int TargetID => ItemID.WaterBolt;
         public override string HeldProjName => "WaterBolt";
     }
+
+    internal class DemonScytheHeld() : BaseMagicBook { public override int targetCayItem => ItemID.DemonScythe; }
+    internal class DemonScytheRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.DemonScythe;
+        public override string HeldProjName => "DemonScythe";
+    }
+
+    internal class RazorbladeTyphoonHeld() : BaseMagicBook { public override int targetCayItem => ItemID.RazorbladeTyphoon; }
+    internal class RazorbladeTyphoonRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.RazorbladeTyphoon;
+        public override string HeldProjName => "RazorbladeTyphoon";
+    }
+
+    internal class LunarFlareBookHeld() : BaseMagicBook { public override int targetCayItem => ItemID.LunarFlareBook; }
+    internal class LunarFlareBookRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.LunarFlareBook;
+        public override string HeldProjName => "LunarFlareBook";
+    }
+
+    internal class CrystalStormHeld() : BaseMagicBook { public override int targetCayItem => ItemID.CrystalStorm; }
+    internal class CrystalStormRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.CrystalStorm;
+        public override string HeldProjName => "CrystalStorm";
+    }
+
+    internal class MagnetSphereHeld() : BaseMagicBook { public override int targetCayItem => ItemID.MagnetSphere; }
+    internal class MagnetSphereRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.MagnetSphere;
+        public override string HeldProjName => "MagnetSphere";
+    }
+
+    internal class CursedFlamesHeld() : BaseMagicBook { public override int targetCayItem => ItemID.CursedFlames; }
+    internal class CursedFlamesRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.CursedFlames;
+        public override string HeldProjName => "CursedFlames";
+    }
+
+    internal class GoldenShowerHeld() : BaseMagicBook { public override int targetCayItem => ItemID.GoldenShower; }
+    internal class GoldenShowerRItem : RMagicBook
+    {
+        public override int TargetID => ItemID.GoldenShower;
+        public override string HeldProjName => "GoldenShower";
+    }
 }
