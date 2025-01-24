@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class BrimstoneSwordHeld : BaseKnife
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<BrimstoneSwordEcType>();
         public override string Texture => "CalamityMod/Items/Weapons/Melee/BrimstoneSword";
         public override int TargetID => ModContent.ItemType<BrimstoneSword>();
         private bool trueMelee;

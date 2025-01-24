@@ -46,12 +46,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual int targetCWRItem => ItemID.None;
         /// <summary>
-        /// 自定义本地化键
-        /// </summary>
-        public override LocalizedText DisplayName => targetCayItem < ItemID.Count ? 
-            Language.GetText("ItemName." + ItemID.Search.GetName(targetCayItem)) 
-            : ItemLoader.GetItem(targetCayItem).GetLocalization("DisplayName");
-        /// <summary>
         /// 右手角度值
         /// </summary>
         public float ArmRotSengsFront;
@@ -197,6 +191,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         private bool _safeMouseInterfaceValue;
         private bool _old_safeMouseInterfaceValue;
         public bool SafeMouseInterfaceValue => _safeMouseInterfaceValue;
+        /// <summary>
+        /// 自定义本地化键
+        /// </summary>
+        public override LocalizedText DisplayName {
+            get {
+                if (targetCayItem <= ItemID.None) {
+                    return base.DisplayName;
+                }
+                return targetCayItem < ItemID.Count ?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(targetCayItem))
+                    : ItemLoader.GetItem(targetCayItem).GetLocalization("DisplayName");
+            }
+        }
         /// <summary>
         /// 获得原射击方法信息
         /// </summary>

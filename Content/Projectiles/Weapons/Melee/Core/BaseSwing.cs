@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
@@ -244,7 +245,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public bool canDrawGlow { get; private set; }
         //光效遮罩纹理缓存，不要直接设置这个
         private Asset<Texture2D> glowTexValue;
-
+        /// <summary>
+        /// 自定义本地化键
+        /// </summary>
+        public override LocalizedText DisplayName {
+            get {
+                if (TargetID <= ItemID.None) {
+                    return base.DisplayName;
+                }
+                return TargetID < ItemID.Count ?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
+            }
+        }
         public struct SwingDataStruct
         {
             /// <summary>
