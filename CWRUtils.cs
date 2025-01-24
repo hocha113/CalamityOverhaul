@@ -793,7 +793,7 @@ namespace CalamityOverhaul
         /// <param name="mhk">Mod 热键绑定</param>
         /// <param name="keyName">替换的关键字，默认为 "[KEY]"</param>
         /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
-        public static void SetHotkey(this List<TooltipLine> tooltips, ModKeybind mhk, string keyName = "[KEY]", string modName = "Terraria") {
+        public static void SetHotkey(this List<TooltipLine> tooltips, ModKeybind mhk, string keyName = "[KEY]", string modName = "") {
             if (Main.dedServ || mhk is null) {
                 return;
             }
@@ -809,11 +809,41 @@ namespace CalamityOverhaul
         /// <param name="targetKeyStr">要替换的关键字</param>
         /// <param name="contentStr">替换后的内容</param>
         /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
-        public static void ReplaceTooltip(this List<TooltipLine> tooltips, string targetKeyStr, string contentStr, string modName = "Terraria") {
-            TooltipLine line = tooltips.FirstOrDefault(x => x.Mod == modName && x.Text.Contains(targetKeyStr));
-            if (line != null) {
+        public static void ReplaceTooltip(this List<TooltipLine> tooltips, string targetKeyStr, string contentStr, string modName = "") {
+            foreach (var line in tooltips) {
+                if (modName != "" && line.Mod != modName) {
+                    continue;
+                }
+                if (!line.Text.Contains(targetKeyStr)) {
+                    continue;
+                }
                 line.Text = line.Text.Replace(targetKeyStr, contentStr);
             }
+        }
+
+        /// <summary>
+        /// 将文本拆分为多行，并为每行分别添加颜色代码。
+        /// </summary>
+        /// <param name="textContent">输入的文本内容，支持换行符</param>
+        /// <param name="color">颜色对象</param>
+        /// <returns>格式化后的多行带颜色文本</returns>
+        public static string FormatColorTextMultiLine(string textContent, Color color) {
+            if (string.IsNullOrEmpty(textContent))
+                return string.Empty;
+
+            // 将颜色转换为 16 进制字符串
+            string hexColor = $"{color.R:X2}{color.G:X2}{color.B:X2}";
+
+            // 按换行符分割文本
+            string[] lines = textContent.Split('\n');
+
+            // 对每一行添加颜色代码
+            for (int i = 0; i < lines.Length; i++) {
+                lines[i] = $"[c/{hexColor}:{lines[i]}]";
+            }
+
+            // 使用换行符重新组合
+            return string.Join("\n", lines);
         }
 
         /// <summary>

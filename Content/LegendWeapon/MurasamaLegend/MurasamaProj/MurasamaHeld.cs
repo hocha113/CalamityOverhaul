@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             int safeGravDir = Math.Sign(Owner.gravDir);
             nolegendStart = true;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                nolegendStart = InWorldBossPhase.Instance.level11;
+                nolegendStart = InWorldBossPhase.Level11;
             }
 
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(0, 5) * safeGravDir;

@@ -3655,8 +3655,6 @@ TextContent: {
 			'''
 			Remember those foolish slime? I can feel that a special aggregation has appeared among them,
 			Take it out, to prevent future troubles.
-			At the same time, we need to defeat that Wall of Flesh in the 
-			Underworld to release the sealed powers of the world.
 			'''
 		Murasama_TextDictionary_Content_5:
 			'''
@@ -4335,5 +4333,12 @@ Legend: {
 				Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
 			}
 		}
+	}
+
+	MuraText: {
+		Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
+		Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
+		Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
+		Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
 	}
 }

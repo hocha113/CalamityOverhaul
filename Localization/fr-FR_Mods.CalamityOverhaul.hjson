@@ -3639,8 +3639,7 @@ TextContent: {
 		Murasama_TextDictionary_Content_4:
 			'''
 			Te souviens-tu de ces stupides slimes? Je sens qu'une agrégation spéciale est apparue parmi eux. 
-			Élimine-la pour éviter des problèmes futurs. En même temps, 
-			nous devons vaincre ce Mur de Chair dans les Enfers pour libérer les pouvoirs scellés du monde.
+			Élimine-la pour éviter des problèmes futurs.
 			'''
 		Murasama_TextDictionary_Content_5:
 			'''
@@ -4325,5 +4324,12 @@ Legend: {
 				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
 			}
 		}
+	}
+
+	MuraText: {
+		// Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
+		// Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
+		// Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
+		// Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
 	}
 }

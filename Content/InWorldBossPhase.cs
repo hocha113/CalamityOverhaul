@@ -11,36 +11,39 @@ namespace CalamityOverhaul.Content
         #region Date
         public static InWorldBossPhase Instance { get; private set; }
 
-        public bool level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
+        public static bool Level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
 
-        public bool level1 => DownedV1.Invoke() || Downed1.Invoke();
+        public static bool Level1 => DownedV1.Invoke() || Downed1.Invoke();
 
-        public bool level2 => DownedV2.Invoke() || DownedV3.Invoke();
+        public static bool Level2 => DownedV2.Invoke() || DownedV3.Invoke();
 
-        public bool level3 => DownedV4.Invoke() || Downed3.Invoke() || Downed4.Invoke();
+        public static bool Level3 => DownedV4.Invoke() || Downed3.Invoke() || Downed4.Invoke();
 
-        public bool level4 => Downed5.Invoke();
+        public static bool Level4 => Downed5.Invoke();
         /// <summary>
         /// 任意灾厄三王
         /// </summary>
-        public bool level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
+        public static bool Level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
 
-        public bool level6 => Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke();
+        public static bool Level6 => Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke();
 
-        public bool level7 => Downed14.Invoke() || Downed15.Invoke() || Downed16.Invoke();
+        public static bool Level7 => Downed14.Invoke() || Downed15.Invoke() || Downed16.Invoke();
 
-        public bool level8 => Downed17.Invoke() || Downed18.Invoke();
+        public static bool Level8 => Downed17.Invoke() || Downed18.Invoke();
 
-        public bool level9 => Downed19.Invoke() || Downed20.Invoke() || Downed21.Invoke() || Downed22.Invoke() || Downed23.Invoke();
+        public static bool Level9 => Downed19.Invoke() || Downed20.Invoke() || Downed21.Invoke() || Downed22.Invoke() || Downed23.Invoke();
 
-        public bool level10 => Downed26.Invoke() || Downed27.Invoke();
+        public static bool Level10 => Downed26.Invoke() || Downed27.Invoke();
 
-        public bool level11 => Downed28.Invoke();
+        public static bool Level11 => Downed28.Invoke();
 
-        public bool level12 => Downed29.Invoke() || Downed30.Invoke();
+        public static bool Level12 => Downed29.Invoke() || Downed30.Invoke();
 
-        public bool level13 => Downed31.Invoke() || Downed32.Invoke();
-
+        public static bool Level13 => Downed31.Invoke() || Downed32.Invoke();
+        /// <summary>
+        /// 击败所有机械Boss
+        /// </summary>
+        public static bool DownedAnyMechBoss => NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
         /// <summary>
         /// 史莱姆王
         /// </summary>
@@ -472,98 +475,98 @@ namespace CalamityOverhaul.Content
                 return 12;
             }
 
-            if (level0) {
+            if (Level0) {
                 level = 1;
             }
             else {
                 return level;
             }
 
-            if (level1) {
+            if (Level1) {
                 level = 2;
             }
             else {
                 return level;
             }
 
-            if (level2) {
+            if (Level2) {
                 level = 3;
             }
             else {
                 return level;
             }
 
-            if (level3) {
+            if (Level3) {
                 level = 4;
             }
             else {
                 return level;
             }
 
-            if (level4 && Main.hardMode) {
+            if (Level4 && Main.hardMode) {
                 level = 5;
             }
             else {
                 return level;
             }
             //不仅仅要通过灾厄三王，还得判断是否通过机械三王
-            if (level5 && DownedV5.Invoke()) {
+            if (Level5 && DownedAnyMechBoss) {
                 level = 6;
             }
             else {
-                return level;
+                return level;//LaiF1
             }
 
-            if (level6) {
+            if (Level6) {
                 level = 7;
             }
             else {
                 return level;
             }
 
-            if (level7) {
+            if (Level7) {
                 level = 8;
             }
             else {
                 return level;
             }
 
-            if (level8) {
+            if (Level8) {
                 level = 9;
             }
             else {
                 return level;
             }
 
-            if (level9) {
+            if (Level9) {
                 level = 10;
             }
             else {
                 return level;
             }
 
-            if (level10) {
+            if (Level10) {
                 level = 11;
             }
             else {
                 return level;
             }
 
-            if (level11) {
+            if (Level11) {
                 level = 12;
             }
             else {
                 return level;
             }
 
-            if (level12) {
+            if (Level12) {
                 level = 13;
             }
             else {
                 return level;
             }
 
-            if (level13) {
+            if (Level13) {
                 level = 14;
             }
             else {

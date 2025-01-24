@@ -1,9 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -111,11 +113,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
         public static readonly SoundStyle Swing = new("CalamityMod/Sounds/Item/MurasamaSwing") { Volume = 0.2f };
         public static readonly SoundStyle BigSwing = new("CalamityMod/Sounds/Item/MurasamaBigSwing") { Volume = 0.25f };
-        private static string[] samNameList = new string[] { "激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam" };
+        private static readonly string[] SamNameList = ["激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam"];
+        private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
         #endregion
 
-        public static bool NameIsVergil(Player player) => player.name == "维吉尔" || player.name == "Vergil";
-        public static bool NameIsSam(Player player) => samNameList.Contains(player.name);
+        public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);
+        public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 10 },
@@ -231,44 +234,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.CWR().heldProjType = heldProjType;
             Item.CWR().GetMeleePrefix = true;
         }
-        public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
-            tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", modName);
-            tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]", modName);
-            string text2 = CWRLocText.GetTextValue("Murasama_Text0");
-            tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]", modName);
-            tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]", modName);
-            tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]", modName);
-            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                int level = InWorldBossPhase.Instance.Mura_Level();
-                string num = (level + 1).ToString();
-                if (level == 14) {
-                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
-                }
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", modName);
-                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Murasama_No_legend_Content_3"), modName);
-            }
-            else {
-                tooltips.ReplaceTooltip("[Lang4]", "", modName);
-                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Murasama_No_legend_Content_4"), modName);
-            }
-        }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            TooltipLine legendtops = tooltips.FirstOrDefault((x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
-            if (legendtops != null) {
-                int index = InWorldBossPhase.Instance.Mura_Level();
-                legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+            => TooltipHandler.SetTooltip(ref tooltips);
 
-                if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
-                }
-                legendtops.OverrideColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-            }
-
-            SetTooltip(ref tooltips);
-        }
-
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
+        public override void ModifyWeaponCrit(Player player, ref float crit) 
+            => crit += GetOnCrit;
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
@@ -276,24 +247,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback)
             => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, Item, GetOnKnockback, GetStartKnockback, ref knockback);
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            Texture2D texture;
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale)
+            => PreDrawInInventoryFunc(spriteBatch, position, origin, scale);
+        public static bool PreDrawInInventoryFunc(SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float scale) {
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
-                texture = ModContent.Request<Texture2D>(Texture).Value;
-                spriteBatch.Draw(texture, position, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
-                return false;//老实说，我不清楚灾厄的制作组为什么要自定义绘制这个，因为他们自定义的方法除了会出现更多的异常之外，没有什么优势
+                return true;
             }
-            else {
-                texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;
-                spriteBatch.Draw(texture, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
-            }
-            return false;
-        }
-
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            Texture2D texture;
-            texture = ModContent.Request<Texture2D>(Texture).Value;
-            spriteBatch.Draw(texture, Item.position - Main.screenPosition, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), lightColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;
+            spriteBatch.Draw(texture, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
             return false;
         }
 
@@ -302,16 +263,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             spriteBatch.Draw(texture, Item.position - Main.screenPosition, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13, false), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
         }
 
-        public override bool CanUseItem(Player player) {
+        public override bool CanUseItem(Player player) => CanUseItemFunc(player, Item);
+        public static bool CanUseItemFunc(Player player, Item Item) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
             return player.ownedProjectileCounts[ModContent.ProjectileType<MuraBreakerSlash>()] > 0
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] > 0
                 || player.PressKey(false)
                 ? false
-                : player.ownedProjectileCounts[Item.shoot] == 0;
+                : (CWRServerConfig.Instance.WeaponEnhancementSystem || InWorldBossPhase.Level11)
+                && player.ownedProjectileCounts[Item.shoot] == 0;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
+            return false;
+        }
+    }
+
+    internal class RMurasama : BaseRItem
+    {
+        public override int TargetID => ModContent.ItemType<Murasama>();
+        public override int ProtogenesisID => ModContent.ItemType<MurasamaEcType>();
+        public override string TargetToolTipItemName => "MurasamaEcType";
+        public override void SetStaticDefaults() {
+            Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
+            ItemID.Sets.AnimatesAsSoul[TargetID] = true;
+        }
+        public override void SetDefaults(Item item) => MurasamaEcType.SetDefaultsFunc(item);
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => TooltipHandler.SetTooltip(ref tooltips);
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
+            => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, MurasamaEcType.GetOnDamage, MurasamaEcType.GetStartDamage, ref damage);
+        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
+            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, MurasamaEcType.GetOnKnockback, MurasamaEcType.GetStartKnockback, ref knockback);
+        public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            crit += MurasamaEcType.GetOnCrit;
+            return false;
+        }
+        public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+            => MurasamaEcType.PreDrawInInventoryFunc(spriteBatch, position, origin, scale);
+        public override bool? On_CanUseItem(Item item, Player player) => MurasamaEcType.CanUseItemFunc(player, item);
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }

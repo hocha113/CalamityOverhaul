@@ -3632,8 +3632,7 @@ TextContent: {
 		Murasama_TextDictionary_Content_4:
 			'''
 			Erinnerst du dich an diese törichten Schleime? Ich spüre, dass eine besondere Agglomeration unter ihnen aufgetaucht ist. 
-			Nimm sie aus dem Weg, um zukünftige Probleme zu vermeiden. 
-			Gleichzeitig müssen wir diese Fleischwand in der Unterwelt besiegen, um die versiegelten Kräfte der Welt freizusetzen.
+			Nimm sie aus dem Weg, um zukünftige Probleme zu vermeiden.
 			'''
 		Murasama_TextDictionary_Content_5:
 			'''
@@ -4304,5 +4303,12 @@ Legend: {
 				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
 			}
 		}
+	}
+
+	MuraText: {
+		// Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
+		// Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
+		// Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
+		// Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
 	}
 }

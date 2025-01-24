@@ -1226,16 +1226,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return base.On_PreKill();
         }
 
-        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-            => npc.ai[0] == 1 && npc.life < npc.lifeMax && !death && !CalamityWorld.revenge;
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!canLoaderAssetZunkenUp) {
                 return false;
-            }
-
-            if (npc.ai[0] == 1 && npc.life < npc.lifeMax) {
-                return true;
             }
 
             Texture2D mainValue = HandAsset.Value;

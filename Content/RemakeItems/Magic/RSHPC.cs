@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
                     text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
 
                     if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                        text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");
+                        text = InWorldBossPhase.Level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");
                     }
                     newLine.Text = text;
                     // 使用颜色渐变以提高可读性

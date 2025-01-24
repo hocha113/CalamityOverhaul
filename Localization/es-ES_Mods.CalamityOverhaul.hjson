@@ -3673,8 +3673,6 @@ TextContent: {
 			'''
 			Se cuenta una leyenda en el reino de los slimes, tienen un dios extraño caído, 
 			y ahora está debilitado, es la oportunidad perfecta para expulsarlo al subespacio.
-			Debemos liberar la luz y la oscuridad del infierno, esto provocará una tormenta subespacial, 
-			pero debemos hacerlo, recluta, ¡escribe un gran capítulo en nuestro viaje!
 			'''
 		Murasama_TextDictionary_Content_5:
 			'''
@@ -4365,5 +4363,12 @@ Legend: {
 				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
 			}
 		}
+	}
+
+	MuraText: {
+		// Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
+		// Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
+		// Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
+		// Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
 	}
 }
