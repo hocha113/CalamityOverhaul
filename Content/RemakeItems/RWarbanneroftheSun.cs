@@ -2,7 +2,7 @@
 using CalamityMod.CalPlayer;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;

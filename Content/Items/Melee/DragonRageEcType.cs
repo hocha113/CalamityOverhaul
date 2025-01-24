@@ -2,6 +2,7 @@
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.Audio;

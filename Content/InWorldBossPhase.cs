@@ -20,8 +20,10 @@ namespace CalamityOverhaul.Content
         public bool level3 => DownedV4.Invoke() || Downed3.Invoke() || Downed4.Invoke();
 
         public bool level4 => Downed5.Invoke();
-
-        public bool level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke() || DownedV5.Invoke();
+        /// <summary>
+        /// 任意灾厄三王
+        /// </summary>
+        public bool level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
 
         public bool level6 => Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke();
 
@@ -504,8 +506,8 @@ namespace CalamityOverhaul.Content
             else {
                 return level;
             }
-
-            if (level5) {
+            //不仅仅要通过灾厄三王，还得判断是否通过机械三王
+            if (level5 && DownedV5.Invoke()) {
                 level = 6;
             }
             else {

@@ -1,5 +1,5 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

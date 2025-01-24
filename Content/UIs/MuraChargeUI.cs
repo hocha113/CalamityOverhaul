@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
