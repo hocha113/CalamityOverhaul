@@ -4333,9 +4333,9 @@ Legend: {
 			Cela déclenchera une tempête subspatiale, mais nous n'avons pas le choix. 
 			Recrue, écrivez un chapitre grandiose pour le voyage !
 			'''
-		Subtest_Text1: "Un immense ver d'acier bloque notre chemin. Déchirez-le en morceaux."
-		Subtest_Text2: "Je peux sentir deux regards nous observer. Allez vous en occuper."
-		Subtest_Text3: 
+		Subtest_Text1: Un immense ver d'acier bloque notre chemin. Déchirez-le en morceaux.
+		Subtest_Text2: Je peux sentir deux regards nous observer. Allez vous en occuper.
+		Subtest_Text3:
 			'''
 			Une bataille décisive approche. Ces tas de ferraille prévoient de s'unir pour tenter de nous arrêter.
 			Avec des lames et du sang, faites-leur savoir que notre expédition écrasera toutes les abominations extraterrestres et les intelligences haineuses.

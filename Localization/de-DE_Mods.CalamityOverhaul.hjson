@@ -4312,9 +4312,9 @@ Legend: {
 			Dies wird einen Subraumsturm auslösen, aber wir haben keine Wahl. 
 			Rekrut, schreibe ein großartiges Kapitel für die Reise!
 			'''
-		Subtest_Text1: "Ein gewaltiger Stahlwurm blockiert unseren Weg. Zerreiß ihn in Stücke."
-		Subtest_Text2: "Ich spüre zwei Blicke, die uns beobachten. Geh und kümmere dich um sie."
-		Subtest_Text3: 
+		Subtest_Text1: Ein gewaltiger Stahlwurm blockiert unseren Weg. Zerreiß ihn in Stücke.
+		Subtest_Text2: Ich spüre zwei Blicke, die uns beobachten. Geh und kümmere dich um sie.
+		Subtest_Text3:
 			'''
 			Eine entscheidende Schlacht steht bevor. Diese Haufen von Schrott planen, sich zu vereinen, um uns aufzuhalten.
 			Mit Klingen und Blut lasst sie wissen, dass unsere Expedition alle fremden Abscheulichkeiten und hassvollen Intelligenzen zerschmettern wird.

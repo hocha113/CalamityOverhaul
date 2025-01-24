@@ -4342,9 +4342,9 @@ Legend: {
 			This will trigger a subspace storm, but we have no choice. 
 			Recruit, write a grand chapter for the journey!
 			'''
-		Subtest_Text1: "A massive steel worm blocks our path. Tear it to pieces."
-		Subtest_Text2: "I can feel two gazes watching us. Go and deal with them."
-		Subtest_Text3: 
+		Subtest_Text1: A massive steel worm blocks our path. Tear it to pieces.
+		Subtest_Text2: I can feel two gazes watching us. Go and deal with them.
+		Subtest_Text3:
 			'''
 			A decisive battle is coming. Those piles of scrap metal are planning to unite in an attempt to stop us.
 			With blades and blood, let them know our expedition will crush all alien abominations and hateful intelligences.
