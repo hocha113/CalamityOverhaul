@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 10f;
-            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
-            Item.rare = ItemRarityID.Pink;
+            Item.rare = ItemRarityID.Green;
+            Item.value = Item.buyPrice(0, 0, 80, 10);
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.channel = true;

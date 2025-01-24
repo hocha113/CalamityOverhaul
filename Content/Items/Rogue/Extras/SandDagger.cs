@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -26,8 +25,8 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.knockBack = 3f;
             Item.UseSound = null;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityGreenBuyPrice;
             Item.rare = ItemRarityID.Green;
+            Item.value = Item.buyPrice(0, 0, 50, 15);
             Item.shoot = ModContent.ProjectileType<SandDaggerThrow>();
             Item.shootSpeed = 10f;
             Item.DamageType = CWRLoad.RogueDamageClass;

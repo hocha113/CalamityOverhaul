@@ -2534,15 +2534,6 @@ Items: {
 			''' */
 	}
 
-	DeathFlySickle: {
-		DisplayName: Faux Volante du Faucheur
-		Tooltip:
-			'''
-			Les attaques furtives génèrent six faux traçantes du Faucheur à la fin de leur trajectoire de vol.  
-			"Le Faucheur pensait que cela améliorerait encore son efficacité."  
-			'''
-	}
-
 	TitanArmEcType: {
 		// DisplayName: Titan Arm
 		/* Tooltip:

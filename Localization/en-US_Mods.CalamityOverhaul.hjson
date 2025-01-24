@@ -2551,15 +2551,6 @@ Items: {
 			'''
 	}
 
-	DeathFlySickle: {
-		DisplayName: Reaper's Flying Scythe
-		Tooltip:
-			'''
-			Stealth attacks spawn six tracking death sickles at the end of the flight path.
-			"This further enhances work efficiency."
-			'''
-	}
-
 	TitanArmEcType: {
 		DisplayName: Titan Arm
 		Tooltip:
@@ -2642,11 +2633,6 @@ Items: {
 
 	SandVortexOfTheDecayedSea: {
 		DisplayName: Sand Vortex Of The Decayed Sea
-		Tooltip: ""
-	}
-
-	IceFlySickle: {
-		DisplayName: Ice Fly Sickle
 		Tooltip: ""
 	}
 
@@ -2790,7 +2776,6 @@ Projectiles: {
 	EvisceratorHeld.DisplayName: Eviscerator
 	SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	StarshipHeld.DisplayName: Starship
-	IceFlySickleThrowable.DisplayName: Ice Fly Sickle Throwable
 	SandDaggerThrow.DisplayName: Sand Dagger Throw
 	SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
 	SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable

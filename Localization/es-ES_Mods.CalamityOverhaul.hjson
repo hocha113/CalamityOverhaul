@@ -2566,15 +2566,6 @@ Items: {
 			''' */
 	}
 
-	DeathFlySickle: {
-		DisplayName: Guadaña Voladora del Segador
-		Tooltip:
-			'''
-			Los ataques furtivos generan seis guadañas rastreadoras del segador al final de su trayectoria de vuelo.
-			"El Segador pensó que esto mejoraría aún más su eficiencia."
-			'''
-	}
-
 	TitanArmEcType: {
 		// DisplayName: Titan Arm
 		/* Tooltip:

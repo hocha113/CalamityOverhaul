@@ -156,27 +156,4 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             }
         }
     }
-
-    internal class DeathSickleThrowableRogue : DeathSickleThrowable
-    {
-        public override string Texture => CWRConstant.Item + "Rogue/DeathFlySickle";
-        public override Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
-        public override void SetThrowable() {
-            base.SetThrowable();
-            Projectile.DamageType = CWRLoad.RogueDamageClass;
-        }
-
-        public override void FlyToMovementAI() {
-            if (stealthStrike && Projectile.velocity.Length() < 2f) {
-                for (int i = 0; i < 6; i++) {
-                    Vector2 ver = ((MathHelper.TwoPi / 6 * i) + Projectile.rotation).ToRotationVector2() * 8;
-                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent()
-                        , Projectile.Center, ver, ProjectileID.DeathSickle, Projectile.damage, 2);
-                    Main.projectile[proj].Calamity().allProjectilesHome = true;
-                    Main.projectile[proj].DamageType = Projectile.DamageType;
-                }
-            }
-            base.FlyToMovementAI();
-        }
-    }
 }

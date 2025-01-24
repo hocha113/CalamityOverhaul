@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.shoot = ModContent.ProjectileType<DecayedSeaOrb>();
             Item.shootSpeed = 6;
             Item.UseSound = SoundID.Item20;
+            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 2, 0, 5);
             Item.SetHeldProj<SandVortexOfTheDecayedSeaHeld>();
         }
     }

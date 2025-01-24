@@ -2540,15 +2540,6 @@ Items: {
 			'''
 	}
 
-	DeathFlySickle: {
-		DisplayName: 死神飞镰
-		Tooltip:
-			'''
-			潜伏攻击会在飞行轨迹末端生成六个追踪敌人的死神镰刀
-			"这样可以进一步提高工作效率"
-			'''
-	}
-
 	TitanArmEcType: {
 		DisplayName: 泰坦手臂
 		Tooltip:
@@ -2599,17 +2590,25 @@ Items: {
 
 	SandDagger: {
 		DisplayName: 潜沙匕首
-		Tooltip: ""
+		Tooltip:
+			'''
+			投掷到沙地上会在一段时间后跳到空中爆炸
+			潜伏攻击会投掷出三枚强化匕首
+			'''
 	}
 
 	UnderTheSand: {
 		DisplayName: 沙之下
-		Tooltip: ""
+		Tooltip: 生成几个沙球
 	}
 
 	WastelandFang: {
 		DisplayName: 荒芜牙猎
-		Tooltip: ""
+		Tooltip:
+			'''
+			与物块发生反弹，并加速收回
+			会张开嘴吐出几团沙球
+			'''
 	}
 
 	Flawless: {
@@ -2619,12 +2618,16 @@ Items: {
 
 	MelodyTheSand: {
 		DisplayName: 沙中曲
-		Tooltip: ""
+		Tooltip: 抛射一片沙刺，受重力影响并穿透敌人
 	}
 
 	SandVortexOfTheDecayedSea: {
 		DisplayName: 腐海沙涡
-		Tooltip: ""
+		Tooltip:
+			'''
+			呕出数颗蒸硫球
+			"呕吐大师"
+			'''
 	}
 
 	IceFlySickle: {
@@ -2634,12 +2637,21 @@ Items: {
 
 	SeasonalKunai: {
 		DisplayName: 季节苦无
-		Tooltip: ""
+		Tooltip:
+			'''
+			丢出三枚追踪敌人的苦无
+			潜伏攻击会掷出大型苦无，在飞行轨迹末尾分裂
+			"映射四季"
+			'''
 	}
 
 	WraithKunai: {
 		DisplayName: 幽魂苦无
-		Tooltip: ""
+		Tooltip:
+			'''
+			丢出三枚追踪敌人的苦无
+			潜伏攻击会生成一片悬停在玩家周围的幽灵匕首
+			'''
 	}
 
 	CalSelfPortrait: {
