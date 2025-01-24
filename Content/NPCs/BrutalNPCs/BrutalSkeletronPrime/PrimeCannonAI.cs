@@ -13,18 +13,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeCannonAI : NPCOverride
+    internal class PrimeCannonAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeCannon;
-        private bool bossRush;
-        private bool masterMode;
-        private bool death;
-        private bool laserAlive;
-        private bool viceAlive;
-        private bool sawAlive;
-        private bool dontAttack;
-        private NPC head;
-        private Player player;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
         internal void Movement() {
@@ -117,7 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.localAI[0] = 0f;
                     npc.TargetClosest();
                     int type = ProjectileID.RocketSkeleton;
-                    int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+                    int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
                     float rocketSpeed = 10f;
                     cannonArmTargetDist = rocketSpeed / cannonArmTargetDist;
                     cannonArmTargetX *= cannonArmTargetDist;
@@ -162,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.localAI[0] = 0f;
                     npc.TargetClosest();
                     int type = ProjectileID.RocketSkeleton;
-                    int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+                    int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
                     float rocketSpeed = 10f;
                     Vector2 cannonSpreadTargetDist = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * rocketSpeed;
                     int numProj = bossRush ? 5 : 3;
@@ -186,36 +177,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
         }
-        public override bool AI() {
-            bossRush = BossRushEvent.BossRushActive;
-            masterMode = Main.masterMode || bossRush;
-            death = CalamityWorld.death || bossRush;
-            npc.spriteDirection = -(int)npc.ai[0];
-            npc.damage = 0;
-            head = Main.npc[(int)npc.ai[1]];
-            player = Main.player[npc.target];
-
-            CalamityGlobalNPC calamityNPC = null;
-            if (!npc.TryGetGlobalNPC(out calamityNPC)) {
-                return false;
-            }
-
-            CalamityGlobalNPC.primeCannon = npc.whoAmI;
-            BrutalSkeletronPrimeAI.FindPlayer(npc);
-            BrutalSkeletronPrimeAI.CheakDead(npc, head);
-            BrutalSkeletronPrimeAI.CheakRam(out _, out viceAlive, out sawAlive, out laserAlive);
-            npc.aiStyle = -1;
-            npc.dontTakeDamage = false;
-            if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 4)) {
-                return false;
-            }
-
+        public override bool ArmBehavior() {
             float timeToNotAttack = 180f;
-            dontAttack = calamityNPC.newAI[2] < timeToNotAttack;
+            dontAttack = calNPC.newAI[2] < timeToNotAttack;
             if (dontAttack) {
-                calamityNPC.newAI[2] += 1f;
-                if (calamityNPC.newAI[2] >= timeToNotAttack) {
-                    BrutalSkeletronPrimeAI.SendExtraAI(npc);
+                calNPC.newAI[2] += 1f;
+                if (calNPC.newAI[2] >= timeToNotAttack) {
+                    HeadPrimeAI.SendExtraAI(npc);
                 }
             }
 
@@ -302,15 +270,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+            if (!HeadPrimeAI.canLoaderAssetZunkenUp) {
                 return false;
+            }
+            if (HeadPrimeAI.DontReform()) {
+                return true;
             }
 
             bool dir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2().X > 0;
 
-            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
-            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPCannon.Value;
-            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPCannonGlow.Value;
+            HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
+            Texture2D mainValue = HeadPrimeAI.BSPCannon.Value;
+            Texture2D mainValue2 = HeadPrimeAI.BSPCannonGlow.Value;
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, null, drawColor
                 , npc.rotation, mainValue.Size() / 2, npc.scale
                 , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
@@ -319,6 +290,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
             return false;
         }
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform();
     }
 }

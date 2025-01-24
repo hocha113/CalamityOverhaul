@@ -13,25 +13,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeLaserAI : NPCOverride
+    internal class PrimeLaserAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeLaser;
-
         private const float timeToNotAttack = 180f;
-        private bool bossRush;
-        private bool masterMode;
-        private bool death;
-        private bool cannonAlive;
-        private bool viceAlive;
-        private bool sawAlive;
-        private bool dontAttack;
         private bool normalLaserRotation;
         private int lerterFireIndex;
-        private NPC head;
-        private Player player;
-
         public override bool CanLoad() => true;
-
         private void Movement() {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;
@@ -145,8 +133,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.TargetClosest();
                     float laserSpeed = bossRush ? 5f : 4f;
                     int type = ProjectileID.DeathLaser;
-                    int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
-                    BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 3);
+                    int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+                    HeadPrimeAI.SpanFireLerterDustEffect(npc, 3);
                     laserArmTargetDist = laserSpeed / laserArmTargetDist;
                     laserArmTargetX *= laserArmTargetDist;
                     laserArmTargetY *= laserArmTargetDist;
@@ -215,14 +203,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     int totalProjectiles = bossRush ? 22 : (masterMode ? 13 : 10);
                     float radians = MathHelper.TwoPi / totalProjectiles;
                     int type = ProjectileID.DeathLaser;
-                    int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
+                    int damage = HeadPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
 
                     float velocity = 3f;
                     double angleA = radians * 0.5;
                     double angleB = MathHelper.ToRadians(90f) - angleA;
                     float laserVelocityX = (float)(velocity * Math.Sin(angleA) / Math.Sin(angleB));
                     Vector2 spinningPoint = normalLaserRotation ? new Vector2(0f, -velocity) : new Vector2(-laserVelocityX, -velocity);
-                    bool spanLerter = BrutalSkeletronPrimeAI.setPosingStarmCount <= 0;
+                    bool spanLerter = HeadPrimeAI.setPosingStarmCount <= 0;
                     if (spanLerter) {
                         if (death) {
                             totalProjectiles = bossRush ? 12 : 6;
@@ -250,7 +238,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                             , ver, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
                             }
-                            BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 33);
+                            HeadPrimeAI.SpanFireLerterDustEffect(npc, 33);
                         }
                         else {
                             for (int k = 0; k < totalProjectiles; k++) {
@@ -270,36 +258,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override bool? CheckDead() => true;
 
-        public override bool AI() {
-            bossRush = BossRushEvent.BossRushActive;
-            masterMode = Main.masterMode || bossRush;
-            death = CalamityWorld.death || bossRush;
-            head = Main.npc[(int)npc.ai[1]];
-            player = Main.player[npc.target];
-
-            CalamityGlobalNPC calamityNPC = null;
-            if (!npc.TryGetGlobalNPC(out calamityNPC)) {
-                return false;
-            }
-
-            CalamityGlobalNPC.primeLaser = npc.whoAmI;
-            npc.spriteDirection = -(int)npc.ai[0];
-            npc.damage = 0;
-            dontAttack = calamityNPC.newAI[2] < timeToNotAttack;
+        public override bool ArmBehavior() {
+            dontAttack = calNPC.newAI[2] < timeToNotAttack;
             normalLaserRotation = npc.localAI[1] % 2f == 0f;
-            BrutalSkeletronPrimeAI.FindPlayer(npc);
-            BrutalSkeletronPrimeAI.CheakDead(npc, head);
-            BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out _);
-            npc.aiStyle = -1;
-            npc.dontTakeDamage = false;
-            if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 2)) {
-                return false;
-            }
-
             if (dontAttack) {
-                calamityNPC.newAI[2]++;
-                if (calamityNPC.newAI[2] >= timeToNotAttack) {
-                    BrutalSkeletronPrimeAI.SendExtraAI(npc);
+                calNPC.newAI[2]++;
+                if (calNPC.newAI[2] >= timeToNotAttack) {
+                    HeadPrimeAI.SendExtraAI(npc);
                 }
             }
             Movement();
@@ -314,13 +279,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+            if (!HeadPrimeAI.canLoaderAssetZunkenUp) {
                 return false;
             }
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
             bool dir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2().X > 0;
-            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
-            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPlaser.Value;
-            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPlaserGlow.Value;
+            HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
+            Texture2D mainValue = HeadPrimeAI.BSPlaser.Value;
+            Texture2D mainValue2 = HeadPrimeAI.BSPlaserGlow.Value;
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, null, drawColor
                 , npc.rotation, mainValue.Size() / 2, npc.scale
                 , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
@@ -329,6 +297,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
             return false;
         }
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform();
     }
 }

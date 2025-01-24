@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -10,6 +11,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         public override int TargetID => NPCID.Probe;
         public override bool AI() => true;
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
+
             SpriteEffects spriteEffects = SpriteEffects.None;
             float drawRot = npc.rotation;
             if (npc.spriteDirection > 0) {
@@ -25,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return false;
+            return !HeadPrimeAI.DontReform();
         }
     }
 }

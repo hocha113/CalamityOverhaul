@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             npc.damage = npc.defDamage;
             bool skeletronPrimeInSprint = skeletronPrime.ai[1] == 1;
             bool LaserWall = skeletronPrime.CWR().NPCOverride.ai[3] == 2;
-            bool isDestroyer = BrutalSkeletronPrimeAI.setPosingStarmCount > 0;
+            bool isDestroyer = HeadPrimeAI.setPosingStarmCount > 0;
             bool isIdle = skeletronPrime.CWR().NPCOverride.ai[10] > 0;
 
             if (isIdle) {
@@ -599,6 +599,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         internal bool IsSecondPhase() => ai[0] == 2;
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
+
             Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/Spazmatism");
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;

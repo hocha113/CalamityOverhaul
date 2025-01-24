@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -12,6 +13,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         public override bool AI() => true;
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
+
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body");
             Texture2D value2 = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body_Glow");
 
@@ -31,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return false;
+            return HeadPrimeAI.DontReform();
         }
     }
 }

@@ -4,6 +4,7 @@ using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -170,7 +171,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void PostDraw(Color lightColor) {
             Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");
-            Main.instance.LoadNPC(NPCID.Probe);
+            if (HeadPrimeAI.DontReform()) {
+                Main.instance.LoadNPC(NPCID.Probe);
+                mainValue = TextureAssets.Npc[NPCID.Probe].Value;
+            }
             Vector2 orig = Projectile.Center - Main.screenPosition;
             for (int i = 0; i < 33; i++) {
                 float rot = MathHelper.TwoPi / 33f * i + Projectile.ai[0] * 0.03f;

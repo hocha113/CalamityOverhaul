@@ -20,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalSkeletronPrimeAI : NPCOverride, ICWRLoader
+    internal class HeadPrimeAI : NPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
@@ -71,6 +71,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAMGlow;
         internal static Asset<Texture2D> BSPRAM_ForearmGlow;
         #endregion
+
+        internal static bool DontReform() {
+            if (!Main.expertMode) {
+                return true;
+            }//如果不是专家模式，就不要使用重做后的绘制
+            if (CalamityWorld.revenge || CalamityWorld.death || BossRushEvent.BossRushActive) {
+                return false;
+            }//如果没有开启任何难度，也不要使用重做后的绘制
+            return true;
+        }
 
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             if (!canLoaderAssetZunkenUp) {
@@ -627,8 +637,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool TwoStageAI() {
             if (ai6 == 0 && ai9 > 2 && death && !bossRush) {
                 ai3 = 3;
-                SpawnEye();
                 ai6 = 1;
+                SpawnEye();
                 NetAISend();
             }
 
@@ -1226,13 +1236,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return base.On_PreKill();
         }
 
-        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => DontReform();
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!canLoaderAssetZunkenUp) {
                 return false;
             }
-
+            if (DontReform()) {
+                return true;
+            }
             Texture2D mainValue = HandAsset.Value;
             Texture2D glowValue = HandAssetGlow.Value;
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frame, 12);

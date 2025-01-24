@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Events;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -69,7 +70,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
 
             Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");
-            Main.instance.LoadNPC(NPCID.Probe);
+            if (HeadPrimeAI.DontReform()) {
+                Main.instance.LoadNPC(NPCID.Probe);
+                mainValue = TextureAssets.Npc[NPCID.Probe].Value;
+            }
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, mainValue.Size() / 2, Projectile.scale, SpriteEffects.FlipHorizontally, 0);
             return false;

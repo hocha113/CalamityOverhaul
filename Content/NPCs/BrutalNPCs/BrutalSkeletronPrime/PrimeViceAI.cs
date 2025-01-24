@@ -1,28 +1,13 @@
-﻿using CalamityMod.Events;
-using CalamityMod.NPCs;
-using CalamityMod.World;
-using CalamityOverhaul.Content.NPCs.Core;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeViceAI : NPCOverride
+    internal class PrimeViceAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeVice;
-
-        private bool bossRush;
-        private bool masterMode;
-        private bool death;
-        private bool cannonAlive;
-        private bool sawAlive;
-        private bool laserAlive;
-        private NPC head;
-        private Player player;
-        private int frame;
-
         public override bool CanLoad() => true;
 
         // 计算加速度的函数
@@ -180,24 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override bool? CheckDead() => true;
 
-        public override bool AI() {
-            bossRush = BossRushEvent.BossRushActive;
-            masterMode = Main.masterMode || bossRush;
-            death = CalamityWorld.death || bossRush;
-            head = Main.npc[(int)npc.ai[1]];
-            player = Main.player[npc.target];
-            npc.spriteDirection = -(int)npc.ai[0];
-            npc.damage = 0;
-            CalamityGlobalNPC.primeVice = npc.whoAmI;
-            BrutalSkeletronPrimeAI.FindPlayer(npc);
-            BrutalSkeletronPrimeAI.CheakDead(npc, head);
-            BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out _, out sawAlive, out laserAlive);
-            npc.aiStyle = -1;
-            npc.dontTakeDamage = false;
-            if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 1)) {
-                return false;
-            }
-
+        public override bool ArmBehavior() {
             Vector2 viceArmPosition = npc.Center;
             float viceArmIdleXPos = head.Center.X - 200f * npc.ai[0] - viceArmPosition.X;
             float viceArmIdleYPos = head.position.Y + 230f - viceArmPosition.Y;
@@ -318,13 +286,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+            if (!HeadPrimeAI.canLoaderAssetZunkenUp) {
                 return false;
             }
-
-            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
-            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPPliers.Value;
-            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPPliersGlow.Value;
+            if (HeadPrimeAI.DontReform()) {
+                return true;
+            }
+            HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
+            Texture2D mainValue = HeadPrimeAI.BSPPliers.Value;
+            Texture2D mainValue2 = HeadPrimeAI.BSPPliersGlow.Value;
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
                 , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
@@ -332,6 +302,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform();
     }
 }

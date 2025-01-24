@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -39,6 +40,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Head")
                 , CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body")
                 , CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Tail")];
+            if (HeadPrimeAI.DontReform()) {
+                Main.instance.LoadNPC(NPCID.TheDestroyer);
+                Main.instance.LoadNPC(NPCID.TheDestroyerBody);
+                Main.instance.LoadNPC(NPCID.TheDestroyerTail);
+                worm = [TextureAssets.Npc[NPCID.TheDestroyer].Value
+                , TextureAssets.Npc[NPCID.TheDestroyerBody].Value, TextureAssets.Npc[NPCID.TheDestroyerTail].Value];
+            }
             Vector2 toD = (Projectile.rotation).ToRotationVector2();
             for (int i = 0; i < 122; i++) {
                 Texture2D body = worm[1];
