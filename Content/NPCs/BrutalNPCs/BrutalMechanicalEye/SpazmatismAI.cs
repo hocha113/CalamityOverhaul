@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.Eye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,15 +15,25 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class SpazmatismAI : NPCOverride
+    internal class SpazmatismAI : NPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.Spazmatism;
-        public static Color TextColor1 => new(155, 215, 215);
-        public static Color TextColor2 => new(200, 54, 91);
-        Player player;
-        public bool accompany;
+        protected Player player;
+        protected bool accompany;
         protected int frameIndex;
         protected int frameCount;
+        public static Color TextColor1 => new(155, 215, 215);
+        public static Color TextColor2 => new(200, 54, 91);
+        internal static Asset<Texture2D> SpazmatismAsset;
+        internal static Asset<Texture2D> SpazmatismAltAsset;
+        void ICWRLoader.LoadAsset() {
+            SpazmatismAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Spazmatism");
+            SpazmatismAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/SpazmatismAlt");
+        }
+        void ICWRLoader.UnLoadData() {
+            SpazmatismAsset = null;
+            SpazmatismAltAsset = null;
+        }
         public override void SetProperty() {
             npc.realLife = -1;
 
@@ -519,8 +530,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         private bool Debut() {
-            ref float ai1 = ref ai[1];
-            if (ai1 == 0) {
+            if (ai[1] == 0) {
                 npc.life = 1;
                 npc.Center = player.Center;
                 npc.Center += npc.type == NPCID.Spazmatism ? new Vector2(-1200, 1000) : new Vector2(1200, 1000);
@@ -535,15 +545,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             npc.position += player.velocity;
             Vector2 toPoint = player.Center;
 
-            if (ai1 < 60) {
+            if (ai[1] < 60) {
                 toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? 500 : -500, 500);
             }
             else {
                 toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? -500 : 500, -500);
-                if (ai1 == 90 && !VaultUtils.isServer && !accompany) {
+                if (ai[1] == 90 && !VaultUtils.isServer && !accompany) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
-                if (ai1 > 90) {
+                if (ai[1] > 90) {
                     int addNum = (int)(npc.lifeMax / 80f);
                     if (npc.life >= npc.lifeMax) {
                         npc.life = npc.lifeMax;
@@ -556,21 +566,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 }
             }
 
-            if (ai1 > 180) {
+            if (ai[1] > 180) {
                 if (!VaultUtils.isServer && !accompany) {
                     SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
                 }
                 npc.dontTakeDamage = false;
                 npc.damage = npc.defDamage;
                 ai[0] = 2;
-                ai1 = 0;
+                ai[1] = 0;
                 NetAISend(npc);
                 return false;
             }
 
             npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
 
-            ai1++;
+            ai[1]++;
 
             return true;
         }
@@ -600,7 +610,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (accompany) {
                 return ai[0] == 2;
             }
-            return (npc.life / (float)npc.lifeMax) < 0.6f;
+            return (npc.life / (float)npc.lifeMax) < 0.6f && ai[0] != 1;
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -608,12 +618,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return true;
             }
 
-            Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/Spazmatism");
+            Texture2D mainValue = SpazmatismAsset.Value;
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = npc.rotation + MathHelper.PiOver2;
             if (IsSecondPhase()) {
-                mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/SpazmatismAlt");
+                mainValue = SpazmatismAltAsset.Value;
                 rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
                 Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
                 , Color.White, drawRot, rectangle.Size() / 2, npc.scale, spriteEffects, 0);

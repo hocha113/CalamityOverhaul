@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -13,13 +14,11 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     internal abstract class BaseAmmoBox : ModProjectile
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-
         private bool onProj;
         private bool onDorp;
         private int dorpDistank;
         protected int maxFrameNum = 1;
         public int FromeThisTImeID;
-
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 36;
@@ -58,8 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
                 list.Add(new Item(ammoType, cwrItem.AmmoCapacity - num));
             }
-            cwrItem.MagazineContents = list.ToArray();
-            AmmoViewUI.Instance.LoadAmmos(cwrItem);
+            cwrItem.SetMagazine(list);
         }
 
         public virtual bool ClickBehavior(Player player, CWRItems cwr) => true;
@@ -89,28 +87,23 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             }
         }
 
-        public override bool PreAI() {
-            ClockFrame();
-            return true;
-        }
-
         public override void AI() {
+            ClockFrame();
             Projectile.timeLeft = 2;
-            Player player = Main.player[Projectile.owner];
+            Player player = Main.LocalPlayer;
             float inPlayer = player.Distance(Projectile.Center);
             bool inMouse = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
-            onProj = inPlayer < 100 && inMouse;
-            if (onProj) {
+            if (inPlayer < 100 && inMouse) {
                 player.noThrow = 2;
                 player.cursorItemIconEnabled = true;
                 if (FromeThisTImeID == 0) {
-                    FromeThisTImeID = ModContent.ItemType<Items.Placeable.AmmoBoxFire>();
+                    FromeThisTImeID = ModContent.ItemType<AmmoBoxFire>();
                 }
                 player.cursorItemIconID = FromeThisTImeID;
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     gun.ShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
                 }
-                if (player.PressKey(false) && Projectile.IsOwnedByLocalPlayer()) {
+                if (player.PressKey(false) && Main.myPlayer == player.whoAmI) {
                     Item item = player.GetItem();
                     if (CanClick(item)) {
                         Preprocessing(player, item);
@@ -119,24 +112,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                         }
                     }
                     else {
-                        //bool inventoryIsFull = true;
-                        //for (int i = 0; i < 53; i++) {
-                        //    Item ccItem = player.inventory[i];
-                        //    if (ccItem.IsAir) {
-                        //        player.inventory[i] = item.Clone();
-                        //        player.inventory[player.selectedItem] = new Item(FromeThisTImeID);
-                        //        SoundEngine.PlaySound(SoundID.Grab, player.Center);
-                        //        inventoryIsFull = false;
-                        //        break;
-                        //    }
-                        //}
-
-                        //if (!inventoryIsFull) {
-                        //    Projectile.Kill();
-                        //}
                         player.QuickSpawnItem(Projectile.FromObjectGetParent(), new Item(FromeThisTImeID));
                         Projectile.Kill();
                     }
+                    Projectile.netUpdate = true;
                     return;
                 }
             }
