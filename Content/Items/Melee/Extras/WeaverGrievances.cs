@@ -393,7 +393,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Projectile.rotation += Projectile.velocity.X;
 
             if (Projectile.ai[1] == 162) {
-                if (Main.player[Projectile.owner].ZoneDungeon || Main.player[Projectile.owner].ZoneHell()) {
+                if (Main.player[Projectile.owner].ZoneDungeon || Main.player[Projectile.owner].ZoneUnderworldHeight) {
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<WeaverExplode>(), Projectile.damage, 0, Projectile.owner);
                 }

@@ -536,8 +536,6 @@ namespace CalamityOverhaul
                 || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
                 || TungstenRiot.Instance.TungstenRiotIsOngoing;
 
-        public static bool ZoneHell(this Player player) => player.position.Y > Main.maxTilesY * 16f / 15f * 14f;
-
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);

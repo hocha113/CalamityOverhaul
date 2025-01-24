@@ -5,10 +5,12 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
+using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
@@ -220,26 +222,26 @@ namespace CalamityOverhaul.Content
 
         public override void OnKill(NPC npc) {
             if (!VaultUtils.isClient) {
-                if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
-                    for (int i = 0; i < Main.rand.Next(3, 6); i++) {
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
+                if (npc.boss) {
+                    if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
+                        for (int i = 0; i < Main.rand.Next(3, 6); i++) {
+                            int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
+                            if (!VaultUtils.isSinglePlayer) {
+                                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                            }
+                        }
+                    }
+                    if (Main.rand.NextBool(200) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
                         if (!VaultUtils.isSinglePlayer) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }
-                }
-
-                if (Main.rand.NextBool(4000) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
-                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
-                }
-
-                if (Main.rand.NextBool(4000)) {
-                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                    if (Main.rand.NextBool(200)) {
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
+                        if (!VaultUtils.isSinglePlayer) {
+                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -313,10 +315,14 @@ namespace CalamityOverhaul.Content
             else if (npc.type == ModContent.NPCType<DesertScourgeHead>()) {
                 IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
                 LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
-                rule.Add(ModContent.ItemType<WastelandFang>(), 6);
-                rule.Add(ModContent.ItemType<SandDagger>(), 6);
+                rule.Add(ModContent.ItemType<MelodyTheSand>(), 10);
+                rule.Add(ModContent.ItemType<WastelandFang>(), 10);
+                rule.Add(ModContent.ItemType<SandDagger>(), 10);
                 rule.Add(ModContent.ItemType<BurntSienna>(), 10);
                 npcLoot.Add(rule);
+            }
+            else if (npc.type == ModContent.NPCType<OldDuke>()) {
+                npcLoot.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
             }
         }
 

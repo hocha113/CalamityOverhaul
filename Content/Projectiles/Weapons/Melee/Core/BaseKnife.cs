@@ -41,6 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public virtual void SetKnifeProperty() { }
 
         public sealed override void Initialize() {
+            base.Initialize();
             Projectile.DamageType = Item.DamageType;
             maxSwingTime = Item.useTime;
             SwingData.maxSwingTime = maxSwingTime;

@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.TreasureBags;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using Terraria;
@@ -12,8 +13,9 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
     {
         public override int TargetID => ModContent.ItemType<DesertScourgeBag>();
         public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ModContent.ItemType<WastelandFang>(), 6);
-            itemLoot.Add(ModContent.ItemType<SandDagger>(), 6);
+            itemLoot.Add(ModContent.ItemType<MelodyTheSand>(), 10);
+            itemLoot.Add(ModContent.ItemType<WastelandFang>(), 10);
+            itemLoot.Add(ModContent.ItemType<SandDagger>(), 10);
             itemLoot.Add(ModContent.ItemType<BurntSienna>(), 10);
         }
     }

@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         private int dirs;
         private float oldRot;
         private float _meleeSize = 0;
-        private bool isInitialize;
         protected Vector2 vector;
         protected Vector2 startVector;
         protected float inWormBodysDamageFaul = 0.85f;
@@ -561,6 +560,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         }
 
+        public override void Initialize() {
+            _meleeSize = 1f;
+            if (Item.type != ItemID.None) {
+                _meleeSize = Owner.GetAdjustedItemScale(Item);
+            }
+        }
+
         /// <summary>
         /// 几乎所有的逻辑更新都在这里进行
         /// </summary>
@@ -568,14 +574,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public sealed override bool PreUpdate() {
             SwingMultiplication = SetSwingSpeed(1f);
             canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * UpdateRate);
-            if (!isInitialize) {
-                _meleeSize = 1f;
-                if (Item.type != ItemID.None) {
-                    _meleeSize = Owner.GetAdjustedItemScale(Item);
-                }
-                Initialize();
-                isInitialize = true;
-            }
             if (PreInOwnerUpdate()) {
                 InOwner();
                 SwingAI();
