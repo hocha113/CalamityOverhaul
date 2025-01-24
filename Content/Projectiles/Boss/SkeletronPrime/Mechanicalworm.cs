@@ -35,12 +35,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D[] worm = [TextureAssets.Npc[NPCID.TheDestroyer].Value
-                , TextureAssets.Npc[NPCID.TheDestroyerBody].Value, TextureAssets.Npc[NPCID.TheDestroyerTail].Value];
+            Texture2D[] worm = [
+                CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Head")
+                , CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body")
+                , CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Tail")];
             Vector2 toD = (Projectile.rotation).ToRotationVector2();
-            Main.instance.LoadNPC(NPCID.TheDestroyer);
-            Main.instance.LoadNPC(NPCID.TheDestroyerBody);
-            Main.instance.LoadNPC(NPCID.TheDestroyerTail);
             for (int i = 0; i < 122; i++) {
                 Texture2D body = worm[1];
                 if (i == 121) {

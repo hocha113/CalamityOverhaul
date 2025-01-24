@@ -56,7 +56,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override bool PreDraw(ref Color lightColor) {
-
             if (Projectile.ai[0] < Projectile.ai[1] + 420 && Projectile.ai[0] > Projectile.ai[1]) {
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicWrap
