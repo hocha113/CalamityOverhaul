@@ -4389,9 +4389,18 @@ Legend: {
 	}
 
 	MuraText: {
-		// Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
-		// Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
-		// Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
-		// Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
+		Subtest_Text0:
+			'''
+			Мы должны отправиться в ад, чтобы высвободить силу света и тьмы. 
+			Это вызовет бурю в подпространстве, но у нас нет выбора. Новобранец, 
+			напиши величественную главу для нашего пути!
+			'''
+		Subtest_Text1: "Огромный стальной червь преграждает нам путь. Разорви его на куски."
+		Subtest_Text2: "Я чувствую, как на нас смотрят два взгляда. Разберись с ними."
+		Subtest_Text3: 
+			'''
+			Решающее сражение близко. Эти груды металлолома собираются объединиться, чтобы попытаться нас остановить.
+			Клинками и кровью покажите им, что наша экспедиция раздавит всех чужих тварей и ненавистные интеллекты.
+			'''
 	}
 }

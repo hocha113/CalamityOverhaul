@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void PostDraw(Color lightColor) {
-            Texture2D mainValue = TextureAssets.Npc[NPCID.Probe].Value;
+            Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");
             Main.instance.LoadNPC(NPCID.Probe);
             Vector2 orig = Projectile.Center - Main.screenPosition;
             for (int i = 0; i < 33; i++) {
@@ -200,9 +200,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap
                 , DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            //Rectangle rekt = new(Main.screenWidth / -2, Main.screenHeight / -2, Main.screenWidth * 2, Main.screenHeight * 2);
             Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() / 2, 0, 0f);
-            //Main.spriteBatch.Draw(blackTile.Value, Vector2.Zero, new Rectangle(0, 0, 2000, 2000), default, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             Main.spriteBatch.ExitShaderRegion();
 
             Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)

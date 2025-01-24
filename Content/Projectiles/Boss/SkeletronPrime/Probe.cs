@@ -68,11 +68,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Main.spriteBatch.ResetBlendState();
             }
 
-            Texture2D mainValue = TextureAssets.Npc[NPCID.Probe].Value;
+            Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");
             Main.instance.LoadNPC(NPCID.Probe);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, mainValue.Size() / 2, Projectile.scale, SpriteEffects.FlipHorizontally, 0);
-
             return false;
         }
     }

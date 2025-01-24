@@ -4366,9 +4366,18 @@ Legend: {
 	}
 
 	MuraText: {
-		// Subtest_Text0: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text0
-		// Subtest_Text1: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text1
-		// Subtest_Text2: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text2
-		// Subtest_Text3: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text3
+		Subtest_Text0:
+			'''
+			Debemos ir al infierno para liberar el poder de la luz y la oscuridad. 
+			Esto desatará una tormenta de subespacio, pero no tenemos otra opción. 
+			¡Recluta, escribe un capítulo grandioso para el viaje!
+			'''
+		Subtest_Text1: "Un enorme gusano de acero bloquea nuestro camino. Despedázalo."
+		Subtest_Text2: "Puedo sentir dos miradas observándonos. Ve y ocúpate de ellas."
+		Subtest_Text3: 
+			'''
+			Se avecina una batalla decisiva. Esas pilas de chatarra planean unirse para intentar detenernos.
+			Con espadas y sangre, hágales saber que nuestra expedición aplastará a todas las abominaciones alienígenas e inteligencias odiosas.
+			'''
 	}
 }
