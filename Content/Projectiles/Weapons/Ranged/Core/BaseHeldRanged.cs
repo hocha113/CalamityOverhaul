@@ -219,9 +219,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             onFireR = flags[4];
         }
 
-        public bool overNoFireCeahks() {
-            return !CalOwner.profanedCrystalBuffs;
-        }
+        public bool CanSpanProj() => !CalOwner.profanedCrystalBuffs;
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -378,7 +376,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override void AI() {
             InOwner();
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            if (CanSpanProj()) {
                 SpanProj();
             }
             Time++;

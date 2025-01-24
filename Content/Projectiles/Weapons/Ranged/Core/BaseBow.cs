@@ -328,15 +328,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         }
 
-        public override void AI() {
-            InOwner();
-            if (overNoFireCeahks()) {
-                SpanProj();
-            }
-
-            Time++;
-        }
-
         public override void SpanProj() {
             if (ShootCoolingValue > Item.useTime && (onFire || onFireR)) {
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {

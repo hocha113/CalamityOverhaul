@@ -62,6 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             if (player.gravDir != 1f) {
                 handOffset.Y = player.bodyFrame.Height - handOffset.Y;
             }
+
             handOffset -= new Vector2(player.bodyFrame.Width - player.width, player.bodyFrame.Height - player.height) / 2f;
             Vector2 rotatedHandPosition = player.RotatedRelativePoint(player.position + handOffset, true);
             for (int i = 0; i < 4; i++) {

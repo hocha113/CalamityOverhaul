@@ -607,7 +607,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 SetCompositeArm();
             }
             UpdateRecoil();
-            if (overNoFireCeahks()) {
+            if (CanSpanProj()) {
                 SpanProj();
             }
             Time++;
