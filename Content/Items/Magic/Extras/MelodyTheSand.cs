@@ -9,6 +9,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
+    /// <summary>
+    /// 沙中曲
+    /// </summary>
     internal class MelodyTheSand : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
@@ -24,8 +27,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.shoot = ModContent.ProjectileType<SaltationSend>();
             Item.shootSpeed = 6;
             Item.UseSound = SoundID.Item20;
-            Item.rare = ItemRarityID.Green;
-            Item.value = Item.buyPrice(0, 0, 50, 15);
+            Item.rare = ItemRarityID.Blue;
+            Item.value = Item.buyPrice(0, 0, 80, 15);
             Item.SetHeldProj<MelodyTheSandHeld>();
         }
     }

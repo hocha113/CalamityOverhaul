@@ -3,6 +3,7 @@ using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.CalamityAIs.CalamityBossAIs;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
@@ -315,14 +316,17 @@ namespace CalamityOverhaul.Content
             else if (npc.type == ModContent.NPCType<DesertScourgeHead>()) {
                 IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
                 LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
-                rule.Add(ModContent.ItemType<MelodyTheSand>(), 10);
+                rule.Add(ModContent.ItemType<UnderTheSand>(), 10);
                 rule.Add(ModContent.ItemType<WastelandFang>(), 10);
                 rule.Add(ModContent.ItemType<SandDagger>(), 10);
                 rule.Add(ModContent.ItemType<BurntSienna>(), 10);
                 npcLoot.Add(rule);
             }
-            else if (npc.type == ModContent.NPCType<OldDuke>()) {
-                npcLoot.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
+            else if (npc.type == ModContent.NPCType<AquaticScourgeHead>()) {
+                IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
+                LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
+                npcLoot.Add(ModContent.ItemType<MelodyTheSand>(), 6);
+                npcLoot.Add(rule);
             }
         }
 

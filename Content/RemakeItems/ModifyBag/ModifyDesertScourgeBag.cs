@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
     {
         public override int TargetID => ModContent.ItemType<DesertScourgeBag>();
         public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ModContent.ItemType<MelodyTheSand>(), 10);
+            itemLoot.Add(ModContent.ItemType<UnderTheSand>(), 10);
             itemLoot.Add(ModContent.ItemType<WastelandFang>(), 10);
             itemLoot.Add(ModContent.ItemType<SandDagger>(), 10);
             itemLoot.Add(ModContent.ItemType<BurntSienna>(), 10);

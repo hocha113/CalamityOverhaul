@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityMod.Projectiles.Boss;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -60,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Projectile.velocity = UnitToMouseV * 17.5f;
             Projectile.tileCollide = true;
             Projectile.penetrate = 1;
-            if (stealthStrike) {
+            if (stealthStrike && Projectile.ai[2] == 0) {
                 Projectile.damage *= 2;
                 Projectile.ArmorPenetration = 10;
                 Projectile.penetrate = 6;
@@ -71,7 +72,21 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         }
 
         public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
+            Vector2 tilePos = CWRUtils.WEPosToTilePos(Projectile.Bottom);
+            if (CWRUtils.GetTile(tilePos + new Vector2(0, 0)).TileType == TileID.Sand
+                || CWRUtils.GetTile(tilePos + new Vector2(-1, 0)).TileType == TileID.Sand
+                || CWRUtils.GetTile(tilePos + new Vector2(1, 0)).TileType == TileID.Sand
+                || CWRUtils.GetTile(tilePos + new Vector2(0, 1)).TileType == TileID.Sand) {
+                Projectile.Explode();
+                for (int i = 0; i < 3; i++) {
+                    Vector2 velocity = new Vector2(0, -6).RotatedByRandom(0.6f);
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity
+                    , ModContent.ProjectileType<DesertScourgeSpit>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    Main.projectile[proj].hostile = false;
+                    Main.projectile[proj].friendly = true;
+                    NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+                }
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
