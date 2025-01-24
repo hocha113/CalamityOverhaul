@@ -352,14 +352,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 for (int i = 0; i < 6; i++) {
                                     Vector2 origVer = toTarget.UnitVector() * 8;
                                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center
-                                    , origVer + new Vector2(origVer.X * 0.2f * i, -0.1f * i), projType, projDamage, 0);
+                                    , origVer + new Vector2(origVer.X * 0.16f * i, -0.1f * i), projType, projDamage, 0);
                                 }
                             }
                             else {
                                 for (int i = 0; i < ai[4]; i++) {
                                     Vector2 origVer = toTarget.UnitVector() * 8;
                                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center
-                                    , origVer.RotatedBy((ai[4] / -2 + i) * 0.1f), projType, projDamage, 0);
+                                    , origVer.RotatedBy((ai[4] / -2 + i) * 0.06f), projType, projDamage, 0);
                                 }
                             }
 
@@ -596,7 +596,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return true;
         }
 
-        internal bool IsSecondPhase() => ai[0] == 2;
+        internal bool IsSecondPhase() {
+            if (accompany) {
+                return ai[0] == 2;
+            }
+            return (npc.life / (float)npc.lifeMax) < 0.6f;
+        }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {
@@ -607,7 +612,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = npc.rotation + MathHelper.PiOver2;
-            if ((accompany && IsSecondPhase())) {
+            if (IsSecondPhase()) {
                 mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/SpazmatismAlt");
                 rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
                 Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle

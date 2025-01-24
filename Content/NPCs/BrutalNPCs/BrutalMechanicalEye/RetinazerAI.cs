@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = npc.rotation + MathHelper.PiOver2;
-            if ((accompany && IsSecondPhase())) {
+            if (IsSecondPhase()) {
                 mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BEYE/RetinazerAlt");
                 rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
                 Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
