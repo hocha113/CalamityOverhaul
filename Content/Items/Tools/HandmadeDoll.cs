@@ -11,14 +11,13 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void SetDefaults() {
             Item.width = 20;
             Item.height = 20;
-            Item.value = Item.buyPrice(0, 0, 50, 50);
+            Item.value = Item.buyPrice(0, 1, 50, 50);
             Item.rare = ItemRarityID.Purple;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useAnimation = 20;
             Item.useTime = 20;
-            Item.maxStack = 64;
             Item.autoReuse = false;
-            Item.consumable = true;
+            Item.consumable = false;//还是不要消耗的好
         }
 
         public override bool CanUseItem(Player player)
