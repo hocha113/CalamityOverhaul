@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.TileModules
         public override int TargetTileID => ModContent.TileType<DarkMatterCompressor>();
         internal CompressorUI compressorUIInstance;
         private const int maxleng = 120;
-        private float snegs;
         private bool mouseOnTile;
         internal bool drawGlow;
         internal Color gloaColor;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.TileModules
                 return;
             }
 
-            if (mouseOnTile || snegs > 0) {
+            if (mouseOnTile) {
                 Lighting.AddLight(Center, Color.White.ToVector3());
             }
 

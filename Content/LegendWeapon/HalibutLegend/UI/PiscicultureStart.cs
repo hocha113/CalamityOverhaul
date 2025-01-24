@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     internal class PiscicultureStart : UIHandle
     {
         public static float _sengs;
-        public static float leftPos_OffsetX_sengs;
         public static bool HeldHalibut {
             get {
                 if (Main.gameMenu || !Main.LocalPlayer.active) {

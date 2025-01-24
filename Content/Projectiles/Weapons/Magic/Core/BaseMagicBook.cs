@@ -9,7 +9,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
 {
-    internal abstract class BaseMagicBook<TItem> : BaseMagicBookAction where TItem : ModItem
+    internal abstract class BaseMagicBook<TItem> : BaseMagicActionBook where TItem : ModItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<TItem>();
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
             ? ItemID.None : CWRMod.Instance.Find<ModItem>(typeof(TItem).Name + "EcType").Type;
     }
 
-    internal abstract class BaseMagicBook : BaseMagicBookAction
+    internal abstract class BaseMagicBook : BaseMagicActionBook
     {
         public override string Texture => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TextureAssets.Item[targetCayItem].Value;
@@ -27,64 +27,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
         public override int targetCWRItem => targetCayItem;
     }
 
-    internal abstract class BaseMagicBookAction : BaseMagicGun
+    internal abstract class BaseMagicActionBook : BaseMagicAction
     {
-        private int useAnimation;
-        public sealed override void SetMagicProperty() {
-            ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
-            HandFireDistanceX = 20;
-            HandFireDistanceY = 0;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            Onehanded = true;
-            GunPressure = 0;
-            ControlForce = 0;
-            Recoil = 0;
-            SetBookProperty();
-        }
-
-        public override void Initialize() {
-            useAnimation = Item.useAnimation;
-            if (!Main.dedServ) {
-                HandFireDistanceX = TextureValue.Width / 2;
-            }
-        }
-
-        public override void HanderPlaySound() {
-            if (Item.ModItem != null && !Item.ModItem.CanUseItem(Owner)) {
-                return;
-            }
-            useAnimation -= Item.useTime;
-            if (useAnimation <= 0) {
-                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                useAnimation = Item.useAnimation;
-            }
-        }
-
-        public virtual void SetBookProperty() {
-
-        }
-
-        public override void FiringShoot() {
-            if (Item.ModItem != null && !Item.ModItem.CanUseItem(Owner)) {
-                return;
-            }
-            OrigItemShoot();
-        }
-
-        public override void FiringShootR() {
-            if (Item.ModItem != null && !Item.ModItem.CanUseItem(Owner)) {
-                return;
-            }
-            Owner.altFunctionUse = 2;
-            OrigItemShoot();
-        }
-
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
-            Vector2 orig = DirSign > 0 ? new Vector2(0, TextureValue.Height) : new Vector2(0, 0);
+            Vector2 orig = DirSign > 0 ? new Vector2(0, TextureValue.Height / 2) : new Vector2(0, 0);
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
-                , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale
+                , Projectile.rotation + offsetRot, new Vector2(0, TextureValue.Height / 2), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

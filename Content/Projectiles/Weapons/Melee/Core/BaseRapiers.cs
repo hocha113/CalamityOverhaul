@@ -57,8 +57,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public override string Texture => CWRConstant.Placeholder3;
 
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
-
         public virtual string GlowPath => CWRConstant.Placeholder;
 
         public virtual Texture2D GlowValue => CWRUtils.GetT2DValue(GlowPath);
