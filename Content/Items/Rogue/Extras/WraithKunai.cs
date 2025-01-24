@@ -74,8 +74,10 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 }
 
                 if (Projectile.ai[0] >= Inder2) {
-                    CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 1300f, 12f, 20f);
-                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                    if (Projectile.Center.FindClosestNPC(1300f) != null) {
+                        CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 1300f, 12f, 20f);
+                        Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                    }
                 }
                 else if (Projectile.ai[0] > Inder1) {
                     origVer = Projectile.Center.DirectionTo(Main.player[Projectile.owner].Center) * 45;

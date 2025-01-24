@@ -1,16 +1,20 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.InWorldBossPhase;
 
-namespace CalamityOverhaul.Content.Items.Ranged
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutCannonEcType : EctypeItem
     {
@@ -104,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<HalibutCannonHeldProj>();
+            Item.CWR().heldProjType = ModContent.ProjectileType<HalibutCannonHeld>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
@@ -112,35 +116,44 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
-            if (legendtops != null) {
-                int index = InWorldBossPhase.Instance.Halibut_Level();
-                legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => SetTooltip(ref tooltips);
 
-                if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                    legendtops.Text = InWorldBossPhase.Level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2")
-                        : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
-                }
-                legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-            }
-            SetTooltip(ref tooltips);
-        }
-
-        public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
+        public static void SetTooltip(ref List<TooltipLine> tooltips) {
+            int index = Instance.SHPC_Level();
+            string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                int level = InWorldBossPhase.Instance.Halibut_Level();
+                int level = Instance.Halibut_Level();
                 string num = (level + 1).ToString();
                 if (level == 14) {
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", modName);
-                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), modName);
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", "");
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), "");
             }
             else {
-                tooltips.ReplaceTooltip("[Lang4]", "", modName);
-                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_4"), modName);
+                tooltips.ReplaceTooltip("[Lang4]", "", "");
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_4"), "");
+                newContent = Level11? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
             }
+            Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+            tooltips.ReplaceTooltip("[Text]", CWRUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }
+    }
+
+    internal class RHalibutCannon : BaseRItem
+    {
+        public override int TargetID => ModContent.ItemType<HalibutCannon>();
+        public override int ProtogenesisID => ModContent.ItemType<HalibutCannonEcType>();
+        public override string TargetToolTipItemName => "HalibutCannonEcType";
+        public override void SetDefaults(Item item) => HalibutCannonEcType.SetDefaultsFunc(item);
+        public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            crit += HalibutCannonEcType.GetOnCrit;
+            return false;
+        }
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, HalibutCannonEcType.GetOnDamage, HalibutCannonEcType.GetStartDamage, ref damage);
+            return false;
+        }
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => HalibutCannonEcType.SetTooltip(ref tooltips);
     }
 }

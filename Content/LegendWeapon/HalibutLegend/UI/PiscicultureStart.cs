@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

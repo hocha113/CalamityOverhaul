@@ -1,19 +1,19 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
-    internal class SHPCHeldProj : BaseMagicGun
+    internal class SHPCHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public override int targetCayItem => ModContent.ItemType<SHPC>();
         public override int targetCWRItem => ModContent.ItemType<SHPCEcType>();
-
         private int level => InWorldBossPhase.Instance.SHPC_Level();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;

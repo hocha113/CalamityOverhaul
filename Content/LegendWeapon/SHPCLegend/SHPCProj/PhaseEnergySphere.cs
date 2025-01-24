@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -6,7 +7,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
 {
     internal class PhaseEnergySphere : ModProjectile
     {

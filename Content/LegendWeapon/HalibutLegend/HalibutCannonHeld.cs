@@ -1,14 +1,14 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutCannonHeldProj : BaseGun
+    internal class HalibutCannonHeld : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int targetCayItem => ModContent.ItemType<HalibutCannon>();

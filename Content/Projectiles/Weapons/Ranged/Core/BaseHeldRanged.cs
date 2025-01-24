@@ -1,13 +1,16 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using System;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -42,6 +45,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 对本身模组的物品对象
         /// </summary>
         public virtual int targetCWRItem => ItemID.None;
+        /// <summary>
+        /// 自定义本地化键
+        /// </summary>
+        public override LocalizedText DisplayName => targetCayItem < ItemID.Count ? 
+            Language.GetText("ItemName." + ItemID.Search.GetName(targetCayItem)) 
+            : ItemLoader.GetItem(targetCayItem).GetLocalization("DisplayName");
         /// <summary>
         /// 右手角度值
         /// </summary>

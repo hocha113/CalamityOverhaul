@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DaemonsFlameHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DaemonsFlame";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DaemonsFlameEcType>();
         public override int targetCayItem => ModContent.ItemType<DaemonsFlame>();
         public override int targetCWRItem => ModContent.ItemType<DaemonsFlameEcType>();
         public override void SetRangedProperty() {

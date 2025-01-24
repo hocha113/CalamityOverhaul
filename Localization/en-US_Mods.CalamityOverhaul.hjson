@@ -2699,7 +2699,6 @@ Projectiles: {
 	EXDemonBlast.DisplayName: EX Demon Blast
 	EXOathblade.DisplayName: EX Oathblade
 	EXDemonBlastAlt.DisplayName: EX Demon Blast
-	HalibutCannonHeldProj.DisplayName: Halibut Cannon
 	DivineJustice.DisplayName: Divine Justice
 	JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
 	JUZenithWorldTime.DisplayName: J U Zenith World Time
@@ -2827,6 +2826,7 @@ Projectiles: {
 	NanoPurgeHeldProj.DisplayName: Nano Purge
 	PlasmaRifleHeldProj.DisplayName: Plasma Rifle
 	SHPCHeldProj.DisplayName: SHPC
+	SHPCHeld.DisplayName: S H P C Held
 	BubbleGunHeldProj.DisplayName: Bubble Gun
 	LunarFlareBookHeldProj.DisplayName: Lunar Flare Book
 	MagicStar.DisplayName: Magic Star

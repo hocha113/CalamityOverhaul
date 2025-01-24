@@ -1,18 +1,16 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.Audio;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
 {
     internal abstract class BaseMagicBook<TItem> : BaseMagicActionBook where TItem : ModItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<TItem>();
         public override int targetCayItem => ModContent.ItemType<TItem>();
         public override int targetCWRItem => CWRServerConfig.Instance.WeaponOverhaul
             ? ItemID.None : CWRMod.Instance.Find<ModItem>(typeof(TItem).Name + "EcType").Type;
@@ -22,7 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
     {
         public override string Texture => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TextureAssets.Item[targetCayItem].Value;
-        public override LocalizedText DisplayName => Language.GetOrRegister("Mods.CalamityOverhaul.Projectiles.MagicBook_" + targetCayItem);
         public override int targetCayItem => ItemID.None;
         public override int targetCWRItem => targetCayItem;
     }

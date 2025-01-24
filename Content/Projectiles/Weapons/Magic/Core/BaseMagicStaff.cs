@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
     {
         public override string Texture => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TextureAssets.Item[targetCayItem].Value;
-        public override LocalizedText DisplayName => Language.GetOrRegister("Mods.CalamityOverhaul.Projectiles.MagicStaff_" + targetCayItem);
         public override int targetCayItem => ItemID.None;
         public override int targetCWRItem => targetCayItem;
     }
