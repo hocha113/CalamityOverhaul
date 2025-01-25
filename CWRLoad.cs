@@ -271,6 +271,10 @@ namespace CalamityOverhaul
         /// </summary>
         internal static Dictionary<int, bool> ItemIsBow { get; private set; } = [];
         /// <summary>
+        /// 该物品是否是一个十字弩
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsCrossBow { get; private set; } = [];
+        /// <summary>
         /// 该物品是否是一个基本的远程类
         /// </summary>
         internal static Dictionary<int, bool> ItemIsRanged { get; private set; } = [];
@@ -489,6 +493,7 @@ namespace CalamityOverhaul
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);
                 ItemIsGun[itemType] = false;
+                ItemIsCrossBow[itemType] = false;
                 ItemIsGunAndMustConsumeAmmunition[itemType] = false;
                 ItemIsGunAndGetRecoilValue[itemType] = 1.2f;
                 ItemIsGunAndGetRecoilLocKey[itemType] = "";
@@ -523,6 +528,7 @@ namespace CalamityOverhaul
                         if (heldProj.ModProjectile != null) {
                             if (heldProj.ModProjectile is BaseGun gun) {
                                 ItemIsGun[itemType] = true;
+                                ItemIsCrossBow[itemType] = gun.IsCrossbow;
                                 ItemIsGunAndMustConsumeAmmunition[itemType] = gun.MustConsumeAmmunition;
                                 ItemIsGunAndGetRecoilValue[itemType] = gun.Recoil;
                                 ItemIsGunAndGetRecoilLocKey[itemType] = GetLckRecoilKey(gun.Recoil);

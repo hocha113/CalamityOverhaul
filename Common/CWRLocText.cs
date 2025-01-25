@@ -113,6 +113,8 @@ namespace CalamityOverhaul.Common
         public LocalizedText CartridgeHolderUI_Text5 { get; private set; }
         public LocalizedText CartridgeHolderUI_Text6 { get; private set; }
         public LocalizedText CartridgeHolderUI_Text7 { get; private set; }
+        public LocalizedText ArrowHolderUI_Text0 { get; private set; }
+        public LocalizedText ArrowHolderUI_Text1 { get; private set; }
         public LocalizedText CWRGun_KL_Text { get; private set; }
         public LocalizedText CWRGun_Scope_Text { get; private set; }
         public LocalizedText CWRGun_Recoil_Text { get; private set; }

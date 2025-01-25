@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.UIs
         internal int Height;
         private int rightHeldTime;
         public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[heldItem.type] || IsAmmo());
-        public bool IsAmmo() => heldItem.ammo != AmmoID.None;
+        public bool IsAmmo() => heldItem.ammo != AmmoID.None && heldItem.ammo != AmmoID.Arrow;
         public override void Update() {
             if (CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
                 targetWeapon = heldItem;
@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.UIs
             if (cwrWeapon == null) {
                 return;
             }
+
+            Initialize();
 
             if (TextureValue != null) {
                 UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
@@ -167,8 +169,6 @@ namespace CalamityOverhaul.Content.UIs
             if (cwrWeapon == null || targetWeapon == null) {
                 return;
             }
-
-            Initialize();
 
             if (AmmoViewUI.Instance.Active) {
                 AmmoViewUI.Instance.Draw(spriteBatch);
