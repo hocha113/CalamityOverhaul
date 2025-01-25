@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             CWRItems cwrItem = item.CWR();
             cwrItem.NumberBullets = cwrItem.AmmoCapacity;
             cwrItem.IsKreload = true;
-            cwrItem.NoKreLoadTime += 30;
+            cwrItem.NoKreLoadTime = 30;
             int num = 0;
             List<Item> list = [];
             foreach (Item i in cwrItem.MagazineContents) {

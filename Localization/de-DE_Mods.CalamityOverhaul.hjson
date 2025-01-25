@@ -3256,8 +3256,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: Rekrut, ich erkenne deine Fähigkeiten an, lass uns jetzt diese Fremden zerstören
 		Murasama_No_legend_Content_3: "[c/fff08c:Wird stärker mit jedem entfernten Reise]"
 		Murasama_No_legend_Content_4: "[c/00707d:Die Glorie der Legende ist bereits verblasst...]"
-		SHPC_No_legend_Content_1: "Wird nach dem Tod des Drachen freigeschaltet"
-		SHPC_No_legend_Content_2: "Bereit zum Angriff!"
+		SHPC_No_legend_Content_1: Wird nach dem Tod des Drachen freigeschaltet
+		SHPC_No_legend_Content_2: Bereit zum Angriff!
 		SHPC_No_legend_Content_3: "[c/fff08c:Wird stärker mit jedem entfernten Reise]"
 		SHPC_No_legend_Content_4: "[c/00707d:Die Glorie der Legende ist bereits verblasst...]"
 		SHPC_TextDictionary_Content_0:
@@ -3331,8 +3331,8 @@ TextContent: {
 			Mach dich bereit, wir brauchen einen perfekten Sieg.
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001-Protokoll wurde entsperrt.
-		Halibut_No_legend_Content_1: "Freigeschaltet nach dem Fall des großen Drachen"
-		Halibut_No_legend_Content_2: "Kumpel, ich war die ganze Zeit hier"
+		Halibut_No_legend_Content_1: Freigeschaltet nach dem Fall des großen Drachen
+		Halibut_No_legend_Content_2: Kumpel, ich war die ganze Zeit hier
 		Halibut_No_legend_Content_3: "[c/fff08c:Stärker geworden mit jeder Reise]"
 		Halibut_No_legend_Content_4: "[c/00707d:Der Glanz der Legende ist verblasst...]"
 		Halibut_TextDictionary_Content_0: Freund, lass uns dieses riesige, schleimige Landwesen herausfordern.

@@ -3286,8 +3286,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
 		Murasama_No_legend_Content_3: "[c/fff08c:Stronger with the distance of the journey]"
 		Murasama_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		SHPC_No_legend_Content_1: "Unlock it after the dragon falls"
-		SHPC_No_legend_Content_2: "Return of the legendary weapon! :)"
+		SHPC_No_legend_Content_1: Unlock it after the dragon falls
+		SHPC_No_legend_Content_2: Return of the legendary weapon! :)
 		SHPC_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
 		SHPC_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
 		SHPC_TextDictionary_Content_0:
@@ -3361,8 +3361,8 @@ TextContent: {
 			Get ready; we need a perfect victory.
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
-		Halibut_No_legend_Content_1: "Unlocked after the fall of the great dragon"
-		Halibut_No_legend_Content_2: "Hey, I've been here all along"
+		Halibut_No_legend_Content_1: Unlocked after the fall of the great dragon
+		Halibut_No_legend_Content_2: Hey, I've been here all along
 		Halibut_No_legend_Content_3: "[c/fff08c:Growing stronger with each step of the journey]"
 		Halibut_No_legend_Content_4: "[c/00707d:The legendary glow has faded...]"
 		Halibut_TextDictionary_Content_0: Friend, let's challenge that enormous, slimy land creature.

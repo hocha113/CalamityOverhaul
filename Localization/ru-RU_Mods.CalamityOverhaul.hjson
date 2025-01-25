@@ -3322,8 +3322,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: Новобранец, я признаю твои способности. Теперь давай пойдем и истребим этих чудовищ
 		Murasama_No_legend_Content_3: "[c/fff08c: Сильней с каждым шагом в пути]"
 		Murasama_No_legend_Content_4: "[c/00707d: Легендарное сияние уже померкло...]"
-		SHPC_No_legend_Content_1: "Разблокируется после падения гигантского дракона"
-		SHPC_No_legend_Content_2: "Накопление силы!"
+		SHPC_No_legend_Content_1: Разблокируется после падения гигантского дракона
+		SHPC_No_legend_Content_2: Накопление силы!
 		SHPC_No_legend_Content_3: "[c/fff08c:Сильней с каждым шагом в пути]"
 		SHPC_No_legend_Content_4: "[c/00707d:Легендарное сияние уже померкло...]"
 		SHPC_TextDictionary_Content_0:
@@ -3399,8 +3399,8 @@ TextContent: {
 			Будь готов, нам нужна идеальная победа
 			'''
 		SHPC_TextDictionary_Content_14: Протокол HMOI-0001 разблокирован
-		Halibut_No_legend_Content_1: "Разблокируется после падения великого дракона"
-		Halibut_No_legend_Content_2: "Эй, я здесь с самого начала"
+		Halibut_No_legend_Content_1: Разблокируется после падения великого дракона
+		Halibut_No_legend_Content_2: Эй, я здесь с самого начала
 		Halibut_No_legend_Content_3: "[c/fff08c:Становлюсь сильнее с каждым шагом пути]"
 		Halibut_No_legend_Content_4: "[c/00707d:Легендарное сияние угасло...]"
 		Halibut_TextDictionary_Content_0: Друг, давай бросим вызов этому огромному, слизкому существу на суше.

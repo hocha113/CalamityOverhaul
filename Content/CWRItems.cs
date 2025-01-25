@@ -265,7 +265,9 @@ namespace CalamityOverhaul.Content
             }
 
             newAmmo.stack = addStack;
-            newAmmo.CWR().AmmoProjectileReturn = !isUnlimited;
+            if (newAmmo.type != ItemID.None) {
+                newAmmo.CWR().AmmoProjectileReturn = !isUnlimited;
+            }
 
             List<Item> newMagazine = MagazineContents.ToList();
             bool onAdds = false;

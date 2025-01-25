@@ -80,6 +80,10 @@ namespace CalamityOverhaul.Content.UIs
                         else {
                             SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked);
                         }
+                        if (cwrWeapon.NumberBullets > 0) {
+                            cwrWeapon.IsKreload = true;
+                            cwrWeapon.NoKreLoadTime = 30;
+                        }
                     }
                 }
                 else {

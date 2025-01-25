@@ -3312,8 +3312,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: Recluta, reconozco tu habilidad, ahora, vamos a destrozar a esos aberrantes
 		Murasama_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
 		Murasama_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
-		SHPC_No_legend_Content_1: "Desbloqueado tras la caída del dragón"
-		SHPC_No_legend_Content_2: "¡Listo para atacar!"
+		SHPC_No_legend_Content_1: Desbloqueado tras la caída del dragón
+		SHPC_No_legend_Content_2: ¡Listo para atacar!
 		SHPC_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
 		SHPC_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
 		SHPC_TextDictionary_Content_0:
@@ -3387,8 +3387,8 @@ TextContent: {
 			Prepárate, necesitamos una victoria perfecta
 			'''
 		SHPC_TextDictionary_Content_14: El protocolo HMOI-0001 ha sido desbloqueado
-		Halibut_No_legend_Content_1: "Desbloquear después de la caída del dragón"
-		Halibut_No_legend_Content_2: "Hermano, he estado aquí todo el tiempo"
+		Halibut_No_legend_Content_1: Desbloquear después de la caída del dragón
+		Halibut_No_legend_Content_2: Hermano, he estado aquí todo el tiempo
 		Halibut_No_legend_Content_3: "[c/fff08c:Me vuelvo más fuerte a medida que avanza el viaje]"
 		Halibut_No_legend_Content_4: "[c/00707d:El brillo de la leyenda se ha apagado...]"
 		Halibut_TextDictionary_Content_0: Amigo, vamos a desafiar a esa enorme criatura terrestre pegajosa

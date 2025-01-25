@@ -3272,8 +3272,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: Nouvelle recrue, je reconnais tes capacités, maintenant, allons éliminer ces aliens
 		Murasama_No_legend_Content_3: "[c/fff08c:Deviens plus fort à mesure que le voyage s'allonge]"
 		Murasama_No_legend_Content_4: "[c/00707d:L'éclat légendaire s'estompe déjà...]"
-		SHPC_No_legend_Content_1: "Débloqué après la chute du dragon géant"
-		SHPC_No_legend_Content_2: "Prêt à être déployé !"
+		SHPC_No_legend_Content_1: Débloqué après la chute du dragon géant
+		SHPC_No_legend_Content_2: Prêt à être déployé !
 		SHPC_No_legend_Content_3: "[c/fff08c:Deviens plus fort à mesure que le voyage s'allonge]"
 		SHPC_No_legend_Content_4: "[c/00707d:L'éclat légendaire s'estompe déjà...]"
 		SHPC_TextDictionary_Content_0:
@@ -3347,8 +3347,8 @@ TextContent: {
 			Soyez prêt, nous avons besoin d'une victoire parfaite cette fois-ci
 			'''
 		SHPC_TextDictionary_Content_14: Protocole HMOI-0001 déverrouillé
-		Halibut_No_legend_Content_1: "Déverrouillé après la chute du grand dragon"
-		Halibut_No_legend_Content_2: "Mec, j'ai été là tout le temps"
+		Halibut_No_legend_Content_1: Déverrouillé après la chute du grand dragon
+		Halibut_No_legend_Content_2: Mec, j'ai été là tout le temps
 		Halibut_No_legend_Content_3: "[c/fff08c:Devenu plus fort au fil des voyages]"
 		Halibut_No_legend_Content_4: "[c/00707d:La lueur de la légende s'est estompée...]"
 		Halibut_TextDictionary_Content_0: Ami, allons défier cette énorme créature gluante qui rampe sur la terre ferme.
