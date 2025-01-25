@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         public override int targetCayItem => NeutronWand.PType;
         public override int targetCWRItem => NeutronWand.PType;
-
-        private int fireIndex;
         private float colers;
         private bool colers2;
         private Vector2 firePos;

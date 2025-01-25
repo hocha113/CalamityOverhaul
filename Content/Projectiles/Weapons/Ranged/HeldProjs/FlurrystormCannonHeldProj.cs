@@ -16,8 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "FlurrystormCannonShooting";
         public override int targetCayItem => ModContent.ItemType<FlurrystormCannon>();
         public override int targetCWRItem => ModContent.ItemType<FlurrystormCannonEcType>();
-
-        private int fireIndex;
         private int fireIndex2;
         private int onFireTime;
         public override void SetRangedProperty() {

@@ -16,18 +16,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
         public override int targetCayItem => NeutronGun.PType;
         public override int targetCWRItem => NeutronGun.PType;
-
         private float Charge {
             get => ((NeutronGun)Item.ModItem).Charge;
             set => ((NeutronGun)Item.ModItem).Charge = value;
         }
-
         private int uiframe;
-        private int fireIndex;
         private bool canattce;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return true;//暂时不要在这个版本中出现
-        }
         public override void SetRangedProperty() {
             FireTime = 5;
             CanRightClick = true;

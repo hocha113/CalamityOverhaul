@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Onyxia";
         public override int targetCayItem => ModContent.ItemType<Onyxia>();
         public override int targetCWRItem => ModContent.ItemType<OnyxiaEcType>();
-
-        private int fireIndex;
         private int chargeIndex;
         private const int maxfireD = 15;
         private const int minfireD = 6;

@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Item + "Fishing/BrimstoneCragCatches/DragoonDrizzlefish";
         public override int targetCayItem => ModContent.ItemType<DragoonDrizzlefish>();
         public override int targetCWRItem => ModContent.ItemType<DragoonDrizzlefishEcType>();
-        private int fireIndex;
         public override void SetRangedProperty() {
             Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;

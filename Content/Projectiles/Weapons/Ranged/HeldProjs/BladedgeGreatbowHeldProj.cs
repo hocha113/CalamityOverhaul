@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeRailbow";
         public override int targetCayItem => ModContent.ItemType<BladedgeRailbow>();
         public override int targetCWRItem => ModContent.ItemType<BladedgeGreatbowEcType>();
-
-        private int fireIndex;
         public override void SetRangedProperty() {
             HandIdleDistanceX = 20;
             HandIdleDistanceY = 5;

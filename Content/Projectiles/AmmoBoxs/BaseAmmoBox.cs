@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     internal abstract class BaseAmmoBox : ModProjectile
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-        private bool onProj;
+        protected bool mouseInBox;
         private bool onDorp;
         private int dorpDistank;
         protected int maxFrameNum = 1;
@@ -92,8 +91,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Projectile.timeLeft = 2;
             Player player = Main.LocalPlayer;
             float inPlayer = player.Distance(Projectile.Center);
-            bool inMouse = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
-            if (inPlayer < 100 && inMouse) {
+            mouseInBox = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
+            if (inPlayer < 100 && mouseInBox) {
                 player.noThrow = 2;
                 player.cursorItemIconEnabled = true;
                 if (FromeThisTImeID == 0) {
@@ -126,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Vector2 drawPos = Projectile.BottomLeft - new Vector2(0, value.Height) - Main.screenPosition;
             Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value)
-                , onProj ? Color.Gold : lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, SpriteEffects.None, 0);
+                , mouseInBox ? Color.White : lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

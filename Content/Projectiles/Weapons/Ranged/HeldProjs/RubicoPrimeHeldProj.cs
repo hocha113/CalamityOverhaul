@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RubicoPrime";
         public override int targetCayItem => ModContent.ItemType<RubicoPrime>();
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
-        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
             FireTime = 18;

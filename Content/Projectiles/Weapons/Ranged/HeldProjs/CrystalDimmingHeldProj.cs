@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimmingHeld";
         public override int targetCayItem => ModContent.ItemType<CrystalDimming>();
         public override int targetCWRItem => ModContent.ItemType<CrystalDimming>();
-        private int fireIndex;
         private int fireIndex2;
         private int onFireTime;
         private int onFireTime2;

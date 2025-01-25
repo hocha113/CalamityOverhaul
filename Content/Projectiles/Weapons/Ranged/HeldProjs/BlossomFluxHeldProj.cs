@@ -16,11 +16,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             HandRotSpeedSengs = 0.6f;
+            HandFireDistance = 14;
+            BowstringData.DeductRectangle = new Rectangle(8, 20, 2, 28);
         }
 
         public override void PostInOwner() {
             BowArrowDrawBool = CanFireMotion = FiringDefaultSound = onFire;
             Item.useTime = onFireR ? 60 : 4;
+            if (onFire) {
+                BowstringData.CanDraw = true;
+                BowstringData.CanDeduct = true;
+            }
+            else {
+                BowstringData.CanDraw = false;
+                BowstringData.CanDeduct = false;
+            }
         }
 
         public override void SetShootAttribute() {

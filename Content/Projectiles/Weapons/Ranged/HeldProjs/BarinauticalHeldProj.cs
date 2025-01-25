@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = AmmoTypes = ModContent.ProjectileType<BoltArrow>();
             ISForcedConversionDrawAmmoInversion = true;
         }
-        private int fireIndex;
         public override void SetShootAttribute() {
             Item.useTime = 4;
             fireIndex++;

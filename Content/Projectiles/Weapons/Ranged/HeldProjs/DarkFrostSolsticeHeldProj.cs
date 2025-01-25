@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolsticeHeld";
         public override int targetCayItem => ModContent.ItemType<DarkFrostSolstice>();
         public override int targetCWRItem => ModContent.ItemType<DarkFrostSolstice>();
-        private int fireIndex;
         private int fireIndex2;
         private int onFireTime;
         private int onFireTime2;

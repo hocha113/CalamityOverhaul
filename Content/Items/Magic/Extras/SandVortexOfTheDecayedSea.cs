@@ -36,7 +36,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
         public override int targetCayItem => ModContent.ItemType<SandVortexOfTheDecayedSea>();
         public override int targetCWRItem => ModContent.ItemType<SandVortexOfTheDecayedSea>();
-        private int fireIndex;
         public override void SetMagicProperty() {
             Recoil = 0;
             InOwner_HandState_AlwaysSetInFireRoding = true;

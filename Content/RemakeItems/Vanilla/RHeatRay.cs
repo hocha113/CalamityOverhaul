@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.HeatRay].Value;
         public override int targetCayItem => ItemID.HeatRay;
         public override int targetCWRItem => ItemID.HeatRay;
-        private int fireIndex;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -14;
             ShootPosNorlLengValue = -2;

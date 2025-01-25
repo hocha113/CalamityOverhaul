@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstrealDefeat";
         public override int targetCayItem => ModContent.ItemType<AstrealDefeat>();
         public override int targetCWRItem => ModContent.ItemType<AstrealDefeatEcType>();
-        private int fireIndex;
         public override void SetShootAttribute() {
             FiringDefaultSound = false;
             if (++fireIndex >= 3) {

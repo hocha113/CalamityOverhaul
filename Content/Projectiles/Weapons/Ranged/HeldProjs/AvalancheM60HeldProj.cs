@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60Held";
         public override int targetCayItem => ModContent.ItemType<AvalancheM60>();
         public override int targetCWRItem => ModContent.ItemType<AvalancheM60>();
-        private int fireIndex;
         private int onFireTime;
         private int onFireTime2;
         public override void SetRangedProperty() {

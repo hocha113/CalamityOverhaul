@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Ultima";
         public override int targetCayItem => ModContent.ItemType<Ultima>();
         public override int targetCWRItem => ModContent.ItemType<UltimaEcType>();
-
-        private int fireIndex;
         public override void SetRangedProperty() {
             HandFireDistance = 26;
             BowArrowDrawBool = false;

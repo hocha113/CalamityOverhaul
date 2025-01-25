@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DD2PhoenixBow].Value;
         public override int targetCayItem => ItemID.DD2PhoenixBow;
         public override int targetCWRItem => ItemID.DD2PhoenixBow;
-        private int fireIndex;
         public override void SetShootAttribute() {
             if (++fireIndex > 3) {
                 AmmoTypes = ProjectileID.DD2PhoenixBowShot;

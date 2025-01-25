@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Condemnation";
         public override int targetCayItem => ModContent.ItemType<Condemnation>();
         public override int targetCWRItem => ModContent.ItemType<CondemnationEcType>();
-
-        private int fireIndex;
         private int fireIndex2 = 20;
         private int fireIndex3;
         private bool canFireR;

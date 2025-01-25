@@ -10,14 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class AnimosityHeldProj : BaseFeederGun
+    internal class AnimosityHeldProj : BaseFeederGun, ICWRLoader
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override int targetCayItem => ModContent.ItemType<Animosity>();
         public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
-
-        private int btoole = ProjectileID.None;
-        private int fireIndex;
+        private static int btoole;
+        void ICWRLoader.SetupData() => btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
         public override void SetRangedProperty() {
             FireTime = 6;
             ControlForce = 0.03f;
@@ -31,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.gunBodyY = -16;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Pitch = -0.25f };
-            btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
         }
 
         public override void HanderPlaySound() {

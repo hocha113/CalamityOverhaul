@@ -73,9 +73,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public int BowArrowDrawNum = 1;
         /// <summary>
-        /// 箭矢绘制模长偏移值，默认值为-16
+        /// 箭矢绘制模长偏移值，默认值为-20
         /// </summary>
-        protected int DrawArrowMode = -16;
+        protected int DrawArrowMode = -20;
         /// <summary>
         /// 箭矢绘制角度矫正值，默认为0
         /// </summary>
@@ -193,12 +193,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         private void setIdleFromeAI() {
             ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY).RotatedBy(Owner.fullRotation);
             int art = 20;
             if (SafeGravDir < 0) {
                 art = 340;
             }
-            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
+            float fullRotation = MathHelper.ToDegrees(Owner.fullRotation) * Owner.direction;
+            float value = art + fullRotation;
+            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
         }
 
         public override void FiringIncident() {

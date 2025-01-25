@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
         public List<ElectrosphereLauncherOrb> Orbs = [];
         public const int MaxOrbNum = 4;
-        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             ShootPosToMouLengValue = 30;

@@ -12,20 +12,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Contagion>();
         public override int targetCWRItem => ModContent.ItemType<ContagionEcType>();
         public override void SetRangedProperty() {
+            HandDistance = 18;
+            HandFireDistance = 20;
+            DrawArrowMode = -26;
             CanRightClick = true;
             BowArrowDrawNum = 2;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<NurgleArrow>();
             DrawArrowOffsetRot = MathHelper.Pi;
             CustomDrawOrig = new Vector2(7, 0);
+            BowstringData.DeductRectangle = new Rectangle(2, 16, 2, 52);
         }
         public override void PostInOwner() {
             if (onFireR) {
                 BowArrowDrawBool = false;
+                BowstringData.CanDraw = false;
+                BowstringData.CanDeduct = false;
                 LimitingAngle();
             }
             else {
                 BowArrowDrawBool = true;
+                BowstringData.CanDraw = true;
+                BowstringData.CanDeduct = true;
             }
         }
 

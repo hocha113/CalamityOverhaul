@@ -34,6 +34,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool GlobalItemBehavior = true;
         /// <summary>
+        /// 一个通用的开火计数器
+        /// </summary>
+        public int fireIndex;
+        /// <summary>
         /// 一个通用的计时器
         /// </summary>
         public ref float Time => ref Projectile.ai[0];
