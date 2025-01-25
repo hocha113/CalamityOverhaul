@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using System;
 using System.Reflection;
 using Terraria;
@@ -10,7 +9,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {

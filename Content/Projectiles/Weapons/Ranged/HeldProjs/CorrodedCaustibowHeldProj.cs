@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CorrodedCaustibow>();
         public override int targetCWRItem => ModContent.ItemType<CorrodedCaustibowEcType>();
         public override void SetRangedProperty() {
-            
+
         }
         public override void SetShootAttribute() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {

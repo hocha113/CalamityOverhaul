@@ -4,9 +4,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -240,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         }
 
         public override void PreInOwnerUpdate() {
-            
+
         }
 
         public override void PostInOwnerUpdate() {
@@ -248,11 +246,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         }
 
         public override void HanderSpwanDust() {
-            
+
         }
 
         public override void FiringShoot() {
-            
+
         }
     }
 }

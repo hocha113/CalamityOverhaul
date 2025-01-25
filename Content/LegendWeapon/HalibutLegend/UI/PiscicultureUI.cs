@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

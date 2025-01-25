@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.GunCustomization
             if (!CWRLoad.ItemIsBow[weapon.type] && !CWRLoad.ItemIsCrossBow[weapon.type]) {
                 return;
             }
-            if (ArrowHolderUI.targetAmmo == null 
+            if (ArrowHolderUI.targetAmmo == null
                 || ArrowHolderUI.targetAmmo.type == ItemID.None
                 || ArrowHolderUI.targetAmmo.ammo != AmmoID.Arrow) {
                 return;

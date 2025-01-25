@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

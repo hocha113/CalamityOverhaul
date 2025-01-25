@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Vector2 drawPos = Projectile.BottomLeft - new Vector2(0, value.Height) - Main.screenPosition;
             Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value)
-                , mouseInBox ? Color.White : lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, SpriteEffects.None, 0);
+                , mouseInBox ? Color.Gold : lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

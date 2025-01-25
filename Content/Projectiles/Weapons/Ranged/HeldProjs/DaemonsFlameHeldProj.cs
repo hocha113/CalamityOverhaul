@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs

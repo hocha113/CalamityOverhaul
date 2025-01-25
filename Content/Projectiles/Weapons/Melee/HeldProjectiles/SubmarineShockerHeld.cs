@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
 using System.Linq;
 using Terraria;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {

@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyTooltips(List<TooltipLine> tooltips)
             => TooltipHandler.SetTooltip(ref tooltips);
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) 
+        public override void ModifyWeaponCrit(Player player, ref float crit)
             => crit += GetOnCrit;
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)

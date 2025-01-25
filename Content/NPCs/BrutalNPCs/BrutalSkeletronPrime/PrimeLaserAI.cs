@@ -1,9 +1,6 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.UIs
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Weith + (arrowDrawStackCount * Weith / 2), Height);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
             hoverInMainPage = UIHitBox.Intersects(mouseHit);
-            
+
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Pressed && IsArrow()) {
                     SoundEngine.PlaySound(SoundID.Grab);

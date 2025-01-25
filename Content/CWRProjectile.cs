@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
-using Mono.Cecil;
 using System;
 using System.Linq;
 using Terraria;

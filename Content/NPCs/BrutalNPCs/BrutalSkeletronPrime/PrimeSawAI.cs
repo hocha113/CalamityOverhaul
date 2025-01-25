@@ -1,8 +1,4 @@
-﻿using CalamityMod.Events;
-using CalamityMod.NPCs;
-using CalamityMod.World;
-using CalamityOverhaul.Content.NPCs.Core;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;

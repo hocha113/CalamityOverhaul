@@ -190,7 +190,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class WyvernsCallRItem : RMagicStaff<WyvernsCall> { }
 
     internal class FrostStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.FrostStaff; }
-    internal class FrostStaffRItem : RMagicStaff {
+    internal class FrostStaffRItem : RMagicStaff
+    {
         public override int TargetID => ItemID.FrostStaff;
         public override string HeldProjName => "FrostStaff";
     }

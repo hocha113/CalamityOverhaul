@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override bool PreDraw(ref Color lightColor) {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float textAlp = Projectile.alpha / 255f;
-                Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.65f) 
+                Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.65f)
                     - (FontAssets.ItemStack.Value.MeasureString(text) / 2 * Projectile.scale);
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text
                     , pos.X, pos.Y, textColor * textAlp, fontColor * textAlp, Vector2.Zero, Projectile.scale);

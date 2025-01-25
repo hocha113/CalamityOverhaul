@@ -5,10 +5,8 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using log4net.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -133,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             else {
                 tooltips.ReplaceTooltip("[Lang4]", "", "");
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_4"), "");
-                newContent = Level11? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
+                newContent = Level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
             }
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplaceTooltip("[Text]", CWRUtils.FormatColorTextMultiLine(newContent, newColor), "");
