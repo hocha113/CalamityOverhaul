@@ -3042,24 +3042,6 @@ Configs: {
 				'''
 		}
 
-		WeaponAdaptiveIllumination: {
-			Label: Illumination adaptative des armes [c/06e33f:(expérimental)]
-			Tooltip:
-				'''
-				Activé par défaut, les armes utiliseront normalement le mélange de lumière ambiante lors de leur utilisation
-				Si désactivé, les armes ignoreront la luminosité ambiante lors de leur utilisation pour rester toujours lumineuses
-				'''
-		}
-
-		WeaponAdaptiveVolumeScaling: {
-			Label: Mise à l'échelle adaptative du volume des armes [c/06e33f:(expérimental)]
-			Tooltip:
-				'''
-				Activé par défaut, les armes auront différentes échelles de dessin pour maintenir une apparence visuelle naturelle et éviter les chevauchements excessifs
-				Pour des problèmes de sensibilité aux pixels incohérents, les joueurs peuvent choisir de désactiver cette fonction pour maintenir une apparence de pixel lisse
-				'''
-		}
-
 		EnableCasingsEntity: {
 			Label: Activer les entités d'étui de cartouches
 			Tooltip: Si vous trouvez les douilles éparpillées dérangeantes, désactiver cette option serait une bonne idée

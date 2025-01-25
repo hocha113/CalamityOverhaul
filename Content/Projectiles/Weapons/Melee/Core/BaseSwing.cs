@@ -823,7 +823,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - GetOwnerCenter()).ToRotation()) + offsetOwnerPos;
             Color color = Projectile.GetAlpha(lightColor);
-            if (Incandescence || !CWRServerConfig.Instance.WeaponAdaptiveIllumination) {
+            if (Incandescence) {
                 color = Color.White;
             }
 

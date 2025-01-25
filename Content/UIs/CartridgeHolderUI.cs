@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.UIs
         internal int Weith;
         internal int Height;
         private int rightHeldTime;
+        private int frameMax;
         public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[heldItem.type] || IsAmmo());
         public bool IsAmmo() => heldItem.ammo != AmmoID.None && heldItem.ammo != AmmoID.Arrow;
         public override void Update() {
@@ -121,6 +122,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public void Initialize() {
+            frameMax = 1;
             if (cwrWeapon.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 DrawPosition = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
@@ -143,6 +145,7 @@ namespace CalamityOverhaul.Content.UIs
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }
             if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
+                frameMax = 7;
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/Magazines");
             }
@@ -150,8 +153,10 @@ namespace CalamityOverhaul.Content.UIs
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");
             }
+
             Weith = TextureValue.Width;
             Height = TextureValue.Height;
+
             DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
         }
@@ -180,7 +185,7 @@ namespace CalamityOverhaul.Content.UIs
             }
 
             if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
-                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - cwrWeapon.NumberBullets, 7);
+                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - cwrWeapon.NumberBullets, frameMax);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
                 DrawToolp(spriteBatch, cwrWeapon);
@@ -200,7 +205,7 @@ namespace CalamityOverhaul.Content.UIs
             //如果是拿着弹药进行选择性装填，这里就绘制出目标枪体
             if (IsAmmo()) {
                 float slp = VaultUtils.GetDrawItemSize(targetWeapon, 64);
-                Vector2 drawPos = DrawPosition + new Vector2(0, Height);
+                Vector2 drawPos = DrawPosition + new Vector2(0, Height / frameMax);
                 VaultUtils.SimpleDrawItem(spriteBatch, targetWeapon.type, drawPos, slp, 0, Color.White, new Vector2(0.001f));
             }
 

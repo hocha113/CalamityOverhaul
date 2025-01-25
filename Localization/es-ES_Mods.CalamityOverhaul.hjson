@@ -3075,24 +3075,6 @@ Configs: {
 				'''
 		}
 
-		WeaponAdaptiveIllumination: {
-			Label: Iluminación adaptativa de armas[c/06e33f:(experimental)]
-			Tooltip:
-				'''
-				Habilitado por defecto, al usarlo, las armas utilizarán la mezcla de luz ambiental de forma normal.
-				Si se desactiva, las armas ignorarán la claridad y oscuridad del entorno, manteniéndose brillantes.
-				'''
-		}
-
-		WeaponAdaptiveVolumeScaling: {
-			Label: Escalado adaptativo de volumen de armas[c/06e33f:(experimental)]
-			Tooltip:
-				'''
-				Habilitado por defecto, las armas tendrán diferentes escalados de dibujo para mantener una apariencia natural y evitar el exceso de obstrucción.
-				Dado el problema de sensibilidad a los píxeles, los jugadores pueden optar por desactivarlo para mantener la suavidad de los bloques de píxeles.
-				'''
-		}
-
 		EnableCasingsEntity: {
 			Label: Habilitar entidades de casquillos
 			Tooltip: Si consideras que los casquillos regados por todas partes son molestos, desactivar esta opción es una buena idea.

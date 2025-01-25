@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
         public override void BowShoot() {
-            _ = Owner.RotatedRelativePoint(Owner.GetPlayerStabilityCenter(), true);
             Vector2 realPlayerPos = new Vector2(Owner.position.X + Owner.width * 0.5f + -(float)Owner.direction + (Main.mouseX + Main.screenPosition.X - Owner.position.X), Owner.MountedCenter.Y - 600f);
             realPlayerPos.X = (realPlayerPos.X + Owner.Center.X) / 2f;
             realPlayerPos.Y -= 100f;

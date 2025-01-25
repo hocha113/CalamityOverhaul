@@ -80,14 +80,6 @@ namespace CalamityOverhaul.Common
         public bool BowArrowDraw { get; set; }
 
         [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool WeaponAdaptiveIllumination { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool WeaponAdaptiveVolumeScaling { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(false)]
         public bool ShotgunFireForcedReloadInterruption { get; set; }
 

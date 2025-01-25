@@ -3040,24 +3040,6 @@ Configs: {
 				'''
 		}
 
-		WeaponAdaptiveIllumination: {
-			Label: Anpassungsfähige Beleuchtung für Waffen[c/06e33f:(Experimentell)]
-			Tooltip:
-				'''
-				Standardmäßig aktiviert, verwenden Waffen bei der Verwendung normale Umgebungslichtmischungen
-				Durch Deaktivieren ignorieren Waffen bei der Verwendung Umgebungslicht und behalten ihre Helligkeit bei
-				'''
-		}
-
-		WeaponAdaptiveVolumeScaling: {
-			Label: Anpassungsfähiges Volumenskalierung für Waffen[c/06e33f:(Experimentell)]
-			Tooltip:
-				'''
-				Standardmäßig aktiviert, haben Waffen unterschiedliche Darstellungsskalierungen, um ein visuelles Gleichgewicht zu gewährleisten und Überlagerungen zu vermeiden
-				Angesichts der pixelgenauen Probleme können Spieler dies ausschalten, um die Glätte der Pixelblöcke zu erhalten
-				'''
-		}
-
 		EnableCasingsEntity: {
 			Label: Aktiviere Hülsenentitäten
 			Tooltip: Wenn Sie das störende Aufsammeln von Hülsen vermeiden möchten, ist das Deaktivieren dieser Option eine gute Idee

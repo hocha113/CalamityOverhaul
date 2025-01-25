@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             /// <summary>
             /// 弓弦颜色
             /// </summary>
-            public TrailColorEvaluator colorEvaluator = (Vector2 _) => Color.White;
+            public TrailColorEvaluator colorEvaluator = null;
             public BowstringDataStruct() { }
         }
         #endregion
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
             if (OnHandheldDisplayBool) {
                 if (BowstringData.CanDraw) {
-                    DrawBowstring();
+                    DrawBowstring(drawPos);
                 }
 
                 if (BowstringData.CanDeduct) {
@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
-                ArrowDraw(drawPos);
+                ArrowDraw(drawPos, lightColor);
             }
 
             return false;
@@ -395,6 +395,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             effect.Parameters["topLeft"].SetValue(BowstringData.DeductRectangle.TopLeft());
             effect.Parameters["width"].SetValue(BowstringData.DeductRectangle.Width);
             effect.Parameters["height"].SetValue(BowstringData.DeductRectangle.Height);
+            effect.Parameters["drawColor"].SetValue(lightColor.ToVector4());
             effect.Parameters["textureSize"].SetValue(TextureValue.Size());
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState
@@ -425,7 +426,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             rightTexCoord = new Vector2(maxU, v); // 右侧为矩形的右边界
         }
 
-        public virtual void DrawBowstring() {
+        public virtual void DrawBowstring(Vector2 drawPos) {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -434,7 +435,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             Vector2 toProjRot = Projectile.rotation.ToRotationVector2();
 
-            Vector2 bowPos = Projectile.Center - toProjRot * (TextureValue.Width / 2 - 1) + Owner.CWR().SpecialDrawPositionOffset;
+            Vector2 bowPos = drawPos - toProjRot * (TextureValue.Width / 2 - 1);
             bowPos += toProjRot * BowstringData.CoreOffset.X;
             bowPos += toProjRot.GetNormalVector() * BowstringData.CoreOffset.Y * DirSign;
             Vector2 posTop = bowPos + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
@@ -453,9 +454,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             BowstringData.Points[2] = posBottom;
 
             if (BowstringData.DoEffect == null) {
+                BowstringData.colorEvaluator ??= (Vector2 _) => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16));
                 BowstringData.DoEffect = new PathEffect(BowstringData.thicknessEvaluator, BowstringData.colorEvaluator, handlerTexturePoss: HanderBowstringTexturePoss);
             }
-            BowstringData.DoEffect.GetPathData(BowstringData.Points, -Main.screenPosition, 88);
+            BowstringData.DoEffect.GetPathData(BowstringData.Points, Vector2.Zero, 88);
             BowstringData.DoEffect.Draw(TextureValue);
             Main.spriteBatch.ResetBlendState();
         }
@@ -473,7 +475,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public virtual void CustomArrowRP(ref Texture2D value, Item arrow) { }
 
-        public void ArrowDraw(Vector2 drawPos) {
+        public void ArrowDraw(Vector2 drawPos, Color lightColor) {
             int cooltime = 3;
             if (cooltime > Item.useTime / 3) {
                 cooltime = Item.useTime / 3;
@@ -518,13 +520,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
                 drawPos += offsetDrawPos;
 
-                Color drawColor = Color.White;
-                if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
-                    drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
-                }
-
                 void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
-                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos), null, drawColor
+                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos), null, lightColor
                     , drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
 
                 switch (BowArrowDrawNum) {

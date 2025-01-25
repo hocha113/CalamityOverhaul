@@ -2,6 +2,7 @@ sampler uImage0 : register(s0);
 float2 topLeft;
 float width;
 float height;
+float4 drawColor;
 float2 textureSize; // 传入的纹理尺寸（像素单位）
 
 float4 Function(float2 coords : TEXCOORD0) : COLOR0
@@ -18,7 +19,7 @@ float4 Function(float2 coords : TEXCOORD0) : COLOR0
     {
         return float4(0, 0, 0, 0); // 返回完全透明
     }
-    return tex2D(uImage0, coords); // 返回原纹理颜色
+    return tex2D(uImage0, coords) * drawColor; // 返回原纹理颜色
 }
 
 technique Technique1

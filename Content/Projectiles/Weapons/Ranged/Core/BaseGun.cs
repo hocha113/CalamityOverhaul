@@ -616,15 +616,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public sealed override bool PreDraw(ref Color lightColor) {
             if (OnHandheldDisplayBool) {
-                Color color = lightColor;
-                if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
-                    color = Color.White;
-                }
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
-                if (PreGunDraw(drawPos, ref color)) {
-                    GunDraw(drawPos, ref color);
+                if (PreGunDraw(drawPos, ref lightColor)) {
+                    GunDraw(drawPos, ref lightColor);
                 }
-                PostGunDraw(drawPos, ref color);
+                PostGunDraw(drawPos, ref lightColor);
             }
             return false;
         }
@@ -639,7 +635,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
-                DrawBolt(drawPos);
+                DrawBolt(drawPos, lightColor);
             }
         }
 
@@ -659,7 +655,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return value1 / Item.useTime;
         }
 
-        public void DrawBolt(Vector2 drawPos) {
+        public void DrawBolt(Vector2 drawPos, Color lightColor) {
             bool boolvalue = Projectile.ai[1] < Item.useTime - 3;
             if (Item.useTime <= 5) {
                 boolvalue = true;
@@ -715,14 +711,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
             drawPos += offsetDrawPos;
 
-            Color drawColor = Color.White;
-            if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
-                drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
-            }
-
             void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
                 , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
-                , null, drawColor, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
+                , null, lightColor, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
 
             if (DrawCrossArrowNum == 1) {
                 drawArrow();

@@ -3061,24 +3061,6 @@ Configs: {
 				'''
 		}
 
-		WeaponAdaptiveIllumination: {
-			Label: Weapon Adaptive Illumination [c/06e33f:(Experimental)]
-			Tooltip:
-				'''
-				Turned on by default, weapons will normally be drawn using ambient light mixing when used
-				If turned off, the weapon will remain bright when used regardless of ambient brightness
-				'''
-		}
-
-		WeaponAdaptiveVolumeScaling: {
-			Label: Weapon Adaptive Volume Scaling [c/06e33f:(Experimental)]
-			Tooltip:
-				'''
-				Turned on by default, weapons will have different drawing scales to keep the vision natural and prevent excessive occlusion
-				Given the ununiformity of pixel sensitivity, players can choose to turn off to keep the pixel blocks smooth
-				'''
-		}
-
 		EnableCasingsEntity: {
 			Label: Enable Casings Entity
 			Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off

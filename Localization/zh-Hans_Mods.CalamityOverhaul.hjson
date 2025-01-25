@@ -3063,24 +3063,6 @@ Configs: {
 				'''
 		}
 
-		WeaponAdaptiveIllumination: {
-			Label: 武器适应性光照[c/06e33f:(实验性)]
-			Tooltip:
-				'''
-				默认开启，使用时武器将正常使用环境光混合绘制
-				如果关闭，武器将在使用时无视环境明暗度保持高亮
-				'''
-		}
-
-		WeaponAdaptiveVolumeScaling: {
-			Label: 武器适应性缩放[c/06e33f:(实验性)]
-			Tooltip:
-				'''
-				默认开启，武器将具备不同的绘制缩放，以保持视觉自然并防止过度遮挡
-				考虑到像素敏感的不统一问题，玩家可以选择关闭以保持像素块的平滑
-				'''
-		}
-
 		EnableCasingsEntity: {
 			Label: 启用弹壳实体
 			Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
