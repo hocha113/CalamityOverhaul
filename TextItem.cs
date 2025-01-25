@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
@@ -121,6 +122,8 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
+            Projectile.NewProjectile(player.GetSource_FromAI(), player.Center, new Vector2(0, 0)
+                            , ModContent.ProjectileType<SetPosingStarm>(), 0, 2, -1, 0, 0);
             //Point startPoint = new Point(1720, 400);
             //Point endPoint = new Point(1720, 400);
             //int heiget = 2000;

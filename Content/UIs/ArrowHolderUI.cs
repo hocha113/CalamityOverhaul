@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.UIs
         private int Height;
         public static bool IsArrow() => handItem.ammo == AmmoID.Arrow;
         public override void Update() {
-            if (ChooseAmmo == null && ChooseAmmo.type != ItemID.None) {
+            if (ChooseAmmo != null && ChooseAmmo.type != ItemID.None) {
                 Weith = Texture.Width;
                 Height = Texture.Height;
             }
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.UIs
                 if (hoverInMainPage) {
                     Texture2D aim = CWRAsset.AimTarget.Value;
                     spriteBatch.Draw(aim, MousePosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, "左键点击标记箭矢"
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("ArrowHolderUI_Text0")
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                 }
             }
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs
                     , MousePosition.X, MousePosition.Y + 30, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
 
                     if (targetAmmo != null && targetAmmo.type > ItemID.None) {
-                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, "右键点击取消标记"
+                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("ArrowHolderUI_Text1")
                         , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                     }
                 }

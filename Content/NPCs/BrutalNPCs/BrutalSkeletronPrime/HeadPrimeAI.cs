@@ -208,6 +208,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool CanLoad() => true;
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
+            if (type == NPCID.PrimeLaser) {
+                type = 0;
+            }
+            else if (type == NPCID.PrimeCannon) {
+                type = 1;
+            }
+            else if (type == NPCID.PrimeSaw) {
+                type = 2;
+            }
+            else if (type == NPCID.PrimeVice) {
+                type = 3;
+            }
+
             NPCOverride pCOverride = head.CWR().NPCOverride;
             for (int i = 0; i < arm.buffImmune.Length; i++) {
                 arm.buffImmune[i] = true;
@@ -1251,6 +1264,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 orig = rectangle.Size() / 2;
 
             SmokeDrawer?.DrawSet(npc.Center);
+
+            float sengs = 0.2f;
+            for (int i = 0; i < npc.oldPos.Length; i++) {
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle, Color.White * sengs
+                    , npc.rotation, orig, npc.scale * (0.8f + sengs), SpriteEffects.None, 0);
+                sengs *= 0.8f;
+            }
 
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
                 , drawColor, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);

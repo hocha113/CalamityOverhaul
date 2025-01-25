@@ -2938,6 +2938,7 @@ Projectiles: {
 	// InfinitePickProj.DisplayName: Infinite Pick Proj
 	// SpanDMBall.DisplayName: Span D M Ball
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// CrossPrediction.DisplayName: Cross Prediction
 }
 
 Configs: {
@@ -3542,6 +3543,8 @@ TextContent: {
 		CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
 		CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
 		CartridgeHolderUI_Text7: The Magazine Is Full!
+		// ArrowHolderUI_Text0: Left Click On The Marked Arrow
+		// ArrowHolderUI_Text1: Right Click Untag
 		Wap_SDMG_Text:
 			'''
 			Feuert mit extrem hoher Geschwindigkeit Schüsse ab

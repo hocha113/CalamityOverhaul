@@ -21,13 +21,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.friendly = false;
             Projectile.timeLeft = 600;
             Projectile.extraUpdates = 4;
-            Projectile.tileCollide = true;
             if (ModGanged.InfernumModeOpenState) {
                 Projectile.extraUpdates += 1;
             }
             if (BossRushEvent.BossRushActive || Main.getGoodWorld || Main.zenithWorld) {
                 Projectile.extraUpdates += 1;
-                Projectile.tileCollide = false;
             }
 
             CooldownSlot = ImmunityCooldownID.Bosses;
@@ -48,6 +46,15 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 dust.noGravity = true;
                 dust.scale *= Main.rand.NextFloat(0.3f, 1.2f);
             }
+            Projectile.localAI[0]++;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (Projectile.localAI[0] <= 0) {
+                Projectile.tileCollide = false;
+                return false;
+            }
+            return base.OnTileCollide(oldVelocity);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

@@ -3,7 +3,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.Eye;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -26,13 +26,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         public static Color TextColor2 => new(200, 54, 91);
         internal static Asset<Texture2D> SpazmatismAsset;
         internal static Asset<Texture2D> SpazmatismAltAsset;
+        internal static Asset<Texture2D> RetinazerAsset;
+        internal static Asset<Texture2D> RetinazerAltAsset;
         void ICWRLoader.LoadAsset() {
             SpazmatismAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Spazmatism");
             SpazmatismAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/SpazmatismAlt");
+            RetinazerAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Retinazer");
+            RetinazerAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/RetinazerAlt");
         }
         void ICWRLoader.UnLoadData() {
             SpazmatismAsset = null;
             SpazmatismAltAsset = null;
+            RetinazerAsset = null;
+            RetinazerAltAsset = null;
         }
         public override void SetProperty() {
             npc.realLife = -1;
@@ -237,7 +243,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
                             }
                         }
-                        if (ai[2] > 60) {
+                        if (ai[2] > 80) {
                             ai[7] = 10;
                             ai[1] = 1;
                             ai[2] = 0;
@@ -247,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         break;
                     case 1:
                         toPoint = player.Center + new Vector2(isSpazmatism ? 700 : -700, ai[9]);
-                        if (++ai[2] > 20) {
+                        if (++ai[2] > 24) {//一阶段两侧激光发射频率，数字越大频率越慢
                             if (!VaultUtils.isClient) {
                                 if (skeletronPrimeIsTwo) {
                                     for (int i = 0; i < 3; i++) {
@@ -265,13 +271,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         }
 
                         if (ai[2] == 2) {
-                            if (skeletronPrimeIsTwo) {
+                            if (skeletronPrimeIsTwo) {//二阶段上下大幅度飞舞
                                 if (ai[10] == 0) {
                                     ai[10] = 1;
                                 }
-                                ai[9] = isSpazmatism ? -600 : 600;
+                                if (!VaultUtils.isClient) {
+                                    ai[9] = isSpazmatism ? -600 : 600;
+                                    ai[9] += Main.rand.Next(-120, 90);
+                                }
                                 ai[9] *= ai[10];
                                 ai[10] *= -1;
+                                NetAISend(npc);
                             }
                             else {
                                 if (!VaultUtils.isClient) {
@@ -618,16 +628,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return true;
             }
 
-            Texture2D mainValue = SpazmatismAsset.Value;
+            Texture2D mainValue = npc.type == NPCID.Spazmatism ? SpazmatismAsset.Value : RetinazerAsset.Value;
             Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = npc.rotation + MathHelper.PiOver2;
             if (IsSecondPhase()) {
-                mainValue = SpazmatismAltAsset.Value;
+                mainValue = npc.type == NPCID.Spazmatism ? SpazmatismAltAsset.Value : RetinazerAltAsset.Value;
                 rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
-                Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
-                , Color.White, drawRot, rectangle.Size() / 2, npc.scale, spriteEffects, 0);
-                return false;
+            }
+            float sengs = 0.2f;
+            for (int i = 0; i < npc.oldPos.Length; i++) {
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle
+                , Color.White * sengs, drawRot, rectangle.Size() / 2, npc.scale * (0.7f + sengs), spriteEffects, 0);
+                sengs *= 0.9f;
             }
             Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
             , Color.White, drawRot, rectangle.Size() / 2, npc.scale, spriteEffects, 0);

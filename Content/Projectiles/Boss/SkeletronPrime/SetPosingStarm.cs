@@ -52,20 +52,24 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                         p.Kill();
                     }
                 }
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-1200, 0)
-                    , new Vector2(53, 0), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 1200)
-                    , new Vector2(0, -53), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
+                if (!VaultUtils.isClient) {
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-2200, 0)
+                        , new Vector2(53, 0), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 2200)
+                        , new Vector2(0, -53), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
+
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
+                        , new Vector2(0, 10), ModContent.ProjectileType<CrossPrediction>(), Projectile.damage, 2, -1);
+                }
             }
 
-            if (Projectile.ai[0] % 15 == 0) {
+            if (Projectile.ai[0] % 15 == 0 && Projectile.ai[0] > 45 && Projectile.ai[0] <= 365) {
                 Vector2 pos = Projectile.Center;
-                float rand = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 4; i++) {
-                    float rot1 = MathHelper.PiOver2 * i + rand;
+                    float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
-                    for (int j = 0; j < 33; j++) {
-                        BasePRT spark = new PRT_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(5.2f, 6.3f), Color.Red);
+                    for (int j = 0; j < 23; j++) {
+                        BasePRT spark = new PRT_Spark2(pos, vr * (0.1f + j * 0.34f), false, 13, 0.1f + j * 0.34f, Color.Red);
                         PRTLoader.AddParticle(spark);
                     }
                 }
@@ -183,10 +187,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Main.EntitySpriteDraw(mainValue, drawPos, null, Color.White
                 , rot2, mainValue.Size() / 2, 3, SpriteEffects.FlipHorizontally, 0);
             }
+
             drawTime++;
-            var blackTile = TextureAssets.MagicPixel;
-            var diagonalNoise = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
-            var maxOpacity = 1f;
             var shader = CWRUtils.GetEffectValue("PrimeHaloShader");
             shader.Parameters["colorMult"].SetValue(11);
             shader.Parameters["time"].SetValue(drawTime * 0.1f);
@@ -195,16 +197,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
             shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
-            shader.Parameters["maxOpacity"].SetValue(maxOpacity);
+            shader.Parameters["maxOpacity"].SetValue(1f);
             shader.Parameters["isVmos"].SetValue(Projectile.timeLeft <= 30);
             shader.Parameters["projTime"].SetValue(Projectile.timeLeft);
-            Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+            Main.spriteBatch.GraphicsDevice.Textures[1] = CWRAsset.Placeholder_White.Value;
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap
                 , DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() / 2, 0, 0f);
+            Main.spriteBatch.Draw(CWRAsset.Placeholder_White.Value, rekt, null, default, 0f, CWRAsset.Placeholder_White.Value.Size() / 2, 0, 0f);
             Main.spriteBatch.ExitShaderRegion();
 
             Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)

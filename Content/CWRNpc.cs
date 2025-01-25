@@ -334,8 +334,9 @@ namespace CalamityOverhaul.Content
             if (shop.NpcType == NPCID.Clothier) {//裁缝将会售卖娃娃
                 shop.Add(ModContent.ItemType<HandmadeDoll>());
             }
-            if (shop.NpcType == NPCID.Merchant) {//商人会在多人模式下售卖传送药水
-                shop.Add(ItemID.WormholePotion, Condition.Multiplayer);
+            if (shop.NpcType == NPCID.Merchant) {
+                shop.Add(ItemID.WormholePotion, Condition.Multiplayer);//商人会在多人模式下售卖传送药水
+                shop.Add(ItemID.RecallPotion, Condition.DownedEyeOfCthulhu);//击败克苏鲁之眼后售卖回忆药水
             }
             foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
                 Item item = shopEntity.Item;

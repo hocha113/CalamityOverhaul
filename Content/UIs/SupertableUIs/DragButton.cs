@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     {
         public override Texture2D Texture => CWRAsset.Placeholder_ERROR.Value;
         public static DragButton Instance => UIHandleLoader.GetUIHandleOfType<DragButton>();
-        public override float RenderPriority => 1;
+        public override float RenderPriority => 0.5f;
         public override bool Active {
             get {
                 if (SupertableUI.Instance == null) {

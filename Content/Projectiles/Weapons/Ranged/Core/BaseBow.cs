@@ -364,20 +364,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         public sealed override bool PreDraw(ref Color lightColor) {
             Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
             if (OnHandheldDisplayBool) {
-                Color color = lightColor;
-                if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
-                    color = Color.White;
-                }
-
                 if (BowstringData.CanDraw) {
                     DrawBowstring();
                 }
 
                 if (BowstringData.CanDeduct) {
-                    DeductBowDraw(drawPos, ref color);
+                    DeductBowDraw(drawPos, ref lightColor);
                 }
                 else {
-                    BowDraw(drawPos, ref color);
+                    BowDraw(drawPos, ref lightColor);
                 }
             }
 

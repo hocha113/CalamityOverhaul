@@ -2960,6 +2960,7 @@ Projectiles: {
 	// InfinitePickProj.DisplayName: Infinite Pick Proj
 	// SpanDMBall.DisplayName: Span D M Ball
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// CrossPrediction.DisplayName: Cross Prediction
 }
 
 Configs: {
@@ -3564,6 +3565,8 @@ TextContent: {
 		CartridgeHolderUI_Text5: 左键点击全部装填，右键点击装填入一颗
 		CartridgeHolderUI_Text6: 该武器不能使用此弹药!
 		CartridgeHolderUI_Text7: 弹匣已满!
+		ArrowHolderUI_Text0: 左键点击标记箭矢
+		ArrowHolderUI_Text1: 右键点击取消标记
 		Wap_SDMG_Text:
 			'''
 			以极快的速度发射子弹

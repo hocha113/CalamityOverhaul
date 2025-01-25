@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.aiStyle = -1;
             }
             npc.dontTakeDamage = false;
-            if (HeadPrimeAI.SetArmRot(npc, head, 1)) {
+            if (HeadPrimeAI.SetArmRot(npc, head, npc.type)) {
                 return false;
             }
             return ArmBehavior();
