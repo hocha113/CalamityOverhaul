@@ -90,14 +90,23 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             }
         }
 
+        private void SetHandBox() {
+            ArmRotSengsFront = 60 * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = 110 * CWRUtils.atoR * SafeGravDir;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY).RotatedBy(Owner.fullRotation);
+            float art = AngleFirearmRest;
+            if (SafeGravDir < 0) {
+                art = 360 - AngleFirearmRest;
+            }
+            float fullRotation = MathHelper.ToDegrees(Owner.fullRotation) * Owner.direction;
+            float value = art + fullRotation;
+            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
+        }
+
         public virtual void InOwner() {
             uiMouseInterface = Owner.CWR().uiMouseInterface;
-            ArmRotSengsFront = 60 * CWRUtils.atoR;
-            ArmRotSengsBack = 110 * CWRUtils.atoR;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
-
+            SetHandBox();
             SetHeld();
 
             if (canUse_SetAmmoBox && DownLeft) {

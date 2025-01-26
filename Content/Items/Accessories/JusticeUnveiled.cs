@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                        new Vector2(0, 2), 20f, 6f, 20, 1000f, FullName);
+                        new Vector2(0, 2), 10f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
         }
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 frameIndex++;
                 if (frameIndex == 4) {
                     PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                        new Vector2(0, 2), 20f, 6f, 20, 1000f, FullName);
+                        new Vector2(0, 2), 10f, 6f, 20, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }
                 if (frameIndex >= maxFrame) {
