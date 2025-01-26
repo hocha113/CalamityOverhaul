@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private SlotId accumulator;
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandDistance = 18;
-            HandFireDistance = 24;
+            HandIdleDistanceX = 18;
+            HandFireDistanceX = 24;
             BowArrowDrawNum = 5;
             DrawArrowMode = -26;
             BowstringData.DeductRectangle = new Rectangle(2, 16, 2, 46);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);

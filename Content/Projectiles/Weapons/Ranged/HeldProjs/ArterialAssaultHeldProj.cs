@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<ArterialAssault>();
         public override int targetCWRItem => ModContent.ItemType<ArterialAssaultEcType>();
         public override void SetRangedProperty() {
-            HandDistance = 20;
-            HandFireDistance = 22;
+            HandIdleDistanceX = 20;
+            HandFireDistanceX = 22;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(6, 22, 2, 60);
         }

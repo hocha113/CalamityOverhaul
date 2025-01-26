@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<BarrenBow>();
         public override void SetRangedProperty() {
             DrawArrowMode = -18;
-            HandFireDistance = 16;
+            HandFireDistanceX = 16;
             //InOwner_HandState_AlwaysSetInFireRoding = true;
             BowstringData.DeductRectangle = new Rectangle(18, 22, 2, 38);
             BowstringData.TopBowOffset = new Vector2(18, 20);

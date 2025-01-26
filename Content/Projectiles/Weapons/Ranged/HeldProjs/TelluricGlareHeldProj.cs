@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<TelluricGlare>();
         public override int targetCWRItem => ModContent.ItemType<TelluricGlareEcType>();
         public override void SetRangedProperty() {
-            HandFireDistance = 20;
+            HandFireDistanceX = 20;
             DrawArrowMode = -26;
             BowstringData.DeductRectangle = new Rectangle(8, 24, 2, 28);
         }

@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<GaleforceEcType>();
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandDistance = 16;
-            HandFireDistance = 16;
+            HandIdleDistanceX = 16;
+            HandFireDistanceX = 16;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(2, 8, 2, 46);
         }

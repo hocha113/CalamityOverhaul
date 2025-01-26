@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<DarkechoGreatbowEcType>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
-            HandDistance = 16;
-            HandFireDistance = 16;
+            HandIdleDistanceX = 16;
+            HandFireDistanceX = 16;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(2, 6, 2, 54);
         }

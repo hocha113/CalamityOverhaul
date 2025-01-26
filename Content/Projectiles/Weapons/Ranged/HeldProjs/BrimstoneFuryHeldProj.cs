@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<BrimstoneFuryEcType>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
-            HandFireDistance = 14;
+            HandFireDistanceX = 14;
             BowstringData.DeductRectangle = new Rectangle(2, 6, 2, 52);
         }
         public override void BowShoot() {

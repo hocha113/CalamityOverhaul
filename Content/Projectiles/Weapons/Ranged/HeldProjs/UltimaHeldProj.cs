@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Ultima>();
         public override int targetCWRItem => ModContent.ItemType<UltimaEcType>();
         public override void SetRangedProperty() {
-            HandFireDistance = 26;
+            HandFireDistanceX = 26;
             BowArrowDrawBool = false;
             CanFireMotion = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;

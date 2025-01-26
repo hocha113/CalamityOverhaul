@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Contagion>();
         public override int targetCWRItem => ModContent.ItemType<ContagionEcType>();
         public override void SetRangedProperty() {
-            HandDistance = 18;
-            HandFireDistance = 20;
+            HandIdleDistanceX = 18;
+            HandFireDistanceX = 20;
             DrawArrowMode = -26;
             CanRightClick = true;
             BowArrowDrawNum = 2;
