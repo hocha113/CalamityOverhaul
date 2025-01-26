@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return SupertableUI.Instance.Active;
             }
         }
-        protected virtual Vector2 offsetDraw => new Vector2(570, 330);
+        protected virtual Vector2 offsetDraw => new Vector2(574, 330);
         private int useTimeCoolding;
         private int useMuse3AddCount;
         private bool checkSetO => GetType() != typeof(MaterialOrganizer);

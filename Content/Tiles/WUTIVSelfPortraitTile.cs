@@ -16,11 +16,11 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileSpelunker[Type] = true;
             Main.tileWaterDeath[Type] = false;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3Wall);
-            TileObjectData.newTile.Width = 8;
-            TileObjectData.newTile.Height = 8;
+            TileObjectData.newTile.Width = 9;
+            TileObjectData.newTile.Height = 9;
             TileObjectData.newTile.Origin = new Point16(4, 4);
             TileObjectData.newTile.LavaDeath = true;
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16];
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16, 16];
             TileObjectData.addTile(Type);
             TileID.Sets.DisableSmartCursor[Type] = true;
             TileID.Sets.FramesOnKillWall[Type] = true;

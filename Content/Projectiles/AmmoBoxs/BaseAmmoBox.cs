@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         protected bool mouseInBox;
         private bool onDorp;
         private int dorpDistank;
-        protected int maxFrameNum = 1;
         public int FromeThisTImeID;
         public override void SetDefaults() {
             Projectile.width = 46;
@@ -61,8 +60,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public virtual bool ClickBehavior(Player player, CWRItems cwr) => true;
 
-        public virtual void ClockFrame() => CWRUtils.ClockFrame(ref Projectile.frame, 10, maxFrameNum - 1);
-
         public virtual void Dorp() {
             for (int i = 0; i < 13; i++) {
                 Tile tile = CWRUtils.GetTile(Projectile.Bottom / 16);
@@ -87,7 +84,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public override void AI() {
-            ClockFrame();
             Projectile.timeLeft = 2;
             Player player = Main.LocalPlayer;
             float inPlayer = player.Distance(Projectile.Center);

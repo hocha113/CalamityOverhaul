@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 DrawPosition = SupertableUI.Instance.DrawPosition + new Vector2(545, 80);
             }
             mainRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), Texture.Width, Texture.Height);
-            rAow = new Rectangle((int)DrawPosition.X + 65, (int)DrawPosition.Y + 20, 25, 25);
+            rAow = new Rectangle((int)DrawPosition.X + 62, (int)DrawPosition.Y + 20, 25, 25);
             lAow = new Rectangle((int)(DrawPosition.X - 30), (int)(DrawPosition.Y + 20), 25, 25);
             onM = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             onR = rAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
@@ -150,16 +150,18 @@ End:;
             Texture2D arow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow");
             Texture2D arow2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow2");
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(65, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(62, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(onL ? arow : arow2, DrawPosition + new Vector2(-30, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
             string text2 = $"{index + 1} -:- {itemTarget.Count}";
-            Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPosition.X - text2.Length * 5 + 40, DrawPosition.Y + 65
+            Vector2 text2Size = FontAssets.MouseText.Value.MeasureString(text2);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPosition.X - text2Size.X / 2 + Texture.Width / 2, DrawPosition.Y + 65
                 , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             if (itemTarget != null && SupertableUI.Instance != null && index >= 0 && index < itemTarget.Count) {
                 SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPosition + new Vector2(5, 5), alp: 0.6f * SupertableUI.Instance._sengs, overSlp: 1.5f * SupertableUI.Instance._sengs);
                 string name = itemTarget[index].HoverName;
                 string text = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}：{(name == "" ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
-                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X - text.Length * 5, DrawPosition.Y - 25
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X - textSize.X / 2 + Texture.Width / 2, DrawPosition.Y - 25
                     , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             }
             if (onM) { //处理鼠标在UI格中查看物品的事情
