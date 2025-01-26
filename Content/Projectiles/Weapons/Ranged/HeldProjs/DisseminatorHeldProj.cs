@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 5; i++) {
-                Projectile.NewProjectile(Source, GunShootPos,
+                Projectile.NewProjectile(Source, ShootPos,
                     ShootVelocity.RotateRandom(0.06f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
             Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);

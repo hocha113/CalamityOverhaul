@@ -21,10 +21,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (Main.rand.NextBool(5)) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<FishronRPG>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
             }

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f)
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f)
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

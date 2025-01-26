@@ -45,12 +45,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             float maxDustNum = 20f;
             for (int i = 0; i < maxDustNum; i++) {
                 Vector2 vr = (MathHelper.TwoPi / maxDustNum * i).ToRotationVector2() * 6;
-                int dust = Dust.NewDust(GunShootPos, 1, 1, DustID.Gold, vr.X, vr.Y, 0, default(Color), .8f);
+                int dust = Dust.NewDust(ShootPos, 1, 1, DustID.Gold, vr.X, vr.Y, 0, default(Color), .8f);
                 Main.dust[dust].noGravity = true;
             }
             for (int i = 0; i < 2; i++) {
                 int proj = Projectile.NewProjectile(Source
-                , GunShootPos + CWRUtils.randVr(84) - ShootVelocity.UnitVector() * 80
+                , ShootPos + CWRUtils.randVr(84) - ShootVelocity.UnitVector() * 80
                 , ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
             }

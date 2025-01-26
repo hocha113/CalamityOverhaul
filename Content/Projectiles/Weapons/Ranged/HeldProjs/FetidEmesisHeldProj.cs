@@ -43,25 +43,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos
+            int proj = Projectile.NewProjectile(Source, ShootPos
                 , ShootVelocityInProjRot.RotatedBy(Main.rand.NextFloat(-0.02f, 0.02f))
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.FetidEmesis;
 
             if (++Projectile.ai[2] > 8) {
-                Projectile.NewProjectile(Source2, GunShootPos, Vector2.Zero
+                Projectile.NewProjectile(Source2, ShootPos, Vector2.Zero
                 , ModContent.ProjectileType<FetidEmesisOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
                 Projectile.ai[2] = 0;
             }
         }
 
         public override void FiringShootR() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                         , ModContent.ProjectileType<EmesisGore>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].penetrate = 8;
             Main.projectile[proj].extraUpdates += 1;
             for (int i = 0; i < 55; i++) {
-                Dust dust = Dust.NewDustDirect(GunShootPos, 10, 10, DustID.Shadowflame);
+                Dust dust = Dust.NewDustDirect(ShootPos, 10, 10, DustID.Shadowflame);
                 dust.velocity = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(0.6f, 1);
                 dust.noGravity = true;
             }

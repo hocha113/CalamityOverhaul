@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;
                 velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                int proj = Projectile.NewProjectile(Source, GunShootPos, velocity
+                int proj = Projectile.NewProjectile(Source, ShootPos, velocity
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].usesLocalNPCImmunity = true;
                 Main.projectile[proj].localNPCHitCooldown = -1;

@@ -40,8 +40,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwnerUpdate() {
             if (onFireR) {
                 for (int i = 0; i < 2; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(GunShootPos + Main.rand.NextVector2Circular(20f, 20f), 267);
-                    chargeMagic.velocity = (GunShootPos - chargeMagic.position) * 0.1f + Owner.velocity;
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos + Main.rand.NextVector2Circular(20f, 20f), 267);
+                    chargeMagic.velocity = (ShootPos - chargeMagic.position) * 0.1f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Projectile.GetAlpha(Color.White);
                     chargeMagic.noGravity = true;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             fireIndex3 = 0;
             Item.useTime = 10;
             CanDrawCrossArrow = true;
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CWRUtils.SetArrowRot(proj);
             if (Main.rand.NextBool(3)) {
                 Main.projectile[proj].ai[0] = 1;
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundStyle sound = new("CalamityMod/Sounds/Custom/AbilitySounds/BrimflameRecharge");
                 SoundEngine.PlaySound(sound with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) });
                 for (int i = 0; i < 36; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(GunShootPos, 267);
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, 267);
                     chargeMagic.velocity = (MathHelper.TwoPi * i / 36f).ToRotationVector2() * 5f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Color.Violet;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (canFireR) {
                 Item.useTime = 1;
                 AmmoTypes = ModContent.ProjectileType<CondemnationArrowHoming>();
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 CWRUtils.SetArrowRot(proj);
                 _ = UpdateConsumeAmmo();
 
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 start = angle.ToRotationVector2();
                     Vector2 end = nextAngle.ToRotationVector2();
                     for (int j = 0; j < 40; j++) {
-                        Dust starDust = Dust.NewDustPerfect(GunShootPos, 267);
+                        Dust starDust = Dust.NewDustPerfect(ShootPos, 267);
                         starDust.scale = 2.5f;
                         starDust.velocity = Vector2.Lerp(start, end, j / 40f) * 16f;
                         starDust.color = Color.Crimson;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (!canFireR) {
                 for (int i = 0; i < 36; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(GunShootPos, 267);
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, 267);
                     chargeMagic.velocity = (MathHelper.TwoPi * i / 36f).ToRotationVector2() * 5f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Color.Violet;

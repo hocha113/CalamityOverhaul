@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.CursedDart) {
                 AmmoTypes = ModContent.ProjectileType<CursedDartRemake>();
             }
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Main.rand.Next(20));
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Main.rand.Next(20));
             Main.projectile[proj].ArmorPenetration += 15;
             Main.projectile[proj].extraUpdates += 1;
         }

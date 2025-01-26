@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (++fireIndex > 6) {
                 SoundEngine.PlaySound(SoundID.Item45 with { Pitch = 0.45f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                     , ProjectileID.VortexBeaterRocket, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 fireIndex = 0;
@@ -74,11 +74,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() =>
-        Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot
+        Projectile.NewProjectile(Source, ShootPos, ShootVelocityInProjRot
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
         public override void FiringShootR() =>
-        Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot
+        Projectile.NewProjectile(Source, ShootPos, ShootVelocityInProjRot
                 , ProjectileID.VortexBeaterRocket, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
     }
 }

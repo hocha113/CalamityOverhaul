@@ -35,11 +35,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     float sparkScale = Main.rand.NextFloat(1f, 1.5f);
                     Color sparkColor = Color.LightGoldenrodYellow;
                     Vector2 sparkVelocity = ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.3f, 1.2f);
-                    SparkParticle spark = new SparkParticle(GunShootPos, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
+                    SparkParticle spark = new SparkParticle(ShootPos, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
 
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
                 Owner.statMana -= Item.mana;
                 if (Owner.statMana < 0) {

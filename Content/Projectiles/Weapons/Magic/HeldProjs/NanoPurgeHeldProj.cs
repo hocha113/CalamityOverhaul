@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void FiringShoot() {
             Item.useTime = fireIndex;
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.9f, 1.1f)
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.9f, 1.1f)
                 , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             if (fireIndex > 5) {
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void FiringShootR() {
             Item.useTime = 3;
             intframe = 2;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 

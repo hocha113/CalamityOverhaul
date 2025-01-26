@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(Owner.HasCooldown(SpeedBlasterBoost.ID) ? 3f : 15f));
             float ShotMode = (Owner.HasCooldown(SpeedBlasterBoost.ID) ? 2f : 0f);
             UpdateMagazineContents();
-            Projectile.NewProjectile(Source, GunShootPos, newVel, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, ColorValue, ShotMode);
+            Projectile.NewProjectile(Source, ShootPos, newVel, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, ColorValue, ShotMode);
         }
 
         public override void FiringShootR() {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     ColorValue += 1f;
                 }
                 UpdateMagazineContents();
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, Item.shoot
                     , (int)(WeaponDamage * DashShotDamageMult), WeaponKnockback, Owner.whoAmI, ColorValue, 3f);
                 Owner.AddCooldown(SpeedBlasterBoost.ID, DashCooldown);
                 Owner.Calamity().sBlasterDashActivated = true;

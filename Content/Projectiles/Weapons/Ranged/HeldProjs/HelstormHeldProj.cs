@@ -51,14 +51,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 5; i++) {
-                _ = Projectile.NewProjectile(Source, GunShootPos,
+                _ = Projectile.NewProjectile(Source, ShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }
 
         public override void FiringShootR() {
-            _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f)
+            _ = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.06f)
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

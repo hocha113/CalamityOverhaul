@@ -47,14 +47,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].timeLeft = 160;
         }
 
         public override void FiringShootR() {
             for (int i = 0; i < 5; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos
+                int proj = Projectile.NewProjectile(Source, ShootPos
                     , ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(1.3f, 1.5f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].timeLeft = 160;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             int dustType = FlareGunHeldProj.GetFlareDustID(this);
             Vector2 projRotTo = Projectile.rotation.ToRotationVector2() * 13 + Owner.velocity;
-            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, projRotTo.X, projRotTo.Y);
+            int dust = Dust.NewDust(ShootPos, 1, 1, dustType, projRotTo.X, projRotTo.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }

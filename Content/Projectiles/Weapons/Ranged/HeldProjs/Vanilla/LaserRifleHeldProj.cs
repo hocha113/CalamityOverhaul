@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 CanCreateRecoilBool = FiringDefaultSound = false;
                 return;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ProjectileID.PurpleLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

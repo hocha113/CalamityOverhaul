@@ -2,7 +2,6 @@
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
 using System;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -108,6 +107,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public Vector2 SpecialDrawPositionOffset => CanFire ? Vector2.Zero : Owner.CWR().SpecialDrawPositionOffset;
         /// <summary>
+        /// 发射口位置
+        /// </summary>
+        public virtual Vector2 ShootPos => Projectile.Center;
+        /// <summary>
         /// 武器适应性缩放，默认为1
         /// </summary>
         public float Scaling = 1;
@@ -206,10 +209,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     : ItemLoader.GetItem(targetCayItem).GetLocalization("DisplayName");
             }
         }
-        /// <summary>
-        /// 获得原射击方法信息
-        /// </summary>
-        public readonly MethodInfo ItemCheck_Shoot_Method = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
         #endregion
 
         /// <summary>
@@ -366,10 +365,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public override void OrigItemShoot() {
-            ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
-        }
-
         public void SetWeaponOccupancyStatus() {
             Owner.itemTime = 2;
             Owner.CWR().DontSwitchWeaponTime = 2;
@@ -438,6 +433,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public virtual void SpanProj() {
 
+        }
+
+        public override void OrigItemShoot() {
+            GlobalItemBehavior = false;
+            if (Item.type < ItemID.Count) {
+                ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
+            }
+            else if (CombinedHooks.CanShoot(Owner, Item) 
+                && CombinedHooks.Shoot(Owner, Item, Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            }
         }
 
         internal void ItemLoaderInFireSetBaver() {

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpwanGunDustMngsData.dustID3 = 76;
         }
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj].Calamity().allProjectilesHome = true;
             Main.projectile[proj].CWR().GetHitAttribute.SuperAttack = true;
             Main.projectile[proj].extraUpdates = 1;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 bolt = ProjectileID.FrostBeam;
                 isbeam = true;
             }
-            int proj2 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, bolt, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
+            int proj2 = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, bolt, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj2].extraUpdates = 1;
             Main.projectile[proj2].friendly = true;
             Main.projectile[proj2].hostile = false;

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             for (int i = 0; i < 8; i++) {
-                _ = Projectile.NewProjectile(Source, GunShootPos
+                _ = Projectile.NewProjectile(Source, ShootPos
                     , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.2f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }

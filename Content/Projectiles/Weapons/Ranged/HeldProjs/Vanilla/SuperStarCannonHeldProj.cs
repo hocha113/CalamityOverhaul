@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void HanderSpwanDust() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
+            SpawnGunFireDust(ShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
         }
 
         public override void HanderPlaySound() {

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            int type = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int type = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (Main.rand.NextBool(6)) {
                 Main.projectile[type].penetrate = -1;

@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<MarksmanShot>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (overflow || cashAvailable > 1) {
                     Owner.BuyItem(1);
 
-                    Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
+                    Projectile.NewProjectile(Source, ShootPos, Owner.GetCoinTossVelocity()
                     , ModContent.ProjectileType<RicoshotCoin>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 }
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 float coinAIVariable = nextShotGoldCoin ? 2f : 1f;
 
-                Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
+                Projectile.NewProjectile(Source, ShootPos, Owner.GetCoinTossVelocity()
                     , ModContent.ProjectileType<RicoshotCoin>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, coinAIVariable);
             }

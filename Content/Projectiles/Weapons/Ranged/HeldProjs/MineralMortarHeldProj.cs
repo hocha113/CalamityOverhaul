@@ -57,8 +57,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             if (chargeIndex > 60) {
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/ScorchedEarthShot", 3) with { Volume = .2f, Pitch = 1.2f, PitchVariance = 1.1f }, Projectile.Center);
-                SpawnGunFireDust(GunShootPos, ShootVelocity);
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                SpawnGunFireDust(ShootPos, ShootVelocity);
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                     , ModContent.ProjectileType<MineralMortarProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
                 UpdateMagazineContents();
                 OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;

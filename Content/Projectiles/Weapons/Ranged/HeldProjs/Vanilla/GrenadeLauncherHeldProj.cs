@@ -92,17 +92,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.MiniNukeII) {
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
-            int proj1 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -4)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj1 = Projectile.NewProjectile(Source, ShootPos, (ShootVelocityInProjRot + new Vector2(0, -4)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj1].timeLeft += 120;
-            int proj2 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -8)) * 0.6f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj2 = Projectile.NewProjectile(Source, ShootPos, (ShootVelocityInProjRot + new Vector2(0, -8)) * 0.6f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj2].timeLeft += 120;
             int ammonum = Main.rand.Next(4);
             if (ammonum <= 1) {
-                int proj3 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -12)) * 0.5f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                int proj3 = Projectile.NewProjectile(Source, ShootPos, (ShootVelocityInProjRot + new Vector2(0, -12)) * 0.5f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj3].timeLeft += 120;
             }
             if (ammonum == 0) {
-                int proj4 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -16)) * 0.4f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                int proj4 = Projectile.NewProjectile(Source, ShootPos, (ShootVelocityInProjRot + new Vector2(0, -16)) * 0.4f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj4].timeLeft += 120;
             }
         }

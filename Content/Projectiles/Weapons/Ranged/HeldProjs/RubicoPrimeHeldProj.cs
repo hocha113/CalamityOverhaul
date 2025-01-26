@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     NPC target = Projectile.Center.FindClosestNPC(1900, false, true);
                     if (target != null) {
                         UpdateMagazineContents();
-                        Vector2 pos = GunShootPos;
+                        Vector2 pos = ShootPos;
                         if (!WeaponHandheldDisplay) {
                             pos = Owner.Center;
                         }
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].penetrate = 6;
             fireIndex = 0;

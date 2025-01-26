@@ -37,9 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             for (int i = 0; i < 4; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.13f) * Main.rand.NextFloat(0.9f, 1.5f)
+                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.13f) * Main.rand.NextFloat(0.9f, 1.5f)
                     , ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);
-                int proj2 = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedByRandom(0.11f) * Main.rand.NextFloat(0.9f, 1.2f)
+                int proj2 = Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedByRandom(0.11f) * Main.rand.NextFloat(0.9f, 1.2f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].timeLeft += Main.rand.Next(30);
                 Main.projectile[proj2].extraUpdates += 1;

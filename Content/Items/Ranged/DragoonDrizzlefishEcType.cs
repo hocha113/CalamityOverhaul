@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 shotType = ModContent.ProjectileType<DrizzlefishFire>();
                 fireIndex = 0;
             }
-            Projectile.NewProjectile(Source, GunShootPos, newShootVer, shotType
+            Projectile.NewProjectile(Source, ShootPos, newShootVer, shotType
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, Main.rand.Next(2));
         }
     }

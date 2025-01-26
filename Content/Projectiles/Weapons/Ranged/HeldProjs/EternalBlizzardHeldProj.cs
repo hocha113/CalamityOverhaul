@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < fireIndex + 1; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
+                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].SetArrowRot();
                 if (Main.rand.NextBool(2)) {
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].SetArrowRot();
             Main.projectile[proj].Calamity().allProjectilesHome = true;

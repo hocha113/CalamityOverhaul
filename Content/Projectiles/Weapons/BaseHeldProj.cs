@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
+using System.Reflection;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -73,7 +74,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// 是否处于活跃状态
         /// </summary>
         public virtual bool CanMouseNet => false;
-
+        /// <summary>
+        /// 获得原射击方法信息
+        /// </summary>
+        public readonly static MethodInfo ItemCheck_Shoot_Method = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
         #endregion
 
         /// <summary>
@@ -225,8 +229,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         protected void NetUpdate() => Projectile.netUpdate = true;
 
         /// <summary>
-        /// 具体实现与子类之中，注意，该方法用于调用原物品的射击行为，会正常出发附加效果，比如饰品效果，所以在使用该函数时注意其他机制的运行避免效果重叠
+        /// 注意，该方法用于调用原物品的射击行为，会正常出发附加效果，比如饰品效果，所以在使用该函数时注意其他机制的运行避免效果重叠
         /// </summary>
-        public virtual void OrigItemShoot() { }
+        public virtual void OrigItemShoot() => ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, Owner.GetWeaponDamage(Item)]);
     }
 }

@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (shootValue > 10) {
                 if (Main.rand.NextBool(6)) {
-                    Vector2 spanPos = GunShootPos + ShootVelocityInProjRot.UnitVector() * Main.rand.NextFloat(-33f, 42f);
+                    Vector2 spanPos = ShootPos + ShootVelocityInProjRot.UnitVector() * Main.rand.NextFloat(-33f, 42f);
                     Dust.NewDust(spanPos, 3, 3, DustID.Smoke, 0, -3, 55, Scale: Main.rand.NextFloat(1, 3));
                 }
             }
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocityInProjRot
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].ArmorPenetration = 20;
             if (shootValue > 10) {

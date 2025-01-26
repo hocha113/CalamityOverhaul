@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.SetArrowRot();
             proj.usesLocalNPCImmunity = true;
             proj.localNPCHitCooldown = 2;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             for (int i = 0; i < 3; i++) {
                 int[] arrows = new int[] { ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow };
-                int proj1 = Projectile.NewProjectile(Source, GunShootPos
+                int proj1 = Projectile.NewProjectile(Source, ShootPos
                         , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
                         , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].SetArrowRot();

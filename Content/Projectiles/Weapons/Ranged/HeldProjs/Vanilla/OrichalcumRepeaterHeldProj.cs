@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             float angle = Main.rand.NextFloat(0.05f, 0.09f);
             for (int i = 0; i < 2; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i))
+                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
                 CWRUtils.SetArrowRot(proj);

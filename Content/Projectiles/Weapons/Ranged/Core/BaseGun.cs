@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
-        public Vector2 GunShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
+        public override Vector2 ShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
         /// <summary>
         /// 玩家是否正在行走
         /// </summary>
@@ -258,11 +258,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 CanCreateSpawnGunDust = false;
                 CanCreateCaseEjection = false;
             }
-        }
-
-        public override void OrigItemShoot() {
-            GlobalItemBehavior = false;
-            ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
         }
 
         /// <summary>
@@ -408,7 +403,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
         /// <summary>
@@ -416,7 +411,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShootR() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
         /// <summary>
@@ -460,7 +455,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 || !CWRServerConfig.Instance.EnableCasingsEntity) {
                 return;
             }
-            Vector2 pos = Owner.Top + Owner.Top.To(GunShootPos) / 2;
+            Vector2 pos = Owner.Top + Owner.Top.To(ShootPos) / 2;
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
             Gore.NewGore(Source2, pos, vr, CaseGore.PType, slp == 1 ? EjectCasingProjSize : slp);//这是早该有的改变
         }
@@ -475,7 +470,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="dustID3"></param>
         public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, float splNum = 1f, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
             if (pos == default) {
-                pos = GunShootPos;
+                pos = ShootPos;
             }
             if (velocity == default) {
                 velocity = ShootVelocity;
@@ -582,7 +577,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                     }
                     if (FireLight > 0) {
-                        Lighting.AddLight(GunShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
+                        Lighting.AddLight(ShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
                     }
                 }
                 PostFiringShoot();

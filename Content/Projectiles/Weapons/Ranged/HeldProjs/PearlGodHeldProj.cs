@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void HanderSpwanDust() {
             SpawnGunFireDust();
             if (BulletNum <= 1) {
-                SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
+                SpawnGunFireDust(ShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
                     , dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);
             }
         }
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.3f;
                 Recoil = 1.2f;
                 for (int i = 0; i < 5; i++) {
-                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * (BulletNum * 0.01f))
+                    int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedBy((-2 + i) * (BulletNum * 0.01f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].Calamity().betterLifeBullet1 = true;
                 }
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 1.3f;
                 Recoil = 5.2f;
                 SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Pitch = -0.7f, Volume = 0.7f }, Projectile.Center);
-                int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity
+                int proj = Projectile.NewProjectile(Source2, ShootPos, ShootVelocity
                     , ModContent.ProjectileType<ShockblastRound>(), WeaponDamage * 5, WeaponKnockback * 2f, Owner.whoAmI, 0f, 10f);
                 Main.projectile[proj].extraUpdates += 2;
                 Main.projectile[proj].Calamity().betterLifeBullet2 = true;

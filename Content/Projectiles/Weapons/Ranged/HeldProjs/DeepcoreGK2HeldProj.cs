@@ -35,11 +35,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void HanderSpwanDust() {
             if (onFire) {
-                SpawnGunFireDust(GunShootPos, dustID1: DustID.YellowStarDust
+                SpawnGunFireDust(ShootPos, dustID1: DustID.YellowStarDust
                     , dustID2: DustID.FireworksRGB, dustID3: DustID.FireworksRGB);
             }
             if (onFireR) {
-                SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
+                SpawnGunFireDust(ShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
                     , dustID2: DustID.FireworkFountain_Red, dustID3: DustID.FireworkFountain_Red);
             }
         }
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].scale *= 3;
             Main.projectile[proj].extraUpdates += 1;
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

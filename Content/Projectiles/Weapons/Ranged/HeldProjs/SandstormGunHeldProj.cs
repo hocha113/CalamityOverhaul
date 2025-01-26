@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, new Vector2(GunShootPos.X, Main.MouseWorld.Y), new Vector2(ShootVelocity.X, 0)
+            Projectile.NewProjectile(Source, new Vector2(ShootPos.X, Main.MouseWorld.Y), new Vector2(ShootVelocity.X, 0)
                 , ModContent.ProjectileType<SandnadoOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

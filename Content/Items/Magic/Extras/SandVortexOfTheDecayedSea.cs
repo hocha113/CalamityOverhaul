@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             SoundEngine.PlaySound(sound with { Pitch = -0.2f, Volume = 0.6f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 Vector2 ver = new Vector2(ShootVelocity.X * (0.6f + i * 0.12f), ShootVelocity.Y * Main.rand.NextFloat(0.6f, 1.2f));
-                Projectile.NewProjectile(Source, GunShootPos, ver, ModContent.ProjectileType<DecayedSeaOrb>()
+                Projectile.NewProjectile(Source, ShootPos, ver, ModContent.ProjectileType<DecayedSeaOrb>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
             }
         }

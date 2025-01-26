@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void HanderSpwanDust() {
             if (chargeValue > maxChargeValue && chargeAmmo > maxChargeAmmo) {
-                SpawnGunFireDust(GunShootPos, ShootVelocity / 2, 13
+                SpawnGunFireDust(ShootPos, ShootVelocity / 2, 13
                     , dustID1: DustID.Smoke, dustID2: DustID.Smoke, dustID3: DustID.Smoke);
             }
         }
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
             SoundEngine.PlaySound(SoundID.Item40 with { PitchVariance = setPitchVarianceValue }, Projectile.Center);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(4f)) * 3
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(4f)) * 3
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             chargeValue++;
         }

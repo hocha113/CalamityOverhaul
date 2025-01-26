@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 4; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * (0.6f + i * 0.1f)
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity * (0.6f + i * 0.1f)
                 , ModContent.ProjectileType<NeutronMagchStar>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }

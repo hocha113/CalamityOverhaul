@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFireTime > 0) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + onFireTime * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
-                    SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
+                    SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
                     onFireTime2 = 8;
                 }
                 if (onFireTime2 > 0) {
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             for (int i = 0; i < 33; i++) {
                 Vector2 vr = ShootVelocity.RotateRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f);
-                int index2 = Dust.NewDust(GunShootPos, 1, 1, DustID.BlueCrystalShard, vr.X, vr.Y, 0, default, 1.1f);
+                int index2 = Dust.NewDust(ShootPos, 1, 1, DustID.BlueCrystalShard, vr.X, vr.Y, 0, default, 1.1f);
                 Main.dust[index2].noGravity = true;
             }
 
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             for (int i = 0; i < 3; i++) {
-                Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
+                Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 proj.extraUpdates += 1;
                 proj.usesLocalNPCImmunity = true;
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             for (int i = 0; i < 3; i++) {
-                Projectile iceorb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f)
+                Projectile iceorb = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.06f)
                 , ModContent.ProjectileType<Crystal>(), WeaponDamage * 3, WeaponKnockback, Owner.whoAmI, 0, 0);
                 iceorb.rotation = iceorb.velocity.ToRotation();
                 iceorb.CWR().SpanTypes = (byte)SpanTypesEnum.CrystalDimming;

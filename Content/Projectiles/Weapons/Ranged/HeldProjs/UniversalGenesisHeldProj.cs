@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void HanderSpwanDust() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, 2, 173, 173, 173);
+            SpawnGunFireDust(ShootPos, ShootVelocity, 2, 173, 173, 173);
         }
 
         public override void FiringShoot() {
@@ -46,10 +46,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             for (int i = 0; i < 5; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * 0.03f)
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedBy((-2 + i) * 0.03f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            Vector2 pos = GunShootPos + new Vector2(Owner.Center.To(Main.MouseWorld).X * 0.3f, -700);
+            Vector2 pos = ShootPos + new Vector2(Owner.Center.To(Main.MouseWorld).X * 0.3f, -700);
             for (int i = 0; i < 7; i++) {
                 pos += CWRUtils.randVr(134);
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor * Main.rand.NextFloat(1.9f, 2.6f);

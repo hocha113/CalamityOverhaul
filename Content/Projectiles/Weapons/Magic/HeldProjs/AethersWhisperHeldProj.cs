@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero, ModContent.ProjectileType<AethersWhisperOnSpan>()
+            Projectile.NewProjectile(Source, ShootPos, Vector2.Zero, ModContent.ProjectileType<AethersWhisperOnSpan>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }

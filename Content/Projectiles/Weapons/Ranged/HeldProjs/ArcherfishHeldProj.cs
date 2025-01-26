@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostFiringShoot() {
             for (int i = 0; i < 4; i++) {
-                Gore bubble = Gore.NewGorePerfect(Source, GunShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(30f)) * 0.5f, 411);
+                Gore bubble = Gore.NewGorePerfect(Source, ShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(30f)) * 0.5f, 411);
                 bubble.timeLeft = 6 + Main.rand.Next(4);
                 bubble.scale = Main.rand.NextFloat(0.6f, 0.8f);
                 bubble.type = Main.rand.NextBool(3) ? 412 : 411;
@@ -56,8 +56,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source2, ShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

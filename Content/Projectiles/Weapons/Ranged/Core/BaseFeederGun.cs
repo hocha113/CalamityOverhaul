@@ -711,13 +711,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 左键单次开火事件，在网络模式中只会被弹幕主人调用
         /// </summary>
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
         /// 右键单次开火事件，在网络模式中只会被弹幕主人调用
         /// </summary>
         public override void FiringShootR() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         //重写这个函数，因为FeederGun和BaseGun的实现原理不一样，为了保持效果正确，封装并重写这部分的逻辑
@@ -789,7 +789,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         if (FireLight > 0) {
                             Color fireColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
                             Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, FireLight);
-                            Lighting.AddLight(GunShootPos, fireColorToVr3);
+                            Lighting.AddLight(ShootPos, fireColorToVr3);
                         }
                     }
                     PostFiringShoot();

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < bulletAmt; i++) {
                 float newSpeedX = ShootVelocity.X + Main.rand.NextFloat(-15f, 15f);
                 float newSpeedY = ShootVelocity.Y + Main.rand.NextFloat(-15f, 15f);
-                int proj = Projectile.NewProjectile(Source, GunShootPos, new Vector2(newSpeedX, newSpeedY), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                int proj = Projectile.NewProjectile(Source, ShootPos, new Vector2(newSpeedX, newSpeedY), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 Main.projectile[proj].extraUpdates += 1;
             }
         }

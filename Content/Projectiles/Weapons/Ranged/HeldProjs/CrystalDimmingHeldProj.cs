@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFireTime > 0) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + onFireTime * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
-                    SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
+                    SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
                     onFireTime2 = 8;
                 }
                 if (onFireTime2 > 0) {
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             for (int i = 0; i < 33; i++) {
                 Vector2 vr = ShootVelocity.RotateRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f);
-                int index2 = Dust.NewDust(GunShootPos, 1, 1, DustID.BlueCrystalShard, vr.X, vr.Y, 0, default, 1.1f);
+                int index2 = Dust.NewDust(ShootPos, 1, 1, DustID.BlueCrystalShard, vr.X, vr.Y, 0, default, 1.1f);
                 Main.dust[index2].noGravity = true;
             }
 
@@ -95,13 +95,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.5f, Volume = 0.3f });
                 for (int i = 0; i < 9; i++) {
-                    Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.75f, 1.12f)
+                    Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.75f, 1.12f)
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                     proj.scale += Main.rand.NextFloat(0.3f);
                     proj.usesLocalNPCImmunity = true;
                     proj.localNPCHitCooldown = -1;
                     if (Main.rand.NextBool(2)) {
-                        Projectile proj2 = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f)
+                        Projectile proj2 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f)
                     , ModContent.ProjectileType<FlurrystormIceChunk>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         proj2.extraUpdates += 2;
                     }
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             for (int i = 0; i < 3; i++) {
-                Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
+                Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 proj.extraUpdates += 1;
                 proj.usesLocalNPCImmunity = true;
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
 
-            Projectile iceorb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity / 2
+            Projectile iceorb = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity / 2
                 , ModContent.ProjectileType<IceSoulOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0);
             iceorb.rotation = iceorb.velocity.ToRotation() + MathHelper.PiOver2;
             iceorb.CWR().SpanTypes = (byte)SpanTypesEnum.CrystalDimming;

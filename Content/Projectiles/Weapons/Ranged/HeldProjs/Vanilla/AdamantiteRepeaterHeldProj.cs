@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity
+            Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.extraUpdates += 1;
             proj.usesLocalNPCImmunity = true;

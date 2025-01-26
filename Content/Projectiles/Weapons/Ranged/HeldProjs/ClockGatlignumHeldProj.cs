@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 AmmoTypes = ProjectileID.BulletHighVelocity;
             }
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos
+                Projectile.NewProjectile(Source, ShootPos
                     , ShootVelocity.RotatedByRandom(0.06f) * Main.rand.NextFloat(0.9f, 1.2f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }

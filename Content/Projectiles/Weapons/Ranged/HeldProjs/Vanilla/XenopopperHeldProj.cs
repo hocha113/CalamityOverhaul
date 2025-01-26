@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             for (int i = 0; i < 3; i++) {
-                Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos,
+                Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(0.7f, 1.3f)
                     , ModContent.ProjectileType<XenopopperProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 proj.localAI[0] = AmmoTypes;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

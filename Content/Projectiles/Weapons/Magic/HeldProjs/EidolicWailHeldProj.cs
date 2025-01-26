@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 proj.scale += Main.rand.NextFloat(-0.2f, 0.2f);
                 proj.velocity *= Main.rand.NextFloat(1, 1.13f);
 
-                BasePRT pulse3 = new PRT_DWave(GunShootPos, ShootVelocity * (0.3f + i * 0.1f), Color.BlueViolet
+                BasePRT pulse3 = new PRT_DWave(ShootPos, ShootVelocity * (0.3f + i * 0.1f), Color.BlueViolet
                 , new Vector2(0.7f, 1.3f) * 0.8f, ShootVelocity.ToRotation(), 0.18f, 0.22f + i * 0.05f, 40);
                 PRTLoader.AddParticle(pulse3);
             }

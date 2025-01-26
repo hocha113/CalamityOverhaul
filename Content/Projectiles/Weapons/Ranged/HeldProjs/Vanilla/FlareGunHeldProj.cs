@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
             int dustType = GetFlareDustID(this);
             Vector2 setTo = ShootVelocity + Owner.velocity;
-            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, setTo.X, setTo.Y);
+            int dust = Dust.NewDust(ShootPos, 1, 1, dustType, setTo.X, setTo.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }

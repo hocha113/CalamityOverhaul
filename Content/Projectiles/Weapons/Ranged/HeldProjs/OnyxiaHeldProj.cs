@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (randomMode < 0) {
                 randomMode = 0;
             }
-            Projectile shard = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(randomMode), ProjectileID.BlackBolt, shardDamage, shardKB, Owner.whoAmI, 0f, 0f);
+            Projectile shard = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(randomMode), ProjectileID.BlackBolt, shardDamage, shardKB, Owner.whoAmI, 0f, 0f);
             shard.timeLeft = (int)(shard.timeLeft * 5.4f);
             if (fireIndex > 15) {
                 shard.MaxUpdates *= 2;
@@ -59,8 +59,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 float randVelMultiplier = Main.rand.NextFloat(0.92f, 1.08f);
                 Vector2 ccwVelocity = ShootVelocity.RotatedBy(-randAngle) * randVelMultiplier;
                 Vector2 cwVelocity = ShootVelocity.RotatedBy(randAngle) * randVelMultiplier;
-                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
-                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, ShootPos, ccwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, ShootPos, cwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
 
         }

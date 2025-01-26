@@ -44,12 +44,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 AmmoTypes = ProjectileID.BulletHighVelocity;
                 WeaponDamage += 14;
             }
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CalamityGlobalProjectile cgp = Main.projectile[proj].Calamity();
             cgp.supercritHits = -1;
             cgp.appliesSomaShred = true;
             float value = MathF.Sin(Time * 0.05f) * 0.3f;
-            Vector2 newPos = GunShootPos - ShootVelocity.UnitVector() * 46;
+            Vector2 newPos = ShootPos - ShootVelocity.UnitVector() * 46;
             int proj2 = Projectile.NewProjectile(Source, newPos, ShootVelocity.RotatedBy(value), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CalamityGlobalProjectile cgp2 = Main.projectile[proj2].Calamity();
             cgp2.supercritHits = -1;

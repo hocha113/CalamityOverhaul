@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             int dustType = FlareGunHeldProj.GetFlareDustID(this);
             Vector2 projRotTo = Projectile.rotation.ToRotationVector2() * 13 + Owner.velocity;
-            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, projRotTo.X, projRotTo.Y);
+            int dust = Dust.NewDust(ShootPos, 1, 1, dustType, projRotTo.X, projRotTo.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;
                 velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                int proj = Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, ShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 if (proj.WithinBounds(Main.maxProjectiles)) {
                     Main.projectile[proj].timeLeft = 150;
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 velocity *= Main.rand.NextFloat(1, 1.1f);
                 velocity.X += Main.rand.Next(-20, 21) * 0.05f;
                 velocity.Y += Main.rand.Next(-20, 21) * 0.05f;
-                int soul = Projectile.NewProjectile(Source, GunShootPos, velocity, ModContent.ProjectileType<LostSoulFriendly>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 2f, 0f);
+                int soul = Projectile.NewProjectile(Source, ShootPos, velocity, ModContent.ProjectileType<LostSoulFriendly>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 2f, 0f);
                 if (soul.WithinBounds(Main.maxProjectiles)) {
                     Main.projectile[soul].timeLeft = 600;
                     Main.projectile[soul].DamageType = DamageClass.Ranged;

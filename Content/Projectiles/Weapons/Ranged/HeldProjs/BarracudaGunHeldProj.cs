@@ -37,9 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (!canFire) {
                 return;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.11f)
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedBy(-0.11f)
                 , ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.11f)
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedBy(0.11f)
                 , ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

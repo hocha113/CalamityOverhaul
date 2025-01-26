@@ -47,29 +47,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFireR) {
                 ShootPosToMouLengValue = 0;
                 if (++fireIndex > 3) {
-                    SoundEngine.PlaySound(Item.UseSound, GunShootPos);
+                    SoundEngine.PlaySound(Item.UseSound, ShootPos);
                     fireIndex = 0;
                 }
                 return;
             }
             ShootPosToMouLengValue = -16;
             if (++fireIndex > 4) {
-                SoundEngine.PlaySound(Item.UseSound, GunShootPos);
+                SoundEngine.PlaySound(Item.UseSound, ShootPos);
                 fireIndex = 0;
             }
         }
 
         public override void FiringShoot() {
-            CritSpark spark = new CritSpark(GunShootPos + ShootVelocity * 3f + new Vector2(0, -3), ShootVelocity.RotatedBy(0.25f * Owner.direction).RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f, 1.8f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Color.OrangeRed, 0.9f, 18, 2f, 1.9f);
+            CritSpark spark = new CritSpark(ShootPos + ShootVelocity * 3f + new Vector2(0, -3), ShootVelocity.RotatedBy(0.25f * Owner.direction).RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f, 1.8f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Color.OrangeRed, 0.9f, 18, 2f, 1.9f);
             GeneralParticleHandler.SpawnParticle(spark);
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].Calamity().allProjectilesHome = true;
         }
 
         public override void FiringShootR() {
             for (int i = 0; i < 2; i++) {
                 Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(5f));
-                Projectile.NewProjectile(Source, GunShootPos, newVel, ModContent.ProjectileType<PristineSecondary>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                Projectile.NewProjectile(Source, ShootPos, newVel, ModContent.ProjectileType<PristineSecondary>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
         }
 

@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() =>
-        Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot
+        Projectile.NewProjectile(Source, ShootPos, ShootVelocityInProjRot
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
     }
 }

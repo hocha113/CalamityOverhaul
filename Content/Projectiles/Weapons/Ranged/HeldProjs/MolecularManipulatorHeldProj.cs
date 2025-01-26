@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-10, 11) * 0.05f;
                 velocity.Y += Main.rand.Next(-10, 11) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes
+                Projectile.NewProjectile(Source, ShootPos, velocity, AmmoTypes
                     , WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
             }
         }

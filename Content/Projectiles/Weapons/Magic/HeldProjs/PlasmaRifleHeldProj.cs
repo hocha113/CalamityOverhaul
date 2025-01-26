@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             SoundEngine.PlaySound(PlasmaRifle.HeavyShotSound, Projectile.Center);
             Item.useTime = 30;
             GunPressure = 0.3f;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<PlasmaShot>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             SoundEngine.PlaySound(PlasmaRifle.FastShotSound, Projectile.Center);
             Item.useTime = 10;
             GunPressure = 0.1f;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<PlasmaBolt>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

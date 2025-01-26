@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 int projIndex = -1;
 
                 if (reset) {
-                    projIndex = Projectile.NewProjectile(Source, GunShootPos
+                    projIndex = Projectile.NewProjectile(Source, ShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.9f, 1.32f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 }
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             switch (level) {
                 case 0:
-                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * Main.rand.NextFloat(0.9f, 1.32f)
+                    int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity * Main.rand.NextFloat(0.9f, 1.32f)
                         , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].timeLeft = 90;
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;

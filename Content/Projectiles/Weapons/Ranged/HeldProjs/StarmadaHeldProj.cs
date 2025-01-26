@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                             ProjectileID.StarCannonStar,
                             ProjectileID.Starfury
                         });
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }

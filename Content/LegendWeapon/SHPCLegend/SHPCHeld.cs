@@ -98,25 +98,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 case 1:
                 case 2:
                 case 3:
-                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                     , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     break;
                 case 4:
                 case 5:
                 case 6:
                     if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                         , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;
                     }
                     for (int i = 0; i < 2; i++) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
                             , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
                 default:
                     for (int i = 0; i < 3; i++) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.22f) * Main.rand.NextFloat(0.8f, 1f)
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.22f) * Main.rand.NextFloat(0.8f, 1f)
                             , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
@@ -130,25 +130,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 case 1:
                 case 2:
                 case 3:
-                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                     , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     break;
                 case 4:
                 case 5:
                 case 6:
                     if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                         , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;
                     }
                     for (int i = 0; i < 2; i++) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1f)
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1f)
                             , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
                 default:
                     for (int i = 0; i < 3; i++) {
-                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
                             , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;

@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             OffsetPos -= ShootVelocity.UnitVector() * 4;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                 , ModContent.ProjectileType<PlagueTaintedProjectile>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
@@ -69,10 +69,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
             OffsetPos -= ShootVelocity.UnitVector() * 6;
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))
+                Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
-                Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
+                Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
             }
