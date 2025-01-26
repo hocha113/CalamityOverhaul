@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
 
         public void LoadAmmos(CWRItems cwrItem) {
             ammoItemElements.Clear();
-            foreach (Item ammo in cwrItem.MagazineContents) {
+            for (int i = cwrItem.MagazineContents.Length - 1; i >= 0; i--) {//弹匣集合是正序的，但按照倒序去读，子弹先进先出
+                Item ammo = cwrItem.MagazineContents[i];
                 if (ammo == null) {
                     continue;
                 }

@@ -229,10 +229,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         /// <returns></returns>
         public Item GetSelectedBullets() {
-            if (MagazineContents == null || MagazineContents.Length <= 0 || MagazineContents[0] == null) {
+            if (MagazineContents == null || MagazineContents.Length <= 0 || MagazineContents[^1] == null) {
                 InitializeMagazine();
             }
-            return MagazineContents[0];
+            return MagazineContents[^1];//倒着读，让子弹先进先出
         }
 
         /// <summary>
