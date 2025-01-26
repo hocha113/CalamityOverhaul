@@ -46,14 +46,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Projectile.timeLeft == 20) {
                     SoundEngine.PlaySound(SoundID.Item108 with { Volume = 0.9f, Pitch = -0.5f }, Projectile.Center);
                     for (int i = 0; i < 3; i++) {
-                        Projectile.NewProjectile(shootState.Source, Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
+                        Projectile.NewProjectile(shootState.Source, Projectile.Center, (Projectile.rotation + (-1 + i) * 0.06f).ToRotationVector2() * 12
                         , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 1);
                     }
                 }
                 if (Projectile.timeLeft == 1) {
                     SoundEngine.PlaySound(SoundID.Item108 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
                     for (int i = 0; i < 5; i++) {
-                        Projectile.NewProjectile(shootState.Source, Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
+                        Projectile.NewProjectile(shootState.Source, Projectile.Center, (Projectile.rotation + (-2 + i) * 0.06f).ToRotationVector2() * 15
                         , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 2);
                     }
                 }

@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GunCustomization;
+using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -10,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
-    internal abstract class BaseBow : BaseHeldRanged
+    public abstract class BaseBow : BaseHeldRanged
     {
         #region Date
         /// <summary>
@@ -231,6 +233,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void PostSetRangedProperty() {
+            foreach (var gBow in RangedLoader.GlobalRangeds) {
+                gBow.PostModifyBow(this);
+            }
+
             // 如果指定了弓弦的扣除矩形（用于纹理剪裁）
             if (BowstringData.DeductRectangle != default) {
                 // 允许扣除逻辑进行

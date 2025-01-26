@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
             fireIndex = 0;
+            BowstringData.DeductRectangle = new Rectangle(6, 8, 2, 40);
         }
         public override void SetShootAttribute() {
             Item.useTime = 10;
@@ -23,18 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Item.useTime = 50;
                 fireIndex = 0;
             }
-            //如果这些开发者愿意遵守那该死的开发手册，就不会需要多写这么多该死特判代码
-            if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
-                AmmoTypes = ModContent.ProjectileType<LunarBolt>();
-            }
         }
-        public override void BowShoot() {
-            int proj = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.GetNormalVector() * 3, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
-            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-            int proj2 = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.GetNormalVector() * -3, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj2].CWR().SpanTypes = (byte)ShootSpanTypeValue;
-            Main.projectile[proj2].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-        }
+        public override void BowShoot() => OrigItemShoot();
     }
 }

@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 4;
             HandFireDistance = 20;
             DrawArrowMode = -22;
+            BowstringData.DeductRectangle = new Rectangle(6, 16, 2, 34);
         }
         public override void BowShoot() {
             if (AmmoTypes == ModContent.ProjectileType<VanquisherArrowProj>()) {

@@ -61,6 +61,7 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(gemstone)
                     .AddIngredient(dyeID)
                     .AddTile(TileID.DyeVat)
+                    .DisableDecraft()//不要被微光转化
                     .Register();
             }
         }
@@ -74,7 +75,8 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(emblem)
                     .AddIngredient(ItemID.SoulofLight, 2)
                     .AddIngredient(ItemID.SoulofNight, 2)
-                    .AddTile(TileID.MythrilAnvil)
+                    .AddTile(TileID.Anvils)
+                    .DisableDecraft()//不要被微光转化
                     .Register();
             }
         }
@@ -261,6 +263,14 @@ namespace CalamityOverhaul.Content
         }
 
         private void AddResultContent() {
+            //添加地狱熔炉的合成
+            {
+                Recipe.Create(ItemID.Hellforge)
+                .AddIngredient(ItemID.Furnace)
+                    .AddIngredient(ItemID.Hellstone, 10)
+                    .AddTile(TileID.Anvils)
+                    .Register();
+            }
             //添加宝石的合成
             {
                 LoadenGemstoneRecipe(ItemID.Sapphire, ItemID.BlueDye);
@@ -528,7 +538,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAddRecipes() {
-            {//遍历所有配方，执行对应的配方修改，这个应该执行在最前，放置覆盖后续的修改操作
+            {//遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     ModifyResultContent(Main.recipe[i]);
                 }

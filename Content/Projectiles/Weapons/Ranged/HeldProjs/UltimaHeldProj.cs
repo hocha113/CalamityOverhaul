@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 26;
             BowArrowDrawBool = false;
             CanFireMotion = false;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
         }
         public override void PostInOwner() {
             if (!CanFire) {

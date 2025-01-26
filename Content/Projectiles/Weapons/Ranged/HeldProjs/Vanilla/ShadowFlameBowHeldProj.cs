@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ProjectileID.ShadowFlameArrow;
+            BowstringData.DeductRectangle = new Rectangle(4, 8, 2, 24);
         }
     }
 }

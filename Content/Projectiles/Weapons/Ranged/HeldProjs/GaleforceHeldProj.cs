@@ -12,7 +12,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Galeforce";
         public override int targetCayItem => ModContent.ItemType<Galeforce>();
         public override int targetCWRItem => ModContent.ItemType<GaleforceEcType>();
-        public override void SetRangedProperty() => CanRightClick = true;
+        public override void SetRangedProperty() {
+            CanRightClick = true;
+            HandDistance = 16;
+            HandFireDistance = 16;
+            DrawArrowMode = -24;
+            BowstringData.DeductRectangle = new Rectangle(2, 8, 2, 46);
+        }
         public override void PostInOwner() {
             Item.useTime = onFireR ? 5 : 20;
         }
@@ -21,8 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypes = ModContent.ProjectileType<FeatherLarge>();
             int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
                 , AmmoTypes, WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
-            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
+            Main.projectile[proj].SetArrowRot();
         }
 
         public override void BowShoot() {

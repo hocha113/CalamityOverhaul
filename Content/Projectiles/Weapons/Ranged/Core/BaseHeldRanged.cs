@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
-    internal abstract class BaseHeldRanged : BaseHeldProj
+    public abstract class BaseHeldRanged : BaseHeldProj
     {
         #region Date
         /// <summary>

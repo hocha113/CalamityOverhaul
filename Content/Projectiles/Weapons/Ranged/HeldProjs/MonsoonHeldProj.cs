@@ -18,15 +18,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private SlotId accumulator;
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandFireDistance = 20;
+            HandDistance = 18;
+            HandFireDistance = 24;
             BowArrowDrawNum = 5;
-            DrawArrowMode = -22;
+            DrawArrowMode = -26;
+            BowstringData.DeductRectangle = new Rectangle(2, 16, 2, 46);
         }
 
         public override void PostInOwner() {
             CanFireMotion = true;
             FiringDefaultSound = true;
             BowArrowDrawBool = onFire;
+            BowstringData.CanDraw = BowstringData.CanDeduct = onFire;
             if (onFireR) {
                 CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;

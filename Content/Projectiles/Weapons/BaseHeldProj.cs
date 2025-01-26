@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons
 {
-    internal abstract class BaseHeldProj : ModProjectile
+    public abstract class BaseHeldProj : ModProjectile
     {
         #region Data
         private bool _initialize;

@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -12,12 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shellshooter";
         public override int targetCayItem => ModContent.ItemType<Shellshooter>();
         public override int targetCWRItem => ModContent.ItemType<ShellshooterEcType>();
-        public override void BowShoot() {
-            //如果这些开发者愿意遵守那该死的开发手册，就不会需要多写这么多该死特判代码
-            if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
-                AmmoTypes = ModContent.ProjectileType<Shell>();
-            }
-            base.BowShoot();
-        }
+        public override void SetRangedProperty() => BowstringData.DeductRectangle = new Rectangle(4, 14, 2, 18);
+        public override void BowShoot() => OrigItemShoot();
     }
 }

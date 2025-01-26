@@ -7,17 +7,17 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.GunCustomization
 {
-    public class FeederGunLoader : ICWRLoader
+    public class RangedLoader : ICWRLoader
     {
         public delegate Item On_ChooseAmmo_Delegate(object obj, Item weapon);
-        public static List<GlobalFeederGun> GlobalFeederGuns { get; private set; } = [];
+        public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
         void ICWRLoader.LoadData() {
-            GlobalFeederGuns = VaultUtils.GetSubclassInstances<GlobalFeederGun>();
+            GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
         }
         void ICWRLoader.UnLoadData() {
-            GlobalFeederGuns?.Clear();
+            GlobalRangeds?.Clear();
         }
 
         private static void ModifyInCartridgeGun(Item weapon, ref Item ammo) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.GunCustomization
                 }
             }
 
-            foreach (var gGun in GlobalFeederGuns) {
+            foreach (var gGun in GlobalRangeds) {
                 Item gAmmo = gGun.ChooseAmmo(weapon);
                 if (gAmmo != null) {
                     ammo = gAmmo;

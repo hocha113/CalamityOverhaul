@@ -16,8 +16,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             HandFireDistance = 26;
             DrawArrowMode = -30;
+            BowstringData.DeductRectangle = new Rectangle(14, 18, 4, 102);
         }
-        public override void PostInOwner() => BowArrowDrawBool = onFire;
+        public override void PostInOwner() {
+            BowstringData.CanDeduct = BowstringData.CanDraw = onFire;
+            BowArrowDrawBool = onFire;
+            HandFireDistance = onFire ? 26 : 22;
+        }
         public override void SetShootAttribute() {
             if (onFire) {
                 Item.UseSound = SoundID.Item5;

@@ -13,12 +13,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Drataliornus";
         public override int targetCayItem => ModContent.ItemType<Drataliornus>();
         public override int targetCWRItem => ModContent.ItemType<DrataliornusEcType>();
-
         private int chargeIndex = 35;
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandFireDistance = 25;
-            DrawArrowMode = -30;
+            HandDistance = 18;
+            HandFireDistance = 28;
+            DrawArrowMode = -36;
+            BowstringData.DeductRectangle = new Rectangle(6, 10, 2, 70);
         }
 
         public override void PostInOwner() {
