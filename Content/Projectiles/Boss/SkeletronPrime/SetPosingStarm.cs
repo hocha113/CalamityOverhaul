@@ -52,15 +52,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                         p.Kill();
                     }
                 }
-                if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-2200, 0)
-                        , new Vector2(53, 0), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 2200)
-                        , new Vector2(0, -53), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
 
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
-                        , new Vector2(0, 10), ModContent.ProjectileType<CrossPrediction>(), Projectile.damage, 2, -1);
-                }
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-2200, 0)
+                        , new Vector2(53, 0), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 2200)
+                    , new Vector2(0, -53), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
+
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
+                    , new Vector2(0, 10), ModContent.ProjectileType<CrossPrediction>(), Projectile.damage, 2, -1);
             }
 
             if (Projectile.ai[0] % 15 == 0 && Projectile.ai[0] > 45 && Projectile.ai[0] <= 365) {

@@ -345,6 +345,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void ThisFromeFindPlayer() {
             if (TargetPlayerIsActive()) {
                 npc.TargetClosest();
+                player = Main.player[npc.target];
                 //在Boss完成登场表演前不要去切换脱战行为，所以这里判断一下npc.ai0，
                 //防止Boss在初始化阶段或者出场阶段时，因为生成距离过远等原因而被判定脱战
                 if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
@@ -542,9 +543,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[1] = 1f;
                     calNPC.newAI[0]++;
                     if (!VaultUtils.isClient && calNPC.newAI[0] >= 2) {
-                        int damage = SetMultiplier(npc.defDamage / 3);
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
-                            , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
+                        if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
+                            int damage = SetMultiplier(npc.defDamage / 3);
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
+                                , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
+                        }
                         calNPC.newAI[0] = 0;
                         ai11++;
                         SendExtraAI(npc);

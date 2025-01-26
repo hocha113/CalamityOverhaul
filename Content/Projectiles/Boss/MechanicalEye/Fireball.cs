@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
+            target.AddBuff(BuffID.OnFire3, 60);
         }
 
         public override bool PreDraw(ref Color lightColor) {
