@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Painting
     internal class WUTIVSelfPortrait : ModItem
     {
         public override string Texture => CWRConstant.Asset + "Painting/WUTIVSelfPortrait";
+        public const int DropProbabilityDenominator = 8000;
         public override void SetDefaults() {
             Item.width = 102;
             Item.height = 126;

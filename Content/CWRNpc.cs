@@ -230,18 +230,19 @@ namespace CalamityOverhaul.Content
                             }
                         }
                     }
-                    if (Main.rand.NextBool(200) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
-                        if (!VaultUtils.isSinglePlayer) {
-                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                        }
-                    }
-                    if (Main.rand.NextBool(200)) {
-                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
-                        if (!VaultUtils.isSinglePlayer) {
-                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                        }
-                    }
+                }
+            }
+
+            if (Main.rand.NextBool(JusticeUnveiled.DropProbabilityDenominator) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
+                int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
+                if (!VaultUtils.isSinglePlayer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                }
+            }
+            if (Main.rand.NextBool(WUTIVSelfPortrait.DropProbabilityDenominator)) {
+                int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
+                if (!VaultUtils.isSinglePlayer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                 }
             }
 
@@ -335,6 +336,7 @@ namespace CalamityOverhaul.Content
             if (shop.NpcType == NPCID.Merchant) {
                 shop.Add(ItemID.WormholePotion, Condition.Multiplayer);//商人会在多人模式下售卖传送药水
                 shop.Add(ItemID.RecallPotion, Condition.DownedEyeOfCthulhu);//击败克苏鲁之眼后售卖回忆药水
+                shop.Add(ItemID.PotionOfReturn, Condition.Hardmode);//击败血肉墙之眼后售卖返回药水
             }
             foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
                 Item item = shopEntity.Item;

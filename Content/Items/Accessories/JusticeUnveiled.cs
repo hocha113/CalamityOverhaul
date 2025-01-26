@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class JusticeUnveiled : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
+        public const int DropProbabilityDenominator = 6000;
         private static bool OnLoaden;
         public override void SetDefaults() {
             Item.width = Item.height = 32;
