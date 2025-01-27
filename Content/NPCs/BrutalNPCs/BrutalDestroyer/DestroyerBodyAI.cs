@@ -25,8 +25,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 value2 = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/BodyAlt_Glow");
             }
 
-            Lighting.AddLight(npc.Center, Color.White.ToVector3() * 1.2f);
-
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
 
