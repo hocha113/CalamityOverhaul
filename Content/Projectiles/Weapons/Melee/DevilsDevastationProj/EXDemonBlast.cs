@@ -70,8 +70,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 if (shoot2) {
                     targetA = Projectile.velocity.ToRotation();
                 }
-                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.1f);
+                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.2f);
                 if (++Time2 > 60) {
+                    Projectile.extraUpdates = 3;
                     shoot2 = true;
                 }
             }
@@ -117,17 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            for (int i = 0; i < 10; i++) {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PurpleMoss,
-                    -Projectile.velocity.X * 0.3f, -Projectile.velocity.Y * 0.3f, Scale: 2);
-            }
-            for (int i = 0; i < 4; i++) {
-                Vector2 vr = (MathHelper.TwoPi / 4 * i + Projectile.rotation + MathHelper.PiOver4).ToRotationVector2();
-                for (int j = 0; j < 13; j++) {
-                    BasePRT spark = new PRT_Spark(Projectile.Center, vr * (1 + i), false, 32, 3, Color.Purple);
-                    PRTLoader.AddParticle(spark);
-                }
-            }
+            CWRDust.SplashDust(Projectile, 21, DustID.ShadowbeamStaff, DustID.ShadowbeamStaff, 13, Main.DiscoColor);
         }
 
         public override bool PreDraw(ref Color lightColor) {

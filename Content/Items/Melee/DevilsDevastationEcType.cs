@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTurn = true;
             Item.knockBack = 3.75f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;

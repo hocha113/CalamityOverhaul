@@ -2,12 +2,14 @@
 using InnoVault.PRT;
 using System.Linq;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class BMGFIRE : ModProjectile
     {
+        public override LocalizedText DisplayName => base.DisplayName;
         public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {
             Projectile.width = 22;

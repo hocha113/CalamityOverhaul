@@ -1,7 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using Mono.Cecil;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -11,20 +13,49 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "MirrorBlade";
         public override void SetDefaults() {
             Item.SetItemCopySD<MirrorBlade>();
-            Item.shoot = ModContent.ProjectileType<MirrorBladeRapier>();
-            Item.useTime = 30;
-            Item.useAnimation = 30;
-            Item.autoReuse = true;
-            Item.useStyle = ItemUseStyleID.Shoot;
-            Item.knockBack = 3.5f;
-            Item.shootSpeed = 5f;
-            Item.noUseGraphic = true;
-            Item.noMelee = true;
-            Item.channel = true;
+            Item.UseSound = null;
+            Item.SetKnifeHeld<MirrorBladeHeld>();
+        }
+    }
+
+    internal class RMirrorBlade : BaseRItem
+    {
+        public override int TargetID => ModContent.ItemType<MirrorBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<MirrorBladeEcType>();
+        public override void SetDefaults(Item item) {
+            item.UseSound = null;
+            item.SetKnifeHeld<MirrorBladeHeld>();
+        }
+    }
+
+    internal class MirrorBladeHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<MirrorBlade>();
+        public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
+        public override void SetKnifeProperty() {
+            drawTrailHighlight = false;
+            canDrawSlashTrail = true;
+            drawTrailCount = 10;
+            drawTrailTopWidth = 30;
+            distanceToOwner = 12;
+            drawTrailBtommWidth = 0;
+            SwingData.baseSwingSpeed = 4f;
+            Projectile.width = 50;
+            Projectile.height = 50;
+            Length = 54;
         }
 
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
+        public override void Shoot() {
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                , ModContent.ProjectileType<MirrorBlast>()
+                , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
+                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
     }
 }

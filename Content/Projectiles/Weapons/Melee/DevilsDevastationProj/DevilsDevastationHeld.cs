@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityOverhaul.Content.Particles;
 
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
@@ -137,32 +138,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             SwingBehavior(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.022f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
                 , minClampLength: 0, maxClampLength: 0, ler1Time: 8, maxSwingTime: 20);
-        }
 
-        private void HitEffect(Entity target, bool theofSteel) {
-            HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
-            for (int i = 0; i < sparkCount; i++) {
-                Vector2 sparkVelocity2 = rotToTargetSpeedTrengsVumVer.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.3f, 1.6f);
-                int sparkLifetime2 = Main.rand.Next(18, 30);
-                float sparkScale2 = Main.rand.NextFloat(0.65f, 1.2f);
-                Color sparkColor2 = Main.rand.NextBool(3) ? Color.OrangeRed : Color.DarkRed;
-                if (theofSteel) {
-                    sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
-                }
-
-                PRT_Spark spark = new PRT_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
-                        , target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * 1f
-                        , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
-                PRTLoader.AddParticle(spark);
+            if (Main.rand.NextBool(3)) {
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.ShadowbeamStaff);
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target));
+            target.AddBuff(BuffID.ShadowFlame, 150);
+            target.AddBuff(BuffID.OnFire, 300);
+            if (hit.Crit) {
+                target.AddBuff(BuffID.ShadowFlame, 450);
+                target.AddBuff(BuffID.OnFire, 900);
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            HitEffect(target, false);
+            target.AddBuff(ModContent.BuffType<Shadowflame>(), 450);
+            target.AddBuff(BuffID.OnFire, 900);
+            SoundEngine.PlaySound(SoundID.Item14, target.Center);
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {

@@ -74,8 +74,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 if (shoot2) {
                     targetA = Projectile.velocity.ToRotation();
                 }
-                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.1f);
+                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.2f);
                 if (++Time2 > 60) {
+                    Projectile.extraUpdates = 2;
                     shoot2 = true;
                 }
             }
