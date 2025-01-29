@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static float _sengs;
         public static bool HeldHalibut {
             get {
+                return false;//TODO:暂时未制作完成，所以不要启动它
                 if (Main.gameMenu || !Main.LocalPlayer.active) {
                     return false;
                 }

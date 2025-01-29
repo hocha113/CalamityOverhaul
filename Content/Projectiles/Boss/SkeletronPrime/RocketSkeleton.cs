@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.scale += 0.012f;
 
             if (PRTLoader.NumberUsablePRT() > 10) {
-                BasePRT spark2 = new PRT_Spark2(Projectile.Center, Projectile.velocity * 0.7f, false, 6, 1.4f, Color.DarkRed);
+                BasePRT spark2 = new PRT_SparkAlpha(Projectile.Center, Projectile.velocity * 0.7f, false, 6, 1.4f, Color.DarkRed);
                 PRTLoader.AddParticle(spark2);
                 BasePRT spark = new PRT_Spark(Projectile.Center, Projectile.velocity * 0.7f, false, 10, 1f, Color.LightGoldenrodYellow);
                 PRTLoader.AddParticle(spark);

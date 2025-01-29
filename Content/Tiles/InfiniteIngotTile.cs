@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override bool CreateDust(int i, int j, ref int type) {
             Vector2 pos = new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16));
-            PRT_Spark2 spark2 = new PRT_Spark2(pos, new Vector2(0, Main.rand.Next(-3, 3)), true, 12, 0.4f, Main.DiscoColor);
+            PRT_SparkAlpha spark2 = new PRT_SparkAlpha(pos, new Vector2(0, Main.rand.Next(-3, 3)), true, 12, 0.4f, Main.DiscoColor);
             PRTLoader.AddParticle(spark2);
             return false;
         }

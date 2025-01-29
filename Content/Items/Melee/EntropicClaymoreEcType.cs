@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                PRT_Spark2 spark = new PRT_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black) {
+                PRT_SparkAlpha spark = new PRT_SparkAlpha(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black) {
                     entity = Owner
                 };
                 PRTLoader.AddParticle(spark);

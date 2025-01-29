@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     {
         public static PiscicultureUI Instance => UIHandleLoader.GetUIHandleOfType<PiscicultureUI>();
         public static DialogboxUI Dialogbox => UIHandleLoader.GetUIHandleOfType<DialogboxUI>();
-        public override bool Active => IsOnpen || _sengs > 0;
+        public override bool Active => false;// IsOnpen || _sengs > 0;//TODO:暂时未制作完成，所以不要启动它
         public static bool IsOnpen;
         public static float _sengs;
         public Vector2 halibutBodyDrawPos;

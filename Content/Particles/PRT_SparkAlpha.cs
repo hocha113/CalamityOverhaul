@@ -5,13 +5,13 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_Spark2 : BasePRT
+    internal class PRT_SparkAlpha : BasePRT
     {
         public Color InitialColor;
         public bool AffectedByGravity;
         public Entity entity;
         public override string Texture => "CalamityMod/Projectiles/StarProj";
-        public PRT_Spark2(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public PRT_SparkAlpha(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
@@ -19,10 +19,7 @@ namespace CalamityOverhaul.Content.Particles
             Lifetime = lifetime;
             Color = InitialColor = color;
         }
-        public override void SetProperty() {
-            //PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
+        public override void SetProperty() => SetLifetime = true;
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));
