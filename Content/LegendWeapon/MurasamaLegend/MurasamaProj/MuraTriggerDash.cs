@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
             else {
-                if (murasama.type != ModContent.ItemType<MurasamaEcType>()) {
+                if (murasama.type != ModContent.ItemType<MurasamaOverride>()) {
                     Projectile.Kill();
                     return;
                 }
@@ -145,12 +145,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                                 break;//不管如何，执行一次伤害二次调整后都需要跳出
                             }
                         }
-                        if (MurasamaEcType.NameIsVergil(Owner)) {
+                        if (MurasamaOverride.NameIsVergil(Owner)) {
                             SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.3f }, Projectile.Center);
                         }
                         murasama.initialize();
 
-                        int sengsDmg = (int)(MurasamaEcType.ActualTrueMeleeDamage * sengs);
+                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage * sengs);
                         Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
 
@@ -189,16 +189,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 //}
 
                 if (Owner.PressKey() && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
-                    if (!MurasamaEcType.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
+                    if (!MurasamaOverride.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
 
                     if (Projectile.ai[1] > 0) {
-                        SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
+                        SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.1f }, Projectile.Center);
                         Projectile.ai[0] = 3;
                     }
                     else {
-                        SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.3f }, Projectile.Center);
                         Projectile.ai[0] = 2;
                     }
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.ai[1] = 0;
                 Projectile.netUpdate = true;
 
-                if (target.boss && MurasamaEcType.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
+                if (target.boss && MurasamaOverride.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
                     //Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);//这个部分存在争议，暂时取消
                 }
             }

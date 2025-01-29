@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return false;
             }
             if (!Main.dedServ) {
-                SoundStyle sound = MurasamaEcType.BigSwing with { Pitch = (0.3f + Level * 0.25f) };
+                SoundStyle sound = MurasamaOverride.BigSwing with { Pitch = (0.3f + Level * 0.25f) };
                 if (Level == 3) {
                     sound = SoundID.Item71 with { Volume = 1.5f, Pitch = 0.75f };
                 }

@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center
                     , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
-                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.35f }, Projectile.Center);
+                SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = 0.35f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f, Volume = 1.25f, MaxInstances = 2 }, Projectile.position);
                 Projectile.timeLeft = 30;
             }

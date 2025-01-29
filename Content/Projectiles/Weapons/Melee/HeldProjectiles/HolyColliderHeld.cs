@@ -78,10 +78,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         private void HitEffect(Entity target, bool theofSteel) {
             if (theofSteel) {
-                SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.25f }, target.Center);
+                SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = 0.25f }, target.Center);
             }
             else {
-                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 1.15f }, target.Center);
+                SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = 1.15f }, target.Center);
             }
 
             HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);

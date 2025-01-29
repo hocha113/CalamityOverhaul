@@ -41,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().Scope = true;
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DeepcoreGK2EcType");
-        }
-
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return false;

@@ -450,7 +450,7 @@ namespace CalamityOverhaul
 
             Projectile_ArcZap = ProjectileType<ArcZap>();
 
-            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeld>();
+            MurasamaOverride.heldProjType = ProjectileType<MurasamaHeld>();
             #endregion
 
             #region List

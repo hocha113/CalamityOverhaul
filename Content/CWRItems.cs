@@ -496,15 +496,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
-                string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
-                if (key != "") {
-                    if (CWRMod.RItemIndsDict[item.type].IsVanilla) {
-                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText(key));
-                    }
-                    else {
-                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
-                    }
-                }
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRMod.RItemIndsDict[item.type].Tooltip);
             }
         }
 

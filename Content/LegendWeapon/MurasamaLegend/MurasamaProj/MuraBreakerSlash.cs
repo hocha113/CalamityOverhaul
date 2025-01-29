@@ -203,8 +203,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             if (Projectile.numHits == 0) {
                 _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                    ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
-                    : SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
+                    ? SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
+                    : SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧
                 Owner.GivePlayerImmuneState(30);
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
 
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
-                if (murasama.CWR().ai[0] == 10 && MurasamaEcType.UnlockSkill3) {
+                if (murasama.CWR().ai[0] == 10 && MurasamaOverride.UnlockSkill3) {
                     SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with { Volume = 0.7f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
                         int maxSpanNum = 13 + level;
@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-            , MurasamaEcType.NameIsVergil(Owner) ? Color.BlueViolet : Color.White, Projectile.rotation
+            , MurasamaOverride.NameIsVergil(Owner) ? Color.BlueViolet : Color.White, Projectile.rotation
             , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }

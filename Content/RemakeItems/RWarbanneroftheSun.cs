@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             if (item2.IsAir) {
                 return true;
             }
-            if (item2.type == ModContent.ItemType<Murasama>() || item2.type == ModContent.ItemType<MurasamaEcType>()) {
+            if (item2.type == ModContent.ItemType<Murasama>() || item2.type == ModContent.ItemType<MurasamaOverride>()) {
                 CalamityPlayer modPlayer = player.Calamity();
                 modPlayer.warbannerOfTheSun = true;
                 float bonus = 0f;
