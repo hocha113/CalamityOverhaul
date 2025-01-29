@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BlossomFluxHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
-        public override int targetCayItem => ModContent.ItemType<BlossomFlux>();
-        public override int targetCWRItem => ModContent.ItemType<BlossomFluxEcType>();
+        public override int TargetID => ModContent.ItemType<BlossomFlux>();
         public override void SetRangedProperty() {
             CanRightClick = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;

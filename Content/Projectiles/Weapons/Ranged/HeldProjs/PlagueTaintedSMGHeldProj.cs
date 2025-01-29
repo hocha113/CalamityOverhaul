@@ -13,9 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PlagueTaintedSMGHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlagueTaintedSMG";
-        public override int targetCayItem => ModContent.ItemType<PlagueTaintedSMG>();
-        public override int targetCWRItem => ModContent.ItemType<PlagueTaintedSMGEcType>();
-
+        public override int TargetID => ModContent.ItemType<PlagueTaintedSMG>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 6;

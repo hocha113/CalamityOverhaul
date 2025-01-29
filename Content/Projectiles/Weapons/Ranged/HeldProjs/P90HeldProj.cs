@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class P90HeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "P90";
-        public override int targetCayItem => ModContent.ItemType<P90>();
-        public override int targetCWRItem => ModContent.ItemType<P90EcType>();
-
+        public override int TargetID => ModContent.ItemType<P90>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 2;

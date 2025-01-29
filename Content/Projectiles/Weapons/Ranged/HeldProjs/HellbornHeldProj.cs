@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class HellbornHeldProj : BaseFeederGun
     {
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
+        public override int TargetID => ModContent.ItemType<Hellborn>();
         public override bool? CanDamage() {
             return (onFire || onFireR) && IsKreload ? null : base.CanDamage();
         }
@@ -53,9 +55,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitFunc(Owner, target);
 
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
-        public override int targetCayItem => ModContent.ItemType<Hellborn>();
-        public override int targetCWRItem => ModContent.ItemType<HellbornEcType>();
         public override void SetRangedProperty() {
             FireTime = 20;
             ControlForce = 0.05f;

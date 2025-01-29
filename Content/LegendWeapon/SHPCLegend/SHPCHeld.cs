@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     internal class SHPCHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
-        public override int targetCayItem => ModContent.ItemType<SHPC>();
+        public override int TargetID => ModContent.ItemType<SHPC>();
         private int level => InWorldBossPhase.Instance.SHPC_Level();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;

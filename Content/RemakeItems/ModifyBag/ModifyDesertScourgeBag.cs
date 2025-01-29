@@ -3,7 +3,7 @@ using CalamityMod.Items.TreasureBags;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using Terraria;
 using Terraria.ModLoader;
 

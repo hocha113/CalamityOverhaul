@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DeadSunsWindHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DeadSunsWind";
-        public override int targetCayItem => ModContent.ItemType<DeadSunsWind>();
-        public override int targetCWRItem => ModContent.ItemType<DeadSunsWindEcType>();
-
+        public override int TargetID => ModContent.ItemType<DeadSunsWind>();
         public override void SetRangedProperty() {
             FireTime = 18;
             HandIdleDistanceX = 30;

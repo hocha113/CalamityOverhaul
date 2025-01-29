@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ZapinatorGray].Value;
-        public override int targetCayItem => ItemID.ZapinatorGray;
-        public override int targetCWRItem => ItemID.ZapinatorGray;
+        public override int TargetID => ItemID.ZapinatorGray;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CosmicBolterHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "VernalBolter";
-        public override int targetCayItem => ModContent.ItemType<VernalBolter>();
-        public override int targetCWRItem => ModContent.ItemType<CosmicBolterEcType>();
+        public override int TargetID => ModContent.ItemType<VernalBolter>();
         private int fireIndex2;
         private bool fire;
         public override void SetRangedProperty() {

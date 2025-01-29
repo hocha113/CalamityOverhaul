@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -12,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SnowmanCannon].Value;
-        public override int targetCayItem => ItemID.SnowmanCannon;
-        public override int targetCWRItem => ItemID.SnowmanCannon;
+        public override int TargetID => ItemID.SnowmanCannon;
         public override void SetRangedProperty() {
             FireTime = 60;
             ShootPosToMouLengValue = 0;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void HanderPlaySound() {
-            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Pitch = 0.3f }, Projectile.Center);
         }
 
         public override void SetShootAttribute() {

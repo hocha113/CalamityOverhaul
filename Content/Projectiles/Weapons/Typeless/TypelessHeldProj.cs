@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     internal class LunicEyeHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "LunicEye";
-        public override int targetCayItem => ModContent.ItemType<LunicEye>();
-        public override int targetCWRItem => ModContent.ItemType<LunicEye>();
+        public override int TargetID => ModContent.ItemType<LunicEye>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 30;
             HandFireDistanceY = 0;
@@ -39,8 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     internal class EyeofMagnusHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "EyeofMagnus";
-        public override int targetCayItem => ModContent.ItemType<EyeofMagnus>();
-        public override int targetCWRItem => ModContent.ItemType<EyeofMagnus>();
+        public override int TargetID => ModContent.ItemType<EyeofMagnus>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 30;
             HandFireDistanceY = 0;
@@ -65,9 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     internal class AestheticusHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "Aestheticus";
-        public override int targetCayItem => ModContent.ItemType<Aestheticus>();
-        public override int targetCWRItem => ModContent.ItemType<Aestheticus>();
-
+        public override int TargetID => ModContent.ItemType<Aestheticus>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 40;
             HandFireDistanceY = 0;

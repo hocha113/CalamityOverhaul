@@ -4,6 +4,7 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.RemakeItems.Ranged;
 using CalamityOverhaul.Content.UIs;
 using Terraria;
 using Terraria.Audio;
@@ -14,8 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MidasPrimeHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MidasPrime";
-        public override int targetCayItem => ModContent.ItemType<MidasPrime>();
-        public override int targetCWRItem => ModContent.ItemType<MidasPrimeEcType>();
+        public override int TargetID => ModContent.ItemType<MidasPrime>();
         private bool oldRsD;
         private bool nextShotGoldCoin = false;
         public override void SetRangedProperty() {

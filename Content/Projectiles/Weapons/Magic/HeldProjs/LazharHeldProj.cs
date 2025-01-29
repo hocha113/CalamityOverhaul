@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class LazharHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Lazhar";
-        public override int targetCayItem => ModContent.ItemType<Lazhar>();
-        public override int targetCWRItem => ModContent.ItemType<LazharEcType>();
+        public override int TargetID => ModContent.ItemType<Lazhar>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
             ShootPosNorlLengValue = 0;

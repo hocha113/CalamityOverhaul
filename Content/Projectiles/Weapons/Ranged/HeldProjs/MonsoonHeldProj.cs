@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MonsoonHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Monsoon";
-        public override int targetCayItem => ModContent.ItemType<Monsoon>();
-        public override int targetCWRItem => ModContent.ItemType<MonsoonEcType>();
+        public override int TargetID => ModContent.ItemType<Monsoon>();
         private SlotId accumulator;
         public override void SetRangedProperty() {
             CanRightClick = true;

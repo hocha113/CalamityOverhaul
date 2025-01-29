@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.MoltenFury].Value;
-        public override int targetCayItem => ItemID.MoltenFury;
-        public override int targetCWRItem => ItemID.MoltenFury;
+        public override int TargetID => ItemID.MoltenFury;
         public override void SetRangedProperty() => BowstringData.DeductRectangle = new Rectangle(2, 4, 2, 28);
         public override void SetShootAttribute() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {

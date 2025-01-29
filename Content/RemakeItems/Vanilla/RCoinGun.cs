@@ -18,8 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.CoinGun].Value;
-        public override int targetCayItem => ItemID.CoinGun;
-        public override int targetCWRItem => ItemID.CoinGun;
+        public override int TargetID => ItemID.CoinGun;
         public override void SetRangedProperty() {
             Recoil = 0.6f;
             EnableRecoilRetroEffect = true;

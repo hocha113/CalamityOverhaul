@@ -35,8 +35,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class MelodyTheSandHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
-        public override int targetCayItem => ModContent.ItemType<MelodyTheSand>();
-        public override int targetCWRItem => ModContent.ItemType<MelodyTheSand>();
+        public override int TargetID => ModContent.ItemType<MelodyTheSand>();
         private bool oldOnFire;
         private int chargeIndex;
         public override void SetRangedProperty() {

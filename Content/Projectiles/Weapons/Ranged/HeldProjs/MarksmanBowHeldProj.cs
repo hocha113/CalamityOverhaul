@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MarksmanBowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MarksmanBow";
-        public override int targetCayItem => ModContent.ItemType<MarksmanBow>();
-        public override int targetCWRItem => ModContent.ItemType<MarksmanBowEcType>();
+        public override int TargetID => ModContent.ItemType<MarksmanBow>();
         public override void SetRangedProperty() {
             DrawArrowMode = -26;
             BowstringData.DeductRectangle = new Rectangle(6, 36, 2, 38);

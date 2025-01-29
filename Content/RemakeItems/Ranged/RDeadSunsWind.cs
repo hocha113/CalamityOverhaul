@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 3.5f;
-            item.UseSound = DeadSunsWindEcType.UseShoot;
+            item.UseSound = new("CalamityMod/Sounds/Item/DeadSunShot") { PitchVariance = 0.35f, Volume = 0.4f };
             item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             item.rare = ItemRarityID.Cyan;
             item.autoReuse = true;

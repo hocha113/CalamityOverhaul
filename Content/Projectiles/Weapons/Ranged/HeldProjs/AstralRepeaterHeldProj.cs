@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AstralRepeaterHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBow";
-        public override int targetCayItem => ModContent.ItemType<AstralBow>();
-        public override int targetCWRItem => ModContent.ItemType<AstralRepeaterEcType>();
+        public override int TargetID => ModContent.ItemType<AstralBow>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 17;
             ShootSpanTypeValue = SpanTypesEnum.AstralRepeater;

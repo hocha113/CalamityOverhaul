@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class OnyxChainBlasterHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "OnyxChainBlaster";
-        public override int targetCayItem => ModContent.ItemType<OnyxChainBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<OnyxChainBlasterEcType>();
-
+        public override int TargetID => ModContent.ItemType<OnyxChainBlaster>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
             FireTime = 6;

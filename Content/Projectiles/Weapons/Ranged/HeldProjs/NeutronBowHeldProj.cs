@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
@@ -13,9 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NeutronBowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
-        public override int targetCayItem => NeutronBow.PType;
-        public override int targetCWRItem => NeutronBow.PType;
-
+        public override int TargetID => NeutronBow.PType;
         private float Charge {
             get => ((NeutronBow)Item.ModItem).Charge;
             set => ((NeutronBow)Item.ModItem).Charge = value;

@@ -1,5 +1,5 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Terraria;

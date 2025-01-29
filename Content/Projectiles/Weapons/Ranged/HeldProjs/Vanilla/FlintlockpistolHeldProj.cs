@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.FlintlockPistol].Value;
-        public override int targetCayItem => ItemID.FlintlockPistol;
-        public override int targetCWRItem => ItemID.FlintlockPistol;
+        public override int TargetID => ItemID.FlintlockPistol;
         public override void SetRangedProperty() {
             InOwner_HandState_AlwaysSetInFireRoding = true;
             ShootPosToMouLengValue = 6;

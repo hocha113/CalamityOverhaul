@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.PulseBow].Value;
-        public override int targetCayItem => ItemID.PulseBow;
-        public override int targetCWRItem => ItemID.PulseBow;
+        public override int TargetID => ItemID.PulseBow;
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.PulseBow;

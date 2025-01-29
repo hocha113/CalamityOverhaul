@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Sandgun].Value;
-        public override int targetCayItem => ItemID.Sandgun;
-        public override int targetCWRItem => ItemID.Sandgun;
+        public override int TargetID => ItemID.Sandgun;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

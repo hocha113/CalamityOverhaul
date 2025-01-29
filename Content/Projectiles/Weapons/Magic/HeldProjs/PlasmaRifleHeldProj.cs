@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class PlasmaRifleHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "PlasmaRifle";
-        public override int targetCayItem => ModContent.ItemType<PlasmaRifle>();
-        public override int targetCWRItem => ModContent.ItemType<PlasmaRifleEcType>();
+        public override int TargetID => ModContent.ItemType<PlasmaRifle>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -5;
             ShootPosNorlLengValue = -5;

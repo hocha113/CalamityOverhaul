@@ -11,7 +11,7 @@ using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Painting;

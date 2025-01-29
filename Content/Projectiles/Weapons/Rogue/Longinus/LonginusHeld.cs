@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

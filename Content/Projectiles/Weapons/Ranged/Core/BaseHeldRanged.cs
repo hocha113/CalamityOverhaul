@@ -39,13 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public ref float Time => ref Projectile.ai[0];
         /// <summary>
-        /// 对源灾厄的物品对象
+        /// 目标物品对象
         /// </summary>
-        public virtual int targetCayItem => ItemID.None;
-        /// <summary>
-        /// 对本身模组的物品对象
-        /// </summary>
-        public virtual int targetCWRItem => ItemID.None;
+        public virtual int TargetID => ItemID.None;
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -201,12 +197,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public override LocalizedText DisplayName {
             get {
-                if (targetCayItem <= ItemID.None) {
+                if (TargetID <= ItemID.None) {
                     return base.DisplayName;
                 }
-                return targetCayItem < ItemID.Count ?
-                    Language.GetText("ItemName." + ItemID.Search.GetName(targetCayItem))
-                    : ItemLoader.GetItem(targetCayItem).GetLocalization("DisplayName");
+                return TargetID < ItemID.Count ?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
             }
         }
         #endregion
@@ -288,7 +284,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.penetrate = -1;
             Projectile.hide = true;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
-            CWRUtils.SafeLoadItem(targetCayItem);
+            CWRUtils.SafeLoadItem(TargetID);
             CWRUtils.SafeLoadProj(ToTargetAmmo);
             PreSetRangedProperty();
             SetRangedProperty();
@@ -396,13 +392,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override bool ExtraPreSet() {
-            if (CWRServerConfig.Instance.WeaponOverhaul) { //如果开启了强制替换
-                if (Item.type != targetCayItem) { //只需要判断原版的物品
-                    Projectile.Kill();
-                    return false;
-                }
-            }
-            else if (Item.type != targetCWRItem) {// 如果没有开启强制替换
+            if (Item.type != TargetID) { //只需要判断原版的物品
                 Projectile.Kill();
                 return false;
             }

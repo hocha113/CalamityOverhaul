@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class EffervescenceHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Effervescence";
-        public override int targetCayItem => ModContent.ItemType<Effervescence>();
-        public override int targetCWRItem => ModContent.ItemType<EffervescenceEcType>();
+        public override int TargetID => ModContent.ItemType<Effervescence>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

@@ -10,10 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     internal class ChainGunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override int targetCayItem => ItemID.ChainGun;
-        public override int targetCWRItem => ItemID.ChainGun;
+        public override int TargetID => ItemID.ChainGun;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ChainGun].Value;
-
         private float randomShootRotset;
         public override void SetRangedProperty() {
             FireTime = 4;

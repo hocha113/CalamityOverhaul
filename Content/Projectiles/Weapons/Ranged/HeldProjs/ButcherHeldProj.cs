@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ButcherHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Butcher";
-        public override int targetCayItem => ModContent.ItemType<Butcher>();
-        public override int targetCWRItem => ModContent.ItemType<ButcherEcType>();
+        public override int TargetID => ModContent.ItemType<Butcher>();
         public override void SetRangedProperty() {
             FireTime = 30;
             ShootPosToMouLengValue = 0;

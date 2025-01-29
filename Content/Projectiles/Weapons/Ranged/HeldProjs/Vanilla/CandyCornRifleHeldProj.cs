@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.CandyCornRifle].Value;
-        public override int targetCayItem => ItemID.CandyCornRifle;
-        public override int targetCWRItem => ItemID.CandyCornRifle;
+        public override int TargetID => ItemID.CandyCornRifle;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 5;

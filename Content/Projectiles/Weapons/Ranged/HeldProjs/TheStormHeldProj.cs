@@ -12,9 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TheStormHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheStorm";
-        public override int targetCayItem => ModContent.ItemType<TheStorm>();
-        public override int targetCWRItem => ModContent.ItemType<TheStormEcType>();
-
+        public override int TargetID => ModContent.ItemType<TheStorm>();
         public override void PostInOwner() {
             if (onFire) {
                 LimitingAngle(20, 160);

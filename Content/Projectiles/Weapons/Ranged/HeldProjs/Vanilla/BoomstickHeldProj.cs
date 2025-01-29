@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Boomstick].Value;
-        public override int targetCayItem => ItemID.Boomstick;
-        public override int targetCWRItem => ItemID.Boomstick;
+        public override int TargetID => ItemID.Boomstick;
         public override void SetRangedProperty() {
             FireTime = 21;
             kreloadMaxTime = 20;

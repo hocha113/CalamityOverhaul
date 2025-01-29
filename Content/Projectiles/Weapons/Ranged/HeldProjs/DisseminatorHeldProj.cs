@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DisseminatorHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Disseminator";
-        public override int targetCayItem => ModContent.ItemType<Disseminator>();
-        public override int targetCWRItem => ModContent.ItemType<DisseminatorEcType>();
+        public override int TargetID => ModContent.ItemType<Disseminator>();
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;
             ShootPosNorlLengValue = -8;

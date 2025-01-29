@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class GoobowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Goobow";
-        public override int targetCayItem => ModContent.ItemType<Goobow>();
-        public override int targetCWRItem => ModContent.ItemType<GoobowEcType>();
+        public override int TargetID => ModContent.ItemType<Goobow>();
         public override void BowShoot() {
             base.BowShoot();
             AmmoTypes = ModContent.ProjectileType<SlimeStream>();

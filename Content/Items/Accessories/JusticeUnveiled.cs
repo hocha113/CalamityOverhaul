@@ -4,7 +4,7 @@ using CalamityMod.Projectiles.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;

@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SlagMagnumHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SlagMagnum";
-        public override int targetCayItem => ModContent.ItemType<SlagMagnum>();
-        public override int targetCWRItem => ModContent.ItemType<SlagMagnumEcType>();
-
+        public override int TargetID => ModContent.ItemType<SlagMagnum>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;

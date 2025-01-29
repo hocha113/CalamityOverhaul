@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AngelicShotgunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AngelicShotgun";
-        public override int targetCayItem => ModContent.ItemType<AngelicShotgun>();
-        public override int targetCWRItem => ModContent.ItemType<AngelicShotgunEcType>();
+        public override int TargetID => ModContent.ItemType<AngelicShotgun>();
         public override void SetRangedProperty() {
             FireTime = 20;
             EnableRecoilRetroEffect = true;

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class EternalBlizzardHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "EternalBlizzard";
-        public override int targetCayItem => ModContent.ItemType<EternalBlizzard>();
-        public override int targetCWRItem => ModContent.ItemType<EternalBlizzardEcType>();
+        public override int TargetID => ModContent.ItemType<EternalBlizzard>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 30;
             HandIdleDistanceY = 6;

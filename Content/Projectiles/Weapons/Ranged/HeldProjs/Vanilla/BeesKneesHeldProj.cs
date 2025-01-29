@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.BeesKnees].Value;
-        public override int targetCayItem => ItemID.BeesKnees;
-        public override int targetCWRItem => ItemID.BeesKnees;
+        public override int TargetID => ItemID.BeesKnees;
         public override void SetRangedProperty() {
             ShootSpanTypeValue = SpanTypesEnum.None;
             BowstringData.DeductRectangle = new Rectangle(2, 10, 2, 32);

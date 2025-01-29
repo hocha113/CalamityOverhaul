@@ -8,9 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TheHiveHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheHive";
-        public override int targetCayItem => ModContent.ItemType<TheHive>();
-        public override int targetCWRItem => ModContent.ItemType<TheHiveEcType>();
-
+        public override int TargetID => ModContent.ItemType<TheHive>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
             FireTime = 10;

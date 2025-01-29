@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class HelstormHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Helstorm";
-        public override int targetCayItem => ModContent.ItemType<Helstorm>();
-        public override int targetCWRItem => ModContent.ItemType<HelstormEcType>();
+        public override int TargetID => ModContent.ItemType<Helstorm>();
         public override bool? CanDamage() => (onFire || onFireR) && IsKreload ? null : base.CanDamage();
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 360);

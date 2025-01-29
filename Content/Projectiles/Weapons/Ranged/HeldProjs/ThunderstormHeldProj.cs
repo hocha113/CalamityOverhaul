@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ThunderstormHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Thunderstorm";
-        public override int targetCayItem => ModContent.ItemType<Thunderstorm>();
-        public override int targetCWRItem => ModContent.ItemType<ThunderstormEcType>();
+        public override int TargetID => ModContent.ItemType<Thunderstorm>();
         public override void SetRangedProperty() {
             Projectile.DamageType = DamageClass.Magic;
             ControlForce = 0.03f;

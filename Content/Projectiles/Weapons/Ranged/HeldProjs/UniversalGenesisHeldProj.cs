@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class UniversalGenesisHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "UniversalGenesis";
-        public override int targetCayItem => ModContent.ItemType<UniversalGenesis>();
-        public override int targetCWRItem => ModContent.ItemType<UniversalGenesisEcType>();
-
+        public override int TargetID => ModContent.ItemType<UniversalGenesis>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
             FireTime = 24;

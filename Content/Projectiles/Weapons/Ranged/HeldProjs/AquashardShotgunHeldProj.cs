@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AquashardShotgunHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AquashardShotgun";
-        public override int targetCayItem => ModContent.ItemType<AquashardShotgun>();
-        public override int targetCWRItem => ModContent.ItemType<AquashardShotgunEcType>();
+        public override int TargetID => ModContent.ItemType<AquashardShotgun>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.52f;

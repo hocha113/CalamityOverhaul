@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ElectrosphereLauncher].Value;
-        public override int targetCayItem => ItemID.ElectrosphereLauncher;
-        public override int targetCWRItem => ItemID.ElectrosphereLauncher;
+        public override int TargetID => ItemID.ElectrosphereLauncher;
         public List<ElectrosphereLauncherOrb> Orbs = [];
         public const int MaxOrbNum = 4;
         public override void SetRangedProperty() {

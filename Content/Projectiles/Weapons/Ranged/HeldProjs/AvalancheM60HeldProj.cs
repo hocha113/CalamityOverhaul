@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AvalancheM60HeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60Held";
-        public override int targetCayItem => ModContent.ItemType<AvalancheM60>();
-        public override int targetCWRItem => ModContent.ItemType<AvalancheM60>();
+        public override int TargetID => ModContent.ItemType<AvalancheM60>();
         private int onFireTime;
         private int onFireTime2;
         public override void SetRangedProperty() {

@@ -10,17 +10,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
     internal abstract class BaseMagicBook<TItem> : BaseMagicActionBook where TItem : ModItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
-        public override int targetCayItem => ModContent.ItemType<TItem>();
-        public override int targetCWRItem => CWRServerConfig.Instance.WeaponOverhaul
-            ? ItemID.None : CWRMod.Instance.Find<ModItem>(typeof(TItem).Name + "EcType").Type;
+        public override int TargetID => ModContent.ItemType<TItem>();
     }
 
     internal abstract class BaseMagicBook : BaseMagicActionBook
     {
         public override string Texture => CWRConstant.Placeholder3;
-        public override Texture2D TextureValue => TextureAssets.Item[targetCayItem].Value;
-        public override int targetCayItem => ItemID.None;
-        public override int targetCWRItem => targetCayItem;
+        public override Texture2D TextureValue => TextureAssets.Item[TargetID].Value;
+        public override int TargetID => ItemID.None;
     }
 
     internal abstract class BaseMagicActionBook : BaseMagicAction

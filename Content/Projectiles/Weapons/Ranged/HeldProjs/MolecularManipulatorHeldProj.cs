@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MolecularManipulatorHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MolecularManipulator";
-        public override int targetCayItem => ModContent.ItemType<MolecularManipulator>();
-        public override int targetCWRItem => ModContent.ItemType<MolecularManipulatorEcType>();
-
+        public override int TargetID => ModContent.ItemType<MolecularManipulator>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TheMaelstromHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheMaelstrom";
-        public override int targetCayItem => ModContent.ItemType<TheMaelstrom>();
-        public override int targetCWRItem => ModContent.ItemType<TheMaelstromEcType>();
+        public override int TargetID => ModContent.ItemType<TheMaelstrom>();
         public override void SetRangedProperty() {
             CanRightClick = true;
             HandFireDistanceX = 26;

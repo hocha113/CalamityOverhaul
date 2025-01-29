@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
-        public override int targetCayItem => ItemID.QuadBarrelShotgun;
-        public override int targetCWRItem => ItemID.QuadBarrelShotgun;
+        public override int TargetID => ItemID.QuadBarrelShotgun;
         public override void SetRangedProperty() {
             FireTime = 25;
             ShootPosToMouLengValue = 0;

@@ -12,11 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PlanetaryAnnihilationHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlanetaryAnnihilation";
-        public override int targetCayItem => ModContent.ItemType<PlanetaryAnnihilation>();
-        public override int targetCWRItem => ModContent.ItemType<PlanetaryAnnihilationEcType>();
-        public override void SetRangedProperty() {
-            BowstringData.DeductRectangle = new Rectangle(8, 8, 2, 84);
-        }
+        public override int TargetID => ModContent.ItemType<PlanetaryAnnihilation>();
+        public override void SetRangedProperty() => BowstringData.DeductRectangle = new Rectangle(8, 8, 2, 84);
         public override void PostInOwner() {
             if (onFire) {
                 BowArrowDrawBool = false;

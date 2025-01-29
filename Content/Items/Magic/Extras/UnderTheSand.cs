@@ -34,8 +34,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class UnderTheSandHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Item_Magic + "UnderTheSand";
-        public override int targetCayItem => ModContent.ItemType<UnderTheSand>();
-        public override int targetCWRItem => ModContent.ItemType<UnderTheSand>();
+        public override int TargetID => ModContent.ItemType<UnderTheSand>();
         public override void SetMagicProperty() {
             Recoil = 0;
             InOwner_HandState_AlwaysSetInFireRoding = true;

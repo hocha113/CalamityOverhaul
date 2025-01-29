@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Gatligator].Value;
-        public override int targetCayItem => ItemID.Gatligator;
-        public override int targetCWRItem => ItemID.Gatligator;
+        public override int TargetID => ItemID.Gatligator;
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
             FireTime = 4;

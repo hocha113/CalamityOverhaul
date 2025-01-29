@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AstrealDefeatHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstrealDefeat";
-        public override int targetCayItem => ModContent.ItemType<AstrealDefeat>();
-        public override int targetCWRItem => ModContent.ItemType<AstrealDefeatEcType>();
+        public override int TargetID => ModContent.ItemType<AstrealDefeat>();
         public override void SetShootAttribute() {
             FiringDefaultSound = false;
             if (++fireIndex >= 3) {

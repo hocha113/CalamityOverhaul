@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SpykerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Spyker";
-        public override int targetCayItem => ModContent.ItemType<Spyker>();
-        public override int targetCWRItem => ModContent.ItemType<SpykerEcType>();
-
+        public override int TargetID => ModContent.ItemType<Spyker>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 12;

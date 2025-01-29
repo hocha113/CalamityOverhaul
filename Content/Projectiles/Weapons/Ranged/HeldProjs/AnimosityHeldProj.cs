@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AnimosityHeldProj : BaseFeederGun, ICWRLoader
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
-        public override int targetCayItem => ModContent.ItemType<Animosity>();
-        public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
+        public override int TargetID => ModContent.ItemType<Animosity>();
         private static int btoole;
         void ICWRLoader.SetupData() => btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
         public override void SetRangedProperty() {

@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BulletFilledShotgunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BulletFilledShotgun";
-        public override int targetCayItem => ModContent.ItemType<BulletFilledShotgun>();
-        public override int targetCWRItem => ModContent.ItemType<BulletFilledShotgunEcType>();
+        public override int TargetID => ModContent.ItemType<BulletFilledShotgun>();
         public override void SetRangedProperty() {
             FireTime = 20;
             ShootPosToMouLengValue = 0;

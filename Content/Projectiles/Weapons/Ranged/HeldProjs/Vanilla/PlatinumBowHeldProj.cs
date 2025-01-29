@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.PlatinumBow].Value;
-        public override int targetCayItem => ItemID.PlatinumBow;
-        public override int targetCWRItem => ItemID.PlatinumBow;
+        public override int TargetID => ItemID.PlatinumBow;
         public override void SetRangedProperty() => ShootSpanTypeValue = SpanTypesEnum.GoldBow;
     }
 }

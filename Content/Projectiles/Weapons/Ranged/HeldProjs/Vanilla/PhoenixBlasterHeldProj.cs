@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.PhoenixBlaster].Value;
-        public override int targetCayItem => ItemID.PhoenixBlaster;
-        public override int targetCWRItem => ItemID.PhoenixBlaster;
+        public override int TargetID => ItemID.PhoenixBlaster;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -6;

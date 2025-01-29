@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.BubbleGun].Value;
-        public override int targetCayItem => ItemID.BubbleGun;
-        public override int targetCWRItem => ItemID.BubbleGun;
+        public override int TargetID => ItemID.BubbleGun;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

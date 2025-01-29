@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ClamorRifleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClamorRifle";
-        public override int targetCayItem => ModContent.ItemType<ClamorRifle>();
-        public override int targetCWRItem => ModContent.ItemType<ClamorRifleEcType>();
-
+        public override int TargetID => ModContent.ItemType<ClamorRifle>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 50;
             FireTime = 15;

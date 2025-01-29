@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DemonBow].Value;
-        public override int targetCayItem => ItemID.DemonBow;
-        public override int targetCWRItem => ItemID.DemonBow;
+        public override int TargetID => ItemID.DemonBow;
         public override void SetRangedProperty() {
             InOwner_HandState_AlwaysSetInFireRoding = true;
             BowstringData.DeductRectangle = new Rectangle(2, 10, 2, 20);

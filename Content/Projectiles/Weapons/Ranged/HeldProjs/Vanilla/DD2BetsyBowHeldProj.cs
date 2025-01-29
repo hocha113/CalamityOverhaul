@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DD2BetsyBow].Value;
-        public override int targetCayItem => ItemID.DD2BetsyBow;
-        public override int targetCWRItem => ItemID.DD2BetsyBow;
+        public override int TargetID => ItemID.DD2BetsyBow;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 5;
             ForcedConversionTargetAmmoFunc = () => true;

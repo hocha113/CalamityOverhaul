@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ClaretCannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClaretCannon";
-        public override int targetCayItem => ModContent.ItemType<ClaretCannon>();
-        public override int targetCWRItem => ModContent.ItemType<ClaretCannonEcType>();
-
+        public override int TargetID => ModContent.ItemType<ClaretCannon>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 18;

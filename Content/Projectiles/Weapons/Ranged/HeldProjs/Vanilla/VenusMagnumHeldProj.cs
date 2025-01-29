@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.VenusMagnum].Value;
-        public override int targetCayItem => ItemID.VenusMagnum;
-        public override int targetCWRItem => ItemID.VenusMagnum;
+        public override int TargetID => ItemID.VenusMagnum;
         public override void SetRangedProperty() {
             FireTime = 7;
             ShootPosToMouLengValue = 0;

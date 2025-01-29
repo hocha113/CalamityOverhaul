@@ -15,8 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SniperRifle].Value;
-        public override int targetCayItem => ItemID.SniperRifle;
-        public override int targetCWRItem => ItemID.SniperRifle;
+        public override int TargetID => ItemID.SniperRifle;
         public bool criticalStrike;
         public override void SetRangedProperty() {
             CanCreateCaseEjection = false;

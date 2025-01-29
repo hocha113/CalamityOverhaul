@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MegalodonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Megalodon";
-        public override int targetCayItem => ModContent.ItemType<Megalodon>();
-        public override int targetCWRItem => ModContent.ItemType<MegalodonEcType>();
+        public override int TargetID => ModContent.ItemType<Megalodon>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 4;

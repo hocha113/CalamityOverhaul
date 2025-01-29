@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ChickenCannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ChickenCannonHeld";
-        public override int targetCayItem => ModContent.ItemType<ChickenCannon>();
-        public override int targetCWRItem => ModContent.ItemType<ChickenCannonEcType>();
+        public override int TargetID => ModContent.ItemType<ChickenCannon>();
         private bool spanSound = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;

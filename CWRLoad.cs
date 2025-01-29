@@ -29,7 +29,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;

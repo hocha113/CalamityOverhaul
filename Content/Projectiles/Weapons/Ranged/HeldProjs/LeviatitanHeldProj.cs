@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class LeviatitanHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Leviatitan";
-        public override int targetCayItem => ModContent.ItemType<Leviatitan>();
-        public override int targetCWRItem => ModContent.ItemType<LeviatitanEcType>();
-
+        public override int TargetID => ModContent.ItemType<Leviatitan>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
             FireTime = 9;

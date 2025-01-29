@@ -13,9 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SomaPrimeHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SomaPrime";
-        public override int targetCayItem => ModContent.ItemType<SomaPrime>();
-        public override int targetCWRItem => ModContent.ItemType<SomaPrimeEcType>();
-
+        public override int TargetID => ModContent.ItemType<SomaPrime>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 2;

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Rogue.Extras;
+﻿using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Terraria;

@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Marrow].Value;
-        public override int targetCayItem => ItemID.Marrow;
-        public override int targetCWRItem => ItemID.Marrow;
+        public override int TargetID => ItemID.Marrow;
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.Marrow;

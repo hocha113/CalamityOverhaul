@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ProximityMineLauncher].Value;
-        public override int targetCayItem => ItemID.ProximityMineLauncher;
-        public override int targetCWRItem => ItemID.ProximityMineLauncher;
+        public override int TargetID => ItemID.ProximityMineLauncher;
         public override void SetRangedProperty() {
             FireTime = 120;
             ShootPosToMouLengValue = 0;

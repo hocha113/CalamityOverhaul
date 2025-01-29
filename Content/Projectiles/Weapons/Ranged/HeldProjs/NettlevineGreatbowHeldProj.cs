@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NettlevineGreatbowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NettlevineGreatbow";
-        public override int targetCayItem => ModContent.ItemType<NettlevineGreatbow>();
-        public override int targetCWRItem => ModContent.ItemType<NettlevineGreatbowEcType>();
+        public override int TargetID => ModContent.ItemType<NettlevineGreatbow>();
         private int nettlevineIndex;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 4;

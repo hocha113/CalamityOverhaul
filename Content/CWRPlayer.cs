@@ -1,8 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;

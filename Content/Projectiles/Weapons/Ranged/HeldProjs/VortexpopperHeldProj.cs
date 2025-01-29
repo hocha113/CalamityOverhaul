@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class VortexpopperHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Vortexpopper";
-        public override int targetCayItem => ModContent.ItemType<Vortexpopper>();
-        public override int targetCWRItem => ModContent.ItemType<VortexpopperEcType>();
-
+        public override int TargetID => ModContent.ItemType<Vortexpopper>();
         public override void SetRangedProperty() {
             FireTime = 12;
             ControlForce = 0.03f;

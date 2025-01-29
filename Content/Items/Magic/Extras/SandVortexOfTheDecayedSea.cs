@@ -34,8 +34,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class SandVortexOfTheDecayedSeaHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
-        public override int targetCayItem => ModContent.ItemType<SandVortexOfTheDecayedSea>();
-        public override int targetCWRItem => ModContent.ItemType<SandVortexOfTheDecayedSea>();
+        public override int TargetID => ModContent.ItemType<SandVortexOfTheDecayedSea>();
         public override void SetMagicProperty() {
             Recoil = 0;
             InOwner_HandState_AlwaysSetInFireRoding = true;

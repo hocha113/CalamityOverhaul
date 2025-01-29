@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class HalleysInfernoHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalleysInferno";
-        public override int targetCayItem => ModContent.ItemType<HalleysInferno>();
-        public override int targetCWRItem => ModContent.ItemType<HalleysInfernoEcType>();
+        public override int TargetID => ModContent.ItemType<HalleysInferno>();
         public override void SetRangedProperty() {
             FireTime = 10;
             HandIdleDistanceX = 20;

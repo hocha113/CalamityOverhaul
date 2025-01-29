@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SvantechnicalHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Svantechnical";
-        public override int targetCayItem => ModContent.ItemType<Svantechnical>();
-        public override int targetCWRItem => ModContent.ItemType<SvantechnicalEcType>();
-
+        public override int TargetID => ModContent.ItemType<Svantechnical>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

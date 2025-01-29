@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ScorchedEarthHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
-        public override int targetCayItem => ModContent.ItemType<ScorchedEarth>();
-        public override int targetCWRItem => ModContent.ItemType<ScorchedEarthEcType>();
+        public override int TargetID => ModContent.ItemType<ScorchedEarth>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 45;
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             ModOwner.SetScreenShake(4);
-            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound, Projectile.Center);
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound, Projectile.Center);
             CWRUtils.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<EarthRocketOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
