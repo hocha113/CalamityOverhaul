@@ -2951,12 +2951,7 @@ Configs: {
 			Label: Refonte des armes
 			Tooltip:
 				'''
-				Si activé, cela modifiera directement le contenu original du module de Calamité
-				Si vous avez d'autres modules complémentaires de Calamité activés, cette fonctionnalité pourrait entraîner des conflits potentiels
-				Si vous choisissez de la désactiver, ce module ajoutera des méthodes alternatives pour obtenir les objets remis à zéro dans le jeu,
-				ce qui est une bonne idée pour éviter les conflits potentiels
-				[c/fff08c:IM: En réalité, nous ne vous recommandons pas de désactiver ceci,]
-				[c/fff08c:sauf en cas de conflits graves confirmés,]
+				L’activation modifiera la plupart des armes.
 				[c/FF0000:Pour une expérience optimale du contenu de Calamité, veuillez l'activer !]
 				'''
 		}

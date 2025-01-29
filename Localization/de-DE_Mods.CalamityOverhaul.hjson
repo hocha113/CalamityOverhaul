@@ -2949,11 +2949,7 @@ Configs: {
 			Label: Waffen Überholung
 			Tooltip:
 				'''
-				Wenn aktiviert, werden die Originalinhalte des Katastrophe-Moduls direkt geändert
-				Wenn Sie andere Katastrophen-Submodule aktiviert haben, kann das Aktivieren dieser Funktion zu potenziellen Konflikten führen
-				Wenn Sie es deaktivieren, fügt dieses Modul eine Möglichkeit hinzu, um streitige Gegenstände im Spiel zu erhalten, was zur Vermeidung potenzieller Konflikte ratsam ist
-				[c/fff08c:IM: Wir empfehlen Ihnen tatsächlich, dies nicht zu deaktivieren,]
-				[c/fff08c:diese Funktion sollte nur bei schwerwiegenden Konflikten deaktiviert werden,]
+				Durch Aktivierung werden die meisten Waffen geändert.
 				[c/FF0000:wenn Sie die optimale Erfahrung des Katastrophe-Overhaul-Inhalts wünschen, aktivieren Sie es bitte!]
 				'''
 		}

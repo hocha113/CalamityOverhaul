@@ -2968,12 +2968,7 @@ Configs: {
 			Label: Weapon Overhaul
 			Tooltip:
 				'''
-				If enabled, it will directly modify the original content of the Calamity mod.
-				If you have enabled other Calamity sub-mods, enabling this feature may lead to potential conflicts.
-				If you choose to disable it, this mod will add a way to obtain reset items in the game, 
-				which is a good idea to prevent potential conflicts.
-				[c/fff08c:IM: Actually, we don't recommend you turn this off,]
-				[c/fff08c: This feature is only recommended to be turned off when a serious conflict is confirmed.]
+				Enabling it will modify most weapons.
 				[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
 				'''
 		}

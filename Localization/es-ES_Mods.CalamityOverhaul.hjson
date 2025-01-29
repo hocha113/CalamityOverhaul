@@ -2983,12 +2983,7 @@ Configs: {
 			Label: Reforma de armas
 			Tooltip:
 				'''
-				Si se activa, se modificará directamente el contenido original del mod de desastre.
-				Si ha habilitado otros mods complementarios de desastre, activar esta función puede provocar problemas de conflicto potenciales.
-				Si decide desactivarlo, este mod añadirá formas de obtener objetos reiniciados en el juego,
-				lo cual es una buena idea para evitar problemas de conflicto potenciales.
-				[c/fff08c:IM: En realidad, no recomendamos desactivar esto,]
-				[c/fff08c: esta función solo se recomienda desactivar si se confirma que hay conflictos graves,]
+				Al activarlo, se modificarán la mayoría de las armas.
 				[c/FF0000: ¡Si desea una experiencia óptima con el contenido del mod de desastre, actívelo!]
 				'''
 		}
