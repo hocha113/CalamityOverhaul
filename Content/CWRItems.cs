@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
@@ -404,6 +405,24 @@ namespace CalamityOverhaul.Content
                     IsKreload = tag.GetBool("_IsKreload");
                 }
             }
+        }
+
+        /// <summary>
+        /// 这个函数用于恢复玩家物品背包内的卸载物品，在一些大更新中会出现许多卸载物品，所以用这个函数来尝试弥补
+        /// </summary>
+        public void RecoverUnloadedItemInInventory(Item item) {
+            if (item.type != ModContent.ItemType<UnloadedItem>()) {
+                return;
+            }
+            UnloadedItem unloadedItem = item.ModItem as UnloadedItem;
+            string key = unloadedItem.ModName + "/" + unloadedItem.ItemName;
+            if (CWRLoad.RecoverUnloadedItemDic.TryGetValue(key, out int targetItemID)) {
+                item.ChangeItemType(targetItemID);
+            }
+        }
+
+        public override void UpdateInventory(Item item, Player player) {
+            RecoverUnloadedItemInInventory(item);
         }
 
         public override void HoldItem(Item item, Player player) {

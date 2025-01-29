@@ -58,6 +58,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
         }
         /// <summary>
+        /// 加载副本物品的补救数据
+        /// </summary>
+        public static void LoadEcTypeUnLoadData() {
+            foreach (var rItem in CWRMod.RItemInstances) {
+                Item ectypeItem = new Item(rItem.TargetID);
+                if (ectypeItem.ModItem != null) {
+                    string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";
+                    CWRLoad.RecoverUnloadedItemDic.Add(key, rItem.TargetID);
+                }
+            }
+        }
+        /// <summary>
         /// 修改这个物品的名字
         /// </summary>
         /// <param name="rItem"></param>

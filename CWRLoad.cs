@@ -25,6 +25,7 @@ using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -35,6 +36,7 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -306,6 +308,10 @@ namespace CalamityOverhaul
         /// 从物品id映射到对应的终焉合成内容上，如果该物品没有终焉合成则返回<see langword="null"/>
         /// </summary>
         internal static Dictionary<int, string[]> ItemIDToOmigaSnyContent { get; private set; } = [];
+        /// <summary>
+        /// 需要恢复的卸载物品，从字符键对应到目标物品的ID
+        /// </summary>
+        internal static Dictionary<string, int> RecoverUnloadedItemDic { get; private set; } = [];
 
         #endregion
 
@@ -479,6 +485,8 @@ namespace CalamityOverhaul
             ];
             #endregion
 
+            LoadRecoverUnloadedItemDic();
+
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
                 DevisCurse = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DevisCurse").Type;
@@ -574,6 +582,11 @@ namespace CalamityOverhaul
             ItemIsGunAndGetRecoilValue?.Clear();
             ItemIsGunAndGetRecoilLocKey?.Clear();
             ProjValue.ImmuneFrozen?.Clear();
+            RecoverUnloadedItemDic.Clear();
+        }
+
+        public static void LoadRecoverUnloadedItemDic() {
+            BaseRItem.LoadEcTypeUnLoadData();
         }
 
         public static string GetLckRecoilKey(float recoil) {
