@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RStellarStriker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StellarStriker>();
-        public override int ProtogenesisID => ModContent.ItemType<StellarStrikerEcType>();
-        public override string TargetToolTipItemName => "StellarStrikerEcType";
+ 
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => StellarStrikerEcType.SetDefaultsFunc(item);

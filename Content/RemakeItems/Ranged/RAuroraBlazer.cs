@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAuroraBlazer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AuroraBlazer>();
-        public override int ProtogenesisID => ModContent.ItemType<AuroraBlazerEcType>();
-        public override string TargetToolTipItemName => "AuroraBlazerEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<AuroraBlazerHeldProj>(660);
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;

@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RCometQuasher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CometQuasher>();
-        public override int ProtogenesisID => ModContent.ItemType<CometQuasherEcType>();
-        public override string TargetToolTipItemName => "CometQuasherEcType";
         public override void SetDefaults(Item item) => CometQuasherEcType.SetDefaultsFunc(item);
     }
 }

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.DartPistol;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_DartPistol_Text";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<DartPistolHeldProj>(12);
             item.damage = 30;

@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         private int Level;
         private int LevelAlt;
         public override int TargetID => ModContent.ItemType<DragonRage>();
-        public override int ProtogenesisID => ModContent.ItemType<DragonRageEcType>();
-        public override string TargetToolTipItemName => "DragonRageEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<DragonRage>()] = true;
         public override void SetDefaults(Item item) => DragonRageEcType.SetDefaultsFunc(item);
 

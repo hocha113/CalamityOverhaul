@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.WoodenBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_WoodenBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<WoodenBowHeldProj>();
     }
 }

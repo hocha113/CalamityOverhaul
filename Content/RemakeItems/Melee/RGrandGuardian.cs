@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGrandGuardian : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GrandGuardian>();
-        public override int ProtogenesisID => ModContent.ItemType<GrandGuardianEcType>();
-        public override string TargetToolTipItemName => "GrandGuardianEcType";
+ 
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<GrandGuardianRapier>();
             item.GiveMeleeType();

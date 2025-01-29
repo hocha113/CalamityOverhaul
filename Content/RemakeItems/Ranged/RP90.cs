@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RP90 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<P90>();
-        public override int ProtogenesisID => ModContent.ItemType<P90EcType>();
         public override void SetDefaults(Item item) {
             item.damage = 5;
             item.DamageType = DamageClass.Ranged;

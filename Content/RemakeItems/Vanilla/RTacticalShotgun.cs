@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.TacticalShotgun;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_TacticalShotgun_Text";
         public override void SetDefaults(Item item) {
             item.damage = 40;
             item.SetHeldProj<TacticalShotgunHeldProj>();

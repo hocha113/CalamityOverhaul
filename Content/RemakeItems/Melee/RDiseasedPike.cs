@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDiseasedPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DiseasedPike>();
-        public override int ProtogenesisID => ModContent.ItemType<DiseasedPikeEcType>();
-        public override string TargetToolTipItemName => "DiseasedPikeEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
 
         public override void SetDefaults(Item item) {

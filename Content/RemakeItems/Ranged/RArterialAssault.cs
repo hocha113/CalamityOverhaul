@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RArterialAssault : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ArterialAssault>();
-        public override int ProtogenesisID => ModContent.ItemType<ArterialAssaultEcType>();
-        public override string TargetToolTipItemName => "ArterialAssaultEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<ArterialAssaultHeldProj>();
     }
 }

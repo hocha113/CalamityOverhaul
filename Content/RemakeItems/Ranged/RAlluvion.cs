@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAlluvion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Alluvion>();
-        public override int ProtogenesisID => ModContent.ItemType<AlluvionEcType>();
-        public override string TargetToolTipItemName => "AlluvionEcType";
         public override void SetDefaults(Item item) {
             item.damage = 165;
             item.DamageType = DamageClass.Ranged;

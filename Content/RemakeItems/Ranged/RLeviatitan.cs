@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RLeviatitan : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Leviatitan>();
-        public override int ProtogenesisID => ModContent.ItemType<LeviatitanEcType>();
-        public override string TargetToolTipItemName => "LeviatitanEcType";
         public override void SetDefaults(Item item) {
             item.damage = 80;
             item.DamageType = DamageClass.Ranged;

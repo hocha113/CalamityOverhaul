@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBarinautical : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Barinautical>();
-        public override int ProtogenesisID => ModContent.ItemType<BarinauticalEcType>();
-        public override string TargetToolTipItemName => "BarinauticalEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<BarinauticalHeldProj>();
     }
 }

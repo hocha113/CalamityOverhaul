@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class REarth : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Earth>();
-        public override int ProtogenesisID => ModContent.ItemType<EarthEcType>();
         public override void SetDefaults(Item item) {
             item.GiveMeleeType();
             item.SetKnifeHeld<EarthHeld>();

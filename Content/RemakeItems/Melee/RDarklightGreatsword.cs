@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDarklightGreatsword : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DarklightGreatsword>();
-        public override int ProtogenesisID => ModContent.ItemType<DarklightGreatswordEcType>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<DarklightGreatswordHeld>();

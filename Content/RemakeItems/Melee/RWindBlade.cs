@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RWindBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WindBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<WindBladeEcType>();
-        public override string TargetToolTipItemName => "WindBladeEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WindBlade>()] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => WindBladeEcType.SetDefaultsFunc(item);

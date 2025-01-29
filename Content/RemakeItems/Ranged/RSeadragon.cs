@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSeadragon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Seadragon>();
-        public override int ProtogenesisID => ModContent.ItemType<SeadragonEcType>();
-        public override string TargetToolTipItemName => "SeadragonEcType";
         public override void SetDefaults(Item item) {
             item.damage = 60;
             item.DamageType = DamageClass.Ranged;

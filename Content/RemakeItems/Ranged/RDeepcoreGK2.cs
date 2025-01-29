@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDeepcoreGK2 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeepcoreGK2>();
-        public override int ProtogenesisID => ModContent.ItemType<DeepcoreGK2EcType>();
+ 
         public override void SetDefaults(Item item) {
             item.damage = 45;
             item.ArmorPenetration = 15;

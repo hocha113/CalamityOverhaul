@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTerratomere : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Terratomere>();
-        public override int ProtogenesisID => ModContent.ItemType<TerratomereEcType>();
-        public override string TargetToolTipItemName => "TerratomereEcType";
         public override void SetDefaults(Item item) {
             item.width = 60;
             item.height = 66;

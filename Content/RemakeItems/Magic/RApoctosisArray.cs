@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RApoctosisArray : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ApoctosisArray>();
-        public override int ProtogenesisID => ModContent.ItemType<ApoctosisArrayEcType>();
-        public override string TargetToolTipItemName => "ApoctosisArrayEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<ApoctosisArrayHeldProj>();
     }
 }

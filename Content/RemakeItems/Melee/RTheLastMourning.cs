@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTheLastMourning : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheLastMourning>();
-        public override int ProtogenesisID => ModContent.ItemType<TheLastMourningEcType>();
-        public override string TargetToolTipItemName => "TheLastMourningEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => TheLastMourningEcType.SetDefaultsFunc(item);
         public override bool? AltFunctionUse(Item item, Player player) => true;

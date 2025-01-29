@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RKarasawa : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Karasawa>();
-        public override int ProtogenesisID => ModContent.ItemType<KarasawaEcType>();
-        public override string TargetToolTipItemName => "KarasawaEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<KarasawaHeldProj>(6);
     }
 }

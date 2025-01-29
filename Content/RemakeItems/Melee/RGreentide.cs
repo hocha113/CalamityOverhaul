@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGreentide : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Greentide>();
-        public override int ProtogenesisID => ModContent.ItemType<GreentideEcType>();
-        public override string TargetToolTipItemName => "GreentideEcType";
+ 
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => GreentideEcType.SetDefaultsFunc(item);

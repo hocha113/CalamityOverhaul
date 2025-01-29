@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RNeedler : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Needler>();
-        public override int ProtogenesisID => ModContent.ItemType<NeedlerEcType>();
-        public override string TargetToolTipItemName => "NeedlerEcType";
         public override void SetDefaults(Item item) {
             item.damage = 40;
             item.SetCartridgeGun<NeedlerHeldProj>(50);

@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RMajesticGuard : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MajesticGuard>();
-        public override int ProtogenesisID => ModContent.ItemType<MajesticGuardEcType>();
-        public override string TargetToolTipItemName => "MajesticGuardEcType";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<MajesticGuardRapier>();
             item.useTime = 30;

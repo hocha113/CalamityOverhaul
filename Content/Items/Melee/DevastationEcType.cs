@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RDevastation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Devastation>();
-        public override int ProtogenesisID => ModContent.ItemType<DevastationEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<DevastationHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

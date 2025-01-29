@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RVortexpopper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Vortexpopper>();
-        public override int ProtogenesisID => ModContent.ItemType<VortexpopperEcType>();
-        public override string TargetToolTipItemName => "VortexpopperEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<VortexpopperHeldProj>(85);
     }
 }

@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RNanoPurge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<NanoPurge>();
-        public override int ProtogenesisID => ModContent.ItemType<NanoPurgeEcType>();
-        public override string TargetToolTipItemName => "NanoPurgeEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<NanoPurgeHeldProj>();
     }
 }

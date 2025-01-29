@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.ChainGun;
-        public override string TargetToolTipItemName => "Wap_ChainGun_Text";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<ChainGunHeldProj>(185);
     }
 }

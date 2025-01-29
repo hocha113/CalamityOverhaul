@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTheDarkMaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheDarkMaster>();
-        public override int ProtogenesisID => ModContent.ItemType<TheDarkMasterEcType>();
-        public override string TargetToolTipItemName => "TheDarkMasterEcType";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<TheDarkMasterRapier>();
             item.useTime = 45;

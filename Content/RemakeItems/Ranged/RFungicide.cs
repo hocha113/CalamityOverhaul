@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RFungicide : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Fungicide>();
-        public override int ProtogenesisID => ModContent.ItemType<FungicideEcType>();
-        public override string TargetToolTipItemName => "FungicideEcType";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<FungicideHeldProj>(16);
             item.damage = 22;

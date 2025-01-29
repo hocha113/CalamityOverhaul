@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RCorrodedCaustibow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CorrodedCaustibow>();
-        public override int ProtogenesisID => ModContent.ItemType<CorrodedCaustibowEcType>();
-        public override string TargetToolTipItemName => "CorrodedCaustibowEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<CorrodedCaustibowHeldProj>();
     }
 }

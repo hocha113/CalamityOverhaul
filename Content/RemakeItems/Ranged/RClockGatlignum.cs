@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RClockGatlignum : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ClockGatlignum>();
-        public override int ProtogenesisID => ModContent.ItemType<ClockGatlignumEcType>();
-        public override string TargetToolTipItemName => "ClockGatlignumEcType";
         public override void SetDefaults(Item item) {
             item.damage = 35;
             item.SetCartridgeGun<ClockGatlignumHeldProj>(90);

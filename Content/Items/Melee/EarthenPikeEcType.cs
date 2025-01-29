@@ -34,8 +34,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class REarthenPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EarthenPike>();
-        public override int ProtogenesisID => ModContent.ItemType<EarthenPikeEcType>();
-        public override string TargetToolTipItemName => "EarthenPikeEcType";
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<EarthenPikeHeld>();

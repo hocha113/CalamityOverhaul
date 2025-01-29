@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSulphuricAcidCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SulphuricAcidCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<SulphuricAcidCannonEcType>();
-        public override string TargetToolTipItemName => "SulphuricAcidCannonEcType";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<SulphuricAcidCannonHeldProj>(55);
             item.useAmmo = AmmoID.Bullet;

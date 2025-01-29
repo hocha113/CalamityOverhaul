@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDodusHandcannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DodusHandcannon>();
-        public override int ProtogenesisID => ModContent.ItemType<DodusHandcannonEcType>();
+ 
         public override void SetDefaults(Item item) {
             item.width = 62;
             item.height = 34;

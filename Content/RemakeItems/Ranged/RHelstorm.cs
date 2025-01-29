@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RHelstorm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Helstorm>();
-        public override int ProtogenesisID => ModContent.ItemType<HelstormEcType>();
-        public override string TargetToolTipItemName => "HelstormEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 31;
             item.DamageType = DamageClass.Ranged;

@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Tsunami;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Tsunami_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<TsunamiHeldProj>();
     }
 }

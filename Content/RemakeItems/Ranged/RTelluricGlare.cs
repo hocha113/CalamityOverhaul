@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RTelluricGlare : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TelluricGlare>();
-        public override int ProtogenesisID => ModContent.ItemType<TelluricGlareEcType>();
-        public override string TargetToolTipItemName => "TelluricGlareEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<TelluricGlareHeldProj>();
     }
 }

@@ -69,7 +69,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RPrismaticBreaker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PrismaticBreaker>();
-        public override int ProtogenesisID => ModContent.ItemType<PrismaticBreakerEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<PrismaticBreakerHeld>();
         public override bool? On_CanUseItem(Item item, Player player) => PrismaticBreakerEcType.CanUseItemFunc(item, player);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

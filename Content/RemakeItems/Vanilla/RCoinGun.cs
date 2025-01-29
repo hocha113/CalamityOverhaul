@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.CoinGun;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<CoinGunHeld>(200);
     }
 

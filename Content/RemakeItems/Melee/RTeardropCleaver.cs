@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTeardropCleaver : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TeardropCleaver>();
-        public override int ProtogenesisID => ModContent.ItemType<TeardropCleaverEcType>();
-        public override string TargetToolTipItemName => "TeardropCleaverEcType";
         public override void SetDefaults(Item item) => TeardropCleaverEcType.SetDefaultsFunc(item);
     }
 }

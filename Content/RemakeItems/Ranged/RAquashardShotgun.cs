@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAquashardShotgun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AquashardShotgun>();
-        public override int ProtogenesisID => ModContent.ItemType<AquashardShotgunEcType>();
-        public override string TargetToolTipItemName => "AquashardShotgunEcType";
         public override void SetDefaults(Item item) {
             item.damage = 9;
             item.DamageType = DamageClass.Ranged;

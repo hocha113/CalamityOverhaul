@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RHoarfrostBow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HoarfrostBow>();
-        public override int ProtogenesisID => ModContent.ItemType<HoarfrostBowEcType>();
-        public override string TargetToolTipItemName => "HoarfrostBowEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<HoarfrostBowHeldProj>();
     }
 }

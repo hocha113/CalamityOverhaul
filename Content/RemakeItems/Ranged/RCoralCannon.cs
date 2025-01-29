@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RCoralCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CoralCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<CoralCannonEcType>();
-        public override string TargetToolTipItemName => "CoralCannonEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 124;
             item.DamageType = DamageClass.Ranged;

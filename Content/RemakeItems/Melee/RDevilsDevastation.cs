@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDevilsDevastation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DevilsDevastation>();
-        public override int ProtogenesisID => ModContent.ItemType<DevilsDevastationEcType>();
-        public override string TargetToolTipItemName => "DevilsDevastationEcType";
         private int Level;
         public override void SetDefaults(Item item) => DevilsDevastationEcType.SetDefaultsFunc(item);
         public override bool? CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 0;

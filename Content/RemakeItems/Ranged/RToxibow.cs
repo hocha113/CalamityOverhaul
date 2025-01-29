@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RToxibow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Toxibow>();
-        public override int ProtogenesisID => ModContent.ItemType<ToxibowEcType>();
-        public override string TargetToolTipItemName => "ToxibowEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<ToxibowHeldProj>();
     }
 }

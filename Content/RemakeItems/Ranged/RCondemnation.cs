@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RCondemnation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Condemnation>();
-        public override int ProtogenesisID => ModContent.ItemType<CondemnationEcType>();
-        public override string TargetToolTipItemName => "CondemnationEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<CondemnationHeldProj>();
     }
 }

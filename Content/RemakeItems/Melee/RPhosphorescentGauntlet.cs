@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RPhosphorescentGauntlet : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PhosphorescentGauntlet>();
-        public override int ProtogenesisID => ModContent.ItemType<PhosphorescentGauntletEcType>();
-        public override string TargetToolTipItemName => "PhosphorescentGauntletEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) => item.damage = 1205;
         public override void HoldItem(Item item, Player player) => PhosphorescentGauntletEcType.HoldItemFunc(player);

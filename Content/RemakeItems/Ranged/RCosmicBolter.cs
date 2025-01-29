@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RCosmicBolter : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VernalBolter>();
-        public override int ProtogenesisID => ModContent.ItemType<CosmicBolterEcType>();
-        public override string TargetToolTipItemName => "CosmicBolterEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<CosmicBolterHeldProj>();
     }
 }

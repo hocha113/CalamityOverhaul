@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RContinentalGreatbow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ContinentalGreatbow>();
-        public override int ProtogenesisID => ModContent.ItemType<ContinentalGreatbowEcType>();
-        public override string TargetToolTipItemName => "ContinentalGreatbowEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<ContinentalGreatbowHeldProj>();
     }
 }

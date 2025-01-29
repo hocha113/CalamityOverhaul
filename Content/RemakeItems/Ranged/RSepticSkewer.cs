@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSepticSkewer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SepticSkewer>();
-        public override int ProtogenesisID => ModContent.ItemType<SepticSkewerEcType>();
-        public override string TargetToolTipItemName => "SepticSkewerEcType";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<SepticSkewerProj>();
             item.useAmmo = AmmoID.Bullet;

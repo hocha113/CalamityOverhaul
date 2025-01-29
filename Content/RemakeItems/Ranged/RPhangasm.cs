@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RPhangasm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Phangasm>();
-        public override int ProtogenesisID => ModContent.ItemType<PhangasmEcType>();
-        public override string TargetToolTipItemName => "PhangasmEcType";
         public override void SetDefaults(Item item) {
             item.damage = 160;
             item.width = 48;

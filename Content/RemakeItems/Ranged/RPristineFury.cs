@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RPristineFury : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PristineFury>();
-        public override int ProtogenesisID => ModContent.ItemType<PristineFuryEcType>();
-        public override string TargetToolTipItemName => "PristineFuryEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<PristineFuryHeldProj>(160);
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;

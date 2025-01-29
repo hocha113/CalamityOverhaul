@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RHalleysInferno : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HalleysInferno>();
-        public override int ProtogenesisID => ModContent.ItemType<HalleysInfernoEcType>();
-        public override string TargetToolTipItemName => "HalleysInfernoEcType";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<HalleysInfernoHeldProj>(86);
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;

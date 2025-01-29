@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBlossomFlux : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlossomFlux>();
-        public override int ProtogenesisID => ModContent.ItemType<BlossomFluxEcType>();
-        public override string TargetToolTipItemName => "BlossomFluxEcType";
         public override void SetDefaults(Item item) => BlossomFluxEcType.SetDefaultsFunc(item);
         public override bool? On_CanUseItem(Item item, Player player) {
             return false;

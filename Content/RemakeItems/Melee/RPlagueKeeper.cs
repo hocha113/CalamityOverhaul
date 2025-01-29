@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RPlagueKeeper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PlagueKeeper>();
-        public override int ProtogenesisID => ModContent.ItemType<PlagueKeeperEcType>();
-        public override string TargetToolTipItemName => "PlagueKeeperEcType";
         public override void SetDefaults(Item item) => PlagueKeeperEcType.SetDefaultsFunc(item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

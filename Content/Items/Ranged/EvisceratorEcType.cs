@@ -24,8 +24,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class REviscerator : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Eviscerator>();
-        public override int ProtogenesisID => ModContent.ItemType<EvisceratorEcType>();
-        public override string TargetToolTipItemName => "EvisceratorEcType";
         public override void SetDefaults(Item item) => EvisceratorEcType.SetDefaultsFunc(item);
     }
 

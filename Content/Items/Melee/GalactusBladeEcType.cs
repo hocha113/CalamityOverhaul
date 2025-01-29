@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RGalactusBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GalactusBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<GalactusBladeEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<GalactusBladeHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RScorchedEarth : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ScorchedEarth>();
-        public override int ProtogenesisID => ModContent.ItemType<ScorchedEarthEcType>();
-        public override string TargetToolTipItemName => "ScorchedEarthEcType";
         public override void SetDefaults(Item item) {
             item.damage = 350;
             item.DamageType = DamageClass.Ranged;

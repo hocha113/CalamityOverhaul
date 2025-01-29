@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RContagion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Contagion>();
-        public override int ProtogenesisID => ModContent.ItemType<ContagionEcType>();
-        public override string TargetToolTipItemName => "ContagionEcType";
         public override void SetDefaults(Item item) {
             item.damage = 280;
             item.DamageType = DamageClass.Ranged;

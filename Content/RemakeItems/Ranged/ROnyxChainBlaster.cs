@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class ROnyxChainBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<OnyxChainBlaster>();
-        public override int ProtogenesisID => ModContent.ItemType<OnyxChainBlasterEcType>();
-        public override string TargetToolTipItemName => "OnyxChainBlasterEcType";
         public override void SetDefaults(Item item) {
             item.damage = 58;
             item.SetCartridgeGun<OnyxChainBlasterHeldProj>(100);

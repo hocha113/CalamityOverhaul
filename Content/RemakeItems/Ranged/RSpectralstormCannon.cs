@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSpectralstormCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SpectralstormCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<SpectralstormCannonEcType>();
-        public override string TargetToolTipItemName => "SpectralstormCannonEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<SpectralstormCannonHeldProj>(180);
     }
 }

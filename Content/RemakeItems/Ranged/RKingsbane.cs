@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RKingsbane : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Kingsbane>();
-        public override int ProtogenesisID => ModContent.ItemType<KingsbaneEctype>();
-        public override string TargetToolTipItemName => "KingsbaneEctype";
         public override void SetDefaults(Item item) {
             item.damage = 175;
             item.shoot = ModContent.ProjectileType<KingsbaneHeldProj>();

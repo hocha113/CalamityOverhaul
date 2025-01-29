@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Gatligator;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Gatligator_Text";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<GatligatorHeldProj>(185);
     }
 }

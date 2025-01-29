@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTheEnforcer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheEnforcer>();
-        public override int ProtogenesisID => ModContent.ItemType<TheEnforcerEcType>();
-        public override string TargetToolTipItemName => "TheEnforcerEcType";
         public override void SetDefaults(Item item) => TheEnforcerEcType.SetDefaultsFunc(item);
     }
 }

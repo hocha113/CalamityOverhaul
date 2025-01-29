@@ -11,8 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrimlash : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Brimlash>();
-        public override int ProtogenesisID => ModContent.ItemType<BrimlashEcType>();
-        public override string TargetToolTipItemName => "BrimlashEcType";
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => BrimlashEcType.SetDefaultsFunc(item);

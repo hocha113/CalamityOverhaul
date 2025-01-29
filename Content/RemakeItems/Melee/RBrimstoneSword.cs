@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrimstoneSword : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BrimstoneSword>();
-        public override int ProtogenesisID => ModContent.ItemType<BrimstoneSwordEcType>();
-        public override string TargetToolTipItemName => "BrimstoneSwordEcType";
         public override void SetDefaults(Item item) => item.SetKnifeHeld<BrimstoneSwordHeld>();
         public override bool? AltFunctionUse(Item item, Player player) => false;
         public override bool? CanUseItem(Item item, Player player) => player.altFunctionUse != 2;

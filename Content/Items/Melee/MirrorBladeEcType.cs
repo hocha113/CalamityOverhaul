@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RMirrorBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MirrorBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<MirrorBladeEcType>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<MirrorBladeHeld>();

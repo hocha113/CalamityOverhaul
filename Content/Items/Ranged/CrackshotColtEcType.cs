@@ -22,8 +22,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class RCrackshotColt : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CrackshotColt>();
-        public override int ProtogenesisID => ModContent.ItemType<CrackshotColtEcType>();
-        public override string TargetToolTipItemName => "CrackshotColtEcType";
         public override void SetDefaults(Item item) => CrackshotColtEcType.SetDefaultsFunc(item);
     }
 

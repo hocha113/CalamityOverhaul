@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RPearlGod : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PearlGod>();
-        public override int ProtogenesisID => ModContent.ItemType<PearlGodEcType>();
         public override void SetDefaults(Item item) {
             item.damage = 150;
             item.DamageType = DamageClass.Ranged;

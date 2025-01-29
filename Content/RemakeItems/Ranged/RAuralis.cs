@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAuralis : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Auralis>();
-        public override int ProtogenesisID => ModContent.ItemType<AuralisEcType>();
-        public override string TargetToolTipItemName => "AuralisEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<AuralisHeldProj>(18);
             item.CWR().Scope = true;

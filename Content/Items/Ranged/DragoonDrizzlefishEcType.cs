@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class RDragoonDrizzlefish : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DragoonDrizzlefish>();
-        public override int ProtogenesisID => ModContent.ItemType<DragoonDrizzlefishEcType>();
         public override void SetDefaults(Item item) {
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;
             item.SetCartridgeGun<DragoonDrizzlefishHeld>(62);

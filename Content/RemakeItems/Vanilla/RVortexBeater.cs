@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.VortexBeater;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_VortexBeater_Text";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<VortexBeaterHeldProj>(122);
             item.UseSound = CWRSound.Gun_AWP_Shoot with { Pitch = -0.3f, Volume = 0.12f };

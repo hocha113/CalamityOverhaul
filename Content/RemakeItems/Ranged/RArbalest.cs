@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RArbalest : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Arbalest>();
-        public override int ProtogenesisID => ModContent.ItemType<ArbalestEcType>();
-        public override string TargetToolTipItemName => "ArbalestEcType";
         public override void SetDefaults(Item item) {
             item.SetHeldProj<ArbalestHeldProj>();
             item.CWR().Scope = true;

@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Megashark;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Megashark_Text";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<MegasharkHeldProj>(260);
     }
 }

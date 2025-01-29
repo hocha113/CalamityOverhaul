@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RArcherfish : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Archerfish>();
-        public override int ProtogenesisID => ModContent.ItemType<ArcherfishEcType>();
-        public override string TargetToolTipItemName => "ArcherfishEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<ArcherfishHeldProj>(82);
     }
 }

@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSpyker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Spyker>();
-        public override int ProtogenesisID => ModContent.ItemType<SpykerEcType>();
-        public override string TargetToolTipItemName => "SpykerEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<SpykerHeldProj>(60);
     }
 }

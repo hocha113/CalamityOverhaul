@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.DemonBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_DemonBow_Text";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<DemonBowHeldProj>();
     }
 }

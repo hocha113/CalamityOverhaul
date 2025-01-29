@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RDraconicDestruction : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DraconicDestruction>();
-        public override int ProtogenesisID => ModContent.ItemType<DraconicDestructionEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<DraconicDestructionHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

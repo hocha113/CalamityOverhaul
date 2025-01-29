@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class R_RedSun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RedSun>();
-        public override int ProtogenesisID => ModContent.ItemType<RedSunEcType>();
         public override void SetDefaults(Item item) {
             item.useTime = item.useAnimation = 40;
             item.SetKnifeHeld<RedSunHeld>();

@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class REvilSmasher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EvilSmasher>();
-        public override int ProtogenesisID => ModContent.ItemType<EvilSmasherEcType>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<EvilSmasherHeld>();

@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RUltimusCleaver : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<UltimusCleaver>();
-        public override int ProtogenesisID => ModContent.ItemType<UltimusCleaverEcType>();
         public override void SetDefaults(Item item) => UltimusCleaverEcType.SetDefaultsFunc(item);
     }
 }

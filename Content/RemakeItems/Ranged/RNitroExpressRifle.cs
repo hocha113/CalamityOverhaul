@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RNitroExpressRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<NitroExpressRifle>();
-        public override int ProtogenesisID => ModContent.ItemType<NitroExpressRifleEcType>();
-        public override string TargetToolTipItemName => "NitroExpressRifleEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<NitroExpressRifleHeldProj>(8);
     }
 }

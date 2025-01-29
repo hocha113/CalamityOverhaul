@@ -42,8 +42,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RSausageMaker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SausageMaker>();
-        public override int ProtogenesisID => ModContent.ItemType<SausageMakerEcType>();
-        public override string TargetToolTipItemName => "SausageMakerEcType";
         public override void SetDefaults(Item item) => item.SetKnifeHeld<SausageMakerHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RCatastropheClaymore : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
-        public override int ProtogenesisID => ModContent.ItemType<CatastropheClaymoreEcType>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<CatastropheClaymoreHeld>();

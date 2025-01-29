@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrinyBaron : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BrinyBaron>();
-        public override int ProtogenesisID => ModContent.ItemType<BrinyBaronEcType>();
-        public override string TargetToolTipItemName => "BrinyBaronEcType";
         private int Level;
         public override void SetDefaults(Item item) => BrinyBaronEcType.SetDefaultsFunc(item);
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

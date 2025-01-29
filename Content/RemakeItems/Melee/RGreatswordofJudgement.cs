@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGreatswordofJudgement : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GreatswordofJudgement>();
-        public override int ProtogenesisID => ModContent.ItemType<GreatswordofJudgementEcType>();
-        public override string TargetToolTipItemName => "GreatswordofJudgementEcType";
+ 
         public override void SetDefaults(Item item) => GreatswordofJudgementEcType.SetDefaultsFunc(item);
     }
 }

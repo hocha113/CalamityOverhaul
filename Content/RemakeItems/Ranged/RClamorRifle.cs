@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RClamorRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ClamorRifle>();
-        public override int ProtogenesisID => ModContent.ItemType<ClamorRifleEcType>();
-        public override string TargetToolTipItemName => "ClamorRifleEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<ClamorRifleHeldProj>(45);
     }
 }

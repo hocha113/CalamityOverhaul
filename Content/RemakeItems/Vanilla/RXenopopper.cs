@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Xenopopper;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Xenopopper_Text";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<XenopopperHeldProj>(65);
     }
 }

@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDrataliornus : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Drataliornus>();
-        public override int ProtogenesisID => ModContent.ItemType<DrataliornusEcType>();
-        public override string TargetToolTipItemName => "DrataliornusEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<DrataliornusHeldProj>();
     }
 }

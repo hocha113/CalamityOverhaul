@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RPridefulHuntersPlanarRipper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PridefulHuntersPlanarRipper>();
-        public override int ProtogenesisID => ModContent.ItemType<PridefulHuntersPlanarRipperEcType>();
-        public override string TargetToolTipItemName => "PridefulHuntersPlanarRipperEcType";
         public override void SetDefaults(Item item) {
             item.damage = 45;
             item.SetCartridgeGun<PridefulHuntersPlanarRipperHeldProj>(280);

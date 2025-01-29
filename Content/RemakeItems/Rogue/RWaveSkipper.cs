@@ -15,12 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
     internal class RWaveSkipper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WaveSkipper>();
-        public override int ProtogenesisID => ModContent.ItemType<WaveSkipperEcType>();
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WaveSkipper>()] = true;
-        }
-        public override string TargetToolTipItemName => "WaveSkipperEcType";
-
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WaveSkipper>()] = true;
         public override void SetDefaults(Item item) {
             item.width = 44;
             item.damage = 70;

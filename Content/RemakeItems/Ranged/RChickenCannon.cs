@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RChickenCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ChickenCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<ChickenCannonEcType>();
-        public override string TargetToolTipItemName => "ChickenCannonEcType";
         public override void SetDefaults(Item item) {
             item.damage = 220;
             item.SetCartridgeGun<ChickenCannonHeldProj>(25);

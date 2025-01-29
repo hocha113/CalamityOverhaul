@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDeathsAscension : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeathsAscension>();
-        public override int ProtogenesisID => ModContent.ItemType<DeathsAscensionEcType>();
-        public override string TargetToolTipItemName => "DeathsAscensionEcType";
         private int swingIndex = 0;
         public override void SetDefaults(Item item) {
             swingIndex = 0;

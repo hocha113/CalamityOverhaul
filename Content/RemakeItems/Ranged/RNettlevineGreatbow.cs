@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RNettlevineGreatbow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<NettlevineGreatbow>();
-        public override int ProtogenesisID => ModContent.ItemType<NettlevineGreatbowEcType>();
-        public override string TargetToolTipItemName => "NettlevineGreatbowEcType";
         public override void SetDefaults(Item item) {
             item.damage = 73;
             item.DamageType = DamageClass.Ranged;

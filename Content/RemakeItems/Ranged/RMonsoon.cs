@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RMonsoon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Monsoon>();
-        public override int ProtogenesisID => ModContent.ItemType<MonsoonEcType>();
-        public override string TargetToolTipItemName => "MonsoonEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<MonsoonHeldProj>();
     }
 }

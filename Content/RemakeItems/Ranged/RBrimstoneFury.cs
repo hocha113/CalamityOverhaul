@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBrimstoneFury : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BrimstoneFury>();
-        public override int ProtogenesisID => ModContent.ItemType<BrimstoneFuryEcType>();
-        public override string TargetToolTipItemName => "BrimstoneFuryEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<BrimstoneFuryHeldProj>();
     }
 }

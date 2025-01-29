@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDeadSunsWind : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeadSunsWind>();
-        public override int ProtogenesisID => ModContent.ItemType<DeadSunsWindEcType>();
-        public override string TargetToolTipItemName => "DeadSunsWindEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 100;
             item.DamageType = DamageClass.Ranged;

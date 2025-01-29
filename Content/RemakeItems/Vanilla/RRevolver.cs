@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Revolver;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Revolver_Text";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<RevolverHeldProj>(6);
             item.CWR().CartridgeType = CartridgeUIEnum.Magazines;

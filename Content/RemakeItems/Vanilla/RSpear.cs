@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Spear;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Spear_Text";
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.DamageType = CWRLoad.RogueDamageClass;

@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RClaretCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ClaretCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<ClaretCannonEcType>();
-        public override string TargetToolTipItemName => "ClaretCannonEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<ClaretCannonHeldProj>(48);
     }
 }

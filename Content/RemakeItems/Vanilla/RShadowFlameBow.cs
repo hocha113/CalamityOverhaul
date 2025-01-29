@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.ShadowFlameBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_ShadowFlameBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<ShadowFlameBowHeldProj>();
     }
 }

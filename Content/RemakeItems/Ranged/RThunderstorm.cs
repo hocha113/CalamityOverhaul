@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RThunderstorm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Thunderstorm>();
-        public override int ProtogenesisID => ModContent.ItemType<ThunderstormEcType>();
-        public override string TargetToolTipItemName => "ThunderstormEcType";
         public override void SetDefaults(Item item) {
             item.damage = 132;
             item.mana = 50;

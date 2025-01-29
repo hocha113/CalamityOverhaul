@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RStormRuler : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StormRuler>();
-        public override int ProtogenesisID => ModContent.ItemType<StormRulerEcType>();
+ 
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<StormRulerHeld>();

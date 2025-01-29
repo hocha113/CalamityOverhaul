@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RVoidEdge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VoidEdge>();
-        public override int ProtogenesisID => ModContent.ItemType<VoidEdgeEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<VoidEdgeHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

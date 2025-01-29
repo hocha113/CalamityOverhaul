@@ -196,7 +196,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             };
         }
         public override int TargetID => ModContent.ItemType<Murasama>();
-        public override string TargetToolTipItemName => "MurasamaEcType";
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[TargetID] = true;

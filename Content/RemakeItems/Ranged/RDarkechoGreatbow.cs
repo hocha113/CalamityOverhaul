@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDarkechoGreatbow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DarkechoGreatbow>();
-        public override int ProtogenesisID => ModContent.ItemType<DarkechoGreatbowEcType>();
-        public override string TargetToolTipItemName => "DarkechoGreatbowEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<DarkechoGreatbowHeldProj>();
     }
 }

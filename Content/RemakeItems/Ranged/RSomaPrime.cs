@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSomaPrime : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SomaPrime>();
-        public override int ProtogenesisID => ModContent.ItemType<SomaPrimeEcType>();
-        public override string TargetToolTipItemName => "SomaPrimeEcType";
         public override void SetDefaults(Item item) {
             item.damage = 300;
             item.SetCartridgeGun<SomaPrimeHeldProj>(600);

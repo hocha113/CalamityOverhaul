@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RTitanArm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TitanArm>();
-        public override int ProtogenesisID => ModContent.ItemType<TitanArmEcType>();
         public override void SetDefaults(Item item) => TitanArmEcType.SetDefaultsFunc(item);
     }
 

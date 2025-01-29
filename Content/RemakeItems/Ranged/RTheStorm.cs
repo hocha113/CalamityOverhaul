@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RTheStorm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheStorm>();
-        public override int ProtogenesisID => ModContent.ItemType<TheStormEcType>();
-        public override string TargetToolTipItemName => "TheStormEcType";
         public override void SetDefaults(Item item) {
             item.damage = 35;
             item.DamageType = DamageClass.Ranged;

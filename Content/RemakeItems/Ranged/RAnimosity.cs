@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAnimosity : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Animosity>();
-        public override int ProtogenesisID => ModContent.ItemType<AnimosityEcType>();
-        public override string TargetToolTipItemName => "AnimosityEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<AnimosityHeldProj>(55);
     }
 }

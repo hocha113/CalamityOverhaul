@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAstrealDefeat : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AstrealDefeat>();
-        public override int ProtogenesisID => ModContent.ItemType<AstrealDefeatEcType>();
-        public override string TargetToolTipItemName => "AstrealDefeatEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<AstrealDefeatHeldProj>();
     }
 }

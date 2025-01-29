@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSeasSearing : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SeasSearing>();
-        public override int ProtogenesisID => ModContent.ItemType<SeasSearingEcType>();
-        public override string TargetToolTipItemName => "SeasSearingEcType";
         public override void SetDefaults(Item item) {
             item.damage = 40;
             item.DamageType = DamageClass.Ranged;
