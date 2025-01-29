@@ -1,16 +1,13 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class DestroyerTailAI : NPCOverride
+    internal class DestroyerTailAI : DestroyerBodyAI
     {
         public override int TargetID => NPCID.TheDestroyerTail;
-
-        public override bool AI() => true;
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {

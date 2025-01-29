@@ -47,11 +47,16 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         private MethodInfo getMethodInfo(string key) => npcLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
 
+        private void DompLog(string name) => CWRMod.Instance.Logger.Info($"ERROR:Fail To Load! {name} Is Null!");
+
         private void LoaderMethodAndHook() {
             {
                 onHitByProjectile_Method = getMethodInfo("OnHitByProjectile");
                 if (onHitByProjectile_Method != null) {
                     CWRHook.Add(onHitByProjectile_Method, OnHitByProjectileHook);
+                }
+                else {
+                    DompLog("onHitByProjectile_Method");
                 }
             }
             {
@@ -59,11 +64,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 if (modifyIncomingHit_Method != null) {
                     CWRHook.Add(modifyIncomingHit_Method, ModifyIncomingHitHook);
                 }
+                else {
+                    DompLog("modifyIncomingHit_Method");
+                }
             }
             {
                 onNPCAI_Method = getMethodInfo("NPCAI");
                 if (onNPCAI_Method != null) {
                     CWRHook.Add(onNPCAI_Method, OnNPCAIHook);
+                }
+                else {
+                    DompLog("onNPCAI_Method");
                 }
             }
             {
@@ -71,11 +82,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 if (onPreDraw_Method != null) {
                     CWRHook.Add(onPreDraw_Method, OnPreDrawHook);
                 }
+                else {
+                    DompLog("onPreDraw_Method");
+                }
             }
             {
                 onPostDraw_Method = getMethodInfo("PostDraw");
                 if (onPostDraw_Method != null) {
                     CWRHook.Add(onPostDraw_Method, OnPostDrawHook);
+                }
+                else {
+                    DompLog("onPostDraw_Method");
                 }
             }
             {
@@ -83,11 +100,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 if (onCheckDead_Method != null) {
                     CWRHook.Add(onCheckDead_Method, OnCheckDeadHook);
                 }
+                else {
+                    DompLog("onCheckDead_Method");
+                }
             }
             {
                 onPreKill_Method = getMethodInfo("PreKill");
                 if (onPreKill_Method != null) {
                     CWRHook.Add(onPreKill_Method, OnPreKillHook);
+                }
+                else {
+                    DompLog("onPreKill_Method");
                 }
             }
         }

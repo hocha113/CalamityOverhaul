@@ -6,7 +6,6 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
-
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,6 +54,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal ref float ai9 => ref ai[9];
         internal ref float ai10 => ref ai[10];
         internal ref float ai11 => ref ai[11];
+        internal float ai12;
+        internal float ai13;
         internal static bool canLoaderAssetZunkenUp;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
@@ -400,7 +401,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             ThisFromeFindPlayer();
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
-            DealingDaytimeRage();
+            if (npc.ai[0] > 1) {
+                DealingDaytimeRage();
+            }
 
             //这个部分是机械骷髅王刚刚进行tp传送后的行为，由ai10属性控制，在这个期间，
             //它不应该做任何攻击性的事情，要防止npc.ai[1]为3，而ai10这个值会自动消减
@@ -434,7 +437,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.life < npc.lifeMax - 20 && bossRush) {
                 LifeRecovery();
             }
-            if (npc.life < npc.lifeMax / 2) {
+
+            if (!VaultUtils.isClient && npc.life < npc.lifeMax / 2) {
                 KillArm_OneToTwoStages();
             }
 
@@ -654,7 +658,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (ai6 == 0 && ai9 > 2 && death && !bossRush) {
                 ai3 = 3;
                 ai6 = 1;
-                SpawnEye();
+                if (npc.ai[1] != 2) {//白天狂暴时不用召唤双子
+                    SpawnEye();
+                }
                 NetAISend();
             }
 
@@ -669,8 +675,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SmokeDrawer.ParticleSpawnRate = 3;
                 SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
                 SmokeDrawer.SpawnAreaCompactness = 80f;
-
-                if (npc.life > npc.lifeMax / 10 && noEye) {
+                if (npc.life > npc.lifeMax / 10 && noEye && npc.ai[1] != 2) {
                     npc.life -= 10;
                 }
             }
@@ -702,7 +707,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                     if (bossRush) {
                                         vector *= 1.45f;
                                     }
-                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
+                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
                                         , vector, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
                                 SpanFireLerterDustEffect(npc, 73);
@@ -884,36 +889,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        private void KillArm_OneToTwoStages() {
-            if (npc.ai[0] != 2) {//2表明是初元阶段，这个杀死手臂的函数在这个时候才能运行
-                return;
-            }
-            foreach (NPC index in Main.npc) {
-                if (!index.active) {
-                    continue;
-                }
+        private void KillArm() {
+            foreach (NPC index in Main.ActiveNPCs) {
                 if (index.type == NPCID.PrimeCannon) {
                     index.life = 0;
                     index.HitEffect();
                     index.active = false;
+                    index.netUpdate = true;
                 }
-                if (index.type == NPCID.PrimeVice) {
+                else if (index.type == NPCID.PrimeVice) {
                     index.life = 0;
                     index.HitEffect();
                     index.active = false;
+                    index.netUpdate = true;
                 }
-                if (index.type == NPCID.PrimeSaw) {
+                else if (index.type == NPCID.PrimeSaw) {
                     index.life = 0;
                     index.HitEffect();
                     index.active = false;
+                    index.netUpdate = true;
                 }
-                if (index.type == NPCID.PrimeLaser) {
+                else if (index.type == NPCID.PrimeLaser) {
                     index.life = 0;
                     index.HitEffect();
                     index.active = false;
+                    index.netUpdate = true;
                 }
             }
+        }
+
+        private void KillArm_OneToTwoStages() {
+            if (npc.ai[0] != 2) {//2表明是初元阶段，这个杀死手臂的函数在这个时候才能运行
+                return;
+            }
+            KillArm();
             npc.ai[0] = 3;//杀死手臂后表明进入三阶段
+            npc.netUpdate = true;
         }
 
         private void LifeRecovery() {
@@ -988,14 +999,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void DealingDaytimeRage() {
-            if (Main.IsItDay()) {
-                if (npc.ai[1] != 3f && npc.ai[1] != 2f) {
-                    npc.ai[1] = 2f;
-                    SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
-                }
+            if (!Main.IsItDay()) {
+                return; 
             }
-            else if (npc.ai[1] == 2f) {
-                npc.ai[1] = 0;
+            if (npc.ai[1] != 3f && npc.ai[1] != 2f) {
+                npc.ai[1] = 2f;
+                KillArm();
                 SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
             }
         }
