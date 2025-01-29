@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -46,9 +47,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText DisplayName {
             get {
-                LocalizedText content = TargetID < ItemID.Count?
-                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
-                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
+                LocalizedText content;
+                string path;
+                if (TargetID < ItemID.Count) {
+                    path = "ItemName." + ItemID.Search.GetName(TargetID);
+                    content = Language.GetText(path);
+                }
+                else {
+                    path = $"Mods.CalamityOverhaul.Items.{ItemLoader.GetItem(TargetID).Name}EcType.DisplayName";
+                    content = Language.GetText(path);
+                    if (content.Value == path) {
+                        content = ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
+                    }
+                }
                 return this.GetLocalization(nameof(DisplayName), () => content.Value);
             }
         }
@@ -57,13 +68,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText Tooltip {
             get {
-                if (IsVanilla) {
-                    string key = CWRUtils.GetVanillaItemNameByID(TargetID);
-                    return this.GetLocalization(nameof(Tooltip), () => CWRLocText.GetTextValue($"Wap_{key}_Text"));
+                LocalizedText content;
+                string path;
+                if (TargetID < ItemID.Count) {
+                    path = $"Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_{ItemID.Search.GetName(TargetID)}_Text";
+                    content = Language.GetText(path);
+                    if (content.Value == path) {
+                        path = "ItemTooltip." + ItemID.Search.GetName(TargetID);
+                        content = Language.GetText(path);
+                    }
+                    if (content.Value == path) {
+                        return this.GetLocalization(nameof(Tooltip), () => "");
+                    }
                 }
-                LocalizedText content = TargetID < ItemID.Count ?
-                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(TargetID))
-                    : ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
+                else {
+                    path = $"Mods.CalamityOverhaul.Items.{ItemLoader.GetItem(TargetID).Name}EcType.Tooltip";
+                    content = Language.GetText(path);
+                    if (content.Value == path) {
+                        content = ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
+                    }
+                }
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }
         }

@@ -89,7 +89,7 @@
       <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
     </Reference>
     <Reference Include="InnoVault">
-      <HintPath>..\..\ModReader\InnoVault\InnoVault.dll</HintPath>
+      <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

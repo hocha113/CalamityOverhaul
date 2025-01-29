@@ -41,19 +41,6 @@ namespace CalamityOverhaul
             return item.GetLocalization("DisplayName");
         }
 
-        private readonly static MethodInfo GenerateLegacyItemDictionaryMethodInfo = typeof(ItemID).GetMethod("GenerateLegacyItemDictionary", BindingFlags.Static | BindingFlags.NonPublic);
-        private static Dictionary<string, short> _nameValueByStringDic;
-        private static Dictionary<short, string> _nameValueByIDDic;
-        public static string GetVanillaItemNameByID(int id) {
-            if (_nameValueByStringDic == null) {
-                _nameValueByStringDic = (Dictionary<string, short>)GenerateLegacyItemDictionaryMethodInfo.Invoke(null, []);
-                foreach (var kvp in _nameValueByStringDic) {
-                    _nameValueByIDDic.Add(kvp.Value, kvp.Key.Replace(" ", ""));
-                }
-            }
-            return _nameValueByIDDic[(short)id];
-        }
-
         /// <summary>
         /// 一个额外的跳字方法，向游戏内打印对象的ToString内容
         /// </summary>
