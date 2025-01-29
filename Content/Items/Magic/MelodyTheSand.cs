@@ -6,7 +6,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Magic.Extras
+namespace CalamityOverhaul.Content.Items.Magic
 {
     /// <summary>
     /// 沙中曲
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.Gold;
             color.A = 0;
-            float slp = (1 + 0.004f * chargeIndex);
+            float slp = 1 + 0.004f * chargeIndex;
             Main.EntitySpriteDraw(TextureValue, drawPos, null, color
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
 
         private void CreateDustEffect(int dustType, int amount) {
             for (int i = 0; i < amount; i++) {
-                int dustIndex = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, 0f, -2f, 0, default(Color), 0.8f);
+                int dustIndex = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, 0f, -2f, 0, default, 0.8f);
                 Dust dust = Main.dust[dustIndex];
                 dust.noGravity = true;
                 dust.position.X += Main.rand.Next(-50, 51) * 0.05f - 1.5f;
@@ -156,8 +156,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
-                Color color = Color.White * (float)(((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) / 2);
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
+                Color color = Color.White * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length / 2);
                 Main.EntitySpriteDraw(texture, drawPos, rectangle, color, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
             }
 

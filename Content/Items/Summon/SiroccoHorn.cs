@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.Items.Summon.Extras
+﻿namespace CalamityOverhaul.Content.Items.Summon
 {
     /// <summary>
     /// 热风

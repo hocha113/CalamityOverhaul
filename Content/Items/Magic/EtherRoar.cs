@@ -2,7 +2,7 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Magic.Extras
+namespace CalamityOverhaul.Content.Items.Magic
 {
     internal class EtherRoar : ModItem
     {

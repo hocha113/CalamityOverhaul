@@ -3,19 +3,19 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Summon.Extras
+namespace CalamityOverhaul.Content.Items.Summon
 {
-    internal class GhostFireWhip : ModItem
+    internal class AzureDragonRage : ModItem
     {
-        public override string Texture => CWRConstant.Item_Summon + "GhostFireWhip";
+        public override string Texture => CWRConstant.Item_Summon + "AzureDragonRage";
 
         public override void SetDefaults() {
-            Item.DefaultToWhip(ModContent.ProjectileType<GhostFireWhipProjectile>(), 220, 1, 12, 30);
+            Item.DefaultToWhip(ModContent.ProjectileType<AzureDragonRageProjectile>(), 172, 2.5f, 13, 35);
             Item.rare = ItemRarityID.Purple;
             Item.useTurn = true;
             Item.autoReuse = true;
-            Item.value = Terraria.Item.buyPrice(0, 16, 5, 75);
-            Item.rare = ItemRarityID.Cyan;
+            Item.value = Terraria.Item.buyPrice(0, 5, 5, 0);
+            Item.rare = ItemRarityID.LightPurple;
         }
 
         public override bool MeleePrefix() {
@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                .AddIngredient(ItemID.BoneWhip)
-                .AddIngredient(ModContent.ItemType<RuinousSoul>(), 5)
+                .AddIngredient(ModContent.ItemType<ElementWhip>())
+                .AddIngredient(ModContent.ItemType<UelibloomBar>(), 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
         }

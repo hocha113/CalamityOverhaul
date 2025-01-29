@@ -3,19 +3,19 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Summon.Extras
+namespace CalamityOverhaul.Content.Items.Summon
 {
-    internal class BleedingScourge : ModItem
+    internal class GhostFireWhip : ModItem
     {
-        public override string Texture => CWRConstant.Item_Summon + "BleedingScourge";
+        public override string Texture => CWRConstant.Item_Summon + "GhostFireWhip";
 
         public override void SetDefaults() {
-            Item.DefaultToWhip(ModContent.ProjectileType<BleedingScourgeProjectile>(), 191, 3, 13, 40);
+            Item.DefaultToWhip(ModContent.ProjectileType<GhostFireWhipProjectile>(), 220, 1, 12, 30);
             Item.rare = ItemRarityID.Purple;
             Item.useTurn = true;
             Item.autoReuse = true;
-            Item.value = Terraria.Item.buyPrice(0, 6, 15, 0);
-            Item.rare = ItemRarityID.Lime;
+            Item.value = Terraria.Item.buyPrice(0, 16, 5, 75);
+            Item.rare = ItemRarityID.Cyan;
         }
 
         public override bool MeleePrefix() {
@@ -24,8 +24,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                .AddIngredient(ModContent.ItemType<ElementWhip>())
-                .AddIngredient(ModContent.ItemType<BloodstoneCore>(), 15)
+                .AddIngredient(ItemID.BoneWhip)
                 .AddIngredient(ModContent.ItemType<RuinousSoul>(), 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();

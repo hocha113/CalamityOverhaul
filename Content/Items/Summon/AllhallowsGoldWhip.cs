@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Summon.Extras
+namespace CalamityOverhaul.Content.Items.Summon
 {
     internal class AllhallowsGoldWhip : ModItem
     {

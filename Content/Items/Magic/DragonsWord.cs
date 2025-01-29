@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Magic.Extras
+namespace CalamityOverhaul.Content.Items.Magic
 {
     internal class DragonsWord : ModItem, ICWRLoader
     {
