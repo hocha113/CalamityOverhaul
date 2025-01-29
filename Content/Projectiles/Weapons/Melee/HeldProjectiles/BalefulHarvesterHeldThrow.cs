@@ -95,15 +95,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public void InOwner() {
             if (DownRight) {
-                if (CWRServerConfig.Instance.WeaponOverhaul) {
-                    if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
-                        Projectile.Kill();
-                    }
-                }
-                else {
-                    if (balefulHarvester.type != ItemType<BalefulHarvesterEcType>()) {
-                        Projectile.Kill();
-                    }
+                if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
+                    Projectile.Kill();
+                    return;
                 }
 
                 float rotSpeed = 0.01f + (Projectile.ai[1] * 0.001f);

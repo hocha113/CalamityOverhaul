@@ -3,6 +3,7 @@ using CalamityMod.Items.Armor.Bloodflare;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -20,36 +21,30 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    /// <summary>
-    /// 女妖之爪
-    /// </summary>
-    internal class BansheeHookEcType : EctypeItem, ICWRLoader
+    internal class RBansheeHook : ItemOverride
     {
-        public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
-        private Asset<Texture2D> glow;
+        public override int TargetID => ModContent.ItemType<BansheeHook>();
         internal static int index;
-        void ICWRLoader.LoadAsset() => glow = CWRUtils.GetT2DAsset(CWRConstant.Cay_Wap_Melee + "BansheeHookGlow");
         public override void SetStaticDefaults() {
-            ItemID.Sets.Spears[Type] = true;
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+            ItemID.Sets.Spears[TargetID] = true;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
 
-        public override void SetDefaults() {
-            Item.SetItemCopySD<BansheeHook>();
-            Item.SetKnifeHeld<BansheeHookHeld>();
+        public override void SetDefaults(Item item) {
+            item.SetKnifeHeld<BansheeHookHeld>();
             index = 0;
         }
 
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
-            , Color alphaColor, float rotation, float scale, int whoAmI) {
-            Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation, glow.Value);
+        public override bool? AltFunctionUse(Item item, Player player) => true;
+
+        public override bool? CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BansheeHookHeldAlt>()] == 0;
+
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return ShootFunc(item, player, source, position, velocity, type, damage, knockback);
         }
-
-        public override bool AltFunctionUse(Player player) => true;
-
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BansheeHookHeldAlt>()] == 0;
 
         public static void PlaySouldSound(Player player) {
             SoundStyle sound1 = CommonCalamitySounds.MeatySlashSound;
@@ -74,36 +69,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, index);
             return false;
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return ShootFunc(Item, player, source, position, velocity, type, damage, knockback);
-        }
-    }
-
-    internal class RBansheeHook : ItemOverride
-    {
-        public override int TargetID => ModContent.ItemType<BansheeHook>();
-        public override int ProtogenesisID => ModContent.ItemType<BansheeHookEcType>();
-        public override string TargetToolTipItemName => "BansheeHookEcType";
-        public override void SetStaticDefaults() {
-            ItemID.Sets.Spears[TargetID] = true;
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
-        }
-
-        public override void SetDefaults(Item item) {
-            item.SetKnifeHeld<BansheeHookHeld>();
-            BansheeHookEcType.index = 0;
-        }
-
-        public override bool? AltFunctionUse(Item item, Player player) => true;
-
-        public override bool? CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BansheeHookHeldAlt>()] == 0;
-
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return BansheeHookEcType.ShootFunc(item, player, source, position, velocity, type, damage, knockback);
         }
     }
 
@@ -263,12 +228,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             Vector2 drawOrigin = texture.Size() / 2;
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
                 Color color = Projectile.GetAlpha(Color.Lerp(WeaverBeam.sloudColor1, WeaverBeam.sloudColor2, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
                 if (Projectile.ai[1] > 160) {
                     color.A = 0;
                 }
-                float slp = (0.8f + 0.2f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length);
+                float slp = 0.8f + 0.2f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length;
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation + k * 0.21f, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
             }
             return false;
@@ -303,7 +268,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            if (Owner == null || bansheeHook == null || (bansheeHook.type != ModContent.ItemType<BansheeHookEcType>() && bansheeHook.type != ModContent.ItemType<BansheeHook>())) {
+            if (Owner == null || bansheeHook == null || bansheeHook.type != ModContent.ItemType<BansheeHook>()) {
                 Projectile.Kill();
                 return;
             }
@@ -373,7 +338,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Projectile.localAI[1] = 0;
                     Projectile.netUpdate = true;
                     bansheeHook.CWR().MeleeCharge = 0;
-                    BansheeHookEcType.PlaySouldSound(Owner);
+                    RBansheeHook.PlaySouldSound(Owner);
                 }
             }
         }

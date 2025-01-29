@@ -5,22 +5,11 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class AtaraxiaEcType : EctypeItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Melee + "Ataraxia";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<Ataraxia>();
-            Item.damage = 405;
-            Item.SetKnifeHeld<AtaraxiaHeld>();
-        }
-    }
-
     internal class RAtaraxia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Ataraxia>();
-        public override int ProtogenesisID => ModContent.ItemType<AtaraxiaEcType>();
         public override void SetDefaults(Item item) {
             item.damage = 405;
             item.SetKnifeHeld<AtaraxiaHeld>();

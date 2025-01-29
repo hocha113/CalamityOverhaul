@@ -6,31 +6,18 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    /// <summary>
-    /// 痛击者
-    /// </summary>
-    internal class BasherEcType : EctypeItem
+    internal class RBasher : ItemOverride
     {
-        public override string Texture => CWRConstant.Cay_Wap_Melee + "Basher";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<Basher>();
-            SetDefaultsFunc(Item);
-        }
+        public override int TargetID => ModContent.ItemType<Basher>();
+        public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.UseSound = null;
             Item.useTime = 90;
             Item.damage = 65;
             Item.SetKnifeHeld<BasherHeld>();
         }
-    }
-
-    internal class RBasher : ItemOverride
-    {
-        public override int TargetID => ModContent.ItemType<Basher>();
-        public override int ProtogenesisID => ModContent.ItemType<BasherEcType>();
-        public override void SetDefaults(Item item) => BasherEcType.SetDefaultsFunc(item);
     }
 
     internal class BasherHeld : BaseKnife

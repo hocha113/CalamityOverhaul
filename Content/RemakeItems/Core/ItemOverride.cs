@@ -25,15 +25,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual bool IsVanilla => false;
         /// <summary>
-        /// 用于在本地化中拉取描述，如果为默认的空字符串则不会启动拉取功能
-        /// </summary>
-        public virtual string TargetToolTipItemName => "";
-        /// <summary>
-        /// 本模组自身对于的物品副本ID，这个字段一般用于重写后指向本模组程序集内的物品ID，默认指向<see cref="SetReadonlyTargetID"/>，而非0值，
-        /// <br/>当重写值为0后，该物品将不参与配方替换，但不建议重写该属性为0来达到这个效果，而是重写<see cref="FormulaSubstitution"/>为<see langword="false"/>来实现想要的
-        /// </summary>
-        public virtual int ProtogenesisID => SetReadonlyTargetID;
-        /// <summary>
         /// 是否参与配方替换，默认为<see langword="true"/>，如果<see cref="IsVanilla"/>为<see langword="true"/>，那么该属性自动返回<see langword="false"/>
         /// </summary>
         public virtual bool FormulaSubstitution => !IsVanilla;
@@ -54,13 +45,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText DisplayName {
             get {
-                int id = ProtogenesisID;
-                if (id == ItemID.None) {
-                    id = TargetID;
-                }
-                LocalizedText content = id < ItemID.Count?
-                    Language.GetText("ItemName." + ItemID.Search.GetName(id))
-                    : ItemLoader.GetItem(id).GetLocalization("DisplayName");
+                LocalizedText content = TargetID < ItemID.Count?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
                 return this.GetLocalization(nameof(DisplayName), () => content.Value);
             }
         }
@@ -69,13 +56,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText Tooltip {
             get {
-                int id = ProtogenesisID;
-                if (id == ItemID.None) {
-                    id = TargetID;
-                }
-                LocalizedText content = id < ItemID.Count ?
-                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(id))
-                    : ItemLoader.GetItem(id).GetLocalization("Tooltip");
+                LocalizedText content = TargetID < ItemID.Count ?
+                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }
         }
@@ -98,22 +81,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";
                     CWRLoad.RecoverUnloadedItemDic.Add(key, rItem.TargetID);
                 }
-            }
-        }
-        /// <summary>
-        /// 修改这个物品的名字
-        /// </summary>
-        /// <param name="rItem"></param>
-        /// <param name="setItem"></param>
-        public void SetNameOverride(Item setItem) {
-            if (TargetToolTipItemName == "") {
-                return;
-            }
-
-            string langKey = $"Mods.CalamityOverhaul.Items.{TargetToolTipItemName}.DisplayName";
-            string newName = Language.GetTextValue(langKey);
-            if (newName != langKey) {
-                setItem.SetNameOverride(newName);
             }
         }
         /// <summary>

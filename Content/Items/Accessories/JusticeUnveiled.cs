@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -139,7 +140,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
         public override void AI() => Projectile.Center = Owner.GetPlayerStabilityCenter();
         public override bool PreDraw(ref Color lightColor) {
-            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Owner, 255, Projectile.timeLeft / 300f);
+            RDefiledGreatsword.DrawRageEnergyChargeBar(Owner, 255, Projectile.timeLeft / 300f);
             return false;
         }
     }

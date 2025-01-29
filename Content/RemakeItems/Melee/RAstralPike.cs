@@ -13,25 +13,19 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    /// <summary>
-    /// 幻星长矛
-    /// </summary>
-    internal class AstralPikeEcType : EctypeItem
+    internal class RAstralPike : ItemOverride
     {
-        public override string Texture => CWRConstant.Cay_Wap_Melee + "AstralPike";
+        public override int TargetID => ModContent.ItemType<AstralPike>();
         public const int InTargetProjToLang = 1220;
         public const int ShootPeriod = 2;
         internal static int index;
-        public override void SetStaticDefaults() => ItemID.Sets.Spears[Item.type] = true;
-        public override void SetDefaults() {
-            Item.SetItemCopySD<AstralPike>();
-            Item.SetKnifeHeld<AstralPikeHeld>();
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<AstralPikeHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return ShootFunc(item, player, source, position, velocity, type, damage, knockback);
         }
-
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 25;
-
         public static bool ShootFunc(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (++index > 3) {
@@ -39,23 +33,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, index);
             return false;
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return ShootFunc(Item, player, source, position, velocity, type, damage, knockback);
-        }
-    }
-
-    internal class RAstralPike : ItemOverride
-    {
-        public override int TargetID => ModContent.ItemType<AstralPike>();
-        public override int ProtogenesisID => ModContent.ItemType<AstralPikeEcType>();
-        public override string TargetToolTipItemName => "AstralPikeEcType";
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<AstralPikeHeld>();
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return AstralPikeEcType.ShootFunc(item, player, source, position, velocity, type, damage, knockback);
         }
     }
 
@@ -117,7 +94,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.Item9 with { Pitch = -0.2f }, Projectile.Center);
             const float sengs = 0.25f;
             Vector2 spanPos = Projectile.Center + AbsolutelyShootVelocity * 0.5f;
-            Vector2 targetPos = AbsolutelyShootVelocity.UnitVector() * AstralPikeEcType.InTargetProjToLang + Projectile.Center;
+            Vector2 targetPos = AbsolutelyShootVelocity.UnitVector() * RAstralPike.InTargetProjToLang + Projectile.Center;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, spanPos, AbsolutelyShootVelocity.RotatedBy(sengs - sengs * i)
                     , ModContent.ProjectileType<AstralPikeBeam>(), Projectile.damage, Projectile.knockBack * 0.25f, Projectile.owner, targetPos.X, targetPos.Y);
