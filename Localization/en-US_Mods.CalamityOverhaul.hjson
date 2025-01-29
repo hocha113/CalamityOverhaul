@@ -7470,4 +7470,13 @@ RemakeItems: {
 		DisplayName: Orange Zapinator
 		Tooltip: This is your lucky light
 	}
+
+	REviscerator: {
+		DisplayName: Eviscerator
+		Tooltip:
+			'''
+			Converts musket balls into slow-flying blood coagulation bullets.  
+			"From the Xenos, to annihilate the Xenos."
+			'''
+	}
 }

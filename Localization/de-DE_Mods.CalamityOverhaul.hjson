@@ -7424,4 +7424,13 @@ RemakeItems: {
 		DisplayName: Orangener Zapinator
 		Tooltip: Das ist dein Glückslicht
 	}
+
+	REviscerator: {
+		DisplayName: Der Ausweider
+		Tooltip:
+			'''
+			Wandelt Musketenkugeln in langsam fliegende Blutgerinnsel um
+			"Von Aliens, um Aliens zu vernichten"
+			'''
+	}
 }

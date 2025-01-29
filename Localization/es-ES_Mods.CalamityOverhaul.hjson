@@ -7506,4 +7506,13 @@ RemakeItems: {
 		DisplayName: Zapinador naranja
 		Tooltip: Esta es tu luz de la suerte
 	}
+
+	REviscerator: {
+		DisplayName: El Eviscerador
+		Tooltip:
+			'''
+			Convierte balas de mosquete en proyectiles de sangre de vuelo lento
+			"De los alienígenas, para exterminar alienígenas"
+			'''
+	}
 }

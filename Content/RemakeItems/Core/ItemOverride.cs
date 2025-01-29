@@ -54,11 +54,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     content = Language.GetText(path);
                 }
                 else {
-                    path = $"Mods.CalamityOverhaul.Items.{ItemLoader.GetItem(TargetID).Name}EcType.DisplayName";
-                    content = Language.GetText(path);
-                    if (content.Value == path) {
-                        content = ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
-                    }
+                    content = ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
                 }
                 return this.GetLocalization(nameof(DisplayName), () => content.Value);
             }
@@ -71,22 +67,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 LocalizedText content;
                 string path;
                 if (TargetID < ItemID.Count) {
-                    path = $"Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_{ItemID.Search.GetName(TargetID)}_Text";
+                    path = "ItemTooltip." + ItemID.Search.GetName(TargetID);
                     content = Language.GetText(path);
-                    if (content.Value == path) {
-                        path = "ItemTooltip." + ItemID.Search.GetName(TargetID);
-                        content = Language.GetText(path);
-                    }
                     if (content.Value == path) {
                         return this.GetLocalization(nameof(Tooltip), () => "");
                     }
                 }
                 else {
-                    path = $"Mods.CalamityOverhaul.Items.{ItemLoader.GetItem(TargetID).Name}EcType.Tooltip";
-                    content = Language.GetText(path);
-                    if (content.Value == path) {
-                        content = ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
-                    }
+                    content = ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
                 }
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }

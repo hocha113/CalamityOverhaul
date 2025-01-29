@@ -7439,4 +7439,13 @@ RemakeItems: {
 		DisplayName: 橙冲击枪
 		Tooltip: 这是你的幸运光
 	}
+
+	REviscerator: {
+		DisplayName: 开膛者
+		Tooltip:
+			'''
+			将火枪子弹转化为缓慢飞行的血凝弹
+			"来自异形，诛灭异形"
+			'''
+	}
 }

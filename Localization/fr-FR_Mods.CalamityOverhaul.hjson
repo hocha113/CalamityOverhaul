@@ -7450,4 +7450,13 @@ RemakeItems: {
 		DisplayName: Zapinator orange
 		Tooltip: Voici votre lumière chanceuse
 	}
+
+	REviscerator: {
+		DisplayName: L'Éviscérateur
+		Tooltip:
+			'''
+			Transforme les balles de mousquet en projectiles de sang volant lentement
+			"Par des aliens, pour exterminer des aliens"
+			'''
+	}
 }
