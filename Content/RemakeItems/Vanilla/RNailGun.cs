@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.damage = 30;
             item.crit = 16;
         }
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_NailGun_Text"));
+        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

@@ -463,7 +463,8 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText($"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip"));
+                string path = $"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip";
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText(path));
             }
         }
 
