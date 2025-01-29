@@ -4024,7 +4024,7 @@ RemakeItems: {
 			'''
 	}
 
-	RSHPC: {
+	SHPCOverride: {
 		DisplayName: SHPC
 		Tooltip:
 			'''
