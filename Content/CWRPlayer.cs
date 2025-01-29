@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
-                string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
+                string text = CWRMod.ItemIDToOverrideDic.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
             }
 

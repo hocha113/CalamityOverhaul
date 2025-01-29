@@ -30,12 +30,7 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static LocalizedText SafeGetItemName<T>() where T : ModItem {
-            Type type = typeof(T);
-            return type.BaseType == typeof(EctypeItem)
-                ? Language.GetText($"Mods.CalamityOverhaul.Items.{(Activator.CreateInstance(type) as EctypeItem)?.Name}.DisplayName")
-                : GetItemName<T>();
-        }
+        public static LocalizedText SafeGetItemName<T>() where T : ModItem => GetItemName<T>();
 
         public static LocalizedText SafeGetItemName(int id) {
             ModItem item = ItemLoader.GetItem(id);

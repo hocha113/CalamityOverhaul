@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.TreasureBags.MiscGrabBags;
-using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Tools;
 using Terraria;
 using Terraria.ModLoader;
 

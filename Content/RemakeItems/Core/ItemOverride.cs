@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         protected override void Register() {
             if (CanLoad() && TargetID > ItemID.None) {
-                CWRMod.RItemInstances.Add(this);
+                CWRMod.ItemOverrideInstances.Add(this);
             }
         }
 
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// 加载副本物品的补救数据
         /// </summary>
         public static void LoadEcTypeUnLoadData() {
-            foreach (var rItem in CWRMod.RItemInstances) {
+            foreach (var rItem in CWRMod.ItemOverrideInstances) {
                 Item ectypeItem = new Item(rItem.TargetID);
                 if (ectypeItem.ModItem != null) {
                     string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";

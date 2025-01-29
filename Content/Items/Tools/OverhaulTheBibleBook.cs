@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items
+namespace CalamityOverhaul.Content.Items.Tools
 {
     internal class OverhaulTheBibleBook : ModItem, ICWRLoader
     {
