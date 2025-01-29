@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraSlashDefault : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaOverride>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Murasama>();
         public ref int hitCooldown => ref Owner.Calamity().murasamaHitCooldown;
         public bool onspan;
         public bool CanAttemptDead;
@@ -62,9 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public static float GetMuraSizeInMeleeSengs(Player player) {
             Item mura = player.GetItem();
-            if ((mura.type == ModContent.ItemType<MurasamaOverride>()
-                || mura.type == ModContent.ItemType<Murasama>())
-                && mura.type != ItemID.None) {
+            if (mura.type == ModContent.ItemType<Murasama>()) {
                 float meleeSizeSengs = player.GetAdjustedItemScale(mura);
                 if (meleeSizeSengs > 1.5f) {
                     meleeSizeSengs = 1.5f;

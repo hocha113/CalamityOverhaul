@@ -3958,7 +3958,7 @@ RemakeItems: {
 			'''
 	}
 
-	RMurasama: {
+	MurasamaOverride: {
 		DisplayName: 鬼妖村正
 		Tooltip:
 			'''

@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -496,7 +497,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRMod.RItemIndsDict[item.type].Tooltip);
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText($"Mods.CalamityOverhaul.RemakeItems.{CWRMod.RItemIndsDict[item.type].GetType().Name}.Tooltip"));
             }
         }
 

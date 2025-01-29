@@ -62,20 +62,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 initialize = true;
             }
 
-            bool heldBool1 = murasama.type != ModContent.ItemType<Murasama>();
-            bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaOverride>();
-            if (CWRServerConfig.Instance.WeaponOverhaul) {//如果开启了强制替换
-                if (heldBool1) {//只需要判断原版的物品
-                    Projectile.Kill();
-                    return false;
-                }
+            if (murasama.type != ModContent.ItemType<Murasama>()) {//只需要判断原版的物品
+                Projectile.Kill();
+                return false;
             }
-            else {//如果没有开启强制替换
-                if (heldBool2) {
-                    Projectile.Kill();
-                    return false;
-                }
-            }
+
             Owner.CWR().HeldMurasamaBool = true;
             if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraSlashDefault>()] != 0
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0

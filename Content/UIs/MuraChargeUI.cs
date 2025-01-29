@@ -100,9 +100,7 @@ namespace CalamityOverhaul.Content.UIs
         public override void Load() => Instance = this;
 
         public override void Update() {
-            if (murasama.type == ItemID.None
-                || (murasama != null && murasama.type != ModContent.ItemType<Murasama>()
-                && murasama.type != ModContent.ItemType<MurasamaOverride>())) {
+            if (murasama == null || murasama.type != ModContent.ItemType<Murasama>()) {
                 murasamaHeld = null;
                 return;
             }

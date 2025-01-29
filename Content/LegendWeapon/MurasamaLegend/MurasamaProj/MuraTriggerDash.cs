@@ -54,17 +54,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.CWR().RisingDragonCharged = 0;
             }
 
-            if (CWRServerConfig.Instance.WeaponOverhaul) {
-                if (murasama.type != ModContent.ItemType<Murasama>()) {
-                    Projectile.Kill();
-                    return;
-                }
-            }
-            else {
-                if (murasama.type != ModContent.ItemType<MurasamaOverride>()) {
-                    Projectile.Kill();
-                    return;
-                }
+            if (murasama.type != ModContent.ItemType<Murasama>()) {
+                Projectile.Kill();
+                return;
             }
 
             if (Projectile.ai[2] > 0) {

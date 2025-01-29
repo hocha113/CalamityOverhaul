@@ -3965,7 +3965,7 @@ RemakeItems: {
 			'''
 	}
 
-	RMurasama: {
+	MurasamaOverride: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
