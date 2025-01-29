@@ -63,10 +63,12 @@ namespace CalamityOverhaul
             }
 
             {
-                RItemInstances = VaultUtils.GetSubclassInstances<BaseRItem>();
-                RItemInstances.RemoveAll(inds => !inds.CanLoad() || inds.TargetID == 0);
                 foreach (var rItem in RItemInstances) {
                     rItem.SetReadonlyTargetID = rItem.TargetID;
+                    if (rItem.CanLoadLocalization) {
+                        _ = rItem.DisplayName;
+                        _ = rItem.Tooltip;
+                    }
                 }
             }
 

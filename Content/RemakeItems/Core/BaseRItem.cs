@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -48,15 +49,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 是否加载这个重制节点的本地化信息
         /// </summary>
-        public virtual bool CanLoadLocalization => TargetToolTipItemName != "";
+        public virtual bool CanLoadLocalization => TargetToolTipItemName != "" && !IsVanilla;
         /// <summary>
         /// 名字
         /// </summary>
         public virtual LocalizedText DisplayName {
             get {
-                LocalizedText content = TargetID < ItemID.Count?
-                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
-                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
+                LocalizedText content = ProtogenesisID < ItemID.Count?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(ProtogenesisID))
+                    : ItemLoader.GetItem(ProtogenesisID).GetLocalization("DisplayName");
                 return this.GetLocalization(nameof(DisplayName), () => content.Value);
             }
         }
@@ -65,21 +66,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText Tooltip {
             get {
-                LocalizedText content = TargetID < ItemID.Count ?
-                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(TargetID))
-                    : ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
+                LocalizedText content = ProtogenesisID < ItemID.Count ?
+                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(ProtogenesisID))
+                    : ItemLoader.GetItem(ProtogenesisID).GetLocalization("Tooltip");
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }
         }
 
-        public override void Load() {
-            if (CanLoadLocalization) {
-                _ = DisplayName;
-                _ = Tooltip;
+        protected override void Register() {
+            if (CanLoad() && TargetID > ItemID.None) {
+                CWRMod.RItemInstances.Add(this);
             }
         }
-
-        protected override void Register() { }
 
         public virtual bool CanLoad() => true;
 
