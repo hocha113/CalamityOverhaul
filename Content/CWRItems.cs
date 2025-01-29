@@ -433,17 +433,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public static void SetNameOverride(BaseRItem rItem, Item setItem) {
-            if (rItem.TargetToolTipItemName == "") {
-                return;
-            }
-            string langKey = $"Mods.CalamityOverhaul.Items.{rItem.TargetToolTipItemName}.DisplayName";
-            string newName = Language.GetTextValue(langKey);
-            if (newName != langKey) {
-                setItem.SetNameOverride(newName);
-            }
-        }
-
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {
             bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
 

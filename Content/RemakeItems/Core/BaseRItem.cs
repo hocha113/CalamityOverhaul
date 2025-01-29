@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -55,6 +56,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             Condition condition = new Condition(CWRLocText.GetTextKey("LoadItemRecipe_Condition_Text1"), conditiontfunc);
             Recipe.Create(recipeTargetType).AddIngredient(TargetID).AddCondition(condition).Register();
             Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
+        }
+        /// <summary>
+        /// 修改这个物品的名字
+        /// </summary>
+        /// <param name="rItem"></param>
+        /// <param name="setItem"></param>
+        public void SetNameOverride(Item setItem) {
+            if (TargetToolTipItemName == "") {
+                return;
+            }
+
+            string langKey = $"Mods.CalamityOverhaul.Items.{TargetToolTipItemName}.DisplayName";
+            string newName = Language.GetTextValue(langKey);
+            if (newName != langKey) {
+                setItem.SetNameOverride(newName);
+            }
         }
         /// <summary>
         /// 设置静态数据，在修改副本被加载时设置一次

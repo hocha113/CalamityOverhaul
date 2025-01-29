@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Gel;
             item.SetCartridgeGun<DeadSunsWindHeldProj>(120);
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;
-            CWRUtils.EasySetLocalTextNameOverride(item, "DeadSunsWindEcType");
         }
     }
 }
