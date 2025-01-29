@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 是否加载这个重制节点的本地化信息
         /// </summary>
-        public virtual bool CanLoadLocalization => TargetToolTipItemName != "" && !IsVanilla;
+        public virtual bool CanLoadLocalization => TargetToolTipItemName != "";
         /// <summary>
         /// 名字
         /// </summary>
