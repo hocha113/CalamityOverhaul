@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RHellionFlowerSpear : BaseRItem
+    internal class RHellionFlowerSpear : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HellionFlowerSpear>();
         public override int ProtogenesisID => ModContent.ItemType<HellionFlowerSpearEcType>();

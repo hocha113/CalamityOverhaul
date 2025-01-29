@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RForbiddenOathblade : BaseRItem
+    internal class RForbiddenOathblade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ForbiddenOathblade>();
         public override int ProtogenesisID => ModContent.ItemType<ForbiddenOathbladeEcType>();

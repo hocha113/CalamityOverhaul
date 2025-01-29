@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RAvalanche : BaseRItem
+    internal class RAvalanche : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Avalanche>();
         public override int ProtogenesisID => ModContent.ItemType<AvalancheEcType>();

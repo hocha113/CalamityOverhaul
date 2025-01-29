@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSepticSkewer : BaseRItem
+    internal class RSepticSkewer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SepticSkewer>();
         public override int ProtogenesisID => ModContent.ItemType<SepticSkewerEcType>();

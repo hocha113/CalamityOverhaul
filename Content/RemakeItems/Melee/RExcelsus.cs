@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RExcelsus : BaseRItem
+    internal class RExcelsus : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Excelsus>();
         public override int ProtogenesisID => ModContent.ItemType<ExcelsusEcType>();

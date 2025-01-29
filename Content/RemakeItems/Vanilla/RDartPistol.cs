@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDartPistol : BaseRItem
+    internal class RDartPistol : ItemOverride
     {
         public override int TargetID => ItemID.DartPistol;
         public override bool IsVanilla => true;

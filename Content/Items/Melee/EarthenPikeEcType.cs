@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool AltFunctionUse(Player player) => true;
     }
 
-    internal class REarthenPike : BaseRItem
+    internal class REarthenPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EarthenPike>();
         public override int ProtogenesisID => ModContent.ItemType<EarthenPikeEcType>();

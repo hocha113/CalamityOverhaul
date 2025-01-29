@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RGeliticBlade : BaseRItem
+    internal class RGeliticBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GeliticBlade>();
         public override int ProtogenesisID => ModContent.ItemType<GeliticBladeEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RCryophobia : BaseRItem
+    internal class RCryophobia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Cryophobia>();
         public override int ProtogenesisID => ModContent.ItemType<CryophobiaEcType>();

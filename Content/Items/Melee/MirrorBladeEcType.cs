@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RMirrorBlade : BaseRItem
+    internal class RMirrorBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MirrorBlade>();
         public override int ProtogenesisID => ModContent.ItemType<MirrorBladeEcType>();

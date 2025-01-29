@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RGalactusBlade : BaseRItem
+    internal class RGalactusBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GalactusBlade>();
         public override int ProtogenesisID => ModContent.ItemType<GalactusBladeEcType>();

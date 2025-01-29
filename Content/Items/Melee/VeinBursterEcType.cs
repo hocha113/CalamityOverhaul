@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RVeinBurster : BaseRItem
+    internal class RVeinBurster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VeinBurster>();
         public override int ProtogenesisID => ModContent.ItemType<VeinBursterEcType>();

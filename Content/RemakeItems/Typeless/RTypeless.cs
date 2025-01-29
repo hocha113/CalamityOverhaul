@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 星光之眼
     /// </summary>
-    internal class RLunicEye : BaseRItem
+    internal class RLunicEye : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<LunicEye>();
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 马格努斯之眼
     /// </summary>
-    internal class REyeofMagnus : BaseRItem
+    internal class REyeofMagnus : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<EyeofMagnus>();
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 美学魔杖
     /// </summary>
-    internal class RAestheticus : BaseRItem
+    internal class RAestheticus : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<Aestheticus>();

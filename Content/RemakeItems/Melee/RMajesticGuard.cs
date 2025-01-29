@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RMajesticGuard : BaseRItem
+    internal class RMajesticGuard : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MajesticGuard>();
         public override int ProtogenesisID => ModContent.ItemType<MajesticGuardEcType>();

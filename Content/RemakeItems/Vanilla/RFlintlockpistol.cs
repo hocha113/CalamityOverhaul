@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RFlintlockpistol : BaseRItem
+    internal class RFlintlockpistol : ItemOverride
     {
         public override int TargetID => ItemID.FlintlockPistol;
         public override bool FormulaSubstitution => false;

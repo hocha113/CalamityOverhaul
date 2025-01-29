@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RNitroExpressRifle : BaseRItem
+    internal class RNitroExpressRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<NitroExpressRifle>();
         public override int ProtogenesisID => ModContent.ItemType<NitroExpressRifleEcType>();

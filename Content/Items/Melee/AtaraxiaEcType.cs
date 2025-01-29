@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RAtaraxia : BaseRItem
+    internal class RAtaraxia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Ataraxia>();
         public override int ProtogenesisID => ModContent.ItemType<AtaraxiaEcType>();

@@ -28,10 +28,10 @@ namespace CalamityOverhaul
         internal static bool Suitableversion_improveGame { get; private set; }
         internal static List<Mod> LoadMods { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
-        internal static List<BaseRItem> RItemInstances { get; private set; } = [];
+        internal static List<ItemOverride> RItemInstances { get; private set; } = [];
         internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
         internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
-        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = [];
+        internal static Dictionary<int, ItemOverride> RItemIndsDict { get; private set; } = [];
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
@@ -74,7 +74,7 @@ namespace CalamityOverhaul
 
             {
                 RItemIndsDict = [];
-                foreach (BaseRItem ritem in RItemInstances) {
+                foreach (ItemOverride ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
                 Instance.Logger.Info($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict");

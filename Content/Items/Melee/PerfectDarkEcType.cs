@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RPerfectDark : BaseRItem
+    internal class RPerfectDark : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PerfectDark>();
         public override int ProtogenesisID => ModContent.ItemType<PerfectDarkEcType>();

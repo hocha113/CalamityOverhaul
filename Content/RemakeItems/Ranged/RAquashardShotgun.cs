@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAquashardShotgun : BaseRItem
+    internal class RAquashardShotgun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AquashardShotgun>();
         public override int ProtogenesisID => ModContent.ItemType<AquashardShotgunEcType>();

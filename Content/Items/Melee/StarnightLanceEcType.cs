@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RStarnightLance : BaseRItem
+    internal class RStarnightLance : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StarnightLance>();
         public override int ProtogenesisID => ModContent.ItemType<StarnightLanceEcType>();

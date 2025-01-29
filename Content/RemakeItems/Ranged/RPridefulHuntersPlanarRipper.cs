@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPridefulHuntersPlanarRipper : BaseRItem
+    internal class RPridefulHuntersPlanarRipper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PridefulHuntersPlanarRipper>();
         public override int ProtogenesisID => ModContent.ItemType<PridefulHuntersPlanarRipperEcType>();

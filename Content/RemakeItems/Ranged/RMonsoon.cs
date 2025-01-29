@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMonsoon : BaseRItem
+    internal class RMonsoon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Monsoon>();
         public override int ProtogenesisID => ModContent.ItemType<MonsoonEcType>();

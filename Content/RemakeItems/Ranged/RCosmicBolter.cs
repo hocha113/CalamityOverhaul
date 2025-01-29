@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RCosmicBolter : BaseRItem
+    internal class RCosmicBolter : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VernalBolter>();
         public override int ProtogenesisID => ModContent.ItemType<CosmicBolterEcType>();

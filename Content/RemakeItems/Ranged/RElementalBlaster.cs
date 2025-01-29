@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RElementalBlaster : BaseRItem
+    internal class RElementalBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ElementalBlaster>();
         public override int ProtogenesisID => ModContent.ItemType<ElementalBlasterEcType>();

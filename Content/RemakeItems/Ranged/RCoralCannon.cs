@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RCoralCannon : BaseRItem
+    internal class RCoralCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CoralCannon>();
         public override int ProtogenesisID => ModContent.ItemType<CoralCannonEcType>();

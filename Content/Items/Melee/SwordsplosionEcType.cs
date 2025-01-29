@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RSwordsplosion : BaseRItem
+    internal class RSwordsplosion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Swordsplosion>();
         public override int ProtogenesisID => ModContent.ItemType<SwordsplosionEcType>();

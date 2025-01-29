@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 罗马短剑
     /// </summary>
-    internal class RGladius : BaseRItem
+    internal class RGladius : ItemOverride
     {
         public override int TargetID => ItemID.Gladius;
         public override bool IsVanilla => true;

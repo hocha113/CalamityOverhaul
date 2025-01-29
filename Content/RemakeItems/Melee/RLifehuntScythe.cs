@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RLifehuntScythe : BaseRItem
+    internal class RLifehuntScythe : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<LifehuntScythe>();
         public override int ProtogenesisID => ModContent.ItemType<LifehuntScytheEcType>();

@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         }
     }
 
-    internal class RMurasama : BaseRItem
+    internal class RMurasama : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Murasama>();
         public override int ProtogenesisID => ModContent.ItemType<MurasamaEcType>();

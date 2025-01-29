@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFlakToxicannon : BaseRItem
+    internal class RFlakToxicannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FlakToxicannon>();
         public override int ProtogenesisID => ModContent.ItemType<FlakToxicannonEcType>();

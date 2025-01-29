@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RTaintedBlade : BaseRItem
+    internal class RTaintedBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TaintedBlade>();
         public override int ProtogenesisID => ModContent.ItemType<TaintedBladeEcType>();

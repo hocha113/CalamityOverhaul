@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 玛瑙爆破枪
     /// </summary>
-    internal class ROnyxBlaster : BaseRItem
+    internal class ROnyxBlaster : ItemOverride
     {
         public override int TargetID => ItemID.OnyxBlaster;
         public override bool IsVanilla => true;

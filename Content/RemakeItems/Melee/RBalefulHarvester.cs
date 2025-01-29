@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBalefulHarvester : BaseRItem
+    internal class RBalefulHarvester : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BalefulHarvester>();
         public override int ProtogenesisID => ModContent.ItemType<BalefulHarvesterEcType>();

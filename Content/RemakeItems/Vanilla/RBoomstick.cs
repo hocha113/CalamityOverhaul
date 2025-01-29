@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 三发猎枪
     /// </summary>
-    internal class RBoomstick : BaseRItem
+    internal class RBoomstick : ItemOverride
     {
         public override int TargetID => ItemID.Boomstick;
         public override bool FormulaSubstitution => false;

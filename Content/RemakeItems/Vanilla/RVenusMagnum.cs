@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RVenusMagnum : BaseRItem
+    internal class RVenusMagnum : ItemOverride
     {
         public override int TargetID => ItemID.VenusMagnum;
         public override bool FormulaSubstitution => false;

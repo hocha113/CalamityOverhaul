@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheEnforcer : BaseRItem
+    internal class RTheEnforcer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheEnforcer>();
         public override int ProtogenesisID => ModContent.ItemType<TheEnforcerEcType>();

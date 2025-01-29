@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAuralis : BaseRItem
+    internal class RAuralis : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Auralis>();
         public override int ProtogenesisID => ModContent.ItemType<AuralisEcType>();

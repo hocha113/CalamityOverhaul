@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSandstormGun : BaseRItem
+    internal class RSandstormGun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SandstormGun>();
         public override int ProtogenesisID => ModContent.ItemType<SandstormGunEcType>();

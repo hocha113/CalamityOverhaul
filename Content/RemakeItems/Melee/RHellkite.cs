@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RHellkite : BaseRItem
+    internal class RHellkite : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Hellkite>();
         public override int ProtogenesisID => ModContent.ItemType<HellkiteEcType>();

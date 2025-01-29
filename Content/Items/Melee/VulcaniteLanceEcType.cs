@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RVulcaniteLance : BaseRItem
+    internal class RVulcaniteLance : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VulcaniteLance>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<VulcaniteLanceHeld>();

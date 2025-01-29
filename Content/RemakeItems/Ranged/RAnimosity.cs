@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAnimosity : BaseRItem
+    internal class RAnimosity : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Animosity>();
         public override int ProtogenesisID => ModContent.ItemType<AnimosityEcType>();

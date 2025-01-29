@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RVirulence : BaseRItem
+    internal class RVirulence : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Virulence>();
         public override int ProtogenesisID => ModContent.ItemType<VirulenceEcType>();

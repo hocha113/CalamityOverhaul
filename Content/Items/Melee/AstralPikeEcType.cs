@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RAstralPike : BaseRItem
+    internal class RAstralPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AstralPike>();
         public override int ProtogenesisID => ModContent.ItemType<AstralPikeEcType>();

@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RChlorophyteShotbow : BaseRItem
+    internal class RChlorophyteShotbow : ItemOverride
     {
         public override int TargetID => ItemID.ChlorophyteShotbow;
         public override bool IsVanilla => true;

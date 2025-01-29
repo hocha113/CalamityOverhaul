@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStarmada : BaseRItem
+    internal class RStarmada : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Starmada>();
         public override int ProtogenesisID => ModContent.ItemType<StarmadaEcType>();

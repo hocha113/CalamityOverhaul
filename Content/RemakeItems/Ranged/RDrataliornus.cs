@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDrataliornus : BaseRItem
+    internal class RDrataliornus : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Drataliornus>();
         public override int ProtogenesisID => ModContent.ItemType<DrataliornusEcType>();

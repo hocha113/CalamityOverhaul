@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RFlamarang : BaseRItem
+    internal class RFlamarang : ItemOverride
     {
         public override int TargetID => ItemID.Flamarang;
         public override bool IsVanilla => true;

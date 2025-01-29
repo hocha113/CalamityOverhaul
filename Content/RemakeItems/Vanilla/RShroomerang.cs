@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 蘑菇回旋镖
     /// </summary>
-    internal class RShroomerang : BaseRItem
+    internal class RShroomerang : ItemOverride
     {
         public override int TargetID => ItemID.Shroomerang;
         public override bool IsVanilla => true;

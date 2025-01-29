@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheDarkMaster : BaseRItem
+    internal class RTheDarkMaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheDarkMaster>();
         public override int ProtogenesisID => ModContent.ItemType<TheDarkMasterEcType>();

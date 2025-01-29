@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFungicide : BaseRItem
+    internal class RFungicide : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Fungicide>();
         public override int ProtogenesisID => ModContent.ItemType<FungicideEcType>();

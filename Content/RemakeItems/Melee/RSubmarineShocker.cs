@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSubmarineShocker : BaseRItem
+    internal class RSubmarineShocker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SubmarineShocker>();
         public override int ProtogenesisID => ModContent.ItemType<SubmarineShockerEcType>();

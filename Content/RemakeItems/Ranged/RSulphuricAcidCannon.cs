@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSulphuricAcidCannon : BaseRItem
+    internal class RSulphuricAcidCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SulphuricAcidCannon>();
         public override int ProtogenesisID => ModContent.ItemType<SulphuricAcidCannonEcType>();

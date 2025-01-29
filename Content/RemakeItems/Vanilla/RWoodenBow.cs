@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RWoodenBow : BaseRItem
+    internal class RWoodenBow : ItemOverride
     {
         public override int TargetID => ItemID.WoodenBow;
         public override bool IsVanilla => true;

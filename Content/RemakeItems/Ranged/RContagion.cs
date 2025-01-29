@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RContagion : BaseRItem
+    internal class RContagion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Contagion>();
         public override int ProtogenesisID => ModContent.ItemType<ContagionEcType>();

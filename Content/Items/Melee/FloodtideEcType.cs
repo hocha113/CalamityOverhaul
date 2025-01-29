@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RFloodtide : BaseRItem
+    internal class RFloodtide : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Floodtide>();
         public override int ProtogenesisID => ModContent.ItemType<FloodtideEcType>();

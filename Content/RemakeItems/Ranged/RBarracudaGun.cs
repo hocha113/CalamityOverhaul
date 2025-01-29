@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RBarracudaGun : BaseRItem
+    internal class RBarracudaGun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BarracudaGun>();
         public override int ProtogenesisID => ModContent.ItemType<BarracudaGunEcType>();

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 骸骨弓
     /// </summary>
-    internal class RMarrow : BaseRItem
+    internal class RMarrow : ItemOverride
     {
         public override int TargetID => ItemID.Marrow;
         public override bool IsVanilla => true;

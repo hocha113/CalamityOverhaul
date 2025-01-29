@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RNeedler : BaseRItem
+    internal class RNeedler : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Needler>();
         public override int ProtogenesisID => ModContent.ItemType<NeedlerEcType>();

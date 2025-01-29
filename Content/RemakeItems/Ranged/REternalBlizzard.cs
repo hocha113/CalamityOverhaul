@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class REternalBlizzard : BaseRItem
+    internal class REternalBlizzard : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EternalBlizzard>();
         public override int ProtogenesisID => ModContent.ItemType<EternalBlizzardEcType>();

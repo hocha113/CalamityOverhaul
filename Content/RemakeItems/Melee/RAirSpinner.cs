@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAirSpinner : BaseRItem
+    internal class RAirSpinner : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AirSpinner>();
         public override int ProtogenesisID => ModContent.ItemType<AirSpinnerEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RClaretCannon : BaseRItem
+    internal class RClaretCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ClaretCannon>();
         public override int ProtogenesisID => ModContent.ItemType<ClaretCannonEcType>();

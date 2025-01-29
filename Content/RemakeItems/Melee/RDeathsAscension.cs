@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDeathsAscension : BaseRItem
+    internal class RDeathsAscension : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeathsAscension>();
         public override int ProtogenesisID => ModContent.ItemType<DeathsAscensionEcType>();

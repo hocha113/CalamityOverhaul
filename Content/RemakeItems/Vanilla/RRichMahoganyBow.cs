@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 红木弓
     /// </summary>
-    internal class RRichMahoganyBow : BaseRItem
+    internal class RRichMahoganyBow : ItemOverride
     {
         public override int TargetID => ItemID.RichMahoganyBow;
         public override bool IsVanilla => true;

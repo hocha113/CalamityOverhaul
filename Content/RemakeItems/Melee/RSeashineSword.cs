@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSeashineSword : BaseRItem
+    internal class RSeashineSword : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SeashineSword>();
         public override int ProtogenesisID => ModContent.ItemType<SeashineSwordEcType>();

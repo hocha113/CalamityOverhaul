@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RBansheeHook : BaseRItem
+    internal class RBansheeHook : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BansheeHook>();
         public override int ProtogenesisID => ModContent.ItemType<BansheeHookEcType>();

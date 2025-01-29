@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSeadragon : BaseRItem
+    internal class RSeadragon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Seadragon>();
         public override int ProtogenesisID => ModContent.ItemType<SeadragonEcType>();

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDragonRage : BaseRItem
+    internal class RDragonRage : ItemOverride
     {
         private int Level;
         private int LevelAlt;

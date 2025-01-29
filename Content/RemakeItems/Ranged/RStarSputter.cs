@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStarSputter : BaseRItem
+    internal class RStarSputter : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StarSputter>();
         public override int ProtogenesisID => ModContent.ItemType<StarSputterEcType>();

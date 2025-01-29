@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAuroraBlazer : BaseRItem
+    internal class RAuroraBlazer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AuroraBlazer>();
         public override int ProtogenesisID => ModContent.ItemType<AuroraBlazerEcType>();

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RBlossomFlux : BaseRItem
+    internal class RBlossomFlux : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlossomFlux>();
         public override int ProtogenesisID => ModContent.ItemType<BlossomFluxEcType>();

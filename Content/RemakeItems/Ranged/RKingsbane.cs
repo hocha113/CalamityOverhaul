@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RKingsbane : BaseRItem
+    internal class RKingsbane : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Kingsbane>();
         public override int ProtogenesisID => ModContent.ItemType<KingsbaneEctype>();

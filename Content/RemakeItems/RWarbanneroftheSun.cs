@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RWarbanneroftheSun : BaseRItem
+    internal class RWarbanneroftheSun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WarbanneroftheSun>();
         public override bool DrawingInfo => false;

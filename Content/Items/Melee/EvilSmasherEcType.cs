@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback) => knockback *= 1f + (player.Calamity().evilSmasherBoost * 0.1f);
     }
 
-    internal class REvilSmasher : BaseRItem
+    internal class REvilSmasher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EvilSmasher>();
         public override int ProtogenesisID => ModContent.ItemType<EvilSmasherEcType>();

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTerratomere : BaseRItem
+    internal class RTerratomere : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Terratomere>();
         public override int ProtogenesisID => ModContent.ItemType<TerratomereEcType>();

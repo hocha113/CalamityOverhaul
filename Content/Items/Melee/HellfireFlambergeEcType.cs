@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RHellfireFlamberge : BaseRItem
+    internal class RHellfireFlamberge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
         public override int ProtogenesisID => ModContent.ItemType<HellfireFlambergeEcType>();

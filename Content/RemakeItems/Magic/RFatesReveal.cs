@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RFatesReveal : BaseRItem
+    internal class RFatesReveal : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FatesReveal>();
         public override int ProtogenesisID => ModContent.ItemType<FatesRevealEcType>();

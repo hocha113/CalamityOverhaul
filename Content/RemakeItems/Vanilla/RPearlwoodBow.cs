@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 珍珠木弓
     /// </summary>
-    internal class RPearlwoodBow : BaseRItem
+    internal class RPearlwoodBow : ItemOverride
     {
         public override int TargetID => ItemID.PearlwoodBow;
         public override bool IsVanilla => true;

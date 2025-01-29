@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBrinyBaron : BaseRItem
+    internal class RBrinyBaron : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BrinyBaron>();
         public override int ProtogenesisID => ModContent.ItemType<BrinyBaronEcType>();

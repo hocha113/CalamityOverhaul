@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RThePack : BaseRItem
+    internal class RThePack : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ThePack>();
         public override int ProtogenesisID => ModContent.ItemType<ThePackEcType>();

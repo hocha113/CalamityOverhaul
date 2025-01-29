@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 棕榈木弓
     /// </summary>
-    internal class RPalmWoodBow : BaseRItem
+    internal class RPalmWoodBow : ItemOverride
     {
         public override int TargetID => ItemID.PalmWoodBow;
         public override bool IsVanilla => true;

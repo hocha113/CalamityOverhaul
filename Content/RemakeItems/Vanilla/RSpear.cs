@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RSpear : BaseRItem
+    internal class RSpear : ItemOverride
     {
         public override int TargetID => ItemID.Spear;
         public override bool IsVanilla => true;

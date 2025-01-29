@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RForsakenSaber : BaseRItem
+    internal class RForsakenSaber : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ForsakenSaber>();
         public override int ProtogenesisID => ModContent.ItemType<ForsakenSaberEcType>();

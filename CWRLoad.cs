@@ -588,7 +588,7 @@ namespace CalamityOverhaul
         }
 
         public static void LoadRecoverUnloadedItemDic() {
-            BaseRItem.LoadEcTypeUnLoadData();
+            ItemOverride.LoadEcTypeUnLoadData();
             RecoverUnloadedItemDic.Add("CalamityOverhaul/BlackMatterStick", ItemType<NeutronStarIngot>());
             RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ItemType<SpearOfLonginus>());
         }

@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDeadSunsWind : BaseRItem
+    internal class RDeadSunsWind : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeadSunsWind>();
         public override int ProtogenesisID => ModContent.ItemType<DeadSunsWindEcType>();

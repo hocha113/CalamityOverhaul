@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
-    internal class RWaveSkipper : BaseRItem
+    internal class RWaveSkipper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WaveSkipper>();
         public override int ProtogenesisID => ModContent.ItemType<WaveSkipperEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RShroomer : BaseRItem
+    internal class RShroomer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Shroomer>();
         public override int ProtogenesisID => ModContent.ItemType<ShroomerEcType>();

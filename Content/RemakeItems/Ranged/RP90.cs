@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RP90 : BaseRItem
+    internal class RP90 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<P90>();
         public override int ProtogenesisID => ModContent.ItemType<P90EcType>();

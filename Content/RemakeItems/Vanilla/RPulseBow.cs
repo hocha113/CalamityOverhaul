@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RPulseBow : BaseRItem
+    internal class RPulseBow : ItemOverride
     {
         public override int TargetID => ItemID.PulseBow;
         public override bool IsVanilla => true;

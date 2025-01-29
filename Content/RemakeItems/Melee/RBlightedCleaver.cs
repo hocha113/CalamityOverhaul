@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBlightedCleaver : BaseRItem
+    internal class RBlightedCleaver : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlightedCleaver>();
         public override int ProtogenesisID => ModContent.ItemType<BlightedCleaverEcType>();

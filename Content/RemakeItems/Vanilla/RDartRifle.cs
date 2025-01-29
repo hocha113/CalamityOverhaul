@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDartRifle : BaseRItem
+    internal class RDartRifle : ItemOverride
     {
         public override int TargetID => ItemID.DartRifle;
         public override bool IsVanilla => true;

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 霰弹枪
     /// </summary>
-    internal class RShotgun : BaseRItem
+    internal class RShotgun : ItemOverride
     {
         public override int TargetID => ItemID.Shotgun;
         public override bool FormulaSubstitution => false;

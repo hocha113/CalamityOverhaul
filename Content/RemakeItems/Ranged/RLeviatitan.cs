@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RLeviatitan : BaseRItem
+    internal class RLeviatitan : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Leviatitan>();
         public override int ProtogenesisID => ModContent.ItemType<LeviatitanEcType>();

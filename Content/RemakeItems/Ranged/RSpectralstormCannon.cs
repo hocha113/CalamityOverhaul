@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSpectralstormCannon : BaseRItem
+    internal class RSpectralstormCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SpectralstormCannon>();
         public override int ProtogenesisID => ModContent.ItemType<SpectralstormCannonEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBrimstoneSword : BaseRItem
+    internal class RBrimstoneSword : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BrimstoneSword>();
         public override int ProtogenesisID => ModContent.ItemType<BrimstoneSwordEcType>();

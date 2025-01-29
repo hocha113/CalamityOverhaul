@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 木剑
     /// </summary>
-    internal class RWoodenSword : BaseRItem
+    internal class RWoodenSword : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.WoodenSword;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 乌木剑
     /// </summary>
-    internal class RWoodenSword2 : BaseRItem
+    internal class RWoodenSword2 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.EbonwoodSword;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 红木剑
     /// </summary>
-    internal class RWoodenSword3 : BaseRItem
+    internal class RWoodenSword3 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.RichMahoganySword;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 珍珠木剑
     /// </summary>
-    internal class RWoodenSword4 : BaseRItem
+    internal class RWoodenSword4 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.PearlwoodSword;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 暗影木剑
     /// </summary>
-    internal class RWoodenSword5 : BaseRItem
+    internal class RWoodenSword5 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.ShadewoodSword;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 棕榈木剑
     /// </summary>
-    internal class RWoodenSword6 : BaseRItem
+    internal class RWoodenSword6 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.PalmWoodSword;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 针叶木剑
     /// </summary>
-    internal class RWoodenSword7 : BaseRItem
+    internal class RWoodenSword7 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.BorealWoodSword;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 灰烬木剑
     /// </summary>
-    internal class RWoodenSword8 : BaseRItem
+    internal class RWoodenSword8 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.AshWoodSword;

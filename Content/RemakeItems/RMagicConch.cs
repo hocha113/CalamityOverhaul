@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RMagicConch : BaseRItem
+    internal class RMagicConch : ItemOverride
     {
         public override int TargetID => ItemID.MagicConch;
         public override bool? On_CanUseItem(Item item, Player player) {

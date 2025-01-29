@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RHeatRay : BaseRItem
+    internal class RHeatRay : ItemOverride
     {
         public override int TargetID => ItemID.HeatRay;
         public override void SetDefaults(Item item) => item.SetHeldProj<HeatRayHeld>();

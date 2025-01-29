@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAnarchyBlade : BaseRItem
+    internal class RAnarchyBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AnarchyBlade>();
         public override int ProtogenesisID => ModContent.ItemType<AnarchyBladeEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStormDragoon : BaseRItem
+    internal class RStormDragoon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StormDragoon>();
         public override int ProtogenesisID => ModContent.ItemType<StormDragoonEcType>();

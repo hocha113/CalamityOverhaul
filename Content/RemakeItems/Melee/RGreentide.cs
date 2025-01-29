@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RGreentide : BaseRItem
+    internal class RGreentide : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Greentide>();
         public override int ProtogenesisID => ModContent.ItemType<GreentideEcType>();

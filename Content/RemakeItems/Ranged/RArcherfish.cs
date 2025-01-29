@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RArcherfish : BaseRItem
+    internal class RArcherfish : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Archerfish>();
         public override int ProtogenesisID => ModContent.ItemType<ArcherfishEcType>();

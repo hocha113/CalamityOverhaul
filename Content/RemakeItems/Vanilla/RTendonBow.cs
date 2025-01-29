@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 肌腱弓
     /// </summary>
-    internal class RTendonBow : BaseRItem
+    internal class RTendonBow : ItemOverride
     {
         public override int TargetID => ItemID.TendonBow;
         public override bool IsVanilla => true;

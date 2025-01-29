@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RChainGun : BaseRItem
+    internal class RChainGun : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.ChainGun;

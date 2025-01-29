@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMarksmanBow : BaseRItem
+    internal class RMarksmanBow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MarksmanBow>();
         public override int ProtogenesisID => ModContent.ItemType<MarksmanBowEcType>();

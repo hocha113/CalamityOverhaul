@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPestilentDefiler : BaseRItem
+    internal class RPestilentDefiler : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PestilentDefiler>();
         public override int ProtogenesisID => ModContent.ItemType<PestilentDefilerEcType>();

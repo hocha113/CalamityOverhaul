@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDeathwind : BaseRItem
+    internal class RDeathwind : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Deathwind>();
         public override int ProtogenesisID => ModContent.ItemType<DeathwindEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class ROnyxia : BaseRItem
+    internal class ROnyxia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Onyxia>();
         public override int ProtogenesisID => ModContent.ItemType<OnyxiaEcType>();

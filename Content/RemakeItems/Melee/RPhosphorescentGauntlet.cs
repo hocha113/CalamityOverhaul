@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RPhosphorescentGauntlet : BaseRItem
+    internal class RPhosphorescentGauntlet : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PhosphorescentGauntlet>();
         public override int ProtogenesisID => ModContent.ItemType<PhosphorescentGauntletEcType>();

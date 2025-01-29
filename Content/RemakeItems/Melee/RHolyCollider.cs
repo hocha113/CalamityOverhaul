@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RHolyCollider : BaseRItem
+    internal class RHolyCollider : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HolyCollider>();
         public override int ProtogenesisID => ModContent.ItemType<HolyColliderEcType>();

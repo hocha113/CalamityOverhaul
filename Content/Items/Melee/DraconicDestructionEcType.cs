@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RDraconicDestruction : BaseRItem
+    internal class RDraconicDestruction : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DraconicDestruction>();
         public override int ProtogenesisID => ModContent.ItemType<DraconicDestructionEcType>();

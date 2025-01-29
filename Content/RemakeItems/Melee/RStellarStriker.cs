@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RStellarStriker : BaseRItem
+    internal class RStellarStriker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StellarStriker>();
         public override int ProtogenesisID => ModContent.ItemType<StellarStrikerEcType>();

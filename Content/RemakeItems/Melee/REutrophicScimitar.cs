@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class REutrophicScimitar : BaseRItem
+    internal class REutrophicScimitar : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EutrophicScimitar>();
         public override int ProtogenesisID => ModContent.ItemType<EutrophicScimitarEcType>();

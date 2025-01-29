@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPearlGod : BaseRItem
+    internal class RPearlGod : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PearlGod>();
         public override int ProtogenesisID => ModContent.ItemType<PearlGodEcType>();

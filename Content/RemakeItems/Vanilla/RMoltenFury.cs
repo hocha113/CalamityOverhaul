@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMoltenFury : BaseRItem
+    internal class RMoltenFury : ItemOverride
     {
         public override int TargetID => ItemID.MoltenFury;
         public override bool IsVanilla => true;

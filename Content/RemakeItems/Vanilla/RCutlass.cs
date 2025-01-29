@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 海盗弯刀
     /// </summary>
-    internal class RCutlass : BaseRItem
+    internal class RCutlass : ItemOverride
     {
         public override int TargetID => ItemID.Cutlass;
         public override bool IsVanilla => true;

@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDiseasedPike : BaseRItem
+    internal class RDiseasedPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DiseasedPike>();
         public override int ProtogenesisID => ModContent.ItemType<DiseasedPikeEcType>();

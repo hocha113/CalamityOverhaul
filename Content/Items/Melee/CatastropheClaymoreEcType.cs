@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RCatastropheClaymore : BaseRItem
+    internal class RCatastropheClaymore : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<CatastropheClaymoreEcType>();

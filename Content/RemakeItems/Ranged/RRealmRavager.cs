@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RRealmRavager : BaseRItem
+    internal class RRealmRavager : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RealmRavager>();
         public override int ProtogenesisID => ModContent.ItemType<RealmRavagerEcType>();

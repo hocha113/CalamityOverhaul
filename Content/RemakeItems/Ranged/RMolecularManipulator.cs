@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMolecularManipulator : BaseRItem
+    internal class RMolecularManipulator : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MolecularManipulator>();
         public override int ProtogenesisID => ModContent.ItemType<MolecularManipulatorEcType>();

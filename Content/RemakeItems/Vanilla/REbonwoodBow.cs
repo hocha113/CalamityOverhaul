@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class REbonwoodBow : BaseRItem
+    internal class REbonwoodBow : ItemOverride
     {
         public override int TargetID => ItemID.EbonwoodBow;
         public override bool IsVanilla => true;

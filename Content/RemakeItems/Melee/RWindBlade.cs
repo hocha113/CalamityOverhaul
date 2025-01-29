@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RWindBlade : BaseRItem
+    internal class RWindBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WindBlade>();
         public override int ProtogenesisID => ModContent.ItemType<WindBladeEcType>();

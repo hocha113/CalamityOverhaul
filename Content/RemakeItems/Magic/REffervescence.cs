@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class REffervescence : BaseRItem
+    internal class REffervescence : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Effervescence>();
         public override int ProtogenesisID => ModContent.ItemType<EffervescenceEcType>();

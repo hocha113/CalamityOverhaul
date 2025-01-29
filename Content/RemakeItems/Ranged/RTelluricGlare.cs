@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RTelluricGlare : BaseRItem
+    internal class RTelluricGlare : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TelluricGlare>();
         public override int ProtogenesisID => ModContent.ItemType<TelluricGlareEcType>();

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RFlarefrostBlade : BaseRItem
+    internal class RFlarefrostBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FlarefrostBlade>();
         public override int ProtogenesisID => ModContent.ItemType<FlarefrostBladeEcType>();

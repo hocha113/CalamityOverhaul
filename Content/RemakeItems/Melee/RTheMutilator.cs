@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheMutilator : BaseRItem
+    internal class RTheMutilator : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheMutilator>();
         public override int ProtogenesisID => ModContent.ItemType<TheMutilatorEcType>();

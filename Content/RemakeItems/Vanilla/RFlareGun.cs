@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RFlareGun : BaseRItem
+    internal class RFlareGun : ItemOverride
     {
         public override int TargetID => ItemID.FlareGun;
         public override bool FormulaSubstitution => false;

@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RCoinGun : BaseRItem
+    internal class RCoinGun : ItemOverride
     {
         public override int TargetID => ItemID.CoinGun;
         public override bool IsVanilla => true;

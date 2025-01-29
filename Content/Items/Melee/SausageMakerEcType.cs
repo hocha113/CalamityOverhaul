@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RSausageMaker : BaseRItem
+    internal class RSausageMaker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SausageMaker>();
         public override int ProtogenesisID => ModContent.ItemType<SausageMakerEcType>();

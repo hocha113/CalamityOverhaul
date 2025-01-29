@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RFeralthornClaymore : BaseRItem
+    internal class RFeralthornClaymore : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FeralthornClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<FeralthornClaymoreEcType>();

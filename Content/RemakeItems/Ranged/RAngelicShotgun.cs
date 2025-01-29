@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAngelicShotgun : BaseRItem
+    internal class RAngelicShotgun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AngelicShotgun>();
         public override int ProtogenesisID => ModContent.ItemType<AngelicShotgunEcType>();

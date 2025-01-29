@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RVoidEdge : BaseRItem
+    internal class RVoidEdge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<VoidEdge>();
         public override int ProtogenesisID => ModContent.ItemType<VoidEdgeEcType>();

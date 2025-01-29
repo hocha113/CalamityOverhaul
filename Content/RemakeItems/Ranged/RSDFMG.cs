@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSDFMG : BaseRItem
+    internal class RSDFMG : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SDFMG>();
         public override int ProtogenesisID => ModContent.ItemType<SDFMGEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RArterialAssault : BaseRItem
+    internal class RArterialAssault : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ArterialAssault>();
         public override int ProtogenesisID => ModContent.ItemType<ArterialAssaultEcType>();

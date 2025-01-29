@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFetidEmesis : BaseRItem
+    internal class RFetidEmesis : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FetidEmesis>();
         public override int ProtogenesisID => ModContent.ItemType<FetidEmesisEcType>();

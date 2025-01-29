@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RClockworkAssaultRifle : BaseRItem
+    internal class RClockworkAssaultRifle : ItemOverride
     {
         public override int TargetID => ItemID.ClockworkAssaultRifle;
         public override bool FormulaSubstitution => false;

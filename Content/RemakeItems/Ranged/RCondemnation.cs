@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RCondemnation : BaseRItem
+    internal class RCondemnation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Condemnation>();
         public override int ProtogenesisID => ModContent.ItemType<CondemnationEcType>();

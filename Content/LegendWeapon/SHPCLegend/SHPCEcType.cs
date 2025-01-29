@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
     }
 
-    internal class RSHPC : BaseRItem, ICWRLoader
+    internal class RSHPC : ItemOverride, ICWRLoader
     {
         public override int TargetID => ModContent.ItemType<SHPC>();
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();

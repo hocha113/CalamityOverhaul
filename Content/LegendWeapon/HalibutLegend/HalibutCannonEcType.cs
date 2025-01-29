@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
     }
 
-    internal class RHalibutCannon : BaseRItem
+    internal class RHalibutCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
         public override int ProtogenesisID => ModContent.ItemType<HalibutCannonEcType>();

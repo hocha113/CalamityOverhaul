@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAlluvion : BaseRItem
+    internal class RAlluvion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Alluvion>();
         public override int ProtogenesisID => ModContent.ItemType<AlluvionEcType>();

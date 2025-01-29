@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RDevastation : BaseRItem
+    internal class RDevastation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Devastation>();
         public override int ProtogenesisID => ModContent.ItemType<DevastationEcType>();

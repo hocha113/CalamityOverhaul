@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal abstract class RMagicBook<TItem> : BaseRItem where TItem : ModItem
+    internal abstract class RMagicBook<TItem> : ItemOverride where TItem : ModItem
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
     }
 
-    internal abstract class RMagicBook : BaseRItem
+    internal abstract class RMagicBook : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;

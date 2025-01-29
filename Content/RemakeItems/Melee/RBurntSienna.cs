@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBurntSienna : BaseRItem
+    internal class RBurntSienna : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BurntSienna>();
         public override int ProtogenesisID => ModContent.ItemType<BurntSiennaEcType>();

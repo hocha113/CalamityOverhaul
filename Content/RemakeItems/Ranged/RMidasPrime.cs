@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMidasPrime : BaseRItem
+    internal class RMidasPrime : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MidasPrime>();
         public override int ProtogenesisID => ModContent.ItemType<MidasPrimeEcType>();

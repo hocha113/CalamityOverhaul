@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTeardropCleaver : BaseRItem
+    internal class RTeardropCleaver : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TeardropCleaver>();
         public override int ProtogenesisID => ModContent.ItemType<TeardropCleaverEcType>();

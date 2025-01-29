@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RPrismaticBreaker : BaseRItem
+    internal class RPrismaticBreaker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PrismaticBreaker>();
         public override int ProtogenesisID => ModContent.ItemType<PrismaticBreakerEcType>();

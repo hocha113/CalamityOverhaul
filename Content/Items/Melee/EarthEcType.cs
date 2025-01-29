@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class REarth : BaseRItem
+    internal class REarth : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Earth>();
         public override int ProtogenesisID => ModContent.ItemType<EarthEcType>();

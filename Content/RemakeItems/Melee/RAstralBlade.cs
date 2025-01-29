@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAstralBlade : BaseRItem
+    internal class RAstralBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AstralBlade>();
         public override int ProtogenesisID => ModContent.ItemType<AstralBladeEcType>();

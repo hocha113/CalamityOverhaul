@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RXenopopper : BaseRItem
+    internal class RXenopopper : ItemOverride
     {
         public override int TargetID => ItemID.Xenopopper;
         public override bool IsVanilla => true;

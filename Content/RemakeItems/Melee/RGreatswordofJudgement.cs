@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RGreatswordofJudgement : BaseRItem
+    internal class RGreatswordofJudgement : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GreatswordofJudgement>();
         public override int ProtogenesisID => ModContent.ItemType<GreatswordofJudgementEcType>();

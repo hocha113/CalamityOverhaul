@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 暗影木
     /// </summary>
-    internal class RShadewoodBow : BaseRItem
+    internal class RShadewoodBow : ItemOverride
     {
         public override int TargetID => ItemID.ShadewoodBow;
         public override bool IsVanilla => true;

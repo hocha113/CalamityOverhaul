@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RTyrannysEnd : BaseRItem
+    internal class RTyrannysEnd : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TyrannysEnd>();
         public override int ProtogenesisID => ModContent.ItemType<TyrannysEndEcType>();

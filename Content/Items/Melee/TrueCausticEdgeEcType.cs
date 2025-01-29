@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RTrueCausticEdge : BaseRItem
+    internal class RTrueCausticEdge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TrueCausticEdge>();
         public override int ProtogenesisID => ModContent.ItemType<TrueCausticEdgeEcType>();

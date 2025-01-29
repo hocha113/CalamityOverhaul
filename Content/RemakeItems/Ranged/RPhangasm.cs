@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPhangasm : BaseRItem
+    internal class RPhangasm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Phangasm>();
         public override int ProtogenesisID => ModContent.ItemType<PhangasmEcType>();

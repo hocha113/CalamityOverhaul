@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFlakKraken : BaseRItem
+    internal class RFlakKraken : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FlakKraken>();
         public override int ProtogenesisID => ModContent.ItemType<FlakKrakenEcType>();

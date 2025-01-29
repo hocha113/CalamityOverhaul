@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RZapinatorOrange : BaseRItem
+    internal class RZapinatorOrange : ItemOverride
     {
         public override int TargetID => ItemID.ZapinatorOrange;
         public override bool FormulaSubstitution => false;

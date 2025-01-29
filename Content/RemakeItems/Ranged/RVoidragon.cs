@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RVoidragon : BaseRItem
+    internal class RVoidragon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Voidragon>();
         public override int ProtogenesisID => ModContent.ItemType<VoidragonEcType>();

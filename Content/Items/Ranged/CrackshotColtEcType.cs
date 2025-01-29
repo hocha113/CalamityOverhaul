@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class RCrackshotColt : BaseRItem
+    internal class RCrackshotColt : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CrackshotColt>();
         public override int ProtogenesisID => ModContent.ItemType<CrackshotColtEcType>();

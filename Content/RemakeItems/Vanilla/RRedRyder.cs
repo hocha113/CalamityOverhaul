@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RRedRyder : BaseRItem
+    internal class RRedRyder : ItemOverride
     {
         public override int TargetID => ItemID.RedRyder;
         public override bool FormulaSubstitution => false;

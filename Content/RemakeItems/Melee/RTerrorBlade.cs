@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTerrorBlade : BaseRItem
+    internal class RTerrorBlade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public override int ProtogenesisID => ModContent.ItemType<TerrorBladeEcType>();

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBrimlash : BaseRItem
+    internal class RBrimlash : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Brimlash>();
         public override int ProtogenesisID => ModContent.ItemType<BrimlashEcType>();

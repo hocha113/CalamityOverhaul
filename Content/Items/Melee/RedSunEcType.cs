@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class R_RedSun : BaseRItem
+    internal class R_RedSun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RedSun>();
         public override int ProtogenesisID => ModContent.ItemType<RedSunEcType>();

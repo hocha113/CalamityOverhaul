@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStormSurge : BaseRItem
+    internal class RStormSurge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StormSurge>();
         public override int ProtogenesisID => ModContent.ItemType<StormSurgeEcType>();

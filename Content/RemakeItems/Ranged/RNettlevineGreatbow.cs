@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RNettlevineGreatbow : BaseRItem
+    internal class RNettlevineGreatbow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<NettlevineGreatbow>();
         public override int ProtogenesisID => ModContent.ItemType<NettlevineGreatbowEcType>();

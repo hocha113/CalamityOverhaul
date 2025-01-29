@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RHallowedRepeater : BaseRItem
+    internal class RHallowedRepeater : ItemOverride
     {
         public override int TargetID => ItemID.HallowedRepeater;
         public override bool FormulaSubstitution => false;

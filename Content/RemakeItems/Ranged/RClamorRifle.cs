@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RClamorRifle : BaseRItem
+    internal class RClamorRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ClamorRifle>();
         public override int ProtogenesisID => ModContent.ItemType<ClamorRifleEcType>();

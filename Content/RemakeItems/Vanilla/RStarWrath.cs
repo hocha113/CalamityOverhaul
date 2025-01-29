@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RStarWrath : BaseRItem
+    internal class RStarWrath : ItemOverride
     {
         public override int TargetID => ItemID.StarWrath;
         public override bool IsVanilla => true;

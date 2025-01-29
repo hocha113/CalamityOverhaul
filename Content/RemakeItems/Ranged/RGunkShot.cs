@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RGunkShot : BaseRItem
+    internal class RGunkShot : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GunkShot>();
         public override int ProtogenesisID => ModContent.ItemType<GunkShotEcType>();

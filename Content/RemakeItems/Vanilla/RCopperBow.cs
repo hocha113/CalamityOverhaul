@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铜弓
     /// </summary>
-    internal class RCopperBow : BaseRItem
+    internal class RCopperBow : ItemOverride
     {
         public override int TargetID => ItemID.CopperBow;
         public override bool IsVanilla => true;

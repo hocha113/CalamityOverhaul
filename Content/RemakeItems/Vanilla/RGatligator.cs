@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 鳄鱼机关枪
     /// </summary>
-    internal class RGatligator : BaseRItem
+    internal class RGatligator : ItemOverride
     {
         public override int TargetID => ItemID.Gatligator;
         public override bool IsVanilla => true;

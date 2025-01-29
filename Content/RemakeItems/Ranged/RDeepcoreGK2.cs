@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDeepcoreGK2 : BaseRItem
+    internal class RDeepcoreGK2 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeepcoreGK2>();
         public override int ProtogenesisID => ModContent.ItemType<DeepcoreGK2EcType>();

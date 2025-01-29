@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RInfinity : BaseRItem
+    internal class RInfinity : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Infinity>();
         public override int ProtogenesisID => ModContent.ItemType<InfinityEcType>();

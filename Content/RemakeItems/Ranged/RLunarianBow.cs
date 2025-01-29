@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RLunarianBow : BaseRItem
+    internal class RLunarianBow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<LunarianBow>();
         public override int ProtogenesisID => ModContent.ItemType<LunarianBowEcType>();

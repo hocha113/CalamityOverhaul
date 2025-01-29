@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RVortexpopper : BaseRItem
+    internal class RVortexpopper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Vortexpopper>();
         public override int ProtogenesisID => ModContent.ItemType<VortexpopperEcType>();

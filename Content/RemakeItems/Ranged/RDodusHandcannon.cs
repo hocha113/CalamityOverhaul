@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDodusHandcannon : BaseRItem
+    internal class RDodusHandcannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DodusHandcannon>();
         public override int ProtogenesisID => ModContent.ItemType<DodusHandcannonEcType>();

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 海啸
     /// </summary>
-    internal class RTsunami : BaseRItem
+    internal class RTsunami : ItemOverride
     {
         public override int TargetID => ItemID.Tsunami;
         public override bool IsVanilla => true;

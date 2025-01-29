@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDisseminator : BaseRItem
+    internal class RDisseminator : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Disseminator>();
         public override int ProtogenesisID => ModContent.ItemType<DisseminatorEcType>();

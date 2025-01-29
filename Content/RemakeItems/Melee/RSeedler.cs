@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     /// <summary>
     /// 种子弯刀
     /// </summary>
-    internal class RSeedler : BaseRItem
+    internal class RSeedler : ItemOverride
     {
         public override int TargetID => ItemID.Seedler;
         public override bool IsVanilla => true;

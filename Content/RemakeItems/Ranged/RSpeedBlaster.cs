@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSpeedBlaster : BaseRItem
+    internal class RSpeedBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SpeedBlaster>();
         public override int ProtogenesisID => ModContent.ItemType<SpeedBlasterEcType>();

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RSDMG : BaseRItem
+    internal class RSDMG : ItemOverride
     {
         public override int TargetID => ItemID.SDMG;
         public override bool IsVanilla => true;

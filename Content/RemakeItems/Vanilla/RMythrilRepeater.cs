@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMythrilRepeater : BaseRItem
+    internal class RMythrilRepeater : ItemOverride
     {
         public override int TargetID => ItemID.MythrilRepeater;
         public override bool FormulaSubstitution => false;

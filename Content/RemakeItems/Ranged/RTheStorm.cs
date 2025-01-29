@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RTheStorm : BaseRItem
+    internal class RTheStorm : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheStorm>();
         public override int ProtogenesisID => ModContent.ItemType<TheStormEcType>();

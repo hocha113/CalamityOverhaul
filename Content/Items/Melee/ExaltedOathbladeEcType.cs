@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RExaltedOathblade : BaseRItem
+    internal class RExaltedOathblade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ExaltedOathblade>();
         public override string TargetToolTipItemName => "ExaltedOathbladeEcType";

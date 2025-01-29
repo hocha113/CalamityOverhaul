@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RBlissfulBombardier : BaseRItem
+    internal class RBlissfulBombardier : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlissfulBombardier>();
         public override int ProtogenesisID => ModContent.ItemType<BlissfulBombardierEcType>();

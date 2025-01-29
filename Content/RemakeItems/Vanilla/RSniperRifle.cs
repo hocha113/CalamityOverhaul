@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RSniperRifle : BaseRItem
+    internal class RSniperRifle : ItemOverride
     {
         public override int TargetID => ItemID.SniperRifle;
         public override bool IsVanilla => true;

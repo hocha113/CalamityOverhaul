@@ -53,15 +53,15 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float[] ai = [0, 0, 0];
         /// <summary>
-        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_AllowPreFix(Item, int)"/>
+        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_AllowPreFix(Item, int)"/>
         /// </summary>
         public bool GetAllowPrefix;
         /// <summary>
-        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_MeleePreFix(Item)"/>
+        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_MeleePreFix(Item)"/>
         /// </summary>
         public bool GetMeleePrefix;
         /// <summary>
-        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_RangedPreFix(Item)"/>
+        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_RangedPreFix(Item)"/>
         /// </summary>
         public bool GetRangedPrefix;
         /// <summary>
@@ -539,7 +539,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem) && baseRItem.DrawingInfo) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.RItemIndsDict.TryGetValue(item.type, out ItemOverride baseRItem) && baseRItem.DrawingInfo) {
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                     , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }

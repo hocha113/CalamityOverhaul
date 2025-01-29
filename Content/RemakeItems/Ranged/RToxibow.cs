@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RToxibow : BaseRItem
+    internal class RToxibow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Toxibow>();
         public override int ProtogenesisID => ModContent.ItemType<ToxibowEcType>();

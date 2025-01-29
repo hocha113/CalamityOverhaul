@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class ROrderbringer : BaseRItem
+    internal class ROrderbringer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Orderbringer>();
         public override int ProtogenesisID => ModContent.ItemType<OrderbringerEcType>();

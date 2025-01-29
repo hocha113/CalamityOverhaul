@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RBarinade : BaseRItem
+    internal class RBarinade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Barinade>();
         public override int ProtogenesisID => ModContent.ItemType<BarinadeEcType>();

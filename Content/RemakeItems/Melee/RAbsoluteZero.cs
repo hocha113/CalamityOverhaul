@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAbsoluteZero : BaseRItem
+    internal class RAbsoluteZero : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AbsoluteZero>();
         public override int ProtogenesisID => ModContent.ItemType<AbsoluteZeroEcType>();

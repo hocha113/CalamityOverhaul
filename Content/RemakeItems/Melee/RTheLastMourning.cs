@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheLastMourning : BaseRItem
+    internal class RTheLastMourning : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheLastMourning>();
         public override int ProtogenesisID => ModContent.ItemType<TheLastMourningEcType>();

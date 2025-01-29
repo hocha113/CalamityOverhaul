@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheBurningSky : BaseRItem
+    internal class RTheBurningSky : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheBurningSky>();
         public override int ProtogenesisID => ModContent.ItemType<TheBurningSkyEcType>();

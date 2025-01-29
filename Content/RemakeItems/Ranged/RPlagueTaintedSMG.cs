@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPlagueTaintedSMG : BaseRItem
+    internal class RPlagueTaintedSMG : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PlagueTaintedSMG>();
         public override int ProtogenesisID => ModContent.ItemType<PlagueTaintedSMGEcType>();

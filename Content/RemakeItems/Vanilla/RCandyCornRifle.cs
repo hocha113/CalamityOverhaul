@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RCandyCornRifle : BaseRItem
+    internal class RCandyCornRifle : ItemOverride
     {
         public override int TargetID => ItemID.CandyCornRifle;
         public override bool IsVanilla => true;

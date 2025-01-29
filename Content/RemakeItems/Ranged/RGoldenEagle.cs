@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RGoldenEagle : BaseRItem
+    internal class RGoldenEagle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GoldenEagle>();
         public override int ProtogenesisID => ModContent.ItemType<GoldenEagleEcType>();

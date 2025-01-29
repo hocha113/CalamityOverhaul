@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RBubbleGun : BaseRItem
+    internal class RBubbleGun : ItemOverride
     {
         public override int TargetID => ItemID.BubbleGun;
         public override bool IsVanilla => true;

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDefiledGreatsword : BaseRItem
+    internal class RDefiledGreatsword : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
         public override int ProtogenesisID => ModContent.ItemType<DefiledGreatswordEcType>();

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RUltimusCleaver : BaseRItem
+    internal class RUltimusCleaver : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<UltimusCleaver>();
         public override int ProtogenesisID => ModContent.ItemType<UltimusCleaverEcType>();

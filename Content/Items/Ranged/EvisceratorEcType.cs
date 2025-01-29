@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class REviscerator : BaseRItem
+    internal class REviscerator : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override int ProtogenesisID => ModContent.ItemType<EvisceratorEcType>();

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAstrealDefeat : BaseRItem
+    internal class RAstrealDefeat : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AstrealDefeat>();
         public override int ProtogenesisID => ModContent.ItemType<AstrealDefeatEcType>();

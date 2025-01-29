@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RBasher : BaseRItem
+    internal class RBasher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Basher>();
         public override int ProtogenesisID => ModContent.ItemType<BasherEcType>();

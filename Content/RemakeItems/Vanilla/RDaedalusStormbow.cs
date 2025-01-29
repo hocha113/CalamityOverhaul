@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDaedalusStormbow : BaseRItem
+    internal class RDaedalusStormbow : ItemOverride
     {
         public override int TargetID => ItemID.DaedalusStormbow;
         public override bool IsVanilla => true;

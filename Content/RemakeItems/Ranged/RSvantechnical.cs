@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSvantechnical : BaseRItem
+    internal class RSvantechnical : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Svantechnical>();
         public override int ProtogenesisID => ModContent.ItemType<SvantechnicalEcType>();

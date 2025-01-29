@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RCosmicDischarge : BaseRItem
+    internal class RCosmicDischarge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CosmicDischarge>();
         public override bool FormulaSubstitution => false;

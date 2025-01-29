@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
-    internal class RFrostcrushValari : BaseRItem
+    internal class RFrostcrushValari : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FrostcrushValari>();
         public override int ProtogenesisID => ModContent.ItemType<FrostcrushValariEcType>();

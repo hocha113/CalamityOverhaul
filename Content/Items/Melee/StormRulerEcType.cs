@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RStormRuler : BaseRItem
+    internal class RStormRuler : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StormRuler>();
         public override int ProtogenesisID => ModContent.ItemType<StormRulerEcType>();

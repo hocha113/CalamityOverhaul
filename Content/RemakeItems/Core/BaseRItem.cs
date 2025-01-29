@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,7 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
-    public abstract class BaseRItem : ModType, ILocalizedModType, ICWRLoader
+    public abstract class ItemOverride : ModType, ILocalizedModType, ICWRLoader
     {
         /// <summary>
         /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
@@ -55,9 +54,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText DisplayName {
             get {
-                LocalizedText content = ProtogenesisID < ItemID.Count?
-                    Language.GetText("ItemName." + ItemID.Search.GetName(ProtogenesisID))
-                    : ItemLoader.GetItem(ProtogenesisID).GetLocalization("DisplayName");
+                int id = ProtogenesisID;
+                if (id == ItemID.None) {
+                    id = TargetID;
+                }
+                LocalizedText content = id < ItemID.Count?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(id))
+                    : ItemLoader.GetItem(id).GetLocalization("DisplayName");
                 return this.GetLocalization(nameof(DisplayName), () => content.Value);
             }
         }
@@ -66,9 +69,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText Tooltip {
             get {
-                LocalizedText content = ProtogenesisID < ItemID.Count ?
-                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(ProtogenesisID))
-                    : ItemLoader.GetItem(ProtogenesisID).GetLocalization("Tooltip");
+                int id = ProtogenesisID;
+                if (id == ItemID.None) {
+                    id = TargetID;
+                }
+                LocalizedText content = id < ItemID.Count ?
+                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(id))
+                    : ItemLoader.GetItem(id).GetLocalization("Tooltip");
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }
         }

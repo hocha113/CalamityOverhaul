@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class RDragoonDrizzlefish : BaseRItem
+    internal class RDragoonDrizzlefish : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DragoonDrizzlefish>();
         public override int ProtogenesisID => ModContent.ItemType<DragoonDrizzlefishEcType>();

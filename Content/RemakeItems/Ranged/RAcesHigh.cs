@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAcesHigh : BaseRItem
+    internal class RAcesHigh : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AcesHigh>();
         public override int ProtogenesisID => ModContent.ItemType<AcesHighEcType>();

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSolsticeClaymore : BaseRItem
+    internal class RSolsticeClaymore : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SolsticeClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<SolsticeClaymoreEcType>();
