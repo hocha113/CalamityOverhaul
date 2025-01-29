@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -56,6 +57,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual LocalizedText Tooltip {
             get {
+                if (IsVanilla) {
+                    string key = CWRUtils.GetVanillaItemNameByID(TargetID);
+                    return this.GetLocalization(nameof(Tooltip), () => CWRLocText.GetTextValue($"Wap_{key}_Text"));
+                }
                 LocalizedText content = TargetID < ItemID.Count ?
                     Language.GetText("ItemTooltip." + ItemID.Search.GetName(TargetID))
                     : ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
@@ -71,18 +76,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public virtual bool CanLoad() => true;
 
-        /// <summary>
-        /// 加载副本物品的补救数据
-        /// </summary>
-        public static void LoadEcTypeUnLoadData() {
-            foreach (var rItem in CWRMod.ItemOverrideInstances) {
-                Item ectypeItem = new Item(rItem.TargetID);
-                if (ectypeItem.ModItem != null) {
-                    string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";
-                    CWRLoad.RecoverUnloadedItemDic.Add(key, rItem.TargetID);
-                }
-            }
-        }
         /// <summary>
         /// 进行背包中的物品绘制，这个函数会执行在Draw之后
         /// </summary>
