@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ID;
@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SnowblindnessHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "Snowblindness";
-        public override int targetCayItem => ModContent.ItemType<Snowblindness>();
-        public override int targetCWRItem => ModContent.ItemType<Snowblindness>();
+        public override int TargetID => ModContent.ItemType<Snowblindness>();
         public override void SetRangedProperty() {
             Recoil = 0.45f;
             FireTime = 4;

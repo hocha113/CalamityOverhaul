@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 骸骨弓
     /// </summary>
-    internal class RMarrow : BaseRItem
+    internal class RMarrow : ItemOverride
     {
         public override int TargetID => ItemID.Marrow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Marrow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<MarrowHeldProj>();
     }
 }

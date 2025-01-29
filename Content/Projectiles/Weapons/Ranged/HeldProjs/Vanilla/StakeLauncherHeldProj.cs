@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.StakeLauncher].Value;
-        public override int targetCayItem => ItemID.StakeLauncher;
-        public override int targetCWRItem => ItemID.StakeLauncher;
+        public override int TargetID => ItemID.StakeLauncher;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

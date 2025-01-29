@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class FungicideHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Fungicide";
-        public override int targetCayItem => ModContent.ItemType<Fungicide>();
-        public override int targetCWRItem => ModContent.ItemType<FungicideEcType>();
+        public override int TargetID => ModContent.ItemType<Fungicide>();
         public override void SetRangedProperty() {
             FireTime = 20;
             ShootPosToMouLengValue = 0;

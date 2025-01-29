@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class HandheldTankHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HandheldTank";
-        public override int targetCayItem => ModContent.ItemType<HandheldTank>();
-        public override int targetCWRItem => ModContent.ItemType<HandheldTankEcType>();
+        public override int TargetID => ModContent.ItemType<HandheldTank>();
         public override void SetRangedProperty() {
             FireTime = 30;
             kreloadMaxTime = 60;

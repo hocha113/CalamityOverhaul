@@ -7,8 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class CryophobiaHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Cryophobia";
-        public override int targetCayItem => ModContent.ItemType<Cryophobia>();
-        public override int targetCWRItem => ModContent.ItemType<CryophobiaEcType>();
+        public override int TargetID => ModContent.ItemType<Cryophobia>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

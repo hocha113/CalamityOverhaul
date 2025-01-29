@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class StormDragoonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "StormDragoon";
-        public override int targetCayItem => ModContent.ItemType<StormDragoon>();
-        public override int targetCWRItem => ModContent.ItemType<StormDragoonEcType>();
-
+        public override int TargetID => ModContent.ItemType<StormDragoon>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 95;
             FireTime = 6;

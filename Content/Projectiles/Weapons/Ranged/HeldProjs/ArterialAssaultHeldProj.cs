@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ArterialAssaultHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ArterialAssault";
-        public override int targetCayItem => ModContent.ItemType<ArterialAssault>();
-        public override int targetCWRItem => ModContent.ItemType<ArterialAssaultEcType>();
+        public override int TargetID => ModContent.ItemType<ArterialAssault>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 20;
             HandFireDistanceX = 22;

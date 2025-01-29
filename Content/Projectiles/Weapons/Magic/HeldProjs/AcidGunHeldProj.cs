@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class AcidGunHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AcidGun";
-        public override int targetCayItem => ModContent.ItemType<AcidGun>();
-        public override int targetCWRItem => ModContent.ItemType<AcidGunEcType>();
+        public override int TargetID => ModContent.ItemType<AcidGun>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -20;
             ShootPosNorlLengValue = 0;

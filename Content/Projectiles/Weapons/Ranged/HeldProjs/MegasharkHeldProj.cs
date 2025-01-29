@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Megashark].Value;
-        public override int targetCayItem => ItemID.Megashark;
-        public override int targetCWRItem => ItemID.Megashark;//这样的用法可能需要进行一定的考查，因为基类的设计并没有考虑到原版物品
+        public override int TargetID => ItemID.Megashark;
         public override void SetRangedProperty() {
             FireTime = 5;
             Recoil = 0.2f;

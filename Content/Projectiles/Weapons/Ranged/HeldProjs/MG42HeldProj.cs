@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -13,21 +13,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MG42HeldProj : BaseFeederGun, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "MG42";
-
+        public override int TargetID => ModContent.ItemType<MG42>();
         private static Asset<Texture2D> masking;
-        private static int MG42;
         private float randomShootRotset;
         private float shootValue;
         void ICWRLoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
-        void ICWRLoader.SetupData() => MG42 = ModContent.ItemType<MG42>();
-        void ICWRLoader.UnLoadData() {
-            masking = null;
-            MG42 = ItemID.None;
-        }
-
-        public override int targetCayItem => MG42;
-        public override int targetCWRItem => MG42;
-
+        void ICWRLoader.UnLoadData() => masking = null;
         public override void SetRangedProperty() {
             FireTime = 4;
             HandIdleDistanceX = 36;

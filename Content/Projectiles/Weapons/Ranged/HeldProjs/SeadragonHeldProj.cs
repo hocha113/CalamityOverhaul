@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SeadragonHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Seadragon";
-        public override int targetCayItem => ModContent.ItemType<Seadragon>();
-        public override int targetCWRItem => ModContent.ItemType<SeadragonEcType>();
+        public override int TargetID => ModContent.ItemType<Seadragon>();
         public override void SetRangedProperty() {
             ControlForce = 0;
             GunPressure = 0;

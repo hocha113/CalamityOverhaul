@@ -11,11 +11,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSDFMG : BaseRItem
+    internal class RSDFMG : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SDFMG>();
-        public override int ProtogenesisID => ModContent.ItemType<SDFMGEcType>();
-        public override string TargetToolTipItemName => "SDFMGEcType";
         public override void SetDefaults(Item item) {
             item.damage = 100;
             item.DamageType = DamageClass.Ranged;

@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Content.CWRDamageTypes;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using System;

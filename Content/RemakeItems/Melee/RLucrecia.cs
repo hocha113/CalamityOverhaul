@@ -8,11 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RLucrecia : BaseRItem
+    internal class RLucrecia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Lucrecia>();
-        public override int ProtogenesisID => ModContent.ItemType<LucreciaEcType>();
-        public override string TargetToolTipItemName => "LucreciaEcType";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<LucreciaRapier>();
             item.useTime = 60;

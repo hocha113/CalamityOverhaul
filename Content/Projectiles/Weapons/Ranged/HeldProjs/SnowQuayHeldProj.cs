@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Ranged.Extras;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SnowQuayHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayHeld";
-        public override int targetCayItem => ModContent.ItemType<SnowQuay>();
-        public override int targetCWRItem => ModContent.ItemType<SnowQuay>();
+        public override int TargetID => ModContent.ItemType<SnowQuay>();
         public override void SetRangedProperty() {
             Recoil = 0.3f;
             FireTime = 10;

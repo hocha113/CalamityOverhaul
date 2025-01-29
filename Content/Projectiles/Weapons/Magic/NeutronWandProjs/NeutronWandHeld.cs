@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Magic.Extras;
+﻿using CalamityOverhaul.Content.Items.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
     internal class NeutronWandHeld : BaseMagicGun
     {
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
-        public override int targetCayItem => NeutronWand.PType;
-        public override int targetCWRItem => NeutronWand.PType;
+        public override int TargetID => NeutronWand.PType;
         private float colers;
         private bool colers2;
         private Vector2 firePos;

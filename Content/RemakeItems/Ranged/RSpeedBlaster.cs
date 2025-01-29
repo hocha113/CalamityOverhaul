@@ -8,11 +8,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSpeedBlaster : BaseRItem
+    internal class RSpeedBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SpeedBlaster>();
-        public override int ProtogenesisID => ModContent.ItemType<SpeedBlasterEcType>();
-        public override string TargetToolTipItemName => "SpeedBlasterEcType";
+ 
         public override void SetDefaults(Item item) {
             item.useAmmo = AmmoID.Bullet;
             item.SetCartridgeGun<SpeedBlasterHeldProj>(80);

@@ -12,11 +12,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAntiMaterielRifle : BaseRItem
+    internal class RAntiMaterielRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AntiMaterielRifle>();
-        public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifleEcType>();
-        public override string TargetToolTipItemName => "AntiMaterielRifleEcType";
         public override void SetDefaults(Item item) {
             item.damage = 1060;
             item.DamageType = DamageClass.Ranged;

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NitroExpressRifleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NitroExpressRifle";
-        public override int targetCayItem => ModContent.ItemType<NitroExpressRifle>();
-        public override int targetCWRItem => ModContent.ItemType<NitroExpressRifleEcType>();
+        public override int TargetID => ModContent.ItemType<NitroExpressRifle>();
         public override void SetRangedProperty() {
             FireTime = 50;
             Recoil = 2.2f;

@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RGoobow : BaseRItem
+    internal class RGoobow : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Goobow>();
-        public override int ProtogenesisID => ModContent.ItemType<GoobowEcType>();
-        public override string TargetToolTipItemName => "GoobowEcType";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<GoobowHeldProj>();
     }
 }

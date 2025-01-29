@@ -12,9 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class InfinityHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Infinity";
-        public override int targetCayItem => ModContent.ItemType<Infinity>();
-        public override int targetCWRItem => ModContent.ItemType<InfinityEcType>();
-
+        public override int TargetID => ModContent.ItemType<Infinity>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 95;
             FireTime = 2;

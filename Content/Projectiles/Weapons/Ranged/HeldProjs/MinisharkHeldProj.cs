@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Minishark].Value;
-        public override int targetCayItem => ItemID.Minishark;
-        public override int targetCWRItem => ItemID.Minishark;//这样的用法可能需要进行一定的考查，因为基类的设计并没有考虑到原版物品
+        public override int TargetID => ItemID.Minishark;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 7;

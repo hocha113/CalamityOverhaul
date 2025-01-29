@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMusket : BaseRItem
+    internal class RMusket : ItemOverride
     {
         public override int TargetID => ItemID.Musket;
         public override bool FormulaSubstitution => false;

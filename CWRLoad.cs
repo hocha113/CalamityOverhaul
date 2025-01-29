@@ -29,7 +29,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
@@ -37,8 +37,10 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -448,7 +450,7 @@ namespace CalamityOverhaul
 
             Projectile_ArcZap = ProjectileType<ArcZap>();
 
-            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeld>();
+            MurasamaOverride.heldProjType = ProjectileType<MurasamaHeld>();
             #endregion
 
             #region List
@@ -586,7 +588,9 @@ namespace CalamityOverhaul
         }
 
         public static void LoadRecoverUnloadedItemDic() {
-            BaseRItem.LoadEcTypeUnLoadData();
+            ItemOverride.LoadEcTypeUnLoadData();
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/BlackMatterStick", ItemType<NeutronStarIngot>());
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ItemType<SpearOfLonginus>());
         }
 
         public static string GetLckRecoilKey(float recoil) {

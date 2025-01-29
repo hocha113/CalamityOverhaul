@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RIonBlaster : BaseRItem
+    internal class RIonBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<IonBlaster>();
-        public override int ProtogenesisID => ModContent.ItemType<IonBlasterEcType>();
-        public override string TargetToolTipItemName => "IonBlasterEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<IonBlasterHeldProj>();
     }
 }

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class FetidEmesisHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FetidEmesis";
-        public override int targetCayItem => ModContent.ItemType<FetidEmesis>();
-        public override int targetCWRItem => ModContent.ItemType<FetidEmesisEcType>();
+        public override int TargetID => ModContent.ItemType<FetidEmesis>();
         public override void SetRangedProperty() {
             FireTime = 7;
             ControlForce = 0.06f;

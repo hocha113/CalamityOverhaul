@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BrimstoneFuryHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BrimstoneFury";
-        public override int targetCayItem => ModContent.ItemType<BrimstoneFury>();
-        public override int targetCWRItem => ModContent.ItemType<BrimstoneFuryEcType>();
+        public override int TargetID => ModContent.ItemType<BrimstoneFury>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             HandFireDistanceX = 14;

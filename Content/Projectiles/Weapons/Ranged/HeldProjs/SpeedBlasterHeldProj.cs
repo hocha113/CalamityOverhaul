@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SpeedBlasterHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SpeedBlaster";
-        public override int targetCayItem => ModContent.ItemType<SpeedBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<SpeedBlasterEcType>();
+        public override int TargetID => ModContent.ItemType<SpeedBlaster>();
         public float DashShotDamageMult = 4.5f;
         public int DashCooldown = 300;
         public float FireRatePowerup = 1.15f;

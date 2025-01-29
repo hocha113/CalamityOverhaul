@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMidasPrime : BaseRItem
+    internal class RMidasPrime : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<MidasPrime>();
-        public override int ProtogenesisID => ModContent.ItemType<MidasPrimeEcType>();
-        public override string TargetToolTipItemName => "MidasPrimeEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<MidasPrimeHeldProj>(30);
     }
 }

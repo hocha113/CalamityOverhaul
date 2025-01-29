@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CorrodedCaustibowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CorrodedCaustibow";
-        public override int targetCayItem => ModContent.ItemType<CorrodedCaustibow>();
-        public override int targetCWRItem => ModContent.ItemType<CorrodedCaustibowEcType>();
+        public override int TargetID => ModContent.ItemType<CorrodedCaustibow>();
         public override void SetRangedProperty() {
 
         }

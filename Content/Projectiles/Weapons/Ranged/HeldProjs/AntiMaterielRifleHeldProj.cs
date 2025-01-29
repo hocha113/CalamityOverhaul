@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AntiMaterielRifleHeldProj : TyrannysEndHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AntiMaterielRifle";
-        public override int targetCayItem => ModContent.ItemType<AntiMaterielRifle>();
-        public override int targetCWRItem => ModContent.ItemType<AntiMaterielRifleEcType>();
+        public override int TargetID => ModContent.ItemType<AntiMaterielRifle>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
             FireTime = 60;

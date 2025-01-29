@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 死神镰刀
     /// </summary>
-    internal class RDeathSickle : BaseRItem
+    internal class RDeathSickle : ItemOverride
     {
         public override int TargetID => ItemID.DeathSickle;
         public override bool IsVanilla => true;

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MineralMortarHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MineralMortar";
-        public override int targetCayItem => ModContent.ItemType<MineralMortar>();
-        public override int targetCWRItem => ModContent.ItemType<MineralMortarEcType>();
+        public override int TargetID => ModContent.ItemType<MineralMortar>();
         private bool oldOnFire;
         private int chargeIndex;
         public override void SetRangedProperty() {

@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ContagionHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Contagion";
-        public override int targetCayItem => ModContent.ItemType<Contagion>();
-        public override int targetCWRItem => ModContent.ItemType<ContagionEcType>();
+        public override int TargetID => ModContent.ItemType<Contagion>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 18;
             HandFireDistanceX = 20;

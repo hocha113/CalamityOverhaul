@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 钨弓
     /// </summary>
-    internal class RTungstenBow : BaseRItem
+    internal class RTungstenBow : ItemOverride
     {
         public override int TargetID => ItemID.TungstenBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_TungstenBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<TungstenBowHeldProj>();
     }
 }

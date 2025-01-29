@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RAcidGun : BaseRItem
+    internal class RAcidGun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AcidGun>();
-        public override int ProtogenesisID => ModContent.ItemType<AcidGunEcType>();
-        public override string TargetToolTipItemName => "AcidGunEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<AcidGunHeldProj>();
     }
 }

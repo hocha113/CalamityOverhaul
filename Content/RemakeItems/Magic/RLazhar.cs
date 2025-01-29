@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RLazhar : BaseRItem
+    internal class RLazhar : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Lazhar>();
-        public override int ProtogenesisID => ModContent.ItemType<LazharEcType>();
-        public override string TargetToolTipItemName => "LazharEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<LazharHeldProj>();
     }
 }

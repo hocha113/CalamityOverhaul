@@ -529,14 +529,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void RItemLoadenRecipe() {
-            foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
-                if (baseRItem.FormulaSubstitution) {
-                    baseRItem.LoadItemRecipe();
-                }
-            }
-        }
-
         public override void PostAddRecipes() {
             {//遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
                 for (int i = 0; i < Recipe.numRecipes; i++) {
@@ -545,11 +537,6 @@ namespace CalamityOverhaul.Content
             }
             {//添加配方的操作
                 AddResultContent();
-            }
-            {//关于重制节点的配方加载
-                if (!CWRServerConfig.Instance.WeaponOverhaul) {
-                    RItemLoadenRecipe();
-                }
             }
         }
 

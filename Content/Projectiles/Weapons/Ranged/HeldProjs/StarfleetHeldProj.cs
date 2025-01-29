@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class StarfleetHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Starfleet";
-        public override int targetCayItem => ModContent.ItemType<Starfleet>();
-        public override int targetCWRItem => ModContent.ItemType<StarfleetEcType>();
-
+        public override int TargetID => ModContent.ItemType<Starfleet>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 10;

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraSlashDefault : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaEcType>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Murasama>();
         public ref int hitCooldown => ref Owner.Calamity().murasamaHitCooldown;
         public bool onspan;
         public bool CanAttemptDead;
@@ -56,15 +56,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Vector2 origin = frame.Size() * 0.5f;
             SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + Projectile.velocity * 0.3f + new Vector2(0, -32).RotatedBy(Projectile.rotation), frame
-                , MurasamaEcType.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+                , MurasamaOverride.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
 
         public static float GetMuraSizeInMeleeSengs(Player player) {
             Item mura = player.GetItem();
-            if ((mura.type == ModContent.ItemType<MurasamaEcType>()
-                || mura.type == ModContent.ItemType<Murasama>())
-                && mura.type != ItemID.None) {
+            if (mura.type == ModContent.ItemType<Murasama>()) {
                 float meleeSizeSengs = player.GetAdjustedItemScale(mura);
                 if (meleeSizeSengs > 1.5f) {
                     meleeSizeSengs = 1.5f;
@@ -80,14 +78,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void AI() {
             Projectile.Calamity().timesPierced = 0;
             if (!onspan) {
-                Projectile.scale = MurasamaEcType.NameIsSam(Owner) ? 1.65f : MurasamaEcType.GetOnScale;
+                Projectile.scale = MurasamaOverride.NameIsSam(Owner) ? 1.65f : MurasamaOverride.GetOnScale;
                 Projectile.scale *= GetMuraSizeInMeleeSengs(base.Owner);
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;
                 onspan = true;
             }
             if (Slash2) {
-                _ = SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.1f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -95,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash3) {
-                _ = SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = 0f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaOverride.BigSwing with { Pitch = 0f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -103,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash1) {
-                _ = SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.05f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.05f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -317,9 +315,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCharged += (int)(MurasamaEcType.GetOnRDCD / 10f);
-                if (Owner.CWR().RisingDragonCharged > MurasamaEcType.GetOnRDCD) {
-                    Owner.CWR().RisingDragonCharged = MurasamaEcType.GetOnRDCD;
+                Owner.CWR().RisingDragonCharged += (int)(MurasamaOverride.GetOnRDCD / 10f);
+                if (Owner.CWR().RisingDragonCharged > MurasamaOverride.GetOnRDCD) {
+                    Owner.CWR().RisingDragonCharged = MurasamaOverride.GetOnRDCD;
                 }
                 int type = ModContent.ProjectileType<MurasamaHeld>();
                 foreach (var p in Main.projectile) {
@@ -333,8 +331,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
             _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)
-                : SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
+                ? SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)
+                : SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
 
             for (int i = 0; i < 3; i++) {
                 Color impactColor = Slash3 ? Main.rand.NextBool(3) ? Color.LightCoral : Color.White : Main.rand.NextBool(4) ? Color.LightCoral : Color.Crimson;

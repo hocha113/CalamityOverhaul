@@ -8,11 +8,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class REternalBlizzard : BaseRItem
+    internal class REternalBlizzard : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EternalBlizzard>();
-        public override int ProtogenesisID => ModContent.ItemType<EternalBlizzardEcType>();
-        public override string TargetToolTipItemName => "EternalBlizzardEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 48;
             item.UseSound = CWRSound.Gun_Crossbow_Shoot with { Volume = 0.7f };

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RSnowmanCannon : BaseRItem
+    internal class RSnowmanCannon : ItemOverride
     {
         public override int TargetID => ItemID.SnowmanCannon;
         public override bool FormulaSubstitution => false;

@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MalevolenceHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Malevolence";
-        public override int targetCayItem => ModContent.ItemType<Malevolence>();
-        public override int targetCWRItem => ModContent.ItemType<MalevolenceEcType>();
+        public override int TargetID => ModContent.ItemType<Malevolence>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
             HandFireDistanceX = 20;

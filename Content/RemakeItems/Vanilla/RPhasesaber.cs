@@ -5,49 +5,49 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RPhasesaber : BaseRItem
+    internal class RPhasesaber : ItemOverride
     {
         public override int TargetID => ItemID.WhitePhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber2 : BaseRItem
+    internal class RPhasesaber2 : ItemOverride
     {
         public override int TargetID => ItemID.PurplePhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber3 : BaseRItem
+    internal class RPhasesaber3 : ItemOverride
     {
         public override int TargetID => ItemID.OrangePhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber4 : BaseRItem
+    internal class RPhasesaber4 : ItemOverride
     {
         public override int TargetID => ItemID.BluePhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber5 : BaseRItem
+    internal class RPhasesaber5 : ItemOverride
     {
         public override int TargetID => ItemID.GreenPhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber6 : BaseRItem
+    internal class RPhasesaber6 : ItemOverride
     {
         public override int TargetID => ItemID.RedPhasesaber;
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) => PhasebladeHeld.Set(item);
     }
 
-    internal class RPhasesaber7 : BaseRItem
+    internal class RPhasesaber7 : ItemOverride
     {
         public override int TargetID => ItemID.YellowPhasesaber;
         public override bool IsVanilla => true;

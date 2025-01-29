@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RUltima : BaseRItem
+    internal class RUltima : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Ultima>();
-        public override int ProtogenesisID => ModContent.ItemType<UltimaEcType>();
-        public override string TargetToolTipItemName => "UltimaEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<UltimaHeldProj>();
     }
 }

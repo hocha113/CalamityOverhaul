@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Magic.Extras;
+﻿using CalamityOverhaul.Content.Items.Magic;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -7,8 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
     internal class EtherRoarHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AethersWhisper";
-        public override int targetCayItem => ModContent.ItemType<EtherRoar>();
-        public override int targetCWRItem => ModContent.ItemType<EtherRoar>();
+        public override int TargetID => ModContent.ItemType<EtherRoar>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 60;
             ShootPosNorlLengValue = -2;
@@ -19,10 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
         }
 
         public override void FiringShoot() {

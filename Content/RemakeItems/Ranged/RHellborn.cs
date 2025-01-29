@@ -10,11 +10,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RHellborn : BaseRItem
+    internal class RHellborn : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Hellborn>();
-        public override int ProtogenesisID => ModContent.ItemType<HellbornEcType>();
-        public override string TargetToolTipItemName => "HellbornEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 20;
             item.DamageType = DamageClass.Ranged;

@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSvantechnical : BaseRItem
+    internal class RSvantechnical : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Svantechnical>();
-        public override int ProtogenesisID => ModContent.ItemType<SvantechnicalEcType>();
-        public override string TargetToolTipItemName => "SvantechnicalEcType";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<SvantechnicalHeldProj>(280);
             item.CWR().Scope = true;

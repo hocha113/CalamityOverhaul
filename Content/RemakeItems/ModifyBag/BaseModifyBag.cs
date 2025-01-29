@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
-    internal abstract class BaseModifyBag : BaseRItem
+    internal abstract class BaseModifyBag : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => false;

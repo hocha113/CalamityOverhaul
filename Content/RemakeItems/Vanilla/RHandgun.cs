@@ -5,12 +5,12 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RHandgun : BaseRItem
+    internal class RHandgun : ItemOverride
     {
         public override int TargetID => ItemID.Handgun;
         public override bool FormulaSubstitution => false;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_HandGun_Text";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 20;
             item.SetCartridgeGun<HandgunHeldProj>(15);

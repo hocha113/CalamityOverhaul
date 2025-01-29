@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
         internal void SetItemVidousList() {
             itemVidousList = [];
-            foreach (var rItem in CWRMod.RItemInstances) {
+            foreach (var rItem in CWRMod.ItemOverrideInstances) {
                 if (rItem.DrawingInfo && rItem.TargetID > 0) {
                     Item ccItem = new Item(rItem.TargetID);
                     if (!tabControlMelee.Tab && (ccItem.DamageType == DamageClass.Melee

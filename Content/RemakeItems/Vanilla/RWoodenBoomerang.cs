@@ -10,11 +10,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 木制回旋镖
     /// </summary>
-    internal class RWoodenBoomerang : BaseRItem
+    internal class RWoodenBoomerang : ItemOverride
     {
         public override int TargetID => ItemID.WoodenBoomerang;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_WoodenBoomerang_Text";
         public override void SetDefaults(Item item) {
             item.DamageType = CWRLoad.RogueDamageClass;
             item.shoot = ModContent.ProjectileType<WoodenBoomerangHeld>();

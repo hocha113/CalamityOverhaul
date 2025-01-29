@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DodusHandcannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DodusHandcannon";
-        public override int targetCayItem => ModContent.ItemType<DodusHandcannon>();
-        public override int targetCWRItem => ModContent.ItemType<DodusHandcannonEcType>();
-
+        public override int TargetID => ModContent.ItemType<DodusHandcannon>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 18;

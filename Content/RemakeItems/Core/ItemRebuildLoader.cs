@@ -9,7 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static CalamityOverhaul.Content.RemakeItems.Core.BaseRItem;
+using static CalamityOverhaul.Content.RemakeItems.Core.ItemOverride;
 using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.type == ItemID.None) {
                 return false;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_AllowPreFix(item, pre);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.type == ItemID.None) {
                 return false;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_MeleePreFix(item);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.type == ItemID.None) {
                 return false;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_RangedPreFix(item);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -212,13 +212,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_AltFunctionUse"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_AltFunctionUse"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public bool OnAltFunctionUseHook(On_AltFunctionUse_Delegate orig, Item item, Player player) {
             if (item.IsAir) {
                 return false;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_AltFunctionUse(item, player);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -227,13 +227,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return orig.Invoke(item, player);
         }
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_UpdateAccessory"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_UpdateAccessory"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public void OnUpdateAccessoryHook(On_UpdateAccessory_Delegate orig, Item item, Player player, bool hideVisual) {
             if (item.IsAir) {
                 return;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool rasg = ritem.On_UpdateAccessory(item, player, hideVisual);
                 if (!rasg) {
                     return;
@@ -242,13 +242,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             orig.Invoke(item, player, hideVisual);
         }
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public void OnModifyWeaponDamageHook(On_ModifyWeaponDamage_Delegate orig, Item item, Player player, ref StatModifier damage) {
             if (item.IsAir) {
                 return;
             }
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool rasg = ritem.On_ModifyWeaponDamage(item, player, ref damage);
                 if (!rasg) {
                     return;
@@ -258,10 +258,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public bool OnCanConsumeAmmoHook(On_CanConsumeAmmo_Delegate orig, Item item, Item ammo, Player player) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_CanConsumeAmmo(item, ammo, player);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnModifyItemLootHook(On_ModifyItemLoot_Delegate orig, Item item, ItemLoot itemLoot) {
             bool? result = null;
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 result = ritem.On_ModifyItemLoot(item, itemLoot);
             }
             if (result.HasValue) {
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnModifyWeaponCritHook(On_ModifyWeaponCrit_Delegate orig, Item item, Player player, ref float crit) {
             bool? result = null;
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 result = ritem.On_ModifyWeaponCrit(item, player, ref crit);
             }
             if (result.HasValue) {
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnUseAnimationHook(On_UseAnimation_Delegate orig, Item item, Player player) {
             bool? result = null;
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 result = ritem.On_UseAnimation(item, player);
             }
             if (result.HasValue) {
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public bool? OnUseItemHook(On_UseItem_Delegate orig, Item item, Player player) {
             bool? result = null;
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 result = ritem.On_UseItem(item, player);
             }
             return result.HasValue ? result.Value : orig(item, player);
@@ -360,15 +360,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         [Obsolete]
         public void OnSetDefaultsHook(On_SetDefaults_Dalegate orig, Item item, bool createModItem) {
             orig.Invoke(item, true);
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 ritem.On_PostSetDefaults(item);
             }
         }
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_Shoot"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_Shoot"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {//
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
                 if (rasg.HasValue) {
                     return rasg.Value;
@@ -378,10 +378,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
         }
         /// <summary>
-        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_ModifyShootStats(Item, Player, ref Vector2, ref Vector2, ref int, ref int, ref float)"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_ModifyShootStats(Item, Player, ref Vector2, ref Vector2, ref int, ref int, ref float)"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public void OnModifyShootStatsHook(On_ModifyShootStats_Delegate orig, Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {//
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool rasg = ritem.On_ModifyShootStats(item, player, ref position, ref velocity, ref type, ref damage, ref knockback);
                 if (!rasg) {
                     return;
@@ -392,10 +392,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
         /// <summary>
         /// 提前于TML的方法执行，这个钩子可以用来做到<see cref="GlobalItem.CanUseItem"/>无法做到的修改效果，比如让一些原本不可使用的物品可以使用，
-        /// <br/>继承重写<see cref="BaseRItem.On_CanUseItem(Item, Player)"/>来达到这些目的，用于进行一些高级修改
+        /// <br/>继承重写<see cref="ItemOverride.On_CanUseItem(Item, Player)"/>来达到这些目的，用于进行一些高级修改
         /// </summary>
         public bool OnCanUseItemHook(On_CanUseItem_Delegate orig, Item item, Player player) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
                 bool? rasg = ritem.On_CanUseItem(item, player);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
                 if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public void OnHitNPCHook(On_HitNPC_Delegate orig, Item item, Player player, NPC target, in NPC.HitInfo hit, int damageDone) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
                 bool? rasg = ritem.On_OnHitNPC(item, player, target, hit, damageDone);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
                 if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public void OnHitPvpHook(On_HitPvp_Delegate orig, Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_OnHitPvp(item, player, target, hurtInfo);
                 if (rasg.HasValue) {
                     if (!rasg.Value) {
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public void OnModifyHitNPCHook(On_ModifyHitNPC_Delegate orig, Item item, Player player, NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_ModifyHitNPC(item, player, target, ref modifiers);
                 if (rasg.HasValue) {
                     if (rasg.Value) {//如果返回了true，那么执行原物品的该方法
@@ -451,7 +451,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public bool OnPreDrawInInventoryHook(On_PreDrawInInventory_Delegate orig, Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool rasg = ritem.On_PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
                 if (!rasg) {
                     return false;
@@ -463,21 +463,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         #endregion
 
         #region Loader Item Hook
-        public static void ProcessRemakeAction(Item item, Action<BaseRItem> action) {
+        public static void ProcessRemakeAction(Item item, Action<ItemOverride> action) {
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 return;
             }
-            if (RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 action(ritem);
             }
         }
 
-        public static bool? ProcessRemakeAction(Item item, Func<BaseRItem, bool?> action) {
+        public static bool? ProcessRemakeAction(Item item, Func<ItemOverride, bool?> action) {
             bool? result = null;
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 return null;
             }
-            if (RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 result = action(ritem);
             }
             return result;

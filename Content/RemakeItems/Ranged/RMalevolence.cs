@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RMalevolence : BaseRItem
+    internal class RMalevolence : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Malevolence>();
-        public override int ProtogenesisID => ModContent.ItemType<MalevolenceEcType>();
-        public override string TargetToolTipItemName => "MalevolenceEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<MalevolenceHeldProj>();
     }
 }

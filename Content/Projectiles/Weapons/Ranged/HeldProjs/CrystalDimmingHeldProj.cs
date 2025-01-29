@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,8 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CrystalDimmingHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimmingHeld";
-        public override int targetCayItem => ModContent.ItemType<CrystalDimming>();
-        public override int targetCWRItem => ModContent.ItemType<CrystalDimming>();
+        public override int TargetID => ModContent.ItemType<CrystalDimming>();
         private int fireIndex2;
         private int onFireTime;
         private int onFireTime2;

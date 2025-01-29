@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DarkechoGreatbowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DarkechoGreatbow";
-        public override int targetCayItem => ModContent.ItemType<DarkechoGreatbow>();
-        public override int targetCWRItem => ModContent.ItemType<DarkechoGreatbowEcType>();
+        public override int TargetID => ModContent.ItemType<DarkechoGreatbow>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
             HandIdleDistanceX = 16;
@@ -17,8 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(2, 6, 2, 54);
         }
-        public override void BowShoot() {
-            OrigItemShoot();
-        }
+        public override void BowShoot() => OrigItemShoot();
     }
 }

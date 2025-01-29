@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class NanoPurgeHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Proj_Magic + "NanoPurgeHoldout";
-        public override int targetCayItem => ModContent.ItemType<NanoPurge>();
-        public override int targetCWRItem => ModContent.ItemType<NanoPurgeEcType>();
+        public override int TargetID => ModContent.ItemType<NanoPurge>();
         private int fireIndex2;
         private int intframe = 15;
         public override void SetMagicProperty() {

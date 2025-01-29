@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RTheBallista : BaseRItem
+    internal class RTheBallista : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheBallista>();
-        public override int ProtogenesisID => ModContent.ItemType<TheBallistaEcType>();
-        public override string TargetToolTipItemName => "TheBallistaEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<TheBallistaHeldProj>();
     }
 }

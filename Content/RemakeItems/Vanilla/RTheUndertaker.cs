@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RTheUndertaker : BaseRItem
+    internal class RTheUndertaker : ItemOverride
     {
         public override int TargetID => ItemID.TheUndertaker;
         public override bool FormulaSubstitution => false;

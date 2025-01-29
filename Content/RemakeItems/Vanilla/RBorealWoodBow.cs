@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 针叶木弓
     /// </summary>
-    internal class RBorealWoodBow : BaseRItem
+    internal class RBorealWoodBow : ItemOverride
     {
         public override int TargetID => ItemID.BorealWoodBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_WoodenBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<BorealWoodBowHeldProj>();
     }
 }

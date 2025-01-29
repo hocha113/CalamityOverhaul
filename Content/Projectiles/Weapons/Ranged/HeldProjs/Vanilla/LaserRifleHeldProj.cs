@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.LaserRifle].Value;
-        public override int targetCayItem => ItemID.LaserRifle;
-        public override int targetCWRItem => ItemID.LaserRifle;
+        public override int TargetID => ItemID.LaserRifle;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = -50;
             ShootPosNorlLengValue = 0;

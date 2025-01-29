@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStormDragoon : BaseRItem
+    internal class RStormDragoon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StormDragoon>();
-        public override int ProtogenesisID => ModContent.ItemType<StormDragoonEcType>();
-        public override string TargetToolTipItemName => "StormDragoonEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 68;
             item.SetCartridgeGun<StormDragoonHeldProj>(225);

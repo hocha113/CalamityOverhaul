@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铁弓
     /// </summary>
-    internal class RIronBow : BaseRItem
+    internal class RIronBow : ItemOverride
     {
         public override int TargetID => ItemID.IronBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_IronBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<IronBowHeldProj>();
     }
 }

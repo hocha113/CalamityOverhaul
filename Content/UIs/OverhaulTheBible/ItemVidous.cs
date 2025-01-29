@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
     internal class ItemVidous : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
-        public BaseRItem BaseRItem { get; set; }
+        public ItemOverride BaseRItem { get; set; }
         public static int Width => 66;
         public static int Height => 66;
         public static Vector2 handerOffsetTopL => new Vector2(6, 6);

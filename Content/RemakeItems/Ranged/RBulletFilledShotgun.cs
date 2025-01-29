@@ -10,11 +10,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     /// <summary>
     /// 满弹霰弹枪
     /// </summary>
-    internal class RBulletFilledShotgun : BaseRItem
+    internal class RBulletFilledShotgun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BulletFilledShotgun>();
-        public override int ProtogenesisID => ModContent.ItemType<BulletFilledShotgunEcType>();
-        public override string TargetToolTipItemName => "BulletFilledShotgunEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<BulletFilledShotgunHeldProj>(8);
     }
 }

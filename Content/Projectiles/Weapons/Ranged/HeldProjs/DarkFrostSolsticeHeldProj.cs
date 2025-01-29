@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DarkFrostSolsticeHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolsticeHeld";
-        public override int targetCayItem => ModContent.ItemType<DarkFrostSolstice>();
-        public override int targetCWRItem => ModContent.ItemType<DarkFrostSolstice>();
+        public override int TargetID => ModContent.ItemType<DarkFrostSolstice>();
         private int fireIndex2;
         private int onFireTime;
         private int onFireTime2;

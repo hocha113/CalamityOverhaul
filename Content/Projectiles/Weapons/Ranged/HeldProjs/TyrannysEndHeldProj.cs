@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TyrannysEndHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
-        public override int targetCayItem => ModContent.ItemType<TyrannysEnd>();
-        public override int targetCWRItem => ModContent.ItemType<TyrannysEndEcType>();
-
+        public override int TargetID => ModContent.ItemType<TyrannysEnd>();
         public override void SetRangedProperty() {
             Recoil = 6;
             FireTime = 20;

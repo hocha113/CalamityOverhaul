@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铅宽剑
     /// </summary>
-    internal class RMineralSword : BaseRItem
+    internal class RMineralSword : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.LeadBroadsword;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 锡宽剑
     /// </summary>
-    internal class RMineralSword2 : BaseRItem
+    internal class RMineralSword2 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.TinBroadsword;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 钨宽剑
     /// </summary>
-    internal class RMineralSword3 : BaseRItem
+    internal class RMineralSword3 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.TungstenBroadsword;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铂金宽剑
     /// </summary>
-    internal class RMineralSword4 : BaseRItem
+    internal class RMineralSword4 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.PlatinumBroadsword;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 金阔剑
     /// </summary>
-    internal class RMineralSword5 : BaseRItem
+    internal class RMineralSword5 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.GoldBroadsword;
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铁阔剑
     /// </summary>
-    internal class RMineralSword6 : BaseRItem
+    internal class RMineralSword6 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.IronBroadsword;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 铜阔剑
     /// </summary>
-    internal class RMineralSword7 : BaseRItem
+    internal class RMineralSword7 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.CopperBroadsword;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 银阔剑
     /// </summary>
-    internal class RMineralSword8 : BaseRItem
+    internal class RMineralSword8 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.SilverBroadsword;
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 仙人掌剑
     /// </summary>
-    internal class RMineralSword9 : BaseRItem
+    internal class RMineralSword9 : ItemOverride
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.CactusSword;

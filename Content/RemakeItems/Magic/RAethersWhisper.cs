@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RAethersWhisper : BaseRItem
+    internal class RAethersWhisper : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AethersWhisper>();
-        public override int ProtogenesisID => ModContent.ItemType<AethersWhisperEcType>();
-        public override string TargetToolTipItemName => "AethersWhisperEcType";
         public override void SetDefaults(Item item) {
             item.useTime = 30;
             item.SetHeldProj<AethersWhisperHeldProj>();

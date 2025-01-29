@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -194,7 +195,7 @@ namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
                 if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
                     CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
                     if (Main.GameUpdateCount % 60 == 0) {
-                        SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
+                        SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
                         if (!VaultUtils.isClient) {
                             Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
                             , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);

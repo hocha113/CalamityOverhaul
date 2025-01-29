@@ -13,10 +13,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPearlGod : BaseRItem
+    internal class RPearlGod : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PearlGod>();
-        public override int ProtogenesisID => ModContent.ItemType<PearlGodEcType>();
         public override void SetDefaults(Item item) {
             item.damage = 150;
             item.DamageType = DamageClass.Ranged;
@@ -38,10 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 12;
             item.SetHeldProj<PearlGodHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "PearlGodEcType");
         }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

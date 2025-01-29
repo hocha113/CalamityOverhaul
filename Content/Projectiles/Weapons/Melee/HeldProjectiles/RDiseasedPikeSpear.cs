@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RDiseasedPikeSpear : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/DiseasedPikeSpear";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPikeEcType>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPike>();
 
         private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 
@@ -69,8 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.Kill();
                     return;
                 }
-                if (diseasedPike == null || diseasedPike?.type != ModContent.ItemType<DiseasedPikeEcType>()
-                    && diseasedPike.type != ModContent.ItemType<DiseasedPike>()) {
+                if (diseasedPike == null || diseasedPike.type != ModContent.ItemType<DiseasedPike>()) {
                     Projectile.Kill();
                     return;
                 }//因为需要替换原模组的内容，所以这里放弃了直接访问类型来获取属性，作为补救，禁止其余物品发射该弹幕，即使这种情况不应该出现

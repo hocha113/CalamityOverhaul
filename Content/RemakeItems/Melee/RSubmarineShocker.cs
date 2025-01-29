@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSubmarineShocker : BaseRItem
+    internal class RSubmarineShocker : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<SubmarineShocker>();
-        public override int ProtogenesisID => ModContent.ItemType<SubmarineShockerEcType>();
-        public override string TargetToolTipItemName => "SubmarineShockerEcType";
+        internal static bool canShoot;
         public override void SetDefaults(Item item) {
             item.SetKnifeHeld<SubmarineShockerHeld>();
             item.shootSpeed = 8;

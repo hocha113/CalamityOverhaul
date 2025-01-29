@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class SepticSkewerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SepticSkewer";
-        public override int targetCayItem => ModContent.ItemType<SepticSkewer>();
-        public override int targetCWRItem => ModContent.ItemType<SepticSkewerEcType>();
-
+        public override int TargetID => ModContent.ItemType<SepticSkewer>();
         public override void SetRangedProperty() {
             FireTime = 1;
             HandIdleDistanceX = 24;

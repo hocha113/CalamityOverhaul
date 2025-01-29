@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SnowballCannon].Value;
-        public override int targetCayItem => ItemID.SnowballCannon;
-        public override int targetCWRItem => ItemID.SnowballCannon;
+        public override int TargetID => ItemID.SnowballCannon;
         public override void SetRangedProperty() {
             FireTime = 40;
             kreloadMaxTime = 35;

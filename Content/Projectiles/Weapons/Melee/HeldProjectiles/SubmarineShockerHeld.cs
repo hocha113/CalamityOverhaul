@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -25,13 +26,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void Shoot() {
-            if (trueMelee || !SubmarineShockerEcType.canShoot) {
-                SubmarineShockerEcType.canShoot = true;
+            if (trueMelee || !RSubmarineShocker.canShoot) {
+                RSubmarineShocker.canShoot = true;
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity
                     , ModContent.ProjectileType<LigSpark>(), (int)(Projectile.damage * 0.7f), Projectile.knockBack, Main.myPlayer);
-            SubmarineShockerEcType.canShoot = false;
+            RSubmarineShocker.canShoot = false;
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

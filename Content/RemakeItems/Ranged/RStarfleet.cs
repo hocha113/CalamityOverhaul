@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStarfleet : BaseRItem
+    internal class RStarfleet : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Starfleet>();
-        public override int ProtogenesisID => ModContent.ItemType<StarfleetEcType>();
-        public override string TargetToolTipItemName => "StarfleetEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<StarfleetHeldProj>(60);
     }
 }

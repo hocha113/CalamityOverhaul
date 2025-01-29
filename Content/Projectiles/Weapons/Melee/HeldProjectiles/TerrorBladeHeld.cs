@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -25,8 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             Item item = player.GetItem();
-            if (item.IsAir || item.type != ModContent.ItemType<TerrorBladeEcType>()
-                && item.type != ModContent.ItemType<TerrorBlade>()) {
+            if (item.IsAir || item.type != ModContent.ItemType<TerrorBlade>()) {
                 Projectile.Kill();
                 return;
             }
@@ -50,8 +50,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
 
-            if (item.CWR().MeleeCharge > TerrorBladeEcType.TerrorBladeMaxRageEnergy) {
-                item.CWR().MeleeCharge = TerrorBladeEcType.TerrorBladeMaxRageEnergy;
+            if (item.CWR().MeleeCharge > RTerrorBlade.TerrorBladeMaxRageEnergy) {
+                item.CWR().MeleeCharge = RTerrorBlade.TerrorBladeMaxRageEnergy;
             }
 
             Projectile.Center = player.GetPlayerStabilityCenter();
@@ -77,8 +77,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool PreDraw(ref Color lightColor) {
             Item item = Owner.GetItem();
             if (item != null && item.type > ItemID.None) {
-                TerrorBladeEcType.DrawFrightEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1],
-                item.CWR().MeleeCharge / TerrorBladeEcType.TerrorBladeMaxRageEnergy);
+                RTerrorBlade.DrawFrightEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1],
+                item.CWR().MeleeCharge / RTerrorBlade.TerrorBladeMaxRageEnergy);
             }
             return false;
         }

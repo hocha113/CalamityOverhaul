@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DaemonsFlameHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DaemonsFlame";
-        public override int targetCayItem => ModContent.ItemType<DaemonsFlame>();
-        public override int targetCWRItem => ModContent.ItemType<DaemonsFlameEcType>();
+        public override int TargetID => ModContent.ItemType<DaemonsFlame>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 28;
             HandFireDistanceX = 28;

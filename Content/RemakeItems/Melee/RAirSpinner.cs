@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -9,11 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAirSpinner : BaseRItem
+    internal class RAirSpinner : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AirSpinner>();
-        public override int ProtogenesisID => ModContent.ItemType<AirSpinnerEcType>();
-        public override string TargetToolTipItemName => "AirSpinnerEcType";
         public override void SetDefaults(Item item) {
             item.width = 28;
             item.height = 28;

@@ -12,10 +12,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDeepcoreGK2 : BaseRItem
+    internal class RDeepcoreGK2 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeepcoreGK2>();
-        public override int ProtogenesisID => ModContent.ItemType<DeepcoreGK2EcType>();
+ 
         public override void SetDefaults(Item item) {
             item.damage = 45;
             item.ArmorPenetration = 15;
@@ -39,10 +39,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 220;
             item.CWR().Scope = true;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DeepcoreGK2EcType");
         }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

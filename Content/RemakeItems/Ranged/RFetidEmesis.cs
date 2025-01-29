@@ -11,11 +11,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFetidEmesis : BaseRItem
+    internal class RFetidEmesis : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FetidEmesis>();
-        public override int ProtogenesisID => ModContent.ItemType<FetidEmesisEcType>();
-        public override string TargetToolTipItemName => "FetidEmesisEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 129;
             item.DamageType = DamageClass.Ranged;

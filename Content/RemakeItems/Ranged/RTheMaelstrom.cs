@@ -12,11 +12,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RTheMaelstrom : BaseRItem
+    internal class RTheMaelstrom : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheMaelstrom>();
-        public override int ProtogenesisID => ModContent.ItemType<TheMaelstromEcType>();
-        public override string TargetToolTipItemName => "TheMaelstromEcType";
         public override void SetDefaults(Item item) {
             item.damage = 530;
             item.width = 20;

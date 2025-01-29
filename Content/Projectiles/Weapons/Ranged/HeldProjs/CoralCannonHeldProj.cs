@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CoralCannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CoralCannon";
-        public override int targetCayItem => ModContent.ItemType<CoralCannon>();
-        public override int targetCWRItem => ModContent.ItemType<CoralCannonEcType>();
+        public override int TargetID => ModContent.ItemType<CoralCannon>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 20;
             kreloadMaxTime = 80;

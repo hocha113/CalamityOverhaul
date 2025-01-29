@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BarracudaGunHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BarracudaGun";
-        public override int targetCayItem => ModContent.ItemType<BarracudaGun>();
-        public override int targetCWRItem => ModContent.ItemType<BarracudaGunEcType>();
+        public override int TargetID => ModContent.ItemType<BarracudaGun>();
 
         private bool canFire;
         public override void SetRangedProperty() {

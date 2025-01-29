@@ -8,8 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class AethersWhisperHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AethersWhisper";
-        public override int targetCayItem => ModContent.ItemType<AethersWhisper>();
-        public override int targetCWRItem => ModContent.ItemType<AethersWhisperEcType>();
+        public override int TargetID => ModContent.ItemType<AethersWhisper>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 60;
             ShootPosNorlLengValue = -2;

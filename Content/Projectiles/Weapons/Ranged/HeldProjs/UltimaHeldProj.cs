@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class UltimaHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Ultima";
-        public override int targetCayItem => ModContent.ItemType<Ultima>();
-        public override int targetCWRItem => ModContent.ItemType<UltimaEcType>();
+        public override int TargetID => ModContent.ItemType<Ultima>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 26;
             BowArrowDrawBool = false;

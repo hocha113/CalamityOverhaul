@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Xenopopper].Value;
-        public override int targetCayItem => ItemID.Xenopopper;
-        public override int targetCWRItem => ItemID.Xenopopper;
-
+        public override int TargetID => ItemID.Xenopopper;
         public override void SetRangedProperty() {
             FireTime = 15;
             ControlForce = 0.1f;

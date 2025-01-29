@@ -2,6 +2,7 @@
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -60,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 240);
-            BalefulHarvesterEcType.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
+            RBalefulHarvester.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
             if (!onHitNPCs.Contains(target)) {
                 SoundStyle sound = CommonCalamitySounds.SwiftSliceSound;
                 sound.Pitch = 0.2f;

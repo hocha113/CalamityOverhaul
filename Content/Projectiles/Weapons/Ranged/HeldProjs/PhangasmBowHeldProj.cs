@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PhangasmBowHeldProj : BaseBow
     {
         public override string Texture => "CalamityMod/Items/Weapons/Ranged/Phangasm";
-        public override int targetCayItem => ModContent.ItemType<Phangasm>();
-        public override int targetCWRItem => ModContent.ItemType<PhangasmEcType>();
+        public override int TargetID => ModContent.ItemType<Phangasm>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             HandFireDistanceX = 22;

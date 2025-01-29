@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.MythrilRepeater].Value;
-        public override int targetCayItem => ItemID.MythrilRepeater;
-        public override int targetCWRItem => ItemID.MythrilRepeater;
+        public override int TargetID => ItemID.MythrilRepeater;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RLaserRifle : BaseRItem
+    internal class RLaserRifle : ItemOverride
     {
         public override int TargetID => ItemID.LaserRifle;
         public override bool IsVanilla => true;

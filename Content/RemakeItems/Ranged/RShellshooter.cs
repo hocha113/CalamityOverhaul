@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RShellshooter : BaseRItem
+    internal class RShellshooter : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Shellshooter>();
-        public override int ProtogenesisID => ModContent.ItemType<ShellshooterEcType>();
-        public override string TargetToolTipItemName => "ShellshooterEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<ShellshooterHeldProj>();
     }
 }

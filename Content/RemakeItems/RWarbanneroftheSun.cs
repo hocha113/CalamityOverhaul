@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RWarbanneroftheSun : BaseRItem
+    internal class RWarbanneroftheSun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<WarbanneroftheSun>();
         public override bool DrawingInfo => false;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             if (item2.IsAir) {
                 return true;
             }
-            if (item2.type == ModContent.ItemType<Murasama>() || item2.type == ModContent.ItemType<MurasamaEcType>()) {
+            if (item2.type == ModContent.ItemType<Murasama>()) {
                 CalamityPlayer modPlayer = player.Calamity();
                 modPlayer.warbannerOfTheSun = true;
                 float bonus = 0f;

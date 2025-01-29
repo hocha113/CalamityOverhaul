@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RStakeLauncher : BaseRItem
+    internal class RStakeLauncher : ItemOverride
     {
         public override int TargetID => ItemID.StakeLauncher;
         public override bool FormulaSubstitution => false;

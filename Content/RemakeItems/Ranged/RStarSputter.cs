@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStarSputter : BaseRItem
+    internal class RStarSputter : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StarSputter>();
-        public override int ProtogenesisID => ModContent.ItemType<StarSputterEcType>();
-        public override string TargetToolTipItemName => "StarSputterEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<StarSputterHeldProj>(42);
     }
 }

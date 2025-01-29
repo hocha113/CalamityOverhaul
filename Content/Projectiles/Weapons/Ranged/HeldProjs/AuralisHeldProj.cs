@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AuralisHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Auralis";
-        public override int targetCayItem => ModContent.ItemType<Auralis>();
-        public override int targetCWRItem => ModContent.ItemType<AuralisEcType>();
+        public override int TargetID => ModContent.ItemType<Auralis>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

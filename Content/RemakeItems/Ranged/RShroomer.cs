@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RShroomer : BaseRItem
+    internal class RShroomer : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Shroomer>();
-        public override int ProtogenesisID => ModContent.ItemType<ShroomerEcType>();
-        public override string TargetToolTipItemName => "ShroomerEcType";
         public override void SetDefaults(Item item) {
             item.damage = 135;
             item.SetCartridgeGun<ShroomerHeldProj>(12);

@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class FlakKrakenHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlakKraken";
-        public override int targetCayItem => ModContent.ItemType<FlakKraken>();
-        public override int targetCWRItem => ModContent.ItemType<FlakKrakenEcType>();
+        public override int TargetID => ModContent.ItemType<FlakKraken>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 10;

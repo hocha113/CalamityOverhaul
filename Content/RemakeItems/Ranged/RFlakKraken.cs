@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFlakKraken : BaseRItem
+    internal class RFlakKraken : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FlakKraken>();
-        public override int ProtogenesisID => ModContent.ItemType<FlakKrakenEcType>();
-        public override string TargetToolTipItemName => "FlakKrakenEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 84;
             item.SetCartridgeGun<FlakKrakenHeldProj>(80);

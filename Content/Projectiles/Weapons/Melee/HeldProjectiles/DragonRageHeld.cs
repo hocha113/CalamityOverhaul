@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -333,10 +334,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private void HitEffect(Entity target, bool theofSteel) {
             HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
             if (theofSteel) {
-                SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.75f }, target.Center);
+                SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = 0.75f }, target.Center);
             }
             else {
-                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 1.25f }, target.Center);
+                SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = 1.25f }, target.Center);
             }
 
             for (int i = 0; i < sparkCount; i++) {
@@ -390,7 +391,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             }
 
-            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && DragonRageEcType.coolWorld) {
+            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && RDragonRage.coolWorld) {
                 for (int i = 0; i < 3; i++) {
                     Vector2 vr = (MathHelper.TwoPi / 3f * i + Main.GameUpdateCount * 0.1f).ToRotationVector2();
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3

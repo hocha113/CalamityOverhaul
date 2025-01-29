@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 战术霰弹枪
     /// </summary>
-    internal class RTacticalShotgun : BaseRItem
+    internal class RTacticalShotgun : ItemOverride
     {
         public override int TargetID => ItemID.TacticalShotgun;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_TacticalShotgun_Text";
         public override void SetDefaults(Item item) {
             item.damage = 40;
             item.SetHeldProj<TacticalShotgunHeldProj>();

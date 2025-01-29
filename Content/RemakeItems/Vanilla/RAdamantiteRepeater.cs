@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RAdamantiteRepeater : BaseRItem
+    internal class RAdamantiteRepeater : ItemOverride
     {
         public override int TargetID => ItemID.AdamantiteRepeater;
         public override bool FormulaSubstitution => false;

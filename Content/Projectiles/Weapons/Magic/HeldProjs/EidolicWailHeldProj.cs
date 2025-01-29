@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class EidolicWailHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "EidolicWail";
-        public override int targetCayItem => ModContent.ItemType<EidolicWail>();
-        public override int targetCWRItem => ModContent.ItemType<EidolicWailEcType>();
+        public override int TargetID => ModContent.ItemType<EidolicWail>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

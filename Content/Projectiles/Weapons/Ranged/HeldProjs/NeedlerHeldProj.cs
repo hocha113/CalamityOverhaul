@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NeedlerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Needler";
-        public override int targetCayItem => ModContent.ItemType<Needler>();
-        public override int targetCWRItem => ModContent.ItemType<NeedlerEcType>();
-
+        public override int TargetID => ModContent.ItemType<Needler>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 12;

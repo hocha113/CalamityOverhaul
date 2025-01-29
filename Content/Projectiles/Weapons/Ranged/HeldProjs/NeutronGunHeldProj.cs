@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class NeutronGunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
-        public override int targetCayItem => NeutronGun.PType;
-        public override int targetCWRItem => NeutronGun.PType;
+        public override int TargetID => NeutronGun.PType;
         private float Charge {
             get => ((NeutronGun)Item.ModItem).Charge;
             set => ((NeutronGun)Item.ModItem).Charge = value;

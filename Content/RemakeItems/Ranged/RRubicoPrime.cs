@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RRubicoPrime : BaseRItem
+    internal class RRubicoPrime : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RubicoPrime>();
-        public override int ProtogenesisID => ModContent.ItemType<RubicoPrimeEcType>();
-        public override string TargetToolTipItemName => "RubicoPrimeEcType";
         public override void SetDefaults(Item item) {
             item.damage = 820;
             item.useTime = 20;

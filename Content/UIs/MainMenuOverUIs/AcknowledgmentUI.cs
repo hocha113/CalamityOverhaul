@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             public static int SpwanItemID() {
-                int id = CWRMod.RItemInstances[Main.rand.Next(CWRMod.RItemInstances.Count)].TargetID;
+                int id = CWRMod.ItemOverrideInstances[Main.rand.Next(CWRMod.ItemOverrideInstances.Count)].TargetID;
                 Main.instance.LoadItem(id);
                 return id;
             }

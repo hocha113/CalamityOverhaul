@@ -2,7 +2,7 @@
 using CalamityMod.Particles;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;

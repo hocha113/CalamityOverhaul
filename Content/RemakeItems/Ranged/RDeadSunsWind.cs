@@ -10,11 +10,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDeadSunsWind : BaseRItem
+    internal class RDeadSunsWind : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeadSunsWind>();
-        public override int ProtogenesisID => ModContent.ItemType<DeadSunsWindEcType>();
-        public override string TargetToolTipItemName => "DeadSunsWindEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 100;
             item.DamageType = DamageClass.Ranged;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 3.5f;
-            item.UseSound = DeadSunsWindEcType.UseShoot;
+            item.UseSound = new("CalamityMod/Sounds/Item/DeadSunShot") { PitchVariance = 0.35f, Volume = 0.4f };
             item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             item.rare = ItemRarityID.Cyan;
             item.autoReuse = true;

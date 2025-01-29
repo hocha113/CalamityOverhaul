@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RButcher : BaseRItem
+    internal class RButcher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Butcher>();
-        public override int ProtogenesisID => ModContent.ItemType<ButcherEcType>();
-        public override string TargetToolTipItemName => "ButcherEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<ButcherHeldProj>(58);
     }
 }

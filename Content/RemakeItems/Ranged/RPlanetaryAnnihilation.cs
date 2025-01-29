@@ -10,11 +10,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPlanetaryAnnihilation : BaseRItem
+    internal class RPlanetaryAnnihilation : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PlanetaryAnnihilation>();
-        public override int ProtogenesisID => ModContent.ItemType<PlanetaryAnnihilationEcType>();
-        public override string TargetToolTipItemName => "PlanetaryAnnihilationEcType";
         public override void SetDefaults(Item item) {
             item.damage = 66;
             item.DamageType = DamageClass.Ranged;

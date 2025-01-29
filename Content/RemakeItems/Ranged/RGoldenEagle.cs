@@ -10,11 +10,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RGoldenEagle : BaseRItem
+    internal class RGoldenEagle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GoldenEagle>();
-        public override int ProtogenesisID => ModContent.ItemType<GoldenEagleEcType>();
-        public override string TargetToolTipItemName => "GoldenEagleEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 85;
             item.DamageType = DamageClass.Ranged;

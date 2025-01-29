@@ -8,10 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RVirulence : BaseRItem
+    internal class RVirulence : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Virulence>();
-        public override int ProtogenesisID => ModContent.ItemType<VirulenceEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<VirulenceHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

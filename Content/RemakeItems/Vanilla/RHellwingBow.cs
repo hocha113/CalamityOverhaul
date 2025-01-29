@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 地狱蝙蝠弓
     /// </summary>
-    internal class RHellwingBow : BaseRItem
+    internal class RHellwingBow : ItemOverride
     {
         public override int TargetID => ItemID.HellwingBow;
         public override bool IsVanilla => true;

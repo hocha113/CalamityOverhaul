@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStarmada : BaseRItem
+    internal class RStarmada : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Starmada>();
-        public override int ProtogenesisID => ModContent.ItemType<StarmadaEcType>();
-        public override string TargetToolTipItemName => "StarmadaEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<StarmadaHeldProj>(180);
     }
 }

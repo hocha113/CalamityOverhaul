@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.BloodRainBow].Value;
-        public override int targetCayItem => ItemID.BloodRainBow;
-        public override int targetCWRItem => ItemID.BloodRainBow;
+        public override int TargetID => ItemID.BloodRainBow;
         public override void SetRangedProperty() => BowstringData.DeductRectangle = new Rectangle(6, 12, 2, 20);
         public override void PostInOwner() {
             if (onFire) {

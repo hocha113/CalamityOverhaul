@@ -7,11 +7,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RCoinGun : BaseRItem
+    internal class RCoinGun : ItemOverride
     {
         public override int TargetID => ItemID.CoinGun;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<CoinGunHeld>(200);
     }
 
@@ -19,8 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.CoinGun].Value;
-        public override int targetCayItem => ItemID.CoinGun;
-        public override int targetCWRItem => ItemID.CoinGun;
+        public override int TargetID => ItemID.CoinGun;
         public override void SetRangedProperty() {
             Recoil = 0.6f;
             EnableRecoilRetroEffect = true;

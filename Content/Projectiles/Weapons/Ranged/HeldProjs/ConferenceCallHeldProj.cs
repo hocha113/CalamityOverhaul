@@ -9,9 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ConferenceCallHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ConferenceCall";
-        public override int targetCayItem => ModContent.ItemType<ConferenceCall>();
-        public override int targetCWRItem => ModContent.ItemType<ConferenceCallEcType>();
-
+        public override int TargetID => ModContent.ItemType<ConferenceCall>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 25;

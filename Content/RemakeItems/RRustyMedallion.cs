@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RRustyMedallion : BaseRItem
+    internal class RRustyMedallion : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RustyMedallion>();
         public override bool DrawingInfo => false;

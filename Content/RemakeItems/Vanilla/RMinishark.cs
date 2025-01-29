@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMinishark : BaseRItem
+    internal class RMinishark : ItemOverride
     {
         public override int TargetID => ItemID.Minishark;
         public override bool FormulaSubstitution => false;

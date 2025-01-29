@@ -10,11 +10,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RGaleforce : BaseRItem
+    internal class RGaleforce : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Galeforce>();
-        public override int ProtogenesisID => ModContent.ItemType<GaleforceEcType>();
-        public override string TargetToolTipItemName => "GaleforceEcType";
 
         public override void SetDefaults(Item item) {
             item.damage = 15;

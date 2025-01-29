@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.PalladiumRepeater].Value;
-        public override int targetCayItem => ItemID.PalladiumRepeater;
-        public override int targetCWRItem => ItemID.PalladiumRepeater;
+        public override int TargetID => ItemID.PalladiumRepeater;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

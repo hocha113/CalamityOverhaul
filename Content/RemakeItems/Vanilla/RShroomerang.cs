@@ -10,11 +10,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 蘑菇回旋镖
     /// </summary>
-    internal class RShroomerang : BaseRItem
+    internal class RShroomerang : ItemOverride
     {
         public override int TargetID => ItemID.Shroomerang;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_Shroomerang_Text";
         public override void SetDefaults(Item item) {
             item.DamageType = CWRLoad.RogueDamageClass;
             item.shoot = ModContent.ProjectileType<ShroomerangHeld>();

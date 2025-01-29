@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RHandheldTank : BaseRItem
+    internal class RHandheldTank : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HandheldTank>();
-        public override int ProtogenesisID => ModContent.ItemType<HandheldTankEcType>();
-        public override string TargetToolTipItemName => "HandheldTankEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<HandheldTankHeldProj>(12);
     }
 }

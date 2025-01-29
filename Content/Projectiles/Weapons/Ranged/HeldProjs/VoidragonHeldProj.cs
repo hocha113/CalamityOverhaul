@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.Audio;
@@ -11,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class VoidragonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Voidragon";
-        public override int targetCayItem => ModContent.ItemType<Voidragon>();
-        public override int targetCWRItem => ModContent.ItemType<VoidragonEcType>();
-
+        public override int TargetID => ModContent.ItemType<Voidragon>();
         private int chargeIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

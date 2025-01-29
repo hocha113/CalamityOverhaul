@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 冰雪镰刀
     /// </summary>
-    internal class RIceSickle : BaseRItem
+    internal class RIceSickle : ItemOverride
     {
         public override int TargetID => ItemID.IceSickle;
         public override bool IsVanilla => true;

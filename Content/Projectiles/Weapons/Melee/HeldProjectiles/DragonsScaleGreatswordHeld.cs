@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Melee.Extras;
+﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
 using System.Linq;

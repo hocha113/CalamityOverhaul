@@ -11,11 +11,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RElementalBlaster : BaseRItem
+    internal class RElementalBlaster : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ElementalBlaster>();
-        public override int ProtogenesisID => ModContent.ItemType<ElementalBlasterEcType>();
-        public override string TargetToolTipItemName => "ElementalBlasterEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 67;
             item.DamageType = DamageClass.Ranged;

@@ -11,12 +11,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDaemonsFlame : BaseRItem
+    internal class RDaemonsFlame : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DaemonsFlame>();
-        public override int ProtogenesisID => ModContent.ItemType<DaemonsFlameEcType>();
-        public override string TargetToolTipItemName => "DaemonsFlameEcType";
-
+ 
         public override void SetDefaults(Item item) {
             item.damage = 150;
             item.width = 62;

@@ -15,10 +15,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RDodusHandcannon : BaseRItem
+    internal class RDodusHandcannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DodusHandcannon>();
-        public override int ProtogenesisID => ModContent.ItemType<DodusHandcannonEcType>();
+ 
         public override void SetDefaults(Item item) {
             item.width = 62;
             item.height = 34;
@@ -41,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 22;
             item.SetHeldProj<DodusHandcannonHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DodusHandcannonEcType");
         }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

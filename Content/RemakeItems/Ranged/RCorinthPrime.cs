@@ -12,11 +12,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RCorinthPrime : BaseRItem
+    internal class RCorinthPrime : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<CorinthPrime>();
-        public override int ProtogenesisID => ModContent.ItemType<CorinthPrimeEcType>();
-        public override string TargetToolTipItemName => "CorinthPrimeEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 140;
             item.DamageType = DamageClass.Ranged;

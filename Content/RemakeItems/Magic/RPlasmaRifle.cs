@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RPlasmaRifle : BaseRItem
+    internal class RPlasmaRifle : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<PlasmaRifle>();
-        public override int ProtogenesisID => ModContent.ItemType<PlasmaRifleEcType>();
-        public override string TargetToolTipItemName => "PlasmaRifleEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<PlasmaRifleHeldProj>();
     }
 }

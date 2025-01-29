@@ -7,11 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFirestormCannon : BaseRItem
+    internal class RFirestormCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FirestormCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<FirestormCannonEcType>();
-        public override string TargetToolTipItemName => "FirestormCannonEcType";
+ 
         public override void SetDefaults(Item item) => item.SetCartridgeGun<FirestormCannonHeldProj>(60);
     }
 }

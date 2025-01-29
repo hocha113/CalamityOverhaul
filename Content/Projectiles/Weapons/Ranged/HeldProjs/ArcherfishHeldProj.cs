@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ArcherfishHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Archerfish";
-        public override int targetCayItem => ModContent.ItemType<Archerfish>();
-        public override int targetCWRItem => ModContent.ItemType<ArcherfishEcType>();
+        public override int TargetID => ModContent.ItemType<Archerfish>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 30;

@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class StarSputterHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "StarSputter";
-        public override int targetCayItem => ModContent.ItemType<StarSputter>();
-        public override int targetCWRItem => ModContent.ItemType<StarSputterEcType>();
+        public override int TargetID => ModContent.ItemType<StarSputter>();
         private int chargeIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

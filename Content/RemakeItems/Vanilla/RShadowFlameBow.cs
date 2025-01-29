@@ -8,11 +8,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 暗影焰弓
     /// </summary>
-    internal class RShadowFlameBow : BaseRItem
+    internal class RShadowFlameBow : ItemOverride
     {
         public override int TargetID => ItemID.ShadowFlameBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_ShadowFlameBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<ShadowFlameBowHeldProj>();
     }
 }

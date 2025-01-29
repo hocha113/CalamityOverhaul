@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AstralBlasterHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBlaster";
-        public override int targetCayItem => ModContent.ItemType<AstralBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<AstralBlasterEcType>();
-
+        public override int TargetID => ModContent.ItemType<AstralBlaster>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

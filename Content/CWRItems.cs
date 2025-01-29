@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,21 +54,17 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float[] ai = [0, 0, 0];
         /// <summary>
-        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_AllowPreFix(Item, int)"/>
+        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_AllowPreFix(Item, int)"/>
         /// </summary>
         public bool GetAllowPrefix;
         /// <summary>
-        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_MeleePreFix(Item)"/>
+        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_MeleePreFix(Item)"/>
         /// </summary>
         public bool GetMeleePrefix;
         /// <summary>
-        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_RangedPreFix(Item)"/>
+        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_RangedPreFix(Item)"/>
         /// </summary>
         public bool GetRangedPrefix;
-        /// <summary>
-        /// 是否是一个重制物品，在基类为<see cref="EctypeItem"/>时自动启用
-        /// </summary>
-        public bool remakeItem;
         /// <summary>
         /// 是否正在真近战
         /// </summary>
@@ -163,7 +160,6 @@ namespace CalamityOverhaul.Content
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
-            cwr.remakeItem = remakeItem;
             cwr.closeCombat = closeCombat;
             cwr.MeleeCharge = MeleeCharge;
             cwr.isHeldItem = isHeldItem;
@@ -214,7 +210,6 @@ namespace CalamityOverhaul.Content
                 AmmoCapacity = 1;
             }
 
-            remakeItem = (item.ModItem as EctypeItem) != null;
             InitializeMagazine();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
@@ -442,18 +437,8 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (remakeItem) {
-                TooltipLine nameLine = tooltips.FirstOrDefault((x) => x.Name == "ItemName" && x.Mod == "Terraria");
-                if (nameLine != null) {
-                    string overText = $" ([c/fff08c:{CWRLocText.GetTextValue("CWRItem_IsRemakeItem_TextContent")}])";
-                    nameLine.Text += overText;
-                }
-            }
-        }
-
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {
-            bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
+            bool inRItemIndsDict = CWRMod.ItemIDToOverrideDic.ContainsKey(item.type);
 
             if (CWRLoad.ItemIsGun[item.type]) {
                 if (CWRLoad.ItemIsGunAndMustConsumeAmmunition[item.type] && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
@@ -496,15 +481,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
-                string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
-                if (key != "") {
-                    if (CWRMod.RItemIndsDict[item.type].IsVanilla) {
-                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText(key));
-                    }
-                    else {
-                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
-                    }
-                }
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText($"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip"));
             }
         }
 
@@ -539,7 +516,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem) && baseRItem.DrawingInfo) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride baseRItem) && baseRItem.DrawingInfo) {
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                     , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }

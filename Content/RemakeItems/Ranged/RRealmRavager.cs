@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RRealmRavager : BaseRItem
+    internal class RRealmRavager : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<RealmRavager>();
-        public override int ProtogenesisID => ModContent.ItemType<RealmRavagerEcType>();
-        public override string TargetToolTipItemName => "RealmRavagerEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<RealmRavagerHeldProj>(180);
     }
 }

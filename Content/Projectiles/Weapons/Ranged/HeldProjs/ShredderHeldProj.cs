@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ShredderHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shredder";
-        public override int targetCayItem => ModContent.ItemType<Shredder>();
-        public override int targetCWRItem => ModContent.ItemType<ShredderEcType>();
-
+        public override int TargetID => ModContent.ItemType<Shredder>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 5;

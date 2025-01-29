@@ -8,11 +8,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 金弓
     /// </summary>
-    internal class RGoldBow : BaseRItem
+    internal class RGoldBow : ItemOverride
     {
         public override int TargetID => ItemID.GoldBow;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_GoldBow_Text";
+ 
         public override void SetDefaults(Item item) => item.SetHeldProj<GoldBowHeldProj>();
     }
 }

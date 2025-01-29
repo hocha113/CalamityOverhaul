@@ -15,8 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PristineFuryHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PristineFury_Animated";
-        public override int targetCayItem => ModContent.ItemType<PristineFury>();
-        public override int targetCWRItem => ModContent.ItemType<PristineFuryEcType>();
+        public override int TargetID => ModContent.ItemType<PristineFury>();
         private int maxFrame = 1;
         public override void SetRangedProperty() {
             FireTime = 3;

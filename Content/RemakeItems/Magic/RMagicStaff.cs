@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal abstract class RMagicStaff<TItem> : BaseRItem where TItem : ModItem
+    internal abstract class RMagicStaff<TItem> : ItemOverride where TItem : ModItem
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
     }
 
-    internal abstract class RMagicStaff : BaseRItem
+    internal abstract class RMagicStaff : ItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
@@ -189,140 +189,140 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class WyvernsCallHeld : BaseMagicStaff<WyvernsCall> { }
     internal class WyvernsCallRItem : RMagicStaff<WyvernsCall> { }
 
-    internal class FrostStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.FrostStaff; }
+    internal class FrostStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.FrostStaff; }
     internal class FrostStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.FrostStaff;
         public override string HeldProjName => "FrostStaff";
     }
 
-    internal class AmethystHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.Amethyst; }
+    internal class AmethystHeld() : BaseMagicStaff { public override int TargetID => ItemID.Amethyst; }
     internal class AmethystRItem : RMagicStaff
     {
         public override int TargetID => ItemID.Amethyst;
         public override string HeldProjName => "Amethyst";
     }
 
-    internal class TopazStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.TopazStaff; }
+    internal class TopazStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.TopazStaff; }
     internal class TopazStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.TopazStaff;
         public override string HeldProjName => "TopazStaff";
     }
 
-    internal class SapphireStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.SapphireStaff; }
+    internal class SapphireStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.SapphireStaff; }
     internal class SapphireStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.SapphireStaff;
         public override string HeldProjName => "SapphireStaff";
     }
 
-    internal class EmeraldStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.EmeraldStaff; }
+    internal class EmeraldStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.EmeraldStaff; }
     internal class EmeraldStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.EmeraldStaff;
         public override string HeldProjName => "EmeraldStaff";
     }
 
-    internal class RubyStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.RubyStaff; }
+    internal class RubyStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.RubyStaff; }
     internal class RubyStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.RubyStaff;
         public override string HeldProjName => "RubyStaff";
     }
 
-    internal class DiamondStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.DiamondStaff; }
+    internal class DiamondStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.DiamondStaff; }
     internal class DiamondStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.DiamondStaff;
         public override string HeldProjName => "DiamondStaff";
     }
 
-    internal class PoisonStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.PoisonStaff; }
+    internal class PoisonStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.PoisonStaff; }
     internal class PoisonStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.PoisonStaff;
         public override string HeldProjName => "PoisonStaff";
     }
 
-    internal class ShadowbeamStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.ShadowbeamStaff; }
+    internal class ShadowbeamStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.ShadowbeamStaff; }
     internal class ShadowbeamStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.ShadowbeamStaff;
         public override string HeldProjName => "ShadowbeamStaff";
     }
 
-    internal class SpectreStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.SpectreStaff; }
+    internal class SpectreStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.SpectreStaff; }
     internal class SpectreStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.SpectreStaff;
         public override string HeldProjName => "SpectreStaff";
     }
 
-    internal class BlizzardStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.BlizzardStaff; }
+    internal class BlizzardStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.BlizzardStaff; }
     internal class BlizzardStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.BlizzardStaff;
         public override string HeldProjName => "BlizzardStaff";
     }
 
-    internal class VenomStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.VenomStaff; }
+    internal class VenomStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.VenomStaff; }
     internal class VenomStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.VenomStaff;
         public override string HeldProjName => "VenomStaff";
     }
 
-    internal class MeteorStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.MeteorStaff; }
+    internal class MeteorStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.MeteorStaff; }
     internal class MeteorStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.MeteorStaff;
         public override string HeldProjName => "MeteorStaff";
     }
 
-    internal class ClingerStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.ClingerStaff; }
+    internal class ClingerStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.ClingerStaff; }
     internal class ClingerStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.ClingerStaff;
         public override string HeldProjName => "ClingerStaff";
     }
 
-    internal class AmberStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.AmberStaff; }
+    internal class AmberStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.AmberStaff; }
     internal class AmberStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.AmberStaff;
         public override string HeldProjName => "AmberStaff";
     }
 
-    internal class ApprenticeStaffT3Held() : BaseMagicStaff { public override int targetCayItem => ItemID.ApprenticeStaffT3; }
+    internal class ApprenticeStaffT3Held() : BaseMagicStaff { public override int TargetID => ItemID.ApprenticeStaffT3; }
     internal class ApprenticeStaffT3RItem : RMagicStaff
     {
         public override int TargetID => ItemID.ApprenticeStaffT3;
         public override string HeldProjName => "ApprenticeStaffT3";
     }
 
-    internal class RazorpineHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.Razorpine; }
+    internal class RazorpineHeld() : BaseMagicStaff { public override int TargetID => ItemID.Razorpine; }
     internal class RazorpineRItem : RMagicStaff
     {
         public override int TargetID => ItemID.Razorpine;
         public override string HeldProjName => "Razorpine";
     }
 
-    internal class StaffofEarthHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.StaffofEarth; }
+    internal class StaffofEarthHeld() : BaseMagicStaff { public override int TargetID => ItemID.StaffofEarth; }
     internal class StaffofEarthRItem : RMagicStaff
     {
         public override int TargetID => ItemID.StaffofEarth;
         public override string HeldProjName => "StaffofEarth";
     }
 
-    internal class SoulDrainHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.SoulDrain; }
+    internal class SoulDrainHeld() : BaseMagicStaff { public override int TargetID => ItemID.SoulDrain; }
     internal class SoulDrainRItem : RMagicStaff
     {
         public override int TargetID => ItemID.SoulDrain;
         public override string HeldProjName => "SoulDrain";
     }
 
-    internal class CrystalSerpentHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.CrystalSerpent; }
+    internal class CrystalSerpentHeld() : BaseMagicStaff { public override int TargetID => ItemID.CrystalSerpent; }
     internal class CrystalSerpentRItem : RMagicStaff
     {
         public override int TargetID => ItemID.CrystalSerpent;
@@ -336,56 +336,56 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     //    public override string HeldProjName => "AquaScepter";
     //}
 
-    internal class NettleBurstHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.NettleBurst; }
+    internal class NettleBurstHeld() : BaseMagicStaff { public override int TargetID => ItemID.NettleBurst; }
     internal class NettleBurstRItem : RMagicStaff
     {
         public override int TargetID => ItemID.NettleBurst;
         public override string HeldProjName => "NettleBurst";
     }
 
-    internal class InfernoForkHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.InfernoFork; }
+    internal class InfernoForkHeld() : BaseMagicStaff { public override int TargetID => ItemID.InfernoFork; }
     internal class InfernoForkRItem : RMagicStaff
     {
         public override int TargetID => ItemID.InfernoFork;
         public override string HeldProjName => "InfernoFork";
     }
 
-    internal class AmethystStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.AmethystStaff; }
+    internal class AmethystStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.AmethystStaff; }
     internal class AmethystStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.AmethystStaff;
         public override string HeldProjName => "AmethystStaff";
     }
 
-    internal class BatScepterHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.BatScepter; }
+    internal class BatScepterHeld() : BaseMagicStaff { public override int TargetID => ItemID.BatScepter; }
     internal class BatScepterRItem : RMagicStaff
     {
         public override int TargetID => ItemID.BatScepter;
         public override string HeldProjName => "BatScepter";
     }
 
-    internal class UnholyTridentHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.UnholyTrident; }
+    internal class UnholyTridentHeld() : BaseMagicStaff { public override int TargetID => ItemID.UnholyTrident; }
     internal class UnholyTridentRItem : RMagicStaff
     {
         public override int TargetID => ItemID.UnholyTrident;
         public override string HeldProjName => "UnholyTrident";
     }
 
-    internal class ThunderStaffHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.ThunderStaff; }
+    internal class ThunderStaffHeld() : BaseMagicStaff { public override int TargetID => ItemID.ThunderStaff; }
     internal class ThunderStaffRItem : RMagicStaff
     {
         public override int TargetID => ItemID.ThunderStaff;
         public override string HeldProjName => "ThunderStaff";
     }
 
-    internal class VilethornHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.Vilethorn; }
+    internal class VilethornHeld() : BaseMagicStaff { public override int TargetID => ItemID.Vilethorn; }
     internal class VilethornRItem : RMagicStaff
     {
         public override int TargetID => ItemID.Vilethorn;
         public override string HeldProjName => "Vilethorn";
     }
 
-    internal class CrystalVileShardHeld() : BaseMagicStaff { public override int targetCayItem => ItemID.CrystalVileShard; }
+    internal class CrystalVileShardHeld() : BaseMagicStaff { public override int TargetID => ItemID.CrystalVileShard; }
     internal class CrystalVileShardRItem : RMagicStaff
     {
         public override int TargetID => ItemID.CrystalVileShard;

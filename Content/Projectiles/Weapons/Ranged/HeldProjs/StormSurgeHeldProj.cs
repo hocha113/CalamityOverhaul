@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class StormSurgeHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "StormSurge";
-        public override int targetCayItem => ModContent.ItemType<StormSurge>();
-        public override int targetCWRItem => ModContent.ItemType<StormSurgeEcType>();
-
+        public override int TargetID => ModContent.ItemType<StormSurge>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 3;

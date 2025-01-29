@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DaedalusStormbow].Value;
-        public override int targetCayItem => ItemID.DaedalusStormbow;
-        public override int targetCWRItem => ItemID.DaedalusStormbow;
+        public override int TargetID => ItemID.DaedalusStormbow;
         public override void SetRangedProperty() {
             CanRightClick = true;
             BowstringData.DeductRectangle = new Rectangle(6, 10, 2, 42);

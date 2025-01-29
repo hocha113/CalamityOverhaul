@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PridefulHuntersPlanarRipperHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PridefulHuntersPlanarRipper";
-        public override int targetCayItem => ModContent.ItemType<PridefulHuntersPlanarRipper>();
-        public override int targetCWRItem => ModContent.ItemType<PridefulHuntersPlanarRipperEcType>();
+        public override int TargetID => ModContent.ItemType<PridefulHuntersPlanarRipper>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 122;
             FireTime = 3;
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Recoil = 1.3f;
                 RecoilRetroForceMagnitude = 8;
                 fireIndex = 0;
-                SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.8f, Volume = 0.5f });
+                SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Pitch = 0.8f, Volume = 0.5f });
                 for (int i = 0; i < 15; i++) {
                     UpdateMagazineContents();
                     int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f)

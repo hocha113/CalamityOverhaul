@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BarinadeHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Barinade";
-        public override int targetCayItem => ModContent.ItemType<Barinade>();
-        public override int targetCWRItem => ModContent.ItemType<BarinadeEcType>();
+        public override int TargetID => ModContent.ItemType<Barinade>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
             HandIdleDistanceY = 5;

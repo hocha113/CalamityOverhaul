@@ -5,6 +5,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -29,12 +30,7 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static LocalizedText SafeGetItemName<T>() where T : ModItem {
-            Type type = typeof(T);
-            return type.BaseType == typeof(EctypeItem)
-                ? Language.GetText($"Mods.CalamityOverhaul.Items.{(Activator.CreateInstance(type) as EctypeItem)?.Name}.DisplayName")
-                : GetItemName<T>();
-        }
+        public static LocalizedText SafeGetItemName<T>() where T : ModItem => GetItemName<T>();
 
         public static LocalizedText SafeGetItemName(int id) {
             ModItem item = ItemLoader.GetItem(id);
@@ -868,38 +864,6 @@ namespace CalamityOverhaul
                 return;
             }
             Main.NewText(message, newColor);
-        }
-
-        /// <summary>
-        /// 快速修改一个物品的简介文本，从模组本地化文本中拉取资源
-        /// </summary>
-        public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, string key) {
-            List<TooltipLine> newTooltips = new(tooltips);
-            List<TooltipLine> overTooltips = [];
-            List<TooltipLine> prefixTooltips = [];
-            foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
-                for (int i = 0; i < 9; i++) {
-                    if (line.Name == "Tooltip" + i) {
-                        line.Hide();
-                    }
-                }
-                if (line.Name == "CalamityDonor" || line.Name == "CalamityDev") {
-                    overTooltips.Add(line.Clone());
-                    line.Hide();
-                }
-                if (line.Name.Contains("Prefix")) {
-                    prefixTooltips.Add(line.Clone());
-                    line.Hide();
-                }
-            }
-
-            TooltipLine newLine = new(mod, "CWRText"
-                , Language.GetText($"Mods.CalamityOverhaul.Items.{key}.Tooltip").Value);
-            newTooltips.Add(newLine);
-            newTooltips.AddRange(overTooltips);
-            tooltips.Clear(); // 清空原 tooltips 集合
-            tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
-            tooltips.AddRange(prefixTooltips);
         }
 
         /// <summary>

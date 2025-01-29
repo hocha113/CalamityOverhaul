@@ -8,11 +8,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFlakToxicannon : BaseRItem
+    internal class RFlakToxicannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<FlakToxicannon>();
-        public override int ProtogenesisID => ModContent.ItemType<FlakToxicannonEcType>();
-        public override string TargetToolTipItemName => "FlakToxicannonEcType";
+ 
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<FlakToxicannonHeldProj>(160);
             item.damage = 62;

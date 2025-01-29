@@ -28,10 +28,9 @@ namespace CalamityOverhaul
         internal static bool Suitableversion_improveGame { get; private set; }
         internal static List<Mod> LoadMods { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
-        internal static List<BaseRItem> RItemInstances { get; private set; } = [];
-        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
+        internal static List<ItemOverride> ItemOverrideInstances { get; private set; } = [];
         internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
-        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = [];
+        internal static Dictionary<int, ItemOverride> ItemIDToOverrideDic { get; private set; } = [];
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
@@ -63,24 +62,21 @@ namespace CalamityOverhaul
             }
 
             {
-                RItemInstances = VaultUtils.GetSubclassInstances<BaseRItem>();
-                RItemInstances.RemoveAll(inds => !inds.CanLoad() || inds.TargetID == 0);
-                foreach (var rItem in RItemInstances) {
+                foreach (var rItem in ItemOverrideInstances) {
                     rItem.SetReadonlyTargetID = rItem.TargetID;
-                    rItem.SetStaticDefaults();
+                    if (rItem.CanLoadLocalization) {
+                        _ = rItem.DisplayName;
+                        _ = rItem.Tooltip;
+                    }
                 }
             }
 
             {
-                RItemIndsDict = [];
-                foreach (BaseRItem ritem in RItemInstances) {
-                    RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
+                ItemIDToOverrideDic = [];
+                foreach (ItemOverride ritem in ItemOverrideInstances) {
+                    ItemIDToOverrideDic.Add(ritem.SetReadonlyTargetID, ritem);
                 }
-                Instance.Logger.Info($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict");
-            }
-
-            {
-                EctypeItemInstance = VaultUtils.GetSubclassInstances<EctypeItem>();
+                Instance.Logger.Info($"{ItemIDToOverrideDic.Count} key pair is loaded into the RItemIndsDict");
             }
 
             {
@@ -129,9 +125,8 @@ namespace CalamityOverhaul
             emptyMod();
             LoadMods?.Clear();
             ILoaders?.Clear();
-            RItemInstances?.Clear();
-            RItemIndsDict?.Clear();
-            EctypeItemInstance?.Clear();
+            ItemOverrideInstances?.Clear();
+            ItemIDToOverrideDic?.Clear();
             NPCCustomizerInstances?.Clear();
             CWR_InItemLoader_Set_Shoot_Hook = null;
             CWR_InItemLoader_Set_CanUse_Hook = null;

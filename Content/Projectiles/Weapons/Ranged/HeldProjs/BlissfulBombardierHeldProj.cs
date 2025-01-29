@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class BlissfulBombardierHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlissfulBombardier";
-        public override int targetCayItem => ModContent.ItemType<BlissfulBombardier>();
-        public override int targetCWRItem => ModContent.ItemType<BlissfulBombardierEcType>();
-
+        public override int TargetID => ModContent.ItemType<BlissfulBombardier>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 130;
             FireTime = 12;

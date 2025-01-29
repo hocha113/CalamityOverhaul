@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AcesHighHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AcesHigh";
-        public override int targetCayItem => ModContent.ItemType<AcesHigh>();
-        public override int targetCWRItem => ModContent.ItemType<AcesHighEcType>();
+        public override int TargetID => ModContent.ItemType<AcesHigh>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;

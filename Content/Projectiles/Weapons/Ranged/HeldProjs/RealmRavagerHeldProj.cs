@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class RealmRavagerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RealmRavager";
-        public override int targetCayItem => ModContent.ItemType<RealmRavager>();
-        public override int targetCWRItem => ModContent.ItemType<RealmRavagerEcType>();
-
+        public override int TargetID => ModContent.ItemType<RealmRavager>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 122;
             FireTime = 20;

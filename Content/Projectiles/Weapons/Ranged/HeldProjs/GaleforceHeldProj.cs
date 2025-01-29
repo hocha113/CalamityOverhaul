@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class GaleforceHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Galeforce";
-        public override int targetCayItem => ModContent.ItemType<Galeforce>();
-        public override int targetCWRItem => ModContent.ItemType<GaleforceEcType>();
+        public override int TargetID => ModContent.ItemType<Galeforce>();
         public override void SetRangedProperty() {
             CanRightClick = true;
             HandIdleDistanceX = 16;

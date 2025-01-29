@@ -8,11 +8,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RStellarCannon : BaseRItem
+    internal class RStellarCannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<StellarCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<StellarCannonEcType>();
-        public override string TargetToolTipItemName => "StellarCannonEcType";
+ 
         public override void SetDefaults(Item item) {
             item.damage = 115;
             item.useAmmo = AmmoID.FallenStar;

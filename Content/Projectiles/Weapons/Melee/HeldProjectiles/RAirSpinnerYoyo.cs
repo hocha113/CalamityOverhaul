@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using System.IO;
 using Terraria;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public const int MaxUpdates = 2;
 
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AirSpinnerEcType>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AirSpinner>();
 
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Yoyos/" + "AirSpinnerYoyo";
 

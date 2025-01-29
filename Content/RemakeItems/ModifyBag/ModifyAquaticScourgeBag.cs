@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.TreasureBags;
-using CalamityOverhaul.Content.Items.Magic.Extras;
+using CalamityOverhaul.Content.Items.Magic;
 using Terraria;
 using Terraria.ModLoader;
 

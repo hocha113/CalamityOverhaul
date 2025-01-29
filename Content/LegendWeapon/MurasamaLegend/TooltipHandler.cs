@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.InWorldBossPhase;
-using static CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaEcType;
+using static CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaOverride;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 {

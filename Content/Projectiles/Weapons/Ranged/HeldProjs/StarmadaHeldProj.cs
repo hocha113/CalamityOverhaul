@@ -13,9 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class StarmadaHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Starmada";
-        public override int targetCayItem => ModContent.ItemType<Starmada>();
-        public override int targetCWRItem => ModContent.ItemType<StarmadaEcType>();
-
+        public override int TargetID => ModContent.ItemType<Starmada>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AuroraBlazerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AuroraBlazer";
-        public override int targetCayItem => ModContent.ItemType<AuroraBlazer>();
-        public override int targetCWRItem => ModContent.ItemType<AuroraBlazerEcType>();
-
+        public override int TargetID => ModContent.ItemType<AuroraBlazer>();
         private int soundPma;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

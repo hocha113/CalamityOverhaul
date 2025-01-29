@@ -10,11 +10,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 附魔回旋镖
     /// </summary>
-    internal class REnchantedBoomerang : BaseRItem
+    internal class REnchantedBoomerang : ItemOverride
     {
         public override int TargetID => ItemID.EnchantedBoomerang;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_EnchantedBoomerang_Text";
+ 
         public override void SetDefaults(Item item) {
             item.DamageType = CWRLoad.RogueDamageClass;
             item.shoot = ModContent.ProjectileType<EnchantedBoomerangHeld>();

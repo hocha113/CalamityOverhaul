@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void OnKill(int timeLeft) {
-            if (MurasamaEcType.NameIsVergil(player)) {
+            if (MurasamaOverride.NameIsVergil(player)) {
                 SoundStyle[] sounds = new SoundStyle[] { CWRSound.V_YouSouDiad, CWRSound.V_ThisThePwero, CWRSound.V_You_Wo_Namges_Is_The_Pwero };
                 SoundEngine.PlaySound(sounds[Main.rand.Next(sounds.Length)]);
                 if (Main.rand.NextBool(13)) {

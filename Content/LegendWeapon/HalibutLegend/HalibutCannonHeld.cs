@@ -10,9 +10,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     internal class HalibutCannonHeld : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
-        public override int targetCayItem => ModContent.ItemType<HalibutCannon>();
-        public override int targetCWRItem => ModContent.ItemType<HalibutCannonEcType>();
-        private int level => HalibutCannonEcType.Level;
+        public override int TargetID => ModContent.ItemType<HalibutCannon>();
+        private int level => HalibutCannonOverride.Level;
         public override void SetRangedProperty() {
             ControlForce = 0.05f;
             GunPressure = 0.2f;

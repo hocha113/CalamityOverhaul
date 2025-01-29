@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ShadewoodBow].Value;
-        public override int targetCayItem => ItemID.ShadewoodBow;
-        public override int targetCWRItem => ItemID.ShadewoodBow;
+        public override int TargetID => ItemID.ShadewoodBow;
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.WoodenBow;

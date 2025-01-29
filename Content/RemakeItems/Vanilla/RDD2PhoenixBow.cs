@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 幽灵凤凰
     /// </summary>
-    internal class RDD2PhoenixBow : BaseRItem
+    internal class RDD2PhoenixBow : ItemOverride
     {
         public override int TargetID => ItemID.DD2PhoenixBow;
         public override bool IsVanilla => true;

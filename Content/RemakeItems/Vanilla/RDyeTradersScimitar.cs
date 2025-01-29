@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDyeTradersScimitar : BaseRItem
+    internal class RDyeTradersScimitar : ItemOverride
     {
         public override int TargetID => ItemID.DyeTradersScimitar;
         public override bool IsVanilla => true;

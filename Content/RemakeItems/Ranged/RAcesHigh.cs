@@ -7,11 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RAcesHigh : BaseRItem
+    internal class RAcesHigh : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AcesHigh>();
-        public override int ProtogenesisID => ModContent.ItemType<AcesHighEcType>();
-        public override string TargetToolTipItemName => "AcesHighEcType";
         public override void SetDefaults(Item item) {
             item.damage = 375;
             item.SetCartridgeGun<AcesHighHeldProj>(90);

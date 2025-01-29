@@ -14,9 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class PearlGodHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PearlGod";
-        public override int targetCayItem => ModContent.ItemType<PearlGod>();
-        public override int targetCWRItem => ModContent.ItemType<PearlGodEcType>();
-
+        public override int TargetID => ModContent.ItemType<PearlGod>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class DeepcoreGK2HeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DeepcoreGK2";
-        public override int targetCayItem => ModContent.ItemType<DeepcoreGK2>();
-        public override int targetCWRItem => ModContent.ItemType<DeepcoreGK2EcType>();
+        public override int TargetID => ModContent.ItemType<DeepcoreGK2>();
         public override void SetRangedProperty() {
             HandFireDistanceX = HandIdleDistanceX = 36;
             HandIdleDistanceY = -2;

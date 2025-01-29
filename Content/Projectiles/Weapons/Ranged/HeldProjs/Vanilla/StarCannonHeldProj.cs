@@ -12,9 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.StarCannon].Value;
-        public override int targetCayItem => ItemID.StarCannon;
-        public override int targetCWRItem => ItemID.StarCannon;
-
+        public override int TargetID => ItemID.StarCannon;
         public override void SetRangedProperty() {
             ArmRotSengsBackNoFireOffset = -30;
             kreloadMaxTime = 60;

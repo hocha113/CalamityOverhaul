@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class KingsbaneHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "KingsbaneWindUp";
-        public override int targetCayItem => ModContent.ItemType<Kingsbane>();
-        public override int targetCWRItem => ModContent.ItemType<KingsbaneEctype>();
+        public override int TargetID => ModContent.ItemType<Kingsbane>();
         private int upNeedsSengs = 11;
         private int chargeSoundSpanTimer = 0;
         private int chargeValue;

@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class CorinthPrimeHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CorinthPrime";
-        public override int targetCayItem => ModContent.ItemType<CorinthPrime>();
-        public override int targetCWRItem => ModContent.ItemType<CorinthPrimeEcType>();
+        public override int TargetID => ModContent.ItemType<CorinthPrime>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.2f;

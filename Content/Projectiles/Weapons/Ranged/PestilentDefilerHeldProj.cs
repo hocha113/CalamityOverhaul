@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class PestilentDefilerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PestilentDefiler";
-        public override int targetCayItem => ModContent.ItemType<PestilentDefiler>();
-        public override int targetCWRItem => ModContent.ItemType<PestilentDefilerEcType>();
-
+        public override int TargetID => ModContent.ItemType<PestilentDefiler>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;

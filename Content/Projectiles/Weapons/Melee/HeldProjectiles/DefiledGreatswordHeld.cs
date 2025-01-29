@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string Texture => CWRConstant.Placeholder;
         private bool oldChargeSet;
         private int oldItemType;
-        private float MaxCarge => (Item.type == ModContent.ItemType<BlightedCleaver>() || Item.type == ModContent.ItemType<BlightedCleaverEcType>()) ? BlightedCleaverEcType.BlightedCleaverMaxRageEnergy : DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy;
+        private float MaxCarge => Item.type == ModContent.ItemType<BlightedCleaver>() ? RBlightedCleaver.BlightedCleaverMaxRageEnergy : RDefiledGreatsword.DefiledGreatswordMaxRageEnergy;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 11;
             Projectile.penetrate = -1;
@@ -26,10 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             Item item = Owner.GetItem();
-            if (item.IsAir
-                || item.type != ModContent.ItemType<DefiledGreatswordEcType>()
-                && item.type != ModContent.ItemType<DefiledGreatsword>()
-                && item.type != ModContent.ItemType<BlightedCleaverEcType>()
+            if (item.IsAir ||
+                item.type != ModContent.ItemType<DefiledGreatsword>()
                 && item.type != ModContent.ItemType<BlightedCleaver>()
                 ) {
                 Projectile.Kill();
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool PreDraw(ref Color lightColor) {
             Item item = Main.player[Projectile.owner].GetItem();
             if (item != null && item.type > ItemID.None) {
-                DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]
+                RDefiledGreatsword.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]
                     , item.CWR().MeleeCharge / MaxCarge);
             }
 

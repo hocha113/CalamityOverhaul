@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.TreasureBags;
-using CalamityOverhaul.Content.Items.Summon.Extras;
+using CalamityOverhaul.Content.Items.Summon;
 using Terraria;
 using Terraria.ModLoader;
 

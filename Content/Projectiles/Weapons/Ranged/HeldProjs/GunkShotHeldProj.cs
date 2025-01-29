@@ -9,8 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class GunkShotHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GunkShot";
-        public override int targetCayItem => ModContent.ItemType<GunkShot>();
-        public override int targetCWRItem => ModContent.ItemType<GunkShotEcType>();
+        public override int TargetID => ModContent.ItemType<GunkShot>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 18;

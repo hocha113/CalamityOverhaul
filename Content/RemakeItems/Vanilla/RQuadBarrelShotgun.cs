@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RQuadBarrelShotgun : BaseRItem
+    internal class RQuadBarrelShotgun : ItemOverride
     {
         public override int TargetID => ItemID.QuadBarrelShotgun;
         public override bool FormulaSubstitution => false;
