@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     return false;
                 }
                 return type == ModContent.ItemType<HalibutCannon>()
-                    || type == ModContent.ItemType<HalibutCannonEcType>();
+                    || type == ModContent.ItemType<HalibutCannonOverride>();
             }
         }
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "HalibutStyleButton");

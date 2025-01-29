@@ -3957,7 +3957,7 @@ RemakeItems: {
 			'''
 	}
 
-	RHalibutCannon: {
+	HalibutCannonOverride: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
 			'''

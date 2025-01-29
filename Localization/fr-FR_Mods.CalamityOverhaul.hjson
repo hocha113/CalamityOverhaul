@@ -3951,7 +3951,7 @@ RemakeItems: {
 			'''
 	}
 
-	RHalibutCannon: {
+	HalibutCannonOverride: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''

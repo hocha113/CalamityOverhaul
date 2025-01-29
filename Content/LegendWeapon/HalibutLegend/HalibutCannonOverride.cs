@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
@@ -14,10 +13,9 @@ using static CalamityOverhaul.Content.InWorldBossPhase;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutCannonEcType : EctypeItem
+    internal class HalibutCannonOverride : ItemOverride
     {
         #region Data
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -26,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
         private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
-        public static int Level => InWorldBossPhase.Instance.Halibut_Level();
+        public static int Level => Instance.Halibut_Level();
         /// <summary>
         /// 获取开局的伤害
         /// </summary>
@@ -84,8 +82,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {14, 20 }
             };
         }
+        public override int TargetID => ModContent.ItemType<HalibutCannon>();
+        public override void SetDefaults(Item item) => SetDefaultsFunc(item);
+        public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            crit += GetOnCrit;
+            return false;
+        }
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage, GetStartDamage, ref damage);
+            return false;
+        }
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(ref tooltips);
+
         public override void SetStaticDefaults() => LoadWeaponData();
-        public override void SetDefaults() => SetDefaultsFunc(Item);
+
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();
             Item.damage = GetStartDamage;
@@ -109,13 +119,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.CWR().heldProjType = ModContent.ProjectileType<HalibutCannonHeld>();
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
-
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
-            => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => SetTooltip(ref tooltips);
-
         public static void SetTooltip(ref List<TooltipLine> tooltips) {
             int index = Instance.SHPC_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
@@ -136,22 +139,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplaceTooltip("[Text]", CWRUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }
-    }
-
-    internal class RHalibutCannon : ItemOverride
-    {
-        public override int TargetID => ModContent.ItemType<HalibutCannon>();
-        public override int ProtogenesisID => ModContent.ItemType<HalibutCannonEcType>();
-        public override string TargetToolTipItemName => "HalibutCannonEcType";
-        public override void SetDefaults(Item item) => HalibutCannonEcType.SetDefaultsFunc(item);
-        public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
-            crit += HalibutCannonEcType.GetOnCrit;
-            return false;
-        }
-        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, HalibutCannonEcType.GetOnDamage, HalibutCannonEcType.GetStartDamage, ref damage);
-            return false;
-        }
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => HalibutCannonEcType.SetTooltip(ref tooltips);
     }
 }
