@@ -40,7 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3());
 
             if (item.type != ModContent.ItemType<TheDarkMaster>()
-                && item.type != ModContent.ItemType<TheDarkMasterEcType>()
                 || Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
                 || !Owner.active || Owner.CCed || Owner == null) {
                 if (Projectile.ai[0] == 1) {

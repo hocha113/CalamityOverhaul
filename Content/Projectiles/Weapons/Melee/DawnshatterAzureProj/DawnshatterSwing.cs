@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

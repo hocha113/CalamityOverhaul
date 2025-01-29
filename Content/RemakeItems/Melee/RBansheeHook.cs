@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
@@ -374,7 +373,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.spriteBatch.ExitShaderRegion();
             }
 
-            TerrorBladeEcType.DrawFrightEnergyChargeBar(
+            RTerrorBlade.DrawFrightEnergyChargeBar(
                 Main.player[Projectile.owner], drawUIalp / 255f,
                 bansheeHook.CWR().MeleeCharge / 500f);
 

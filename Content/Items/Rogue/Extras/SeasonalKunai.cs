@@ -2,8 +2,8 @@
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Rogue;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+using CalamityOverhaul.Content.RemakeItems.Melee;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

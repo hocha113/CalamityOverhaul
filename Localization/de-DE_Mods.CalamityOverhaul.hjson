@@ -5756,7 +5756,7 @@ RemakeItems: {
 		Tooltip: ItemTooltip.Xenopopper
 	}
 
-	R_RedSun: {
+	RRedSun: {
 		DisplayName: Red Sun
 		Tooltip:
 			'''

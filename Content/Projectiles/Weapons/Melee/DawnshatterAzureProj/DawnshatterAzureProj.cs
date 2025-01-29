@@ -1,5 +1,5 @@
 ﻿using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

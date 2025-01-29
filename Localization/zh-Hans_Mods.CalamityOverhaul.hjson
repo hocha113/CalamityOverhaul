@@ -5753,7 +5753,7 @@ RemakeItems: {
 		Tooltip: ItemTooltip.Xenopopper
 	}
 
-	R_RedSun: {
+	RRedSun: {
 		DisplayName: 红日
 		Tooltip:
 			'''
