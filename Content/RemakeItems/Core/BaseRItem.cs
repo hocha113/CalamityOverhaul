@@ -1,16 +1,16 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
-    public abstract class BaseRItem
+    public abstract class BaseRItem : ModType, ILocalizedModType, ICWRLoader
     {
         /// <summary>
         /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
@@ -41,22 +41,48 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// 该重置节点是否会加载进图鉴中，默认为<see langword="true"/>
         /// </summary>
         public virtual bool DrawingInfo => true;
+        /// <summary>
+        /// 在RemakeItems里面添加本地化
+        /// </summary>
+        public string LocalizationCategory => "RemakeItems";
+        /// <summary>
+        /// 是否加载这个重制节点的本地化信息
+        /// </summary>
+        public virtual bool CanLoadLocalization => TargetToolTipItemName != "";
+        /// <summary>
+        /// 名字
+        /// </summary>
+        public virtual LocalizedText DisplayName {
+            get {
+                LocalizedText content = TargetID < ItemID.Count?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("DisplayName");
+                return this.GetLocalization(nameof(DisplayName), () => content.Value);
+            }
+        }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public virtual LocalizedText Tooltip {
+            get {
+                LocalizedText content = TargetID < ItemID.Count ?
+                    Language.GetText("ItemTooltip." + ItemID.Search.GetName(TargetID))
+                    : ItemLoader.GetItem(TargetID).GetLocalization("Tooltip");
+                return this.GetLocalization(nameof(Tooltip), () => content.Value);
+            }
+        }
+
+        public override void Load() {
+            if (CanLoadLocalization) {
+                _ = DisplayName;
+                _ = Tooltip;
+            }
+        }
+
+        protected override void Register() { }
 
         public virtual bool CanLoad() => true;
 
-        /// <summary>
-        /// 加入配方，当关闭了强制内容替换设置时进行调用
-        /// </summary>
-        public virtual void LoadItemRecipe() {
-            int recipeTargetType = ProtogenesisID;
-            if (ProtogenesisID == 0) {
-                return;//如果没有设置ProtogenesisID，那么就表示不参与配方替换
-            }
-            Func<bool> conditiontfunc = () => Main.LocalPlayer.CWR().HasOverhaulTheBibleBook;
-            Condition condition = new Condition(CWRLocText.GetTextKey("LoadItemRecipe_Condition_Text1"), conditiontfunc);
-            Recipe.Create(recipeTargetType).AddIngredient(TargetID).AddCondition(condition).Register();
-            Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
-        }
         /// <summary>
         /// 加载副本物品的补救数据
         /// </summary>
@@ -85,10 +111,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 setItem.SetNameOverride(newName);
             }
         }
-        /// <summary>
-        /// 设置静态数据，在修改副本被加载时设置一次
-        /// </summary>
-        public virtual void SetStaticDefaults() { }
         /// <summary>
         /// 进行背包中的物品绘制，这个函数会执行在Draw之后
         /// </summary>

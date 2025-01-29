@@ -67,7 +67,6 @@ namespace CalamityOverhaul
                 RItemInstances.RemoveAll(inds => !inds.CanLoad() || inds.TargetID == 0);
                 foreach (var rItem in RItemInstances) {
                     rItem.SetReadonlyTargetID = rItem.TargetID;
-                    rItem.SetStaticDefaults();
                 }
             }
 

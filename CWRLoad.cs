@@ -37,8 +37,10 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -587,6 +589,8 @@ namespace CalamityOverhaul
 
         public static void LoadRecoverUnloadedItemDic() {
             BaseRItem.LoadEcTypeUnLoadData();
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/BlackMatterStick", ItemType<NeutronStarIngot>());
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ItemType<SpearOfLonginus>());
         }
 
         public static string GetLckRecoilKey(float recoil) {
