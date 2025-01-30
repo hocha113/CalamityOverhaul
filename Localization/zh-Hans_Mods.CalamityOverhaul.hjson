@@ -1580,14 +1580,15 @@ Legend: {
 			一次决战要到来了，那些破铜烂铁计划联合在一起，妄图阻挡我们
 			以刀与血来告诉它们，我们远征的步伐将碾碎一切异形邪祟和憎恶智能
 			'''
+		World_Text0: 上次升级的世界
 	}
 }
 
-// For Language Pack Creators:
-// The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
-// The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
-// Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
-// So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
+# For Language Pack Creators:
+# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
+# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
+# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
+# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
 	HalibutCannonOverride: {

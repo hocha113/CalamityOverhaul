@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// </summary>
         public static int GetOnDamage => DamageDictionary[Instance.SHPC_Level()];
         public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
+        public override int TargetID => ModContent.ItemType<SHPC>();
         private static void onSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
             MethodInfo methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
@@ -52,11 +54,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 {14, 1200 }
             };
         }
-        public override int TargetID => ModContent.ItemType<SHPC>();
+
         public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[TargetID] = ModContent.ItemType<PlasmaDriveCore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => SHPCDamage(player, item, ref damage);
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(ref tooltips);
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();
@@ -72,16 +74,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             return false;
         }
 
-        public static void SetTooltip(ref List<TooltipLine> tooltips) {
-            int index = Instance.SHPC_Level();
+        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData.Update(Instance.SHPC_Level());
+
+        public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
+            int index = item.CWR().LegendData.Level;
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                int level = Instance.SHPC_Level();
-                string num = (level + 1).ToString();
-                if (level == 14) {
+                string num = (index + 1).ToString();
+                if (index == 14) {
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", "");
+
+                string text = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
+                string worldLine = LegendData.GetWorldUpLines(item.CWR());
+                if (worldLine != "") {
+                    text += worldLine;
+                }
+
+                tooltips.ReplaceTooltip("[Lang4]", text, "");
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), "");
             }
             else {

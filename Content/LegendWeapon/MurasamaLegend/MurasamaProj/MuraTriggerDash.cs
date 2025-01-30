@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -11,10 +12,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    internal class MuraTriggerDash : ModProjectile
+    internal class MuraTriggerDash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
-        protected Player Owner => Main.player[Projectile.owner];
         protected Item murasama => Owner.GetItem();
         private Vector2 breakOutVector;
         private int Time;
@@ -38,8 +38,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Time = 0;
         }
 
-        public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
-
         private float getBrakSwingDamageSengsValue(int level) {
             float overValue = 0;
             if (level >= 5) {
@@ -50,6 +48,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void AI() {
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
+
             if (Time == 0 && !Projectile.IsOwnedByLocalPlayer()) {
                 Owner.CWR().RisingDragonCharged = 0;
             }
@@ -110,10 +110,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.mount.Dismount(Owner);
 
                 Vector2 toBreakV = Owner.Center.To(Projectile.Center);
-
-                if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕和进行位移的代码只能交由主人玩家执行
-                    Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
-                    Owner.velocity = breakOutVector;
+                Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
+                Owner.velocity = breakOutVector;
+                if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕的代码只能交由主人玩家执行
                     if (CWRServerConfig.Instance.LensEasing) {
                         Main.SetCameraLerp(0.1f, 10);
                     }
@@ -150,37 +149,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     }
                 }
 
-                for (int i = 0; i < 3; i++) {
-                    SparkParticle spark = new SparkParticle(Owner.Center, toBreakV.UnitVector() * -0.1f, false, 9, 3.3f, Color.IndianRed * 0.1f);
-                    GeneralParticleHandler.SpawnParticle(spark);
-                }
+                if (!VaultUtils.isServer) {
+                    for (int i = 0; i < 3; i++) {
+                        SparkParticle spark = new SparkParticle(Owner.Center, toBreakV.UnitVector() * -0.1f, false, 9, 3.3f, Color.IndianRed * 0.1f);
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
 
-                AltSparkParticle spark2 = new AltSparkParticle(
-                Owner.Center + Main.rand.NextVector2Circular(13, 23) + toBreakV.UnitVector() * 1.2f
-                , toBreakV.UnitVector() * 23
-                , false, 13, Main.rand.NextFloat(1.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
-                GeneralParticleHandler.SpawnParticle(spark2);
+                    AltSparkParticle spark2 = new AltSparkParticle(
+                    Owner.Center + Main.rand.NextVector2Circular(13, 23) + toBreakV.UnitVector() * 1.2f
+                    , toBreakV.UnitVector() * 23
+                    , false, 13, Main.rand.NextFloat(1.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
+                    GeneralParticleHandler.SpawnParticle(spark2);
+                }
             }
 
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !VaultUtils.isServer) {
-                //神皇在上，我竟然一直没有发现这个地方有多余的代码 -HoCha113 - 2024/9/22/17:32
-                //if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
-                //    if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
-                //        return;
-                //    }
-                //    murasama.initialize();
-                //    if (murasama.CWR().ai[0] >= 2) {
-                //        
-                //        if (Projectile.IsOwnedByLocalPlayer()) {
-                //            Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
-                //            , ModContent.ProjectileType<MurasamaDownSkill>(), murasama.damage, 0, Owner.whoAmI);
-                //        }
-                //        Projectile.Kill();
-                //        return;
-                //    }
-                //}
-
-                if (Owner.PressKey() && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
+                if (DownLeft && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
                     if (!MurasamaOverride.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }

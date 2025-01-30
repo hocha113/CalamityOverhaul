@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
+using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -152,8 +153,11 @@ namespace CalamityOverhaul.Content
         /// 是否被抛射物控制使用，优先级高于<see cref="hasHeldNoCanUseBool"/>，且不受<see cref="heldProjType"/>影响
         /// </summary>
         public bool IsShootCountCorlUse;
+        /// <summary>
+        /// 被传奇武器所使用，用于保存一些数据
+        /// </summary>
+        public LegendData LegendData;
         #endregion
-
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
@@ -179,6 +183,7 @@ namespace CalamityOverhaul.Content
             cwr.DrawOmigaSnyUIBool = DrawOmigaSnyUIBool;
             cwr.IsBow = IsBow;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
+            cwr.LegendData = LegendData;
             return cwr;
         }
 
@@ -210,6 +215,7 @@ namespace CalamityOverhaul.Content
             InitializeMagazine();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
+            LegendData.Create(item);
 
             if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
                 item.maxStack = 64;
@@ -366,6 +372,8 @@ namespace CalamityOverhaul.Content
                 }
                 tag.Add("_IsKreload", IsKreload);
             }
+
+            LegendData?.SaveData(item, tag);
         }
 
         public override void LoadData(Item item, TagCompound tag) {
@@ -397,6 +405,8 @@ namespace CalamityOverhaul.Content
                     IsKreload = tag.GetBool("_IsKreload");
                 }
             }
+
+            LegendData?.LoadData(item, tag);
         }
 
         public override void HoldItem(Item item, Player player) {

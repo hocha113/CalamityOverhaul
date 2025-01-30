@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     {
         public override void AI() {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                if (Owner.PressKey()) {
+                if (DownLeft) {
                     Projectile.Kill();
                     return;
                 }

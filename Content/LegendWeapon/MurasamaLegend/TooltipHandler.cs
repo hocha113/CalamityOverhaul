@@ -57,25 +57,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             num += levelContent;
         }
 
-        public static void SetTooltip(ref List<TooltipLine> tooltips) {
+        public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]");
             tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]");
 
-            int index = Instance.Mura_Level();
+            int index = GetLevel();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
             string text2 = CWRLocText.GetTextValue("Murasama_Text0");
             string text3;
             string text4;
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                int level = Instance.Mura_Level();
-                string num = (level + 1).ToString();
-                if (level == 14) {
+                string num = (index + 1).ToString();
+                if (index == 14) {
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
                 ModifyWallSelect(index, ref newContent, ref num);
                 ModifyMechBossSelect(index, ref newContent, ref num);
                 text3 = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
+                string worldName = item.CWR().LegendData.UpgradeWorldName;
+                if (Main.worldName != worldName) {
+                    text3 += CWRUtils.FormatColorTextMultiLine($"--{MuraText.GetTextValue("World_Text0")}:<{worldName}>", Color.Gold);
+                }
             }
             else {
                 text3 = "";

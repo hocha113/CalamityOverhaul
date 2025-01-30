@@ -1613,14 +1613,15 @@ Legend: {
 			Решающее сражение близко. Эти груды металлолома собираются объединиться, чтобы попытаться нас остановить.
 			Клинками и кровью покажите им, что наша экспедиция раздавит всех чужих тварей и ненавистные интеллекты.
 			'''
+		// World_Text0: Last Upgraded World
 	}
 }
 
-// For Language Pack Creators:
-// The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
-// The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
-// Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
-// So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
+# For Language Pack Creators:
+# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
+# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
+# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
+# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
 	HalibutCannonOverride: {

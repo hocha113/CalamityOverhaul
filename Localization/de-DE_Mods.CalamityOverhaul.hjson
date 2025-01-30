@@ -1571,14 +1571,15 @@ Legend: {
 			Eine entscheidende Schlacht steht bevor. Diese Haufen von Schrott planen, sich zu vereinen, um uns aufzuhalten.
 			Mit Klingen und Blut lasst sie wissen, dass unsere Expedition alle fremden Abscheulichkeiten und hassvollen Intelligenzen zerschmettern wird.
 			'''
+		// World_Text0: Last Upgraded World
 	}
 }
 
-// For Language Pack Creators:
-// The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
-// The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
-// Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
-// So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
+# For Language Pack Creators:
+# The keys here were previously in Items. Since EcTypeItem has been removed, all localization keys similar to "ItemNameEcType" have been moved here.
+# The corresponding format is "ItemNameEcType" → "RItemName" or "ItemNameOverride".
+# Apart from the class name change, the DisplayName and Tooltip remain the same as in the previous version.
+# So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
 	HalibutCannonOverride: {

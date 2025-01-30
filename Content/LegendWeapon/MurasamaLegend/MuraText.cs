@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public LocalizedText Subtest_Text1 { get; private set; }
         public LocalizedText Subtest_Text2 { get; private set; }
         public LocalizedText Subtest_Text3 { get; private set; }
+        public LocalizedText World_Text0 { get; private set; }
         #endregion
         #region Utils
         public static string GetTextKey(string key) => $"Mods.CalamityOverhaul.Legend.MuraText.{key}";

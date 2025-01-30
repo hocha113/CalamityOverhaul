@@ -1,8 +1,10 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
@@ -92,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage, GetStartDamage, ref damage);
             return false;
         }
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(ref tooltips);
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public override void SetStaticDefaults() => LoadWeaponData();
 
@@ -115,20 +117,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<HalibutCannonHeld>();
+            Item.SetHeldProj<HalibutCannonHeld>();
         }
 
-        public static void SetTooltip(ref List<TooltipLine> tooltips) {
-            int index = Instance.SHPC_Level();
+        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(Instance.Halibut_Level());
+
+        public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
+            int index = item.CWR().LegendData.Level;
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                int level = Instance.Halibut_Level();
-                string num = (level + 1).ToString();
-                if (level == 14) {
+                string num = (index + 1).ToString();
+                if (index == 14) {
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", "");
+
+                string text = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
+                string worldLine = LegendData.GetWorldUpLines(item.CWR());
+                if (worldLine != "") {
+                    text += worldLine;
+                }
+
+                tooltips.ReplaceTooltip("[Lang4]", text, "");
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), "");
             }
             else {
