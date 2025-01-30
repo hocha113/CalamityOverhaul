@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void AI() {
             Projectile.Calamity().timesPierced = 0;
             if (!onspan) {
-                Projectile.scale = MurasamaOverride.NameIsSam(Owner) ? 1.65f : MurasamaOverride.GetOnScale;
+                Projectile.scale = MurasamaOverride.NameIsSam(Owner) ? 1.65f : MurasamaOverride.GetOnScale(Item);
                 Projectile.scale *= GetMuraSizeInMeleeSengs(base.Owner);
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;
@@ -315,9 +315,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCharged += (int)(MurasamaOverride.GetOnRDCD / 10f);
-                if (Owner.CWR().RisingDragonCharged > MurasamaOverride.GetOnRDCD) {
-                    Owner.CWR().RisingDragonCharged = MurasamaOverride.GetOnRDCD;
+                Owner.CWR().RisingDragonCharged += (int)(MurasamaOverride.GetOnRDCD(Item) / 10f);
+                if (Owner.CWR().RisingDragonCharged > MurasamaOverride.GetOnRDCD(Item)) {
+                    Owner.CWR().RisingDragonCharged = MurasamaOverride.GetOnRDCD(Item);
                 }
                 int type = ModContent.ProjectileType<MurasamaHeld>();
                 foreach (var p in Main.projectile) {

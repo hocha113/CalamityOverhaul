@@ -48,55 +48,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
         /// <summary>
-        /// 获取时期对应的伤害
-        /// </summary>
-        public static int GetOnDamage => DamageDictionary[GetLevel()];
-        /// <summary>
-        /// 计算伤害比例
-        /// </summary>
-        public static float GetSengsDamage => GetOnDamage / (float)GetStartDamage;
-        /// <summary>
-        /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="TrueMeleeDamageClass"/>相关的乘算伤害
-        /// </summary>
-        public static int ActualTrueMeleeDamage => (int)(GetOnDamage * Main.LocalPlayer.GetDamage<TrueMeleeDamageClass>().Additive);
-        /// <summary>
-        /// 获取时期对应的范围增幅
-        /// </summary>
-        public static float GetOnScale => BladeVolumeRatioDictionary[GetLevel()];
-        /// <summary>
-        /// 获取时期对应的额外暴击
-        /// </summary>
-        public static int GetOnCrit => SetLevelCritDictionary[GetLevel()];
-        /// <summary>
-        /// 获取时期对应的冷却时间上限
-        /// </summary>
-        public static int GetOnRDCD => RDCDDictionary[GetLevel()];
-        /// <summary>
         /// 获取开局的击退力度
         /// </summary>
         public static float GetStartKnockback => KnockbackDictionary[0];
         /// <summary>
-        /// 获取时期对应的击退力度
-        /// </summary>
-        public static float GetOnKnockback => KnockbackDictionary[GetLevel()];
-        /// <summary>
         /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRLoad.Setup"/>中被加载，不需要进行手动的赋值
         /// </summary>
         public static int heldProjType;
-        public int frameCounter = 0;
-        public int frame = 0;
-        /// <summary>
-        /// 是否解锁升龙斩
-        /// </summary>
-        public static bool UnlockSkill1 => GetLevel() >= 2;
-        /// <summary>
-        /// 是否解锁下砸
-        /// </summary>
-        public static bool UnlockSkill2 => GetLevel() >= 5;
-        /// <summary>
-        /// 是否解锁终结技
-        /// </summary>
-        public static bool UnlockSkill3 => GetLevel() >= 9;
 
         public static readonly SoundStyle OrganicHit = new("CalamityMod/Sounds/Item/MurasamaHitOrganic") { Volume = 0.45f };
         public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
@@ -106,15 +64,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
         public override int TargetID => ModContent.ItemType<Murasama>();
         #endregion
-        public static int GetLevel() {
-            if (Main.gameMenu) {
-                return 0;
-            }
-            Item item = Main.LocalPlayer.GetItem();
+        /// <summary>
+        /// 获取时期对应的伤害
+        /// </summary>
+        public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
+        /// <summary>
+        /// 计算伤害比例
+        /// </summary>
+        public static float GetSengsDamage(Item item) => GetOnDamage(item) / (float)GetStartDamage;
+        /// <summary>
+        /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="TrueMeleeDamageClass"/>相关的乘算伤害
+        /// </summary>
+        public static int ActualTrueMeleeDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage<TrueMeleeDamageClass>().Additive);
+        /// <summary>
+        /// 获取时期对应的范围增幅
+        /// </summary>
+        public static float GetOnScale(Item item) => BladeVolumeRatioDictionary[GetLevel(item)];
+        /// <summary>
+        /// 获取时期对应的额外暴击
+        /// </summary>
+        public static int GetOnCrit(Item item) => SetLevelCritDictionary[GetLevel(item)];
+        /// <summary>
+        /// 获取时期对应的冷却时间上限
+        /// </summary>
+        public static int GetOnRDCD(Item item) => RDCDDictionary[GetLevel(item)];
+        /// <summary>
+        /// 获取时期对应的击退力度
+        /// </summary>
+        public static float GetOnKnockback(Item item) => KnockbackDictionary[GetLevel(item)];
+        /// <summary>
+        /// 是否解锁升龙斩
+        /// </summary>
+        public static bool UnlockSkill1(Item item) => GetLevel(item) >= 2;
+        /// <summary>
+        /// 是否解锁下砸
+        /// </summary>
+        public static bool UnlockSkill2(Item item) => GetLevel(item) >= 5;
+        /// <summary>
+        /// 是否解锁终结技
+        /// </summary>
+        public static bool UnlockSkill3(Item item) => GetLevel(item) >= 9;
+        public static int GetLevel(Item item) {
             if (item.type != ModContent.ItemType<Murasama>()) {
                 return 0;
             }
-            return item.CWR().LegendData.Level;
+            CWRItems cwrItem = item.CWR();
+            if (cwrItem == null) {
+                return 0;
+            }
+            if (cwrItem.LegendData == null) {
+                return 0;
+            }
+            return cwrItem.LegendData.Level;
         }
         public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);
         public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
@@ -215,15 +216,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => TooltipHandler.SetTooltip(item, ref tooltips);
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
-            => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage, GetStartDamage, ref damage);
+            => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage(item), GetStartDamage, ref damage);
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
-            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback, GetStartKnockback, ref knockback);
+            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback(item), GetStartKnockback, ref knockback);
 
         public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(InWorldBossPhase.Instance.Mura_Level());
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
-            crit += GetOnCrit;
+            crit += GetOnCrit(item);
             return false;
         }
 

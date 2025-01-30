@@ -148,8 +148,8 @@ namespace CalamityOverhaul.Content.UIs
                 Vector2 barOrigin = barBG.Size() * 0.5f;
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
                 Color color = Color.White * uiAlape;
-                if (risingDragon < MurasamaOverride.GetOnRDCD) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD * barFG.Width), barFG.Height);
+                if (risingDragon < MurasamaOverride.GetOnRDCD(murasama)) {
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(murasama) * barFG.Width), barFG.Height);
                     Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
                     Main.spriteBatch.Draw(barFG, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
                 }
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.UIs
                 Main.spriteBatch.Draw(Mura.Value, DrawPosition + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
             }
 
-            if (charge <= 9 || !MurasamaOverride.UnlockSkill3) {
+            if (charge <= 9 || !MurasamaOverride.UnlockSkill3(murasama)) {
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(newForCharge / 10f * barFG.Width), barFG.Height);
                 Main.spriteBatch.Draw(barBG, DrawPosition, null, color, 0f, barOrigin, scale, 0, 0f);
                 Main.spriteBatch.Draw(barFG, DrawPosition + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
@@ -220,8 +220,8 @@ namespace CalamityOverhaul.Content.UIs
                     Texture2D muraBarTop = MuraBarTop.Value;
                     Vector2 barOrigin2 = muraBarBottom.Size() * 0.5f;
                     Vector2 drawPos = DrawPosition + new Vector2(-20, -40);
-                    if (risingDragon < MurasamaOverride.GetOnRDCD) {
-                        Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD * muraBarTop.Width), muraBarTop.Height);
+                    if (risingDragon < MurasamaOverride.GetOnRDCD(murasama)) {
+                        Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(murasama) * muraBarTop.Width), muraBarTop.Height);
                         Main.spriteBatch.Draw(muraBarBottom, drawPos, null, color, 0f, barOrigin2, scale, 0, 0f);
                         Main.spriteBatch.Draw(muraBarTop, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin2, scale, 0, 0f);
                     }

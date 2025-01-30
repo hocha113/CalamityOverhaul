@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                         }
                         murasama.initialize();
 
-                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage * sengs);
+                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(murasama) * sengs);
                         Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
 
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !VaultUtils.isServer) {
                 if (DownLeft && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
-                    if (!MurasamaOverride.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
+                    if (!MurasamaOverride.UnlockSkill1(murasama)) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
 
@@ -189,10 +189,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.ai[0] = 1;
                 Projectile.ai[1] = 0;
                 Projectile.netUpdate = true;
-
-                if (target.boss && MurasamaOverride.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
-                    //Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);//这个部分存在争议，暂时取消
-                }
             }
         }
 
