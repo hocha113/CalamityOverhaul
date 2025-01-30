@@ -18,30 +18,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
-        private const float DRIncreaseTime = 600f;
-        private const float DeathModeLaserBreathGateValue = 600f;
-        private const float LaserTelegraphTime = 120f;
-        private const float SparkTelegraphTime = 30f;
-        private const float FlightPhaseGateValue = 900f;
-        private const float FlightPhaseResetGateValue = FlightPhaseGateValue * 2f;
-        private const float Phase4FlightPhaseTimerSetValue = FlightPhaseGateValue * 0.5f;
-        private const float Phase5FlightPhaseTimerSetValue = FlightPhaseGateValue;
-        private const float PhaseTransitionTelegraphTime = 180f;
-        private const float GroundTelegraphStartGateValue = FlightPhaseResetGateValue - PhaseTransitionTelegraphTime;
-        private const float FlightTelegraphStartGateValue = FlightPhaseGateValue - PhaseTransitionTelegraphTime;
+        private const float BeamWarningDuration = 120f;
+        private const float SparkWarningDuration = 30f;
+        private const float AerialPhaseThreshold = 900f;
+        private const float ExtremeModeBeamThreshold = 600f;
+        private const float PhaseShiftWarningDuration = 180f;
+        private const float DamageReductionIncreaseDuration = 600f;
+        private const float Phase5AerialTimerValue = AerialPhaseThreshold;
+        private const float Phase4AerialTimerValue = AerialPhaseThreshold * 0.5f;
+        private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
+        private const float AerialWarningStartThreshold = AerialPhaseThreshold - PhaseShiftWarningDuration;
+        private const float GroundWarningStartThreshold = AerialPhaseResetThreshold - PhaseShiftWarningDuration;
         private bool BossRush => BossRushEvent.BossRushActive;
         private bool MasterMode => Main.masterMode || BossRush;
         private bool Death => CalamityWorld.death || BossRush;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
-        private bool startFlightPhase => LifeRatio < 0.5f;
+        private bool StartFlightPhase => LifeRatio < 0.5f;
         private bool Phase2 => LifeRatio < 0.85f || MasterMode;
         private bool Phase3 => LifeRatio < 0.7f || MasterMode;
         private bool Phase4 => LifeRatio < (Death ? 0.4f : 0.25f);
         private bool Phase5 => LifeRatio < (Death ? 0.2f : 0.1f);
-        private bool HasSpawnDR => calNPC.newAI[1] < DRIncreaseTime && calNPC.newAI[1] > 60f;
+        private bool HasSpawnDR => calNPC.newAI[1] < DamageReductionIncreaseDuration && calNPC.newAI[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance350Tiles;
-        private bool FlyAtTarget => (calNPC.newAI[3] >= FlightPhaseGateValue && startFlightPhase) || HasSpawnDR;
+        private bool FlyAtTarget => (calNPC.newAI[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private bool AbleToFireLaser => calNPC.destroyerLaserColor != -1;
         private float enrageScale;
         private int noFlyZoneBoxHeight;
@@ -158,24 +158,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateDRIncrease() {
-            if (calNPC.newAI[1] < DRIncreaseTime) {
+            if (calNPC.newAI[1] < DamageReductionIncreaseDuration) {
                 calNPC.newAI[1] += 1f;
             }
 
-            calNPC.CurrentlyIncreasingDefenseOrDR = calNPC.newAI[1] < DRIncreaseTime;
+            calNPC.CurrentlyIncreasingDefenseOrDR = calNPC.newAI[1] < DamageReductionIncreaseDuration;
         }
 
         private void UpdateFlightPhase() {
-            if (startFlightPhase) {
+            if (StartFlightPhase) {
                 calNPC.newAI[3] += 1f;
             }
 
-            float flightPhaseTimerSetValue = Phase5 ? Phase5FlightPhaseTimerSetValue : Phase4 ? Phase4FlightPhaseTimerSetValue : 0f;
+            float flightPhaseTimerSetValue = Phase5 ? Phase5AerialTimerValue : Phase4 ? Phase4AerialTimerValue : 0f;
             if (calNPC.newAI[3] < flightPhaseTimerSetValue) {
                 calNPC.newAI[3] = flightPhaseTimerSetValue;
             }
 
-            if (calNPC.newAI[3] >= FlightPhaseResetGateValue) {
+            if (calNPC.newAI[3] >= AerialPhaseResetThreshold) {
                 calNPC.newAI[3] = flightPhaseTimerSetValue;
             }
         }
@@ -184,11 +184,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (HasSpawnDR || Phase5)
                 return 1f;
 
-            if (calNPC.newAI[3] >= GroundTelegraphStartGateValue)
-                return MathHelper.Clamp(1f - (calNPC.newAI[3] - GroundTelegraphStartGateValue) / PhaseTransitionTelegraphTime, 0f, 1f);
+            if (calNPC.newAI[3] >= GroundWarningStartThreshold)
+                return MathHelper.Clamp(1f - (calNPC.newAI[3] - GroundWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
 
-            if (calNPC.newAI[3] >= FlightTelegraphStartGateValue)
-                return MathHelper.Clamp((calNPC.newAI[3] - FlightTelegraphStartGateValue) / PhaseTransitionTelegraphTime, 0f, 1f);
+            if (calNPC.newAI[3] >= AerialWarningStartThreshold)
+                return MathHelper.Clamp((calNPC.newAI[3] - AerialWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
 
             return 0f;
         }
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
 
             if (AbleToFireLaser)
-                calNPC.newAI[0] += (calNPC.newAI[0] > shootProjectileGateValue - LaserTelegraphTime) ? 1f : 2f;
+                calNPC.newAI[0] += (calNPC.newAI[0] > shootProjectileGateValue - BeamWarningDuration) ? 1f : 2f;
 
             if (Main.netMode != NetmodeID.MultiplayerClient && calNPC.newAI[0] % 20f == 10f && AbleToFireLaser) {
                 npc.SyncExtraAI();
@@ -371,17 +371,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     break;
             }
 
-            if (calNPC.newAI[0] == shootProjectileGateValue - LaserTelegraphTime) {
+            if (calNPC.newAI[0] == shootProjectileGateValue - BeamWarningDuration) {
                 Particle telegraph = new DestroyerReticleTelegraph(
                     npc,
                     telegraphColor,
                     1.5f,
                     0.15f,
-                    (int)LaserTelegraphTime);
+                    (int)BeamWarningDuration);
                 GeneralParticleHandler.SpawnParticle(telegraph);
             }
 
-            if (calNPC.newAI[0] == shootProjectileGateValue - SparkTelegraphTime) {
+            if (calNPC.newAI[0] == shootProjectileGateValue - SparkWarningDuration) {
                 Particle spark = new DestroyerSparkTelegraph(
                     npc,
                     telegraphColor * 2f,
@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return;
 
             // 更新激光发射时间和目标
-            UpdateLaserTimingAndTarget(totalSegments, shootProjectileTime, bodySegmentTime, LaserTelegraphTime, MasterMode);
+            UpdateLaserTimingAndTarget(totalSegments, shootProjectileTime, bodySegmentTime, BeamWarningDuration, MasterMode);
 
             // 检查是否可以命中目标
             if (!Collision.CanHit(npc.position, npc.width, npc.height, Target.position, Target.width, Target.height))
@@ -530,21 +530,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float telegraphProgress = 0f;
 
             if (calNPC.destroyerLaserColor != -1) {
-                float telegraphGateValue = DeathModeLaserBreathGateValue - LaserTelegraphTime;
+                float telegraphGateValue = ExtremeModeBeamThreshold - BeamWarningDuration;
 
                 if (npc.type == NPCID.TheDestroyer && spitLaserSpreads && calNPC.newAI[0] > telegraphGateValue) {
                     telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                    telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - telegraphGateValue) / LaserTelegraphTime, 0f, 1f);
+                    telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
                 }
                 else if (npc.type == NPCID.TheDestroyerBody) {
                     float shootProjectileTime = (CalamityWorld.death || BossRushEvent.BossRushActive) ? 270f : 450f;
                     float bodySegmentTime = npc.ai[0] * 30f;
                     float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
-                    float bodyTelegraphGateValue = shootProjectileGateValue - LaserTelegraphTime;
+                    float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
 
                     if (calNPC.newAI[0] > bodyTelegraphGateValue) {
                         telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                        telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - bodyTelegraphGateValue) / LaserTelegraphTime, 0f, 1f);
+                        telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - bodyTelegraphGateValue) / BeamWarningDuration, 0f, 1f);
                     }
                 }
             }
