@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
@@ -33,6 +34,14 @@ namespace CalamityOverhaul.Content.Items.Rogue
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe(333).
+                AddIngredient<RuinousSoul>().
+                AddIngredient<Necroplasm>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 

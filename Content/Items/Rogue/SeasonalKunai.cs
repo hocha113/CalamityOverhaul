@@ -1,7 +1,9 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
+using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using Terraria;
@@ -34,6 +36,15 @@ namespace CalamityOverhaul.Content.Items.Rogue
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe(333).
+                AddIngredient<LifeAlloy>().
+                AddIngredient<AstralBar>().
+                AddIngredient<GalacticaSingularity>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 
