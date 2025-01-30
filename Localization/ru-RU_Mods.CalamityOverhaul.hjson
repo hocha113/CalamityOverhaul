@@ -1559,6 +1559,7 @@ TextContent: {
 		CWRGun_Recoil_Level_4: Сильная
 		CWRGun_Recoil_Level_5: Очень сильная
 		CWRGun_Recoil_Level_6: Крайне сильная
+		// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
 	}
 }
 

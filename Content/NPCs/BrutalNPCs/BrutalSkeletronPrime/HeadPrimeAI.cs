@@ -350,6 +350,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 //在Boss完成登场表演前不要去切换脱战行为，所以这里判断一下npc.ai0，
                 //防止Boss在初始化阶段或者出场阶段时，因为生成距离过远等原因而被判定脱战
                 if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
+                    if (npc.ai[1] == 4) {
+                        for (int i = 0; i < 5; i++) {
+                            VaultUtils.Text(CWRLocText.Instance.SkeletronPrime_Text.Value, Color.Red);
+                        }
+                    }
                     npc.ai[1] = 3f;
                 }
             }
@@ -402,7 +407,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             ThisFromeFindPlayer();
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
             if (npc.ai[0] > 1) {
-                DealingDaytimeRage();
+                DealingFury();
             }
 
             //这个部分是机械骷髅王刚刚进行tp传送后的行为，由ai10属性控制，在这个期间，
@@ -646,12 +651,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 UpdateRotation();
                 MoveTowardsPlayer(10f, 8f, 32f, 100f);
             }
-            else {
-                if (npc.ai[1] != 3f) {
-                    return;
-                }
+            else if (npc.ai[1] == 3f) {
                 HandleDespawn();
             }
+            else {
+                FulyByCoinGun();
+            }
+        }
+
+        private void FulyByCoinGun() {
+            npc.damage = 999;
+            npc.defense = 999;
+            npc.ChasingBehavior(player.Center, 33);
+            npc.rotation += npc.velocity.X > 0 ? 0.42f : -0.42f;
         }
 
         private bool TwoStageAI() {
@@ -966,7 +978,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private bool InIdleAI() {
-            if (npc.ai[1] != 3 && ai10 > 0) {
+            if (npc.ai[1] != 3 && npc.ai[1] != 4 && ai10 > 0) {
                 npc.damage = 0;
 
                 if (ai4 == 0) {
@@ -998,14 +1010,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        private void DealingDaytimeRage() {
-            if (!Main.IsItDay()) {
+        private void DealingFury() {
+            if (npc.ai[1] == 3f) {
                 return;
             }
-            if (npc.ai[1] != 3f && npc.ai[1] != 2f) {
-                npc.ai[1] = 2f;
-                KillArm();
-                SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+            if (Main.IsItDay()) {
+                if (npc.ai[1] != 2f) {
+                    npc.ai[1] = 2f;
+                    KillArm();
+                    SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+                }
+                return;
+            }
+            if (player.GetItem().type == ItemID.CoinGun) {
+                if (npc.ai[1] != 4f) {
+                    npc.ai[1] = 4f;
+                    SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
+                    SoundEngine.PlaySound(sound with { Pitch = -0.18f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+                }
             }
         }
 
@@ -1266,6 +1289,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!canLoaderAssetZunkenUp) {
                 return false;
+            }
+            if (npc.ai[1] == 4) {
+                drawColor = Color.Red;
             }
             if (DontReform()) {
                 return true;

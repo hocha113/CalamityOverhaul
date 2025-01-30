@@ -1517,6 +1517,7 @@ TextContent: {
 		CWRGun_Recoil_Level_4: Starker
 		CWRGun_Recoil_Level_5: Extremer
 		CWRGun_Recoil_Level_6: Absurder
+		// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
 	}
 }
 

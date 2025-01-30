@@ -7,6 +7,7 @@ namespace CalamityOverhaul.Common
     internal class CWRLocText : ModType, ILocalizedModType
     {
         public string LocalizationCategory => "TextContent";
+        public static CWRLocText Instance { get; private set; }
         //不要被吓到，这些只是必须的
         #region 字段内容
         public LocalizedText DontUseMagicConch { get; private set; }
@@ -158,8 +159,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText Error_2 { get; private set; }
         public LocalizedText Config_1 { get; private set; }
         public LocalizedText Config_2 { get; private set; }
+        public LocalizedText SkeletronPrime_Text { get; private set; }
         #endregion
-        protected override void Register() { }
+        protected override void Register() => Instance = this;
         #region Utils
         public static string GetTextKey(string key) => $"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}";
         public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
