@@ -1022,8 +1022,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 return;
             }
-            if (player.GetItem().type == ItemID.CoinGun) {
-                if (npc.ai[1] != 4f) {
+            Item heandItem = player.GetItem();
+            if (heandItem.type == ItemID.CoinGun) {
+                if (npc.ai[1] != 4f && player.ChooseAmmo(heandItem).type == ItemID.PlatinumCoin) {
                     npc.ai[1] = 4f;
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = -0.18f }, npc.Center);
