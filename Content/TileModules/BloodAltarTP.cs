@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.TileModules
             CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
             if (player != null) {
                 PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
-                player.Hurt(pd, player.statLifeMax2 / 10, 0);
+                player.Hurt(pd, 50, 0);
             }
             Old_OnBoolMoon = OnBoolMoon = false;
         }
