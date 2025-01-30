@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.GoldBow;
         public override bool IsVanilla => true;
- 
+
         public override void SetDefaults(Item item) => item.SetHeldProj<GoldBowHeldProj>();
     }
 }

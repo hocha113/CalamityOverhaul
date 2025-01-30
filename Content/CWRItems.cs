@@ -2,10 +2,8 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
-using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +12,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
@@ -463,6 +460,12 @@ namespace CalamityOverhaul.Content
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
+                foreach (TooltipLine line in tooltips) {//复制 tooltips 集合，以便在遍历时修改
+                    if (line.Name != "ItemName") {
+                        continue;
+                    }
+                    line.Text = CWRMod.ItemIDToOverrideDic[item.type].DisplayName.Value;
+                }
                 string path = $"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip";
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText(path));
             }

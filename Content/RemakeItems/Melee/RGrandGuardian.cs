@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGrandGuardian : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<GrandGuardian>();
- 
+
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<GrandGuardianRapier>();
             item.GiveMeleeType();

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ShootSpeed = 11;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             ShootSpeed = 16;
-             
+
         }
 
         public override void Shoot() {

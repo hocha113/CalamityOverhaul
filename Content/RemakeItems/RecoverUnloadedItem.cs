@@ -20,6 +20,9 @@ namespace CalamityOverhaul.Content.RemakeItems
         internal static Dictionary<string, int> RecoverUnloadedItemDic { get; private set; } = [];
         void ICWRLoader.SetupData() {
             foreach (var rItem in CWRMod.ItemOverrideInstances) {
+                if (rItem.TargetID == ModContent.ItemType<UnloadedItem>()) {
+                    continue;//不   要   替   换   自   己
+                }
                 Item ectypeItem = new Item(rItem.TargetID);
                 if (ectypeItem.ModItem != null) {
                     string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";

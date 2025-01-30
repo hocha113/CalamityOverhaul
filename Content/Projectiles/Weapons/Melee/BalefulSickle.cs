@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;

@@ -5167,4 +5167,6 @@ RemakeItems: {
 			"Par des aliens, pour exterminer des aliens"
 			'''
 	}
+
+	// RecoverUnloadedItem.DisplayName: 卸载物品
 }

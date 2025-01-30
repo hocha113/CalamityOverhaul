@@ -25,7 +25,6 @@ using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -36,11 +35,8 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
-using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -271,6 +267,10 @@ namespace CalamityOverhaul
         /// </summary>
         internal static Dictionary<int, bool> ItemIsGun { get; private set; } = [];
         /// <summary>
+        /// 该物品是否是一把枪械
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsShotgun { get; private set; } = [];
+        /// <summary>
         /// 该物品是否是一个弓
         /// </summary>
         internal static Dictionary<int, bool> ItemIsBow { get; private set; } = [];
@@ -496,6 +496,7 @@ namespace CalamityOverhaul
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);
                 ItemIsGun[itemType] = false;
+                ItemIsShotgun[itemType] = false;
                 ItemIsCrossBow[itemType] = false;
                 ItemIsGunAndMustConsumeAmmunition[itemType] = false;
                 ItemIsGunAndGetRecoilValue[itemType] = 1.2f;
@@ -536,12 +537,13 @@ namespace CalamityOverhaul
                                 ItemIsGunAndGetRecoilValue[itemType] = gun.Recoil;
                                 ItemIsGunAndGetRecoilLocKey[itemType] = GetLckRecoilKey(gun.Recoil);
                             }
-
+                            if (heldProj.ModProjectile is BaseFeederGun feederGun) {
+                                ItemIsShotgun[itemType] = feederGun.LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun;
+                            }
                             if (heldProj.ModProjectile is BaseBow bow) {
                                 ItemIsBow[itemType] = true;
                                 ItemIsBowAndArrowNum[itemType] = bow.BowArrowDrawNum;
                             }
-
                             if (heldProj.ModProjectile is BaseHeldRanged ranged) {
                                 ItemIsRanged[itemType] = true;
                                 ItemIsRangedAndCanRightClickFire[itemType] = ranged.CanRightClick;

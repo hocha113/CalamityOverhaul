@@ -1,10 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -15,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDeepcoreGK2 : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DeepcoreGK2>();
- 
+
         public override void SetDefaults(Item item) {
             item.damage = 45;
             item.ArmorPenetration = 15;

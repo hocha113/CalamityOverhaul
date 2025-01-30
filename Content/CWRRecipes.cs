@@ -13,7 +13,6 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

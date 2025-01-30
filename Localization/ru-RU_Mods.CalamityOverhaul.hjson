@@ -5226,4 +5226,6 @@ RemakeItems: {
 			"Из чужих, для уничтожения чужих"
 			'''
 	}
+
+	// RecoverUnloadedItem.DisplayName: 卸载物品
 }

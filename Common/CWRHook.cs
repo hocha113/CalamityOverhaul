@@ -66,6 +66,9 @@ namespace CalamityOverhaul.Common
 
         void ICWRLoader.UnLoadData() {
             foreach (var hook in _hooks.Values) {
+                if (hook == null) {
+                    continue;
+                }
                 if (hook.IsApplied) {
                     hook.Undo();
                 }

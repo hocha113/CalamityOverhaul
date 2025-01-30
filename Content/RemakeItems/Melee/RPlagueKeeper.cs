@@ -1,12 +1,10 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Mono.Cecil;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

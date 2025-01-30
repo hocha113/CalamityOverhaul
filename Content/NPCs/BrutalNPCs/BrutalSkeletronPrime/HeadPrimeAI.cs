@@ -1000,7 +1000,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void DealingDaytimeRage() {
             if (!Main.IsItDay()) {
-                return; 
+                return;
             }
             if (npc.ai[1] != 3f && npc.ai[1] != 2f) {
                 npc.ai[1] = 2f;

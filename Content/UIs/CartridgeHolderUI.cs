@@ -63,6 +63,10 @@ namespace CalamityOverhaul.Content.UIs
                     rightHeldTime = 0;
                 }
 
+                if (Main.playerInventory) {
+                    player.mouseInterface = true;
+                }
+
                 if (IsAmmo()) {
                     player.mouseInterface = true;
                     bool canContrl = false;
@@ -73,6 +77,9 @@ namespace CalamityOverhaul.Content.UIs
                     else if (keyLeftPressState == KeyPressState.Pressed) {
                         canContrl = true;
                         addStact = 0;
+                        if (CWRLoad.ItemIsShotgun[targetWeapon.type]) {
+                            addStact = 1;//霰弹枪还是只能一颗颗装
+                        }
                     }
 
                     if (canContrl) {

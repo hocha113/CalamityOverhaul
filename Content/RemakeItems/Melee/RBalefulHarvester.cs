@@ -1,22 +1,20 @@
 ﻿using CalamityMod.CalPlayer;
+using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
+using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Particles;
-using InnoVault.PRT;
-using ReLogic.Content;
-using System;
-using CalamityMod.Items;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

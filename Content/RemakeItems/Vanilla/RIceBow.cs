@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.IceBow;
         public override bool IsVanilla => true;
- 
+
         public override void SetDefaults(Item item) {
             item.damage = 30;
             item.SetHeldProj<IceBowHeldProj>();

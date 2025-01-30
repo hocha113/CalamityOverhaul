@@ -4,10 +4,8 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -18,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDodusHandcannon : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<DodusHandcannon>();
- 
+
         public override void SetDefaults(Item item) {
             item.width = 62;
             item.height = 34;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Content.Items.Magic;
 using Terraria;
 using Terraria.ModLoader;
 

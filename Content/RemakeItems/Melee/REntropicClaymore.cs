@@ -1,21 +1,18 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
-using System.Linq;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core.BaseKnife;
-using CalamityMod.Items;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -30,7 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
-        
+
         public static void SetDefaultsFunc(Item Item) {
             Item.damage = 92;
             Item.DamageType = DamageClass.Melee;

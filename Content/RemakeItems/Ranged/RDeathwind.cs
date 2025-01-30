@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDeathwind : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Deathwind>();
- 
+
         public override void SetDefaults(Item item) {
             item.damage = 248;
             item.DamageType = DamageClass.Ranged;

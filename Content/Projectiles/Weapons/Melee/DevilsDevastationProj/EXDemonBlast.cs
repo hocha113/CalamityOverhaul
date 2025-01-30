@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
 using CalamityOverhaul.Content.RemakeItems.Melee;

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.DaedalusStormbow;
         public override bool IsVanilla => true;
- 
+
         public override void SetDefaults(Item item) => item.SetHeldProj<DaedalusStormbowHeldProj>();
     }
 }

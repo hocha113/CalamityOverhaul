@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;

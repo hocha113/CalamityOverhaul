@@ -4,7 +4,6 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;

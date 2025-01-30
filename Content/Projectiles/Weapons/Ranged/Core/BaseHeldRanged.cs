@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (Item.type < ItemID.Count) {
                 ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
             }
-            else if (CombinedHooks.CanShoot(Owner, Item) 
+            else if (CombinedHooks.CanShoot(Owner, Item)
                 && CombinedHooks.Shoot(Owner, Item, Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }

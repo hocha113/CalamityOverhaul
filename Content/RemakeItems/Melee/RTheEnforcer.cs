@@ -1,11 +1,9 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Mono.Cecil;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

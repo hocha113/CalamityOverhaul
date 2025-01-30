@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         internal delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
         internal delegate bool On_AltFunctionUse_Delegate(Item item, Player player);
         internal delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
+        internal delegate string On_GetItemNameValue_Delegate(int id);
+        internal delegate string On_GetItemName_get_Delegate(Item item);
 
         public static Type itemLoaderType;
         public static MethodBase onMeleePrefixMethod;
@@ -58,6 +60,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onModifyWeaponDamageMethod;
         public static MethodBase onUpdateAccessoryMethod;
         public static MethodBase onAltFunctionUseMethod;
+        public static MethodBase onGetItemNameValueMethod;
+        public static MethodBase onItemNamePropertyGetMethod;
 
         void ICWRLoader.LoadData() {
             itemLoaderType = typeof(ItemLoader);
@@ -80,7 +84,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onAllowPrefixMethod = itemLoaderType.GetMethod("AllowPrefix", BindingFlags.Public | BindingFlags.Static);
             onMeleePrefixMethod = itemLoaderType.GetMethod("MeleePrefix", BindingFlags.NonPublic | BindingFlags.Static);
             onRangedPrefixMethod = itemLoaderType.GetMethod("RangedPrefix", BindingFlags.NonPublic | BindingFlags.Static);
-
+            onGetItemNameValueMethod = typeof(Lang).GetMethod("GetItemNameValue", BindingFlags.Public | BindingFlags.Static);
+            onItemNamePropertyGetMethod = typeof(Item).GetProperty("Name", BindingFlags.Instance | BindingFlags.Public).GetGetMethod();
             //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
             //if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
             //    CWRHook.Add(onSetDefaultsMethod, OnSetDefaultsHook);
@@ -139,6 +144,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onAllowPrefixMethod != null) {
                 CWRHook.Add(onAllowPrefixMethod, OnAllowPrefixHook);
             }
+            if (onGetItemNameValueMethod != null) {
+                //CWRHook.Add(onGetItemNameValueMethod, OnGetItemNameValueHook);
+            }
+            if (onItemNamePropertyGetMethod != null) {
+                //CWRHook.Add(onItemNamePropertyGetMethod, On_Name_Get_Hook);
+            }
         }
 
         void ICWRLoader.UnLoadData() {
@@ -161,7 +172,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onMeleePrefixMethod = null;
             onRangedPrefixMethod = null;
             onAllowPrefixMethod = null;
+            onGetItemNameValueMethod = null;
+            onItemNamePropertyGetMethod = null;
         }
+
+        /// <summary>
+        /// 这个钩子非常危险，未来很可能移除，因为它钩的是属性的get行为，这可能会带来较大的性能开销和适配性问题，同时，编写代码时也得非常小心，否则可能引起无限迭代让游戏闪退
+        /// </summary>
+        //public string On_Name_Get_Hook(On_GetItemName_get_Delegate orig, Item item) {
+        //    if (ItemIDToOverrideDic.TryGetValue(item.type, out var itemOverride)) {
+        //        return itemOverride.DisplayName.Value;
+        //    }
+        //    return orig.Invoke(item);
+        //}
+
+        //public string OnGetItemNameValueHook(On_GetItemNameValue_Delegate orig, int id) {
+        //    if (ItemIDToOverrideDic.TryGetValue(id, out var itemOverride)) {
+        //        return itemOverride.DisplayName.Value;
+        //    }
+        //    return orig.Invoke(id);
+        //}
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
             if (item.type == ItemID.None) {

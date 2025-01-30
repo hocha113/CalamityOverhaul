@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Gladius;
         public override bool IsVanilla => true;
- 
+
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<GladiusRapier>();
             item.DamageType = DamageClass.Melee;

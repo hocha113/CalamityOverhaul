@@ -5180,4 +5180,6 @@ RemakeItems: {
 			"From the Xenos, to annihilate the Xenos."
 			'''
 	}
+
+	RecoverUnloadedItem.DisplayName: 卸载物品
 }
