@@ -205,7 +205,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public string OnAffixNameHook(On_GetItemName_get_Delegate orig, Item item) {
             if (ItemIDToOverrideDic.TryGetValue(item.type, out var itemOverride)) {
-                return itemOverride.DisplayName.Value;
+                string newName = itemOverride.DisplayName.Value;
+                if (item.prefix < 0 || item.prefix >= Lang.prefix.Length) {
+                    return newName;
+                }
+                string text = Lang.prefix[item.prefix].Value;
+                if (text == "") {
+                    return newName;
+                }
+                if (text.StartsWith("(")) {
+                    return newName + " " + text;
+                }
+                return text + " " + newName;
             }
             return orig.Invoke(item);
         }

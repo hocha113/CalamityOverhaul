@@ -147,7 +147,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
 
             Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
-
             effect.Parameters["transformMatrix"].SetValue(CWRUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
