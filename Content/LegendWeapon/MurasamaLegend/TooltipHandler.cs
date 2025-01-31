@@ -75,10 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 ModifyMechBossSelect(index, ref newContent, ref num);
                 text3 = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
-                string worldName = item.CWR().LegendData.UpgradeWorldName;
-                if (Main.worldName != worldName) {
-                    text3 += CWRUtils.FormatColorTextMultiLine($"--{MuraText.GetTextValue("World_Text0")}:<{worldName}>", Color.Gold);
-                }
+                text3 += LegendData.GetWorldUpLines(item.CWR());
             }
             else {
                 text3 = "";
