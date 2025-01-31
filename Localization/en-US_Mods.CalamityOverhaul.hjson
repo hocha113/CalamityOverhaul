@@ -1181,26 +1181,26 @@ TextContent: {
 		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
 		Murasama_Text_Lang_0: Trial:
 		Murasama_Text_Lang_End: Already passed
-		Murasama_TextDictionary_Content_0: 
+		Murasama_TextDictionary_Content_0:
 			'''
 			New recruit, prove yourself to me.
 			That slimy blue fat thing, the last remnants of the sea witches beneath the desert sands, 
 			the zombie crabs in the mushroom caves—
 			Eliminate one of them. This is your first step.
 			'''
-		Murasama_TextDictionary_Content_1: 
+		Murasama_TextDictionary_Content_1:
 			'''
 			With the moon high in the night sky, let us pierce that chaotic, flying eye in the heavens and blind that false god for good.
 			The desert trembles. Go beneath it and discover what stirs, then deal with the great oyster that lurks there.
 			'''
-		Murasama_TextDictionary_Content_2: 
+		Murasama_TextDictionary_Content_2:
 			'''
 			The rotting corpse of the false god defiles Terra's sacred earth, 
 			heretics breed at the world's ends, and xenos ravage the land.
 			Go and liberate the corrupted continent, crush the false god’s brain, and shred that vile purple worm!
 			I want to see your blade dance through the flesh and blood of the xenos!
 			'''
-		Murasama_TextDictionary_Content_3: 
+		Murasama_TextDictionary_Content_3:
 			'''
 			The corrupted earth still trembles like a heart in agony. 
 			The flesh-eaters move beneath the surface, and the tainted tumors still think.
@@ -1208,12 +1208,12 @@ TextContent: {
 			The curse at the dungeon door is loosening. 
 			I can feel the psychic stirrings deep in the dungeon, mixed with screams, wails, and whispers...
 			'''
-		Murasama_TextDictionary_Content_4: 
+		Murasama_TextDictionary_Content_4:
 			'''
 			The Slime Kingdom whispers of a legend. They have a fallen god, now weakened. 
 			It is the perfect time to exile it back to the warp.
 			'''
-		Murasama_TextDictionary_Content_5: 
+		Murasama_TextDictionary_Content_5:
 			'''
 			In the prison within the Glacial Bastion lies a mighty psyker. 
 			Free him, and he will be a great ally in our reclamation of Terra.
@@ -1227,37 +1227,37 @@ TextContent: {
 			The foolish lizardfolk worship these mindless idols. 
 			Let us grind them to dust, shatter their faith, for we are the ones they should worship.
 			'''
-		Murasama_TextDictionary_Content_7: 
+		Murasama_TextDictionary_Content_7:
 			'''
 			The flesh-wrought husks, the vengeful souls of ancient battlefields, the unceasing destroyer of things—it annihilates all, and we shall annihilate it.
 			In the jungle, the remnants of someone’s failed creations still roam. As failures, they deserve nothing but to be discarded like scrap metal.
 			The ancient star gods have long since fallen. What remains is but a maggot. Let us end their era once and for all.
 			'''
-		Murasama_TextDictionary_Content_8: 
+		Murasama_TextDictionary_Content_8:
 			'''
 			The clumsy mockery of the Mechanicus heretic, the foolish clones that wander the jungle—destroy them.
 			A new sun stirs beneath the earth, it seeks to bring its sacred flame to the surface. Exile its apostles, 
 			for Terra permits only one faith’s fire to burn.
 			'''
-		Murasama_TextDictionary_Content_9: 
+		Murasama_TextDictionary_Content_9:
 			'''
 			The pitiful god that clings to life by siphoning stellar heat, its heretical fire must be extinguished.
 			The storm-borne creatures that prey on the winged dragons in the sky have strong armor, but their doom is near.
 			Within the dungeon, a sealed dimensional rift may be our chance to acquire dark matter.
 			The apostle of the warp, bearing rare twisted void—this is our chance to understand the true nature of the warp.
 			'''
-		Murasama_TextDictionary_Content_10: 
+		Murasama_TextDictionary_Content_10:
 			'''
 			The arrogant cosmic serpent stirs behind the veil of the world. End its foolish ambition.
 			The oldest of the beasts stirs within the Sulfur Sea, awakened by the psychic storm. Let it become a part of our glory.
 			'''
-		Murasama_TextDictionary_Content_11: 
+		Murasama_TextDictionary_Content_11:
 			'''
 			The jungle dragon, the last of the golden-scaled drakes on Terra, is unlike any xenos. It demands our respect.
 			Yet now, we must send it to death once more and strip its golden soul from its body.
 			These materials will forge weapons of supreme quality.
 			'''
-		Murasama_TextDictionary_Content_12: 
+		Murasama_TextDictionary_Content_12:
 			'''
 			The heretic of the Mechanicus, believing his creation of star-titans to be more powerful than the gods—such faith is absurd.
 			Let us return those titans to their natural state—mere heaps of scrap.
@@ -1265,12 +1265,12 @@ TextContent: {
 			should have been an ally in protecting Terra. But she has long since been lost to Chaos.
 			We must exile her, drive the blade into her chest, and let the fire of loyalty burn away her rotting soul.
 			'''
-		Murasama_TextDictionary_Content_13: 
+		Murasama_TextDictionary_Content_13:
 			'''
 			Our path of conquest is unstoppable. Break the armor of the dragon beneath the Black Abyss.
 			Use the Stone of the End to wage our final battle against the xenos.
 			'''
-		Murasama_TextDictionary_Content_14: 
+		Murasama_TextDictionary_Content_14:
 			'''
 			Well done, recruit. The xenos scum have been purged from this world.
 			Our journey has reached its apex, and even the tyrants who once ruled Terra are nothing compared to us.
