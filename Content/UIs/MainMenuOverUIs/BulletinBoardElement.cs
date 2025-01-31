@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public LocalizedText textContent;
         public Action downFunc;
-        public Vector2 TextSize => BulletinBoardUI.Instance.Font.Value.MeasureString(textContent.Value);
+        public Vector2 TextSize => BulletinBoardUI.Font.Value.MeasureString(textContent.Value);
         public Vector2 trueDrawPos => new Vector2(Main.screenWidth - TextSize.X - 4, DrawPosition.Y);
         public BulletinBoardElement Setproperty(LocalizedText textContent, Action downFunc) {
             this.textContent = textContent;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void Update() {
             UIHitBox = trueDrawPos.GetRectangle(TextSize);
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
-            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed && BulletinBoardUI.Instance.SafeStart) {
+            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed && BulletinBoardUI.SafeStart) {
                 SoundEngine.PlaySound(SoundID.MenuOpen);
                 downFunc.Invoke();
             }
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (BulletinBoardUI.Instance.hoverInMainPage) {
                 textColor *= 0.3f;
             }
-            Utils.DrawBorderStringFourWay(spriteBatch, BulletinBoardUI.Instance.Font.Value, VaultUtils.WrapTextToWidth(textContent.Value, TextSize, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, BulletinBoardUI.Font.Value, VaultUtils.WrapTextToWidth(textContent.Value, TextSize, 1000)
                 , trueDrawPos.X, trueDrawPos.Y, textColor * BulletinBoardUI.sengs, Color.Black, new Vector2(0.2f), 1);
         }
     }

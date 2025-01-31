@@ -209,8 +209,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
 
                 if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-                    Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-                    Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+                    Texture2D barBG = CWRAsset.GenericBarBack.Value;
+                    Texture2D barFG = CWRAsset.GenericBarFront.Value;
                     float barScale = 2f;
                     Vector2 barOrigin = barBG.Size() * 0.5f;
                     Vector2 drawPos = Owner.GetPlayerStabilityCenter() + Vector2.UnitY * 250 - Main.screenPosition;

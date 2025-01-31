@@ -2,6 +2,7 @@
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
@@ -17,6 +18,8 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> SemiCircularSmear;
         public static Asset<Texture2D> UI_JAR;
         public static Asset<Texture2D> AimTarget;
+        public static Asset<Texture2D> GenericBarBack;
+        public static Asset<Texture2D> GenericBarFront;
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -28,6 +31,8 @@ namespace CalamityOverhaul
             SemiCircularSmear = CWRUtils.GetT2DAsset("CalamityMod/Particles/SemiCircularSmear");
             UI_JAR = CWRUtils.GetT2DAsset(CWRConstant.UI + "JAR");
             AimTarget = CWRUtils.GetT2DAsset(CWRConstant.Other + "AimTarget");
+            GenericBarBack = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarBack");
+            GenericBarFront = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarFront");
             TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
         }
         void ICWRLoader.UnLoadData() {
@@ -41,6 +46,8 @@ namespace CalamityOverhaul
             SemiCircularSmear = null;
             UI_JAR = null;
             AimTarget = null;
+            GenericBarBack = null;
+            GenericBarFront = null;
         }
     }
 }

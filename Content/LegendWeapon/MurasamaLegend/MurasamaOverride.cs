@@ -5,7 +5,9 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         }
 
         public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-            => PreDrawInInventoryFunc(spriteBatch, position, origin, scale);
+            => PreDrawInInventoryFunc(item, spriteBatch, position, frame, origin, scale);
 
         public override bool? On_CanUseItem(Item item, Player player) => CanUseItemFunc(player, item);
 
@@ -261,8 +263,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.CWR().GetMeleePrefix = true;
         }
 
-        public static bool PreDrawInInventoryFunc(SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float scale) {
+        public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
+                item.initialize();
+                float charge = item.CWR().ai[0];
+                if (MuraChargeUI.MuraUIStyle == MuraChargeUI.MuraUIStyleEnum.conceal && charge > 0) {
+                    Texture2D barBG = CWRAsset.GenericBarBack.Value;
+                    Texture2D barFG = CWRAsset.GenericBarFront.Value;
+                    float barScale = 3f;
+                    Vector2 barOrigin = barBG.Size() * 0.5f;
+                    float yOffset = 50f;
+                    Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(charge / 10f * barFG.Width), barFG.Height);
+                    Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
+                    spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
+                    spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+                }
                 return true;
             }
             Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;

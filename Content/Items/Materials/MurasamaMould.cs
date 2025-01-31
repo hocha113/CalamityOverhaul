@@ -14,14 +14,14 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override void SetDefaults() {
             Item.width = Item.height = 25;
             Item.rare = ItemRarityID.Lime;
-            Item.value = Terraria.Item.sellPrice(gold: 3);
+            Item.value = Item.sellPrice(gold: 3);
             Durability = maxDurability;
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             if (!(Durability >= maxDurability)) {//这是一个通用的进度条绘制，用于判断耐久进度
-                Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-                Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+                Texture2D barBG = CWRAsset.GenericBarBack.Value;
+                Texture2D barFG = CWRAsset.GenericBarFront.Value;
                 float barScale = 2f;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
                 float yOffset = 50f;

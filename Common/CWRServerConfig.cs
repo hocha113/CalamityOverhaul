@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Common
             public static float LoadingAA_VolumeValue;
             internal const int LoadingAA_Volume_MinValue = 0;
             internal const int LoadingAA_Volume_MaxValue = 800;
-            internal const int MuraUIStyleMaxType = 4;
+            internal const int MuraUIStyleMaxType = 5;
             internal const int MuraUIStyleMinType = 1;
             public static int MuraUIStyleValue;
             internal const int MuraPosStyleMaxType = 3;

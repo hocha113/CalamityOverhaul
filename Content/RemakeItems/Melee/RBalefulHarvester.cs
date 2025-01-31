@@ -80,8 +80,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public static void PostDrawInInventoryFunc(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, float scale) {
             Item.initialize();
             if (!(Item.CWR().ai[0] <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-                Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-                Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+                Texture2D barBG = CWRAsset.GenericBarBack.Value;
+                Texture2D barFG = CWRAsset.GenericBarFront.Value;
                 float barScale = 3f;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
                 float yOffset = 50f;

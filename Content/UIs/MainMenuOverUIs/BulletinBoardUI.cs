@@ -1,19 +1,17 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
+    //Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 就是这样，这样才是优雅的 -hocah113 2025/2/1
     internal class BulletinBoardUI : UIHandle, ICWRLoader
     {
         #region Date
@@ -22,13 +20,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public static int Time;
         public static float sengs;
         public static BulletinBoardUI Instance => UIHandleLoader.GetUIHandleOfType<BulletinBoardUI>();
-        public Asset<DynamicSpriteFont> Font { get; private set; }
-        public static List<BulletinBoardElement> bulletinBoardElements;
-        private string HoverText => CWRLocText.GetTextValue("IconUI_Text0");
-        private Vector2 HoverTextSize => Font.Value.MeasureString(HoverText);
+        internal static bool SafeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
+        public static Asset<DynamicSpriteFont> Font { get; private set; }
+        public static List<BulletinBoardElement> bulletinBoardElements = [];
+        private static string HoverText => CWRLocText.Instance.IconUI_Text0.Value;
+        private static Vector2 HoverTextSize => Font.Value.MeasureString(HoverText);
         private string ModNameAndVersion => Mod.Name + " v" + Mod.Version;
         private Vector2 ModNameSize => Font.Value.MeasureString(ModNameAndVersion);
-        internal bool SafeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
         internal Vector2 TrueDrawPos => new Vector2(Main.screenWidth - ModNameSize.X - 4, DrawPosition.Y);
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
@@ -41,9 +39,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Font = FontAssets.MouseText;
             sengs = 0;
             Time = 0;
-            bulletinBoardElements = [];
         }
         void ICWRLoader.SetupData() {
+            bulletinBoardElements = [];
             //wiki没做完，暂时不要给别人看
             //BulletinBoardElement wikiBulletinBoard = new BulletinBoardElement()
             //    .Setproperty(CWRLocText.Instance.IconUI_Text8, () => CWRConstant.modWikiUrl.WebRedirection());
@@ -77,13 +75,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             UIHitBox = TrueDrawPos.GetRectangle(ModNameSize);
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
             DrawPosition = new Vector2(Main.screenWidth - 82, -120 + sengs * 121);
+
             float loaderY = 0;
-            for (int i = 0; i < bulletinBoardElements.Count; i++) {
-                BulletinBoardElement bulletinBoardElement = bulletinBoardElements[i];
-                bulletinBoardElement.DrawPosition = DrawPosition + new Vector2(0, loaderY + ModNameSize.Y);
-                bulletinBoardElement.Update();
-                loaderY += bulletinBoardElement.TextSize.Y;
+            if (bulletinBoardElements != null) {
+                for (int i = 0; i < bulletinBoardElements.Count; i++) {
+                    BulletinBoardElement bulletinBoardElement = bulletinBoardElements[i];
+                    bulletinBoardElement.DrawPosition = DrawPosition + new Vector2(0, loaderY + ModNameSize.Y);
+                    bulletinBoardElement.Update();
+                    loaderY += bulletinBoardElement.TextSize.Y;
+                }
             }
+            
             Time++;
         }
 

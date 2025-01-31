@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.UIs
             delicacy_compact,
             classical_overhead,
             classical_compact,
+            conceal,
         }
         internal enum MuraPosStyleEnum
         {
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.UIs
         }
         internal static MuraChargeUI Instance;
         internal MurasamaHeld murasamaHeld;
-        internal Item murasama => Main.LocalPlayer.GetItem();
+        internal static Item MurasamaItem => Main.LocalPlayer.GetItem();
         private static Asset<Texture2D> classical_SwordStanceTop;
         private static Asset<Texture2D> classical_SwordStanceFull;
         private static Asset<Texture2D> classical_SwordStanceBottom;
@@ -50,15 +51,14 @@ namespace CalamityOverhaul.Content.UIs
         private static float invasionSetOffsetValue;
         private static Vector2 setBossHealthBarOffsetValue;
         private static Color fullColor;
-        internal MuraUIStyleEnum MuraUIStyle => (MuraUIStyleEnum)CWRServerConfig.Instance.MuraUIStyleType;
-        internal MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
-        internal Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
-        private bool compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
-        internal bool dontAddUIAlape =>
-            murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeld>() || Main.playerInventory;
+        internal static MuraUIStyleEnum MuraUIStyle => (MuraUIStyleEnum)CWRServerConfig.Instance.MuraUIStyleType;
+        internal static MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
+        internal static Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
+        private static bool Compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
+        internal bool DontAddUIAlape => murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeld>() || Main.playerInventory;
         public override bool Active {
             get {
-                if (dontAddUIAlape) {
+                if (DontAddUIAlape) {
                     if (uiAlape > 0) {
                         uiAlape -= 0.05f;
                     }
@@ -99,17 +99,17 @@ namespace CalamityOverhaul.Content.UIs
         public override void Load() => Instance = this;
 
         public override void Update() {
-            if (murasama == null || murasama.type != ModContent.ItemType<Murasama>()) {
+            if (MurasamaItem == null || MurasamaItem.type != ModContent.ItemType<Murasama>()) {
                 murasamaHeld = null;
                 return;
             }
 
-            if (uiAlape < 1 && !dontAddUIAlape) {
+            if (uiAlape < 1 && !DontAddUIAlape) {
                 uiAlape += 0.05f;
             }
 
-            murasama.initialize();
-            charge = murasama.CWR().ai[0];
+            MurasamaItem.initialize();
+            charge = MurasamaItem.CWR().ai[0];
             newForCharge = MathHelper.Lerp(newForCharge, charge, 0.2f);
 
             if (Math.Abs(charge - newForCharge) > 0.1f) {
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         internal void DrawOverheadSorwdBar(Player Owner, float risingDragon, int uiFrame, int maxFrame) {
-            if (compact) {
+            if (Compact) {
                 return;
             }
             float scale = 1;
@@ -148,8 +148,8 @@ namespace CalamityOverhaul.Content.UIs
                 Vector2 barOrigin = barBG.Size() * 0.5f;
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
                 Color color = Color.White * uiAlape;
-                if (risingDragon < MurasamaOverride.GetOnRDCD(murasama)) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(murasama) * barFG.Width), barFG.Height);
+                if (risingDragon < MurasamaOverride.GetOnRDCD(MurasamaItem)) {
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(MurasamaItem) * barFG.Width), barFG.Height);
                     Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
                     Main.spriteBatch.Draw(barFG, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
                 }
@@ -163,6 +163,10 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (MuraUIStyle == MuraUIStyleEnum.conceal) {
+                return;
+            }
+
             float scale = 1;
             if (uiAlape <= 0) {
                 return;
@@ -203,7 +207,7 @@ namespace CalamityOverhaul.Content.UIs
                 Main.spriteBatch.Draw(Mura.Value, DrawPosition + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
             }
 
-            if (charge <= 9 || !MurasamaOverride.UnlockSkill3(murasama)) {
+            if (charge <= 9 || !MurasamaOverride.UnlockSkill3(MurasamaItem)) {
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(newForCharge / 10f * barFG.Width), barFG.Height);
                 Main.spriteBatch.Draw(barBG, DrawPosition, null, color, 0f, barOrigin, scale, 0, 0f);
                 Main.spriteBatch.Draw(barFG, DrawPosition + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
@@ -213,15 +217,15 @@ namespace CalamityOverhaul.Content.UIs
                 Main.spriteBatch.Draw(fullFG, DrawPosition, rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
             }
 
-            if (compact) {
+            if (Compact) {
                 float risingDragon = Main.LocalPlayer.CWR().RisingDragonCharged;
                 if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断进度
                     Texture2D muraBarBottom = MuraBarBottom.Value;
                     Texture2D muraBarTop = MuraBarTop.Value;
                     Vector2 barOrigin2 = muraBarBottom.Size() * 0.5f;
                     Vector2 drawPos = DrawPosition + new Vector2(-20, -40);
-                    if (risingDragon < MurasamaOverride.GetOnRDCD(murasama)) {
-                        Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(murasama) * muraBarTop.Width), muraBarTop.Height);
+                    if (risingDragon < MurasamaOverride.GetOnRDCD(MurasamaItem)) {
+                        Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaOverride.GetOnRDCD(MurasamaItem) * muraBarTop.Width), muraBarTop.Height);
                         Main.spriteBatch.Draw(muraBarBottom, drawPos, null, color, 0f, barOrigin2, scale, 0, 0f);
                         Main.spriteBatch.Draw(muraBarTop, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin2, scale, 0, 0f);
                     }
