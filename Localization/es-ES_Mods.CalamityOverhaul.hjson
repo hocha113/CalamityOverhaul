@@ -985,6 +985,7 @@ Projectiles: {
 	// SpanDMBall.DisplayName: Span D M Ball
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// CrossPrediction.DisplayName: Cross Prediction
+	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 }
 
 Configs: {
@@ -5215,5 +5216,12 @@ RemakeItems: {
 			'''
 	}
 
-	// RecoverUnloadedItem.DisplayName: 卸载物品
+	RStarfury: {
+		// DisplayName: Star fury
+		/* Tooltip:
+			'''
+			Make the stars fall from the sky
+			"Forged with the wrath of heaven."
+			''' */
+	}
 }

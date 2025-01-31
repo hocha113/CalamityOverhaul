@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool CanRightClick() {
             LoadDorp();
-            if (Main.mouseItem.type > ItemID.None) {
+            if (Main.mouseItem.type > ItemID.None && Main.mouseItem.type != ModContent.ItemType<DarkMatterBall>()) {//不要自己右键自己
                 dorpItems.Add(Main.mouseItem.Clone());
                 Main.mouseItem.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab);

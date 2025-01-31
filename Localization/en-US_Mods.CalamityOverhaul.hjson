@@ -381,6 +381,7 @@ Items: {
 			let the special ammunition to fill the magazine
 			Special ammo can be overlaid with the original bullet effect
 			It makes the warhead highly flammable and explodes when it hits the target
+			"This isn't cod."
 			'''
 	}
 
@@ -974,6 +975,7 @@ Projectiles: {
 	SpanDMBall.DisplayName: Span D M Ball
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	CrossPrediction.DisplayName: Cross Prediction
+	BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 }
 
 Configs: {
@@ -1179,102 +1181,100 @@ TextContent: {
 		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
 		Murasama_Text_Lang_0: Trial:
 		Murasama_Text_Lang_End: Already passed
-		Murasama_TextDictionary_Content_0:
+		Murasama_TextDictionary_Content_0: 
 			'''
-			Recruit, You need to prove yourself to me.
-			Those foolish slime aggregations, guardians of the pre-drought sea, decaying husks within the fungus,
-			Deal with one of them at your leisure, this is your first step.
+			New recruit, prove yourself to me.
+			That slimy blue fat thing, the last remnants of the sea witches beneath the desert sands, 
+			the zombie crabs in the mushroom caves—
+			Eliminate one of them. This is your first step.
 			'''
-		Murasama_TextDictionary_Content_1:
+		Murasama_TextDictionary_Content_1: 
 			'''
-			As the sun sets, I can feel it, the gaze of the fallen god not completely dissipated still watching this world, I dislike this feeling, kill it.
-			In the ruins of the front sea, I feel that certain ancient things are protected within the giant clams of the arid sea, set them free.
+			With the moon high in the night sky, let us pierce that chaotic, flying eye in the heavens and blind that false god for good.
+			The desert trembles. Go beneath it and discover what stirs, then deal with the great oyster that lurks there.
 			'''
-		Murasama_TextDictionary_Content_2:
+		Murasama_TextDictionary_Content_2: 
 			'''
-			The remnants of the old rulers still pollute the land here, flesh grows rampant, corruption abounds.
-			Crush the brain, sever the worm, let us send that pitiful evil god on his way.
+			The rotting corpse of the false god defiles Terra's sacred earth, 
+			heretics breed at the world's ends, and xenos ravage the land.
+			Go and liberate the corrupted continent, crush the false god’s brain, and shred that vile purple worm!
+			I want to see your blade dance through the flesh and blood of the xenos!
 			'''
-		Murasama_TextDictionary_Content_3:
+		Murasama_TextDictionary_Content_3: 
 			'''
-			The flesh parasites are still active, the corrupt tumors begin to contemplate... 
-			you haven't completely wiped them out yet, go, root out the problem.
-			I hear cries coming from the dungeon, and the dungeon seems sealed by some force, 
-			break its seal, perhaps to find treasures of the old world.
+			The corrupted earth still trembles like a heart in agony. 
+			The flesh-eaters move beneath the surface, and the tainted tumors still think.
+			Go, exile them forever!
+			The curse at the dungeon door is loosening. 
+			I can feel the psychic stirrings deep in the dungeon, mixed with screams, wails, and whispers...
 			'''
-		Murasama_TextDictionary_Content_4:
+		Murasama_TextDictionary_Content_4: 
 			'''
-			Remember those foolish slime? I can feel that a special aggregation has appeared among them,
-			Take it out, to prevent future troubles.
+			The Slime Kingdom whispers of a legend. They have a fallen god, now weakened. 
+			It is the perfect time to exile it back to the warp.
 			'''
-		Murasama_TextDictionary_Content_5:
+		Murasama_TextDictionary_Content_5: 
 			'''
-			In the prison within the ice barrier, the prisoners there may be useful, release him, let him serve us.
-			The abandoned offspring of the sulfur sea hinders our exploration of the treasures of the abyss, go, end its devouring and wandering.
-			I miss the flames tempered in the sulfur cliffs, go meet the guardians there.
+			In the prison within the Glacial Bastion lies a mighty psyker. 
+			Free him, and he will be a great ally in our reclamation of Terra.
+			The forsaken child of the Sulfur Sea blocks our path to the treasures of the Abyss. End its hunger and wanderings.
+			I miss the fire-forged flames of the Sulfur Cliffs. Go, meet its guardians.
 			'''
 		Murasama_TextDictionary_Content_6:
 			'''
-			That foolish escaping replica, dare to secretly spy. Kill that alien, with blood and flames to sacrifice the blade.
-			Enchanting songs come from the sea, those are the sirens' people, let us take the head of the sea monster, and establish our deeds on the sea.
-			The foolish lizard clan only worships these stubborn stones, let us crush it to pieces, destroy their faith, we are what they should worship.
+			The witch who fell to Chaos, with her twisted clone-sister, eliminate the xenos, sacrificing them to blood and flame.
+			The siren’s song calls from the shore. It is the voice of her kind. Let us take the head of the sea witch and make our mark upon the sea.
+			The foolish lizardfolk worship these mindless idols. 
+			Let us grind them to dust, shatter their faith, for we are the ones they should worship.
 			'''
-		Murasama_TextDictionary_Content_7:
+		Murasama_TextDictionary_Content_7: 
 			'''
-			The intertwined flesh shell, the resentful souls of ancient battlefields, 
-			the relentless destruction golems, it destroys everything, and we destroy it.
-			In the jungle, someone's previous crude work is still wandering, as a failure, it should be like a pile of scrap iron.
-			The former star god wandering dragon has long fallen, now there is only a mere maggot, let us end the era of the star god completely.
+			The flesh-wrought husks, the vengeful souls of ancient battlefields, the unceasing destroyer of things—it annihilates all, and we shall annihilate it.
+			In the jungle, the remnants of someone’s failed creations still roam. As failures, they deserve nothing but to be discarded like scrap metal.
+			The ancient star gods have long since fallen. What remains is but a maggot. Let us end their era once and for all.
 			'''
-		Murasama_TextDictionary_Content_8:
+		Murasama_TextDictionary_Content_8: 
 			'''
-			Poor imitation, foolish clone, that stupid bird, wandering in the jungle, eliminate it.
-			Another sun appears underground, they seem to want to bring this sacred flame 
-			through the sacred land to the surface, expel its apostles.
+			The clumsy mockery of the Mechanicus heretic, the foolish clones that wander the jungle—destroy them.
+			A new sun stirs beneath the earth, it seeks to bring its sacred flame to the surface. Exile its apostles, 
+			for Terra permits only one faith’s fire to burn.
 			'''
-		Murasama_TextDictionary_Content_9:
+		Murasama_TextDictionary_Content_9: 
 			'''
-			The pitiful deity surviving on the heat of stars gasps its last breath; 
-			its heretical flame needs to be extinguished completely.
-			The stormworms that prey on sky-edge dragons boast impressive armored shells. 
-			Sealed within the dungeons are dimensional rifts, perhaps a good avenue to acquire dark matter. 
-			The heretical apostles from subspace carry rare twisted voids, 
-			presenting us with a fine opportunity to understand the nature of subspace.
+			The pitiful god that clings to life by siphoning stellar heat, its heretical fire must be extinguished.
+			The storm-borne creatures that prey on the winged dragons in the sky have strong armor, but their doom is near.
+			Within the dungeon, a sealed dimensional rift may be our chance to acquire dark matter.
+			The apostle of the warp, bearing rare twisted void—this is our chance to understand the true nature of the warp.
 			'''
-		Murasama_TextDictionary_Content_10:
+		Murasama_TextDictionary_Content_10: 
 			'''
-			The arrogant cosmic python lurks behind the veil of the world, poised to unleash its ambitions. 
-			Put an end to his aspirations. The oldest creature lurking in the Sea of Sulfur awakens with the surge of psychic storms, 
-			making it a glorious part of our endeavor.
+			The arrogant cosmic serpent stirs behind the veil of the world. End its foolish ambition.
+			The oldest of the beasts stirs within the Sulfur Sea, awakened by the psychic storm. Let it become a part of our glory.
 			'''
-		Murasama_TextDictionary_Content_11:
+		Murasama_TextDictionary_Content_11: 
 			'''
-			The Jungle Dragon, the last surviving descendant of the Aurelian Dragons on the continent of Terra, 
-			stands apart from other xenomorphs and deserves our respect. However, at present, 
-			we must send it to its demise once again, stripping it of its Auric Essence. 
-			These materials will be used to craft an unparalleled set of armor.
+			The jungle dragon, the last of the golden-scaled drakes on Terra, is unlike any xenos. It demands our respect.
+			Yet now, we must send it to death once more and strip its golden soul from its body.
+			These materials will forge weapons of supreme quality.
 			'''
-		Murasama_TextDictionary_Content_12:
+		Murasama_TextDictionary_Content_12: 
 			'''
-			The heresy of the Mechanist Church, believing their created Star-Flow Titans surpass the power of the divine,
-			is utterly absurd. Let us return those Titans to their natural state—mere heaps of scrap metal. 
-			The witch, once gifted with exceptional psychic talents, should have been a great asset in safeguarding the sacred Terra. 
-			Yet, she has long been lost to chaos. Therefore, we must exile her, 
-			thrust the blade into her chest, and let the fire of loyalty consume her decayed soul. 
-			This war shall be etched into the annals of Terra, and our journey shall henceforth span the galaxy.
+			The heretic of the Mechanicus, believing his creation of star-titans to be more powerful than the gods—such faith is absurd.
+			Let us return those titans to their natural state—mere heaps of scrap.
+			The witch, once blessed with immense psychic talent, 
+			should have been an ally in protecting Terra. But she has long since been lost to Chaos.
+			We must exile her, drive the blade into her chest, and let the fire of loyalty burn away her rotting soul.
 			'''
-		Murasama_TextDictionary_Content_13:
+		Murasama_TextDictionary_Content_13: 
 			'''
-			The demon dragon appears, we will engage in a full-scale conflict with the alien evil spirits, 
-			with that stone obtained from the trench. New recruit, this is the final battle!
+			Our path of conquest is unstoppable. Break the armor of the dragon beneath the Black Abyss.
+			Use the Stone of the End to wage our final battle against the xenos.
 			'''
-		Murasama_TextDictionary_Content_14:
+		Murasama_TextDictionary_Content_14: 
 			'''
-			Well done, rookie, the abominations of the xenomorphs in this world have been completely eradicated 
-			by us... Why do I see tears shimmering in your eyes?
-			Is it because of confusion? Is it because of guilt? Look, our journey has reached its peak, 
-			even the tyrant who once ruled Terra is no match for us.
-			Now, spread your arms and embrace this world that victory has brought to you
+			Well done, recruit. The xenos scum have been purged from this world.
+			Our journey has reached its apex, and even the tyrants who once ruled Terra are nothing compared to us.
+			Now, spread your arms and embrace this world forged by victory.
 			'''
 		Murasama_No_legend_Content_1: The sheath will be unlocked after the dragon falls
 		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
@@ -5184,10 +5184,17 @@ RemakeItems: {
 		DisplayName: Eviscerator
 		Tooltip:
 			'''
-			Converts musket balls into slow-flying blood coagulation bullets.  
+			Turns Musket Bullets into Blood Bombs.
 			"From the Xenos, to annihilate the Xenos."
 			'''
 	}
 
-	RecoverUnloadedItem.DisplayName: 卸载物品
+	RStarfury: {
+		DisplayName: Star fury
+		Tooltip:
+			'''
+			Make the stars fall from the sky
+			"Forged with the wrath of heaven."
+			'''
+	}
 }

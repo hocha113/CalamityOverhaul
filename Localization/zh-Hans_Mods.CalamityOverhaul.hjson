@@ -383,6 +383,7 @@ Items: {
 			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
 			特种弹药可以和原来的子弹效果叠加
 			让弹头变得极度易燃，击中目标时发生爆燃
+			"这里不是cod"
 			'''
 	}
 
@@ -989,6 +990,7 @@ Projectiles: {
 	SpanDMBall.DisplayName: Span D M Ball
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	CrossPrediction.DisplayName: Cross Prediction
+	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 }
 
 Configs: {
@@ -1266,7 +1268,7 @@ TextContent: {
 			'''
 			那个机械教会的异端，他笃信自己所创造的星流泰坦胜过神明之力
 			这种信念荒谬至极，让我们将那几台泰坦归还自然的状态 —— 一堆废铁
-			曾拥有出色灵能天赋的女巫，本应成为守护神圣泰拉的一大助力，却早已迷失于混沌之中
+			曾拥有出色灵能天赋的女巫，本应成为守护泰拉的一大助力，却早已迷失于混沌之中
 			我们唯有将她放逐，将刀锋刺入她的胸膛，让忠诚之火焚尽她腐朽的灵魂
 			'''
 		Murasama_TextDictionary_Content_13:
@@ -5163,10 +5165,17 @@ RemakeItems: {
 		DisplayName: 开膛者
 		Tooltip:
 			'''
-			将火枪子弹转化为缓慢飞行的血凝弹
+			将火枪子弹转化为鲜血爆弹
 			"来自异形，诛灭异形"
 			'''
 	}
 
-	// RecoverUnloadedItem.DisplayName: 卸载物品
+	RStarfury: {
+		DisplayName: 星怒
+		Tooltip:
+			'''
+			使星星从天而降
+			“用天堂怒火锻造而成”
+			'''
+	}
 }
