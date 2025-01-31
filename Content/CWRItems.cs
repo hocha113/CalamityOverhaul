@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -424,6 +425,10 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+        }
+
+        public override void UpdateInventory(Item item, Player player) {
+            RecoverUnloadedItem.UpdateInventory(item, player);
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {

@@ -94,8 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0)
-                && head.CWR().NPCOverride.ai[11] >= 1 && setPosingStarmCount <= 0) {
+            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0) && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
                 Rectangle drawRec = CWRUtils.GetRec(BSPRAM.Value);
@@ -241,7 +240,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 arm.damage = 0;
                 return true;
             }
-            if ((head.ai[1] != 1 && head.ai[1] != 2) || pCOverride.ai[11] < 1) {
+            if (head.ai[1] != 1 && head.ai[1] != 2) {
                 return false;
             }
             float rot = pCOverride.ai[9] * 0.1f + MathHelper.TwoPi / 4 * type;
@@ -623,7 +622,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f && ai11 >= 1 && !noArm) {//只有当ai11的值大于等于1后才会进行冲刺
+                if (npc.ai[2] == 38f && !noArm) {
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -1106,7 +1105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void UpdateVelocity(Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
-            if (death && ai11 >= 1) {
+            if (death) {
                 if (--calNPC.newAI[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed;
