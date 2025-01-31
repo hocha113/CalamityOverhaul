@@ -49,6 +49,6 @@
 
         public const string githubUrl = "https://github.com/hocha113/CalamityOverhaul";
         public const string modWikiUrl = "https://calamity-overhaul.cc";
-        public const string steamIssueUrl = "https://steamcommunity.com/sharedfiles/filedetails/changelog/3161388997";
+        public const string steamLogUrl = "https://steamcommunity.com/sharedfiles/filedetails/changelog/3161388997";
     }
 }

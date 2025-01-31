@@ -144,6 +144,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText IconUI_Text5 { get; private set; }
         public LocalizedText IconUI_Text6 { get; private set; }
         public LocalizedText IconUI_Text7 { get; private set; }
+        public LocalizedText IconUI_Text8 { get; private set; }
         public LocalizedText SPU_Text0 { get; private set; }
         public LocalizedText SPU_Text1 { get; private set; }
         public LocalizedText SPU_Text2 { get; private set; }

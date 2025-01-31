@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
-            npc.defense = 20;
+            npc.defDefense = npc.defense = 20;
         }
 
         public override bool AI() {
