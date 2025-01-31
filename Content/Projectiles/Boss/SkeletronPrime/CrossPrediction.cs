@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;
-            Projectile.hostile = true;
             Projectile.scale = 1f;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
@@ -23,6 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.timeLeft = 50;
             Projectile.alpha = 0;
         }
+
+        public override bool? CanDamage() => false;
 
         public override void AI() {
             if (Projectile.localAI[0] == 0) {

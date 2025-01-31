@@ -366,6 +366,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
+            npc.defense = 20;
         }
 
         public override bool AI() {
@@ -613,7 +614,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 AdjustHorizontalMovement(horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
             }
             else if (npc.ai[1] == 1f) {
-                npc.defense *= 2;
+                npc.defense *= (int)(npc.defDefense * 1.25f);
                 npc.damage = npc.defDamage * 2;
                 calNPC.CurrentlyIncreasingDefenseOrDR = true;
 
@@ -688,7 +689,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
                 SmokeDrawer.SpawnAreaCompactness = 80f;
                 if (npc.life > npc.lifeMax / 10 && noEye && npc.ai[1] != 2) {
-                    npc.life -= 10;
+                    npc.life -= 12;
                 }
             }
             SmokeDrawer.Update();
