@@ -427,6 +427,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override void OrigItemShoot() {
             GlobalItemBehavior = false;
+            if (onFireR) {
+                Owner.altFunctionUse = 2;
+            }
             if (Item.type < ItemID.Count) {
                 ItemCheck_Shoot_Method.Invoke(Owner, [Owner.whoAmI, Item, WeaponDamage]);
             }

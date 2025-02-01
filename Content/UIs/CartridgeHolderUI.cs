@@ -113,6 +113,7 @@ namespace CalamityOverhaul.Content.UIs
                             }
                             player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ammo.type), ammo.stack);
                         }
+
                         cwrWeapon.InitializeMagazine();
                     }
                 }

@@ -247,7 +247,6 @@ namespace CalamityOverhaul.Content
         /// <param name="addStack"></param>
         public void LoadenMagazine(Item addAmmo, int addStack = 0) {
             CalculateNumberBullet();
-
             bool isUnlimited = CWRUtils.IsAmmunitionUnlimited(addAmmo);
 
             if (addStack == 0) {
@@ -285,7 +284,6 @@ namespace CalamityOverhaul.Content
             if (!onAdds) {
                 newMagazine.Add(newAmmo);
             }
-
             SetMagazine(newMagazine);
         }
 
@@ -298,7 +296,6 @@ namespace CalamityOverhaul.Content
                 InitializeMagazine();//如果输入的是非法的弹匣内容，直接初始化弹匣，并返回
                 return;
             }
-
             SetMagazine(magazineArray.ToList());
         }
 
@@ -344,7 +341,7 @@ namespace CalamityOverhaul.Content
             AmmoProjectileReturn = true;
             IsKreload = false;
             NumberBullets = 0;
-            NoKreLoadTime += 10;
+            NoKreLoadTime = 10;
             MagazineContents = new Item[AmmoCapacity];
             for (int i = 0; i < MagazineContents.Length; i++) {
                 MagazineContents[i] = new Item();

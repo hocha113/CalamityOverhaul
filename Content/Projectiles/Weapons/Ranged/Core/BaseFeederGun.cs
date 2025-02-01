@@ -304,7 +304,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected void InitializeMagazine() {
             if (ModItem.MagazineContents == null) {
-
                 ModItem.MagazineContents = new Item[ModItem.AmmoCapacity];
                 for (int i = 0; i < ModItem.MagazineContents.Length; i++) {
                     ModItem.MagazineContents[i] = new Item();
@@ -554,6 +553,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (WhetherStartChangingAmmunition()) {
+                    AmmoState = Owner.GetAmmoState();
                     if (AmmoState.CurrentAmount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
                         OnKreload = true;
                         kreloadTimeValue = kreloadMaxTime;
@@ -673,22 +673,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
                 ModItem.InitializeMagazine();
+                AmmoState = Owner.GetAmmoState();
                 IsKreload = false;
                 return;
             }
 
-            Item targetAmmo = ModItem.GetSelectedBullets();
-            targetAmmo.stack--;
+            if (IsKreload) {//已经打空弹匣了就不要干多余的事情了
+                Item targetAmmo = ModItem.GetSelectedBullets();
+                targetAmmo.stack--;
 
-            if (targetAmmo.stack <= 0) {//自己设置一下，这样可以利用SetMagazine函数的清理机制自动排除空位
-                ModItem.SetMagazine(ModItem.MagazineContents);
-            }
-            else {
-                ModItem.CalculateNumberBullet();
+                if (targetAmmo.stack <= 0) {//自己设置一下，这样可以利用SetMagazine函数的清理机制自动排除空位
+                    ModItem.SetMagazine(ModItem.MagazineContents);
+                }
+                else {
+                    ModItem.CalculateNumberBullet();
+                }
             }
 
             if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
                 ModItem.InitializeMagazine();
+                AmmoState = Owner.GetAmmoState();
                 IsKreload = false;
                 return;
             }

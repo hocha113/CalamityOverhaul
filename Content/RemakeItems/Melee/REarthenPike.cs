@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         private float tileRot;
         public override void SetThrowable() {
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.width = Projectile.height = 64;
+            Projectile.width = Projectile.height = 24;
             Projectile.alpha = 255;
             HandOnTwringMode = -15;
             OnThrowingGetRotation = (a) => ToMouseA;
@@ -72,7 +72,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (!onTIle) {
-                Projectile.velocity /= 10;
+                Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+                SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+                Projectile.velocity /= 6;
                 tileRot = Projectile.rotation;
                 onTIle = true;
             }

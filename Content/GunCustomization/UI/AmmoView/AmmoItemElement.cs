@@ -51,7 +51,6 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
                     if (Ammo.CWR().AmmoProjectileReturn) {
                         player.QuickSpawnItem(player.FromObjectGetParent(), Ammo);
                     }
-
                     cwrItem.SetMagazine(newMagazine);
                 }
             }

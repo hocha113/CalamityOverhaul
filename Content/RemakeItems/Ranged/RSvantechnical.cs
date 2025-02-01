@@ -11,8 +11,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Svantechnical>();
 
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<SvantechnicalHeldProj>(280);
+            item.SetCartridgeGun<SvantechnicalHeldProj>(880);
             item.CWR().Scope = true;
         }
+
+        public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => true;
     }
 }
