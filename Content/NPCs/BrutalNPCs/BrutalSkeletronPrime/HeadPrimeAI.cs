@@ -553,6 +553,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     calNPC.newAI[0]++;
                     if (!VaultUtils.isClient && calNPC.newAI[0] >= 2) {
                         if (CWRUtils.FindNPCFromeType(NPCID.TheDestroyer) == null) {
+                            SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                             int damage = SetMultiplier(npc.defDamage / 3);
                             Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                                 , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);

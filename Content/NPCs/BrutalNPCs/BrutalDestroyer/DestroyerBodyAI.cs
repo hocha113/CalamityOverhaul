@@ -7,6 +7,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -14,10 +15,17 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class DestroyerBodyAI : NPCOverride
+    internal class DestroyerBodyAI : NPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
+        internal static Asset<Texture2D> Body_Stingless;
+        internal static Asset<Texture2D> Body;
+        internal static Asset<Texture2D> Body_Glow;
+        internal static Asset<Texture2D> BodyAlt;
+        internal static Asset<Texture2D> BodyAlt_Glow;
+        internal static Asset<Texture2D> Tail;
+        internal static Asset<Texture2D> Tail_Glow;
         private const float BeamWarningDuration = 120f;
         private const float SparkWarningDuration = 30f;
         private const float AerialPhaseThreshold = 900f;
@@ -59,6 +67,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
         #endregion
+        void ICWRLoader.LoadAsset() {
+            Body_Stingless = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body_Stingless");
+            Body = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body");
+            Body_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body_Glow");
+            BodyAlt = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BodyAlt");
+            BodyAlt_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BodyAlt_Glow");
+            Tail = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Tail");
+            Tail_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Tail_Glow");
+        }
+        void ICWRLoader.UnLoadData() {
+            Body_Stingless = null;
+            Body = null;
+            Body_Glow = null;
+            BodyAlt = null;
+            BodyAlt_Glow = null;
+            Tail = null;
+            Tail_Glow = null;
+        }
+
         private void SetMechQueenUp() {
             mechdusaCurvedSpineSegmentIndex = 0;
             mechdusaCurvedSpineSegments = 10;
@@ -91,6 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
         }
+
         public override bool AI() {
             SetMechQueenUp();
             UpdateDRIncrease();
@@ -638,12 +666,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return true;
             }
 
-            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body");
-            Texture2D value2 = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Body_Glow");
+            Texture2D value = Body.Value;
+            Texture2D value2 = Body_Glow.Value;
 
             if (npc.whoAmI % 2 == 0) {
-                value = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/BodyAlt");
-                value2 = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/BodyAlt_Glow");
+                value = BodyAlt.Value;
+                value2 = BodyAlt_Glow.Value;
             }
 
             spriteBatch.Draw(value, npc.Center - Main.screenPosition

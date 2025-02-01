@@ -204,29 +204,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     }
                 }
 
-                int fireTime = 10;
                 if (projectile.Alives()) {
-                    fireTime = death ? 5 : 8;
-                    toTarget = npc.Center.To(projectile.Center);
-                    float speedRot = death ? 0.02f : 0.03f;
-                    int modelong = death ? 1060 : 1160;
-                    toPoint = projectile.Center + (ai[4] * speedRot + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
+                    ai[8]++;
                 }
-                else {
-                    toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
-                }
-
-                if (++ai[5] > fireTime && ai[4] > 30) {//这里需要停一下，不要立即开火
-                    if (!VaultUtils.isClient) {
-                        Projectile.NewProjectile(npc.GetSource_FromAI()
-                            , npc.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
-                    }
-                    ai[5] = 0;
+                if (ai[8] == Mechanicalworm.DontAttackTime + 10) {
                     NetAISend(npc);
                 }
-                ai[4]++;
-                SetEyeValue(npc, player, toPoint, toTarget);
-                return true;
+                if (ai[8] > Mechanicalworm.DontAttackTime + 10) {
+                    int fireTime = 10;
+                    if (projectile.Alives()) {
+                        fireTime = death ? 5 : 8;
+                        toTarget = npc.Center.To(projectile.Center);
+                        float speedRot = death ? 0.02f : 0.03f;
+                        int modelong = death ? 1060 : 1160;
+                        toPoint = projectile.Center + (ai[4] * speedRot + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
+                    }
+                    else {
+                        toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
+                    }
+
+                    if (++ai[5] > fireTime && ai[4] > 30) {//这里需要停一下，不要立即开火
+                        if (!VaultUtils.isClient) {
+                            Projectile.NewProjectile(npc.GetSource_FromAI()
+                                , npc.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
+                        }
+                        ai[5] = 0;
+                        NetAISend(npc);
+                    }
+                    ai[4]++;
+                    SetEyeValue(npc, player, toPoint, toTarget);
+                    return true;
+                }
+            }
+            else {
+                ai[8] = 0;
+                NetAISend(npc);
             }
 
             if (skeletronPrimeInSprint || ai[7] > 0) {
