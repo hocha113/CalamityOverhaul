@@ -4109,11 +4109,12 @@ RemakeItems: {
 	}
 
 	RSvantechnical: {
-		DisplayName: Fusil Svantechnique
+		DisplayName: Pistolet Svantechnical
 		Tooltip:
 			'''
-			Tire une grande quantité de balles quantiques
-			"La technologie change la vie"
+			Tire trois faisceaux d'énergie, qui se divisent en faisceaux suivant la position du curseur.
+			Cliquez droit pour tirer une balle normale.
+			"La technologie change la vie."
 			'''
 	}
 

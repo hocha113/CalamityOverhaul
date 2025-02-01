@@ -4165,11 +4165,12 @@ RemakeItems: {
 	}
 
 	RSvantechnical: {
-		DisplayName: Svantechnical Gewehr
+		DisplayName: Svantechnical Waffe
 		Tooltip:
 			'''
-			Feuert eine massive Menge an Kugeln ab
-			"Technologie verändert Leben"
+			Feuert drei Energiestrahlen ab, die sich in Strahlen aufteilen, die der Cursorposition folgen.
+			Rechtsklick, um eine normale Kugel abzufeuern.
+			"Technologie verändert das Leben."
 			'''
 	}
 

@@ -4181,12 +4181,12 @@ RemakeItems: {
 	}
 
 	RSvantechnical: {
-		DisplayName: Svantechnical
+		DisplayName: Svantechnical Gun
 		Tooltip:
 			'''
-			Fires giant quantum bullets
-			"Technology changes lives"
-			"Perhaps this is a contemporary product of the Hextech Gun."
+			Fires three energy beams, which split into beams that track the cursor's position.
+			Right-click to fire a regular bullet.
+			"Technology changes life."
 			'''
 	}
 

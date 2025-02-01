@@ -4149,13 +4149,15 @@ RemakeItems: {
 	}
 
 	RSvantechnical: {
-		DisplayName: Rifle de Tecnología Svante
+		DisplayName: Pistola Svantechnical
 		Tooltip:
 			'''
-			Lanza una gran cantidad de balas
-			"La tecnología cambia la vida"
+			Dispara tres haces de energía, que se dividen en haces que siguen la posición del cursor.
+			Haz clic derecho para disparar una bala normal.
+			"La tecnología cambia la vida."
 			'''
 	}
+
 
 	RTelluricGlare: {
 		DisplayName: Llama del Núcleo

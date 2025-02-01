@@ -6,7 +6,9 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
@@ -75,6 +77,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             UIHitBox = TrueDrawPos.GetRectangle(ModNameSize);
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
             DrawPosition = new Vector2(Main.screenWidth - 82, -120 + sengs * 121);
+            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed && SafeStart) {
+                SoundEngine.PlaySound(SoundID.MenuOpen);
+                CWRConstant.githubUrl.WebRedirection();
+            }
 
             float loaderY = 0;
             if (bulletinBoardElements != null) {
