@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     loaderY += bulletinBoardElement.TextSize.Y;
                 }
             }
-            
+
             Time++;
         }
 

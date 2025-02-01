@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
-using CalamityOverhaul.Content.UIs.CompressorUIs;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;

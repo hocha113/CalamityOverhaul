@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == ModContent.NPCType<AquaticScourgeHead>()) {
-                
+
                 npcLoot.Add(ModContent.ItemType<MelodyTheSand>(), 6);
                 npcLoot.Add(dontExpertRule);
             }

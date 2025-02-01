@@ -991,6 +991,7 @@ Projectiles: {
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	CrossPrediction.DisplayName: Cross Prediction
 	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
+	// VulcaniteFire.DisplayName: Vulcanite Fire
 }
 
 Configs: {
@@ -3124,7 +3125,7 @@ RemakeItems: {
 			'''
 			发射早已逝去的深渊居民的可怖鬼魂
 			用剑刃击中敌人会从下方召唤额外的鬼魂
-			"上一任刀主已经成为了其中一员"
+			"上任刀主已经成为了其中一员"
 			'''
 	}
 
@@ -3132,8 +3133,8 @@ RemakeItems: {
 		DisplayName: 火山长矛
 		Tooltip:
 			'''
-			手持时在玩家周围生成燎狱火球
-			长矛击中燎狱火球会爆发出燎狱能量
+			喷射烈焰灼烧敌人
+			"我们需要更多的汽油"
 			'''
 	}
 

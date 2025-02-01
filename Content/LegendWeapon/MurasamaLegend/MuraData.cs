@@ -1,8 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
+﻿namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 {
     internal class MuraData : LegendData
     {

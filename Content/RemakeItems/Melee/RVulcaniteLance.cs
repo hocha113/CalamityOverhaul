@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
-using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -68,12 +67,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 bool Smoketype = Main.rand.NextBool();
                 Vector2 smokePos = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f);
                 Vector2 smokeVel = AbsolutelyShootVelocity.UnitVector() * Main.rand.NextFloat(0.2f, 2f) * MathHelper.Clamp(Projectile.height * 0.1f, 1f, 10f);
-                Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 50, 50), Color.DimGray
+                Particle smoke = new MediumMistParticle(smokePos, smokeVel, new Color(255, 110, 50), Color.OrangeRed
                     , Smoketype ? Main.rand.NextFloat(0.4f, 0.75f) : Main.rand.NextFloat(1.5f, 2f), 220 - Main.rand.Next(50), 0.1f);
                 GeneralParticleHandler.SpawnParticle(smoke);
                 return true;
             }
-            if (Time % (2 * UpdateRate) == 0 && Time < maxSwingTime / 2) {
+            if (Time % 2 == 0 && Time < maxSwingTime / 2) {
                 canShoot = true;
             }
             StabBehavior(initialLength: 60, lifetime: 26, scaleFactorDenominator: 220f, minLength: 60, maxLength: 120, canDrawSlashTrail: true);
@@ -85,10 +84,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
-            int projType = ModContent.ProjectileType<BrimstoneFireFriendly>();
-            Projectile projectile = Projectile.NewProjectileDirect(Source, ShootSpanPos, AbsolutelyShootVelocity.RotatedByRandom(0.2f)
-                , projType, (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+            Projectile projectile = Projectile.NewProjectileDirect(Source, Owner.Center
+                , AbsolutelyShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.8f, 1.6f)
+                , ProjectileID.Flames, Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
             projectile.DamageType = DamageClass.Melee;
+            projectile.netUpdate = true;
         }
 
         public override void MeleeEffect() {

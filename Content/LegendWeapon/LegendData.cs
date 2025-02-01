@@ -1,11 +1,10 @@
-﻿using Terraria.ModLoader.IO;
-using Terraria;
+﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
-using Terraria.ModLoader;
-using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon
 {
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             else if (item.type == ModContent.ItemType<SHPC>()) {
                 item.CWR().LegendData = new LegendData();
             }
-            else if(item.type == ModContent.ItemType<HalibutCannon>()) {
+            else if (item.type == ModContent.ItemType<HalibutCannon>()) {
                 item.CWR().LegendData = new LegendData();
             }
         }

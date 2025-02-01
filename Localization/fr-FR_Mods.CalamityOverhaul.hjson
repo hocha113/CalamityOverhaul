@@ -972,6 +972,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// CrossPrediction.DisplayName: Cross Prediction
 	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
+	// VulcaniteFire.DisplayName: Vulcanite Fire
 }
 
 Configs: {

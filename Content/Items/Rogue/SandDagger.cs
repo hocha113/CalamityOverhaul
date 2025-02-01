@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         private bool onTIle;
         private bool onSend;
         private float tileRot;
-        private readonly static int[] SandTileIDs = new int[] { 
+        private readonly static int[] SandTileIDs = new int[] {
             TileID.Sand, TileID.Ebonsand, TileID.Pearlsand, TileID.Crimsand
             , TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand };
         public override void SetStaticDefaults() {
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                     Projectile.Kill();
                 }
             }
-            
+
         }
 
         public override bool PreThrowOut() {
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                     , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
                 }
             }
-            
+
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (MathHelper.PiOver2 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
                 , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
