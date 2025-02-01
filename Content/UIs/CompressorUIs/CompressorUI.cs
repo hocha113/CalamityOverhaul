@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
         public static CompressorUI Instance => UIHandleLoader.GetUIHandleOfType<CompressorUI>();
         private static bool _active;
         public override bool Active {
-            get => _active;
+            get => false;// _active;//没做完，先藏起来
             set {
                 _active = value;
                 if (compressorEntity.compressorUIInstance != null) {

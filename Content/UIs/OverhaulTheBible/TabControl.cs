@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         public override void Draw(SpriteBatch spriteBatch) {
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.Placeholder_White.Value
                 , 4, DrawPosition, 64, 64, Color.White * OverhaulTheBibleUI.Instance._sengs
-                , (Tab ? Color.Red : Color.GhostWhite) * OverhaulTheBibleUI.Instance._sengs, 1);
+                , (Tab ? Color.BurlyWood : Color.GhostWhite) * OverhaulTheBibleUI.Instance._sengs, 1);
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
                 , 4, DrawPosition, 64, 64, Color.White * OverhaulTheBibleUI.Instance._sengs, Color.White * 0, 1);
 
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     , size, 0, Color.White * OverhaulTheBibleUI.Instance._sengs, Vector2.Zero);
             }
             else {
-                Texture2D value = CWRAsset.Placeholder_ERROR.Value;
+                Texture2D value = CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon");
                 spriteBatch.Draw(value, DrawPosition + new Vector2(64, 64) / 2, null, Color.White * OverhaulTheBibleUI.Instance._sengs
                     , MathHelper.PiOver4 + MathHelper.PiOver2, value.Size() / 2, 1, SpriteEffects.None, 0);
             }

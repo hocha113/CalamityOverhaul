@@ -30,9 +30,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 , 4, DrawPosition, Width, Height, Color.White * OverhaulTheBibleUI.Instance._sengs, Color.White * 0, 1);
 
             Item item = new Item(BaseRItem.TargetID);
-            if (BaseRItem.IsVanilla) {
-                Main.instance.LoadItem(BaseRItem.TargetID);
-            }
+            Main.instance.LoadItem(BaseRItem.TargetID);
             float size = VaultUtils.GetDrawItemSize(item, Width);
             VaultUtils.SimpleDrawItem(spriteBatch, BaseRItem.TargetID, DrawPosition + new Vector2(Width, Height) / 2
                 , size, 0, Color.White * OverhaulTheBibleUI.Instance._sengs, Vector2.Zero);
