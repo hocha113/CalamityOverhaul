@@ -642,6 +642,7 @@ namespace CalamityOverhaul
             item.noMelee = true;
             item.noUseGraphic = true;
             item.CWR().IsShootCountCorlUse = true;
+            item.CWR().IsHeldSwing = true;
             item.shoot = ModContent.ProjectileType<T>();
             if (item.shootSpeed <= 0) {
                 //不能让速度模场为0，这会让向量失去方向的性质，从而影响一些刀剑的方向判定

@@ -2855,197 +2855,264 @@ RemakeItems: {
 	}
 
 	ROrderbringer: {
-		DisplayName: Ordnungsbringer
+		DisplayName: Klinge der Ordnung
 		Tooltip:
 			'''
-			Feuert ein buntes prismatisches Energieprojektil ab, das Feinde verfolgt. 
-			Nach zehn aufeinanderfolgenden Angriffen auf einen Feind wird ein riesiger Schwertgeist des Gerichts beschworen.  
-			"Wo immer du bist, du wirst niemals allein sein, ich werde immer bei dir sein, mein König."  
+			Schießt farbige Kristallenergie, die Feinde verfolgt. Nach zehn Angriffen auf einen Feind wird ein riesiger Gerichtsschwertgeist heraufbeschworen.
+			"Egal wo du bist, du wirst niemals alleine sein, ich werde immer an deiner Seite sein, mein König."
 			'''
 	}
 
 	RPerfectDark: {
-		DisplayName: Perfect Dark
-		Tooltip: ""
+		DisplayName: Perfekte Dunkelheit
+		Tooltip:
+			'''
+			Wirft ein Giftmoorbomben.
+			"Dieses Schwert ist vielleicht nicht hygienisch."
+			'''
 	}
 
 	RPhosphorescentGauntlet: {
-		DisplayName: Phosphoreszierender Handschuh
+		DisplayName: Phosphoreszierende Fäustlinge
 		Tooltip:
 			'''
-			Schlage Feinde mit der Macht der Faust
-			Rechtsklick für einen Nahkampfangriff mit Stachelfaust
+			Schlägt den Feind mit der Kraft des Fistes.
+			Rechtsklick führt einen Nahkampfstoß aus.
 			'''
 	}
 
 	RPlagueKeeper: {
-		DisplayName: Seuchen-Großschwert
-		Tooltip: Feuert Seuchenbienenschwärme ab
+		DisplayName: Plagen Großschwert
+		Tooltip: Schießt Plagenbienen.
 	}
 
 	RPrismaticBreaker: {
-		DisplayName: Prismatic Breaker
-		Tooltip: ""
+		DisplayName: Prisma Zerstörer
+		Tooltip:
+			'''
+			Lädt auf und feuert einen Regenbogenstrahl ab.
+			Rechtsklick ermöglicht einen Schwertangriff und entlädt einen Regenbogenschwertstrahl.
+			Dieses Schwert profitiert sowohl von Nahkampf- als auch Fernkampfschaden.
+			"Die Macht des Regenbogens sei mit mir!"
+			'''
 	}
 
 	RRedSun: {
-		DisplayName: Red Sun
-		Tooltip: ""
+		DisplayName: Rote Sonne
+		Tooltip:
+			'''
+			Ein Feuerball der Sonnenflamme fällt vom Himmel.
+			"Über der heiligen Halle."
+			'''
 	}
 
 	RSausageMaker: {
 		DisplayName: Wurstspieß
-		Tooltip:
-			'''
-			Feuert bei jedem fünften Stich eine Fleischbombe ab
-			Treffer im Nahkampf lassen verfolgte Blutperlen entstehen
-			'''
+		Tooltip: Schießt Polypen, Nahkampftreffer heilen dich.
 	}
 
 	RSeashineSword: {
-		DisplayName: Seashine Sword
-		Tooltip: ""
+		DisplayName: Meeresschein-Schwert
+		Tooltip: Schießt Wasserstrahlen.
 	}
 
 	RSeedler: {
-		DisplayName: Setzling
-		Tooltip: ""
+		DisplayName: Samensichel
+		Tooltip:
+			'''
+			Schießt explodierende Samen.
+			"Obwohl wir keinen Erbsenschützen haben, haben wir das hier!"
+			'''
 	}
 
 	RSolsticeClaymore: {
-		DisplayName: Solstice Claymore
-		Tooltip: ""
+		DisplayName: Sonnenwendschwert
+		Tooltip:
+			'''
+			Feuert farblich unterschiedliche Schwertstrahlen, die je nach Tageszeit verfolgen.
+			Tagsüber fügt es den Dawn-Buff zu, nachts fügt es den Nightmare-Buff hinzu.
+			"Jahreszeiten wie Frühling."
+			'''
 	}
 
 	RStarnightLance: {
-		DisplayName: Starnight Lance
-		Tooltip: ""
+		DisplayName: Sternennachtlanze
+		Tooltip:
+			'''
+			Schießt einen Sternenstrahl.
+			Bei Drehangriffen mit der Lanze wird bei Nahkampftreffern ein weiterer Sternenstrahl erzeugt.
+			"Ganz schön kalt in der Hand, möchtest du Eiscreme damit machen?"
+			'''
 	}
 
 	RStellarStriker: {
-		DisplayName: Mondflammen-Klinge
+		DisplayName: Mondflammenklinge
 		Tooltip:
 			'''
-			Feuert eine Mondsichel ab
-			Rechtsklick verstärkt die Klinge, und Treffer rufen mehrere Mondstrahlen herab
+			Schießt einen Mondsichelstrahl ab.
+			Rechtsklick verstärkt das Schwert, und beim Treffer regen mehrere Mondstrahlen herab.
+			"Über dem Mond."
 			'''
 	}
 
 	RStormRuler: {
-		DisplayName: Storm Ruler
-		Tooltip: ""
+		DisplayName: Sturmherrscher
+		Tooltip:
+			'''
+			Feuert Schwertstrahlen ab, die bei Treffern einen Wirbelsturm erzeugen.
+			Der Wirbelsturm zieht Gegner an.
+			"Ich schwanke im Sturm."
+			'''
 	}
 
 	RStormSaber: {
-		DisplayName: Storm Saber
-		Tooltip: ""
+		DisplayName: Sturmsäbel
+		Tooltip:
+			'''
+			Feuert zwei Windstöße ab.
+			Einer kommt vom Schwert, der andere vom Himmel.
+			"Kumpel, versuche nicht, das Wetter vorherzusagen."
+			'''
 	}
 
 	RSubmarineShocker: {
-		DisplayName: Tiefsee-Dolch
-		Tooltip: Feuert ionisierte Funken ab
+		DisplayName: Tiefsee Kurzschwert
+		Tooltip: Feuert Ionenspuren ab.
 	}
 
 	RSwordsplosion: {
-		DisplayName: Swordsplosion
-		Tooltip: ""
+		DisplayName: Explosionsklinge
+		Tooltip:
+			'''
+			Lässt mehrere Regenbogenschwertstrahlen vom Himmel fallen.
+			"Weil es Stein-Kalt sagt!"
+			'''
 	}
 
 	RTaintedBlade: {
-		DisplayName: Tainted Blade
-		Tooltip: ""
+		DisplayName: Vergiftete Klinge
+		Tooltip:
+			'''
+			Fügt Feinden bei Treffern den Gift-Effekt zu.
+			"Diese Klinge ist sehr giftig."
+			'''
 	}
 
 	RTeardropCleaver: {
-		DisplayName: Tränenschneider
-		Tooltip: Ein Regenguss aus Tränen
+		DisplayName: Tränenklinge
+		Tooltip: Tränenregen fällt.
 	}
 
 	RTerratomere: {
-		DisplayName: Terra-Großklinge
+		DisplayName: Terra Großschwert
 		Tooltip:
 			'''
-			Schwingen setzt einen Strom des Lebens frei
-			"Verbunden mit der Essenz der Terraria-Welt"
+			Schwingt und entfesselt den Fluss des Lebens.
+			"Verbindung zur Essenz der Terraria-Welt."
 			'''
 	}
 
 	RTerrorBlade: {
-		DisplayName: Terrorklinge
+		DisplayName: Terror-Klinge
 		Tooltip:
 			'''
-			Schwingen setzt Terrorbomben frei
-			Bei einem Treffer wird die Waffe verstärkt
-			"Vor langer, langer Zeit... sehr lange... lange her"
+			Schwingt und entfesselt eine Angstmachende Explosion.
+			Der Schwerttreffer verstärkt die Waffe.
+			"Vor langer, langer Zeit... vor langer... langer Zeit."
 			'''
 	}
 
 	RTheBurningSky: {
-		DisplayName: Feurige Zerstörungsstrafe
-		Tooltip: Damit wurde ein feuerball abgeworfen
+		DisplayName: Brennende Himmelsstrafe
+		Tooltip:
+			'''
+			Schwingt das Schwert und lässt einen Drachenfeuerball vom Himmel fallen.
+			"Ja, es verbraucht keine Magie."
+			'''
 	}
 
 	RTheDarkMaster: {
-		DisplayName: Dunkler Meister
+		DisplayName: Schwert des Dunklen Meisters
 		Tooltip:
 			'''
-			Bei echtem Nahkampf beschwört es nach einem Treffer einen dunklen Pakt, bei dem drei Schattenkopien dem Spieler helfen
-			Während des dunklen Paktes, wenn der Spieler Schaden erleidet, werden alle Schattenkopien sofort aufgelöst
-			und der Spieler erhält 10 Sekunden lang einen dunklen Furcht-Debuff, währenddessen kann der Spieler keine Schattenkopien mehr durch echten Nahkampf beschwören
+			Bei einem Nahkampftreffer wird ein Dunkelheitsvertrag heraufbeschworen, und drei Schattenspione kämpfen an deiner Seite.
+			Solange der Vertrag aktiv ist, wird bei Spielerverwundung sofort alle Schattenspione entfernt.
+			Es wird ein 10-sekündiger Dark Fear Debuff gewährt, in dem der Spieler keine weiteren Schattenspione heraufbeschwören kann.
 			'''
 	}
 
 	RTheEnforcer: {
-		DisplayName: Der Vollstrecker
-		Tooltip: Beim Schwingen erzeugt es kosmisches Feuer um dich herum
+		DisplayName: Tyrannei
+		Tooltip: Erzeugt beim Schwingen um dich herum Feuer aus dem Universum.
 	}
 
 	RTheLastMourning: {
-		DisplayName: Letzte Trauer
+		DisplayName: Letztes Morgen des Trauerns
 		Tooltip:
 			'''
-			Verfolgt Feinde mit Todesköpfen und Seelen der Feuersbrunst
-			Rechtsklick verstärkt die Klinge, und Treffer erzeugen mehrere rachsüchtige Geisterköpfe
+			Jagd Feinde mit Sünden-Skeletten und brennenden Seelen.
+			Rechtsklick verstärkt das Schwert, und beim Treffer werden mehrere Knochen der Rache heraufbeschworen.
 			'''
 	}
 
 	RTheMutilator: {
-		DisplayName: The Mutilator
-		Tooltip: ""
+		DisplayName: Blutschneider
+		Tooltip:
+			'''
+			Kritische Treffer lösen Blutexplosionspartikel aus.
+			Diese Explosionen lassen rote Herzen fallen und heilen den Spieler.
+			'''
 	}
 
 	RTitanArm: {
-		DisplayName: Titan Arm
+		DisplayName: Titanarm
 		Tooltip:
 			'''
-			Charge up for a mighty swing.
-			"Everyone gets slapped."
+			Lädt auf und führt einen mächtigen Schlag aus.
+			"Jeder, der kommt, wird einen Klaps bekommen."
 			'''
 	}
 
 	RTrueCausticEdge: {
-		DisplayName: True Caustic Edge
-		Tooltip: ""
+		DisplayName: Wahre Ätzende Klinge
+		Tooltip:
+			'''
+			Schießt einen Ätzstrahl ab, der beim Berühren von Objekten abprallt.
+			Fügt Feinden den Säuregift-Effekt und Verlangsamung zu.
+			'''
 	}
 
 	RUltimusCleaver: {
-		DisplayName: Ultimus Cleaver
-		Tooltip: ""
+		DisplayName: Enthauptender Klinge
+		Tooltip: Schießt mehrere, verfolgende blaue Flammen, die beim Treffer explodieren.
 	}
 
 	RVeinBurster: {
-		DisplayName: Vein Burster
-		Tooltip: ""
+		DisplayName: Venenzerberster
+		Tooltip:
+			'''
+			Schießt einen Blutracheblitz ab, der am Boden oder an Feinden haften bleibt und explodiert.
+			"Ehrlich, diese Krankheit ist sehr ernst."
+			'''
 	}
 
 	RVirulence: {
-		DisplayName: Virulence
-		Tooltip: ""
+		DisplayName: Seuchen-Giftklinge
+		Tooltip:
+			'''
+			Schießt eine Wolke der Seuche ab.
+			"Lob sei dem gütigen Vater!"
+			'''
 	}
 
 	RVoidEdge: {
-		DisplayName: Void Edge
-		Tooltip: ""
+		DisplayName: Klinge des Abgrunds
+		Tooltip:
+			'''
+			Schießt die schrecklichen Geister verstorbener Bewohner des Abgrunds ab.
+			Ein Treffer mit dem Schwert beschwört zusätzlich Geister unter dem Feind.
+			"Der vorherige Besitzer des Schwertes ist jetzt einer von ihnen."
+			'''
 	}
 
 	RVulcaniteLance: {

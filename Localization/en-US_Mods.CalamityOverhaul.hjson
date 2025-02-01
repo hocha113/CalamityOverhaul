@@ -2880,201 +2880,264 @@ RemakeItems: {
 	}
 
 	ROrderbringer: {
-		DisplayName: Orderbringer
+		DisplayName: Blade of the Order
 		Tooltip:
 			'''
-			Fires a multicolored prismatic energy projectile that tracks enemies. 
-			After ten consecutive attacks on a single enemy, summons a massive judgment sword spirit.  
-			"Wherever you are, you will never be alone, I will always be by your side, my king."  
+			Fires colored crystalline energy that tracks enemies, after ten consecutive attacks on a single enemy, a massive Judgement Sword Spirit is summoned.
+			"Wherever you go, you will never be alone, I will always be by your side, my King."
 			'''
 	}
 
 	RPerfectDark: {
-		DisplayName: Perfect Dark
-		Tooltip: ""
+		DisplayName: Perfect Darkness
+		Tooltip:
+			'''
+			Throws toxic swamp bombs
+			"This knife might not be sanitary."
+			'''
 	}
 
 	RPhosphorescentGauntlet: {
 		DisplayName: Phosphorescent Gauntlet
 		Tooltip:
 			'''
-			Strikes the Enemy with multiple fists that home in on enemies. Upon 5 hits, 
-			a pair of larger fists will crash onto the enemy hit, causing massive damage.
-			Right click to lunge in the direction of your mouse. On collision, you are knocked back.
+			Strike enemies with the will of the fist
+			Right-click to perform a close-range jab
 			'''
 	}
 
 	RPlagueKeeper: {
-		DisplayName: Plague Keeper
-		Tooltip: Launches a Myriad of homing bee swarms that inflict the plague
+		DisplayName: Plague Greatsword
+		Tooltip: Fires a swarm of plague bees
 	}
 
 	RPrismaticBreaker: {
 		DisplayName: Prismatic Breaker
-		Tooltip: ""
+		Tooltip:
+			'''
+			Charge and fire a rainbow light cannon
+			Right-click to slash, releasing rainbow sword energy
+			This sword is affected by both melee and ranged damage bonuses
+			"The power of the rainbow is with me!"
+			'''
 	}
 
 	RRedSun: {
 		DisplayName: Red Sun
-		Tooltip: ""
+		Tooltip:
+			'''
+			Solar fireballs fall from the sky
+			"Above the sanctuary"
+			'''
 	}
 
 	RSausageMaker: {
-		DisplayName: Sausage Maker
-		Tooltip: Launch polyp ball, real melee hit enemy can heal yourself
+		DisplayName: Sausage Spear
+		Tooltip: Fires polyp balls, healing yourself on close-range melee hits
 	}
 
 	RSeashineSword: {
 		DisplayName: Seashine Sword
-		Tooltip: ""
+		Tooltip: Fires water blade sword energy
 	}
 
 	RSeedler: {
-		DisplayName: Seedler
-		Tooltip: ""
+		DisplayName: Seed Scythe
+		Tooltip:
+			'''
+			Fires explosive seeds
+			"We may not have pea shooters, but we have this!"
+			'''
 	}
 
 	RSolsticeClaymore: {
 		DisplayName: Solstice Claymore
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires colored tracking sword energy based on the real-world time
+			During the day, it inflicts Dawn debuff; during the night, it inflicts Nightmare debuff
+			"Spring is eternal"
+			'''
 	}
 
 	RStarnightLance: {
 		DisplayName: Starnight Lance
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires starlight beams
+			Spinning lance attacks generate more starlight beams on melee hits
+			"It’s freezing cold, want to use it to make ice cream?"
+			'''
 	}
 
 	RStellarStriker: {
-		DisplayName: Stellar Striker
+		DisplayName: Moonfire Blade
 		Tooltip:
 			'''
-			Waning Moon rays shimmer across the blade's surface.
-			Right-click to strengthen the blade, increasing range while decreasing attack speed. 
-			Upon True Melee Strikes in this mode, it fires cosmic rays downwards towards the enemy.
+			Fires a crescent moon beam
+			Right-click to strengthen the sword, striking enemies will cause multiple moonlight rays to fall
+			"Above the moon"
 			'''
 	}
 
 	RStormRuler: {
 		DisplayName: Storm Ruler
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires sword energy, generating a tornado storm on hit
+			The tornado storm will suck enemies in
+			"I sway in the storm"
+			'''
 	}
 
 	RStormSaber: {
 		DisplayName: Storm Saber
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires two gusts of storm energy
+			One from the sword blade, the other falls from the sky
+			"Buddy, stop trying to predict the weather"
+			'''
 	}
 
 	RSubmarineShocker: {
-		DisplayName: Submarine Shocker
-		Tooltip: A Fast pair of daggers that shoots out Electrically charged ions. Upon hitting enemies, it will cause a lightning chain to bounce off any enemy nearby.
+		DisplayName: Abyss Short Sword
+		Tooltip: Fires ionized electric sparks
 	}
 
 	RSwordsplosion: {
-		DisplayName: Swordsplosion
-		Tooltip: ""
+		DisplayName: Explosion Sword
+		Tooltip:
+			'''
+			Summons multiple rainbow sword energies to fall from the sky
+			"Because Stone Cold said so!"
+			'''
 	}
 
 	RTaintedBlade: {
 		DisplayName: Tainted Blade
-		Tooltip: ""
+		Tooltip:
+			'''
+			Inflicts poison debuff on enemies
+			"This blade is poisonous."
+			'''
 	}
 
 	RTeardropCleaver: {
-		DisplayName: Teardrop Cleaver
-		Tooltip: Torrential rain of tears
+		DisplayName: Tear Blade
+		Tooltip: Tears rain down in torrents
 	}
 
 	RTerratomere: {
-		DisplayName: Terratomere
+		DisplayName: Terra Greatblade
 		Tooltip:
 			'''
-			Swing a Sword Infused with the essence of Terraria, 
-			causing several piercing energy bolts to seek out enemies along with several beams from above.
-			Upon death, energy bolts discharge and explode, dealing damage in an Area of Effect.
-			"Make this Journey one to remember."
+			Swing to release a life surge
+			"Connected to the essence of the Terraria world."
 			'''
 	}
 
 	RTerrorBlade: {
-		DisplayName: Terror Blade
+		DisplayName: Terror Soul Blade
 		Tooltip:
 			'''
-			Wield a blade manifested with souls filled with agony and despair. 
-			Shoots out slow moving sword beams that pierce and ricohet off walls, exploding on every enemy hit.
-			Preforming true melee strikes will enhance the weapon immensely and charge up energy, 
-			causing the projectiles fired upon non True Melee Strikes to move faster and summon more beams on enemy hits.
+			Swing to release terror explosive bombs
+			Hitting enemies with the blade will enhance the weapon
+			"A long, long time ago... a very, very long time ago."
 			'''
 	}
 
 	RTheBurningSky: {
-		DisplayName: The Burning Sky
-		Tooltip: Swing and let a ball of fire fall
+		DisplayName: Skyfire's Judgement
+		Tooltip:
+			'''
+			Swing to make a series of dragonfire fireballs fall from the sky
+			"Yes, it doesn’t consume mana."
+			'''
 	}
 
 	RTheDarkMaster: {
-		DisplayName: The Dark Master
+		DisplayName: Sword of the Dark Master
 		Tooltip:
 			'''
-			When True Melee hits the target, summon the Dark Contract, 
-			and three shadow replicas will fight together with the player
-			When Dark Covenants exist, if a player is injured, 
-			all Shadow replicas are immediately disbanded
-			It also gives the player 10 seconds of Dark Fear reduction, 
-			during which the player can no longer summon Dark Covenants through true Melee
+			Melee hits summon the Dark Pact, with three shadow clones that fight alongside the player
+			While the Dark Pact is active, if the player takes damage, all shadow clones are immediately dismissed
+			The player will receive a 10-second Dark Fear debuff, during which they can no longer summon the Dark Pact through melee hits
 			'''
 	}
 
 	RTheEnforcer: {
-		DisplayName: The Enforcer
-		Tooltip: Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while.
+		DisplayName: The Enforce
+		Tooltip: Generates cosmic fire around the player while swinging
 	}
 
 	RTheLastMourning: {
-		DisplayName: The Last Mourning
+		DisplayName: Final Mourning
 		Tooltip:
 			'''
-			Left click will fire a skull of sin, chasing down enemies before erupting into multiple flares
-			Right click to strengthen the blade, increasing range. True Melee strikes in this mode causes several sin skulls to chase down enemies.
+			Pursues enemies using the skulls of the guilty and the souls of the burning inferno
+			Right-click to enhance the sword, striking enemies will generate several vengeful spirit skulls
 			'''
 	}
 
 	RTheMutilator: {
-		DisplayName: The Mutilator
-		Tooltip: ""
+		DisplayName: Bloodstone Cleaver
+		Tooltip:
+			'''
+			Critical hits activate a blood explosion particle effect
+			The blood explosion causes red hearts to drop, healing the player
+			'''
 	}
 
 	RTitanArm: {
 		DisplayName: Titan Arm
 		Tooltip:
 			'''
-			Charge up for a mighty swing.
-			"Everyone gets slapped."
+			Charge to perform a massive swing
+			"Whoever comes, gets a slap."
 			'''
 	}
 
 	RTrueCausticEdge: {
 		DisplayName: True Caustic Edge
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a beam of despair, which bounces off blocks
+			Inflicts acidic venom debuff and slows enemies on hit
+			'''
 	}
 
 	RUltimusCleaver: {
-		DisplayName: Ultimus Cleaver
-		Tooltip: ""
+		DisplayName: Headseverer
+		Tooltip: Fires several tracking blue flame sparks that explode on impact
 	}
 
 	RVeinBurster: {
 		DisplayName: Vein Burster
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a flesh lightning bolt that sticks to the ground or enemies, causing an explosion
+			"Honestly, this disease is quite severe."
+			'''
 	}
 
 	RVirulence: {
-		DisplayName: Virulence
-		Tooltip: ""
+		DisplayName: Plague Poison Blade
+		Tooltip:
+			'''
+			Fires a cloud of plague
+			"Praise the merciful father!"
+			'''
 	}
 
 	RVoidEdge: {
 		DisplayName: Void Edge
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires terrifying ghosts of the long-dead Abyss dwellers
+			Hitting enemies with the blade summons additional ghosts from below
+			"The previous owner of this blade has already become one of them."
+			'''
 	}
 
 	RVulcaniteLance: {

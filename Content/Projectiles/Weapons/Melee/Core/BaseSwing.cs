@@ -194,6 +194,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float SwingDrawRotingOffset = 0;
         /// <summary>
+        /// 这个刀会发射弹幕的ID,该属性在大多数时候并未使用,但如果希望调用<see cref="OrigItemShoot"/>，务必设置该属性
+        /// </summary>
+        protected int ShootProjID;
+        /// <summary>
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => GetOwnerCenter().To(Projectile.Center).UnitVector();
@@ -361,6 +365,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 oldDistanceToOwner[j] = distanceToOwner;
                 oldLength[j] = (IgnoreImpactBoxSize ? 22 : Projectile.height) * Projectile.scale;
             }
+        }
+
+        public override void OrigItemShoot() {
+            Item.shoot = ShootProjID;
+            base.OrigItemShoot();
+            Item.shoot = Type;
         }
 
         /// <summary>

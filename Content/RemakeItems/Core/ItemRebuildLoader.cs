@@ -802,6 +802,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
                 return false;
             }
+            if (item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type]) {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                return false;
+            }
             bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
             return rest ?? base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }

@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<SubmarineShocker>();
         internal static bool canShoot;
         public override void SetDefaults(Item item) {
+            item.damage = 80;
             item.SetKnifeHeld<SubmarineShockerHeld>();
             item.shootSpeed = 8;
         }

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.CalPlayer;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 60;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
             drawTrailHighlight = false;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
@@ -25,7 +25,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.life <= (target.lifeMax * 0.2f) && target.canGhostHeal) {
+            if (hit.Crit && target.canGhostHeal && Owner.lifeSteal > 0f) {
+                Owner.lifeSteal -= 5;
                 if (!CalamityPlayer.areThereAnyDamnBosses || Main.rand.NextBool()) {
                     int heartDrop = CalamityPlayer.areThereAnyDamnBosses ? 1 : Main.rand.Next(1, 3);
                     for (int i = 0; i < heartDrop; i++) {

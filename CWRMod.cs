@@ -64,6 +64,7 @@ namespace CalamityOverhaul
             {
                 foreach (var rItem in ItemOverrideInstances) {
                     rItem.SetReadonlyTargetID = rItem.TargetID;
+                    rItem.SetStaticDefaults();
                     if (rItem.CanLoadLocalization) {
                         _ = rItem.DisplayName;
                         _ = rItem.Tooltip;

@@ -155,6 +155,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool IsShootCountCorlUse;
         /// <summary>
+        /// 该物品是否是一个手持挥舞类，一般由<see cref="CWRUtils.SetKnifeHeld{T}(Item)"/>来设置，如果为<see langword="true"/>，那么就会阻断原方法的发射逻辑
+        /// </summary>
+        public bool IsHeldSwing;
+        /// <summary>
         /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
         public LegendData LegendData;
@@ -165,6 +169,7 @@ namespace CalamityOverhaul.Content
             cwr.closeCombat = closeCombat;
             cwr.MeleeCharge = MeleeCharge;
             cwr.isHeldItem = isHeldItem;
+            cwr.IsHeldSwing = IsHeldSwing;
             cwr.heldProjType = heldProjType;
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
             cwr.IsKreload = IsKreload;

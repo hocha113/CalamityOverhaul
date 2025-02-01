@@ -2,8 +2,6 @@
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -33,6 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.width = Projectile.height = 46;
             Length = 42;
             SwingData.starArg = 50;
+            ShootProjID = ProjectileID.Starfury;
         }
 
         public override bool PreInOwnerUpdate() {
@@ -42,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void Shoot() {
-            Item.shoot = ProjectileID.Starfury;
-            OrigItemShoot();
-            Item.shoot = Type;
-        }
+        public override void Shoot() => OrigItemShoot();
     }
 }

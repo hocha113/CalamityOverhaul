@@ -263,6 +263,10 @@ namespace CalamityOverhaul
         /// </summary>
         public static Dictionary<int, int> WallToItem { get; private set; } = [];
         /// <summary>
+        /// 该物品是否是一个手持挥舞类武器
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsHeldSwing { get; private set; } = [];
+        /// <summary>
         /// 该物品是否是一把枪械
         /// </summary>
         internal static Dictionary<int, bool> ItemIsGun { get; private set; } = [];
@@ -495,6 +499,7 @@ namespace CalamityOverhaul
 
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);
+                ItemIsHeldSwing[itemType] = false;
                 ItemIsGun[itemType] = false;
                 ItemIsShotgun[itemType] = false;
                 ItemIsCrossBow[itemType] = false;
@@ -522,6 +527,7 @@ namespace CalamityOverhaul
                         ItemIDToOmigaSnyContent[itemType] = snyOmig;
                     }
 
+                    ItemIsHeldSwing[itemType] = cwrItem.IsHeldSwing;
                     ItemHasCartridgeHolder[itemType] = cwrItem.HasCartridgeHolder;
 
                     int heldProjType = cwrItem.heldProjType;

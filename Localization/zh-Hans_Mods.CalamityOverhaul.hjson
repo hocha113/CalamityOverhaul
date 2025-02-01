@@ -2878,7 +2878,11 @@ RemakeItems: {
 
 	RPerfectDark: {
 		DisplayName: 完美黑暗
-		Tooltip: ""
+		Tooltip:
+			'''
+			抛射毒沼炸弹
+			"这刀或许不卫生"
+			'''
 	}
 
 	RPhosphorescentGauntlet: {
@@ -2897,12 +2901,22 @@ RemakeItems: {
 
 	RPrismaticBreaker: {
 		DisplayName: 光棱破碎者
-		Tooltip: ""
+		Tooltip:
+			'''
+			充能发射一束彩虹光炮
+			右键可以挥砍使用，释放虹光剑气
+			这把剑同时受到近战和远程的伤害加成影响
+			"彩虹之力与我同在!"
+			'''
 	}
 
 	RRedSun: {
 		DisplayName: 红日
-		Tooltip: ""
+		Tooltip:
+			'''
+			日炎火球从天而降
+			“圣堂之上”
+			'''
 	}
 
 	RSausageMaker: {
@@ -2912,22 +2926,36 @@ RemakeItems: {
 
 	RSeashineSword: {
 		DisplayName: 海耀之刃
-		Tooltip: ""
+		Tooltip: 发射水刃剑气
 	}
 
 	RSeedler: {
 		DisplayName: 种子弯刀
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射爆炸种子
+			"虽然我们没有豌豆射手，但是有这个!"
+			'''
 	}
 
 	RSolsticeClaymore: {
 		DisplayName: 季节长剑
-		Tooltip: ""
+		Tooltip:
+			'''
+			依照现实时间，发射出颜色不同的追踪剑气
+			在白天造成破晓减益，在晚上造成夜魇减益
+			"四季如春"
+			'''
 	}
 
 	RStarnightLance: {
-		DisplayName: Starnight Lance
-		Tooltip: ""
+		DisplayName: 星夜长枪
+		Tooltip:
+			'''
+			发射星夜光束
+			旋枪攻击真近战命中敌人会生成更多的星夜光束
+			"非常冻手，试试用它来制作冰淇淋?"
+			'''
 	}
 
 	RStellarStriker: {
@@ -2936,17 +2964,28 @@ RemakeItems: {
 			'''
 			发生残月射线
 			右键加强剑身，砍中敌人后令数道月耀射线降下
+			"月亮之上"
 			'''
 	}
 
 	RStormRuler: {
 		DisplayName: 风暴管束者
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射剑气，命中时生成龙卷风暴
+			龙卷风暴会将敌怪吸入
+			“我在暴风骤雨中摇摆”
+			'''
 	}
 
 	RStormSaber: {
 		DisplayName: 风暴军刀
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射两束风暴气流
+			一束从剑刃发出，另一束从天而降
+			"伙计，别试图预测天气了"
+			'''
 	}
 
 	RSubmarineShocker: {
@@ -2956,12 +2995,20 @@ RemakeItems: {
 
 	RSwordsplosion: {
 		DisplayName: 爆破剑
-		Tooltip: ""
+		Tooltip:
+			'''
+			让数道彩虹剑气从天而降
+			"因为石冷说了算!"
+			'''
 	}
 
 	RTaintedBlade: {
 		DisplayName: 污浊之刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			击中敌人时施加中毒减益
+			"我这刀可是剧毒的"
+			'''
 	}
 
 	RTeardropCleaver: {
@@ -2990,7 +3037,11 @@ RemakeItems: {
 
 	RTheBurningSky: {
 		DisplayName: 焚灭天惩
-		Tooltip: 挥舞让一片火球降下
+		Tooltip:
+			'''
+			挥舞让一片龙息火球从天而降
+			"是的，它不消耗魔力"
+			'''
 	}
 
 	RTheDarkMaster: {
@@ -3019,7 +3070,11 @@ RemakeItems: {
 
 	RTheMutilator: {
 		DisplayName: 血石斩切刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			暴击时会激发鲜血爆破粒子效果
+			鲜血爆破会让红心掉落并回复你的生命值
+			'''
 	}
 
 	RTitanArm: {
@@ -3033,27 +3088,44 @@ RemakeItems: {
 
 	RTrueCausticEdge: {
 		DisplayName: 绝望之刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			发出绝望光束，接触物块后会反弹
+			命中敌人时施加酸性毒液减益并减速
+			'''
 	}
 
 	RUltimusCleaver: {
 		DisplayName: 斩首者
-		Tooltip: ""
+		Tooltip: 发射几团会追踪的蓝焰火花，击中敌人时爆炸
 	}
 
 	RVeinBurster: {
 		DisplayName: 静脉爆裂
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射一个血肉之雷，会黏在地上或敌人身上，造成爆炸
+			"说真的，这个病很严重"
+			'''
 	}
 
 	RVirulence: {
 		DisplayName: 瘟疫毒刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射瘟疫之云
+			"赞美慈父!"
+			'''
 	}
 
 	RVoidEdge: {
 		DisplayName: 虚渊之锋
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射早已逝去的深渊居民的可怖鬼魂
+			用剑刃击中敌人会从下方召唤额外的鬼魂
+			"上一任刀主已经成为了其中一员"
+			'''
 	}
 
 	RVulcaniteLance: {

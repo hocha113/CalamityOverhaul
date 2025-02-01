@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,95 +11,49 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class TheBurningSkyHeld : BaseSwing
+    internal class TheBurningSkyHeld : BaseKnife
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
-        public override void SetSwingProperty() {
-            Projectile.width = 72;
-            Projectile.height = 72;
-            Projectile.friendly = true;
-            Projectile.penetrate = -1;
-            Projectile.alpha = 255;
-            Projectile.extraUpdates = 4;
-            distanceToOwner = 30;
-            drawTrailTopWidth = 60;
+        public override void SetKnifeProperty() {
+            drawTrailHighlight = false;
             canDrawSlashTrail = true;
+            drawTrailCount = 10;
+            drawTrailTopWidth = 40;
+            distanceToOwner = 10;
+            drawTrailBtommWidth = 30;
+            SwingData.baseSwingSpeed = 4f;
+            Projectile.width = Projectile.height = 90;
+            Length = 90;
+            unitOffsetDrawZkMode = 8;
+            SwingDrawRotingOffset = MathHelper.ToRadians(12);
+            ShootProjID = ModContent.ProjectileType<BurningMeteor>();
+            autoSetShoot = true;
         }
 
-        public override void SwingAI() {
-            if (Time == 0) {
-                SoundEngine.PlaySound(SoundID.Item71, Owner.position);
-                Rotation = MathHelper.ToRadians(-33 * Owner.direction);
-                startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                speed = MathHelper.ToRadians(5);
-            }
-            if (Time == 10 * UpdateRate && Projectile.IsOwnedByLocalPlayer()) {
-                float meleeSpeedAf = SwingMultiplication;
-                float count = 12 / meleeSpeedAf;
-                SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
-                float speed = 9 / meleeSpeedAf;
-                for (int i = 0; i < count; ++i) {
-                    float randomSpeed = speed * Main.rand.NextFloat(0.7f, 1.4f);
-                    CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
-                        , 290f, 130f, 850f, 1100f, randomSpeed, ModContent.ProjectileType<BurningMeteor>()
-                        , Projectile.damage / 6, 6f, Owner.whoAmI);
-                }
-            }
-            if (Time < 10) {
-                Length *= 1 + 0.1f / UpdateRate;
-                Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 + 0.2f / UpdateRate;
-                vector = startVector.RotatedBy(Rotation) * Length;
-                Projectile.scale += 0.06f;
-            }
-            else {
-                Length *= 1 - 0.01f / UpdateRate;
-                Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 - 0.2f / UpdateRate;
-                vector = startVector.RotatedBy(Rotation) * Length;
-                if (Projectile.scale > 1f) {
-                    Projectile.scale -= 0.01f;
-                }
-            }
-            if (Time >= 22 * UpdateRate) {
-                Projectile.Kill();
-            }
-            if (Time % UpdateRate == UpdateRate - 1) {
-                Length = MathHelper.Clamp(Length, 120, 160);
-            }
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.3f, phase0SwingSpeed: -0.1f
+                , phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
 
-        public override void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
-
-            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
-            effect.Parameters["sampleTexture"].SetValue(TrailTexture);
-            effect.Parameters["gradientTexture"].SetValue(GradientTexture);
-            //应用shader，并绘制顶点
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
-                pass.Apply();
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-                Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-            }
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(ModContent.BuffType<Dragonfire>(), 180);
         }
 
-        public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
-            Rectangle rect = new Rectangle(0, 0, texture.Width, texture.Height);
-            Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
-            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            target.AddBuff(ModContent.BuffType<Dragonfire>(), 180);
+        }
 
-            Vector2 v = Projectile.Center - RodingToVer(48, (Projectile.Center - Owner.Center).ToRotation());
-
-            float drawRoting = Projectile.rotation + MathHelper.ToRadians(24) * Projectile.spriteDirection;
-            if (Projectile.spriteDirection == -1) {
-                drawRoting += MathHelper.Pi;
+        public override void Shoot() {
+            SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
+            for (int i = 0; i < 9; ++i) {
+                float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
+                CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
+                    , 290f, 130f, 850f, 1100f, randomSpeed, ShootProjID
+                    , Projectile.damage / 6, 6f, Owner.whoAmI);
             }
-
-            Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
     }
 }

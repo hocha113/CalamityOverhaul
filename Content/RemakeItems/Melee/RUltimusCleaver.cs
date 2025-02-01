@@ -21,13 +21,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.DamageType = DamageClass.Melee;
             Item.useTurn = true;
             Item.rare = ItemRarityID.Yellow;
+            Item.UseSound = null;
             Item.useTime = 20;
             Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 8f;
             Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.autoReuse = true;
-            Item.UseSound = SoundID.Item1;
             Item.SetKnifeHeld<UltimusCleaverHeld>();
         }
     }
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Length = 70;
             unitOffsetDrawZkMode = -8;
             overOffsetCachesRoting = MathHelper.ToRadians(8);
-            SwingData.starArg = 80;
+            SwingData.starArg = 68;
             SwingData.ler1_UpLengthSengs = 0.1f;
             SwingData.minClampLength = 80;
             SwingData.maxClampLength = 90;
@@ -56,12 +56,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             for (int i = 0; i < 6; i++) {
-                Projectile.NewProjectile(Source, ShootSpanPos, new Vector2(Projectile.spriteDirection * (7 + i * 0.2f), Main.rand.Next(-13, 0))
+                Projectile.NewProjectile(Source, Owner.Center, new Vector2(Projectile.spriteDirection * (7 + i * 0.2f), Main.rand.Next(-13, 0))
                 , ModContent.ProjectileType<UltimusCleaverDust>(), Projectile.damage / 4, Projectile.knockBack, Owner.whoAmI);
             }
         }
 
         public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
+                , phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 
