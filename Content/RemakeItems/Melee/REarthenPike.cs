@@ -15,13 +15,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class REarthenPike : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<EarthenPike>();
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) {
             item.UseSound = null;
             item.SetKnifeHeld<EarthenPikeHeld>();
         }
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void ModifyShootStats(Item item, Player player, ref ShootStats shootStats) {
+            item.useTime = 25;
             if (player.altFunctionUse == 2) {
+                item.useTime = 40;
                 shootStats.Type = ModContent.ProjectileType<EarthenPikeAlt>();
             }
         }
@@ -56,7 +59,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             if (onTIle) {
                 Projectile.rotation = tileRot;
-                Projectile.velocity *= 0.9f;
+                Player player = CWRUtils.GetPlayerInstance(Projectile.owner);
+                if (player != null) {
+                    if (player.Distance(Projectile.Center) < Projectile.width) {
+                        player.CWR().ReceivingPlatformTime = 2;
+                    }
+                }
             }
         }
 
@@ -80,7 +88,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (!onTIle) {
                 Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-                Projectile.velocity /= 6;
+                Projectile.velocity = Vector2.Zero;
                 tileRot = Projectile.rotation;
                 onTIle = true;
             }
@@ -124,6 +132,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity,
                 ModContent.ProjectileType<FossilShard>(), (int)(Projectile.damage * 0.5), Projectile.knockBack * 0.85f, Projectile.owner);
+            Item.useTime = 40;
         }
 
         public override void MeleeEffect() {

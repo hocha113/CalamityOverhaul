@@ -4158,7 +4158,6 @@ RemakeItems: {
 			'''
 	}
 
-
 	RTelluricGlare: {
 		DisplayName: Llama del Núcleo
 		Tooltip:

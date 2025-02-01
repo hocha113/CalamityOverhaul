@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
 
-            Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.DarkRed
+            Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 
