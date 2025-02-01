@@ -159,6 +159,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool IsHeldSwing;
         /// <summary>
+        /// 对于手持挥舞来说，是否不阻断原射击方式
+        /// </summary>
+        public bool IsHeldSwingDontStopOrigShoot;
+        /// <summary>
         /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
         public LegendData LegendData;

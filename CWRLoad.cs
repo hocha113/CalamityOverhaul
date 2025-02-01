@@ -267,6 +267,10 @@ namespace CalamityOverhaul
         /// </summary>
         internal static Dictionary<int, bool> ItemIsHeldSwing { get; private set; } = [];
         /// <summary>
+        /// 该手持挥舞类武器否是不阻断原射击方式
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsHeldSwingDontStopOrigShoot { get; private set; } = [];
+        /// <summary>
         /// 该物品是否是一把枪械
         /// </summary>
         internal static Dictionary<int, bool> ItemIsGun { get; private set; } = [];
@@ -500,6 +504,7 @@ namespace CalamityOverhaul
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);
                 ItemIsHeldSwing[itemType] = false;
+                ItemIsHeldSwingDontStopOrigShoot[itemType] = false;
                 ItemIsGun[itemType] = false;
                 ItemIsShotgun[itemType] = false;
                 ItemIsCrossBow[itemType] = false;
@@ -528,6 +533,7 @@ namespace CalamityOverhaul
                     }
 
                     ItemIsHeldSwing[itemType] = cwrItem.IsHeldSwing;
+                    ItemIsHeldSwingDontStopOrigShoot[itemType] = cwrItem.IsHeldSwingDontStopOrigShoot;
                     ItemHasCartridgeHolder[itemType] = cwrItem.HasCartridgeHolder;
 
                     int heldProjType = cwrItem.heldProjType;

@@ -633,8 +633,8 @@ namespace CalamityOverhaul
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
-        /// <param name="stopOrigShoot"></param>
-        public static void SetKnifeHeld<T>(this Item item) where T : ModProjectile {
+        /// <param name="dontStopOrigShoot"></param>
+        public static void SetKnifeHeld<T>(this Item item, bool dontStopOrigShoot = false) where T : ModProjectile {
             if (item.shoot == ProjectileID.None || !item.noUseGraphic
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
                 || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
@@ -644,6 +644,7 @@ namespace CalamityOverhaul
             item.noUseGraphic = true;
             item.CWR().IsShootCountCorlUse = true;
             item.CWR().IsHeldSwing = true;
+            item.CWR().IsHeldSwingDontStopOrigShoot = dontStopOrigShoot;
             item.shoot = ModContent.ProjectileType<T>();
             if (item.shootSpeed <= 0) {
                 //不能让速度模场为0，这会让向量失去方向的性质，从而影响一些刀剑的方向判定

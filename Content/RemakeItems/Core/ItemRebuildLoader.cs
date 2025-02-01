@@ -803,7 +803,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 return false;
             }
             bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
-            if ((!rest.HasValue || rest.Value) && item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type]) {
+            if ((!rest.HasValue || rest.Value) && item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 return false;
             }

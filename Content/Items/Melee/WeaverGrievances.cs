@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.crit = 8;
             Item.shoot = ModContent.ProjectileType<WeaverBeam>();
             Item.shootSpeed = 18f;
-            Item.SetKnifeHeld<WeaverGrievancesHeld>();
+            Item.SetKnifeHeld<WeaverGrievancesHeld>(true);//因为这个武器有自己的射击定义，这里设置为不要阻断
         }
         internal static void SpwanInOwnerDust(Player player) {
             if (Main.dedServ) {
@@ -174,7 +174,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
         public override void SetDefaults() {
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.height = 64;
             Projectile.width = 64;
