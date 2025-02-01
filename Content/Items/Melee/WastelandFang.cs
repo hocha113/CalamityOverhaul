@@ -147,7 +147,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                     newOrig = drawChainAltOrig;
                 }
                 Vector2 drawChainPos = origPos + toPos.UnitVector() * i * chainBodyTrs - Main.screenPosition;
-                Main.EntitySpriteDraw(chainValue, drawChainPos, null, Color.White
+                Color chainLightColor = Lighting.GetColor(CWRUtils.WEPosToTilePos(drawChainPos + Main.screenPosition).ToPoint());
+                Main.EntitySpriteDraw(chainValue, drawChainPos, null, chainLightColor
                 , drawChainRot, newOrig, Projectile.scale, SpriteEffects.None, 0);
             }
 
@@ -155,15 +156,15 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Vector2 drawToothOrig = new Vector2(22, 2);
             float drawToothRot = Projectile.rotation + Projectile.ai[1];
-            Main.EntitySpriteDraw(tooth.Value, drawToothPos, null, Color.White
+            Main.EntitySpriteDraw(tooth.Value, drawToothPos, null, lightColor
                 , drawToothRot, drawToothOrig, Projectile.scale, SpriteEffects.None, 0);
 
             Vector2 drawToothOrig2 = new Vector2(4, 2);
             float drawToothRot2 = Projectile.rotation - Projectile.ai[1];
-            Main.EntitySpriteDraw(toothAlt.Value, drawToothPos, null, Color.White
+            Main.EntitySpriteDraw(toothAlt.Value, drawToothPos, null, lightColor
                 , drawToothRot2, drawToothOrig2, Projectile.scale, SpriteEffects.None, 0);
 
-            Main.EntitySpriteDraw(head.Value, endPos - Main.screenPosition, null, Color.White
+            Main.EntitySpriteDraw(head.Value, endPos - Main.screenPosition, null, lightColor
                 , Projectile.rotation, head.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

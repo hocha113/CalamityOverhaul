@@ -57,13 +57,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (target != null && Time % 30 == 0 && Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetPlayerInstance(Projectile.owner)?.ownedProjectileCounts[types] < 12) {
                 Time2++;
                 if (Time2 > 5) {
-                    for (int i = 0; i < 6; i++) {
+                    for (int i = 0; i < 5; i++) {
                         int proj = Projectile.NewProjectile(
                             Projectile.FromObjectGetParent(),
                             Projectile.Center,
-                            (MathHelper.TwoPi / 6f * i).ToRotationVector2() * 13,
+                            (MathHelper.TwoPi / 5f * i).ToRotationVector2() * 9,
                             types,
-                            Projectile.damage / 2,
+                            Projectile.damage / 3,
                             2,
                             Projectile.owner,
                             2

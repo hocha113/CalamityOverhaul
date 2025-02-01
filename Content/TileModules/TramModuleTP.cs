@@ -43,6 +43,12 @@ namespace CalamityOverhaul.Content.TileModules
         }
         public override void SetProperty() => initializeItems();
         internal void tpEntityLoadenItems() {
+            foreach (var item in items) {//这里给原版物品预加载一下纹理，如果有的话
+                if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
+                    continue;
+                }
+                Main.instance.LoadItem(item.type);
+            }
             SupertableUI.Instance.items = items;
             if (!VaultUtils.isSinglePlayer) {
                 SendData();
@@ -70,7 +76,7 @@ namespace CalamityOverhaul.Content.TileModules
                 }
             }
             SupertableUI.Instance.items = items;
-            SupertableUI.Instance.FinalizeCraftingResult(false);//不要进行网络发生，否则会迭代起来引发网络数据洪流
+            SupertableUI.Instance.FinalizeCraftingResult(false);//不要进行网络发送，否则会迭代起来引发网络数据洪流
         }
         public override void SaveData(TagCompound tag) {
             for (int i = 0; i < items.Length; i++) {

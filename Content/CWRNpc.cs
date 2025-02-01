@@ -5,6 +5,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
@@ -305,6 +306,9 @@ namespace CalamityOverhaul.Content
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
             TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
+            IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
+            LeadingConditionRule dontExpertRule = new LeadingConditionRule(dontExpertCondition);
+
             if (npc.type == NPCID.TombCrawlerHead) {
                 npcLoot.RemoveWhere(rule => true);
                 npcLoot.Add(3380, 1, 2, 6);
@@ -313,19 +317,20 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(ModContent.ItemType<CalSelfPortrait>(), 20);//5%概率掉落自画像
             }
             else if (npc.type == ModContent.NPCType<DesertScourgeHead>()) {
-                IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
-                LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
-                rule.Add(ModContent.ItemType<UnderTheSand>(), 10);
-                rule.Add(ModContent.ItemType<WastelandFang>(), 10);
-                rule.Add(ModContent.ItemType<SandDagger>(), 10);
-                rule.Add(ModContent.ItemType<BurntSienna>(), 10);
-                npcLoot.Add(rule);
+                dontExpertRule.Add(ModContent.ItemType<UnderTheSand>(), 10);
+                dontExpertRule.Add(ModContent.ItemType<WastelandFang>(), 10);
+                dontExpertRule.Add(ModContent.ItemType<SandDagger>(), 10);
+                dontExpertRule.Add(ModContent.ItemType<BurntSienna>(), 10);
+                npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == ModContent.NPCType<AquaticScourgeHead>()) {
-                IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
-                LeadingConditionRule rule = new LeadingConditionRule(dontExpertCondition);
+                
                 npcLoot.Add(ModContent.ItemType<MelodyTheSand>(), 6);
-                npcLoot.Add(rule);
+                npcLoot.Add(dontExpertRule);
+            }
+            else if (npc.type == ModContent.NPCType<OldDuke>()) {
+                npcLoot.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
+                npcLoot.Add(dontExpertRule);
             }
         }
 
