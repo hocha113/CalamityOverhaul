@@ -15,11 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.GiveMeleeType();
             item.SetKnifeHeld<EarthHeld>();
         }
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-            return false;
-        }
     }
 
     internal class EarthHeld : BaseKnife
@@ -56,15 +51,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             int type = ModContent.ProjectileType<EarthProj>();
             Vector2 orig = ShootSpanPos + new Vector2(0, -800);
             Vector2 toMou = orig.To(InMousePos);
-            for (int i = 0; i < 3; i++) {
-                Vector2 spwanPos = orig + toMou.UnitVector() * 600;
-                spwanPos.X += Main.rand.Next(-1260, 1260);
-                spwanPos.Y -= 660;
-                Vector2 ver = spwanPos.To(InMousePos).UnitVector() * 26;
-                ver = ver.RotatedByRandom(0.2f);
-                ver *= Main.rand.NextFloat(0.6f, 1.33f);
-                Projectile.NewProjectile(Source, spwanPos, ver, type, Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(10));
-            }
+            Vector2 spwanPos = orig + toMou.UnitVector() * 600;
+            spwanPos.X += Main.rand.Next(-860, 860);
+            spwanPos.Y -= 660;
+            Vector2 ver = spwanPos.To(InMousePos).UnitVector() * 26;
+            ver = ver.RotatedByRandom(0.2f);
+            ver *= Main.rand.NextFloat(0.6f, 1.33f);
+            Projectile.NewProjectile(Source, spwanPos, ver, type, Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(10));
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

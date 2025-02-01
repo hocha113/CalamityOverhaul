@@ -633,6 +633,7 @@ namespace CalamityOverhaul
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
+        /// <param name="stopOrigShoot"></param>
         public static void SetKnifeHeld<T>(this Item item) where T : ModProjectile {
             if (item.shoot == ProjectileID.None || !item.noUseGraphic
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()

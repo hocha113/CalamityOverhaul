@@ -235,11 +235,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         public override bool? On_CanUseItem(Item item, Player player) => CanUseItemFunc(player, item);
 
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
-            return false;
-        }
-
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();
             Item.height = 134;

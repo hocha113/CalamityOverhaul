@@ -18,11 +18,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<BlightedCleaver>();
         public const float BlightedCleaverMaxRageEnergy = 5000;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-            return false;
-        }
 
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 78;

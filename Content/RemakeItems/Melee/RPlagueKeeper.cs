@@ -16,10 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<PlagueKeeper>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return ShootFunc(player, source, position, velocity, type, damage, knockback);
-        }
 
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 74;
@@ -38,12 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.shoot = ModContent.ProjectileType<PlagueBeeWave>();
             Item.shootSpeed = 9f;
             Item.SetKnifeHeld<PlagueKeeperHeld>();
-        }
-
-        public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-            return false;
         }
     }
 

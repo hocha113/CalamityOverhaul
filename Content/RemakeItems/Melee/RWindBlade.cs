@@ -17,10 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WindBlade>()] = true;
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return ShootFunc(player, source, position, velocity, type, damage, knockback);
-        }
+
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 58;
             Item.damage = 41;
