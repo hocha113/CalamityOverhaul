@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private int mechdusaCurvedSpineSegmentIndex;
         private int mechdusaCurvedSpineSegments;
         private float phaseTransitionColorAmount;
+        protected int frame;
         internal Player Target {
             get {
                 if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {
@@ -126,6 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             phaseTransitionColorAmount = CalculatePhaseTransitionColorAmount();
             UpdateEnrageScale();
             UpdateAlpha();
+            CWRUtils.ClockFrame(ref frame, 5, 3);
 
             if (npc.ai[3] > 0f) {
                 npc.realLife = (int)npc.ai[3];
@@ -668,17 +670,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             Texture2D value = Body.Value;
             Texture2D value2 = Body_Glow.Value;
+            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
 
             if (npc.whoAmI % 2 == 0) {
                 value = BodyAlt.Value;
                 value2 = BodyAlt_Glow.Value;
+                rectangle = CWRUtils.GetRec(value);
             }
 
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
-                , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
 
             spriteBatch.Draw(value2, npc.Center - Main.screenPosition
-                , null, Color.White, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , rectangle, Color.White, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             return false;
         }
 

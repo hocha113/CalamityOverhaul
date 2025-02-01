@@ -12,6 +12,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         public override int TargetID => NPCID.TheDestroyer;
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
+        private int frame;
+        private int glowFrame;
+        private bool openMouth;
+        private int dontOpenMouthTime;
         void ICWRLoader.LoadAsset() {
             Head = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head");
             Head_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head_Glow");
@@ -21,7 +25,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Head_Glow = null;
         }
 
-        public override bool AI() => true;
+        public override bool AI() {
+            CWRUtils.ClockFrame(ref glowFrame, 5, 3);
+            Player target = CWRUtils.GetPlayerInstance(npc.target);
+            if (target.Alives()) {
+                float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(target.Center).UnitVector());
+                float toPlayerLang = npc.Distance(target.Center);
+                if (toPlayerLang < 660 && toPlayerLang > 100 && dotProduct > 0.8f) {
+                    if (dontOpenMouthTime <= 0) {
+                        openMouth = true;
+                    }
+                }
+                else {
+                    openMouth = false;
+                }
+
+                if (openMouth) {
+                    if (frame < 3) {
+                        frame++;
+                    }
+                    dontOpenMouthTime = 120;
+                }
+                else {
+                    if (frame > 0) {
+                        frame--;
+                    }
+                }
+            }
+            if (dontOpenMouthTime > 0) {
+                dontOpenMouthTime--;
+            }
+            return true;
+        }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {
@@ -29,11 +64,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             Texture2D value = Head.Value;
+            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
+            Rectangle glowRectangle = CWRUtils.GetRec(value, glowFrame, 4);
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
-                , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             Texture2D value2 = Head_Glow.Value;
             spriteBatch.Draw(value2, npc.Center - Main.screenPosition
-                , null, Color.White, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , glowRectangle, Color.White, npc.rotation + MathHelper.Pi, glowRectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             return false;
         }
 

@@ -15,11 +15,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             Texture2D value = Tail.Value;
+            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
-                , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             Texture2D value2 = Tail_Glow.Value;
             spriteBatch.Draw(value2, npc.Center - Main.screenPosition
-                , null, Color.White, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+                , rectangle, Color.White, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             return false;
         }
 
