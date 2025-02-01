@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -38,9 +39,17 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Item + "Rogue/SandDaggerProj";
         private bool onTIle;
+        private bool onSend;
         private float tileRot;
+        private readonly static int[] SandTileIDs = new int[] { 
+            TileID.Sand, TileID.Ebonsand, TileID.Pearlsand, TileID.Crimsand
+            , TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand };
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+        }
         public override void SetThrowable() {
-            Projectile.width = Projectile.height = 12;
+            Projectile.width = Projectile.height = 8;
             HandOnTwringMode = -20;
         }
 
@@ -51,9 +60,22 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Projectile.velocity.X *= 0.99f;
             }
             if (onTIle) {
+                Projectile.timeLeft = 2;
                 Projectile.rotation = tileRot;
-                Projectile.velocity *= 0.6f;
+                if (Projectile.ai[2] <= 40) {
+                    Projectile.velocity *= 0.6f;
+                }
+
+                if (onSend && Projectile.ai[2] > 40) {
+                    Projectile.velocity = new Vector2(0, -13);
+                    Projectile.rotation = Projectile.velocity.ToRotation();
+                }
+
+                if (++Projectile.ai[2] >= 60) {
+                    Projectile.Kill();
+                }
             }
+            
         }
 
         public override bool PreThrowOut() {
@@ -68,15 +90,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Projectile.extraUpdates = 3;
                 Projectile.scale = 1.5f;
             }
+            Projectile.localAI[0] = 1;
             return false;
         }
 
         public override void OnKill(int timeLeft) {
-            Vector2 tilePos = CWRUtils.WEPosToTilePos(Projectile.Bottom);
-            if (CWRUtils.GetTile(tilePos + new Vector2(0, 0)).TileType == TileID.Sand
-                || CWRUtils.GetTile(tilePos + new Vector2(-1, 0)).TileType == TileID.Sand
-                || CWRUtils.GetTile(tilePos + new Vector2(1, 0)).TileType == TileID.Sand
-                || CWRUtils.GetTile(tilePos + new Vector2(0, 1)).TileType == TileID.Sand) {
+            if (onSend) {
                 Projectile.Explode();
                 for (int i = 0; i < 3; i++) {
                     Vector2 velocity = new Vector2(0, -6).RotatedByRandom(0.6f);
@@ -91,16 +110,35 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (!onTIle) {
-                Projectile.velocity /= 10;
+                Projectile.Center += Projectile.velocity;
+                Projectile.velocity = Vector2.Zero;
                 tileRot = Projectile.rotation;
+                Vector2 tilePos = CWRUtils.WEPosToTilePos(Projectile.Bottom);
+                if (SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, 0)).TileType)
+                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(1, 0)).TileType)
+                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(-1, 0)).TileType)
+                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, 1)).TileType)
+                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, -1)).TileType)) {
+                    onSend = true;
+                }
+                Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+                SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
                 onTIle = true;
             }
-
-            Projectile.alpha -= 15;
             return false;
         }
 
         public override void DrawThrowable(Color lightColor) {
+            if (Projectile.localAI[0] == 1) {
+                for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                    Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
+                    Color color = lightColor * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length / 2);
+                    Main.EntitySpriteDraw(TextureValue, drawPos, null, color
+                    , Projectile.rotation + (MathHelper.PiOver2 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
+                    , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+                }
+            }
+            
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (MathHelper.PiOver2 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
                 , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);

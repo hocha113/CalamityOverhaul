@@ -32,6 +32,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EarthenPike";
         private bool onTIle;
         private float tileRot;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        }
         public override void SetThrowable() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 24;
@@ -60,6 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.velocity = UnitToMouseV * 17.5f;
             Projectile.tileCollide = true;
             Projectile.penetrate = 1;
+            Projectile.localAI[0] = 1;
             return false;
         }
 
@@ -84,9 +90,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void DrawThrowable(Color lightColor) {
+            float drawRot = Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1);
+            if (Projectile.localAI[0] == 1) {
+                for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                    Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
+                    Color color = lightColor * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length / 2);
+                    Main.EntitySpriteDraw(TextureValue, drawPos, null, color
+                    , drawRot, TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+                }
+            }
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor * (Projectile.alpha / 255f)
-                , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
-                , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+                , drawRot, TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
         }
     }
 

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class WastelandFangProj : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "WastelandFang";
-        private bool canTueSob;
+        private bool isShoot;
         private static Asset<Texture2D> chain;
         private static Asset<Texture2D> chainAlt;
         private static Asset<Texture2D> head;
@@ -84,12 +84,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                         Main.projectile[proj].friendly = true;
                         NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
                     }
-                    canTueSob = true;
+                    isShoot = true;
                 }
             }
 
             if (Projectile.ai[0] > 36) {
-                if (canTueSob) {
+                if (Projectile.ai[0] > 160) {//如果时间太长了就设置弹幕可以穿墙收回防止卡墙角
+                    Projectile.tileCollide = false;
+                }
+                if (isShoot) {
                     Projectile.ChasingBehavior(Owner.Center, 18);
                     if (ownerToDistance.Length() < Projectile.width) {
                         Projectile.Kill();
