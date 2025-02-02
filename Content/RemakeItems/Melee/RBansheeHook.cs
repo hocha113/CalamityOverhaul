@@ -133,8 +133,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 1.2f
-                , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 2.25f)
-                , Projectile.knockBack * 0.85f, Projectile.owner);
+               , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 3.25f)
+               , Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
         public override void MeleeEffect() {

@@ -352,6 +352,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.localNPCHitCooldown = -1;
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage /= 2;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead) {
+                modifiers.FinalDamage /= 2;
+            }
+        }
+
         public override void AI() {
             if (Projectile.ai[0] == 0 && Projectile.ai[1] >= 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.position);
@@ -407,7 +416,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     SoundEngine.PlaySound(sound, Projectile.Center);
                 }
                 Projectile.velocity = Projectile.Center.To(Main.player[Projectile.owner].Center).RotatedByRandom(0.6f).UnitVector() * 16;
-
+                Projectile.damage /= 2;//再度减少伤害
                 Vector2 velocityDirection = Projectile.velocity.SafeNormalize(Vector2.Zero);
                 float angle = (float)Math.Atan2(velocityDirection.Y, velocityDirection.X);
                 float ellipseFactorX = 1.2f;  // X轴的缩放，控制椭圆的宽度

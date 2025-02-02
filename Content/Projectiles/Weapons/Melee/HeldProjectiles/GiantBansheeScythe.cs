@@ -41,7 +41,6 @@ public class GiantBansheeScythe : ModProjectile
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
         Projectile.velocity *= 0.95f;
-        Projectile.damage -= 25;
         if (Projectile.timeLeft <= 65) {
             onHitNPCs.Add(target);
         }
