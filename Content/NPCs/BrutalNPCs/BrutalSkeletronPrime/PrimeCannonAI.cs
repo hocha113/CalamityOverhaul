@@ -79,8 +79,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float cannonArmTargetX = player.Center.X - cannonArmPosition.X;
             float cannonArmTargetY = player.Center.Y - cannonArmPosition.Y;
             float cannonArmTargetDist = (float)Math.Sqrt(cannonArmTargetX * cannonArmTargetX + cannonArmTargetY * cannonArmTargetY);
-
-            npc.rotation = (float)Math.Atan2(cannonArmTargetY, cannonArmTargetX) - MathHelper.PiOver2;
+            float targetRot = (float)Math.Atan2(cannonArmTargetY, cannonArmTargetX) - MathHelper.PiOver2;
+            npc.EntityToRot(targetRot, 0.2f);
 
             if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
                 npc.localAI[0] += 1f;
@@ -135,7 +135,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 cannonSpreadArmPosition = npc.Center;
             float cannonSpreadArmTargetX = player.Center.X - cannonSpreadArmPosition.X;
             float cannonSpreadArmTargetY = player.Center.Y - cannonSpreadArmPosition.Y;
-            npc.rotation = (float)Math.Atan2(cannonSpreadArmTargetY, cannonSpreadArmTargetX) - MathHelper.PiOver2;
+            float targetRot = (float)Math.Atan2(cannonSpreadArmTargetY, cannonSpreadArmTargetX) - MathHelper.PiOver2;
+            npc.EntityToRot(targetRot, 0.2f);
 
             if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
                 npc.localAI[0] += 1f;
