@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems
                 }
                 if (myIsBossTarget) {
                     if (player.whoAmI == Main.myPlayer) {
-                        VaultUtils.Text(CWRLocText.GetTextValue("DontUseMagicConch"));
+                        VaultUtils.Text(CWRLocText.GetTextValue("DontUseMagicConch"), Color.Goldenrod);
                     }
                     return false;
                 }
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems
 
     internal class RDemonConch : ItemOverride
     {
-        public override int TargetID => ItemID.MagicConch;
+        public override int TargetID => ItemID.DemonConch;
         public override bool DrawingInfo => false;
         public override bool? On_CanUseItem(Item item, Player player) => RMagicConch.DontInBossUseItem(player);
     }

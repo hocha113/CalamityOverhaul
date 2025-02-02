@@ -4298,7 +4298,7 @@ RemakeItems: {
 
 	RMagicConch: {
 		DisplayName: 魔法海螺
-		Tooltip: 仔细听，你会听到海洋的声音
+		Tooltip: 为什么不问问神奇的魔法海螺呢?
 	}
 
 	RFrostcrushValari: {
@@ -5253,6 +5253,15 @@ RemakeItems: {
 			'''
 			使星星从天而降
 			“用天堂怒火锻造而成”
+			'''
+	}
+
+	RDemonConch: {
+		DisplayName: 恶魔海螺
+		Tooltip:
+			'''
+			仔细听，你会听到尖叫声
+			“小心”
 			'''
 	}
 }

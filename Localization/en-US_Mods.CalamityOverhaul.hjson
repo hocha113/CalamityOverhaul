@@ -5264,4 +5264,13 @@ RemakeItems: {
 			"Forged with the wrath of heaven."
 			'''
 	}
+
+	RDemonConch: {
+		DisplayName: Demon Conch
+		Tooltip:
+			'''
+			Listen carefully, and you'll hear screams
+			"Be careful"
+			'''
+	}
 }
