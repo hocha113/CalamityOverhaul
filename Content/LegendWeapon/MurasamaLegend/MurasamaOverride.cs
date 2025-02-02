@@ -122,8 +122,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
-                {0, 10 },
-                {1, 14 },
+                {0, 12 },
+                {1, 16 },
                 {2, 23 },
                 {3, 28 },
                 {4, 40 },
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 {14, 1.5f }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
-                {0, 1 },
+                {0, 2 },
                 {1, 5 },
                 {2, 8 },
                 {3, 10 },

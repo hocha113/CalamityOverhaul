@@ -57,10 +57,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.3f;
+                modifiers.FinalDamage *= 0.2f;
             }
             if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.4f;
             }
         }
 
