@@ -159,6 +159,7 @@ Items: {
 			Right-click while holding the item to store items inside.
 			Right-click with an empty hand to retrieve stored items.
 			'''
+		Contents: Contents:
 	}
 
 	NeutronStarIngot: {

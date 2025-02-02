@@ -158,6 +158,7 @@ Items: {
 			Haz clic derecho mientras sostienes el objeto para almacenar cosas dentro.
 			Haz clic derecho con las manos vacías para recuperar los objetos almacenados.
 			'''
+		// Contents: Contents:
 	}
 
 	NeutronStarIngot: {

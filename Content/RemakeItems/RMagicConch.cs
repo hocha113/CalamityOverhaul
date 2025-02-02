@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.RemakeItems
     {
         public override int TargetID => ItemID.MagicConch;
         public override bool DrawingInfo => false;
-        public override bool? On_CanUseItem(Item item, Player player) {
+        public override bool? On_CanUseItem(Item item, Player player) => DontInBossUseItem(player);
+        public static bool? DontInBossUseItem(Player player) {
             if (CalamityWorld.death || BossRushEvent.BossRushActive) {
                 bool myIsBossTarget = false;
                 foreach (var npc in Main.ActiveNPCs) {
@@ -29,5 +30,12 @@ namespace CalamityOverhaul.Content.RemakeItems
             }
             return null;
         }
+    }
+
+    internal class RDemonConch : ItemOverride
+    {
+        public override int TargetID => ItemID.MagicConch;
+        public override bool DrawingInfo => false;
+        public override bool? On_CanUseItem(Item item, Player player) => RMagicConch.DontInBossUseItem(player);
     }
 }

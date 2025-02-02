@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
@@ -87,12 +88,18 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             for (int i = 0; i < darMatterItemVidElements.Count; i++) {
                 DarMatterItemVidElement darMatterItemVidElement = darMatterItemVidElements[i];
-                darMatterItemVidElement.DrawPosition = DrawPosition + new Vector2(0, DarMatterItemVidElement.Height) * (1 + i) * _sengs;
+                darMatterItemVidElement.DrawPosition = DrawPosition + new Vector2(0, DarMatterItemVidElement.Height) * (2 + i) * _sengs;
                 darMatterItemVidElement.Update();
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (darMatterItemVidElements.Count > 0) {
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
+                , DarkMatterBall.Contents.Value, DrawPosition.X, DrawPosition.Y + 36 * _sengs
+                , Color.White * _sengs, Color.Black * _sengs, new Vector2(0.2f), 0.8f);
+            }
+
             foreach (DarMatterItemVidElement darMatterItemVidElement in darMatterItemVidElements) {
                 darMatterItemVidElement.Draw(spriteBatch);
             }
@@ -129,8 +136,10 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            string text = Item.Name + " " + Item.stack.ToString();
-            
+            string text = Item.Name;
+            if (Item.stack > 1) {
+                text += " " + Item.stack.ToString();
+            }
             Color barkColor = Color.Lerp(Color.AliceBlue, Color.Goldenrod, _sengs);
             Color centerColor = Color.Lerp(Color.Azure, Color.WhiteSmoke, _sengs);
 
@@ -151,9 +160,10 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class DarkMatterBall : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
-        internal static int ID;
-        internal static Asset<Texture2D> DarkMatter;
-        internal static Asset<Texture2D> Full;
+        internal static int ID { get; private set; }
+        internal static Asset<Texture2D> DarkMatter { get; private set; }
+        internal static Asset<Texture2D> Full { get; private set; }
+        internal static LocalizedText Contents { get; private set; }
         public List<Item> DorpItems {
             get {
                 if (Item.TryGetGlobalItem<DarMatterGlobal>(out var gItem)) {
@@ -193,6 +203,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             return ball;
         }
         public override void SetStaticDefaults() {
+            Contents = this.GetLocalization("Contents", () => "Contents:");
             Item.ResearchUnlockCount = 9999;
             ID = Type;
         }

@@ -158,6 +158,7 @@ Items: {
 			手持物品右键可以将物品存入其中
 			空手右键可以将容纳物取出
 			'''
+		Contents: 内容物:
 	}
 
 	NeutronStarIngot: {
