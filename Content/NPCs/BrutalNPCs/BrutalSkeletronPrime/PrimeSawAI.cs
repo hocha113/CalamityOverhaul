@@ -15,37 +15,59 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         // 计算加速度的函数
         private float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool viceAlive) {
             float acceleration = bossRush ? 0.6f : (death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
-            if (!cannonAlive) acceleration += 0.025f;
-            if (!laserAlive) acceleration += 0.025f;
-            if (!viceAlive) acceleration += 0.025f;
+            if (!cannonAlive) {
+                acceleration += 0.02f;
+            }
+            if (!laserAlive) {
+                acceleration += 0.02f;
+            }
+            if (!viceAlive) {
+                acceleration += 0.02f;
+            }
             return acceleration;
         }
 
         // 调整Y轴速度的函数
         private void AdjustVelocityY(NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.position.Y > head.position.Y + 20f) {
-                if (npc.velocity.Y > 0f) npc.velocity.Y *= deceleration;
+                if (npc.velocity.Y > 0f) {
+                    npc.velocity.Y *= deceleration;
+                }
                 npc.velocity.Y -= acceleration;
-                if (npc.velocity.Y > topVelocity) npc.velocity.Y = topVelocity;
+                if (npc.velocity.Y > topVelocity) {
+                    npc.velocity.Y = topVelocity;
+                }
             }
             else if (npc.position.Y < head.position.Y - 20f) {
-                if (npc.velocity.Y < 0f) npc.velocity.Y *= deceleration;
+                if (npc.velocity.Y < 0f) {
+                    npc.velocity.Y *= deceleration;
+                }
                 npc.velocity.Y += acceleration;
-                if (npc.velocity.Y < -topVelocity) npc.velocity.Y = -topVelocity;
+                if (npc.velocity.Y < -topVelocity) {
+                    npc.velocity.Y = -topVelocity;
+                }
             }
         }
 
         // 调整X轴速度的函数
         private void AdjustVelocityX(NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.Center.X > head.Center.X + 20f) {
-                if (npc.velocity.X > 0f) npc.velocity.X *= deceleration;
+                if (npc.velocity.X > 0f) {
+                    npc.velocity.X *= deceleration;
+                }
                 npc.velocity.X -= acceleration * 2f;
-                if (npc.velocity.X > topVelocity) npc.velocity.X = topVelocity;
+                if (npc.velocity.X > topVelocity) {
+                    npc.velocity.X = topVelocity;
+                }
             }
             else if (npc.Center.X < head.Center.X - 20f) {
-                if (npc.velocity.X < 0f) npc.velocity.X *= deceleration;
+                if (npc.velocity.X < 0f) {
+                    npc.velocity.X *= deceleration;
+                }
                 npc.velocity.X += acceleration * 2f;
-                if (npc.velocity.X < -topVelocity) npc.velocity.X = -topVelocity;
+                if (npc.velocity.X < -topVelocity) {
+                    npc.velocity.X = -topVelocity;
+                }
             }
         }
 
@@ -57,13 +79,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             // 开始充能
             npc.ai[3] += 1f;
-            if (!cannonAlive) npc.ai[3] += 1f;
-            if (!laserAlive) npc.ai[3] += 1f;
-            if (!viceAlive) npc.ai[3] += 1f;
+            if (!cannonAlive) {
+                npc.ai[3] += 1f;
+            }
+            if (!laserAlive) {
+                npc.ai[3] += 1f;
+            }
+            if (!viceAlive) {
+                npc.ai[3] += 1f;
+            }
 
-            float cooldingnum = masterMode ? 90f : 180f;
+            float cooldingnum = masterMode ? 120f : 180f;
             if (death) {
-                cooldingnum = 30;
+                cooldingnum = 60;
             }
             if (npc.ai[3] >= cooldingnum) {
                 npc.ai[2] += 1f;

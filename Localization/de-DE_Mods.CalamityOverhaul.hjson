@@ -154,11 +154,12 @@ Items: {
 	}
 
 	DarkMatterBall: {
-		DisplayName: Dunkelmateriekugel
+		DisplayName: Sphère de Matière Noire
 		Tooltip:
 			'''
-			Sie wurde zu einem Schwarzen Loch komprimiert, aber auf wundersame Weise stabil geblieben
-			Manchmal enthält sie einige Gegenstände, Rechtsklick, um sie zu entnehmen
+			Elle a été compressée en un trou noir, mais reste miraculeusement stable.
+			Faites un clic droit en tenant l'objet pour y stocker des objets.
+			Faites un clic droit avec les mains vides pour récupérer les objets stockés.
 			'''
 	}
 

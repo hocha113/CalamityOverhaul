@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -33,7 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class GuardOfLife : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "HellionSpike";
-        internal GuardOfLifeCore guardOfLifeCore;
         internal Vector2 targetPos;
         internal Vector2 ver1;
         public override void SetStaticDefaults() {
@@ -52,6 +52,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.localNPCHitCooldown = 8;
         }
 
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            Projectile.localAI[0] = reader.ReadSingle();
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(Projectile.localAI[0]);
+        }
+
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
@@ -62,11 +70,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 }
             }
 
-            if (guardOfLifeCore != null && guardOfLifeCore.Projectile.active && Projectile.ai[2] == 0) {
+            if (Projectile.localAI[0] != 0 && Projectile.ai[2] == 0) {
                 ver1 = Projectile.velocity.UnitVector() * -9;
                 Projectile.timeLeft = 120;
                 Projectile.ai[2] = 1;
                 Projectile.ai[0] = 0;
+            }
+            else if (Projectile.localAI[0] == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                Item item = Main.player[Projectile.owner].GetItem();//没拿着武器时自己切换阶段
+                if (item != null && item.type != ModContent.ItemType<HellionFlowerSpear>()) {
+                    Projectile.localAI[0] = 1;
+                    Projectile.netUpdate = true;
+                }
             }
 
             if (Projectile.ai[2] == 1) {
@@ -222,7 +237,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0).ModProjectile as GuardOfLifeCore;
 
             foreach (var proj in guardOfLives) {
-                proj.guardOfLifeCore = core;
+                proj.Projectile.localAI[0] = 1;
+                proj.Projectile.netUpdate = true;
             }
 
             RHellionFlowerSpear.guardOfLives.Clear();

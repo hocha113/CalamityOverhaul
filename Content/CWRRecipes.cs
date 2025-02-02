@@ -136,6 +136,21 @@ namespace CalamityOverhaul.Content
                     recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
                 }
             }
+            //修改火山系列
+            {
+                //火山长矛
+                if (recipe.HasResult(ItemType<VulcaniteLance>())) {
+                    recipe.AddIngredient(ItemType<Brimlance>());//添加硫磺火矛
+                }
+                //欧陆巨弓
+                if (recipe.HasResult(ItemType<ContinentalGreatbow>())) {
+                    recipe.AddIngredient(ItemType<BrimstoneFury>());//添加硫火之怒
+                }
+                //地狱风暴
+                if (recipe.HasResult(ItemType<Helstorm>())) {
+                    recipe.AddIngredient(ItemType<Hellborn>());//添加地狱降临
+                }
+            }
             //修改肉后矿弩的合成：添加前置弓以及同级转化
             {
                 //秘银弓合成需要钴蓝弓

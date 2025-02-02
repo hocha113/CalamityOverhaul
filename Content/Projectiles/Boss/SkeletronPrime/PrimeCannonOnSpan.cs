@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 50;
+            Projectile.timeLeft = 60;
             Projectile.alpha = 0;
         }
 
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (scaleTimer < 8 && scaleIndex == 0) {
                 scaleTimer++;
             }
-            if (Projectile.timeLeft < 30) {
+            if (Projectile.timeLeft < 20) {
                 scaleIndex = 1;
             }
             if (scaleIndex > 0) {

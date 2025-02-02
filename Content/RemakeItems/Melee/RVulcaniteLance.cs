@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
             Projectile projectile = Projectile.NewProjectileDirect(Source, Owner.Center
                 , AbsolutelyShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.8f, 1.6f)
-                , ProjectileID.Flames, Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
+                , ProjectileID.Flames, Projectile.damage / 2, Projectile.knockBack * 0.85f, Projectile.owner);
             projectile.DamageType = DamageClass.Melee;
             projectile.netUpdate = true;
         }

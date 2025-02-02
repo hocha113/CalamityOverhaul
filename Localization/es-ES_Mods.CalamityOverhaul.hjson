@@ -154,8 +154,9 @@ Items: {
 		DisplayName: Esfera de Materia Oscura
 		Tooltip:
 			'''
-			Ha sido comprimida en un agujero negro, pero milagrosamente se mantiene estable.
-			A veces puede contener algunos objetos, haz clic derecho para sacar lo que contenga.
+			Ha sido comprimida en un agujero negro, pero milagrosamente sigue siendo estable.
+			Haz clic derecho mientras sostienes el objeto para almacenar cosas dentro.
+			Haz clic derecho con las manos vacías para recuperar los objetos almacenados.
 			'''
 	}
 

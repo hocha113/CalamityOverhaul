@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 {11, 1600 },
                 {12, 1900 },
                 {13, 2400 },
-                {14, 4000 }
+                {14, 6000 }
             };
             BladeVolumeRatioDictionary = new Dictionary<int, float>(){
                 {0, 0.6f },

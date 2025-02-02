@@ -153,11 +153,12 @@ Items: {
 	}
 
 	DarkMatterBall: {
-		DisplayName: Boule de Matière Sombre
+		DisplayName: Sphère de Matière Noire
 		Tooltip:
 			'''
-			Comprimée en un trou noir, mais miraculeusement maintenue stable
-			Parfois, contient des objets, clic droit pour les récupérer
+			Elle a été compressée en un trou noir, mais reste miraculeusement stable.
+			Faites un clic droit en tenant l'objet pour y stocker des objets.
+			Faites un clic droit avec les mains vides pour récupérer les objets stockés.
 			'''
 	}
 

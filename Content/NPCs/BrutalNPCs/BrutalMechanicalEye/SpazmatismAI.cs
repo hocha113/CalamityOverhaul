@@ -242,6 +242,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (skeletronPrimeInSprint || ai[7] > 0) {
+                if (isDestroyer && ai[8] < Mechanicalworm.DontAttackTime + 10) {
+                    npc.damage = 0;
+                    toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -150);
+                    if (death) {
+                        toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -150);
+                    }
+                    SetEyeValue(npc, player, toPoint, toTarget);
+                    return true;
+                }
                 switch (ai[1]) {
                     case 0:
                         toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -650);

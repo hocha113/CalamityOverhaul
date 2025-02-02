@@ -131,22 +131,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         }
 
         public override void OnKill(int timeLeft) {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
-                DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
-                if (dorpTypes.Count > 0 && darkMatterBall != null) {
-                    Vector2 spanPos = Projectile.Center;
-                    if (Projectile.ai[0] != 1) {
-                        spanPos = InMousePos;
-                    }
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
 
-                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, Vector2.Zero, ModContent.ProjectileType<SpanDMBall>(), 0, 0, Projectile.owner, ai1: Projectile.ai[0]);
-                    Projectile projectile = Main.projectile[proj];
-                    if (projectile.ModProjectile is SpanDMBall span) {
-                        darkMatterBall.dorpTypes = dorpTypes;
-                        span.darkMatterBall = darkMatterBall;
-                    }
+            Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
+            DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
+            if (dorpTypes.Count <= 0 || darkMatterBall == null) {
+                return;
+            }
+
+            Vector2 spanPos = Projectile.Center;
+            if (Projectile.ai[0] != 1) {
+                spanPos = InMousePos;
+            }
+
+            int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, Vector2.Zero
+                , ModContent.ProjectileType<SpanDMBall>(), 0, 0, Projectile.owner, ai1: Projectile.ai[0]);
+            Projectile projectile = Main.projectile[proj];
+            if (projectile.ModProjectile is SpanDMBall span) {
+                foreach (var id in dorpTypes) {
+                    darkMatterBall.DorpItems.Add(new Item(id));
                 }
+                span.darkMatterBall = darkMatterBall;
             }
         }
 

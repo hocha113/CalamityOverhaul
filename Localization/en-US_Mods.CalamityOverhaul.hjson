@@ -155,8 +155,9 @@ Items: {
 		DisplayName: Dark Matter Ball
 		Tooltip:
 			'''
-			It has been compressed into a black hole but miraculously maintained a stable state. 
-			Occasionally, it can contain some items, and right-clicking allows you to withdraw the items it contains.
+			It has been compressed into a black hole, yet miraculously remains stable.
+			Right-click while holding the item to store items inside.
+			Right-click with an empty hand to retrieve stored items.
 			'''
 	}
 

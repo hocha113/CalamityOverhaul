@@ -22,44 +22,56 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         // 计算加速度倍率的函数
         private float CalculateAccelerationMult(bool cannonAlive, bool laserAlive) {
             float mult = 1f;
-            if (!cannonAlive) mult += 0.5f;
-            if (!laserAlive) mult += 0.5f;
+            if (!cannonAlive) {
+                mult += 0.4f;
+            }
+            if (!laserAlive) {
+                mult += 0.4f;
+            }
             return mult;
         }
 
         // 调整Y轴速度的函数
         private void AdjustVelocityY(float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound) {
             if (npc.position.Y > upperBound) {
-                if (npc.velocity.Y > 0f)
+                if (npc.velocity.Y > 0f) {
                     npc.velocity.Y *= deceleration;
+                }
                 npc.velocity.Y -= acceleration;
-                if (npc.velocity.Y > topVelocity)
+                if (npc.velocity.Y > topVelocity) {
                     npc.velocity.Y = topVelocity;
+                }
             }
             else if (npc.position.Y < lowerBound) {
-                if (npc.velocity.Y < 0f)
+                if (npc.velocity.Y < 0f) {
                     npc.velocity.Y *= deceleration;
+                }
                 npc.velocity.Y += acceleration;
-                if (npc.velocity.Y < -topVelocity)
+                if (npc.velocity.Y < -topVelocity) {
                     npc.velocity.Y = -topVelocity;
+                }  
             }
         }
 
         // 调整X轴速度的函数
         private void AdjustVelocityX(float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound, float factor = 1f) {
             if (npc.Center.X > upperBound) {
-                if (npc.velocity.X > 0f)
+                if (npc.velocity.X > 0f) {
                     npc.velocity.X *= deceleration;
+                }
                 npc.velocity.X -= acceleration * factor;
-                if (npc.velocity.X > topVelocity)
+                if (npc.velocity.X > topVelocity) {
                     npc.velocity.X = topVelocity;
+                }
             }
             if (npc.Center.X < lowerBound) {
-                if (npc.velocity.X < 0f)
+                if (npc.velocity.X < 0f) {
                     npc.velocity.X *= deceleration;
+                }
                 npc.velocity.X += acceleration * factor;
-                if (npc.velocity.X < -topVelocity)
+                if (npc.velocity.X < -topVelocity) {
                     npc.velocity.X = -topVelocity;
+                }  
             }
         }
 
@@ -67,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void HandleChargePhase(bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
             float deceleration = masterMode ? 0.75f : 0.8f;
             if (death) {
-                deceleration = 0.5f;
+                deceleration = 0.6f;
             }
             if (npc.velocity.Y > 0f) {
                 npc.velocity.Y *= deceleration;
@@ -81,7 +93,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.velocity.X = (npc.velocity.X * 5f + Main.npc[(int)npc.ai[1]].velocity.X) / 6f;
             npc.velocity.X += 0.5f;
             npc.velocity.Y -= 0.5f;
-            if (npc.velocity.Y < -12f) npc.velocity.Y = -12f;
+            if (npc.velocity.Y < -12f) {
+                npc.velocity.Y = -12f;
+            }
 
             if (npc.position.Y < Main.npc[(int)npc.ai[1]].position.Y - 280f) {
                 npc.damage = npc.defDamage;
@@ -109,7 +123,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             npc.velocity.Y = (npc.velocity.Y * 5f + Main.npc[(int)npc.ai[1]].velocity.Y) / 6f;
             npc.velocity.X += 0.5f;
-            if (npc.velocity.X > 12f) npc.velocity.X = 12f;
+            if (npc.velocity.X > 12f) {
+                npc.velocity.X = 12f;
+            }
 
             if (npc.Center.X < Main.npc[(int)npc.ai[1]].Center.X - 500f || npc.Center.X > Main.npc[(int)npc.ai[1]].Center.X + 500f) {
                 npc.damage = npc.defDamage;
@@ -132,11 +148,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private float CalculateChargeVelocity(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive, float bossRushVelocity, float defaultVelocity) {
             float chargeVelocity = bossRush ? bossRushVelocity : defaultVelocity;
             if (!cannonAlive)
-                chargeVelocity += 1.5f;
+                chargeVelocity += 1.2f;
             if (!laserAlive)
-                chargeVelocity += 1.5f;
+                chargeVelocity += 1.2f;
             if (!sawAlive)
-                chargeVelocity += 1.5f;
+                chargeVelocity += 1.2f;
             return chargeVelocity;
         }
 

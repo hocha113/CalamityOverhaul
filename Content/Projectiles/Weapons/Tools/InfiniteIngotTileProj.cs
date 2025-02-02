@@ -39,8 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                         if (tile.HasTile) {
                             if (Main.rand.NextBool(6)) {
                                 int dorptype = CWRUtils.GetTileDorp(tile);
-                                if (dorptype != 0)
-                                    darkMatterBall.dorpTypes.Add(dorptype);
+                                if (dorptype != 0) {
+                                    darkMatterBall.DorpItems.Add(new Item(dorptype));
+                                }
                             }
                             tile.HasTile = false;
                         }
@@ -78,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         }
 
         public override void OnKill(int timeLeft) {
-            if (darkMatterBall.dorpTypes.Count > 0 && Projectile.IsOwnedByLocalPlayer()) {
+            if (darkMatterBall.DorpItems.Count > 0 && Projectile.IsOwnedByLocalPlayer()) {
                 int type = Item.NewItem(Projectile.FromObjectGetParent(), Projectile.Hitbox, darkMatterBall.Item);
                 if (VaultUtils.isClient) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);

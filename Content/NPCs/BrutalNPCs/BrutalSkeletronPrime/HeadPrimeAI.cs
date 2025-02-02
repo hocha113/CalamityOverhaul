@@ -592,7 +592,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     maxHorizontalSpeed = Main.masterMode ? 10f : 9.5f;
                     if (death) {
                         verticalAcceleration += 0.01f;
-                        maxVerticalSpeed += 0.5f;
+                        maxVerticalSpeed += 0.3f;
                         horizontalAcceleration += 0.1f;
                         maxHorizontalSpeed += 1f;
                     }
