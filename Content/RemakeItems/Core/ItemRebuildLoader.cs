@@ -204,21 +204,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public string OnAffixNameHook(On_GetItemName_get_Delegate orig, Item item) {
+            bool onOverd = false;
             if (ItemIDToOverrideDic.TryGetValue(item.type, out var itemOverride)) {
-                string newName = itemOverride.DisplayName.Value;
-                if (item.prefix < 0 || item.prefix >= Lang.prefix.Length) {
-                    return newName;
-                }
-                string text = Lang.prefix[item.prefix].Value;
-                if (text == "") {
-                    return newName;
-                }
-                if (text.StartsWith("(")) {
-                    return newName + " " + text;
-                }
-                return text + " " + newName;
+                item.SetNameOverride(itemOverride.DisplayName.Value);
+                onOverd = true;
             }
-            return orig.Invoke(item);
+            string forgtName = orig.Invoke(item);//这是个很取巧的办法，保证了兼容性
+            if (onOverd) {
+                item.ClearNameOverride();
+            }
+            return forgtName;
         }
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {

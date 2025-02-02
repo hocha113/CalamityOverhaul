@@ -22,8 +22,6 @@ namespace CalamityOverhaul.Content.Players
             noRippersProj = [
                 ModContent.ProjectileType<CosmicDischargeFlail>(),
                 ModContent.ProjectileType<CosmicIceBurst>(),
-                ModContent.ProjectileType<EndSkillMakeDamage>(),
-                ModContent.ProjectileType<EndSkillMakeDamage>(),
                 ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearProj>(),
                 ModContent.ProjectileType<StormArc>(),

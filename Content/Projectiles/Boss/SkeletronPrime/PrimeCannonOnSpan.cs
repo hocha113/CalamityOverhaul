@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         private int scaleTimer = 0;
         private int scaleIndex = 0;
         private bool formeNPC;
+        private const int disengage = 20;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 60;
+            Projectile.timeLeft = disengage + 40;
             Projectile.alpha = 0;
         }
 
@@ -43,12 +44,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.Kill();
             }
 
-            Player player = CWRUtils.GetPlayerInstance((int)Projectile.ai[1]);
-            if (player.Alives()) {
-                Vector2 toSet = Projectile.Center.To(player.Center);
-                Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.03f);
-            }
-
             Projectile.scale += 0.05f;
             if (Projectile.alpha < 255) {
                 Projectile.alpha += 15;
@@ -57,9 +52,18 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (scaleTimer < 8 && scaleIndex == 0) {
                 scaleTimer++;
             }
-            if (Projectile.timeLeft < 20) {
+
+            if (Projectile.timeLeft < disengage) {
                 scaleIndex = 1;
             }
+            else {
+                Player player = CWRUtils.GetPlayerInstance((int)Projectile.ai[1]);
+                if (player.Alives()) {
+                    Vector2 toSet = Projectile.Center.To(player.Center);
+                    Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.03f);
+                }
+            }
+
             if (scaleIndex > 0) {
                 if (--scaleTimer <= 0) {
                     Projectile.Kill();

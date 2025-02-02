@@ -174,17 +174,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             set {
                 if (Item.TryGetGlobalItem<DarMatterGlobal>(out var gItem)) {
                     value ??= []; // 避免 null 赋值
-                    Dictionary<int, Item> itemMap = new(); // 用于合并相同类型的物品
+                    List<Item> itemList = new(); // 用于存储合并后的物品
                     foreach (var item in value) {
-                        if (itemMap.TryGetValue(item.type, out var existingItem)) {
-                            existingItem.stack += item.stack; // 合并相同类型的物品
-                        }
-                        else {
-                            itemMap[item.type] = item;
-                        }
+                        CWRUtils.MergeItemStacks(itemList, item);
                     }
-
-                    gItem.dorpItems = [.. itemMap.Values]; // 转换为 List
+                    gItem.dorpItems = itemList; // 更新物品列表
                 }
             }
         }

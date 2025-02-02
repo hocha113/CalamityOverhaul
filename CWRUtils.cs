@@ -537,6 +537,42 @@ namespace CalamityOverhaul
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
 
         /// <summary>
+        /// 处理对物品集合的堆叠添加
+        /// </summary>
+        /// <param name="itemList"></param>
+        /// <param name="itemToAdd"></param>
+        public static void MergeItemStacks(List<Item> itemList, Item itemToAdd) {
+            // 查找是否有相同类型的物品
+            var existingItem = itemList.FirstOrDefault(i => i.type == itemToAdd.type);
+
+            if (existingItem != null) {
+                // 合并物品堆叠数
+                int totalStack = existingItem.stack + itemToAdd.stack;
+                int maxStack = existingItem.maxStack;
+
+                // 如果堆叠超过最大堆叠数，分配新的堆叠物品
+                while (totalStack > maxStack) {
+                    existingItem.stack = maxStack;
+                    totalStack -= maxStack;
+
+                    // 创建新的物品并添加剩余堆叠
+                    var newItem = itemToAdd.Clone(); // 确保不会修改原物品
+                    newItem.stack = Math.Min(totalStack, newItem.maxStack);
+                    itemList.Add(newItem);
+                }
+
+                // 最后将剩余堆叠数添加到现有物品
+                if (totalStack > 0) {
+                    existingItem.stack = totalStack;
+                }
+            }
+            else {
+                // 没有相同类型物品，直接添加
+                itemList.Add(itemToAdd);
+            }
+        }
+
+        /// <summary>
         /// 目标弹药是否应该判定为一个木箭
         /// </summary>
         /// <param name="player"></param>

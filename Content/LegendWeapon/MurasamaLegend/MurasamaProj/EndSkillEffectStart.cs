@@ -11,26 +11,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override string Texture => CWRConstant.Placeholder;
 
         public const int CanDamageTime = 140;
-        public const int CanDamageInNPCCountNum = 30;
-
         public Player player => Main.player[Projectile.owner];
-
         private ref float Time => ref Projectile.ai[0];
-
-        /// <summary>
-        /// 在场的符合条件的NPC是否小于<see cref="CanDamageInNPCCountNum"/>，如果是，返回<see langword="true"/>
-        /// </summary>
-        /// <returns></returns>
-        public static bool CanDealDamageToNPCs() {
-            int count = 0;
-            foreach (NPC n in Main.npc) {
-                if (!n.active || n.friendly) {
-                    continue;
-                }
-                count++;
-            }
-            return count <= CanDamageInNPCCountNum;
-        }
 
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
 
@@ -65,23 +47,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
 
-            if (Time == CanDamageTime) {
-                if (!CanDealDamageToNPCs() && Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), OrigPos, Vector2.Zero
-                        , ModContent.ProjectileType<EndSkillMakeDamage>(), Projectile.damage, 0, Projectile.owner);
-                }
-            }
             Time++;
         }
 
         public override void OnKill(int timeLeft) {
             if (MurasamaOverride.NameIsVergil(player)) {
-                SoundStyle[] sounds = new SoundStyle[] { CWRSound.V_YouSouDiad, CWRSound.V_ThisThePwero, CWRSound.V_You_Wo_Namges_Is_The_Pwero };
+                SoundStyle[] sounds = [CWRSound.V_YouSouDiad, CWRSound.V_ThisThePwero, CWRSound.V_You_Wo_Namges_Is_The_Pwero];
                 SoundEngine.PlaySound(sounds[Main.rand.Next(sounds.Length)]);
                 if (Main.rand.NextBool(13)) {
                     player.QuickSpawnItem(player.FromObjectGetParent(), ModContent.ItemType<FoodStallChair>());
                 }
-                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PowerSoundEgg>(), 0, 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<PowerSoundEgg>(), 0, 0, Projectile.owner);
             }
         }
     }
