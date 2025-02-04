@@ -108,8 +108,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public void DrawTrild() {
             float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Red, Color.DarkRed, Color.DarkRed, Color.OrangeRed, Color.IndianRed);
-            Color secondaryColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.DarkRed, Color.IndianRed, Color.OrangeRed, Color.IndianRed, Color.MediumVioletRed);
+            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Red, Color.DarkRed, Color.DarkRed, Color.OrangeRed, Color.IndianRed);
+            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.DarkRed, Color.IndianRed, Color.OrangeRed, Color.IndianRed, Color.MediumVioletRed);
 
             mainColor = Color.Lerp(Color.Red, mainColor, 0.85f);
             secondaryColor = Color.Lerp(Color.OrangeRed, secondaryColor, 0.85f);

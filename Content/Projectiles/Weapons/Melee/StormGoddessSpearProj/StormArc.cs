@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public virtual Color PrimitiveColorFunction(float completionRatio) {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = CalamityUtils.MulticolorLerp(colorInterpolant, light);
+            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, light);
             return color;
         }
 

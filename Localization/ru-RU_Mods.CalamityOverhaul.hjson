@@ -476,6 +476,9 @@ Items: {
 			Правый клик для трехступенчатой зарядки: 
 			после полной зарядки стреляет тремя мощными стрелами с гравитационным эффектом
 			'''
+		// Lang1: Trapping gravity
+		// Lang2: Is making gravity yield
+		// Lang3: Finished!!
 	}
 
 	NeutronGun: {

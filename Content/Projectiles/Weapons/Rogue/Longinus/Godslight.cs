@@ -91,15 +91,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
         }
 
-        public override void OnKill(int timeLeft) {
-            SpanDeadLightPenms();
-        }
+        public override void OnKill(int timeLeft) => SpanDeadLightPenms();
 
-        public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width * Projectile.ai[1];
+        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * Projectile.width * Projectile.ai[1];
 
         public Color PrimitiveColorFunction(float completionRatio) {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = colors != null ? CalamityUtils.MulticolorLerp(colorInterpolant, colors) : Color.White;
+            Color color = colors != null ? VaultUtils.MultiStepColorLerp(colorInterpolant, colors) : Color.White;
             return color;
         }
 

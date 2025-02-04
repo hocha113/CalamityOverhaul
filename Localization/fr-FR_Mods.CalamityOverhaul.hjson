@@ -474,6 +474,9 @@ Items: {
 			Tire des flèches de gravité qui génèrent des rayons gamma après avoir touché une cible
 			Clic droit pour charger à trois niveaux, une fois chargé, tire trois puissantes flèches de gravité
 			'''
+		// Lang1: Trapping gravity
+		// Lang2: Is making gravity yield
+		// Lang3: Finished!!
 	}
 
 	NeutronGun: {

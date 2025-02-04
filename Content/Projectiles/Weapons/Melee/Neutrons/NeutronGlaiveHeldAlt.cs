@@ -119,6 +119,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public static void DrawBar(Player Owner, float sengs, int uiframe) {
+            sengs = MathHelper.Clamp(sengs, 0, maxatcck);
             if (!(sengs <= 0f)) {
                 Texture2D barBG = bar3.Value;
                 Texture2D barFG = bar1.Value;
@@ -127,7 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                     barFG = bar2.Value;
                 }
                 float barScale = 1.2f;
-                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, 75) - Main.screenPosition;
+                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, 90) - Main.screenPosition;
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(sengs / maxatcck * barFG.Width), barFG.Height);
                 Color color = Color.White;
                 Main.spriteBatch.Draw(barBG, drawPos, CWRUtils.GetRec(barBG, uiframe, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), barScale, 0, 0f);

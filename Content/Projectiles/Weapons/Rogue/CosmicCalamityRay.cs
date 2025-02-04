@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
         public Color PrimitiveColorFunction(float completionRatio) {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = CalamityUtils.MulticolorLerp(colorInterpolant, new Color(119, 210, 255), Color.Blue, new Color(247, 119, 255));
+            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, new Color(119, 210, 255), Color.Blue, new Color(247, 119, 255));
             return color;
         }
 

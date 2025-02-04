@@ -70,12 +70,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 15f;
 
-        public Color PrimitiveColorFunction(float _) => CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + Projectile.identity * 0.1372f) % 1f, HeavenfallLongbow.rainbowColors) * Projectile.Opacity * (Projectile.timeLeft / 30f);
+        public Color PrimitiveColorFunction(float _) => VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + Projectile.identity * 0.1372f) % 1f, HeavenfallLongbow.rainbowColors) * Projectile.Opacity * (Projectile.timeLeft / 30f);
 
         public override bool PreDraw(ref Color lightColor) {
             float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, HeavenfallLongbow.rainbowColors);
-            Color secondaryColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, HeavenfallLongbow.rainbowColors);
+            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, HeavenfallLongbow.rainbowColors);
+            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, HeavenfallLongbow.rainbowColors);
 
             mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);

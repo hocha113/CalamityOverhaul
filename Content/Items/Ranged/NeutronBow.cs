@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
@@ -14,10 +15,16 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public static int PType;
         public float Charge;
+        public static LocalizedText Lang1;
+        public static LocalizedText Lang2;
+        public static LocalizedText Lang3;
         public void SetupData() => PType = ModContent.ItemType<NeutronBow>();
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));
+            Lang1 = this.GetLocalization(nameof(Lang1), () => "Trapping gravity");
+            Lang2 = this.GetLocalization(nameof(Lang2), () => "Is making gravity yield");
+            Lang3 = this.GetLocalization(nameof(Lang3), () => "Finished!!");
         }
 
         public override void SetDefaults() {

@@ -486,6 +486,9 @@ Items: {
 			Fires gravity arrows that generate gamma rays upon hitting a target.
 			Right-click to perform a three-level charge, releasing three powerful gravity arrows when fully charged.
 			'''
+		Lang1: Trapping gravity
+		Lang2: Is making gravity yield
+		Lang3: Finished!!
 	}
 
 	NeutronGun: {

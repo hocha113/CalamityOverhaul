@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -18,15 +20,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             get => ((NeutronBow)Item.ModItem).Charge;
             set => ((NeutronBow)Item.ModItem).Charge = value;
         }
-
+        private bool canAltFire;
         private int uiframe;
         private bool level1 = true;
         private bool level2 = true;
         private bool level3 = true;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;//暂时不要在这个版本中出现
+            return true;
         }
         public override void SetRangedProperty() {
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             ForcedConversionTargetAmmoFunc = () => true;
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ModContent.ProjectileType<NeutronArrow>();
@@ -39,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private void NewText(string key, int offsetY = 0) {
             Rectangle rectext = Owner.Hitbox;
             rectext.Y -= offsetY;
-            CombatText.NewText(rectext, new Color(155, 200, 100 + offsetY), CWRLocText.GetTextValue(key), true);
+            CombatText.NewText(rectext, new Color(155, 200, 100 + offsetY), key, true);
         }
 
         public override void PostInOwner() {
@@ -47,19 +50,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (onFireR) {
                     if (Charge < 80) {
                         Charge += 0.5f;
+                        BowArrowDrawNum = 1;
                         Item.useTime = 20;
                         ShootCoolingValue = Charge / 4;
-                        BowArrowDrawNum = 1;
                         if (ShootCoolingValue > 2) {
                             if (level1) {
-                                NewText("Wap_NeutronBow_LoadingText1", 0);
+                                NewText(NeutronBow.Lang1.Value, 0);
                                 SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.3f, Volume = 0.6f }, Projectile.Center);
                                 level1 = false;
                             }
                         }
                         if (Charge > 30) {
                             if (level2) {
-                                NewText("Wap_NeutronBow_LoadingText2", 60);
+                                NewText(NeutronBow.Lang2.Value, 60);
                                 SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
                                 level2 = false;
                             }
@@ -67,15 +70,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         }
                         if (Charge > 60) {
                             if (level3) {
-                                NewText("Wap_NeutronBow_LoadingText3", 120);
+                                NewText(NeutronBow.Lang3.Value, 120);
                                 SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
                                 level3 = false;
+                                Charge = 80;
                             }
                             BowArrowDrawNum++;
                         }
                     }
                     else {
                         BowArrowDrawNum = 3;
+                    }
+
+                    if (ShootCoolingValue > 19) {
+                        if (!canAltFire) {
+                            for (int i = 0; i < 3; i++) {
+                                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center, ShootVelocity, Color.BlueViolet
+                                    , new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), ShootVelocity.ToRotation(), 0.62f, 0.12f, 60, Projectile);
+                                PRTLoader.AddParticle(pulse);
+                            }
+                            canAltFire = true;
+                        }
+                        ShootCoolingValue = 19;
                     }
                 }
                 else {
@@ -92,6 +108,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.frame = 0;
                 uiframe = 0;
                 level1 = level2 = level3 = true;
+                if (canAltFire) {
+                    onFireR = true;
+                    ShootCoolingValue = 21;
+                    canAltFire = false;
+                }
             }
         }
 
@@ -131,7 +152,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
             if (Item != null && !Item.IsAir && Item.type == NeutronBow.PType) {
-                NeutronGlaiveHeldAlt.DrawBar(Owner, Charge, uiframe);
+                float newCharge = Charge / 60f * 80;
+                NeutronGlaiveHeldAlt.DrawBar(Owner, Charge / 60f * 80, uiframe);
             }
             Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 7), CanFire ? Color.White : lightColor
                 , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 7), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

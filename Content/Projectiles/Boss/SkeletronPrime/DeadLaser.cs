@@ -74,9 +74,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override bool PreDraw(ref Color lightColor) {
             float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f
+            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f
                 , Color.Red, Color.Gold, Color.Goldenrod, Color.OrangeRed, Color.DarkRed);
-            Color secondaryColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f
+            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f
                 , Color.Red, Color.Red, Color.Gold, Color.OrangeRed, Color.DarkRed);
 
             mainColor = Color.Lerp(Color.DarkRed, mainColor, Projectile.timeLeft / timeLeft);

@@ -482,6 +482,9 @@ Items: {
 			Haz clic derecho para cargar hasta tres niveles, 
 			al llenar la carga, lanzará tres poderosas flechas gravitatorias
 			'''
+		// Lang1: Trapping gravity
+		// Lang2: Is making gravity yield
+		// Lang3: Finished!!
 	}
 
 	NeutronGun: {

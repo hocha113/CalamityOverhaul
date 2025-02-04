@@ -474,6 +474,9 @@ Items: {
 			Feuern Sie Gravitationspfeile ab, die bei Treffer Gammastrahlen erzeugen
 			Halten Sie die rechte Maustaste für Dreistufenladung gedrückt. Wenn die Energie vollständig aufgeladen ist, werden drei starke Gravitationspfeile abgefeuert
 			'''
+		// Lang1: Trapping gravity
+		// Lang2: Is making gravity yield
+		// Lang3: Finished!!
 	}
 
 	NeutronGun: {
