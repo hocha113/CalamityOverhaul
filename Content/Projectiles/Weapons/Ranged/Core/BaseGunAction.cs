@@ -1,20 +1,18 @@
-﻿using Terraria.Audio;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
-    internal abstract class BaseMagicAction : BaseMagicGun
+    internal class BaseGunAction : BaseGun
     {
+        public override string Texture => CWRConstant.Placeholder3;
+        public override Texture2D TextureValue => TextureAssets.Item[TargetID].Value;
+        public override int TargetID => ItemID.None;
         private int useAnimation;
-        public sealed override void SetMagicProperty() {
-            ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
-            HandFireDistanceX = 0;
-            HandFireDistanceY = 0;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            Onehanded = true;
-            GunPressure = 0;
-            ControlForce = 0;
-            Recoil = 0;
+        public override void SetRangedProperty() {
+            base.SetRangedProperty();
         }
 
         public override void Initialize() => useAnimation = Item.useAnimation;
@@ -66,6 +64,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
             fireIndex++;
             Owner.altFunctionUse = 2;
             OrigItemShoot();
+        }
+
+
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            base.GunDraw(drawPos, ref lightColor);
         }
     }
 }

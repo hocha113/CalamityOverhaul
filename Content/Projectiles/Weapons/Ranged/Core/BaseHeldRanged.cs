@@ -448,7 +448,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
                 g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType)
-                    , Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                    , ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }
         }
     }

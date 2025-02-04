@@ -50,6 +50,7 @@ namespace CalamityOverhaul
         internal Mod coolerItemVisualEffect = null;
         internal Mod gravityDontFlipScreen = null;
         internal Mod infernum = null;
+        internal Mod ddmod = null;
 
         #endregion
 
@@ -154,6 +155,7 @@ namespace CalamityOverhaul
             coolerItemVisualEffect = null;
             gravityDontFlipScreen = null;
             infernum = null;
+            ddmod = null;
         }
 
         public void FindMod() {
@@ -175,6 +177,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("CoolerItemVisualEffect", out coolerItemVisualEffect);
             ModLoader.TryGetMod("GravityDontFlipScreen", out gravityDontFlipScreen);
             ModLoader.TryGetMod("InfernumMode", out infernum);
+            ModLoader.TryGetMod("DDmod", out ddmod);
         }
     }
 }

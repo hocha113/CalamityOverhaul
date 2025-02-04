@@ -32,6 +32,7 @@ using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
@@ -535,6 +536,18 @@ namespace CalamityOverhaul
                     ItemIsHeldSwing[itemType] = cwrItem.IsHeldSwing;
                     ItemIsHeldSwingDontStopOrigShoot[itemType] = cwrItem.IsHeldSwingDontStopOrigShoot;
                     ItemHasCartridgeHolder[itemType] = cwrItem.HasCartridgeHolder;
+
+                    if (cwrItem.IsHeldSwing) {//DeBug处理，如果有的地方没有使用正确的初始化函数设置刀剑，就会在加载的时候在这里报错以提醒开发者
+                        Projectile shootProj = new Projectile();
+                        shootProj.SetDefaults(item.shoot);
+                        if (shootProj.ModProjectile != null && shootProj.ModProjectile is BaseSwing swing) {
+                            if (!cwrItem.WeaponInSetKnifeHeld) {
+                                throw new InvalidOperationException($"The Sword is not initialized correctly：{item})。" +
+                                    $"Please check that the initialization function is called correctly"
+                                    + "SetKnifeHeld must be used to set the BaseSwing item");
+                            }
+                        }
+                    }
 
                     int heldProjType = cwrItem.heldProjType;
                     if (heldProjType > 0) {

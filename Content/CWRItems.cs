@@ -139,6 +139,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal int destructTime;
         /// <summary>
+        /// 用于存储一个手持挥舞类的原生射弹ID
+        /// </summary>
+        internal int SetHeldSwingOrigShootID;
+        /// <summary>
+        /// 表示这个物品是否经过了<see cref="CWRUtils.SetKnifeHeld{T}(Item, bool)"/>的设置
+        /// </summary>
+        internal bool WeaponInSetKnifeHeld;
+        /// <summary>
         /// 这个物品所属的终焉合成内容，这决定了它的物品简介是否绘制终焉合成表格
         /// </summary>
         internal string[] OmigaSnyContent;

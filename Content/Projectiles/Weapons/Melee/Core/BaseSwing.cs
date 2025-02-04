@@ -194,9 +194,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float SwingDrawRotingOffset = 0;
         /// <summary>
-        /// 这个刀会发射弹幕的ID,该属性在大多数时候并未使用,但如果希望调用<see cref="OrigItemShoot"/>，务必设置该属性
+        /// 这个刀会发射弹幕的ID
         /// </summary>
-        protected int ShootProjID;
+        protected int ShootD => Item.CWR().SetHeldSwingOrigShootID;
         /// <summary>
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public override void OrigItemShoot() {
-            Item.shoot = ShootProjID;
+            Item.shoot = ShootD;
             base.OrigItemShoot();
             Item.shoot = Type;
         }
@@ -602,6 +602,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 SwingAI();
                 if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
                     Shoot();
+                    foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                        g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootD), ShootSpanPos, ShootVelocity, ShootD, Projectile.damage, Projectile.knockBack);
+                    }
                 }
                 if (canDrawSlashTrail) {
                     UpdateCaches();

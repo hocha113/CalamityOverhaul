@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Length = 90;
             unitOffsetDrawZkMode = 8;
             SwingDrawRotingOffset = MathHelper.ToRadians(12);
-            ShootProjID = ModContent.ProjectileType<BurningMeteor>();
             autoSetShoot = true;
         }
 
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             for (int i = 0; i < 9; ++i) {
                 float randomSpeed = ShootSpeed * Main.rand.NextFloat(0.7f, 1.4f) / SwingMultiplication;
                 CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
-                    , 290f, 130f, 850f, 1100f, randomSpeed, ShootProjID
+                    , 290f, 130f, 850f, 1100f, randomSpeed, ShootD
                     , Projectile.damage / 6, 6f, Owner.whoAmI);
             }
         }

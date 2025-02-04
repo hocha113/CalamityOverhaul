@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.width = Projectile.height = 46;
             Length = 42;
             SwingData.starArg = 50;
-            ShootProjID = ProjectileID.Starfury;
         }
 
         public override bool PreInOwnerUpdate() {

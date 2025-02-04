@@ -420,12 +420,35 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_Shoot"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
-        public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {//
+        public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {
+            bool? rest;
             if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
-                bool? rasg = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
-                if (rasg.HasValue) {
-                    return rasg.Value;
+                rest = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
+                if (rest.HasValue) {
+                    return rest.Value;
                 }
+            }
+
+            if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
+                return false;
+            }
+
+            if (!CWRLoad.ItemIsHeldSwing[item.type]) {//手持挥舞类的物品不能直接调用gItem的Shoot，所以这里判断一下
+                foreach (var g in CWR_InItemLoader_Set_Shoot_Hook.Enumerate(item)) {
+                    rest = g.Shoot(item, player, source, position, velocity, type, damage, knockback);
+                }
+            }
+
+            rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
+
+            if ((!rest.HasValue || rest.Value) && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                return false;
+            }
+
+            if (rest.HasValue) {
+                return rest.Value;
             }
 
             return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
@@ -503,7 +526,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             orig.Invoke(item, player, target, ref modifiers);
         }
 
-        public bool OnPreDrawInInventoryHook(On_PreDrawInInventory_Delegate orig, Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+        public bool OnPreDrawInInventoryHook(On_PreDrawInInventory_Delegate orig, Item item, SpriteBatch spriteBatch
+            , Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             if (CWRServerConfig.Instance.WeaponOverhaul && ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride ritem)) {
                 bool rasg = ritem.On_PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
                 if (!rasg) {
@@ -792,18 +816,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             ProcessRemakeAction(item, (inds) => inds.SaveData(item, tag));
         }
 
-        public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
-                return false;
-            }
-            bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
-            if ((!rest.HasValue || rest.Value) && item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-                return false;
-            }
-            return rest ?? base.Shoot(item, player, source, position, velocity, type, damage, knockback);
-        }
+        //public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+        //    , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+        //    if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
+        //        return false;
+        //    }
+
+        //    bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
+        //    if ((!rest.HasValue || rest.Value) && item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
+        //        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+        //        return false;
+        //    }
+
+        //    return rest ?? base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+        //}
 
         public override void SplitStack(Item destination, Item source, int numToTransfer) {
             ProcessRemakeAction(destination, (inds) => inds.SplitStack(destination, source, numToTransfer));

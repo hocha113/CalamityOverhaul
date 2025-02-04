@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool FormulaSubstitution => true;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
+        public override bool CanLoad() => TargetID >= ItemID.Count || !ModLoader.HasMod("DDmod");//这里勉强适配一下DDMod，防止修改互相干扰
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
     }
 
