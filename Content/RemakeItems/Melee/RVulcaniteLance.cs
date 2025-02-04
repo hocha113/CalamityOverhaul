@@ -14,7 +14,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         internal static int index;
         public override int TargetID => ModContent.ItemType<VulcaniteLance>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<VulcaniteLanceHeld>();
+        public override void SetDefaults(Item item) {
+            item.damage = 120;
+            item.SetKnifeHeld<VulcaniteLanceHeld>();
+        }
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return ShootFunc(item, player, source, position, velocity, type, damage, knockback);

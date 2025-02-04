@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     value ??= []; // 避免 null 赋值
                     List<Item> itemList = new(); // 用于存储合并后的物品
                     foreach (var item in value) {
-                        CWRUtils.MergeItemStacks(itemList, item);
+                        VaultUtils.MergeItemStacks(itemList, item);
                     }
                     gItem.dorpItems = itemList; // 更新物品列表
                 }

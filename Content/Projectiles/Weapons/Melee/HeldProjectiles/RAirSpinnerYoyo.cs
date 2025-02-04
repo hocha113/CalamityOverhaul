@@ -59,15 +59,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Time2 > 5) {
                     for (int i = 0; i < 5; i++) {
                         int proj = Projectile.NewProjectile(
-                            Projectile.FromObjectGetParent(),
-                            Projectile.Center,
+                            Projectile.FromObjectGetParent(), Projectile.Center,
                             (MathHelper.TwoPi / 5f * i).ToRotationVector2() * 9,
-                            types,
-                            Projectile.damage / 3,
-                            2,
-                            Projectile.owner,
-                            2
-                            );
+                            types, Projectile.damage / 3, 2,
+                            Projectile.owner, 2);
                         Main.projectile[proj].localAI[0] = 1;
                         Main.projectile[proj].tileCollide = false;
                     }
@@ -75,14 +70,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 else {
                     Projectile.NewProjectile(
-                            Projectile.FromObjectGetParent(),
-                            Projectile.Center,
+                            Projectile.FromObjectGetParent(), Projectile.Center,
                             Projectile.Center.To(target.Center).UnitVector() * 15,
-                            types,
-                            Projectile.damage / 2,
-                            0,
-                            Projectile.owner
-                            );
+                            types, Projectile.damage / 2, 0, Projectile.owner);
                 }
                 Projectile.netUpdate = true;
             }
