@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
-    internal class BaseGunAction : BaseGun
+    internal abstract class BaseGunAction : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TextureAssets.Item[TargetID].Value;
