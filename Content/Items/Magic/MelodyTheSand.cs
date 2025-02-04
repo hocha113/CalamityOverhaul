@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override int TargetID => ModContent.ItemType<MelodyTheSand>();
         private bool oldOnFire;
         private int chargeIndex;
-        public override void SetRangedProperty() {
+        public override void SetMagicProperty() {
             HandFireDistanceX = 18;
             HandFireDistanceY = 0;
             ShootPosNorlLengValue = -8;

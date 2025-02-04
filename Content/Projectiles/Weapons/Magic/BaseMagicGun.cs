@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         /// </summary>
         protected float SetRegenDelayValue;
 
-        public override void SetRangedProperty() {
+        public sealed override void SetRangedProperty() {
             Projectile.DamageType = DamageClass.Magic;
             SetMagicProperty();
         }

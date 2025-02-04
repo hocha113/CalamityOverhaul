@@ -1,7 +1,15 @@
-﻿using CalamityMod.Items.Weapons.Magic;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.NPCs.Providence;
+using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -39,7 +47,41 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class FrigidflashBoltHeld : BaseMagicBook<FrigidflashBolt> { }
     internal class FrigidflashBoltRItem : RMagicBook<FrigidflashBolt> { }
 
-    internal class EternityHeld : BaseMagicBook<Eternity> { }
+    internal class EternityHeld : BaseMagicBook<Eternity>
+    {
+        private NPC target;
+        private List<NPC> onNPCs = [];
+        public override bool CanSpanProj() {
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<EternityHex>()] > 0) {
+                return false;
+            }
+            target = Main.MouseWorld.FindClosestNPC(1600, true, true);
+            if (target == null) {
+                return false;
+            }
+            return base.CanSpanProj();
+        }
+        public override void FiringShoot() {
+            SoundEngine.PlaySound(Providence.HolyRaySound);
+            Projectile hex = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
+                , ModContent.ProjectileType<EternityHex>(), Projectile.damage, 0f, Owner.whoAmI, target.whoAmI);
+            hex.localAI[1] = Projectile.whoAmI;
+
+            for (int i = 0; i < 5; i++) {
+                float crystalAngleOffset = MathHelper.TwoPi / 5f * i;
+                Projectile crystal = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
+                    , ModContent.ProjectileType<EternityCrystal>(), 0, 0f, Owner.whoAmI, target.whoAmI, crystalAngleOffset);
+                crystal.frame = i % 2;
+                crystal.localAI[1] = Projectile.whoAmI;
+            }
+            for (int i = 0; i < 10; i++) {
+                float circleOffset = MathHelper.TwoPi / 10f * i;
+                Projectile circleSpell = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
+                    , ModContent.ProjectileType<EternityCircle>(), 0, 0f, Owner.whoAmI, target.whoAmI, circleOffset);
+                circleSpell.localAI[1] = Projectile.whoAmI;
+            }
+        }
+    }
     internal class EternityRItem : RMagicBook<Eternity> { }
 
     internal class EldritchTomeHeld : BaseMagicBook<EldritchTome> { }
@@ -123,10 +165,35 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class TomeofFatesHeld : BaseMagicBook<TomeofFates> { }
     internal class TomeofFatesRItem : RMagicBook<TomeofFates> { }
 
-    internal class TradewindsHeld : BaseMagicBook<Tradewinds> { }
+    internal class TradewindsHeld : BaseMagicBook<Tradewinds>
+    {
+        public override void PostSetRangedProperty() {
+            CanRightClick = true;
+        }
+
+        public override void FiringShootR() {
+            AmmoTypes = ModContent.ProjectileType<Feathers>();
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity / 2
+                , AmmoTypes, WeaponDamage / 2, WeaponKnockback / 2, Owner.whoAmI);
+            Main.projectile[proj].ai[0] = 2;
+            Main.projectile[proj].localAI[0] = 1;
+            Main.projectile[proj].DamageType = DamageClass.Magic;
+            Main.projectile[proj].netUpdate = true;
+        }
+    }
     internal class TradewindsRItem : RMagicBook<Tradewinds> { }
 
-    internal class VeeringWindHeld : BaseMagicBook<VeeringWind> { }
+    internal class VeeringWindHeld : BaseMagicBook<VeeringWind>
+    {
+        public override void PostSetRangedProperty() {
+            CanRightClick = true;
+        }
+        public override void FiringShootR() {
+            AmmoTypes = ModContent.ProjectileType<VeeringWindFrostWave>();
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback / 3, Owner.whoAmI);
+        }
+    }
     internal class VeeringWindRItem : RMagicBook<VeeringWind> { }
 
     internal class WaywasherHeld : BaseMagicBook<Waywasher> { }

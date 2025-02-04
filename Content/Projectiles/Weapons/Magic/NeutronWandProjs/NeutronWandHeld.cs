@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         private float colers;
         private bool colers2;
         private Vector2 firePos;
-        public override void SetRangedProperty() {
+        public override void SetMagicProperty() {
             HandIdleDistanceX = 52;
             HandIdleDistanceY = -20;
             HandFireDistanceX = 52;

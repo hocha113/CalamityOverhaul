@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "FatesReveal";
         public override int TargetID => ModContent.ItemType<FatesReveal>();
-        public override void SetRangedProperty() {
-            Projectile.DamageType = DamageClass.Magic;
+        public override void SetMagicProperty() {
             GunPressure = 0;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = -5;
