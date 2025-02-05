@@ -91,16 +91,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 old_onSteam = onSteam;
                 old_onGithub = onGithub;
 
-                //int mouS = DownStartL();
-                int mouS = (int)keyLeftPressState;
-                if (mouS == 1) {
+                if (keyLeftPressState == KeyPressState.Pressed) {
                     if (onGithub) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         (CWRConstant.githubUrl + "/issues/new").WebRedirection(true);
                     }
                     else if (onSteam) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
-                        "https://steamcommunity.com/workshop/filedetails/discussion/3161388997/4700161359561532453/".WebRedirection(true);
+                        CWRConstant.steamFeedback.WebRedirection(true);
                     }
                     else {
                         SoundEngine.PlaySound(SoundID.MenuClose);
