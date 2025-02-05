@@ -333,7 +333,7 @@ namespace CalamityOverhaul
                 npc.HitSound != SoundID.NPCHit34 && npc.HitSound != SoundID.NPCHit36 && npc.HitSound != SoundID.NPCHit42 &&
                 npc.HitSound != SoundID.NPCHit49 && npc.HitSound != SoundID.NPCHit52 && npc.HitSound != SoundID.NPCHit53 &&
                 npc.HitSound != SoundID.NPCHit54 && npc.HitSound != null)
-                || npc.type == Providence || npc.type == ScornEater || npc.type == Yharon) {
+                || npc.type == Providence || npc.type == ScornEater || npc.type == Yharon || npc.type == DevourerofGodsHead) {
                     return false;
                 }
                 return true;

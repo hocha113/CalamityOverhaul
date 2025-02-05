@@ -73,6 +73,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAM_ForearmGlow;
         #endregion
 
+        void ICWRLoader.LoadAsset() {
+            string path = CWRConstant.NPC + "BSP/";
+            HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
+            BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
+            BSPlaser = CWRUtils.GetT2DAsset(path + "BSPlaser");
+            BSPPliers = CWRUtils.GetT2DAsset(path + "BSPPliers");
+            BSPSAW = CWRUtils.GetT2DAsset(path + "BSPSAW");
+            BSPRAM = CWRUtils.GetT2DAsset(path + "BSPRAM");
+            BSPRAM_Forearm = CWRUtils.GetT2DAsset(path + "BSPRAM_Forearm");
+            HandAssetGlow = CWRUtils.GetT2DAsset(path + "BrutalSkeletronGlow");
+            BSPCannonGlow = CWRUtils.GetT2DAsset(path + "BSPCannonGlow");
+            BSPlaserGlow = CWRUtils.GetT2DAsset(path + "BSPlaserGlow");
+            BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
+            BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
+            BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
+            BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
+            canLoaderAssetZunkenUp = true;
+        }
+
+        void ICWRLoader.UnLoadData() {
+            HandAsset = null;
+            BSPCannon = null;
+            BSPlaser = null;
+            BSPPliers = null;
+            BSPSAW = null;
+            BSPRAM = null;
+            BSPRAM_Forearm = null;
+            HandAssetGlow = null;
+            BSPCannonGlow = null;
+            BSPlaserGlow = null;
+            BSPPliersGlow = null;
+            BSPSAWGlow = null;
+            BSPRAMGlow = null;
+            BSPRAM_ForearmGlow = null;
+            canLoaderAssetZunkenUp = false;
+        }
+
+        public override bool CanLoad() => true;
+
         internal static bool DontReform() {
             if (!Main.expertMode) {
                 return true;
@@ -167,45 +206,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
         }
-
-        void ICWRLoader.LoadAsset() {
-            string path = CWRConstant.NPC + "BSP/";
-            HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
-            BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
-            BSPlaser = CWRUtils.GetT2DAsset(path + "BSPlaser");
-            BSPPliers = CWRUtils.GetT2DAsset(path + "BSPPliers");
-            BSPSAW = CWRUtils.GetT2DAsset(path + "BSPSAW");
-            BSPRAM = CWRUtils.GetT2DAsset(path + "BSPRAM");
-            BSPRAM_Forearm = CWRUtils.GetT2DAsset(path + "BSPRAM_Forearm");
-            HandAssetGlow = CWRUtils.GetT2DAsset(path + "BrutalSkeletronGlow");
-            BSPCannonGlow = CWRUtils.GetT2DAsset(path + "BSPCannonGlow");
-            BSPlaserGlow = CWRUtils.GetT2DAsset(path + "BSPlaserGlow");
-            BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
-            BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
-            BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
-            BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
-            canLoaderAssetZunkenUp = true;
-        }
-
-        void ICWRLoader.UnLoadData() {
-            HandAsset = null;
-            BSPCannon = null;
-            BSPlaser = null;
-            BSPPliers = null;
-            BSPSAW = null;
-            BSPRAM = null;
-            BSPRAM_Forearm = null;
-            HandAssetGlow = null;
-            BSPCannonGlow = null;
-            BSPlaserGlow = null;
-            BSPPliersGlow = null;
-            BSPSAWGlow = null;
-            BSPRAMGlow = null;
-            BSPRAM_ForearmGlow = null;
-            canLoaderAssetZunkenUp = false;
-        }
-
-        public override bool CanLoad() => true;
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
             if (type == NPCID.PrimeLaser) {
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f && !noArm) {
+                if (npc.ai[2] == 38f) {
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -761,15 +761,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     break;
                 case 1:
                     if (ai4 > 90 && noEye && ai5 <= 2 && ai10 <= 0) {
-                        npc.TargetClosest();
-                        if (!VaultUtils.isClient) {
+                        ThisFromeFindPlayer();
+                        Projectile setPointEntity = null;
+                        foreach (var proj in Main.ActiveProjectiles) {
+                            if (proj.type != ModContent.ProjectileType<SetPosingStarm>()) {
+                                continue;
+                            }
+                            setPointEntity = proj;
+                        }
+                        if (!VaultUtils.isClient && (setPointEntity == null || setPointEntity.timeLeft < 220)) {
                             float maxLerNum = death ? 13 : 9f;
                             for (int i = 0; i < maxLerNum; i++) {
                                 float rotoffset = MathHelper.TwoPi / maxLerNum * i;
                                 Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
                                 if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
-                                    Projectile.NewProjectile(npc.GetSource_FromAI()
-                                    , npc.Center, perturbedSpeed
+                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed
                                     , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
                                     , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
                                 }
