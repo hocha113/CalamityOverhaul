@@ -1,13 +1,11 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Magic;
+﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.Projectiles.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -153,7 +151,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class StarShowerHeld : BaseMagicBook<StarShower> { }
     internal class StarShowerRItem : RMagicBook<StarShower> { }
 
-    internal class SubsumingVortexHeld : BaseMagicBook<SubsumingVortex> { }
+    internal class SubsumingVortexHeld : BaseMagicBook<SubsumingVortex>
+    {
+        public override void PostSetRangedProperty() {
+            CanRightClick = true;
+            HandFireDistanceX = -10;
+        }
+        public override bool CanSpanProj() {
+            return base.CanSpanProj() && Owner.ownedProjectileCounts[VortexAlt.ID] == 0;
+        }
+        public override void FiringShootR() {
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                , VortexAlt.ID, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+        }
+        public override void PostDraw(Color lightColor) => VortexAlt.DoDraw();
+    }
     internal class SubsumingVortexRItem : RMagicBook<SubsumingVortex> { }
 
     internal class TearsofHeavenHeld : BaseMagicBook<TearsofHeaven> { }

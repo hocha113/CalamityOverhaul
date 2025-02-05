@@ -7,7 +7,10 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class HandmadeDoll : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/HandmadeDoll";
-        public override void SetStaticDefaults() => Item.ResearchUnlockCount = 64;
+        public override void SetStaticDefaults() {
+            Item.ResearchUnlockCount = 64;
+            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.GuideVoodooDoll;
+        }
         public override void SetDefaults() {
             Item.width = 20;
             Item.height = 20;
