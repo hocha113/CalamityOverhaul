@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override Color PrimitiveColorFunction(float completionRatio) {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
-            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, Color.Yellow);
+            Color color = VaultUtils.MultiStepColorLerp(colorInterpolant, Color.Yellow, Color.Gold, Color.White);
             return color;
         }
     }

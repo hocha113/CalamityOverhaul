@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f) {
+                if (npc.ai[2] == 36f) {
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -716,11 +716,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 }
                                 Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
                                 for (int j = 0; j < totalProjectiles; j++) {
-                                    Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 6;
+                                    Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.1f) * 6;
                                     if (bossRush) {
                                         vector *= 1.45f;
                                     }
-                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
+                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.UnitVector() * 100f
                                         , vector, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
                                 SpanFireLerterDustEffect(npc, 73);
@@ -1114,8 +1114,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float adjustedSpeed = speedMultiplier / distance;
             if (death) {
                 if (--calNPC.newAI[2] <= 0) {
-                    npc.velocity.X = targetVector.X * adjustedSpeed;
-                    npc.velocity.Y = targetVector.Y * adjustedSpeed;
+                    npc.velocity.X = targetVector.X * adjustedSpeed / 2;
+                    npc.velocity.Y = targetVector.Y * adjustedSpeed / 2;
                 }
                 else {
                     npc.velocity *= 0.99f;
@@ -1150,6 +1150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.velocity.X = targetVector.X * adjustedSpeed;
                 npc.velocity.Y = targetVector.Y * adjustedSpeed;
             }
+
             if (NPC.IsMechQueenUp) {
                 float distanceToPlayer = Vector2.Distance(npc.Center, Main.player[npc.target].Center);
                 if (distanceToPlayer < 0.1f) distanceToPlayer = 0f;

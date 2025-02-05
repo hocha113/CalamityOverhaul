@@ -124,6 +124,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     SoundStyle sound = SoundID.DD2_MonkStaffGroundImpact;
                     sound.Pitch = -0.3f;
                     SoundEngine.PlaySound(sound, Projectile.position);
+                    Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
                 }
 
                 Projectile.velocity = new Vector2(Projectile.velocity.X / 2, Projectile.velocity.Y / -2);
