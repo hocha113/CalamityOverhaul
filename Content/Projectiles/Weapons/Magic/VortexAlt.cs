@@ -74,9 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             }
         }
 
-        private bool ShouldDestroyProjectile() {
-            return HasBeenReleased && Projectile.timeLeft > ExplosionDelay && !Projectile.WithinRange(Owner.Center, 2000f);
-        }
+        private bool ShouldDestroyProjectile() => HasBeenReleased && Projectile.timeLeft > ExplosionDelay && !Projectile.WithinRange(Owner.Center, 2000f);
 
         private void FireProjectile(Vector2 target, float damageMultiplier) {
             Projectile.velocity = Projectile.SafeDirectionTo(target) * SubsumingVortex.ReleaseSpeed;

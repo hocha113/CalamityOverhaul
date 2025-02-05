@@ -1,9 +1,13 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Mono.Cecil;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
@@ -64,8 +68,45 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class EidolonStaffHeld : BaseMagicStaff<EidolonStaff> { }
     internal class EidolonStaffRItem : RMagicStaff<EidolonStaff> { }
 
-    //internal class ElementalRayHeld : BaseMagicStaff<ElementalRay> { }
-    //internal class ElementalRayRItem : RMagicStaff<ElementalRay> { }
+    internal class ElementalRayHeld : BaseMagicStaff<ElementalRay>, ICWRLoader
+    {
+        private static int[] projectileTypes;
+        void ICWRLoader.SetupData() {
+            projectileTypes = [
+                ModContent.ProjectileType<SolarElementalBeam>(),
+                ModContent.ProjectileType<NebulaElementalBeam>(),
+                ModContent.ProjectileType<VortexElementalBeam>(),
+                ModContent.ProjectileType<StardustElementalBeam>()
+            ];
+        }
+        void ICWRLoader.UnLoadData() => projectileTypes = null;
+        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 60;
+        public override void FiringShoot() {
+            float offsetAngle = MathHelper.TwoPi * useAnimation / Item.useAnimation + Main.rand.NextFloat(0f, 1.3f);
+            float shootSpeed = 1f;
+            int index = (Item.useAnimation - useAnimation) / Item.useTime;
+            index = Math.Clamp(index, 0, projectileTypes.Length - 1);
+
+            AmmoTypes = projectileTypes[index];
+
+            if (AmmoTypes == ModContent.ProjectileType<NebulaElementalBeam>()) {
+                offsetAngle -= NebulaElementalBeam.UniversalAngularSpeed * 0.5f;
+            }
+            else if (AmmoTypes == ModContent.ProjectileType<VortexElementalBeam>()) {
+                shootSpeed = 2f;
+            }
+
+            Vector2 spawnOffset = Owner.Center.To(InMousePos).UnitVector().RotatedBy(offsetAngle) * -Main.rand.NextFloat(40f, 96f);
+            Vector2 shootDirection = (InMousePos - (ShootPos + spawnOffset)).SafeNormalize(Vector2.UnitX * Owner.direction);
+
+            int beam = Projectile.NewProjectile(Source, ShootPos + spawnOffset, shootDirection * shootSpeed, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            if (AmmoTypes == ModContent.ProjectileType<VortexElementalBeam>()) {
+                Main.projectile[beam].ai[0] = shootDirection.ToRotation();
+                Main.projectile[beam].ai[1] = Main.rand.Next(100);
+            }
+        }
+    }
+    internal class ElementalRayRItem : RMagicStaff<ElementalRay> { }
 
     internal class FabstaffHeld : BaseMagicStaff<Fabstaff> { }
     internal class FabstaffRItem : RMagicStaff<Fabstaff> { }

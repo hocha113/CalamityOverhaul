@@ -978,6 +978,7 @@ Projectiles: {
 	// CrossPrediction.DisplayName: Cross Prediction
 	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 	// VulcaniteFire.DisplayName: Vulcanite Fire
+	// EssencePlunder.DisplayName: Essence Plunder
 }
 
 Configs: {
@@ -5200,6 +5201,27 @@ RemakeItems: {
 			'''
 			Listen carefully, and you'll hear screams
 			"Be careful"
+			''' */
+	}
+
+	REssenceFlayer: {
+		// DisplayName: Essence Flayer
+		/* Tooltip:
+			'''
+			Launch the Essence Scythe, which will release healing light when killing enemies
+			"Ineffective on undead creatures"
+			''' */
+	}
+
+	ElementalRayRItem: {
+		// DisplayName: Elemental Ray
+		/* Tooltip:
+			'''
+			Fires four celestial beams. 
+			The Solar Beam explodes into flames upon hitting an enemy.  
+			The Nebula Beam sweeps slightly while firing.  
+			The Vortex Beam inflicts an electrified debuff.  
+			The Stardust Beam generates homing meteors upon hitting an enemy.
 			''' */
 	}
 }

@@ -62,6 +62,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public static void HoldItemFunc(Player player) {
             if (player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 player.AddBuff(BuffID.Darkness, maxDeBuffTime);
+                player.AddBuff(BuffID.Slow, maxDeBuffTime);
+                player.AddBuff(BuffID.Weak, maxDeBuffTime);
+                player.AddBuff(BuffID.Silenced, maxDeBuffTime);
                 player.CWR().DontHasSemberDarkMasterCloneTime = maxDeBuffTime;
             }
         }

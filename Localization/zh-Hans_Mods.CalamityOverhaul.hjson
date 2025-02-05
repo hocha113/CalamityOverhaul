@@ -997,6 +997,7 @@ Projectiles: {
 	CrossPrediction.DisplayName: Cross Prediction
 	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 	// VulcaniteFire.DisplayName: Vulcanite Fire
+	// EssencePlunder.DisplayName: Essence Plunder
 }
 
 Configs: {
@@ -5265,6 +5266,27 @@ RemakeItems: {
 			'''
 			仔细听，你会听到尖叫声
 			“小心”
+			'''
+	}
+
+	REssenceFlayer: {
+		DisplayName: 精元劫掠者
+		Tooltip:
+			'''
+			发射精元镰刀，击杀敌人时会释放治愈光线
+			"对亡灵生物无效"
+			'''
+	}
+
+	ElementalRayRItem: {
+		DisplayName: 元素射线
+		Tooltip:
+			'''
+			发射四道天体射线
+			日耀射线在击中敌人时会爆炸成火焰
+			星云射线会小幅度扫射
+			星旋射线会造成带电减益
+			星尘射线在击中敌人敌怪时会生成追踪流星
 			'''
 	}
 }

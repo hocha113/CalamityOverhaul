@@ -4,7 +4,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
 {
     internal abstract class BaseMagicAction : BaseMagicGun
     {
-        private int useAnimation;
+        protected int useAnimation;
         public sealed override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
