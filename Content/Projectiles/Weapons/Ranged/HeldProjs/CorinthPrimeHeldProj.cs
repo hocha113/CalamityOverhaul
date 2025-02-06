@@ -2,11 +2,12 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class CorinthPrimeHeldProj : BaseGun
+    internal class CorinthPrimeHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CorinthPrime";
         public override int TargetID => ModContent.ItemType<CorinthPrime>();
@@ -21,6 +22,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 15;
             CanRightClick = true;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ModContent.ProjectileType<RealmRavagerBullet>();
+            CanUpdateMagazineContentsInShootBool = false;
         }
 
         public override void PostInOwnerUpdate() {
@@ -42,15 +46,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
-                    , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            _ = UpdateConsumeAmmo();
+            UpdateMagazineContents();
         }
 
         public override void FiringShootR() {
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<CorinthPrimeAirburstGrenade>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
         }
     }
 }

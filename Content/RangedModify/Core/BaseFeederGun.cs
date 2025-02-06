@@ -666,7 +666,19 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
         /// </summary>
-        public virtual void UpdateMagazineContents() {
+        public void UpdateMagazineContents() {
+            bool reset = true;
+            foreach (var gRanged in RangedLoader.GlobalRangeds) {
+                bool? gReset = gRanged.CanUpdateMagazine(this);
+                if (gReset.HasValue) {
+                    reset = gReset.Value;
+                }
+            }
+
+            if (!reset) {
+                return;
+            }
+
             if (!MagazineSystem) {//如果关闭了弹匣系统，将使用原版的弹药更新机制，因为弹匣不会再发挥作用
                 UpdateConsumeAmmo();
                 return;
@@ -802,14 +814,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
                 if (CanUpdateMagazineContentsInShootBool) {
                     //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents
-                    bool reset = GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem;
-                    foreach (var gRanged in RangedLoader.GlobalRangeds) {
-                        bool? gReset = gRanged.CanUpdateMagazine(this);
-                        if (gReset.HasValue) {
-                            reset = gReset.Value;
-                        }
-                    }
-                    if (reset) {
+                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
                         UpdateMagazineContents();
                     }
                 }

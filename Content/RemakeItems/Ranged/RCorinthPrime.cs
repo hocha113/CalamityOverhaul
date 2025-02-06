@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.shoot = ModContent.ProjectileType<RealmRavagerBullet>();
             item.Calamity().canFirePointBlankShots = true;
-            item.SetHeldProj<CorinthPrimeHeldProj>();
+            item.SetCartridgeGun<CorinthPrimeHeldProj>(80);
         }
     }
 }
