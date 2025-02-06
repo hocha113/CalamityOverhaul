@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<RealmRavagerBullet>();
-            CanUpdateMagazineContentsInShootBool = false;
         }
 
         public override void PostInOwnerUpdate() {
@@ -32,13 +31,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.7f;
                 Recoil = 6;
                 RangeOfStress = 25;
-                Item.useTime = 80;
+                FireTime = 80;
             }
             else {
                 GunPressure = 0.2f;
                 Recoil = 1;
                 RangeOfStress = 5;
-                Item.useTime = 30;
+                FireTime = 30;
             }
         }
 
@@ -48,7 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            UpdateMagazineContents();
         }
 
         public override void FiringShootR() {
