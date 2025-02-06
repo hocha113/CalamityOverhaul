@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;

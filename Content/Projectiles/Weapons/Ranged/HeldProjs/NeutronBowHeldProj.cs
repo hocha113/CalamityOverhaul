@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

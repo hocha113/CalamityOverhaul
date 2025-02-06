@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -8,7 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs
+namespace CalamityOverhaul.Content.RangedModify.UI
 {
     internal class CartridgeHolderUI : UIHandle
     {
@@ -167,6 +168,10 @@ namespace CalamityOverhaul.Content.UIs
 
             DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+
+            if (player.Calamity().adrenalineModeActive) {
+                DrawPosition += CWRUtils.randVr(6);
+            }
         }
 
         private void DrawToolp(SpriteBatch spriteBatch, CWRItems cwrItem) {
@@ -212,7 +217,7 @@ namespace CalamityOverhaul.Content.UIs
 
             //如果是拿着弹药进行选择性装填，这里就绘制出目标枪体
             if (IsAmmo()) {
-                float slp = VaultUtils.GetDrawItemSize(targetWeapon, 64);
+                float slp = targetWeapon.GetDrawItemSize(64);
                 Vector2 drawPos = DrawPosition + new Vector2(0, Height / frameMax);
                 VaultUtils.SimpleDrawItem(spriteBatch, targetWeapon.type, drawPos, slp, 0, Color.White, new Vector2(0.001f));
             }

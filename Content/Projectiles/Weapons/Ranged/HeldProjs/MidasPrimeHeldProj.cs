@@ -2,9 +2,9 @@
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.UI;
 using CalamityOverhaul.Content.RemakeItems.Ranged;
-using CalamityOverhaul.Content.UIs;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;

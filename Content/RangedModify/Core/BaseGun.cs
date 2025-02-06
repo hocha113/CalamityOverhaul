@@ -9,12 +9,12 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     /// <summary>
     /// 一个改进版的枪基类，这个基类的基础实现会更加快捷和易于模板化
     /// </summary>
-    internal abstract class BaseGun : BaseHeldRanged
+    public abstract class BaseGun : BaseHeldRanged
     {
         #region Date
         protected float oldSetRoting;
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public override bool OnHandheldDisplayBool => !HandheldDisplay && !CanFire ? false : WeaponHandheldDisplay ? true : CanFire;
 
-        internal struct SpwanGunDustMngsDataStruct
+        public struct SpwanGunDustMngsDataStruct
         {
             public Vector2 pos = default;
             public Vector2 velocity = default;

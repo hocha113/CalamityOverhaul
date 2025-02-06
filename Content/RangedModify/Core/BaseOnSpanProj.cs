@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -6,7 +7,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     /// <summary>
     /// 一个通用的用于制造蓄力效果的实体栈，其中Projectile.ai[0]默认作为时间计数器

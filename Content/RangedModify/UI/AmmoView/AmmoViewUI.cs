@@ -1,11 +1,10 @@
-﻿using CalamityOverhaul.Content.UIs;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
+namespace CalamityOverhaul.Content.RangedModify.UI.AmmoView
 {
     internal class AmmoViewUI : UIHandle
     {

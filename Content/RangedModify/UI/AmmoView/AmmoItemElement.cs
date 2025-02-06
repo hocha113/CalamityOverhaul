@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
+namespace CalamityOverhaul.Content.RangedModify.UI.AmmoView
 {
     internal class AmmoItemElement : UIHandle
     {

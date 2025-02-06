@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

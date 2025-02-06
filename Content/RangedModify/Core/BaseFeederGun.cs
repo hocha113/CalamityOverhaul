@@ -1,19 +1,20 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
-using CalamityOverhaul.Content.UIs;
 using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using CalamityOverhaul.Content.RangedModify.UI;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     /// <summary>
     /// 比<see cref="BaseGun"/>更为复杂的枪基类，用于更加快速且模板化的实现关于弹匣系统的联动
     /// </summary>
-    internal abstract class BaseFeederGun : BaseGun
+    public abstract class BaseFeederGun : BaseGun
     {
         #region Data
         /// <summary>
@@ -801,7 +802,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (CanUpdateMagazineContentsInShootBool) {
                     //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents
-                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
+                    bool reset = GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem;
+                    foreach (var gRanged in RangedLoader.GlobalRangeds) {
+                        bool? gReset = gRanged.CanUpdateMagazine(this);
+                        if (gReset.HasValue) {
+                            reset = gReset.Value;
+                        }
+                    }
+                    if (reset) {
                         UpdateMagazineContents();
                     }
                 }

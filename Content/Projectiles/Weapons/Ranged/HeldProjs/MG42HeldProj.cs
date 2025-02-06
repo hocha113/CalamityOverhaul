@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.IO;

@@ -1,7 +1,7 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.GunCustomization
+namespace CalamityOverhaul.Content.RangedModify
 {
     internal class GlobalBow : GlobalRanged
     {

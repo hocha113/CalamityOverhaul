@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs
+namespace CalamityOverhaul.Content.RangedModify.UI
 {
     internal class ArrowHolderUI : UIHandle
     {
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.UIs
             DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
 
-            UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Weith + (arrowDrawStackCount * Weith / 2), Height);
+            UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Weith + arrowDrawStackCount * Weith / 2, Height);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
             hoverInMainPage = UIHitBox.Intersects(mouseHit);
 

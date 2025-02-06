@@ -1,11 +1,12 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.UI;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.GunCustomization
+namespace CalamityOverhaul.Content.RangedModify
 {
     public class RangedLoader : ICWRLoader
     {

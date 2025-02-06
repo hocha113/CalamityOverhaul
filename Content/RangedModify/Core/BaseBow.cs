@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GunCustomization;
+using CalamityOverhaul.Content.RangedModify;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     public abstract class BaseBow : BaseHeldRanged
     {
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             /// <summary>
             /// 弓弦宽度
             /// </summary>
-            public TrailThicknessCalculator thicknessEvaluator = (float _) => 1;
+            public TrailThicknessCalculator thicknessEvaluator = (_) => 1;
             /// <summary>
             /// 弓弦颜色
             /// </summary>
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 // 如果开启了自动宽度设置，并且扣除矩形的宽度有效（大于0）
                 if (BowstringData.AutomaticWidthSetting && BowstringData.DeductRectangle.Width > 0) {
                     // 设置弓弦的厚度计算器为固定值，等于扣除矩形的宽度
-                    BowstringData.thicknessEvaluator = (float _) => BowstringData.DeductRectangle.Width / 2;
+                    BowstringData.thicknessEvaluator = (_) => BowstringData.DeductRectangle.Width / 2;
                 }
                 if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset == default) {
                     BowstringData.TopBowOffset = BowstringData.BottomBowOffset = new Vector2(BowstringData.DeductRectangle.Left, BowstringData.DeductRectangle.Top - 2);
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             BowstringData.Points[2] = posBottom;
 
             if (BowstringData.DoEffect == null) {
-                BowstringData.colorEvaluator ??= (Vector2 _) => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16));
+                BowstringData.colorEvaluator ??= (_) => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16));
                 BowstringData.DoEffect = new PathEffect(BowstringData.thicknessEvaluator, BowstringData.colorEvaluator, handlerTexturePoss: HanderBowstringTexturePoss);
             }
             BowstringData.DoEffect.GetPathData(BowstringData.Points, Vector2.Zero, 88);

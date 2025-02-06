@@ -3,7 +3,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     internal abstract class BaseGunAction : BaseGun
     {

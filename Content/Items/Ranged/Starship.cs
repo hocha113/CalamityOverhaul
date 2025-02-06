@@ -1,15 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using InnoVault.Trails;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using Terraria;
-using Terraria.Graphics.Effects;
-using Terraria.ID;
-using Terraria.ModLoader;
-
-namespace CalamityOverhaul.Content.Items.Ranged
+﻿namespace CalamityOverhaul.Content.Items.Ranged
 {
     /// <summary>
     /// 群星巨舰

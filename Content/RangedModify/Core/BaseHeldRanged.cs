@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -9,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     public abstract class BaseHeldRanged : BaseHeldProj
     {

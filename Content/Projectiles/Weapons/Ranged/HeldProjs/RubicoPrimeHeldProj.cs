@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;

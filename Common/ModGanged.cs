@@ -2,7 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;

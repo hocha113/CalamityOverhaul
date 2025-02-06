@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using Microsoft.Xna.Framework.Graphics;
 using System;

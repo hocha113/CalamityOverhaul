@@ -1,7 +1,6 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using Terraria;
+﻿using Terraria;
 
-namespace CalamityOverhaul.Content.GunCustomization
+namespace CalamityOverhaul.Content.RangedModify.Core
 {
     public abstract class GlobalRanged
     {
@@ -11,6 +10,10 @@ namespace CalamityOverhaul.Content.GunCustomization
 
         public virtual void PostModifyBow(BaseBow bow) {
 
+        }
+
+        public virtual bool? CanUpdateMagazine(BaseFeederGun baseFeederGun) {
+            return null;
         }
     }
 }
