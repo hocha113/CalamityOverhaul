@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
                 }
                 ai[0] = 1;
-                NetAISend(npc);
+                netAIWorkSend = true;
             }
 
             if (ai[0] == 1) {
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     ai[8]++;
                 }
                 if (ai[8] == Mechanicalworm.DontAttackTime + 10) {
-                    NetAISend(npc);
+                    netAIWorkSend = true;
                 }
                 if (ai[8] > Mechanicalworm.DontAttackTime + 10) {
                     int fireTime = 10;
@@ -229,16 +229,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 , npc.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
                         }
                         ai[5] = 0;
-                        NetAISend(npc);
+                        netAIWorkSend = true;
                     }
                     ai[4]++;
                     SetEyeValue(npc, player, toPoint, toTarget);
                     return true;
                 }
             }
-            else {
+            else if (ai[8] != 0) {
                 ai[8] = 0;
-                NetAISend(npc);
+                netAIWorkSend = true;
             }
 
             if (skeletronPrimeInSprint || ai[7] > 0) {
@@ -251,6 +251,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     SetEyeValue(npc, player, toPoint, toTarget);
                     return true;
                 }
+
                 switch (ai[1]) {
                     case 0:
                         toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -650);
@@ -268,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             ai[7] = 10;
                             ai[1] = 1;
                             ai[2] = 0;
-                            NetAISend(npc);
+                            netAIWorkSend = true;
                         }
                         ai[2]++;
                         break;
@@ -288,7 +289,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             }
                             ai[3]++;
                             ai[2] = 0;
-                            NetAISend(npc);
+                            netAIWorkSend = true;
                         }
 
                         if (ai[2] == 2) {
@@ -302,13 +303,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 }
                                 ai[9] *= ai[10];
                                 ai[10] *= -1;
-                                NetAISend(npc);
+                                netAIWorkSend = true;
                             }
                             else {
                                 if (!VaultUtils.isClient) {
                                     ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
                                 }
-                                NetAISend(npc);
+                                netAIWorkSend = true;
                             }
                         }
 
@@ -317,7 +318,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             ai[2] = 0;
                             ai[1] = 0;
                             ai[7] = 0;
-                            NetAISend(npc);
+                            netAIWorkSend = true;
                         }
                         else if (ai[7] < 2) {
                             ai[7] = 2;
@@ -351,7 +352,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 player = Main.player[npc.target];
                 if (!player.Alives()) {
                     ai[0] = 4;
-                    NetAISend(npc);
+                    netAIWorkSend = true;
                 }
             }
             int projDamage = death ? 36 : 30;
@@ -360,7 +361,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 case 0:
                     //这里应该做点什么，比如初始化
                     ai[0] = 1;
-                    NetAISend(npc);
+                    netAIWorkSend = true;
                     break;
                 case 1:
                     Debut();
@@ -425,7 +426,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 ai[5] *= -1;
                                 ai[6]++;
                             }
-                            NetAISend(npc);
+                            netAIWorkSend = true;
                         }
                         SetEyeValue(npc, player, toPoint + offset, toTarget);
                     }
@@ -452,7 +453,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                     ai[1] = 2;//如果轮回了2次，那么就切换到2吧，开始冲刺
                                 }
                             }
-                            NetAISend(npc);
+                            netAIWorkSend = true;
                         }
                         SetEyeValue(npc, player, toPoint + offset, toTarget);
                     }
@@ -483,7 +484,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 ai[5] *= -1;
                                 ai[6] = 0;
                                 npc.damage = 0;
-                                NetAISend(npc);
+                                netAIWorkSend = true;
                             }
                         }
                     }
@@ -525,7 +526,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                     ai[4] = 0;
                                 }
                                 npc.damage = 0;
-                                NetAISend(npc);
+                                netAIWorkSend = true;
                             }
                         }
                     }
@@ -555,7 +556,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[2] = 0;
                 ai[1] = 0;
                 ai[0] = 3;
-                NetAISend(npc);
+                netAIWorkSend = true;
             }
             return true;
         }
@@ -605,7 +606,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 npc.damage = npc.defDamage;
                 ai[0] = 2;
                 ai[1] = 0;
-                NetAISend(npc);
+                netAIWorkSend = true;
                 return false;
             }
 

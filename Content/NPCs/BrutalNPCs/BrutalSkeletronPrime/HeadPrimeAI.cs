@@ -384,8 +384,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             setPosingStarmCount = 0;
             int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
-            foreach (var value in Main.projectile) {
-                if (value.type == typeSetPosingStarm && value.active) {
+            foreach (var value in Main.ActiveProjectiles) {
+                if (value.type == typeSetPosingStarm) {
                     setPosingStarmCount++;
                 }
             }
@@ -398,7 +398,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     npc.TargetClosest();
                     SendExtraAI(npc);
-                    NetAISend();
+                    netAIWorkSend = true;
                 }
                 //设置为1，表明完成了首次初始化
                 npc.ai[0] = 1f;
@@ -561,7 +561,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         calNPC.newAI[0] = 0;
                         ai11++;
                         SendExtraAI(npc);
-                        NetAISend();
+                        netAIWorkSend = true;
                     }
                     npc.TargetClosest();
                     npc.netUpdate = true;
@@ -674,7 +674,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[1] != 2) {//白天狂暴时不用召唤双子
                     SpawnEye();
                 }
-                NetAISend();
+                netAIWorkSend = true;
             }
 
             int type = ProjectileID.RocketSkeleton;
@@ -748,7 +748,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                         ai4 = 0;
                         ai5++;
-                        NetAISend();
+                        netAIWorkSend = true;
                     }
 
                     if (ai5 > 3 || npc.ai[1] == 1) {
@@ -756,7 +756,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai8++;
-                        NetAISend();
+                        netAIWorkSend = true;
                     }
                     break;
                 case 1:
@@ -797,7 +797,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        NetAISend();
+                        netAIWorkSend = true;
                     }
 
                     ai4++;
@@ -810,7 +810,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             ai4 = 0;
                             ai5 = 0;
                             ai7 = 0;
-                            NetAISend();
+                            netAIWorkSend = true;
                             return false;
                         }
 
@@ -860,7 +860,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        NetAISend();
+                        netAIWorkSend = true;
                     }
 
                     break;
@@ -941,7 +941,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[0] != 2) {//2表明是初元阶段，这个杀死手臂的函数在这个时候才能运行
                 return;
             }
-            KillArm();
             npc.ai[0] = 3;//杀死手臂后表明进入三阶段
             npc.netUpdate = true;
         }
@@ -1024,7 +1023,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (Main.IsItDay()) {
                 if (npc.ai[1] != 2f) {
                     npc.ai[1] = 2f;
-                    KillArm();
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
                 return;

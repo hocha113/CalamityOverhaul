@@ -50,6 +50,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (HeadPrimeAI.SetArmRot(npc, head, npc.type)) {
                 return false;
             }
+
+            if (head.ai[0] == 3 || head.ai[1] == 2f) {
+                npc.life = 0;
+                npc.HitEffect();
+                npc.active = false;
+                npc.netUpdate = true;
+                return false;
+            }
+
             return ArmBehavior();
         }
 

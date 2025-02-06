@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// <summary>
         /// 本地ai槽位，这个值不会自动多人同步，如果有需要，重载<see cref="OtherNetWorkReceive(BinaryReader)"/>来同步它
         /// </summary>
-        public float[] localAi = new float[MaxAISlot];
+        public float[] localAI = new float[MaxAISlot];
         /// <summary>
         /// 这个实例对应的NPC实例
         /// </summary>
@@ -46,19 +46,34 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         public CalamityGlobalNPC calNPC { get; private set; }
         //不要直接设置这个
-        private bool _netWorkSend;
+        private bool _netOtherWorkSend;
+        //不要直接设置这个
+        private bool _netAIWorkSend;
         /// <summary>
         /// 用于网络同步，只能在服务端进行设置，其他端口永远返回<see langword="false"/>，
         /// 当设置为<see langword="true"/>时，会自动调用<see cref="OtherNetWorkReceiveHander(BinaryReader)"/>进行网络数据同步
         /// </summary>
-        public bool netWorkSend {
+        public bool netOtherWorkSend {
             get {
                 if (!VaultUtils.isServer) {
                     return false;
                 }
-                return _netWorkSend;
+                return _netOtherWorkSend;
             }
-            set => _netWorkSend = value;
+            set => _netOtherWorkSend = value;
+        }
+        /// <summary>
+        /// 用于网络同步，只能在服务端进行设置，其他端口永远返回<see langword="false"/>，
+        /// 当设置为<see langword="true"/>时，会自动调用<see cref="NetAISend()"/>进行网络数据同步
+        /// </summary>
+        public bool netAIWorkSend {
+            get {
+                if (!VaultUtils.isServer) {
+                    return false;
+                }
+                return _netAIWorkSend;
+            }
+            set => _netAIWorkSend = value;
         }
         /// <summary>
         /// 克隆这个实例，注意，克隆出的新对象与原实例将不再具有任何引用关系
@@ -79,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 }
             }
             inds.ai = new float[MaxAISlot];
-            inds.localAi = new float[MaxAISlot];
+            inds.localAI = new float[MaxAISlot];
             inds.npc = npc;
             inds.cwrNPC = cwr;
             inds.calNPC = cal;
@@ -88,49 +103,70 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         #region NetWork
-
-        internal void OtherNetWorkSendHander() {
-            if (!VaultUtils.isServer || !netWorkSend) {
+        //统一管理的网络行为，自动运行在更新后
+        internal void DoNet() {
+            if (!VaultUtils.isServer) {
                 return;
             }
-            ModPacket netMessage = mod.GetPacket();
-            netMessage.Write((byte)CWRMessageType.NPCOverrideOtherAI);
-            netMessage.Write(npc.whoAmI);
-            OtherNetWorkSend(netMessage);
-            netWorkSend = false;
+
+            if (netAIWorkSend) {
+                NetAISend();
+                netAIWorkSend = false;
+            }
+            if (netOtherWorkSend) {
+                OtherNetWorkSendHander();
+                netOtherWorkSend = false;
+            }
         }
-        /// <summary>
-        /// 发送网络数据，同步额外的网络数据，重载编写时需要注意与<see cref="OtherNetWorkReceive"/>对应
-        /// ，将<see cref="netWorkSend"/>设置为<see langword="true"/>后自动进行一次发包
-        /// </summary>
-        internal virtual void OtherNetWorkSend(ModPacket netMessage) { }
+
         //不要在实例中调用这个，而是使用netWorkSend
         internal static void OtherNetWorkReceiveHander(BinaryReader reader) {
             NPC npc = Main.npc[reader.ReadInt32()];
             npc.CWR().NPCOverride.OtherNetWorkReceive(reader);
         }
+
+        internal void OtherNetWorkSendHander() {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            ModPacket netMessage = mod.GetPacket();
+            netMessage.Write((byte)CWRMessageType.NPCOverrideOtherAI);
+            netMessage.Write(npc.whoAmI);
+            OtherNetWorkSend(netMessage);
+        }
+
+        /// <summary>
+        /// 发送网络数据，同步额外的网络数据，重载编写时需要注意与<see cref="OtherNetWorkReceive"/>对应
+        /// ，将<see cref="netOtherWorkSend"/>设置为<see langword="true"/>后自动进行一次发包
+        /// </summary>
+        public virtual void OtherNetWorkSend(ModPacket netMessage) { }
+
         /// <summary>
         /// 接受网络数据，同步额外的网络数据，重载编写时需要注意与<see cref="OtherNetWorkSend"/>对应
         /// </summary>
-        internal virtual void OtherNetWorkReceive(BinaryReader reader) { }
+        public virtual void OtherNetWorkReceive(BinaryReader reader) { }
+
         /// <summary>
         /// 发送网络数据，同步<see cref="ai"/>的值，只会在服务端上运行
         /// </summary>
         internal void NetAISend() {
-            if (VaultUtils.isServer) {
-                var netMessage = mod.GetPacket();
-                netMessage.Write((byte)CWRMessageType.NPCOverrideAI);
-                netMessage.Write(npc.whoAmI);
-
-                NPCOverride pCOverride = npc.CWR().NPCOverride;
-                float[] ai = pCOverride.ai;
-
-                foreach (var aiValue in ai) {
-                    netMessage.Write(aiValue);
-                }
-
-                netMessage.Send();
+            if (!VaultUtils.isServer) {
+                return;
             }
+
+            var netMessage = mod.GetPacket();
+            netMessage.Write((byte)CWRMessageType.NPCOverrideAI);
+            netMessage.Write(npc.whoAmI);
+
+            NPCOverride pCOverride = npc.CWR().NPCOverride;
+            float[] ai = pCOverride.ai;
+
+            foreach (var aiValue in ai) {
+                netMessage.Write(aiValue);
+            }
+
+            netMessage.Send();
         }
         /// <summary>
         /// 发送网络数据，同步<see cref="ai"/>的值，只会在服务端上运行

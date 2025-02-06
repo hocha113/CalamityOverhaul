@@ -174,7 +174,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
             int type = npc.type;
             bool reset = cwrNPC.NPCOverride.AI();
-            cwrNPC.NPCOverride.OtherNetWorkSendHander();
+
+            cwrNPC.NPCOverride.DoNet();
+
             npc.type = type;
             if (!reset) {
                 return;
