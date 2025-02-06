@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "生物音素" + textElement3,
             "快乐肥宅橘九" + textElement3,
             "半生浮云半生闲" + textElement3,
-            "吐司" + textElement3,
+            "阿萨德沃荣托" + textElement3,
             "冰冷小龙" + textElement3,
             "心酱" + textElement3,
             "圣盗杰布微明" + textElement3,
@@ -259,6 +259,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "Fwoer'Vmoerd" + textElement3,
             "烂柯棋缘" + textElement3,
             "华屋丘墟" + textElement3,
+            "易燃易爆品daze" + textElement3,
         ];
         }
         private void ToMusicFunc() {
