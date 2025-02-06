@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Barinautical";
         public override int TargetID => ModContent.ItemType<Barinautical>();
         public override void SetRangedProperty() {
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ForcedConversionTargetAmmoFunc = () => Owner.IsWoodenAmmo(AmmoTypes);
             ToTargetAmmo = AmmoTypes = ModContent.ProjectileType<BoltArrow>();
             ISForcedConversionDrawAmmoInversion = true;
         }

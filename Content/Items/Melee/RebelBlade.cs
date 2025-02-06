@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Terraria;
@@ -39,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0;
 
         public override void HoldItem(Player player) {
-            if (Main.myPlayer != player.whoAmI || player.PressKey()) {
+            if (Main.myPlayer != player.whoAmI || player.PressKey() || !CWRServerConfig.Instance.WeaponHandheldDisplay) {
                 return;
             }
 

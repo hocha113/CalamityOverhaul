@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.ShadowFlameBow;
         public override void SetRangedProperty() {
             ShootSpanTypeValue = SpanTypesEnum.None;
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ForcedConversionTargetAmmoFunc = () => Owner.IsWoodenAmmo(AmmoTypes);
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ProjectileID.ShadowFlameArrow;
             BowstringData.DeductRectangle = new Rectangle(4, 8, 2, 24);

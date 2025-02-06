@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -16,16 +15,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 {
-    internal class LonginusHeld : ModProjectile
+    internal class LonginusHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Rogue/Longinus";
-        private Player Owner => Main.player[Projectile.owner];
-        private Vector2 toMou = Vector2.Zero;
-        private int Time {
-            get => (int)Projectile.ai[0];
-            set => Projectile.ai[0] = value;
-        }
-
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 46;
@@ -34,14 +26,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
             Projectile.DamageType = CWRLoad.RogueDamageClass;
             Projectile.penetrate = -1;
             Projectile.hide = true;
-        }
-
-        public override void SendExtraAI(BinaryWriter writer) {
-            writer.WriteVector2(toMou);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            toMou = reader.ReadVector2();
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -63,11 +47,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                 Charge();
             }
             NPC npc = Projectile.Center.FindClosestNPC(1900);
-            int slp = Time;
+            float slp = Projectile.ai[0];
             if (slp > 600)
                 slp = 600;
             if (npc != null) {
-                if (Time % 30 == 0) {
+                if (Projectile.ai[0] % 30 == 0) {
                     Vector2 vr = new Vector2(0, 13);
                     PRT_LonginusWave pulse = new PRT_LonginusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
                     PRTLoader.AddParticle(pulse);
@@ -82,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                     }
                 }
             }
-            Time++;
+            Projectile.ai[0]++;
         }
 
         public void Charge() {
@@ -111,13 +95,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         }
 
         public void StickToOwner() {
-            toMou = Owner.Center.To(Main.MouseWorld);
             Owner.heldProj = Projectile.whoAmI;
-            Projectile.rotation = toMou.ToRotation();
-            Owner.direction = Math.Sign(toMou.X);
+            Projectile.rotation = ToMouseA;
+            Owner.direction = Math.Sign(ToMouse.X);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + toMou.UnitVector() * 70;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + UnitToMouseV * 70;
             Projectile.timeLeft = 2;
         }
 

@@ -2,6 +2,7 @@
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.Tiles;
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void HoldItem(Player player) {
             if (player.GetProjectileHasNum(ModContent.ProjectileType<LonginusHeld>()) == 0
                 && player.GetProjectileHasNum(ModContent.ProjectileType<LonginusThrow>()) == 0
-                && Main.myPlayer == player.whoAmI) {
+                && Main.myPlayer == player.whoAmI && CWRServerConfig.Instance.WeaponHandheldDisplay) {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero
                     , ModContent.ProjectileType<LonginusHeld>(), 0, 0, player.whoAmI);
             }

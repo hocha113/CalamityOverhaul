@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.IceBow;
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ForcedConversionTargetAmmoFunc = () => Owner.IsWoodenAmmo(AmmoTypes);
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ProjectileID.FrostArrow;
             BowstringData.DeductRectangle = new Rectangle(2, 6, 2, 24);

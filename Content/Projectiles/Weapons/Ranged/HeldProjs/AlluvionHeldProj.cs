@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceX = 30;
             BowArrowDrawNum = 5;
             DrawArrowMode = -30;
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ForcedConversionTargetAmmoFunc = () => Owner.IsWoodenAmmo(AmmoTypes);
             ToTargetAmmo = ModContent.ProjectileType<CalamityMod.Projectiles.Ranged.Voidragon>();
         }
 

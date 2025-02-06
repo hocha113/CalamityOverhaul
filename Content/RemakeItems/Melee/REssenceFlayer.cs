@@ -62,7 +62,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (Projectile.timeLeft < 120) {
                 NPC target = Projectile.Center.FindClosestNPC(850, false, true, onHitNPCs);
                 if (target != null) {
-                    Projectile.ChasingBehavior(target.Center, 30f);
+                    if (Projectile.velocity.Length() < 6) {
+                        Projectile.velocity = Projectile.Center.To(target.Center).UnitVector() * 26;
+                    }
+                    Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.2f);
                     if (!Main.dedServ) {
                         LineParticle spark2 = new LineParticle(Projectile.Center + CWRUtils.randVr(Projectile.width / 2)
                             , -Projectile.velocity * 0.05f, false, 7, 1.7f, Color.AliceBlue);

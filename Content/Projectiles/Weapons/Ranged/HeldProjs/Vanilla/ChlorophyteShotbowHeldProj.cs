@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0;
             DrawCrossArrowNum = 3;
             IsCrossbow = true;
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ForcedConversionTargetAmmoFunc = () => Owner.IsWoodenAmmo(AmmoTypes);
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ProjectileID.ChlorophyteArrow;
         }
