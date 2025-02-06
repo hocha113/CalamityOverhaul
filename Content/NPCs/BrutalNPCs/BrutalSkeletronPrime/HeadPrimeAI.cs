@@ -398,7 +398,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     npc.TargetClosest();
                     SendExtraAI(npc);
-                    netAIWorkSend = true;
+                    NetAISend();
                 }
                 //设置为1，表明完成了首次初始化
                 npc.ai[0] = 1f;
@@ -561,7 +561,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         calNPC.newAI[0] = 0;
                         ai11++;
                         SendExtraAI(npc);
-                        netAIWorkSend = true;
+                        NetAISend();
                     }
                     npc.TargetClosest();
                     npc.netUpdate = true;
@@ -674,7 +674,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[1] != 2) {//白天狂暴时不用召唤双子
                     SpawnEye();
                 }
-                netAIWorkSend = true;
+                NetAISend();
             }
 
             int type = ProjectileID.RocketSkeleton;
@@ -748,7 +748,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                         ai4 = 0;
                         ai5++;
-                        netAIWorkSend = true;
+                        NetAISend();
                     }
 
                     if (ai5 > 3 || npc.ai[1] == 1) {
@@ -756,7 +756,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai8++;
-                        netAIWorkSend = true;
+                        NetAISend();
                     }
                     break;
                 case 1:
@@ -797,7 +797,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        netAIWorkSend = true;
+                        NetAISend();
                     }
 
                     ai4++;
@@ -810,7 +810,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             ai4 = 0;
                             ai5 = 0;
                             ai7 = 0;
-                            netAIWorkSend = true;
+                            NetAISend();
                             return false;
                         }
 
@@ -860,7 +860,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai4 = 0;
                         ai5 = 0;
                         ai7 = 0;
-                        netAIWorkSend = true;
+                        NetAISend();
                     }
 
                     break;
