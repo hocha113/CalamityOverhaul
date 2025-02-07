@@ -1,12 +1,10 @@
 ﻿using CalamityMod;
-using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
@@ -20,7 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
         public static Asset<Texture2D> effectAsset;
         private Trail Trail;
-        private const int MaxPos = 20;
         void ICWRLoader.LoadAsset() => effectAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak");
         void ICWRLoader.UnLoadData() => effectAsset = null;
         public override void SetDefaults() {
@@ -94,10 +91,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public float GetWidthFunc(float completionRatio) => Projectile.scale * 30f;
-
-        public Color GetColorFunc(Vector2 _) => Color.Gold * Projectile.Opacity;
-
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Projectile.oldPos.Length != 20) {
                 return;
@@ -110,7 +103,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     newPoss[i] = Projectile.Center + norlVer * 26;
                 }
             }
-            Trail ??= new Trail(Main.graphics.GraphicsDevice, 20, new EmptyMeshGenerator(), GetWidthFunc, GetColorFunc);
+            Trail ??= new Trail(newPoss, (float completionRatio) => Projectile.scale * 30f, (Vector2 _) => Color.Gold * Projectile.Opacity);
             Trail.TrailPositions = newPoss;
 
             Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;

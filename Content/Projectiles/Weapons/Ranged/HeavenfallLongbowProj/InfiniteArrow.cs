@@ -123,8 +123,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 return;
             }
 
-            Trail ??= new Trail(Main.graphics.GraphicsDevice, MaxPos, new EmptyMeshGenerator(), GetWidthFunc, GetColorFunc);
             Vector2[] newPoss = new Vector2[MaxPos];
+            Trail ??= new Trail(newPoss, GetWidthFunc, GetColorFunc);
             Vector2 norlVer = Projectile.velocity.UnitVector();
             for (int i = 0; i < MaxPos; i++) {
                 newPoss[i] = Projectile.Center - norlVer * (-10 + i) * 16;

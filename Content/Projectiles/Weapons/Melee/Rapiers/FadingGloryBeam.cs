@@ -1,10 +1,8 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -50,6 +48,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     Projectile.velocity *= 0.98f;
                 }
             }
+
+            if (Projectile.ai[1] <= 0 && Projectile.velocity.Length() > 0.2f) {
+                float localIdentityOffset = Projectile.identity * 0.1372f;
+                Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f
+                    , Color.Red, Color.DarkRed, Color.DarkRed, Color.OrangeRed, Color.IndianRed);
+                Color marginColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f
+                    , Color.DarkRed, Color.IndianRed, Color.OrangeRed, Color.IndianRed, Color.MediumVioletRed);
+                float sengs = MathHelper.Clamp(Projectile.ai[0] * 0.01f, 0, 1);
+                mainColor = Color.Lerp(Color.Red, mainColor, sengs);
+                marginColor = Color.Lerp(Color.Red, marginColor, sengs);
+
+                LineParticle spark = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1.7f, marginColor);
+                GeneralParticleHandler.SpawnParticle(spark);
+                LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1f, mainColor);
+                GeneralParticleHandler.SpawnParticle(spark2);
+            }
+
             Projectile.ai[0]++;
         }
 
@@ -102,31 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Projectile.Explode(explosionSound: SoundID.Item14 with { Pitch = 0.6f });
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 20f;
-
-        public Color PrimitiveColorFunction(float _) => Color.Red;
-
-        public void DrawTrild() {
-            float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Red, Color.DarkRed, Color.DarkRed, Color.OrangeRed, Color.IndianRed);
-            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.DarkRed, Color.IndianRed, Color.OrangeRed, Color.IndianRed, Color.MediumVioletRed);
-
-            mainColor = Color.Lerp(Color.Red, mainColor, 0.85f);
-            secondaryColor = Color.Lerp(Color.OrangeRed, secondaryColor, 0.85f);
-
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>(CWRConstant.Placeholder));
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
-        }
-
         public override bool PreDraw(ref Color color) {
-            if (Projectile.ai[1] <= 0) {
-                DrawTrild();
-            }
             SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Texture2D mainValue = Projectile.T2DValue();
             Vector2 drawOrigin = mainValue.Size() / 2;

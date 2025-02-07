@@ -40,16 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Main.projectile[ammo].MaxUpdates = 2;
                     Main.projectile[ammo].CWR().SpanTypes = (byte)SpanTypesEnum.DeadWing;
                 }
-                Projectile.ai[2]++;
-                if (Projectile.ai[2] > 5) {
-                    for (int i = 0; i < 3; i++) {
-                        Vector2 vr = (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2();
-                        int ammo = Projectile.NewProjectile(Source, Projectile.Center + vr * 150, vr * 15,
-                                ModContent.ProjectileType<DeadArrow>(), WeaponDamage, Projectile.knockBack, Projectile.owner);
-                        Main.projectile[ammo].scale = 1.5f;
-                    }
-                    Projectile.ai[2] = 0;
-                }
             }
         }
     }

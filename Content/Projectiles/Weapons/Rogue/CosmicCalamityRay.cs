@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
     {
         public override string Texture => CWRConstant.Placeholder;
         internal Vector2[] RayPoint;
-        internal int pointNum => 100;
+        internal const int pointNum = 100;
         public override bool ShouldUpdatePosition() => false;
 
         public override void SetDefaults() {
@@ -71,6 +71,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.damage = (int)(Projectile.damage * 0.98f);
             target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage /= 2f;
+            }
         }
 
         public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;

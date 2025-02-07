@@ -64,11 +64,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                     }
                 }
 
-                TrailByY ??= new Trail(Main.graphics.GraphicsDevice, RayPoint.Length, new EmptyMeshGenerator(), GetColorFunc, GetWeithFunc);
-                TrailByY.TrailPositions = RayPoint;
-
-                TrailByX ??= new Trail(Main.graphics.GraphicsDevice, RayPoint.Length, new EmptyMeshGenerator(), GetColorFunc, GetWeithFunc);
-                TrailByX.TrailPositions = RayPointByX;
+                TrailByY ??= new Trail(RayPoint, GetColorFunc, GetWeithFunc);
+                TrailByX ??= new Trail(RayPointByX, GetColorFunc, GetWeithFunc);
 
                 Projectile.ai[0] = 1;
             }

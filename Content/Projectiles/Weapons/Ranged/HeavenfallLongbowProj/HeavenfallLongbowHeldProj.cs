@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using static Terraria.ModLoader.ModContent;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
-
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
             if (Owner == null || Owner.HeldItem?.type != ItemType<HeavenfallLongbow>()) {
                 Projectile.Kill();
                 return;
@@ -109,8 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Color drawColor2 = VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 15 / 15f, HeavenfallLongbow.rainbowColors);
             if (HFBow.ChargeValue < 200)
                 drawColor2 = VaultUtils.MultiStepColorLerp(HFBow.ChargeValue / 200f, HeavenfallLongbow.rainbowColors);

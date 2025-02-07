@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
-
+            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
             if (Owner == null || Owner.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()) {
                 Projectile.Kill();
                 return;
@@ -90,7 +90,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void PostDraw(Color lightColor) {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture + "Glow");
             Main.EntitySpriteDraw(
                 mainValue,

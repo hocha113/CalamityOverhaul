@@ -360,11 +360,11 @@ namespace CalamityOverhaul.Content
                     if (player.Center.To(target.Center).LengthSquared() < 600 * 600
                         && projectile.type != types
                         && projectile.numHits == 0) {
-                        Vector2 vr = player.Center.To(Main.MouseWorld)
+                        Vector2 shootVer = player.Center.To(Main.MouseWorld)
                             .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
-                        Vector2 pos = player.Center + (vr * 10);
-                        Projectile.NewProjectileDirect(player.FromObjectGetParent(), pos, vr, ModContent.ProjectileType<DeadWave>(),
-                            projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
+                        SoundEngine.PlaySound(SoundID.Item117, player.Center);
+                        Projectile.NewProjectileDirect(player.FromObjectGetParent(), player.Center, shootVer, ModContent.ProjectileType<DeadWave>(),
+                            projectile.damage, projectile.knockBack, projectile.owner).rotation = shootVer.ToRotation();
                     }
 
                     break;

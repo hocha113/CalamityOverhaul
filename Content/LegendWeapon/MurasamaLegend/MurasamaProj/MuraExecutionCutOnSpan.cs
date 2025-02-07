@@ -1,14 +1,15 @@
-﻿using CalamityMod.Graphics.Primitives;
+﻿using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Graphics.Shaders;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    internal class MuraExecutionCutOnSpan : ModProjectile
+    internal class MuraExecutionCutOnSpan : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
         private List<Vector2> PosLists;
@@ -16,6 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private float maxOrbNinmsWeith;
         private bool onSpan = true;
         private bool onOrb = true;
+        private Trail Trail;
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 7000;
@@ -28,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.friendly = true;
             Projectile.MaxUpdates = 5;
             Projectile.timeLeft = 100 * Projectile.MaxUpdates;
-            maxOrbNinmsWeith = Main.rand.NextFloat(3, 53.3f);
+            maxOrbNinmsWeith = Main.rand.NextFloat(2, 6.3f);
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
@@ -52,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (Projectile.timeLeft > 25) {
                 //Projectile.ai[0] += 0.001f;
                 Projectile.localAI[0] += 0.001f;
-                orbNinmsWeith += 0.05f;
+                orbNinmsWeith += 0.02f;
                 if (orbNinmsWeith > maxOrbNinmsWeith) {
                     orbNinmsWeith = maxOrbNinmsWeith;
                 }
@@ -78,19 +80,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
         }
 
-        public Color PrimitiveColorFunction(float completionRatio) => Color.White;
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (PosLists == null) {
+                return;
+            }
 
-        public float PrimitiveWidthFunction(float completionRatio) => orbNinmsWeith;
+            Trail ??= new Trail(PosLists.ToArray(), (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
 
-        public override bool PreDraw(ref Color lightColor) {
-            if (PosLists == null)
-                return false;
+            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uGradient"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-
-            PrimitiveRenderer.RenderTrail(PosLists, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (_) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 18);
-            return false;
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 }
