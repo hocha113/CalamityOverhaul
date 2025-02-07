@@ -18,6 +18,7 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

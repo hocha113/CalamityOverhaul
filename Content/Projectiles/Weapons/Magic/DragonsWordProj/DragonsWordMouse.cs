@@ -1,6 +1,7 @@
 ﻿using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;

@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using static CalamityOverhaul.CWRUtils;
 using static CalamityOverhaul.CWRUtils.AnimationCurvePart;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {

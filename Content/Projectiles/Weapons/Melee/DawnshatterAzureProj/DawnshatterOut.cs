@@ -3,6 +3,7 @@ using CalamityMod.Particles;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;

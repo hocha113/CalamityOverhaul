@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Particles;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;

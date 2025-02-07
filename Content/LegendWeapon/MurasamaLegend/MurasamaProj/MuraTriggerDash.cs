@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -15,7 +16,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraTriggerDash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
-        protected Item murasama => Owner.GetItem();
         private Vector2 breakOutVector;
         private int Time;
         public override void SetStaticDefaults() {
@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (level >= 5) {
                 overValue = level * 0.2f;
             }
-            murasama.initialize();
-            return 2.2f + murasama.CWR().ai[0] * 0.2f + level * 0.15f + overValue;
+            Item.initialize();
+            return 2.2f + Item.CWR().ai[0] * 0.2f + level * 0.15f + overValue;
         }
 
         public override void AI() {
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.CWR().RisingDragonCharged = 0;
             }
 
-            if (murasama.type != ModContent.ItemType<Murasama>()) {
+            if (Item.type != ModContent.ItemType<Murasama>()) {
                 Projectile.Kill();
                 return;
             }
@@ -139,10 +139,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                         if (MurasamaOverride.NameIsVergil(Owner)) {
                             SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.3f }, Projectile.Center);
                         }
-                        murasama.initialize();
+                        Item.initialize();
 
-                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(murasama) * sengs);
-                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
+                        int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * sengs);
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
 
                         Projectile.Kill();
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !VaultUtils.isServer) {
                 if (DownLeft && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
-                    if (!MurasamaOverride.UnlockSkill1(murasama)) {//在击败初期Boss之前不能使用这个技能
+                    if (!MurasamaOverride.UnlockSkill1(Item)) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
 

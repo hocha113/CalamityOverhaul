@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 {

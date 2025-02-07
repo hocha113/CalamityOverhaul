@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 {

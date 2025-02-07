@@ -132,10 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Trail.TrailPositions = newPoss;
 
             Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-            Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);

@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Particles;
+using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -8,6 +8,7 @@ using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

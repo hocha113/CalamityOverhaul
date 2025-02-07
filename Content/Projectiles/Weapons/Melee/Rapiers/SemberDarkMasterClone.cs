@@ -9,21 +9,21 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class SemberDarkMasterClone : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Placeholder;
-        private Player player;
-        private Item item => Owner.GetItem();
+        private Player playerClone;
         private static Asset<Texture2D> swordAsset;
         void ICWRLoader.LoadAsset() => swordAsset = CWRUtils.GetT2DAsset("CalamityMod/Items/Weapons/Melee/TheDarkMaster");
         void ICWRLoader.UnLoadData() => swordAsset = null;
         public override void SetDefaults() {
             Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
-            if (player == null) {
-                player = new Player();
+            if (playerClone == null) {
+                playerClone = new Player();
             }
         }
         public override bool? CanDamage() => false;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
             Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3());
 
-            if (item.type != ModContent.ItemType<TheDarkMaster>()
+            if (Item.type != ModContent.ItemType<TheDarkMaster>()
                 || Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
                 || !Owner.active || Owner.CCed || Owner == null) {
                 if (Projectile.ai[0] == 1) {
@@ -82,40 +82,40 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (player == null) {
+            if (playerClone == null) {
                 return false;
             }
 
-            player.CopyVisuals(Owner);
+            playerClone.CopyVisuals(Owner);
 
-            player.hair = Owner.hair;
-            player.skinVariant = Owner.skinVariant;
-            player.skinColor = Color.Black;
-            player.shirtColor = Color.Black;
-            player.underShirtColor = Color.Black;
-            player.pantsColor = Color.Black;
-            player.shoeColor = Color.Black;
-            player.hairColor = Color.Black;
-            player.eyeColor = Color.Red;
+            playerClone.hair = Owner.hair;
+            playerClone.skinVariant = Owner.skinVariant;
+            playerClone.skinColor = Color.Black;
+            playerClone.shirtColor = Color.Black;
+            playerClone.underShirtColor = Color.Black;
+            playerClone.pantsColor = Color.Black;
+            playerClone.shoeColor = Color.Black;
+            playerClone.hairColor = Color.Black;
+            playerClone.eyeColor = Color.Red;
 
-            for (int i = 0; i < player.dye.Length; i++) {
-                if (player.dye[i].type != ItemID.ShadowDye) {
-                    player.dye[i].SetDefaults(ItemID.ShadowDye);
+            for (int i = 0; i < playerClone.dye.Length; i++) {
+                if (playerClone.dye[i].type != ItemID.ShadowDye) {
+                    playerClone.dye[i].SetDefaults(ItemID.ShadowDye);
                 }
             }
 
-            player.ResetEffects();
-            player.ResetVisibleAccessories();
-            player.DisplayDollUpdate();
-            player.UpdateSocialShadow();
-            player.UpdateDyes();
-            player.PlayerFrame();
+            playerClone.ResetEffects();
+            playerClone.ResetVisibleAccessories();
+            playerClone.DisplayDollUpdate();
+            playerClone.UpdateSocialShadow();
+            playerClone.UpdateDyes();
+            playerClone.PlayerFrame();
 
-            player.bodyFrame = Owner.bodyFrame;
-            player.legFrame = Owner.legFrame;
+            playerClone.bodyFrame = Owner.bodyFrame;
+            playerClone.legFrame = Owner.legFrame;
 
-            player.direction = Math.Sign(Projectile.DirectionTo(Main.MouseWorld).X);
-            Main.PlayerRenderer.DrawPlayer(Main.Camera, player, Projectile.position, 0f, player.fullRotationOrigin, 0f, 1f);
+            playerClone.direction = Math.Sign(Projectile.DirectionTo(Main.MouseWorld).X);
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, playerClone, Projectile.position, 0f, playerClone.fullRotationOrigin, 0f, 1f);
 
             if (CWRUtils.GetProjectileHasNum(ModContent.ProjectileType<TheDarkMasterRapier>(), Owner.whoAmI) > 0) {
                 Texture2D Sword = swordAsset.Value;

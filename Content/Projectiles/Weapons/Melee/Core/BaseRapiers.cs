@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.RemakeItems.Melee;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

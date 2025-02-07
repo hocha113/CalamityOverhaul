@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using static Terraria.ModLoader.ModContent;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {

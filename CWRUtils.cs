@@ -975,14 +975,6 @@ namespace CalamityOverhaul
             return combined;
         }
 
-        public static Matrix GetTransfromMatrix() {
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-            Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-            return world * view * projection;
-        }
-
         /// <summary>
         /// 生成一组不重复的随机数集合，数字的数量不能大于取值范围
         /// </summary>

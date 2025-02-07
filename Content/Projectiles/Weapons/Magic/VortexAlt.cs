@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

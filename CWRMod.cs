@@ -124,7 +124,7 @@ namespace CalamityOverhaul
                 setup.UnLoadData();
             }
 
-            emptyMod();
+            EmptyMod();
             LoadMods?.Clear();
             ILoaders?.Clear();
             ItemOverrideInstances?.Clear();
@@ -139,7 +139,7 @@ namespace CalamityOverhaul
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
 
-        private void emptyMod() {
+        private void EmptyMod() {
             musicMod = null;
             betterWaveSkipper = null;
             fargowiltasSouls = null;
@@ -159,7 +159,7 @@ namespace CalamityOverhaul
         }
 
         public void FindMod() {
-            emptyMod();
+            EmptyMod();
             ModLoader.TryGetMod("CalamityModMusic", out musicMod);
             ModLoader.TryGetMod("BetterWaveSkipper", out betterWaveSkipper);
             ModLoader.TryGetMod("FargowiltasSouls", out fargowiltasSouls);

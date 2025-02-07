@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {

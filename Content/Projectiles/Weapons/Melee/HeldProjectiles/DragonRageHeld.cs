@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {
             Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
 
-            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);
             effect.Parameters["gradientTexture"].SetValue(GradientTexture);
             //应用shader，并绘制顶点

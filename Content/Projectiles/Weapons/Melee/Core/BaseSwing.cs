@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
@@ -761,7 +762,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
             Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
 
-            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["drawTrailHighlight"].SetValue(drawTrailHighlight);
             effect.Parameters["obliqueSampling"].SetValue(ObliqueSampling);
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);
@@ -773,13 +774,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
                 Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
             }
-        }
-
-        public virtual Matrix GetTransfromMaxrix() {
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-            Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-            return world * view * projection;
         }
 
         public virtual float ControlTrailBottomWidth(float factor) {
