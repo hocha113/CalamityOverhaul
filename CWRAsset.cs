@@ -20,6 +20,9 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> GenericBarBack;
         public static Asset<Texture2D> GenericBarFront;
         public static Asset<Texture2D> MediumMist;
+        public static Asset<Texture2D> LightShot;
+        public static Asset<Texture2D> Airflow;
+        public static Asset<Texture2D> Extra_193;
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -34,6 +37,9 @@ namespace CalamityOverhaul
             GenericBarBack = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarBack");
             GenericBarFront = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarFront");
             MediumMist = CWRUtils.GetT2DAsset("CalamityMod/Particles/MediumMist");
+            LightShot = CWRUtils.GetT2DAsset(CWRConstant.Masking + "LightShot");
+            Airflow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Airflow");
+            Extra_193 = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_193");
             TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
         }
         void ICWRLoader.UnLoadData() {
@@ -50,6 +56,9 @@ namespace CalamityOverhaul
             GenericBarBack = null;
             GenericBarFront = null;
             MediumMist = null;
+            LightShot = null;
+            Airflow = null;
+            Extra_193 = null;
         }
     }
 }

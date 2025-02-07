@@ -1,23 +1,27 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
+using InnoVault.Trails;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.Graphics.Shaders;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 {
-    internal class Godslight : ModProjectile
+    internal class Godslight : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
         internal Vector2[] RayPoint;
+        internal Vector2[] RayPointByX;
         internal int pointNum => 100;
         internal Color[] colors;
+        private Trail TrailByY;
+        private Trail TrailByX;
         public override bool ShouldUpdatePosition() => false;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 8000;
         public override void SetDefaults() {
@@ -35,11 +39,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         public override bool PreAI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[0] == 0) {
-                colors = new Color[] { Color.Red, Color.Green, Color.OrangeRed };
+                colors = [Color.Red, Color.Green, Color.OrangeRed];
                 RayPoint = new Vector2[pointNum];
+                RayPointByX = new Vector2[pointNum];
+                Vector2 rotByY = Projectile.velocity.UnitVector();
+                Vector2 rotByX = rotByY.RotatedBy(MathHelper.PiOver2);
+
                 for (int i = 0; i < pointNum; i++) {
-                    RayPoint[i] = Projectile.velocity.ToRotation().ToRotationVector2() * (-pointNum * 30 + 60 * i) + Projectile.Center;
+                    RayPoint[i] = rotByY * (-pointNum * 30 + 60 * i) + Projectile.Center;
                 }
+                for (int i = 0; i < pointNum; i++) {
+                    RayPointByX[i] = rotByX * (-pointNum * 30 + 60 * i) + Projectile.Center;
+                }
+
                 for (int i = 0; i < 4; i++) {
                     foreach (Vector2 pos in RayPoint) {
                         Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
@@ -51,12 +63,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                         PRTLoader.AddParticle(light);
                     }
                 }
+
+                TrailByY ??= new Trail(Main.graphics.GraphicsDevice, RayPoint.Length, new EmptyMeshGenerator(), GetColorFunc, GetWeithFunc);
+                TrailByY.TrailPositions = RayPoint;
+
+                TrailByX ??= new Trail(Main.graphics.GraphicsDevice, RayPoint.Length, new EmptyMeshGenerator(), GetColorFunc, GetWeithFunc);
+                TrailByX.TrailPositions = RayPointByX;
+
                 Projectile.ai[0] = 1;
             }
             if (Projectile.timeLeft > 60) {
                 Projectile.scale += 0.5f;
-                if (Projectile.scale > 6)
-                    Projectile.scale = 6;
+                if (Projectile.scale > 9)
+                    Projectile.scale = 9;
             }
             if (Projectile.timeLeft < 20) {
                 Projectile.scale -= 1f;
@@ -93,23 +112,36 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 
         public override void OnKill(int timeLeft) => SpanDeadLightPenms();
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * Projectile.width * Projectile.ai[1];
+        public float GetColorFunc(float sengs) => Projectile.scale * Projectile.width * Projectile.ai[1];
 
-        public Color PrimitiveColorFunction(float completionRatio) {
-            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
+        public Color GetWeithFunc(Vector2 sengs) {
+            float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + sengs.X * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
             Color color = colors != null ? VaultUtils.MultiStepColorLerp(colorInterpolant, colors) : Color.White;
             return color;
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            if (RayPoint != null) {
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
-                GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-                PrimitiveRenderer.RenderTrail(RayPoint, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (TrailByY == null || TrailByX == null) {
+                return;
             }
-            return false;
+
+            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DragonRage_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            TrailByY?.DrawTrail(effect);
+            TrailByX?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 }

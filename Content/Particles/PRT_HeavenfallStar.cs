@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Particles
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }
-        public override string Texture => "CalamityMod/Projectiles/StarProj";
+        public override string Texture => CWRConstant.Masking + "StarTexture_White";
 
         public PRT_HeavenfallStar(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
+            Vector2 scale = new Vector2(0.2f, 1.6f) * Scale;
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
 
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color

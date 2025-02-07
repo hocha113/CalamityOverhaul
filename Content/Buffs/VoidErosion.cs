@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Buffs
                 float rot1 = MathHelper.PiOver2 * i;
                 Vector2 vr = rot1.ToRotationVector2();
                 for (int j = 0; j < 3; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(nPC.Center + offset
+                    BasePRT spark = new PRT_Spark(nPC.Center + offset
                         , vr * (0.1f + j * 0.1f), false, 3, 0.8f, Color.CadetBlue);
                     PRTLoader.AddParticle(spark);
                 }

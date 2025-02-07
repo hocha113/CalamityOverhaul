@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Vector2 spanPos = Projectile.Hitbox.TopLeft();
                 spanPos.X += Main.rand.Next(Projectile.Hitbox.Width);
                 spanPos.Y += Main.rand.Next(Projectile.Hitbox.Height);
-                RBalefulHarvester.SpanDust(spanPos, 6, 0.3f, 0.5f);
+                RBalefulHarvester.SpanDust(spanPos, 6, 0.2f, 0.4f);
             }
         }
 

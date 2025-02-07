@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                     float rot = MathHelper.PiOver2 * i;
                     Vector2 vr = rot.ToRotationVector2() * 10;
                     for (int j = 0; j < 76; j++) {
-                        PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vr * (0.3f + j * 0.1f), false, 37, Main.rand.Next(3, 17), Color.Red);
+                        PRT_Spark spark = new PRT_Spark(Projectile.Center, vr * (0.3f + j * 0.1f), false, 37, Main.rand.Next(3, 17), Color.Red);
                         PRTLoader.AddParticle(spark);
                     }
                 }

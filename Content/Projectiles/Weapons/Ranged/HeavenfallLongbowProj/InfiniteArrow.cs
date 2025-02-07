@@ -1,28 +1,25 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
-using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Graphics.Shaders;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {
-    internal class InfiniteArrow : ModProjectile
+    internal class InfiniteArrow : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
-        private Color chromaColor => VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 45 / 45f, HeavenfallLongbow.rainbowColors);
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
-        }
-
+        private Color ChromaColor => VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 45 / 45f, HeavenfallLongbow.rainbowColors);
+        private Trail Trail;
+        private const int MaxPos = 50;
         public override void SetDefaults() {
             Projectile.height = 54;
             Projectile.width = 54;
@@ -40,15 +37,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
 
-            Lighting.AddLight(Projectile.Center, chromaColor.ToVector3() * 1.5f);
+            Lighting.AddLight(Projectile.Center, ChromaColor.ToVector3() * 1.5f);
             Projectile.velocity += (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 0.1f;
             if (Projectile.ai[0] == 0) {
                 Projectile.ai[1] = Main.rand.Next(30);
             }
             if (Projectile.ai[0] > 0 && !VaultUtils.isServer) {
-                Color outerSparkColor = chromaColor;
+                Color outerSparkColor = ChromaColor;
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
-                float outerSparkScale = 3.2f + scaleBoost;
+                float outerSparkScale = 1.2f + scaleBoost;
                 PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
                 PRTLoader.AddParticle(spark);
 
@@ -59,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
                 //生成彩色的星光粒子
                 if (Main.rand.NextBool(2))
-                    SpanStarPrt(chromaColor);
+                    SpanStarPrt(ChromaColor);
             }
 
             if (Projectile.ai[0] < 3) {
@@ -117,27 +114,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Projectile.Explode(spanSound: false);
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 30f;
+        public float GetWidthFunc(float sengs) => Projectile.scale * 130f;
 
-        public Color PrimitiveColorFunction(float _) => Color.AliceBlue * Projectile.Opacity;
+        public Color GetColorFunc(Vector2 _) => ChromaColor * Projectile.Opacity;
 
-        public override bool PreDraw(ref Color lightColor) {
-            float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, HeavenfallLongbow.rainbowColors);
-            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, HeavenfallLongbow.rainbowColors);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Projectile.ai[0] < 13) {
+                return;
+            }
 
-            mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
-            secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
+            Trail ??= new Trail(Main.graphics.GraphicsDevice, MaxPos, new EmptyMeshGenerator(), GetWidthFunc, GetColorFunc);
+            Vector2[] newPoss = new Vector2[MaxPos];
+            Vector2 norlVer = Projectile.velocity.UnitVector();
+            for (int i = 0; i < MaxPos; i++) {
+                newPoss[i] = Projectile.Center - norlVer * (-10 + i) * 16;
+            }
+            Trail.TrailPositions = newPoss;
 
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
+            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DarklightGreatsword_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
-            return false;
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 }
