@@ -1,28 +1,28 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class BlazingFireball : ModProjectile, ICWRLoader
+    internal class BlazingFireball : ModProjectile, ICWRLoader, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
         public static Asset<Texture2D> effectAsset;
+        private Trail Trail;
+        private const int MaxPos = 20;
         void ICWRLoader.LoadAsset() => effectAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak");
         void ICWRLoader.UnLoadData() => effectAsset = null;
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-        }
-
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.MaxUpdates = 2;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Type] = 20;
         }
 
         public override void AI() {
@@ -92,27 +94,41 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 30f;
+        public float GetWidthFunc(float completionRatio) => Projectile.scale * 30f;
 
-        public Color PrimitiveColorFunction(float _) => Color.Gold * Projectile.Opacity;
+        public Color GetColorFunc(Vector2 _) => Color.Gold * Projectile.Opacity;
 
-        public override bool PreDraw(ref Color lightColor) {
-            float localIdentityOffset = Projectile.identity * 0.1372f;
-            Color mainColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Gold, Color.White, Color.Goldenrod, Color.DarkGoldenrod, Color.Gold);
-            Color secondaryColor = VaultUtils.MultiStepColorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.Gold, Color.White, Color.Goldenrod, Color.DarkGoldenrod, Color.Gold);
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Projectile.oldPos.Length != 20) {
+                return;
+            }
+            Vector2[] newPoss = new Vector2[Projectile.oldPos.Length];
+            Vector2 norlVer = Projectile.velocity.UnitVector();
+            for (int i = 0; i < newPoss.Length; i++) {
+                newPoss[i] = Projectile.oldPos[i] + Projectile.Size / 2 + norlVer * 26;
+                if (newPoss[i] == Vector2.Zero || newPoss[i] == default || newPoss[i].DistanceSQ(Projectile.Center) > 111180) {
+                    newPoss[i] = Projectile.Center + norlVer * 26;
+                }
+            }
+            Trail ??= new Trail(Main.graphics.GraphicsDevice, 20, new EmptyMeshGenerator(), GetWidthFunc, GetColorFunc);
+            Trail.TrailPositions = newPoss;
 
-            mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
-            secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
+            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRAsset.LightShotAlt.Value);
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "AegisBlade_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetMiscShaderAsset_1(effectAsset);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            //非常好的改动，PrimitiveTrail的绘制非常烦杂，使用这种形式会是一个绝佳的选择
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size / 2f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
-            return true;
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> GenericBarFront;
         public static Asset<Texture2D> MediumMist;
         public static Asset<Texture2D> LightShot;
+        public static Asset<Texture2D> LightShotAlt;
         public static Asset<Texture2D> Airflow;
         public static Asset<Texture2D> Extra_193;
         void ICWRLoader.LoadAsset() {
@@ -38,6 +39,7 @@ namespace CalamityOverhaul
             GenericBarFront = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarFront");
             MediumMist = CWRUtils.GetT2DAsset("CalamityMod/Particles/MediumMist");
             LightShot = CWRUtils.GetT2DAsset(CWRConstant.Masking + "LightShot");
+            LightShotAlt = CWRUtils.GetT2DAsset(CWRConstant.Masking + "LightShotAlt");
             Airflow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Airflow");
             Extra_193 = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_193");
             TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");

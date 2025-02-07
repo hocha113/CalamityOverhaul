@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
+﻿using CalamityMod.Events;
 using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
