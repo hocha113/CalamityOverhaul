@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Projectile.timeLeft < 200) {
                 Projectile.alpha -= 1;
-            }  
+            }
             if (Projectile.alpha <= 0) {
                 Projectile.Kill();
             }

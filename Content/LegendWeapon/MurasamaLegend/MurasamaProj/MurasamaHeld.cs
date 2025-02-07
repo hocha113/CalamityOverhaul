@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.UIHandles;

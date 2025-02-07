@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         private void ManageProjectileBehavior() {
             NPC target = Projectile.Center.ClosestNPCAt(SubsumingVortex.SmallVortexTargetRange - 100f);
-            if (target == null || HasBeenReleased || Time >= SubsumingVortex.LargeVortexChargeupTime 
+            if (target == null || HasBeenReleased || Time >= SubsumingVortex.LargeVortexChargeupTime
                 || Time % SubsumingVortex.VortexReleaseRate != SubsumingVortex.VortexReleaseRate - 1) {
                 return;
             }

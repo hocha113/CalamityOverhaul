@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

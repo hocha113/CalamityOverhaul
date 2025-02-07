@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

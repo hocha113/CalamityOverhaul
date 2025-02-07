@@ -9,7 +9,6 @@ using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;

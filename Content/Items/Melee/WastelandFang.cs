@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Projectiles.Boss;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

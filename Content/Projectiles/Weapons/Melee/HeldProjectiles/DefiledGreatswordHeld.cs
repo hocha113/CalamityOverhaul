@@ -1,11 +1,11 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Melee;
+using InnoVault.GameContent.BaseEntity;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

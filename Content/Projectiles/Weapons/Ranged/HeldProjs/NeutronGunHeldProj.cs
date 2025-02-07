@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;

@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;

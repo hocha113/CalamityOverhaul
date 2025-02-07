@@ -1,10 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Rogue;
-using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ModLoader;
 

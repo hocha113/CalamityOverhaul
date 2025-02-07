@@ -3,13 +3,13 @@ using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 {

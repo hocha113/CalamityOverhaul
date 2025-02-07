@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Terraria;
 using Terraria.Audio;

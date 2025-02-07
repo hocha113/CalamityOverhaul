@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;

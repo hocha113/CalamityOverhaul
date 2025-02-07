@@ -2,12 +2,10 @@
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Mono.Cecil;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {

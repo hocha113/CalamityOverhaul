@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons;
+using InnoVault.GameContent.BaseEntity;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -9,7 +9,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.RangedModify.Core
 {

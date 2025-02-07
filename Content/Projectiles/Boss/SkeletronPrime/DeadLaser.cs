@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Events;
-using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
@@ -10,7 +9,6 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -82,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 newPoss[i] = Projectile.Center + norlVer * i * 10 - norlVer * 200;
             }
             Trail.TrailPositions = newPoss;
-            
+
             Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);

@@ -2,13 +2,13 @@
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using InnoVault.GameContent.BaseEntity;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 {

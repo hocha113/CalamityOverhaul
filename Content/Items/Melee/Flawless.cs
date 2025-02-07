@@ -1,16 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
-
-namespace CalamityOverhaul.Content.Items.Melee
+﻿namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
     /// 化境

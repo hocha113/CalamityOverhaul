@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.velocity.Y += acceleration;
                 if (npc.velocity.Y < -topVelocity) {
                     npc.velocity.Y = -topVelocity;
-                }  
+                }
             }
         }
 
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.velocity.X += acceleration * factor;
                 if (npc.velocity.X < -topVelocity) {
                     npc.velocity.X = -topVelocity;
-                }  
+                }
             }
         }
 
