@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
     {
         public override int TargetID => ModContent.ItemType<DevourerofGodsBag>();
         public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ModContent.ItemType<Ataraxia>(), 4);
-            itemLoot.Add(ModContent.ItemType<Nadir>(), 4);
+            //itemLoot.Add(ModContent.ItemType<Ataraxia>(), 4);
+            //itemLoot.Add(ModContent.ItemType<Nadir>(), 4);
         }
     }
 }

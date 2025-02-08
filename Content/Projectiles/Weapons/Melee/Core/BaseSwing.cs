@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         protected float inWormBodysDamageFaul = 0.85f;
         /// <summary>
+        /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
+        /// </summary>
+        public bool GlobalItemBehavior = true;
+        /// <summary>
         /// 刀刃是否应该受近战缩放影响
         /// </summary>
         public bool AffectedMeleeSize = true;
@@ -603,8 +607,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 SwingAI();
                 if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
                     Shoot();
-                    foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                        g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootID), ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack);
+                    if (GlobalItemBehavior) {
+                        foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                            g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootID), ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack);
+                        }
                     }
                 }
                 if (canDrawSlashTrail) {

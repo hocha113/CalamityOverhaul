@@ -9,9 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAtaraxia : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Ataraxia>();
-        public override void SetDefaults(Item item) {
-            item.damage = 405;
-            item.SetKnifeHeld<AtaraxiaHeld>();
-        }
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<AtaraxiaHeld>();
     }
 }

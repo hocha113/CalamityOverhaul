@@ -178,19 +178,13 @@ namespace CalamityOverhaul.Content
                     recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
                 }
             }
-            //修改禅心剑的合成
-            {
-                if (recipe.HasResult(ItemType<Ataraxia>())) {
-                    recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                }
-            }
-            //修改天底的合成
-            {
-                if (recipe.HasResult(ItemType<Nadir>())) {
-                    recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                    recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
-                }
-            }
+            ////修改天底的合成
+            //{
+            //    if (recipe.HasResult(ItemType<Nadir>())) {
+            //        recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+            //        recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+            //    }
+            //}
             //修改天顶剑的合成
             {
                 if (recipe.HasResult(ItemID.Zenith)) {
