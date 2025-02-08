@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
@@ -8,6 +9,7 @@ using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -22,11 +24,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     /// <summary>
     /// 升龙斩的爆发弹幕刀刃效果
     /// </summary>
-    internal class MuraBreakerSlash : ModProjectile
+    internal class MuraBreakerSlash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MuraBreakerSlash";
-        private Player Owner => Main.player[Projectile.owner];
-        private Item murasama => Owner.GetItem();
         private List<NPC> onHitNpcs = [];
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
@@ -43,17 +43,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
-        private int level => InWorldBossPhase.Instance.Mura_Level();
-
-        public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
+        private int Level => MurasamaOverride.GetLevel(Item);
 
         public override void AI() {
+            CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
             if (Projectile.ai[0] == 0) {
-                Projectile.scale = 0.5f + level * 0.0f;
+                Projectile.scale = 0.5f + Level * 0.0f;
                 Projectile.scale *= MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner);
             }
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
-            Projectile.scale += 0.05f + level * 0.005f;
+            Projectile.scale += 0.05f + Level * 0.005f;
             Projectile.position += Owner.velocity;
             Projectile.rotation = Projectile.velocity.ToRotation();
             Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
@@ -61,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         internal static void StrikeToFly(Vector2 velocity, NPC npc, Player owner, int level) {
-            Vector2 flyVr = new Vector2(velocity.X, -16 + InWorldBossPhase.Instance.Mura_Level() * 0.3f);
+            Vector2 flyVr = new Vector2(velocity.X, -16 + level * 0.3f);
             float modef = npc.Center.To(owner.Center).Length() / (300 + level * 30);
             if (modef > 1) {
                 modef = 1f;
@@ -219,13 +218,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
 
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
-                if (murasama.CWR().ai[0] == 10 && MurasamaOverride.UnlockSkill3(murasama)) {
+                if (Item.CWR().ai[0] == 10 && MurasamaOverride.UnlockSkill3(Item)) {
                     SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with { Volume = 0.7f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
-                        int maxSpanNum = 13 + level;
+                        int maxSpanNum = 13 + Level;
                         for (int i = 0; i < maxSpanNum; i++) {
                             Vector2 spanPos = Projectile.Center + CWRUtils.randVr(1380, 2200);
-                            Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + level * 12)).UnitVector() * 12;
+                            Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + Level * 12)).UnitVector() * 12;
                             Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
 
@@ -233,11 +232,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Vector2.Zero,
                             ModContent.ProjectileType<EndSkillEffectStart>(), (int)(Projectile.damage * 0.7f), 0, Owner.whoAmI, 0, Owner.Center.X, Owner.Center.Y);
 
-                        murasama.CWR().ai[0] = 0;//清零充能
+                        Item.CWR().ai[0] = 0;//清零充能
                         CombatText.NewText(target.Hitbox, Color.Gold, "Finishing Blow!!!", true);
                     }
 
-                    CombatText.NewText(target.Hitbox, Main.rand.NextBool(3) ? Color.Red : Color.IndianRed, $"{murasama.CWR().ai[0]}!", true);
+                    CombatText.NewText(target.Hitbox, Main.rand.NextBool(3) ? Color.Red : Color.IndianRed, $"{Item.CWR().ai[0]}!", true);
 
                     if (CWRServerConfig.Instance.ScreenVibration) {
                         PunchCameraModifier modifier2 = new PunchCameraModifier(Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 10f, 30f, 20, 1000f, FullName);
@@ -252,22 +251,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     Owner.velocity += ver * 10;
 
                     //进行武器充能的操作
-                    murasama.initialize();
-                    murasama.CWR().ai[0]++;
-                    if (murasama.CWR().ai[0] > 10) {
-                        murasama.CWR().ai[0] = 10;
+                    Item.initialize();
+                    Item.CWR().ai[0]++;
+                    if (Item.CWR().ai[0] > 10) {
+                        Item.CWR().ai[0] = 10;
                     }
                 }
             }
 
             if (!onHitNpcs.Contains(target)) {
-                StrikeToFly(Projectile.velocity, target, Owner, level);
+                StrikeToFly(Projectile.velocity, target, Owner, Level);
                 onHitNpcs.Add(target);
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            int level = InWorldBossPhase.Instance.Mura_Level();
+            int level = MurasamaOverride.GetLevel(Item);
             if (target.type == ModContent.NPCType<Crabulon>() || target.type == ModContent.NPCType<CrabShroom>()) {
                 modifiers.FinalDamage *= 1.5f;
             }

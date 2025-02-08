@@ -2,8 +2,8 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

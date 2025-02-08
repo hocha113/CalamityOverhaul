@@ -4,8 +4,8 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => TooltipHandler.SetTooltip(item, ref tooltips);
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
-            => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage(item), GetStartDamage, ref damage);
+            => DataHandler.DamageModify(item, player, ref damage);
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
             => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback(item), GetStartKnockback, ref knockback);

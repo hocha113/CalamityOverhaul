@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 return;
             }
 
-            //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的台词选择
+            //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的选择
             do {
                 if (!NPC.downedMechBoss1) {//毁灭者
                     newContent = MuraText.GetTextValue("Subtest_Text1");

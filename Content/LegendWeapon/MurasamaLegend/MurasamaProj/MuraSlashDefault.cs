@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             if (target.boss) {
-                float sengsValue = 0.5f + InWorldBossPhase.Instance.Mura_Level() * 0.03f;
+                float sengsValue = 0.5f + MurasamaOverride.GetLevel(Item) * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
         }

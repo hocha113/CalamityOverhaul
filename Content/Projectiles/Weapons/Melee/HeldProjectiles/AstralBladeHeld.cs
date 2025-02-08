@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<AstralBall>()
-                , (int)(Projectile.damage * 0.55f), Projectile.knockBack, Owner.whoAmI);
+                , Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override bool PreInOwnerUpdate() {

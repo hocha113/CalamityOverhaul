@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (target.IsWormBody()) {
                 modifiers.FinalDamage /= 2;
             }
-            if (target.type == CWRLoad.DevourerofGodsHead) {
+            if (target.type == CWRLoad.DevourerofGodsHead || CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.FinalDamage /= 2;
             }
         }
