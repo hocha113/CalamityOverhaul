@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
@@ -12,10 +13,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         public override int TargetID => NPCID.TheDestroyer;
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
+        private static int iconIndex;
         private int frame;
         private int glowFrame;
         private bool openMouth;
         private int dontOpenMouthTime;
+        void ICWRLoader.LoadData() {
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
+            iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
+        }
+
         void ICWRLoader.LoadAsset() {
             Head = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head");
             Head_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head_Glow");
@@ -24,6 +31,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Head = null;
             Head_Glow = null;
         }
+
+        public override void BossHeadSlot(ref int index) {
+            if (!HeadPrimeAI.DontReform()) {
+                index = iconIndex;
+            }
+        }
+
+        public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
 
         public override bool AI() {
             CWRUtils.ClockFrame(ref glowFrame, 5, 3);

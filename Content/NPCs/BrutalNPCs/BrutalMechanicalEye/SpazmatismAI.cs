@@ -28,6 +28,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         internal static Asset<Texture2D> SpazmatismAltAsset;
         internal static Asset<Texture2D> RetinazerAsset;
         internal static Asset<Texture2D> RetinazerAltAsset;
+        private static int spazmatismIconIndex;
+        private static int retinazerIconIndex;
+        private static int spazmatismAltIconIndex;
+        private static int retinazerAltIconIndex;
+        void ICWRLoader.LoadData() {
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/Spazmatism_Head", -1);
+            spazmatismIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/Spazmatism_Head");
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/Retinazer_Head", -1);
+            retinazerIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/Retinazer_Head");
+
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/SpazmatismAlt_Head", -1);
+            spazmatismAltIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/SpazmatismAlt_Head");
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/RetinazerAlt_Head", -1);
+            retinazerAltIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/RetinazerAlt_Head");
+        }
         void ICWRLoader.LoadAsset() {
             SpazmatismAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Spazmatism");
             SpazmatismAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/SpazmatismAlt");
@@ -40,6 +55,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             RetinazerAsset = null;
             RetinazerAltAsset = null;
         }
+
+        public override void BossHeadSlot(ref int index) {
+            if (HeadPrimeAI.DontReform()) {
+                return;
+            }
+            if (npc.type == NPCID.Spazmatism) {
+                index = IsSecondPhase() ? spazmatismAltIconIndex : spazmatismIconIndex;
+            }
+            else {
+                index = IsSecondPhase() ? retinazerAltIconIndex : retinazerIconIndex;
+            }
+        }
+
         public override void SetProperty() {
             npc.realLife = -1;
 

@@ -11,6 +11,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -71,7 +72,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPSAWGlow;
         internal static Asset<Texture2D> BSPRAMGlow;
         internal static Asset<Texture2D> BSPRAM_ForearmGlow;
+        private static int iconIndex;
         #endregion
+
+        void ICWRLoader.LoadData() {
+            string path = CWRConstant.NPC + "BSP/";
+            CWRMod.Instance.AddBossHeadTexture(path + "Skeletron_Head", -1);
+            iconIndex = ModContent.GetModBossHeadSlot(path + "Skeletron_Head");
+        }
 
         void ICWRLoader.LoadAsset() {
             string path = CWRConstant.NPC + "BSP/";
@@ -108,6 +116,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = null;
             BSPRAM_ForearmGlow = null;
             canLoaderAssetZunkenUp = false;
+        }
+
+        public override void BossHeadSlot(ref int index) {
+            if (!DontReform()) {
+                index = iconIndex;
+            }
         }
 
         public override bool CanLoad() => true;

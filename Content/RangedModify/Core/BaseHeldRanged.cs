@@ -194,6 +194,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         private bool _old_safeMouseInterfaceValue;
         public bool SafeMouseInterfaceValue => _safeMouseInterfaceValue;
         /// <summary>
+        /// 重写后用于光效遮罩的绘制
+        /// </summary>
+        public virtual string GlowTexPath => "";
+        /// <summary>
         /// 自定义本地化键
         /// </summary>
         public override LocalizedText DisplayName {

@@ -29,19 +29,16 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static MethodInfo onPreDraw_Method;
         public static MethodInfo onPostDraw_Method;
         public static MethodInfo onCheckDead_Method;
-        public static List<NPCOverride> NPCSets { get; private set; }
+        internal static List<NPCCustomizer> NPCCustomizers { get; private set; } = [];
+        public static List<NPCOverride> NPCOverrides { get; private set; } = [];
+        public static Dictionary<int, NPCOverride> IDToNPCSetDic { get; private set; } = [];
 
         private void LoadNPCSets() {
-            NPCSets = [];
-            foreach (Type type in VaultUtils.GetSubclassTypeList(typeof(NPCOverride))) {
-                if (type != typeof(NPCOverride)) {
-                    object obj = Activator.CreateInstance(type);
-                    if (obj is NPCOverride inds) {
-                        if (inds.CanLoad() && CWRServerConfig.Instance.BiologyOverhaul) {//前提是开启了生物修改
-                            NPCSets.Add(inds);
-                        }
-                    }
-                }
+            NPCCustomizers = VaultUtils.GetSubclassInstances<NPCCustomizer>();
+            NPCOverrides = VaultUtils.GetSubclassInstances<NPCOverride>();
+            IDToNPCSetDic = [];
+            foreach (var npcOverh in NPCOverrides) {
+                IDToNPCSetDic.Add(npcOverh.TargetID, npcOverh);
             }
         }
 
@@ -130,7 +127,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
             onPreDraw_Method = null;
             onPostDraw_Method = null;
             onCheckDead_Method = null;
-            NPCSets?.Clear();
+            NPCCustomizers?.Clear();
+            NPCOverrides?.Clear();
+            IDToNPCSetDic?.Clear();
         }
 
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
@@ -210,7 +209,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public void OnHitByProjectileHook(On_OnHitByProjectileDelegate orig, NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone) {
-            foreach (NPCCustomizer inds in CWRMod.NPCCustomizerInstances) {
+            foreach (NPCCustomizer inds in NPCCustomizers) {
                 bool? shouldOverride = null;
                 if (inds.On_OnHitByProjectile_IfSpan(projectile)) {
                     shouldOverride = inds.On_OnHitByProjectile(npc, projectile, hit, damageDone);
@@ -229,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public void ModifyIncomingHitHook(On_ModifyIncomingHitDelegate orig, NPC npc, ref NPC.HitModifiers modifiers) {
-            foreach (NPCCustomizer inds in CWRMod.NPCCustomizerInstances) {
+            foreach (NPCCustomizer inds in NPCCustomizers) {
                 bool? shouldOverride = inds.On_ModifyIncomingHit(npc, ref modifiers);
                 if (shouldOverride.HasValue) {
                     if (shouldOverride.Value) {

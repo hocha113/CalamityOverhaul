@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public static void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
             if (Main.player[projectile.owner].CWR().IsJusticeUnveiled && !Main.zenithWorld) {
-                modifiers.CritDamage *= 0;//制造暴击伤害缩放
+                modifiers.CritDamage *= 0.5f;//制造暴击伤害缩放
             }
         }
 

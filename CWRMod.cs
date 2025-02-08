@@ -28,7 +28,6 @@ namespace CalamityOverhaul
         internal static List<Mod> LoadMods { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
         internal static List<ItemOverride> ItemOverrideInstances { get; private set; } = [];
-        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
         internal static Dictionary<int, ItemOverride> ItemIDToOverrideDic { get; private set; } = [];
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
@@ -81,10 +80,6 @@ namespace CalamityOverhaul
             }
 
             {
-                NPCCustomizerInstances = VaultUtils.GetSubclassInstances<NPCCustomizer>();
-            }
-
-            {
                 GlobalHookList<GlobalItem> getItemLoaderHookTargetValue(string key)
                     => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
                 CWR_InItemLoader_Set_Shoot_Hook = getItemLoaderHookTargetValue("HookShoot");
@@ -129,7 +124,6 @@ namespace CalamityOverhaul
             ILoaders?.Clear();
             ItemOverrideInstances?.Clear();
             ItemIDToOverrideDic?.Clear();
-            NPCCustomizerInstances?.Clear();
             CWR_InItemLoader_Set_Shoot_Hook = null;
             CWR_InItemLoader_Set_CanUse_Hook = null;
             CWR_InItemLoader_Set_UseItem_Hook = null;

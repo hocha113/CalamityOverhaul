@@ -14,6 +14,7 @@ using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Painting;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -194,6 +195,10 @@ namespace CalamityOverhaul.Content
                 }
             }
         }
+
+        public override void BossHeadSlot(NPC npc, ref int index) => NPCOverride.BossHeadSlot(ref index);
+
+        public override void BossHeadRotation(NPC npc, ref float rotation) => NPCOverride.BossHeadRotation(ref rotation);
 
         public override bool PreAI(NPC npc) {
             UpdateOverBeatBack(npc);

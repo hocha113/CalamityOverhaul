@@ -171,6 +171,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool IsHeldSwingDontStopOrigShoot;
         /// <summary>
+        /// 是否是死亡模式专属物品
+        /// </summary>
+        public bool DeathModeItem;
+        /// <summary>
         /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
         public LegendData LegendData;
@@ -487,6 +491,12 @@ namespace CalamityOverhaul.Content
             if (inRItemIndsDict) {
                 string path = $"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip";
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText(path));
+            }
+
+            if (item.CWR().DeathModeItem) {
+                var line = new TooltipLine(CWRMod.Instance, "DeathModeItem", $"--{CWRLocText.Instance.DeathModeItem.Value}--");
+                line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f, Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
+                tooltips.Add(line);
             }
         }
 

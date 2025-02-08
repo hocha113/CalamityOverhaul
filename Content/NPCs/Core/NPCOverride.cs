@@ -88,10 +88,8 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public static void SetDefaults(NPC npc, CWRNpc cwr, CalamityGlobalNPC cal) {
             NPCOverride inds = npc.CWR().NPCOverride;
-            foreach (var pcc in NPCSystem.NPCSets) {
-                if (pcc.TargetID == npc.type) {
-                    inds = pcc.Clone();
-                }
+            if (NPCSystem.IDToNPCSetDic.TryGetValue(npc.type, out var npcOverride)) {
+                inds = npcOverride.Clone();
             }
             inds.ai = new float[MaxAISlot];
             inds.localAI = new float[MaxAISlot];
@@ -218,6 +216,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public virtual bool? On_PreKill() { return null; }
 
         public virtual bool? CheckDead() { return null; }
+
+        public virtual void BossHeadSlot(ref int index) { }
+
+        public virtual void BossHeadRotation(ref float rotation) { }
 
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
 

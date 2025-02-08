@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Common
         public static CWRLocText Instance { get; private set; }
         //不要被吓到，这些只是必须的
         #region 字段内容
+        public LocalizedText DeathModeItem { get; private set; }
         public LocalizedText DontUseMagicConch { get; private set; }
         public LocalizedText OnlyZenith { get; private set; }
         public LocalizedText Event_TungstenRiot_Name { get; private set; }

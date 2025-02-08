@@ -712,6 +712,16 @@ Items: {
 			"La columna de la gran serpiente del cosmos, llena de energía cósmica, guía la ira del universo."
 			'''
 	}
+
+	FocusingGrimoire: {
+		// DisplayName: Focusing Grimoire
+		/* Tooltip:
+			'''
+			Left button to launch the tracking thermal ring
+			Right-click and quickly fire the death ray
+			"One book is better than six."
+			''' */
+	}
 }
 
 Projectiles: {
@@ -994,6 +1004,7 @@ Projectiles: {
 	// VulcaniteFire.DisplayName: Vulcanite Fire
 	// EssencePlunder.DisplayName: Essence Plunder
 	// EssenceEnergy.DisplayName: Essence Energy
+	// PowerCoil.DisplayName: Power Coil
 }
 
 Configs: {
@@ -1185,6 +1196,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Solo en el mundo de Zenith
 		Event_TungstenRiot_Name: Revuelta de tungsteno

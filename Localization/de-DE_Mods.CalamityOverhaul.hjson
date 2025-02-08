@@ -697,6 +697,16 @@ Items: {
 			"Die Wirbelsäule der kosmischen Riesenschlange, gefüllt mit kosmischer Energie, leitet den Zorn des Universums"
 			'''
 	}
+
+	FocusingGrimoire: {
+		// DisplayName: Focusing Grimoire
+		/* Tooltip:
+			'''
+			Left button to launch the tracking thermal ring
+			Right-click and quickly fire the death ray
+			"One book is better than six."
+			''' */
+	}
 }
 
 Projectiles: {
@@ -979,6 +989,7 @@ Projectiles: {
 	// VulcaniteFire.DisplayName: Vulcanite Fire
 	// EssencePlunder.DisplayName: Essence Plunder
 	// EssenceEnergy.DisplayName: Essence Energy
+	// PowerCoil.DisplayName: Power Coil
 }
 
 Configs: {
@@ -1170,6 +1181,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Nur in der Zenith-Welt
 		Event_TungstenRiot_Name: Wolfram-Aufstand

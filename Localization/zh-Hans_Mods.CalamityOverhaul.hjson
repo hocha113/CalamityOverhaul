@@ -717,6 +717,16 @@ Items: {
 			"那条宇宙巨蛇的脊柱，充盈着宇宙能量，引导着宇宙的怒火"
 			'''
 	}
+
+	FocusingGrimoire: {
+		DisplayName: 聚能魔典
+		Tooltip:
+			'''
+			左键发射追踪的热能环
+			右键快速发射死亡射线
+			"一本更比六本强"
+			'''
+	}
 }
 
 Projectiles: {
@@ -999,6 +1009,7 @@ Projectiles: {
 	// VulcaniteFire.DisplayName: Vulcanite Fire
 	// EssencePlunder.DisplayName: Essence Plunder
 	// EssenceEnergy.DisplayName: Essence Energy
+	// PowerCoil.DisplayName: Power Coil
 }
 
 Configs: {
@@ -1190,6 +1201,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DeathModeItem: 死亡模式
 		DontUseMagicConch: 你被一个强大的生物盯住了...
 		OnlyZenith: 仅在天顶世界
 		Event_TungstenRiot_Name: 钨钢暴乱

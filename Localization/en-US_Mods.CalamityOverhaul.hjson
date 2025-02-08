@@ -702,6 +702,16 @@ Items: {
 		DisplayName: Whiplash Galactica
 		Tooltip: ""
 	}
+
+	FocusingGrimoire: {
+		DisplayName: Focusing Grimoire
+		Tooltip:
+			'''
+			Left button to launch the tracking thermal ring
+			Right-click and quickly fire the death ray
+			"One book is better than six."
+			'''
+	}
 }
 
 Projectiles: {
@@ -984,6 +994,7 @@ Projectiles: {
 	VulcaniteFire.DisplayName: Vulcanite Fire
 	EssencePlunder.DisplayName: Essence Plunder
 	EssenceEnergy.DisplayName: Essence Energy
+	PowerCoil.DisplayName: Power Coil
 }
 
 Configs: {
@@ -1176,6 +1187,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Only in Zenith World
 		Event_TungstenRiot_Name: Tungsten Riot

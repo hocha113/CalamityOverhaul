@@ -705,6 +705,16 @@ Items: {
 			"Позвоночник гигантской космической змеи, наполненный космической энергией, направляющей космический огонь".
 			'''
 	}
+
+	FocusingGrimoire: {
+		// DisplayName: Focusing Grimoire
+		/* Tooltip:
+			'''
+			Left button to launch the tracking thermal ring
+			Right-click and quickly fire the death ray
+			"One book is better than six."
+			''' */
+	}
 }
 
 Projectiles: {
@@ -987,6 +997,7 @@ Projectiles: {
 	// VulcaniteFire.DisplayName: Vulcanite Fire
 	// EssencePlunder.DisplayName: Essence Plunder
 	// EssenceEnergy.DisplayName: Essence Energy
+	// PowerCoil.DisplayName: Power Coil
 }
 
 Configs: {
@@ -1193,6 +1204,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Только в мире Зенита
 		Event_TungstenRiot_Name: Восстание вольфрамовой стали
