@@ -828,7 +828,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += MathHelper.Max((int)((FireTime + 1) / AttackSpeed), 1f);
                 onFire = false;
-
+                PostShootEverthing();
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     NetUpdate();
                 }

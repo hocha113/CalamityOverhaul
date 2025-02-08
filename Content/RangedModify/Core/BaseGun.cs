@@ -529,6 +529,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         /// <returns></returns>
         public virtual void PostFiringShoot() { }
+        /// <summary>
+        /// 在所有关于射击的逻辑执行完成后调用
+        /// </summary>
+        public virtual void PostShootEverthing() { }
 
         public override void SpanProj() {
             if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
@@ -584,6 +588,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += MathHelper.Max((int)(Item.useTime / AttackSpeed), 1f);
                 onFireR = onFire = false;
+                PostShootEverthing();
             }
         }
 

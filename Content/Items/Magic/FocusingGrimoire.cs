@@ -5,6 +5,7 @@ using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using ReLogic.Content;
+using System;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
@@ -51,24 +52,28 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void SetShootAttribute() {
+            if (onFire) {
+                return;
+            }
+            Item.useTime = 4;
+            Item.useAnimation = 4;
+            Item.UseSound = SoundID.Item12;
+            Item.mana = 2;
+            AmmoTypes = ProjectileID.MiniRetinaLaser;
+        }
+
+        public override void FiringShootR() {
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].DamageType = DamageClass.Magic;
+        }
+
+        public override void PostShootEverthing() {
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.UseSound = SoundID.Item84;
             Item.mana = 8;
             AmmoTypes = ModContent.ProjectileType<PowerCoil>();
-            if (onFireR) {
-                Item.useTime = 4;
-                Item.useAnimation = 4;
-                Item.UseSound = SoundID.Item12;
-                Item.mana = 2;
-                AmmoTypes = ProjectileID.MiniRetinaLaser;
-            }
-        }
-
-        public override void FiringShootR() {
-            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].DamageType = DamageClass.Magic;
         }
     }
 
@@ -84,20 +89,33 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.penetrate = 6;
             Projectile.width = 30;
             Projectile.height = 30;
-            Projectile.timeLeft = 700;
+            Projectile.timeLeft = 460;
             Projectile.alpha = 255;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.ignoreWater = true;
-            Projectile.tileCollide = false;
             Projectile.extraUpdates = 2;
         }
 
         public override void AI() {
+            if (Projectile.timeLeft > 400) {
+                return;
+            }
+            Projectile.rotation += Math.Sign(Projectile.velocity.X) * 0.22f;
             NPC target = Projectile.Center.FindClosestNPC(600);
             if (target != null) {
                 Projectile.SmoothHomingBehavior(target.Center, 1, 0.1f);
             }
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (Projectile.velocity.X != oldVelocity.X) {
+                Projectile.velocity.X = -oldVelocity.X * 0.9f;
+            }
+            if (Projectile.velocity.Y != oldVelocity.Y) {
+                Projectile.velocity.Y = -oldVelocity.Y * 0.9f;
+            }
+            return false;
         }
 
         public override bool PreDraw(ref Color lightColor) {
