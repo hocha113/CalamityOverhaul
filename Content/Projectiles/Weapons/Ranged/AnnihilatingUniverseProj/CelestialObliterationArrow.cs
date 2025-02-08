@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         private Trail Trail;
         private const int MaxPos = 40;
         public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.height = 54;
             Projectile.width = 54;
             Projectile.tileCollide = false;

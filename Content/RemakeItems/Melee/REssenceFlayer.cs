@@ -5,13 +5,16 @@ using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Healing;
 using CalamityMod.Sounds;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -89,6 +92,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     , 8, ModContent.ProjectileType<EssenceFlame>(), 2000, 0f);
             }
 
+            if (Projectile.numHits == 0) {
+                for (int i = 0; i < 3; i++) {
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, (MathHelper.TwoPi / 3 * i).ToRotationVector2() * 6
+                        , ModContent.ProjectileType<EssenceEnergy>(), Projectile.damage / 3, 0, Projectile.owner, 0, Projectile.whoAmI);
+                }
+                Projectile.numHits++;
+            }
+
             if (!onHitNPCs.Contains(target)) {
                 SoundStyle sound = CommonCalamitySounds.SwiftSliceSound;
                 sound.Pitch = 0.2f;
@@ -128,6 +139,97 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Main.spriteBatch.ExitShaderRegion();
 
             return false;
+        }
+    }
+
+    internal class EssenceEnergy : ModProjectile, IPrimitiveDrawable
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        private Trail Trail;
+        private const int MaxPos = 40;
+        private Vector2 offset;
+        private Vector2 origInHomePos;
+        public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.height = 54;
+            Projectile.width = 54;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 200;
+            Projectile.extraUpdates = 1;
+            Projectile.localNPCHitCooldown = 10;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.alpha = 255;
+        }
+        public override bool ShouldUpdatePosition() => false;
+        public override void AI() {
+            Projectile homeProj;
+
+            if (Projectile.localAI[0] == 0) {
+                Projectile.oldPos = new Vector2[MaxPos];
+                for (int i = 0; i < MaxPos; i++) {
+                    Projectile.oldPos[i] = Projectile.Center + Projectile.velocity.UnitVector() * 160;
+                }
+
+                homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
+                if (homeProj.Alives() && homeProj.type == ModContent.ProjectileType<EssencePlunder>()) {
+                    origInHomePos = homeProj.Center;
+                }
+
+                Projectile.localAI[0] = 1;
+            }
+
+            for (int i = 0; i < MaxPos - 1; i++) {
+                Projectile.oldPos[i] = Projectile.oldPos[i + 1];
+            }
+            Projectile.oldPos[MaxPos - 1] = Projectile.Center + Projectile.velocity.UnitVector() * 160;
+
+            Trail ??= new Trail(Projectile.oldPos, GetWeithFunc, GetColorFunc);
+            Trail.TrailPositions = Projectile.oldPos;
+
+            Projectile.velocity = Projectile.velocity.RotatedBy(0.11f) * 0.9f;
+            offset += Projectile.velocity;
+
+            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
+            if (homeProj.Alives() && homeProj.type == ModContent.ProjectileType<EssencePlunder>()) {
+                origInHomePos = Vector2.Lerp(origInHomePos, homeProj.Center, 0.2f);
+            }
+            else {
+                NPC targetNPC = Main.player[Projectile.owner].Center.FindClosestNPC(900);
+                if (targetNPC != null) {
+                    origInHomePos = Vector2.Lerp(origInHomePos, targetNPC.Center, 0.1f);
+                }
+            }
+
+            Projectile.Center = origInHomePos + offset;
+
+            if (Projectile.timeLeft < 10) {
+                Projectile.alpha -= 25;
+            }
+        }
+
+        private Color GetColorFunc(Vector2 _) => Color.DarkBlue * (Projectile.alpha / 255f);
+        private float GetWeithFunc(float sengs) => Projectile.scale * 110f * (1 - sengs);
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Trail == null) {
+                return;
+            }
+            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
+            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
+            effect.Parameters["udissolveS"].SetValue(1f);
+            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture"));
+            effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
+            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DarklightGreatsword_Bar"));
+            effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            Trail?.DrawTrail(effect);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 
