@@ -1,15 +1,19 @@
-﻿using CalamityMod.Events;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -65,6 +69,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
             else {
                 index = IsSecondPhase() ? retinazerAltIconIndex : retinazerIconIndex;
+            }
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot) {
+            if (npc.type == NPCID.Spazmatism) {
+                IItemDropRuleCondition condition = new DropInDeathMode();
+                LeadingConditionRule rule = new LeadingConditionRule(condition);
+                rule.Add(ModContent.ItemType<FocusingGrimoire>(), 4);
+                npcLoot.Add(rule);
             }
         }
 

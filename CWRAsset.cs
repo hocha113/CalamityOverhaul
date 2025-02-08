@@ -42,7 +42,6 @@ namespace CalamityOverhaul
             LightShotAlt = CWRUtils.GetT2DAsset(CWRConstant.Masking + "LightShotAlt");
             Airflow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Airflow");
             Extra_193 = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_193");
-            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
         }
         void ICWRLoader.UnLoadData() {
             icon_small = null;

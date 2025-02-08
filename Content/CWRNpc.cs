@@ -329,13 +329,16 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == ModContent.NPCType<AquaticScourgeHead>()) {
-
-                npcLoot.Add(ModContent.ItemType<MelodyTheSand>(), 6);
+                dontExpertRule.Add(ModContent.ItemType<MelodyTheSand>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == ModContent.NPCType<OldDuke>()) {
-                npcLoot.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
+                dontExpertRule.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
+            }
+
+            if (npc.type == NPCOverride.TargetID) {
+                NPCOverride.ModifyNPCLoot(npcLoot);
             }
         }
 

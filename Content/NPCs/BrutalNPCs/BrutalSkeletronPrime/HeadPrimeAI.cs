@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.Particles;
@@ -98,6 +99,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
             BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
             canLoaderAssetZunkenUp = true;
+
+            if (CWRServerConfig.Instance.BiologyOverhaul) {
+                TextureAssets.Item[ItemID.TwinsBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/TwinBag");
+                TextureAssets.Item[ItemID.DestroyerBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/DestroyerBag");
+                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/PrimeBag");
+            }
         }
 
         void ICWRLoader.UnLoadData() {

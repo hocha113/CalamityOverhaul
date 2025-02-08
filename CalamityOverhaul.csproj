@@ -74,6 +74,7 @@
     <None Remove="Localization\es-ES_Mods.CalamityOverhaul.hjson" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\Items\Bag\" />
     <Folder Include="Assets\Players\" />
     <Folder Include="Assets\TileModules\" />
     <Folder Include="Assets\Painting\" />

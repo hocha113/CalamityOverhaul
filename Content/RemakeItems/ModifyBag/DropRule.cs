@@ -1,7 +1,10 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
+using CalamityMod.World;
 using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
@@ -23,5 +26,12 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
         }
         bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
         string IProvideItemConditionDescription.GetConditionDescription() => null;
+    }
+
+    public class DropInDeathMode : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+        public bool CanDrop(DropAttemptInfo info) => CalamityWorld.death;
+        public bool CanShowItemDropInUI() => CalamityWorld.death;
+        public string GetConditionDescription() => CWRLocText.Instance.DeathModeItem.Value;
     }
 }

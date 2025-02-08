@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         private void LoadNPCSets() {
             NPCCustomizers = VaultUtils.GetSubclassInstances<NPCCustomizer>();
             NPCOverrides = VaultUtils.GetSubclassInstances<NPCOverride>();
+            NPCOverrides.RemoveAll(npc => !npc.CanLoad());
             IDToNPCSetDic = [];
             foreach (var npcOverh in NPCOverrides) {
                 IDToNPCSetDic.Add(npcOverh.TargetID, npcOverh);

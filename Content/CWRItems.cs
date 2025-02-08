@@ -220,6 +220,14 @@ namespace CalamityOverhaul.Content
                 item.knockBack = 2;
                 item.useStyle = ItemUseStyleID.Swing;
             }
+
+            if (CWRServerConfig.Instance.BiologyOverhaul) {
+                if (item.type == ItemID.TwinsBossBag 
+                    || item.type == ItemID.DestroyerBossBag 
+                    || item.type == ItemID.SkeletronPrimeBossBag) {
+                    item.CWR().DeathModeItem = true;
+                }
+            }
         }
 
         public override void SetDefaults(Item item) {

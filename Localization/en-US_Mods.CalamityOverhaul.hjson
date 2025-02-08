@@ -917,7 +917,6 @@ Projectiles: {
 	ParadiseArrow.DisplayName: Paradise Arrow
 	VientianePunishment.DisplayName: Vientiane Punishment
 	MonsoonOnSpan.DisplayName: Monsoon On Span
-	Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
 	IceOrb.DisplayName: Ice Orb
 	IceParclose.DisplayName: Ice Parclose
 	IceSoulOrb.DisplayName: Ice Soul Orb
@@ -995,6 +994,7 @@ Projectiles: {
 	EssencePlunder.DisplayName: Essence Plunder
 	EssenceEnergy.DisplayName: Essence Energy
 	PowerCoil.DisplayName: Power Coil
+	IceExplosionFriend.DisplayName: Ice Explosion Friend
 }
 
 Configs: {

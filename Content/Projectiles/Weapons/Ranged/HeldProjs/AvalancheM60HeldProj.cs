@@ -20,17 +20,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.3f;
             FireTime = 20;
             GunPressure = 0;
-            HandIdleDistanceX = 55;
+            HandIdleDistanceX = 54;
             HandIdleDistanceY = -4;
             HandFireDistanceX = 55;
             HandFireDistanceY = -8;
-            AngleFirearmRest = -11;
+            AngleFirearmRest = -6;
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 18;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
             LoadingAA_None.gunBodyY = 42;
+            LoadingAA_None.gunBodyX = 20;
         }
 
         public override void PostInOwnerUpdate() {

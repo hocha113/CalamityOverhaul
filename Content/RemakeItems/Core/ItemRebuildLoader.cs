@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -540,6 +541,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         #endregion
 
         #region Loader Item Hook
+        void ICWRLoader.LoadAsset() {
+            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
+        }
+
         public static void ProcessRemakeAction(Item item, Action<ItemOverride> action) {
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 return;

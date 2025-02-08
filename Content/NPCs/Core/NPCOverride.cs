@@ -221,6 +221,8 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public virtual void BossHeadRotation(ref float rotation) { }
 
+        public virtual void ModifyNPCLoot(NPCLoot npcLoot) { }
+
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
 
         public virtual bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
