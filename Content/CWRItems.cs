@@ -261,6 +261,10 @@ namespace CalamityOverhaul.Content
             CalculateNumberBullet();
             bool isUnlimited = CWRUtils.IsAmmunitionUnlimited(addAmmo);
 
+            if (addAmmo.type != ItemID.None && !addAmmo.CWR().AmmoProjectileReturn) {
+                isUnlimited = true;//如果加入的物品本身设置就是不返还，就强行判定为无限弹药
+            }
+
             if (addStack == 0) {
                 addStack = AmmoCapacity - NumberBullets;
                 if (addStack > addAmmo.stack && !isUnlimited) {
@@ -288,7 +292,8 @@ namespace CalamityOverhaul.Content
             List<Item> newMagazine = MagazineContents.ToList();
             bool onAdds = false;
             foreach (var item in newMagazine) {
-                if (item.type == newAmmo.type && item.stack < item.maxStack) {
+                if (item.type == newAmmo.type && item.stack < item.maxStack 
+                    && item.CWR().AmmoProjectileReturn == newAmmo.CWR().AmmoProjectileReturn) {
                     item.stack += newAmmo.stack;
                     onAdds = true;
                 }

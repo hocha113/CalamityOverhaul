@@ -318,9 +318,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Projectile.rotation = GetGunBodyRot();
             Projectile.Center = GetGunBodyPos();
         }
+        /// <summary>
+        /// 是否可以使用枪械，与是否开火或<see cref="CanSpanProj"/>不同，这个返回false相当于阻止玩家按键判定
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool CanUseGun() => true;
 
         public override void FiringIncident() {
-            if (DownLeft) {
+            if (DownLeft && CanUseGun()) {
                 SetGunBodyInFire();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     if (!onFire) {
@@ -333,7 +338,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 onFire = false;
             }
 
-            if (DownRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
+            if (DownRight && CanUseGun() && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 SetGunBodyInFire();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     if (!onFireR) {

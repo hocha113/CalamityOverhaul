@@ -531,7 +531,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                 }
 
-                if (DownLeft) {
+                if (DownLeft && CanUseGun()) {
                     SetGunBodyInFire();
                     if (IsKreload) {
                         if (!onFire) {
@@ -544,7 +544,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     onFire = false;
                 }
 
-                if (DownRight && !onFire && CanRightClick && SafeMousetStart
+                if (DownRight && CanUseGun() && !onFire && CanRightClick && SafeMousetStart
                     && (!CartridgeHolderUI.Instance.hoverInMainPage || SafeMousetStart2)) {//Owner.PressKey()
                     SetGunBodyInFire();
                     if (IsKreload) {

@@ -41,30 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<BurningBlood>(), 240);
 
         public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 40; i++) {
-                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 2f);
-                Main.dust[idx].velocity *= 3f;
-                if (Main.rand.NextBool()) {
-                    Main.dust[idx].scale = 0.5f;
-                    Main.dust[idx].fadeIn = 1f + Main.rand.Next(10) * 0.1f;
-                }
-            }
-            for (int i = 0; i < 70; i++) {
-                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 3f);
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].velocity *= 5f;
-                idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 2f);
-                Main.dust[idx].velocity *= 2f;
-            }
-            Vector2 ver = Projectile.velocity * -1;
-            for (int i = 0; i < 70; i++) {
-                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 3f);
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].velocity = ver.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f, 3.6f);
-                idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 2f);
-                Main.dust[idx].velocity *= ver.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.2f, 1.6f);
-            }
-
+            CWRDust.BlastingSputteringDust(Projectile, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood);
             Projectile.damage /= 2;
             Projectile.Explode(explosionSound: SoundID.Item62);
         }

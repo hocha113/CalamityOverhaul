@@ -736,6 +736,45 @@ Items: {
 			"从那台机械的手臂上拆下来的，试试用灵能代替柴油供能?"
 			'''
 	}
+
+	RaiderGun: {
+		DisplayName: 突袭者
+		Tooltip:
+			'''
+			将火枪子弹转化为高速子弹
+			右键可以翻滚冲刺，并将弹匣填满
+			翻滚后的第一发子弹会被转化为毁灭者榴弹
+			"非常适合用于室内人质解救"
+			'''
+	}
+
+	HyperionBarrage: {
+		DisplayName: 海伯利昂自动炮
+		Tooltip:
+			'''
+			发射热射巡航弹
+			"物尽其用"
+			'''
+	}
+
+	RaiderGunEX: {
+		DisplayName: 突袭者EX
+		Tooltip:
+			'''
+			将火枪子弹转化为高速子弹
+			额外发射大量毁灭者归航弹
+			"狂轰滥炸"
+			'''
+	}
+
+	CommandersChainsaw: {
+		DisplayName: 统帅链锯
+		Tooltip:
+			'''
+			击中目标时生成火花
+			"多加点柴油"
+			'''
+	}
 }
 
 Projectiles: {
@@ -1020,6 +1059,13 @@ Projectiles: {
 	// PowerCoil.DisplayName: Power Coil
 	// IceExplosionFriend.DisplayName: Ice Explosion Friend
 	// CommandersRay.DisplayName: Commanders Ray
+	// WeaverGrievancesDash.DisplayName: Weaver Grievances Dash
+	// RaiderGunDash.DisplayName: Raider Gun Dash
+	// DestroyerGrenade.DisplayName: Destroyer Grenade
+	// PunisherGrenade.DisplayName: Punisher Grenade
+	// HyperionBarrageHeld.DisplayName: Hyperion Barrage Held
+	// PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
+	// RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
 }
 
 Configs: {

@@ -718,7 +718,50 @@ Items: {
 
 	CommandersStaff: {
 		// DisplayName: Commanders Staff
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires a thermal disintegration beam that pierces through enemies.  
+			"Torn from the arm of that machine—how about using psionic energy instead of diesel?"
+			''' */
+	}
+
+	RaiderGun: {
+		// DisplayName: Raider
+		/* Tooltip:
+			'''
+			Converts musket balls into high-speed bullets.
+			Right-click to perform a roll dash and fully reload the magazine.
+			The first shot after rolling is transformed into a Devastator Grenade.
+			"Highly suitable for indoor hostage rescue."
+			''' */
+	}
+
+	HyperionBarrage: {
+		// DisplayName: Hyperion Barrage
+		/* Tooltip:
+			'''
+			Fire thermal cruise missiles
+			"Make the most of everything."
+			''' */
+	}
+
+	RaiderGunEX: {
+		// DisplayName: Raider EX
+		/* Tooltip:
+			'''
+			Convert musket bullets into high velocity bullets
+			Fire extra destroyer homing bombs
+			"Bombard."
+			''' */
+	}
+
+	CommandersChainsaw: {
+		// DisplayName: Commander's Chainsaw
+		/* Tooltip:
+			'''
+			Sparks are generated when the target is hit
+			"Add more diesel."
+			''' */
 	}
 }
 
@@ -1004,6 +1047,13 @@ Projectiles: {
 	// PowerCoil.DisplayName: Power Coil
 	// IceExplosionFriend.DisplayName: Ice Explosion Friend
 	// CommandersRay.DisplayName: Commanders Ray
+	// WeaverGrievancesDash.DisplayName: Weaver Grievances Dash
+	// RaiderGunDash.DisplayName: Raider Gun Dash
+	// DestroyerGrenade.DisplayName: Destroyer Grenade
+	// PunisherGrenade.DisplayName: Punisher Grenade
+	// HyperionBarrageHeld.DisplayName: Hyperion Barrage Held
+	// PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
+	// RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
 }
 
 Configs: {

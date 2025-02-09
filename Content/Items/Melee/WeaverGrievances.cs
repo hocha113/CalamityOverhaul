@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 if (player.CWR().CustomCooldownCounter <= 0) {
                     float _swingDir = position.X + velocity.X > player.position.X ? 1 : -1;
                     Projectile.NewProjectile(source, position, velocity
-                        , ModContent.ProjectileType<WeaverGrievancesHurmp>(), damage, knockback, player.whoAmI, ai1: _swingDir);
+                        , ModContent.ProjectileType<WeaverGrievancesDash>(), damage, knockback, player.whoAmI, ai1: _swingDir);
                 }
 
                 return false;
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
     }
 
-    internal class WeaverGrievancesHurmp : BaseHeldProj
+    internal class WeaverGrievancesDash : BaseHeldProj
     {
         public override string Texture => "CalamityMod/NPCs/Polterghast/Polterghast";
         private ref float Time => ref Projectile.ai[0];

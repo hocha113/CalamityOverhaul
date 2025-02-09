@@ -1,11 +1,38 @@
 ﻿using InnoVault.PRT;
 using Terraria;
 using Terraria.Graphics.Shaders;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content
 {
     internal class CWRDust
     {
+        public static void BlastingSputteringDust(Projectile Projectile, int dustID1, int dustID2, int dustID3, int dustID4, int dustID5) {
+            for (int i = 0; i < 40; i++) {
+                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID1, 0f, 0f, 100, default, 2f);
+                Main.dust[idx].velocity *= 3f;
+                if (Main.rand.NextBool()) {
+                    Main.dust[idx].scale = 0.5f;
+                    Main.dust[idx].fadeIn = 1f + Main.rand.Next(10) * 0.1f;
+                }
+            }
+            for (int i = 0; i < 70; i++) {
+                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID2, 0f, 0f, 100, default, 3f);
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity *= 5f;
+                idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID3, 0f, 0f, 100, default, 2f);
+                Main.dust[idx].velocity *= 2f;
+            }
+            Vector2 ver = Projectile.velocity * -1;
+            for (int i = 0; i < 70; i++) {
+                int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID4, 0f, 0f, 100, default, 3f);
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity = ver.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f, 3.6f);
+                idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID5, 0f, 0f, 100, default, 2f);
+                Main.dust[idx].velocity *= ver.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.2f, 1.6f);
+            }
+        }
+
         public static void DrawParticleElectricity(BasePRT particle, Vector2 point1, Vector2 point2
             , float scale = 1, int armLength = 30, float density = 0.05f, float ai0 = 0) {
             int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;

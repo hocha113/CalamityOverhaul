@@ -1,18 +1,11 @@
-﻿using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+﻿using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
-using rail;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -43,10 +36,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     internal class CommandersStaffHeld : BaseMagicStaff<CommandersStaff>
     {
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffHeld";
-        public override void PostSetRangedProperty() {
-            ShootPosToMouLengValue = 90;
-        }
-
+        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
@@ -62,6 +52,8 @@ namespace CalamityOverhaul.Content.Items.Magic
         private const int disengage = 20;
         private Trail Trail;
         private List<Vector2> newPoss;
+        private Projectile homeProj;
+        public override bool ShouldUpdatePosition() => false;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -77,7 +69,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void AI() {
-            Projectile homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
             if (homeProj.Alives()) {
                 Projectile.Center = homeProj.Center;
                 Projectile.rotation = homeProj.rotation;
