@@ -225,11 +225,12 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public void UpdateRecoil() {
             OffsetRot -= ControlForce;
-            if (OffsetRot <= 0) {
-                OffsetRot = 0;
-            }
+            OffsetRot = MathHelper.Clamp(OffsetRot, 0, GunPressure * 2);
             if (OffsetPos != Vector2.Zero) {
                 OffsetPos *= RecoilOffsetRecoverValue;
+                if (OffsetPos.LengthSquared() < 0.0001f) {
+                    OffsetPos = Vector2.Zero;
+                }
             }
         }
         /// <summary>

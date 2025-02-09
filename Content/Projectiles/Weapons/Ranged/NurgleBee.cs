@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Particles;
+using CalamityOverhaul.Content.Projectiles.Others;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

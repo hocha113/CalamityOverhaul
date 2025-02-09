@@ -708,6 +708,11 @@ Items: {
 			"One book is better than six."
 			''' */
 	}
+
+	CommandersStaff: {
+		// DisplayName: Commanders Staff
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -991,6 +996,7 @@ Projectiles: {
 	// EssenceEnergy.DisplayName: Essence Energy
 	// PowerCoil.DisplayName: Power Coil
 	// IceExplosionFriend.DisplayName: Ice Explosion Friend
+	// CommandersRay.DisplayName: Commanders Ray
 }
 
 Configs: {

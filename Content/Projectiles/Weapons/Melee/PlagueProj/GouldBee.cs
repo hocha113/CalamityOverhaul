@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
 {

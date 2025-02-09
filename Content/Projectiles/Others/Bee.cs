@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons
+namespace CalamityOverhaul.Content.Projectiles.Others
 {
     internal class Bee
     {

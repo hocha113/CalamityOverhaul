@@ -17,24 +17,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 1;
-            HandIdleDistanceX = 25;
-            HandIdleDistanceY = 5;
-            HandFireDistanceX = 25;
-            HandFireDistanceY = -10;
+            HandIdleDistanceX = 24;
+            HandIdleDistanceY = 4;
+            HandFireDistanceX = 24;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
-            ControlForce = 0.05f;
+            GunPressure = 0;
+            ControlForce = 0;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 6;
             CanCreateSpawnGunDust = false;
             CanRightClick = true;
         }
 
-        public override void Initialize() => useAnimation = Item.useAnimation;
+        public override void InitializeGun() => useAnimation = Item.useAnimation;
         public override void HanderPlaySound() {
             useAnimation -= FireTime;
             if (useAnimation <= 0) {

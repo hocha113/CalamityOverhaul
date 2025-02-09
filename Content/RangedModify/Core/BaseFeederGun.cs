@@ -85,9 +85,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         protected int extraKreloadMaxTime = 0;
         /// <summary>
-        /// 开火间隔，默认为10
+        /// 开火间隔，默认为0，如果该值不大于0，则会自动设置为<see cref="Item.useTime"/>的值
         /// </summary>
-        protected int FireTime = 10;
+        protected int FireTime = 0;
         /// <summary>
         /// 是否可以重复换弹，默认为<see cref="true"/>
         /// </summary>
@@ -294,9 +294,17 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             return Owner.GetPlayerStabilityCenter() + (FeederOffsetPos + handOffset).RotatedBy(Owner.fullRotation);
         }
 
-        public override void Initialize() {
+        public sealed override void Initialize() {
             ModItem.SetMagazine(ModItem.MagazineContents);
             AmmoState = Owner.GetAmmoState(Item.useAmmo);
+            if (FireTime <= 0) {
+                FireTime = Item.useTime;
+            }
+            InitializeGun();
+        }
+
+        public virtual void InitializeGun() {
+
         }
 
         /// <summary>

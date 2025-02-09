@@ -727,6 +727,15 @@ Items: {
 			"一本更比六本强"
 			'''
 	}
+
+	CommandersStaff: {
+		DisplayName: 统帅之杖
+		Tooltip:
+			'''
+			发射一道热能分解射线穿透敌人
+			"从那台机械的手臂上拆下来的，试试用灵能代替柴油供能?"
+			'''
+	}
 }
 
 Projectiles: {
@@ -1010,6 +1019,7 @@ Projectiles: {
 	// EssenceEnergy.DisplayName: Essence Energy
 	// PowerCoil.DisplayName: Power Coil
 	// IceExplosionFriend.DisplayName: Ice Explosion Friend
+	// CommandersRay.DisplayName: Commanders Ray
 }
 
 Configs: {

@@ -714,13 +714,22 @@ Items: {
 	}
 
 	FocusingGrimoire: {
-		// DisplayName: Focusing Grimoire
-		/* Tooltip:
+		DisplayName: Focusing Grimoire
+		Tooltip:
 			'''
 			Left button to launch the tracking thermal ring
 			Right-click and quickly fire the death ray
 			"One book is better than six."
-			''' */
+			'''
+	}
+
+	CommandersStaff: {
+		DisplayName: Commander's Staff
+		Tooltip:
+			'''
+			Send a thermal decomposition beam through the enemy
+			"From the arm of that machine. Try using psionic power instead of diesel?"
+			'''
 	}
 }
 
@@ -1005,6 +1014,7 @@ Projectiles: {
 	// EssenceEnergy.DisplayName: Essence Energy
 	// PowerCoil.DisplayName: Power Coil
 	// IceExplosionFriend.DisplayName: Ice Explosion Friend
+	// CommandersRay.DisplayName: Commanders Ray
 }
 
 Configs: {

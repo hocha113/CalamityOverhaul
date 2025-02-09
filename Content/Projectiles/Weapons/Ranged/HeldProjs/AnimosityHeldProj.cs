@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandIdleDistanceX = 27;
             HandIdleDistanceY = 3;
             HandFireDistanceX = 27;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -3;
             CanRightClick = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.gunBodyY = -16;
