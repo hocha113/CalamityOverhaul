@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
         public override void SetDefaults() {
             Item.width = Item.height = 32;
-            Item.damage = 282;
+            Item.damage = 355;
             Item.DamageType = DamageClass.Magic;
             Item.useTime = Item.useAnimation = 15;
             Item.autoReuse = true;
