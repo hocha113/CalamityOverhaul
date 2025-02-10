@@ -755,6 +755,21 @@ Items: {
 			"Add more diesel."
 			''' */
 	}
+
+	GeminisTribute: {
+		// DisplayName: Geminis Tribute
+		// Tooltip: ""
+	}
+
+	Dicoria: {
+		// DisplayName: Dicoria
+		// Tooltip: ""
+	}
+
+	GeminisTributeEX: {
+		// DisplayName: Geminis Tribute E X
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1046,6 +1061,11 @@ Projectiles: {
 	// HyperionBarrageHeld.DisplayName: Hyperion Barrage Held
 	// PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
 	// RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
+	// GeminisTributeHeld.DisplayName: Geminis Tribute Held
+	// GeminisTributeAlt.DisplayName: Geminis Tribute Alt
+	// GeminisTributeEXHeld.DisplayName: Geminis Tribute E X Held
+	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
+	// DicoriaRay.DisplayName: Dicoria Ray
 }
 
 Configs: {

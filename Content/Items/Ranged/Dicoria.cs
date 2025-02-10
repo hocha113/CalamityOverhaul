@@ -1,8 +1,10 @@
-﻿using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Enums;
@@ -10,41 +12,110 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Magic
+namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class CommandersStaff : ModItem
+    internal class Dicoria : ModItem, ICWRLoader
     {
-        public override string Texture => CWRConstant.Item_Magic + "CommandersStaff";
+        public override string Texture => CWRConstant.Item_Ranged + "Dicoria";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetDefaults() {
-            Item.DamageType = DamageClass.Magic;
+            Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 32;
             Item.height = 32;
-            Item.damage = 82;
-            Item.useTime = 62;
-            Item.useAnimation = 62;
-            Item.mana = 20;
-            Item.shoot = ModContent.ProjectileType<CommandersRay>();
+            Item.damage = 98;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
+            Item.useAmmo = AmmoID.Bullet;
             Item.shootSpeed = 10;
-            Item.UseSound = SoundID.Item68;
+            Item.UseSound = CWRSound.Gun_50CAL_Shoot with { Volume = 0.6f };
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.SetHeldProj<CommandersStaffHeld>();
+            Item.SetCartridgeGun<DicoriaHeld>(60);
             Item.CWR().DeathModeItem = true;
         }
-    }
 
-    internal class CommandersStaffHeld : BaseMagicStaff<CommandersStaff>
-    {
-        public override string Texture => CWRConstant.Item_Magic + "CommandersStaffHeld";
-        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition, null, Color.White
+                , rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
         }
     }
 
-    internal class CommandersRay : ModProjectile
+    internal class DicoriaHeld : BaseFeederGun
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "Dicoria";
+        public override string GlowTexPath => CWRConstant.Item_Ranged + "DicoriaGlow";
+        public override int TargetID => ModContent.ItemType<Dicoria>();
+        public override void SetRangedProperty() {
+            Recoil = 0.3f;
+            GunPressure = 0.1f;
+            ControlForce = 0.02f;
+            HandIdleDistanceX = 26;
+            HandIdleDistanceY = -4;
+            HandFireDistanceX = 30;
+            HandFireDistanceY = -8;
+            ShootPosNorlLengValue = -16;
+            ShootPosToMouLengValue = 2;
+            RecoilRetroForceMagnitude = 12;
+            RecoilOffsetRecoverValue = 0.9f;
+            EnableRecoilRetroEffect = true;
+            CanCreateSpawnGunDust = false;
+        }
+
+        public override void SetShootAttribute() {
+            InOwner_HandState_AlwaysSetInFireRoding = false;
+            ShootPosNorlLengValue = -16;
+            if (++fireIndex > 6) {
+                FireTime = 40;
+                GunPressure = 0;
+                ControlForce = 0;
+                ShootPosNorlLengValue = 4;
+                InOwner_HandState_AlwaysSetInFireRoding = true;
+                CanUpdateMagazineContentsInShootBool = false;
+                AmmoTypes = ModContent.ProjectileType<DicoriaRay>();
+                Item.UseSound = SoundID.Item69;
+            }
+        }
+
+        public override void PostShootEverthing() {
+            FireTime = Item.useTime;
+            GunPressure = 0.1f;
+            ControlForce = 0.02f;
+            Item.UseSound = CWRSound.Gun_50CAL_Shoot with { Volume = 0.6f };
+            CanUpdateMagazineContentsInShootBool = true;
+            if (fireIndex > 6) {
+                fireIndex = 0;
+            }
+        }
+
+        public override bool CanSpanProj() {
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<DicoriaRay>()] != 0) {
+                return false;
+            }
+            return base.CanSpanProj();
+        }
+
+        public override void FiringShoot() {
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ProjectileID.BulletHighVelocity;
+            }
+            if (fireIndex > 6) {
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+            }
+            else {
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity / 2
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+        }
+    }
+
+    internal class DicoriaRay : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         private const int MaxPosNum = 100;
@@ -58,7 +129,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override bool ShouldUpdatePosition() => false;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
-            Projectile.DamageType = DamageClass.Magic;
             Projectile.width = 10;
             Projectile.height = 10;
             Projectile.hostile = false;
@@ -73,8 +143,8 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override void AI() {
             homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
-            if (homeProj.Alives()) {
-                Projectile.Center = homeProj.Center;
+            if (homeProj.Alives() && homeProj.ModProjectile is BaseFeederGun gun) {
+                Projectile.Center = gun.ShootPos;
                 Projectile.rotation = homeProj.rotation;
             }
 
@@ -95,10 +165,23 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
 
                 if (isSolid) {
-                    PRTLoader.AddParticle(new PRT_HeavenfallStar(targetPos, CWRUtils.randVr(6), false, 2, Main.rand.NextFloat(0.6f, 1.6f), color));
+                    PRT_LavaFire lavaFire = new PRT_LavaFire {
+                        Velocity = new Vector2(unitVer.X, -Main.rand.NextFloat(2, 6)),
+                        Position = targetPos + CWRUtils.randVr(36),
+                        Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                        maxLifeTime = 20,
+                        minLifeTime = 8,
+                        Color = color
+                    };
+                    PRTLoader.AddParticle(lavaFire);
                 }
                 else if (toTileLeng > 90) {
-                    PRTLoader.AddParticle(new PRT_HeavenfallStarAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f, color));
+                    if (Main.rand.NextBool(16)) {
+                        PRT_LonginusWave wave = new PRT_LonginusWave(targetPos, unitVer
+                            , color, new Vector2(0.1f, 0.2f), Projectile.rotation, 1, 3, 2, null);
+                        PRTLoader.AddParticle(wave);
+                    }
+                    PRTLoader.AddParticle(new PRT_SparkAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.6f, color));
                 }
             }
 

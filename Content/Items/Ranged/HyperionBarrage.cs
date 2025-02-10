@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAnimation = 80;
             Item.useAmmo = AmmoID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = null;
+            Item.UseSound = SoundID.Item15 with { Pitch = -0.2f };
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 2, 60, 10);
             Item.SetHeldProj<HyperionBarrageHeld>();
