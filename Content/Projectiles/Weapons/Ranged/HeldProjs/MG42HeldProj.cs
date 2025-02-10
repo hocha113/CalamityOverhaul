@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetShootAttribute() {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                randomShootRotset = Main.rand.NextFloat(-0.1f, 0.1f);
+                randomShootRotset = Main.rand.NextFloat(-0.06f, 0.06f);
                 NetUpdate();
             }
             shootValue += 0.4f;

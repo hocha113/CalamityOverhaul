@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<Phangasm>();
         public override void SetDefaults(Item item) {
-            item.damage = 160;
+            item.damage = 120;
             item.width = 48;
             item.height = 82;
-            item.useTime = 12;
-            item.useAnimation = 12;
+            item.useTime = 15;
+            item.useAnimation = 15;
             item.useStyle = ItemUseStyleID.Shoot;
             item.knockBack = 3f;
             item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;

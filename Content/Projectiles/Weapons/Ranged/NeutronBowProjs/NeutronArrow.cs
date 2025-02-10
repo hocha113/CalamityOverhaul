@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + rand
                         , vr, ModContent.ProjectileType<NeutronLaser>(), Projectile.damage * 2, 0);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
-                        , Vector2.Zero, ModContent.ProjectileType<NeutronExplosionRanged>(), Projectile.damage, 0);
+                        , Vector2.Zero, ModContent.ProjectileType<NeutronExplosionRanged>(), Projectile.damage * 2, 0);
             }
         }
     }

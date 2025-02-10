@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<Alluvion>();
         public override void SetDefaults(Item item) {
-            item.damage = 165;
+            item.damage = 125;
             item.DamageType = DamageClass.Ranged;
             item.width = 62;
             item.height = 90;
-            item.useTime = 15;
+            item.useTime = 18;
             item.useAnimation = 30;
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 chargeIndex = 35;
-                if (!Owner.PressKey(false)) {
+                if (!DownRight) {
                     Owner.wingTime = 0;
                 }
             }
@@ -72,8 +72,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostBowShoot() {
             if (onFire) {
                 chargeIndex--;
-                if (chargeIndex < 5) {
-                    chargeIndex = 5;
+                if (chargeIndex < 4) {
+                    chargeIndex = 4;
                 }
             }
         }
