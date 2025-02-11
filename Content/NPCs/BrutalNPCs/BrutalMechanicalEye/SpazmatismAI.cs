@@ -164,8 +164,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             if (ai[0] == 0) {
                 if (!VaultUtils.isServer && isSpazmatism) {
-                    CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TextColor1);
-                    CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
+                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TextColor1);
+                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
                 }
                 ai[0] = 1;
                 NetAISend();
@@ -187,20 +187,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (ai[6] == 0) {
                     if (isSpazmatism && !VaultUtils.isServer) {
                         if (lowBloodVolume) {
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TextColor1);
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TextColor2);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TextColor1);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TextColor2);
                         }
                         else if (skeletronPrime?.ai[1] == 3) {
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor1);
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor1);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
                         }
                         else if (isSpawnFirstStageFromeExeunt) {
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor1);
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor2);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor1);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor2);
                         }
                         else {
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor1);
-                            CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor2);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor1);
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor2);
                         }
                     }
                     for (int i = 0; i < 13; i++) {
@@ -578,8 +578,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     return false;
                 case 4:
                     if (isSpazmatism && !VaultUtils.isServer && ai[2] == 2) {
-                        CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor1);
-                        CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
+                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor1);
+                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
                     }
                     npc.dontTakeDamage = true;
                     npc.damage = 0;

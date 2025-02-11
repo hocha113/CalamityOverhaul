@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Common
             string errorT_CN = $"格式化图格发生异常，位于地图坐标[{tilePos.X}, {tilePos.Y}]，如果需要寻求帮助，请附带上 {path} 文件夹下的client.log文件";
             string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{tilePos.X}, {tilePos.Y}] {path} subfolder 'client.log' File";
             errorT = VaultUtils.Translation(errorT_CN, errorT_EN);
-            CWRUtils.Text(errorT, Color.Red);
+            VaultUtils.Text(errorT, Color.Red);
             CWRMod.Instance.Logger.Info(errorT);
             CWRMod.Instance.Logger.Info($"At in InfinitePickProj.AI 69 line 'WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);', targetID: {tile.TileType}:{tile}");
         }

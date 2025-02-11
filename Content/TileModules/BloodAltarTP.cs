@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.TileModules
         }
 
         private void SommonLose(Player player) {
-            CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
+            VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
             if (player != null) {
                 PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
                 player.Hurt(pd, 50, 0);
@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.TileModules
                         Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                             , Scale: Main.rand.NextFloat(1.2f, 3.1f));
                     }
-                    CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
+                    VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
                 }
 
                 Main.dayTime = false;

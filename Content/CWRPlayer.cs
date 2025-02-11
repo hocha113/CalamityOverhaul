@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content
             string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
             soubText = soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
             soubText = soubText.Replace("[V2]", "0.6");
-            SpwanTextProj.New(Player, () => CWRUtils.Text(soubText, Color.IndianRed));
+            SpwanTextProj.New(Player, () => VaultUtils.Text(soubText, Color.IndianRed));
         }
 
         public override void OnEnterWorld() {
@@ -235,17 +235,17 @@ namespace CalamityOverhaul.Content
 
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
-                SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
+                SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
                 string text = CWRMod.ItemIDToOverrideDic.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
-                SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
+                SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }
 
             if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
-                SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
+                SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             }
 
             CraftingSlotHighlighter.Instance.eyEBool = true;

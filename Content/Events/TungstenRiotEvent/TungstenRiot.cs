@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
             }
 
             if (playerCount > 0) {
-                CWRUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_1"), MainColor);
+                VaultUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_1"), MainColor);
                 SoundEngine.PlaySound(SoundID.Roar);
                 TungstenRiotIsOngoing = true;
                 EventKillPoints = (int)MaxEventIntegration;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
             TungstenRiotIsOngoing = false;
             EventKillPoints = 0;
             EventNetWorkSend();
-            CWRUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_2"), MainColor);
+            VaultUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_2"), MainColor);
         }
 
         public void TungstenKillNPC(NPC npc) {

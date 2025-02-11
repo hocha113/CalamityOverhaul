@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content
                     "请自行前往magicStorage的模组设置中将RecursionCraftingDepth调整为0并保存!";
                 string errorText2 = "Abnormal composition task call detected, RecursionCraftingDepth has been set to 0, " +
                     "this defensive change is temporary, please go to magicStorage's module Settings to adjust RecursionCraftingDepth to 0 and save!";
-                CWRUtils.Text(VaultUtils.Translation(errorText, errorText2), Color.Red);
+                VaultUtils.Text(VaultUtils.Translation(errorText, errorText2), Color.Red);
                 ModGanged.MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
             }
         }

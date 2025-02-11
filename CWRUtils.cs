@@ -48,10 +48,10 @@ namespace CalamityOverhaul
                 color = Color.White;
             }
             if (obj == null) {
-                Text("ERROR Is Null", Color.Red);
+                VaultUtils.Text("ERROR Is Null", Color.Red);
                 return;
             }
-            Text(obj.ToString(), color);
+            VaultUtils.Text(obj.ToString(), color);
         }
 
         /// <summary>
@@ -376,39 +376,6 @@ namespace CalamityOverhaul
                 for (int j = 0; j < 10; j++) {
                     Dust.NewDust(npcAtIndex.position, npcAtIndex.width, npcAtIndex.height, DustID.Electric);
                 }
-            }
-        }
-
-        public static void SpawnGunDust(Projectile projectile, Vector2 pos, Vector2 velocity, int splNum = 1) {
-            if (Main.myPlayer != projectile.owner) return;
-
-            pos += velocity.SafeNormalize(Vector2.Zero) * projectile.width * projectile.scale * 0.71f;
-            for (int i = 0; i < 30 * splNum; i++) {
-                int dustID;
-                switch (Main.rand.Next(6)) {
-                    case 0:
-                        dustID = 262;
-                        break;
-                    case 1:
-                    case 2:
-                        dustID = 54;
-                        break;
-                    default:
-                        dustID = 53;
-                        break;
-                }
-                float num = Main.rand.NextFloat(3f, 13f) * splNum;
-                float angleRandom = 0.06f;
-                Vector2 dustVel = new Vector2(num, 0f).RotatedBy((double)velocity.ToRotation(), default);
-                dustVel = dustVel.RotatedBy(0f - angleRandom);
-                dustVel = dustVel.RotatedByRandom(2f * angleRandom);
-                if (Main.rand.NextBool(4)) {
-                    dustVel = Vector2.Lerp(dustVel, -Vector2.UnitY * dustVel.Length(), Main.rand.NextFloat(0.6f, 0.85f)) * 0.9f;
-                }
-                float scale = Main.rand.NextFloat(0.5f, 1.5f);
-                int idx = Dust.NewDust(pos, 1, 1, dustID, dustVel.X, dustVel.Y, 0, default, scale);
-                Main.dust[idx].noGravity = true;
-                Main.dust[idx].position = pos;
             }
         }
 
@@ -845,32 +812,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 快速从模组本地化文件中设置对应物品的名称
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="key"></param>
-        public static void EasySetLocalTextNameOverride(this Item item, string key) {
-            if (Main.GameModeInfo.IsJourneyMode) {
-                return;
-            }
-            item.SetNameOverride(Language.GetText($"Mods.CalamityOverhaul.Items.{key}.DisplayName").Value);
-        }
-
-        /// <summary>
-        /// 在游戏中发送文本消息
-        /// </summary>
-        /// <param name="message">要发送的消息文本</param>
-        /// <param name="colour">（可选）消息的颜色,默认为 null</param>
-        public static void Text(string message, Color? colour = null) {
-            Color newColor = (Color)(colour == null ? Color.White : colour);
-            if (Main.netMode == NetmodeID.Server) {
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), (Color)(colour == null ? Color.White : colour));
-                return;
-            }
-            Main.NewText(message, newColor);
-        }
-
-        /// <summary>
         /// 快速修改一个物品的简介文本，从<see cref="CWRLocText"/>中拉取资源
         /// </summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
@@ -926,7 +867,7 @@ namespace CalamityOverhaul
 
         public static CWRItems CWR(this Item item) {
             if (item.type == ItemID.None) {
-                Text("ERROR!发生了一次空传递，该物品为None!");
+                VaultUtils.Text("ERROR!发生了一次空传递，该物品为None!");
                 CWRMod.Instance.Logger.Info("ERROR!发生了一次空传递，该物品为None!");
                 return null;
             }
@@ -1023,16 +964,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 比较两个角度之间的差异，将结果限制在 -π 到 π 的范围内
-        /// </summary>
-        /// <param name="baseAngle">基准角度（参考角度）</param>
-        /// <param name="targetAngle">目标角度（待比较角度）</param>
-        /// <returns>从基准角度到目标角度的差异，范围在 -π 到 π 之间</returns>
-        public static float CompareAngle(float baseAngle, float targetAngle) {
-            return ((baseAngle - targetAngle + ((float)Math.PI * 3)) % MathHelper.TwoPi) - (float)Math.PI;// 计算两个角度之间的差异并将结果限制在 -π 到 π 的范围内
-        }
-
-        /// <summary>
         /// 色彩混合
         /// </summary>
         public static Color RecombinationColor(params (Color color, float weight)[] colorWeightPairs) {
@@ -1062,50 +993,11 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 计算两个向量的点积
-        /// </summary>
-        public static float DotProduct(this Vector2 vr1, Vector2 vr2) {
-            return (vr1.X * vr2.X) + (vr1.Y * vr2.Y);
-        }
-
-        /// <summary>
         /// 检测索引的合法性
         /// </summary>
         /// <returns>合法将返回 <see cref="true"/></returns>
         public static bool ValidateIndex(this int index, Array array) {
             return index >= 0 && index < array.Length;
-        }
-
-        /// <summary>
-        /// 检测索引的合法性
-        /// </summary>
-        public static bool ValidateIndex(this int index, int cap) {
-            return index >= 0 && index < cap;
-        }
-
-        /// <summary>
-        /// 会自动替补-1元素
-        /// </summary>
-        /// <param name="list">目标集合</param>
-        /// <param name="valueToAdd">替换为什么值</param>
-        /// <param name="valueToReplace">替换的目标对象的值，不填则默认为-1</param>
-        public static void AddOrReplace(this List<int> list, int valueToAdd, int valueToReplace = -1) {
-            int index = list.IndexOf(valueToReplace);
-            if (index >= 0) {
-                list[index] = valueToAdd;
-            }
-            else {
-                list.Add(valueToAdd);
-            }
-        }
-
-        /// <summary>
-        /// 返回一个集合的筛选副本，排除数默认为-1，该扩展方法不会影响原集合
-        /// </summary>
-        public static List<int> GetIntList(this List<int> list, int valueToReplace = -1) {
-            List<int> result = new(list);
-            _ = result.RemoveAll(item => item == -1);
-            return result;
         }
 
         /// <summary>

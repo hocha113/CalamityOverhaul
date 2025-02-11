@@ -56,8 +56,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal ref float ai9 => ref ai[9];
         internal ref float ai10 => ref ai[10];
         internal ref float ai11 => ref ai[11];
-        internal float ai12;
-        internal float ai13;
         internal static bool canLoaderAssetZunkenUp;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;

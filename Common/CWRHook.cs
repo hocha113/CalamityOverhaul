@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Common
             }
             if (hookDownNum > 0) {
                 string hookDownText1 = $"{hookDownNum} " + CWRLocText.GetTextValue("Error_1");
-                CWRUtils.Text(hookDownText1, Color.Red);
+                VaultUtils.Text(hookDownText1, Color.Red);
                 return false;
             }
             return true;

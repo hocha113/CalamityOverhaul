@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Common
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {
             string text = CWRLocText.GetTextValue("Config_1")
                 + Main.player[whoAmI].name + CWRLocText.GetTextValue("Config_2");
-            CWRUtils.Text(text);
+            VaultUtils.Text(text);
             return true;
         }
     }
