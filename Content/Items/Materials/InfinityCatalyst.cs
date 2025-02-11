@@ -2,11 +2,9 @@
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Tiles;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -63,28 +61,14 @@ namespace CalamityOverhaul.Content.Items.Materials
             return true;
         }
 
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
-        }
-
         public static int QFD(int num) => (int)(num * QFH);
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient<Rock>(1)//古恒石
                 .AddIngredient<MiracleMatter>(QFD(5))//奇迹物质
                 .AddIngredient<ExoPrism>(QFD(5))//星流棱晶
-                .AddIngredient<AuricBar>(QFD(5))//圣金源锭
-                .AddIngredient<ShadowspecBar>(QFD(5))//影魔锭
                 .AddIngredient<AshesofAnnihilation>(QFD(5))//至尊灾厄精华
                 .AddIngredient<YharonSoulFragment>(QFD(5))//龙魂
-                .AddIngredient<AerialiteBar>(QFD(5))//水华锭
-                .AddIngredient<AstralBar>(QFD(5))//彗星锭
-                .AddIngredient<CosmiliteBar>(QFD(5))//宇宙锭
-                .AddIngredient<CryonicBar>(QFD(5))//极寒锭
-                .AddIngredient<PerennialBar>(QFD(5))//永恒锭
-                .AddIngredient<UelibloomBar>(QFD(5))//龙篙锭
-                .AddIngredient<ScoriaBar>(QFD(5))//岩浆锭
-                .AddIngredient<PestilenceIngot>(QFD(5))//瘟疫锭
                 .AddIngredient<DarkPlasma>(QFD(10))//暗物质
                 .AddIngredient<TwistingNether>(QFD(10))//扭曲虚空
                 .AddIngredient<ArmoredShell>(QFD(10))//装甲心脏
@@ -107,11 +91,6 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<UnholyEssence>(QFD(50))//灼火精华
                 .AddTile(TileType<DarkMatterCompressor>())
                 .Register();
-        }
-
-        public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
-            item.CWR().NoDestruct = true;
-            SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pewatermagic"));
         }
     }
 }

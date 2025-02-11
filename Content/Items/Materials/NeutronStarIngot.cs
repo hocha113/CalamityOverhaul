@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void AddRecipes() {
             CreateRecipe()
+                .AddIngredient(ItemID.MeteoriteBar)
+                .AddIngredient(ItemID.PlatinumBar)
                 .AddIngredient(ItemID.LunarBar)
                 .AddIngredient(ItemID.SpectreBar)
                 .AddIngredient(ItemID.ChlorophyteBar)

@@ -24,6 +24,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> LightShotAlt;
         public static Asset<Texture2D> Airflow;
         public static Asset<Texture2D> Extra_193;
+        public static Asset<Texture2D> DraedonContactPanel;
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -42,6 +43,7 @@ namespace CalamityOverhaul
             LightShotAlt = CWRUtils.GetT2DAsset(CWRConstant.Masking + "LightShotAlt");
             Airflow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Airflow");
             Extra_193 = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_193");
+            DraedonContactPanel = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonSummoning/DraedonContactPanel");
         }
         void ICWRLoader.UnLoadData() {
             icon_small = null;
@@ -60,6 +62,7 @@ namespace CalamityOverhaul
             LightShot = null;
             Airflow = null;
             Extra_193 = null;
+            DraedonContactPanel = null;
         }
     }
 }

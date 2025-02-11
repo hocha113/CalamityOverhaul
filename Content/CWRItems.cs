@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
@@ -15,6 +14,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content
 {
@@ -503,6 +503,21 @@ namespace CalamityOverhaul.Content
                 line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f, Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
                 tooltips.Add(line);
             }
+        }
+
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset) {
+            if (line.Mod == "CalamityMod" && line.Name == "CalamityCharge") {
+                Texture2D value = CWRAsset.DraedonContactPanel.Value;
+                VaultUtils.DrawBorderedRectangle(Main.spriteBatch, value, 4
+                    , new Vector2(line.X, line.Y), 200, 28, Color.White, Color.White * 0, 1);
+                Color color = VaultUtils.MultiStepColorLerp(item.Calamity().ChargeRatio, Color.Red, Color.SeaGreen);
+                VaultUtils.DrawBorderedRectangle(Main.spriteBatch, value, 4
+                    , new Vector2(line.X, line.Y), (int)(200 * item.Calamity().ChargeRatio), 28, Color.White * 0, color, 1);
+                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, new Vector2(line.X + 16, line.Y + 6)
+                , Color.White, line.Rotation, line.Origin, line.BaseScale * 0.8f, line.MaxWidth, line.Spread);
+                return false;
+            }
+            return base.PreDrawTooltipLine(item, line, ref yOffset);
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
