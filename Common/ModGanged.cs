@@ -2,9 +2,11 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Mdb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,7 +124,16 @@ namespace CalamityOverhaul.Common
         private static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
 
         void ICWRLoader.LoadData() {
-            #region
+            #region Coralite
+            if (CWRMod.Instance.coralite != null) {
+                CWRMod.Instance.coralite.Call("MagikeRecipe:CreateRecipe", "CalamityOverhaul/WastelandFang", "CalamityOverhaul/SandDagger", 1, 1, 1, null);
+            }
+            else {
+                LogModNotLoaded("Coralite");
+            }
+            #endregion
+
+            #region luiafk
             if (CWRMod.Instance.luiafk != null) {
                 Type luiAFKConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.luiafk), "LuiAFKConfig");
                 LuiAFKConfig_RangerAmmoInfo = luiAFKConfigType.GetField("rangerAmmo", BindingFlags.Public | BindingFlags.Instance);

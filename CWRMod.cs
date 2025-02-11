@@ -50,6 +50,7 @@ namespace CalamityOverhaul
         internal Mod gravityDontFlipScreen = null;
         internal Mod infernum = null;
         internal Mod ddmod = null;
+        internal Mod coralite = null;
 
         #endregion
 
@@ -150,6 +151,7 @@ namespace CalamityOverhaul
             gravityDontFlipScreen = null;
             infernum = null;
             ddmod = null;
+            coralite = null;
         }
 
         public void FindMod() {
@@ -172,6 +174,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("GravityDontFlipScreen", out gravityDontFlipScreen);
             ModLoader.TryGetMod("InfernumMode", out infernum);
             ModLoader.TryGetMod("DDmod", out ddmod);
+            ModLoader.TryGetMod("Coralite", out coralite);
         }
     }
 }

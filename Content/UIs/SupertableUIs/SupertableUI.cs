@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
 
                 string targetItemFullName = value[^1];
-                int targetItemID = InStrGetItemType(targetItemFullName);
+                int targetItemID = VaultUtils.GetItemTypeFromFullName(targetItemFullName);
 
                 // 检查目标合成结果是否有效
                 if (targetItemFullName != "Null/Null" && targetItemID == ItemID.None) {
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 foreach (var recipes in OtherRpsData_ZenithWorld_StringList) {
                     RecipeData recipeData = new RecipeData {
                         Values = recipes,
-                        Target = InStrGetItemType(recipes[recipes.Length - 1])
+                        Target = VaultUtils.GetItemTypeFromFullName(recipes[recipes.Length - 1])
                     };
                     AllRecipes.Add(recipeData);
                 }
@@ -332,28 +332,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static void PlayGrabSound() => SoundEngine.PlaySound(SoundID.Grab);
 
         /// <summary>
-        /// 解析字符串键并获取对应的物品类型
-        /// </summary>
-        /// <param name="key">用于解析的字符串键，可以是整数类型或模组/物品名称的组合</param>
-        /// <returns>解析后得到的物品类型</returns>
-        public static int InStrGetItemType(string key, bool loadVanillaItem = false) {
-            if (key == "Null/Null") {
-                return ItemID.None;
-            }
-
-            if (int.TryParse(key, out int intValue)) {
-                if (loadVanillaItem && !VaultUtils.isServer) {
-                    Main.instance.LoadItem(intValue);
-                }
-                return (intValue);
-            }
-            else {
-                string[] fruits = key.Split('/');
-                return ModLoader.GetMod(fruits[0]).Find<ModItem>(fruits[1]).Type;
-            }
-        }
-
-        /// <summary>
         /// 解析字符串键并获取对应的物品实例
         /// </summary>
         /// <param name="key">用于解析的字符串键，可以是整数类型或模组/物品名称的组合</param>
@@ -383,7 +361,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             int[] toValueTypes = new int[arg.Length];
             for (int i = 0; i < arg.Length; i++) {
                 string value = arg[i];
-                toValueTypes[i] = InStrGetItemType(value);
+                toValueTypes[i] = VaultUtils.GetItemTypeFromFullName(value);
             }
             return toValueTypes;
         }

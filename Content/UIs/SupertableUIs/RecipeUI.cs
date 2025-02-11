@@ -135,7 +135,7 @@ End:;
                 if (names != null) {
                     for (int i = 0; i < 81; i++) {
                         string value = names[i];
-                        SupertableUI.Instance.previewItems[i] = new Item(SupertableUI.InStrGetItemType(value, true));
+                        SupertableUI.Instance.previewItems[i] = new Item(VaultUtils.GetItemTypeFromFullName(value, true));
                     }
                 }
                 else {
