@@ -1315,24 +1315,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 使用反射来设置 _uImage2。它的底层数据是私有的，唯一可以公开更改它的方式是通过一个只接受原始纹理路径的方法
-        /// </summary>
-        /// <param name="shader">着色器</param>
-        /// <param name="texture">要使用的纹理</param>
-        public static void SetMiscShaderAsset_2(this MiscShaderData shader, Asset<Texture2D> texture) {
-            EffectLoader.Shader_Texture_FieldInfo_2.SetValue(shader, texture);
-        }
-
-        /// <summary>
-        /// 使用反射来设置 _uImage3。它的底层数据是私有的，唯一可以公开更改它的方式是通过一个只接受原始纹理路径的方法
-        /// </summary>
-        /// <param name="shader">着色器</param>
-        /// <param name="texture">要使用的纹理</param>
-        public static void SetMiscShaderAsset_3(this MiscShaderData shader, Asset<Texture2D> texture) {
-            EffectLoader.Shader_Texture_FieldInfo_3.SetValue(shader, texture);
-        }
-
-        /// <summary>
         /// 任意设置 <see cref=" SpriteBatch "/> 的 <see cref=" BlendState "/>
         /// </summary>
         /// <param name="spriteBatch">绘制模式</param>

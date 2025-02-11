@@ -19,8 +19,6 @@ namespace CalamityOverhaul.Common
         public static ArmorShaderData InShootGlowShader;
 
         internal static FieldInfo Shader_Texture_FieldInfo_1;
-        internal static FieldInfo Shader_Texture_FieldInfo_2;
-        internal static FieldInfo Shader_Texture_FieldInfo_3;
 
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
@@ -55,8 +53,6 @@ namespace CalamityOverhaul.Common
             Instance = this;
 
             Shader_Texture_FieldInfo_1 = miscShaderGetFieldInfo("_uImage1");
-            Shader_Texture_FieldInfo_2 = miscShaderGetFieldInfo("_uImage2");
-            Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
 
             On_FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
@@ -67,8 +63,6 @@ namespace CalamityOverhaul.Common
             StreamerDustShader = null;
             InShootGlowShader = null;
             Shader_Texture_FieldInfo_1 = null;
-            Shader_Texture_FieldInfo_2 = null;
-            Shader_Texture_FieldInfo_3 = null;
 
             screen = null;
 
