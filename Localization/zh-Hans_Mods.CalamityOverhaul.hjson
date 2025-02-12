@@ -908,15 +908,8 @@ Projectiles: {
 	BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
 	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
 	DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
-	DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
-	DragonRageHeld.DisplayName: Dragon Rage Held
-	EarlierSwordHeld.DisplayName: Earlier Sword Held
 	GiantBansheeScythe.DisplayName: Giant Banshee Scythe
-	HolyColliderHeld.DisplayName: Holy Collider Held
 	LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
-	PhasebladeHeld.DisplayName: Phaseblade Held
-	TerrorBladeHeld.DisplayName: Terror Blade Held
-	TheBurningSkyHeld.DisplayName: The Burning Sky Held
 	WraithBeam.DisplayName: Wraith Beam
 	HolyColliderExFire.DisplayName: Holy Collider Ex Fire
 	HyperBlade.DisplayName: Hyper Blade
@@ -1086,6 +1079,7 @@ Projectiles: {
 	// GeminisTributeEXHeld.DisplayName: Geminis Tribute E X Held
 	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	// DicoriaRay.DisplayName: Dicoria Ray
+	// EarlierSwordHeld.DisplayName: Earlier Sword Held
 }
 
 Configs: {
@@ -4828,7 +4822,7 @@ RemakeItems: {
 
 	RMineralSword9: {
 		DisplayName: 仙人掌剑
-		Tooltip: ""
+		Tooltip: 穿着全套仙人掌套装时，可以发射仙人掌球
 	}
 
 	RMinishark: {

@@ -896,15 +896,8 @@ Projectiles: {
 	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
 	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
 	// DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
-	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
-	// DragonRageHeld.DisplayName: Dragon Rage Held
-	// EarlierSwordHeld.DisplayName: Earlier Sword Held
 	// GiantBansheeScythe.DisplayName: Giant Banshee Scythe
-	// HolyColliderHeld.DisplayName: Holy Collider Held
 	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
-	// PhasebladeHeld.DisplayName: Phaseblade Held
-	// TerrorBladeHeld.DisplayName: Terror Blade Held
-	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
 	// WraithBeam.DisplayName: Wraith Beam
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
 	// HyperBlade.DisplayName: Hyper Blade
@@ -961,9 +954,9 @@ Projectiles: {
 	// BarracudaProj.DisplayName: Barracuda Proj
 	// BarrenOrb.DisplayName: Barren Orb
 	// BloodVerdict.DisplayName: Blood Verdict
-	// BMGBullet.DisplayName: B M G Bullet
-	// BMGFIRE.DisplayName: B M G F I R E
-	// BMGFIRE2.DisplayName: B M G F I R E2
+	// BMGBullet.DisplayName: BMG Bullet
+	// BMGFIRE.DisplayName: BMGFIRE
+	// BMGFIRE2.DisplayName: BMGFIRE2
 	// Crystal.DisplayName: Crystal
 	// CursedDartRemake.DisplayName: Cursed Dart Remake
 	// DeadArrow.DisplayName: Dead Arrow
@@ -988,8 +981,8 @@ Projectiles: {
 	// IceSoulOrb.DisplayName: Ice Soul Orb
 	// LostSoulBullet.DisplayName: Lost Soul Bullet
 	// MarbleBullet.DisplayName: Marble Bullet
-	// EXNeutronArrow.DisplayName: E X Neutron Arrow
-	// EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
+	// EXNeutronArrow.DisplayName: EX Neutron Arrow
+	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion Ranged
 	// NeutronArrow.DisplayName: Neutron Arrow
 	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
 	// NeutronLaser.DisplayName: Neutron Laser
@@ -1074,6 +1067,7 @@ Projectiles: {
 	// GeminisTributeEXHeld.DisplayName: Geminis Tribute E X Held
 	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	// DicoriaRay.DisplayName: Dicoria Ray
+	// EarlierSwordHeld.DisplayName: Earlier Sword Held
 }
 
 Configs: {

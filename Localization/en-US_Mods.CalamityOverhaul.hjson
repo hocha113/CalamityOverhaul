@@ -1070,6 +1070,7 @@ Projectiles: {
 	GeminisTributeEXHeld.DisplayName: Geminis Tribute E X Held
 	PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	DicoriaRay.DisplayName: Dicoria Ray
+	EarlierSwordHeld.DisplayName: Earlier Sword Held
 }
 
 Configs: {

@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -438,6 +439,10 @@ namespace CalamityOverhaul.Content
             }
         }
         #endregion
+
+        public override string IsArmorSet(Item head, Item body, Item legs) {
+            return base.IsArmorSet(head, body, legs);
+        }
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
