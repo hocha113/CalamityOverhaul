@@ -136,7 +136,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SpriteEffects.None,
                 0
                 );
-            Main.spriteBatch.ResetBlendState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
     }

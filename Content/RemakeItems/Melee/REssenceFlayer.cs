@@ -6,7 +6,7 @@ using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Healing;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;

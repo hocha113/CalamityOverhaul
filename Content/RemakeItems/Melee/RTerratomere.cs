@@ -5,7 +5,7 @@ using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Healing;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;

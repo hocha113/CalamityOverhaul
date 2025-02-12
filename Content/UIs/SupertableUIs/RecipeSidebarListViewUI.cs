@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;
-            spriteBatch.ResetUICanvasState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
         }
     }
 }

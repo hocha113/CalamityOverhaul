@@ -13,7 +13,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
+namespace CalamityOverhaul.Content.MeleeModify.Core
 {
     internal abstract class BaseSwing : BaseHeldProj
     {
@@ -39,11 +39,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 对应的武器近战缩放
         /// </summary>
-        public float MeleeSize => AffectedMeleeSize ? (_meleeSize * OtherMeleeSize) : 1f;
+        public float MeleeSize => AffectedMeleeSize ? _meleeSize * OtherMeleeSize : 1f;
         /// <summary>
         /// 近战缩放对应的渐进中间值
         /// </summary>
-        protected float meleeSizeAsymptotic => (1 + (MeleeSize - 1f) / 2f);
+        protected float meleeSizeAsymptotic => 1 + (MeleeSize - 1f) / 2f;
         /// <summary>
         /// 刀光弧度全局缩放，默认为1
         /// </summary>
@@ -686,10 +686,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 float rotate = oldRotate[i] % MathHelper.TwoPi;
                 float twistOrientation = (rotate >= MathHelper.Pi ? rotate - MathHelper.Pi : rotate + MathHelper.Pi) / MathHelper.TwoPi;
 
-                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() *
-                    (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
-                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() *
-                    (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
+                Vector2 Top = Center + oldRotate[i].ToRotationVector2() *
+                    (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
+                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() *
+                    (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
 
                 bars.Add(new ColoredVertex(Top, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 0f, w)));
                 bars.Add(new ColoredVertex(Bottom, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 1f, w)));
@@ -796,8 +796,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 float factor = 1f - i / count;
                 Vector2 Center = GetInOwnerDrawOrigPosition();
-                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
-                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
+                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
+                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
 
                 var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
                 var bottomColor = Color.Lerp(new Color(109, 73, 86, 200), new Color(83, 16, 85, 0), 1 - factor);

@@ -114,10 +114,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             effect.Parameters["set"].SetValue(set && onFireR);
             effect.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default
+                , RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
             var rec = CWRUtils.GetRec(texRing, -texRing.Width / 2, -texRing.Height / 2, texRing.Width * 2, texRing.Height * 2);
             Main.spriteBatch.Draw(texRing, drawpos, rec, Color.White, MathHelper.PiOver2, rec.Size() / 2, size, SpriteEffects.None, 0);
-            Main.spriteBatch.ResetBlendState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }

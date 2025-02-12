@@ -641,7 +641,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             if (GlowTexPath != "") {
-                Texture2D glowTex = CWRUtils.GetT2DValue(GlowTexPath);
+                Texture2D glowTex = RangedLoader.TypeToGlowAsset[GetType()].Value;
                 Main.EntitySpriteDraw(glowTex, drawPos, null, Color.White
                 , Projectile.rotation + offsetRot, glowTex.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

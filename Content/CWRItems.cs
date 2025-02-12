@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
@@ -8,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -46,12 +48,13 @@ namespace CalamityOverhaul.Content
     {
         #region Date
         public override bool InstancePerEntity => true;
+        public const int MaxAISlot = 3;
         /// <summary>
         /// 用于存储物品的状态值，对这个数组的使用避免了额外类成员的创建
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
-        public float[] ai = [0, 0, 0];
+        public float[] ai = new float[MaxAISlot];
         /// <summary>
         /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_AllowPreFix(Item, int)"/>
         /// </summary>
@@ -87,45 +90,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool hasHeldNoCanUseBool;
         /// <summary>
-        /// 是否已经装好了弹药，一般来讲，该字段用于存储可装弹式手持弹幕的装弹状态
-        /// </summary>
-        public bool IsKreload;
-        /// <summary>
-        /// 该物品是否具有弹夹系统
-        /// </summary>
-        public bool HasCartridgeHolder;
-        /// <summary>
-        /// 使用的弹匣UI类型
-        /// </summary>
-        public CartridgeUIEnum CartridgeType;
-        /// <summary>
-        /// 特种状态
-        /// </summary>
-        public SpecialAmmoStateEnum SpecialAmmoState;
-        /// <summary>
-        /// 弹匣内容，管理装填后的弹药部分
-        /// </summary>
-        internal Item[] MagazineContents;
-        /// <summary>
-        /// 该物品对应的剩余子弹数量，一般用于给手持枪械弹幕访问
-        /// </summary>
-        public int NumberBullets;
-        /// <summary>
-        /// 该物品的弹容量
-        /// </summary>
-        public int AmmoCapacity;
-        /// <summary>
-        /// 大于0时不可以装弹
-        /// </summary>
-        public int NoKreLoadTime;
-        /// <summary>
         /// 该物品是否可以开启侦察
         /// </summary>
         public bool Scope;
-        /// <summary>
-        /// 退弹时，该物品是否返还
-        /// </summary>
-        public bool AmmoProjectileReturn;
         /// <summary>
         /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
         /// </summary>
@@ -151,9 +118,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal string[] OmigaSnyContent;
         /// <summary>
-        /// 用于动态开关该合成指示UI的变量
+        /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
-        internal bool DrawOmigaSnyUIBool;
+        public LegendData LegendData;
         /// <summary>
         /// 是一把弓
         /// </summary>
@@ -175,9 +142,41 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool DeathModeItem;
         /// <summary>
-        /// 被传奇武器所使用，用于保存一些数据
+        /// 该物品对应的剩余子弹数量，一般用于给手持枪械弹幕访问
         /// </summary>
-        public LegendData LegendData;
+        public int NumberBullets;
+        /// <summary>
+        /// 该物品的弹容量
+        /// </summary>
+        public int AmmoCapacity;
+        /// <summary>
+        /// 大于0时不可以装弹
+        /// </summary>
+        public int NoKreLoadTime;
+        /// <summary>
+        /// 退弹时，该物品是否返还
+        /// </summary>
+        public bool AmmoProjectileReturn;
+        /// <summary>
+        /// 是否已经装好了弹药，一般来讲，该字段用于存储可装弹式手持弹幕的装弹状态
+        /// </summary>
+        public bool IsKreload;
+        /// <summary>
+        /// 该物品是否具有弹夹系统
+        /// </summary>
+        public bool HasCartridgeHolder;
+        /// <summary>
+        /// 使用的弹匣UI类型
+        /// </summary>
+        public CartridgeUIEnum CartridgeType;
+        /// <summary>
+        /// 特种状态
+        /// </summary>
+        public SpecialAmmoStateEnum SpecialAmmoState;
+        /// <summary>
+        /// 弹匣内容，管理装填后的弹药部分
+        /// </summary>
+        internal Item[] MagazineContents;
         #endregion
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
@@ -202,7 +201,6 @@ namespace CalamityOverhaul.Content
             cwr.NoDestruct = NoDestruct;
             cwr.destructTime = destructTime;
             cwr.OmigaSnyContent = OmigaSnyContent;
-            cwr.DrawOmigaSnyUIBool = DrawOmigaSnyUIBool;
             cwr.IsBow = IsBow;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             cwr.LegendData = LegendData;
@@ -229,6 +227,8 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
+
+            ai = new float[MaxAISlot];
 
             InitializeMagazine();
             SmiperItemSet(item);
@@ -368,6 +368,74 @@ namespace CalamityOverhaul.Content
             }
             SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
             AmmoViewUI.Instance.LoadAmmos(this);
+        }
+        #endregion
+
+        #region NetWork
+        public override void NetSend(Item item, BinaryWriter writer) {
+            LegendData?.NetSend(item, writer);
+
+            if (ai == null) {
+                ai = new float[MaxAISlot];
+            }
+            for (int i = 0; i < MaxAISlot; i++) {
+                writer.Write(ai[i]);
+            }
+
+            if (HasCartridgeHolder) {
+                if (MagazineContents == null) {
+                    InitializeMagazine();
+                }
+                writer.Write(NumberBullets);
+                writer.Write(NoKreLoadTime);
+                writer.Write(AmmoProjectileReturn);
+                writer.Write(IsKreload);
+                writer.Write((byte)SpecialAmmoState);
+                int count = 0;
+                foreach (var ammo in MagazineContents) {
+                    if (ammo.type == ItemID.None || ammo.stack <= 0) {
+                        continue;
+                    }
+                    count++;
+                }
+                writer.Write(count);
+                foreach (var ammo in MagazineContents) {
+                    if (ammo.type == ItemID.None || ammo.stack <= 0) {
+                        continue;
+                    }
+
+                    writer.Write(ammo.type);
+                    writer.Write(ammo.stack);
+                    writer.Write(ammo.CWR().AmmoProjectileReturn);
+                }
+            }
+        }
+
+        public override void NetReceive(Item item, BinaryReader reader) {
+            LegendData?.NetReceive(item, reader);
+
+            if (ai == null) {
+                ai = new float[MaxAISlot];
+            }
+            for (int i = 0; i < MaxAISlot; i++) {
+                ai[i] = reader.ReadSingle();
+            }
+
+            if (HasCartridgeHolder) {
+                NumberBullets = reader.ReadInt32();
+                NoKreLoadTime = reader.ReadInt32();
+                AmmoProjectileReturn = reader.ReadBoolean();
+                IsKreload = reader.ReadBoolean();
+                SpecialAmmoState = (SpecialAmmoStateEnum)reader.ReadByte();
+                List<Item> list = new List<Item>();
+                int count = reader.ReadInt32();
+                for (int i = 0; i < count; i++) {
+                    Item ammo = new Item(reader.ReadInt32(), reader.ReadInt32());
+                    ammo.CWR().AmmoProjectileReturn = reader.ReadBoolean();
+                    list.Add(ammo);
+                }
+                MagazineContents = list.ToArray();
+            }
         }
         #endregion
 

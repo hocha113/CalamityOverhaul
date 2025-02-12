@@ -66,18 +66,6 @@ namespace CalamityOverhaul
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Melee + "WastelandFang");
-            Effect effect = CWRUtils.GetEffectValue("DeductDraw");
-            Rectangle deductRec = new Rectangle(0, 0, value.Width, value.Height / 2);
-            effect.CurrentTechnique.Passes[0].Apply();
-            effect.Parameters["topLeft"].SetValue(deductRec.TopLeft());
-            effect.Parameters["width"].SetValue(deductRec.Width);
-            effect.Parameters["height"].SetValue(deductRec.Height);
-            effect.Parameters["textureSize"].SetValue(value.Size());
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-            Main.spriteBatch.Draw(value, Item.position - Main.screenPosition, null, Color.White, Main.GameUpdateCount * 0.1f, value.Size() / 2, 1, SpriteEffects.FlipVertically, 0);
-            Main.spriteBatch.ResetBlendState();
             return false;
         }
 

@@ -7,7 +7,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
+namespace CalamityOverhaul.Content.MeleeModify.Core
 {
     internal abstract class BaseKnife : BaseSwing
     {

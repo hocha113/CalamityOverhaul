@@ -121,7 +121,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             if (slp2 < 0.1f)
                 slp2 = 0;
 
-            Main.spriteBatch.SetAdditiveState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             for (int i = 0; i < 8; i++)
                 Main.EntitySpriteDraw(
                     mainValue,
@@ -133,7 +135,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     Projectile.scale * (1 + slp2 * 0.08f),
                     Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                     );
-            Main.spriteBatch.ResetBlendState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
             Main.EntitySpriteDraw(
                 mainValue,

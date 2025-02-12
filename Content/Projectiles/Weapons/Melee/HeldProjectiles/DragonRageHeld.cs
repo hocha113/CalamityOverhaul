@@ -1,10 +1,11 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class DragonRageHeld : BaseSwing
     {
+        public override int TargetID => ModContent.ItemType<DragonRage>();
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";

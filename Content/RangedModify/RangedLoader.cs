@@ -1,6 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RangedModify.UI;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -12,13 +15,25 @@ namespace CalamityOverhaul.Content.RangedModify
     {
         public delegate Item On_ChooseAmmo_Delegate(object obj, Item weapon);
         public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
+        public static Dictionary<Type, Asset<Texture2D>> TypeToGlowAsset { get; private set; } = [];
         void ICWRLoader.LoadData() {
             GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
         }
+        void ICWRLoader.LoadAsset() {
+            var indss = VaultUtils.GetSubclassInstances<BaseHeldRanged>();
+            TypeToGlowAsset = [];
+            foreach (var ranged in indss) {
+                if (ranged.GlowTexPath != "") {
+                    TypeToGlowAsset.Add(ranged.GetType(), CWRUtils.GetT2DAsset(ranged.GlowTexPath));
+                }
+            }
+            indss.Clear();
+        }
         void ICWRLoader.UnLoadData() {
             GlobalRangeds?.Clear();
+            TypeToGlowAsset?.Clear();
         }
 
         private static void ModifyInCartridgeGun(Item weapon, ref Item ammo) {
@@ -46,14 +61,16 @@ namespace CalamityOverhaul.Content.RangedModify
         }
 
         private static void ModifyInBow(Item weapon, ref Item ammo) {
-            if (!CWRLoad.ItemIsBow[weapon.type] && !CWRLoad.ItemIsCrossBow[weapon.type]) {
+            if (!GlobalBow.BowActive) {
                 return;
             }
+
             if (ArrowHolderUI.targetAmmo == null
                 || ArrowHolderUI.targetAmmo.type == ItemID.None
                 || ArrowHolderUI.targetAmmo.ammo != AmmoID.Arrow) {
                 return;
             }
+
             foreach (var item in Main.LocalPlayer.inventory) {
                 if (item.type != ArrowHolderUI.targetAmmo.type) {
                     continue;

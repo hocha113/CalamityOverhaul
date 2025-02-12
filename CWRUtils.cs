@@ -1122,7 +1122,6 @@ namespace CalamityOverhaul
 
         #region DrawUtils
 
-        #region 普通绘制工具
         /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>
@@ -1303,55 +1302,6 @@ namespace CalamityOverhaul
 
         #endregion
 
-        #region 高级绘制工具
-
-        /// <summary>
-        /// 使用反射来设置 _uImage1。它的底层数据是私有的，唯一可以公开更改它的方式是通过一个只接受原始纹理路径的方法
-        /// </summary>
-        /// <param name="shader">着色器</param>
-        /// <param name="texture">要使用的纹理</param>
-        public static void SetMiscShaderAsset_1(this MiscShaderData shader, Asset<Texture2D> texture) {
-            EffectLoader.Shader_Texture_FieldInfo_1.SetValue(shader, texture);
-        }
-
-        /// <summary>
-        /// 任意设置 <see cref=" SpriteBatch "/> 的 <see cref=" BlendState "/>
-        /// </summary>
-        /// <param name="spriteBatch">绘制模式</param>
-        /// <param name="blendState">要使用的混合状态</param>
-        public static void ModifyBlendState(this SpriteBatch spriteBatch, BlendState blendState) {
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        /// <summary>
-        /// 将 <see cref="SpriteBatch"/> 的 <see cref="BlendState"/> 重置为典型的 <see cref="BlendState.AlphaBlend"/>。
-        /// </summary>
-        /// <param name="spriteBatch">绘制模式</param>
-        public static void ResetBlendState(this SpriteBatch spriteBatch) {
-            spriteBatch.ModifyBlendState(BlendState.AlphaBlend);
-        }
-
-        /// <summary>
-        /// 将 <see cref="SpriteBatch"/> 的 <see cref="BlendState"/> 设置为 <see cref="BlendState.Additive"/>。
-        /// </summary>
-        /// <param name="spriteBatch">绘制模式</param>
-        public static void SetAdditiveState(this SpriteBatch spriteBatch) {
-            spriteBatch.ModifyBlendState(BlendState.Additive);
-        }
-
-        /// <summary>
-        /// 将 <see cref="SpriteBatch"/> 重置为无效果的UI画布状态，在大多数情况下，这个适合结束一段在UI中的绘制
-        /// </summary>
-        /// <param name="spriteBatch">绘制模式</param>
-        public static void ResetUICanvasState(this SpriteBatch spriteBatch) {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
-        }
-        #endregion
-
-        #endregion
-
         #region TileUtils
         public static void SafeSquareTileFrame(int x, int y, bool resetFrame = true)
             => SafeSquareTileFrame(new Point(x, y), resetFrame);
@@ -1417,54 +1367,6 @@ namespace CalamityOverhaul
         public static Tile GetTile(Vector2 pos) {
             pos = PTransgressionTile(pos);
             return Main.tile[(int)pos.X, (int)pos.Y];
-        }
-
-        #endregion
-
-        #region SoundUtils
-
-        /// <summary>
-        /// 播放声音
-        /// </summary>
-        /// <param name="pos">声音播放的位置</param>
-        /// <param name="sound">要播放的声音样式（SoundStyle）</param>
-        /// <param name="volume">声音的音量</param>
-        /// <param name="pitch">声音的音调</param>
-        /// <param name="pitchVariance">音调的变化范围</param>
-        /// <param name="maxInstances">最大实例数，允许同时播放的声音实例数量</param>
-        /// <param name="soundLimitBehavior">声音限制行为，用于控制当达到最大实例数时的行为</param>
-        /// <returns>返回声音实例的索引</returns>
-        public static SlotId SoundPlayer(
-            Vector2 pos,
-            SoundStyle sound,
-            float volume = 1,
-            float pitch = 1,
-            float pitchVariance = 1,
-            int maxInstances = 1,
-            SoundLimitBehavior soundLimitBehavior = SoundLimitBehavior.ReplaceOldest
-            ) {
-            sound = sound with {
-                Volume = volume,
-                Pitch = pitch,
-                PitchVariance = pitchVariance,
-                MaxInstances = maxInstances,
-                SoundLimitBehavior = soundLimitBehavior
-            };
-
-            SlotId sid = SoundEngine.PlaySound(sound, pos);
-            return sid;
-        }
-
-        /// <summary>
-        /// 更新声音位置
-        /// </summary>
-        public static void PanningSound(Vector2 pos, SlotId sid) {
-            if (!SoundEngine.TryGetActiveSound(sid, out ActiveSound activeSound)) {
-                return;
-            }
-            else {
-                activeSound.Position = pos;
-            }
         }
 
         #endregion

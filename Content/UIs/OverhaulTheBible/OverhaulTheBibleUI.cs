@@ -250,7 +250,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;
-            spriteBatch.ResetUICanvasState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value
                 , 4, viedutRect.TopLeft(), (int)(viedutRect.Width * _sengs), (int)(viedutRect.Height * _sengs), Color.White, Color.White * 0, 1);

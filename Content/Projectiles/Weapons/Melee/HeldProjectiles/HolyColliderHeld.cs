@@ -1,7 +1,8 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class HolyColliderHeld : BaseSwing, IWarpDrawable
     {
+        public override int TargetID => ModContent.ItemType<HolyCollider>();
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override string gradientTexturePath => CWRConstant.ColorBar + "HolyCollider_Bar";
 

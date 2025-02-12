@@ -393,6 +393,12 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            if (GlowTexPath != "") {
+                Texture2D glowTex = RangedLoader.TypeToGlowAsset[GetType()].Value;
+                Main.EntitySpriteDraw(glowTex, drawPos, null, Color.White
+                , Projectile.rotation, glowTex.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            }
         }
 
         public virtual void DeductBowDraw(Vector2 drawPos, ref Color lightColor) {
@@ -410,8 +416,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            if (GlowTexPath != "") {
+                Texture2D glowTex = RangedLoader.TypeToGlowAsset[GetType()].Value;
+                Main.EntitySpriteDraw(glowTex, drawPos, null, Color.White
+                , Projectile.rotation, glowTex.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            }
 
-            Main.spriteBatch.ResetBlendState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public virtual void HanderBowstringTexturePoss(float t, out Vector2 leftTexCoord, out Vector2 rightTexCoord) {
@@ -465,7 +479,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
             BowstringData.DoEffect.GetPathData(BowstringData.Points, Vector2.Zero, 88);
             BowstringData.DoEffect.Draw(TextureValue);
-            Main.spriteBatch.ResetBlendState();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {

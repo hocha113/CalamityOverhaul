@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class TheBurningSkyHeld : BaseKnife
     {
+        public override int TargetID => ModContent.ItemType<TheBurningSky>();
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetKnifeProperty() {

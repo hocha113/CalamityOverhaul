@@ -2,7 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;

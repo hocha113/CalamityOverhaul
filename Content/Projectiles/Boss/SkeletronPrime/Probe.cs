@@ -66,7 +66,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 float slp = sengs * 0.2f + 0.6f;
                 Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.Red * (0.3f + sengs)
                 , Projectile.rotation, CWRUtils.GetOrig(value), slp, SpriteEffects.FlipHorizontally, 0);
-                Main.spriteBatch.ResetBlendState();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             }
 
             Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");

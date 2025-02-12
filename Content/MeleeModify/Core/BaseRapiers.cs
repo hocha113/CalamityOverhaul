@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
+namespace CalamityOverhaul.Content.MeleeModify.Core
 {
     internal abstract class BaseRapiers : BaseHeldProj
     {

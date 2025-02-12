@@ -1,10 +1,10 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+﻿using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class EarlierSwordHeld : BaseKnife
+    internal abstract class EarlierSwordHeld : BaseKnife
     {
         public override int TargetID => Item.type;
         public override void SetKnifeProperty() {
@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             //drawTrailCount = 4;
             SwingData.baseSwingSpeed = 4;
             Length = 30;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
             Projectile.usesLocalNPCImmunity = false;
         }
 

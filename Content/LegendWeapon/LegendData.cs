@@ -1,7 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -29,6 +31,26 @@ namespace CalamityOverhaul.Content.LegendWeapon
             else if (item.type == ModContent.ItemType<HalibutCannon>()) {
                 item.CWR().LegendData = new LegendData();
             }
+        }
+
+        public void NetSend(Item item, BinaryWriter writer) {
+            writer.Write(Level);
+            writer.Write(UpgradeWorldName);
+            SendLegend(item, writer);
+        }
+
+        public void NetReceive(Item item, BinaryReader reader) {
+            Level = reader.ReadInt32();
+            UpgradeWorldName = reader.ReadString();
+            ReceiveLegend(item, reader);
+        }
+
+        public virtual void SendLegend(Item item, BinaryWriter writer) {
+
+        }
+
+        public virtual void ReceiveLegend(Item item, BinaryReader reader) {
+
         }
 
         public static string GetWorldUpLines(CWRItems cwrItem) {

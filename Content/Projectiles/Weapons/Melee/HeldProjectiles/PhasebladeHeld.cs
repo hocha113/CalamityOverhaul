@@ -1,11 +1,12 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.MeleeModify;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class PhasebladeHeld : BaseKnife
+    internal abstract class PhasebladeHeld : BaseKnife
     {
         public override int TargetID => Item.type;
         public override void SetKnifeProperty() {

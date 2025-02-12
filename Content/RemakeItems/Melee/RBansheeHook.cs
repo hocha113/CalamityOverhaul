@@ -4,8 +4,9 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.MeleeModify;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
@@ -342,8 +343,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture2D = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glow = ModContent.Request<Texture2D>("CalamityMod/Projectiles/Melee/Spears/BansheeHookGlow").Value;
+            Texture2D texture2D = TextureAssets.Projectile[Type].Value;
+            Texture2D glow = SwingSystem.glowTextures[ModContent.ProjectileType<BansheeHookHeld>()].Value;
 
             SpriteEffects spriteEffects = SpriteEffects.None;
             float drawRot = Projectile.rotation + MathHelper.PiOver4;
@@ -377,7 +378,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 bansheeHook.CWR().MeleeCharge / 500f);
 
             if (Projectile.localAI[2] != 0) {
-                Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture_White");
+                Texture2D mainValue = CWRAsset.StarTexture_White.Value;
                 Vector2 pos = drawPos + UnitToMouseV * 40;
                 int Time = (int)Projectile.localAI[2];
                 int slp = Time * 5;
@@ -395,7 +396,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 for (int i = 0; i < 5; i++) {
                     Main.spriteBatch.Draw(mainValue, pos, null, Color.Gold, MathHelper.ToRadians(Time * 9 + i * 17), CWRUtils.GetOrig(mainValue), slp / 2355f, SpriteEffects.None, 0);
                 }
-                Main.spriteBatch.ResetBlendState();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             }
             return false;
         }

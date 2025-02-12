@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -378,7 +379,6 @@ namespace CalamityOverhaul.Content
                 player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
             }
             if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {
-                CWRItems cwrItem = item.CWR();
                 Texture2D value = null;
                 Rectangle frame = new Rectangle(0, 0, 1, 1);
                 Vector2 orig = Vector2.Zero;
@@ -392,7 +392,7 @@ namespace CalamityOverhaul.Content
                     offsetRot = MathHelper.Pi;
                 }
 
-                if (cwrItem.IsBow) {
+                if (GlobalBow.BowActive) {
                     int maxframe = 4;
                     if (player.velocity.Y == 0f && player.velocity.X != 0) {
                         frameindex = (int)(Main.GameUpdateCount / 4 % maxframe);
@@ -405,7 +405,7 @@ namespace CalamityOverhaul.Content
                     orig = frame.Size() / 2;
                 }
 
-                if (item.type == ModContent.ItemType<DarkFrostSolstice>()) {
+                if (item.type == DarkFrostSolstice.ID) {
                     value = CWRAsset.IceGod_back_Asset.Value;
                     frame = CWRUtils.GetRec(value);
                     orig = CWRUtils.GetOrig(value);

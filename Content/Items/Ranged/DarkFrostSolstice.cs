@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class DarkFrostSolstice : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolstice";
+        public static int ID { get; private set; }
+        public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() {
             Item.SetItemCopySD<Onyxia>();
             Item.damage = 102;

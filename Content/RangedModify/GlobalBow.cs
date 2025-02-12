@@ -1,10 +1,27 @@
 ﻿using CalamityOverhaul.Content.RangedModify.Core;
+using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RangedModify
 {
     internal class GlobalBow : GlobalRanged
     {
+        public static bool BowActive {
+            get {
+                Item handItem = Main.LocalPlayer.GetItem();
+                return handItem != null && !CWRLoad.ItemHasCartridgeHolder[handItem.type]
+                && (CWRLoad.ItemIsBow[handItem.type] || CWRLoad.ItemIsCrossBow[handItem.type] || IsArrow());
+            }
+        }
+
+        public static bool IsArrow() {
+            Item handItem = Main.LocalPlayer.GetItem();
+            if (handItem == null || handItem.type == ItemID.None) {
+                return false;
+            }
+            return handItem.ammo == AmmoID.Arrow;
+        }
+
         public override void PostModifyBow(BaseBow bow) {
             if (bow.TargetID == ItemID.PlatinumBow
                 || bow.TargetID == ItemID.RichMahoganyBow
