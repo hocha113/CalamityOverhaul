@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.CWRDamageTypes
+namespace CalamityOverhaul.Content.DamageModify
 {
     internal class EndlessDamageClass : DamageClass
     {

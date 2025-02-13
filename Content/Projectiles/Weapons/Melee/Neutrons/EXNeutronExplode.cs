@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

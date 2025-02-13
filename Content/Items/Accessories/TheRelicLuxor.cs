@@ -2,7 +2,7 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;

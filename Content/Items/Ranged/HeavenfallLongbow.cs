@@ -5,7 +5,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;

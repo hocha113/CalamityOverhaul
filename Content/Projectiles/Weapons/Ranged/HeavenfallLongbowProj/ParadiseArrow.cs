@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;

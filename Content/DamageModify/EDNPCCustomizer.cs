@@ -5,17 +5,20 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.CWRDamageTypes
+namespace CalamityOverhaul.Content.DamageModify
 {
-    internal class EndlessDamageNPCCustomizer : NPCCustomizer, ICWRLoader
+    internal class EDNPCCustomizer : NPCCustomizer, ICWRLoader
     {
         private static List<int> nihilityProjs = [];
 
-        public void SetupData() {
+        void ICWRLoader.SetupData() {
             nihilityProjs = [
                 ModContent.ProjectileType<Godslight>(),
                 ModContent.ProjectileType<EXNeutronExplode>(),
             ];
+        }
+        void ICWRLoader.UnLoadData() {
+            nihilityProjs?.Clear();
         }
 
         public override bool On_OnHitByProjectile_IfSpan(Projectile proj) {

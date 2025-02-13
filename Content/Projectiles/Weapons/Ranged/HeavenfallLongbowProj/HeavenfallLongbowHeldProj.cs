@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;

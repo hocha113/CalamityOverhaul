@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.CWRDamageTypes;
+﻿using CalamityOverhaul.Content.DamageModify;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

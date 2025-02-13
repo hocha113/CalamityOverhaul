@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using InnoVault.Trails;

@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Tools;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
 using CalamityOverhaul.Content.Tiles;

@@ -1,7 +1,7 @@
 ﻿using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
