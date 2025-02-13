@@ -834,257 +834,257 @@ Projectiles: {
 	EXDemonBlast.DisplayName: 欢愉之戟
 	EXOathblade.DisplayName: 痛苦之轮回
 	EXDemonBlastAlt.DisplayName: 绯红魔王戟
-	DivineJustice.DisplayName: Divine Justice
-	JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
-	JUZenithWorldTime.DisplayName: J U Zenith World Time
-	DecayedSeaOrb.DisplayName: Decayed Sea Orb
-	SaltationSend.DisplayName: Saltation Send
-	SandThorn.DisplayName: Sand Thorn
-	BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
-	EarthenPikeAlt.DisplayName: Earthen Pike Alt
-	EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
-	EXOathblade2.DisplayName: E X Oathblade2
-	FlawlessHeld.DisplayName: Flawless Held
-	WastelandFangProj.DisplayName: Wasteland Fang Proj
-	WeaverBeam.DisplayName: Weaver Beam
-	WeaverExplode.DisplayName: Weaver Explode
-	WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
-	GuardOfLife.DisplayName: Guard Of Life
-	GuardOfLifeCore.DisplayName: Guard Of Life Core
-	RageKillerImpact.DisplayName: Rage Killer Impact
-	SolsticeHomeBeam.DisplayName: Solstice Home Beam
-	SoulSearchScythe.DisplayName: Soul Search Scythe
-	StarshipAmmo.DisplayName: Starship Ammo
-	SandDaggerThrow.DisplayName: Sand Dagger Throw
-	SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
-	SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
-	WraithKunaiProj.DisplayName: Wraith Kunai Proj
-	WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
-	PowerSoundEgg.DisplayName: Power Sound Egg
-	PhaseEnergySphere.DisplayName: Phase Energy Sphere
-	PhaseLaser.DisplayName: Phase Laser
-	ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
-	ArmourPiercerHeld.DisplayName: Armour Piercer Held
-	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
-	DragonBreathHeld.DisplayName: Dragon Breath Held
-	HghExplosiveHeld.DisplayName: Hgh Explosive Held
-	HghExplosiveProj.DisplayName: Hgh Explosive Proj
-	NapalmBombBox.DisplayName: Napalm Bomb Box
-	NapalmBombHeld.DisplayName: Napalm Bomb Held
-	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
-	Fireball.DisplayName: Fireball
-	Laser.DisplayName: Laser
-	DeadLaser.DisplayName: Dead Laser
-	Mechanicalworm.DisplayName: Mechanicalworm
-	PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
-	Probe.DisplayName: Probe
-	RocketSkeleton.DisplayName: Rocket Skeleton
-	SetPosingStarm.DisplayName: Set Posing Starm
-	Hit.DisplayName: Hit
-	SpwanTextProj.DisplayName: Spwan Text Proj
-	AetherOrb.DisplayName: Aether Orb
-	AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
-	DragonsWordCut.DisplayName: Dragons Word Cut
-	DragonsWordMouse.DisplayName: Dragons Word Mouse
-	DragonsWordProj.DisplayName: Dragons Word Proj
-	EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	EtherRoarOrb.DisplayName: Ether Roar Orb
-	EtherRoarOrb2.DisplayName: Ether Roar Orb2
-	FateCluster.DisplayName: Fate Cluster
-	HatredFire.DisplayName: Hatred Fire
-	MagicStar.DisplayName: Magic Star
-	NeutronMagchStar.DisplayName: Neutron Magch Star
-	NeutronWandExplode.DisplayName: Neutron Wand Explode
-	PhaseBlasting.DisplayName: Phase Blasting
-	WaningMoonLight.DisplayName: Waning Moon Light
-	AbominateHookScythe.DisplayName: Abominate Hook Scythe
-	AbominateSpirit.DisplayName: Abominate Spirit
-	AegisBladeGuardian.DisplayName: Aegis Blade Guardian
-	AirBomb.DisplayName: Air Bomb
-	AnarchyBeam.DisplayName: Anarchy Beam
-	AstralBall.DisplayName: Astral Ball
-	AstralPikeBeam.DisplayName: Astral Pike Beam
-	BalefulBall.DisplayName: Baleful Ball
-	BalefulSickle.DisplayName: Baleful Sickle
-	BlazingFireball.DisplayName: Blazing Fireball
-	BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
-	BrinyBaronOrb.DisplayName: Briny Baron Orb
-	DarkIceBomb.DisplayName: Dark Ice Bomb
-	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
-	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
-	MakeDamage.DisplayName: Make Damage
-	TheDaybreak.DisplayName: The Daybreak
-	TheDaybreak2.DisplayName: The Daybreak2
-	TheDaybreak3.DisplayName: The Daybreak3
-	TheEndSun.DisplayName: The End Sun
-	DeathLaserSpwan.DisplayName: Death Laser Spwan
-	DeathLaser.DisplayName: Death Laser
-	DivineSourceBeam.DisplayName: Divine Source Beam
-	DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
-	DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
-	DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
-	SporeCloud.DisplayName: Spore Cloud
-	EarthenBall.DisplayName: Earthen Ball
-	MeleeFossilShard.DisplayName: Melee Fossil Shard
-	EnforcerFlame.DisplayName: Enforcer Flame
-	ExcelsusBomb.DisplayName: Excelsus Bomb
-	Feathers.DisplayName: Feathers
-	BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
-	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
-	DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
-	GiantBansheeScythe.DisplayName: Giant Banshee Scythe
-	LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
-	WraithBeam.DisplayName: Wraith Beam
-	HolyColliderExFire.DisplayName: Holy Collider Ex Fire
-	HyperBlade.DisplayName: Hyper Blade
-	JudgementBeam.DisplayName: Judgement Beam
-	EXNeutronExplode.DisplayName: E X Neutron Explode
-	NeutronExplode.DisplayName: Neutron Explode
-	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
-	NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
-	NeutronsOrb.DisplayName: Neutrons Orb
-	OrderbringerGuardian.DisplayName: Orderbringer Guardian
-	OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
-	PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
-	EXGauntlet.DisplayName: EX Gauntlet
-	GauntletDerive.DisplayName: Gauntlet Derive
-	GauntletInAltShoot.DisplayName: Gauntlet
-	GouldBee.DisplayName: Gould Bee
-	PlagueBee.DisplayName: Plague Bee
-	PlagueBeeWave.DisplayName: Plague Bee Wave
-	FadingGloryBeam.DisplayName: Fading Glory Beam
-	FadingGloryRapier.DisplayName: Fading Glory Rapier
-	GladiusBeam.DisplayName: Gladius Beam
-	GladiusRapier.DisplayName: Gladius Rapier
-	GrandGuardianBeam.DisplayName: Grand Guardian Beam
-	GrandGuardianRapier.DisplayName: Grand Guardian Rapier
-	LucreciaRapier.DisplayName: Lucrecia Rapier
-	MajesticGuardBeam.DisplayName: Majestic Guard Beam
-	MajesticGuardRapier.DisplayName: Majestic Guard Rapier
-	MirrorBladeRapier.DisplayName: Mirror Blade Rapier
-	SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-	TheDarkMasterRapier.DisplayName: The Dark Master Rapier
-	RulingPrism.DisplayName: Ruling Prism
-	RulingPrismCore.DisplayName: Ruling Prism Core
-	SickleLife.DisplayName: Sickle Life
-	SoulSeekerSkull.DisplayName: Soul Seeker Skull
-	SoulSeeker.DisplayName: Soul Seeker
-	LigSpark.DisplayName: Lig Spark
-	SparkBall.DisplayName: Spark Ball
-	SparkLightning.DisplayName: Spark Lightning
-	SpiritFlame.DisplayName: Spirit Flame
-	StellarStrikerBeam.DisplayName: Stellar Striker Beam
-	StormArc.DisplayName: Storm Arc
-	StormLightning.DisplayName: Storm Lightning
-	SunlightBlades.DisplayName: Sunlight Blades
-	TerrorExplode.DisplayName: Terror Explode
-	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
-	AnimosityOnSpan.DisplayName: Animosity On Span
-	CelestialDevourer.DisplayName: Celestial Devourer
-	CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
-	CosmicEddies.DisplayName: Cosmic Eddies
-	DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
-	DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
-	DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
-	ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
-	BarracudaProj.DisplayName: Barracuda Proj
-	BarrenOrb.DisplayName: Barren Orb
-	BloodVerdict.DisplayName: Blood Verdict
-	BMGBullet.DisplayName: B M G Bullet
-	BMGFIRE.DisplayName: B M G F I R E
-	BMGFIRE2.DisplayName: B M G F I R E2
-	Crystal.DisplayName: Crystal
-	CursedDartRemake.DisplayName: Cursed Dart Remake
-	DeadArrow.DisplayName: Dead Arrow
-	DeadWave.DisplayName: Dead Wave
-	DeepSeaSharks.DisplayName: Deep Sea Sharks
-	EarthRocketOnSpan.DisplayName: Earth Rocket On Span
-	ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
-	EnergyBlast.DisplayName: Energy Blast
-	EnergyBlast2.DisplayName: Energy Blast2
-	ExtremeColdHail.DisplayName: Extreme Cold Hail
-	FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
-	GraniteBullet.DisplayName: Granite Bullet
-	GunCasing.DisplayName: Gun Casing
-	HeavenLightning.DisplayName: Heaven Lightning
-	InfiniteArrow.DisplayName: Infinite Arrow
-	InfiniteRune.DisplayName: Infinite Rune
-	ParadiseArrow.DisplayName: Paradise Arrow
-	VientianePunishment.DisplayName: Vientiane Punishment
-	MonsoonOnSpan.DisplayName: Monsoon On Span
-	IceOrb.DisplayName: Ice Orb
-	IceParclose.DisplayName: Ice Parclose
-	IceSoulOrb.DisplayName: Ice Soul Orb
-	LostSoulBullet.DisplayName: Lost Soul Bullet
-	MarbleBullet.DisplayName: Marble Bullet
-	EXNeutronArrow.DisplayName: E X Neutron Arrow
-	EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
-	NeutronArrow.DisplayName: Neutron Arrow
-	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
-	NeutronLaser.DisplayName: Neutron Laser
-	NeutronBullet.DisplayName: Neutron Bullet
-	NurgleArrow.DisplayName: Nurgle Arrow
-	NurgleBee.DisplayName: Nurgle Bee
-	NurgleSoul.DisplayName: Nurgle Soul
-	NurgleTheOfBall.DisplayName: Nurgle The Of Ball
-	PlanetaryArrow.DisplayName: Planetary Arrow
-	RVoidTentacle.DisplayName: R Void Tentacle
-	SandnadoOnSpan.DisplayName: Sandnado On Span
-	SepticSkewerProj.DisplayName: Septic Skewer Proj
-	SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
-	SnowQuayBall.DisplayName: Snow Quay Ball
-	SporeBombOnSpan.DisplayName: Spore Bomb On Span
-	SporeBombs.DisplayName: Spore Bombs
-	StakeHmmod.DisplayName: Stake Hmmod
-	TarragonArrow.DisplayName: Tarragon Arrow
-	TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
-	TheArrowPunishment.DisplayName: The Arrow Punishment
-	TheCurseArchdemon.DisplayName: The Curse Archdemon
-	TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
-	TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
-	Tornado.DisplayName: Tornado
-	TorrentialBullet.DisplayName: Torrential Bullet
-	TsunamiOnSpan.DisplayName: Tsunami On Span
-	TungstenBulletProj.DisplayName: Tungsten Bullet Proj
-	TyphoonOnSpan.DisplayName: Typhoon On Span
-	VoidragonOrb.DisplayName: Voidragon Orb
-	XenopopperProj.DisplayName: Xenopopper Proj
-	CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
-	CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
-	NeutronScytheHeld.DisplayName: Neutron Scythe Held
-	EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
-	FlamarangHeld.DisplayName: Flamarang Held
-	ShroomerangHeld.DisplayName: Shroomerang Held
-	SpearHeld.DisplayName: Spear Held
-	WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
-	Godslight.DisplayName: Godslight
-	LonginusHeld.DisplayName: Longinus Held
-	LonginusThrow.DisplayName: Longinus Throw
-	PilgrimsFury.DisplayName: Pilgrims Fury
-	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
-	Spindrift.DisplayName: Spindrift
-	BloodBall.DisplayName: Blood Ball
-	BloodBlast.DisplayName: Blood Blast
-	BloodflareSouls.DisplayName: Bloodflare Souls
-	CosmicFire.DisplayName: Cosmic Fire
-	GhostFires.DisplayName: Ghost Fires
-	Ieaf.DisplayName: Ieaf
-	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
-	ATrail.DisplayName: A Trail
-	AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
-	BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
-	ElementWhipProjectile.DisplayName: Element Whip Projectile
-	GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
-	WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
-	WTrail.DisplayName: W Trail
-	InfiniteEnmgs.DisplayName: Infinite Enmgs
-	InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
-	InfinitePickProj.DisplayName: Infinite Pick Proj
-	SpanDMBall.DisplayName: Span D M Ball
-	DeathSickleThrowable.DisplayName: Death Sickle Throwable
-	CrossPrediction.DisplayName: Cross Prediction
+	// DivineJustice.DisplayName: Divine Justice
+	// JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
+	// JUZenithWorldTime.DisplayName: J U Zenith World Time
+	// DecayedSeaOrb.DisplayName: Decayed Sea Orb
+	// SaltationSend.DisplayName: Saltation Send
+	// SandThorn.DisplayName: Sand Thorn
+	// BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
+	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
+	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
+	// EXOathblade2.DisplayName: E X Oathblade2
+	// FlawlessHeld.DisplayName: Flawless Held
+	// WastelandFangProj.DisplayName: Wasteland Fang Proj
+	// WeaverBeam.DisplayName: Weaver Beam
+	// WeaverExplode.DisplayName: Weaver Explode
+	// WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
+	// GuardOfLife.DisplayName: Guard Of Life
+	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// RageKillerImpact.DisplayName: Rage Killer Impact
+	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
+	// SoulSearchScythe.DisplayName: Soul Search Scythe
+	// StarshipAmmo.DisplayName: Starship Ammo
+	// SandDaggerThrow.DisplayName: Sand Dagger Throw
+	// SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
+	// SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
+	// WraithKunaiProj.DisplayName: Wraith Kunai Proj
+	// WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
+	// PowerSoundEgg.DisplayName: Power Sound Egg
+	// PhaseEnergySphere.DisplayName: Phase Energy Sphere
+	// PhaseLaser.DisplayName: Phase Laser
+	// ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
+	// ArmourPiercerHeld.DisplayName: Armour Piercer Held
+	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
+	// DragonBreathHeld.DisplayName: Dragon Breath Held
+	// HghExplosiveHeld.DisplayName: Hgh Explosive Held
+	// HghExplosiveProj.DisplayName: Hgh Explosive Proj
+	// NapalmBombBox.DisplayName: Napalm Bomb Box
+	// NapalmBombHeld.DisplayName: Napalm Bomb Held
+	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
+	// Fireball.DisplayName: Fireball
+	// Laser.DisplayName: Laser
+	// DeadLaser.DisplayName: Dead Laser
+	// Mechanicalworm.DisplayName: Mechanicalworm
+	// PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	// Probe.DisplayName: Probe
+	// RocketSkeleton.DisplayName: Rocket Skeleton
+	// SetPosingStarm.DisplayName: Set Posing Starm
+	// Hit.DisplayName: Hit
+	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// AetherOrb.DisplayName: Aether Orb
+	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
+	// DragonsWordCut.DisplayName: Dragons Word Cut
+	// DragonsWordMouse.DisplayName: Dragons Word Mouse
+	// DragonsWordProj.DisplayName: Dragons Word Proj
+	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
+	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
+	// EtherRoarOrb.DisplayName: Ether Roar Orb
+	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
+	// FateCluster.DisplayName: Fate Cluster
+	// HatredFire.DisplayName: Hatred Fire
+	// MagicStar.DisplayName: Magic Star
+	// NeutronMagchStar.DisplayName: Neutron Magch Star
+	// NeutronWandExplode.DisplayName: Neutron Wand Explode
+	// PhaseBlasting.DisplayName: Phase Blasting
+	// WaningMoonLight.DisplayName: Waning Moon Light
+	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
+	// AbominateSpirit.DisplayName: Abominate Spirit
+	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
+	// AirBomb.DisplayName: Air Bomb
+	// AnarchyBeam.DisplayName: Anarchy Beam
+	// AstralBall.DisplayName: Astral Ball
+	// AstralPikeBeam.DisplayName: Astral Pike Beam
+	// BalefulBall.DisplayName: Baleful Ball
+	// BalefulSickle.DisplayName: Baleful Sickle
+	// BlazingFireball.DisplayName: Blazing Fireball
+	// BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
+	// BrinyBaronOrb.DisplayName: Briny Baron Orb
+	// DarkIceBomb.DisplayName: Dark Ice Bomb
+	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
+	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
+	// MakeDamage.DisplayName: Make Damage
+	// TheDaybreak.DisplayName: The Daybreak
+	// TheDaybreak2.DisplayName: The Daybreak2
+	// TheDaybreak3.DisplayName: The Daybreak3
+	// TheEndSun.DisplayName: The End Sun
+	// DeathLaserSpwan.DisplayName: Death Laser Spwan
+	// DeathLaser.DisplayName: Death Laser
+	// DivineSourceBeam.DisplayName: Divine Source Beam
+	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
+	// DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
+	// SporeCloud.DisplayName: Spore Cloud
+	// EarthenBall.DisplayName: Earthen Ball
+	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+	// EnforcerFlame.DisplayName: Enforcer Flame
+	// ExcelsusBomb.DisplayName: Excelsus Bomb
+	// Feathers.DisplayName: Feathers
+	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
+	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
+	// DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
+	// GiantBansheeScythe.DisplayName: Giant Banshee Scythe
+	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
+	// WraithBeam.DisplayName: Wraith Beam
+	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
+	// HyperBlade.DisplayName: Hyper Blade
+	// JudgementBeam.DisplayName: Judgement Beam
+	// EXNeutronExplode.DisplayName: E X Neutron Explode
+	// NeutronExplode.DisplayName: Neutron Explode
+	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	// NeutronsOrb.DisplayName: Neutrons Orb
+	// OrderbringerGuardian.DisplayName: Orderbringer Guardian
+	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
+	// PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
+	// EXGauntlet.DisplayName: E X Gauntlet
+	// GauntletDerive.DisplayName: Gauntlet Derive
+	// GauntletInAltShoot.DisplayName: Gauntlet In Alt Shoot
+	// GouldBee.DisplayName: Gould Bee
+	// PlagueBee.DisplayName: Plague Bee
+	// PlagueBeeWave.DisplayName: Plague Bee Wave
+	// FadingGloryBeam.DisplayName: Fading Glory Beam
+	// FadingGloryRapier.DisplayName: Fading Glory Rapier
+	// GladiusBeam.DisplayName: Gladius Beam
+	// GladiusRapier.DisplayName: Gladius Rapier
+	// GrandGuardianBeam.DisplayName: Grand Guardian Beam
+	// GrandGuardianRapier.DisplayName: Grand Guardian Rapier
+	// LucreciaRapier.DisplayName: Lucrecia Rapier
+	// MajesticGuardBeam.DisplayName: Majestic Guard Beam
+	// MajesticGuardRapier.DisplayName: Majestic Guard Rapier
+	// MirrorBladeRapier.DisplayName: Mirror Blade Rapier
+	// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	// TheDarkMasterRapier.DisplayName: The Dark Master Rapier
+	// RulingPrism.DisplayName: Ruling Prism
+	// RulingPrismCore.DisplayName: Ruling Prism Core
+	// SickleLife.DisplayName: Sickle Life
+	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
+	// SoulSeeker.DisplayName: Soul Seeker
+	// LigSpark.DisplayName: Lig Spark
+	// SparkBall.DisplayName: Spark Ball
+	// SparkLightning.DisplayName: Spark Lightning
+	// SpiritFlame.DisplayName: Spirit Flame
+	// StellarStrikerBeam.DisplayName: Stellar Striker Beam
+	// StormArc.DisplayName: Storm Arc
+	// StormLightning.DisplayName: Storm Lightning
+	// SunlightBlades.DisplayName: Sunlight Blades
+	// TerrorExplode.DisplayName: Terror Explode
+	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
+	// AnimosityOnSpan.DisplayName: Animosity On Span
+	// CelestialDevourer.DisplayName: Celestial Devourer
+	// CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
+	// CosmicEddies.DisplayName: Cosmic Eddies
+	// DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
+	// DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
+	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
+	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
+	// BarracudaProj.DisplayName: Barracuda Proj
+	// BarrenOrb.DisplayName: Barren Orb
+	// BloodVerdict.DisplayName: Blood Verdict
+	// BMGBullet.DisplayName: BMG Bullet
+	// BMGFIRE.DisplayName: BMGFIRE
+	// BMGFIRE2.DisplayName: BMGFIRE2
+	// Crystal.DisplayName: Crystal
+	// CursedDartRemake.DisplayName: Cursed Dart Remake
+	// DeadArrow.DisplayName: Dead Arrow
+	// DeadWave.DisplayName: Dead Wave
+	// DeepSeaSharks.DisplayName: Deep Sea Sharks
+	// EarthRocketOnSpan.DisplayName: Earth Rocket On Span
+	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
+	// EnergyBlast.DisplayName: Energy Blast
+	// EnergyBlast2.DisplayName: Energy Blast2
+	// ExtremeColdHail.DisplayName: Extreme Cold Hail
+	// FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
+	// GraniteBullet.DisplayName: Granite Bullet
+	// GunCasing.DisplayName: Gun Casing
+	// HeavenLightning.DisplayName: Heaven Lightning
+	// InfiniteArrow.DisplayName: Infinite Arrow
+	// InfiniteRune.DisplayName: Infinite Rune
+	// ParadiseArrow.DisplayName: Paradise Arrow
+	// VientianePunishment.DisplayName: Vientiane Punishment
+	// MonsoonOnSpan.DisplayName: Monsoon On Span
+	// IceOrb.DisplayName: Ice Orb
+	// IceParclose.DisplayName: Ice Parclose
+	// IceSoulOrb.DisplayName: Ice Soul Orb
+	// LostSoulBullet.DisplayName: Lost Soul Bullet
+	// MarbleBullet.DisplayName: Marble Bullet
+	// EXNeutronArrow.DisplayName: EX Neutron Arrow
+	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion Ranged
+	// NeutronArrow.DisplayName: Neutron Arrow
+	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
+	// NeutronLaser.DisplayName: Neutron Laser
+	// NeutronBullet.DisplayName: Neutron Bullet
+	// NurgleArrow.DisplayName: Nurgle Arrow
+	// NurgleBee.DisplayName: Nurgle Bee
+	// NurgleSoul.DisplayName: Nurgle Soul
+	// NurgleTheOfBall.DisplayName: Nurgle The Of Ball
+	// PlanetaryArrow.DisplayName: Planetary Arrow
+	// RVoidTentacle.DisplayName: R Void Tentacle
+	// SandnadoOnSpan.DisplayName: Sandnado On Span
+	// SepticSkewerProj.DisplayName: Septic Skewer Proj
+	// SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
+	// SnowQuayBall.DisplayName: Snow Quay Ball
+	// SporeBombOnSpan.DisplayName: Spore Bomb On Span
+	// SporeBombs.DisplayName: Spore Bombs
+	// StakeHmmod.DisplayName: Stake Hmmod
+	// TarragonArrow.DisplayName: Tarragon Arrow
+	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
+	// TheArrowPunishment.DisplayName: The Arrow Punishment
+	// TheCurseArchdemon.DisplayName: The Curse Archdemon
+	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
+	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
+	// Tornado.DisplayName: Tornado
+	// TorrentialBullet.DisplayName: Torrential Bullet
+	// TsunamiOnSpan.DisplayName: Tsunami On Span
+	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
+	// TyphoonOnSpan.DisplayName: Typhoon On Span
+	// VoidragonOrb.DisplayName: Voidragon Orb
+	// XenopopperProj.DisplayName: Xenopopper Proj
+	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
+	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
+	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
+	// NeutronScytheHeld.DisplayName: Neutron Scythe Held
+	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
+	// FlamarangHeld.DisplayName: Flamarang Held
+	// ShroomerangHeld.DisplayName: Shroomerang Held
+	// SpearHeld.DisplayName: Spear Held
+	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
+	// Godslight.DisplayName: Godslight
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
+	// PilgrimsFury.DisplayName: Pilgrims Fury
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	// Spindrift.DisplayName: Spindrift
+	// BloodBall.DisplayName: Blood Ball
+	// BloodBlast.DisplayName: Blood Blast
+	// BloodflareSouls.DisplayName: Bloodflare Souls
+	// CosmicFire.DisplayName: Cosmic Fire
+	// GhostFires.DisplayName: Ghost Fires
+	// Ieaf.DisplayName: Ieaf
+	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	// ATrail.DisplayName: A Trail
+	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
+	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
+	// ElementWhipProjectile.DisplayName: Element Whip Projectile
+	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	// WTrail.DisplayName: W Trail
+	// InfiniteEnmgs.DisplayName: Infinite Enmgs
+	// InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	// InfinitePickProj.DisplayName: Infinite Pick Proj
+	// SpanDMBall.DisplayName: Span D M Ball
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// CrossPrediction.DisplayName: Cross Prediction
 	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
 	// VulcaniteFire.DisplayName: Vulcanite Fire
 	// EssencePlunder.DisplayName: Essence Plunder

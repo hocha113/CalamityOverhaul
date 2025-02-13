@@ -615,17 +615,25 @@ Items: {
 
 	SandDagger: {
 		// DisplayName: Sand Dagger
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Throws onto sand, then jumps into the air and explodes after a while
+			Stealth attacks throw an enhanced dagger
+			''' */
 	}
 
 	UnderTheSand: {
-		// DisplayName: Under The Sand
-		// Tooltip: ""
+		// DisplayName: Beneath the Sand
+		// Tooltip: Creates several sand orbs
 	}
 
 	WastelandFang: {
 		// DisplayName: Wasteland Fang
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Bounces off blocks and accelerates when retracting
+			Opens its mouth and spits out several sand orbs
+			''' */
 	}
 
 	Flawless: {
@@ -634,47 +642,60 @@ Items: {
 	}
 
 	MelodyTheSand: {
-		// DisplayName: Melody The Sand
-		// Tooltip: ""
+		// DisplayName: Song of the Sand
+		// Tooltip: Throws a spread of sand spikes that are affected by gravity and pierce enemies
 	}
 
 	SandVortexOfTheDecayedSea: {
-		// DisplayName: Sand Vortex Of The Decayed Sea
-		// Tooltip: ""
+		// DisplayName: Decayed Sea Sand Vortex
+		/* Tooltip:
+			'''
+			Vomits several sulfuric steam orbs
+			"Master of Vomiting"
+			''' */
 	}
 
 	SeasonalKunai: {
 		// DisplayName: Seasonal Kunai
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Throws three homing kunai at enemies
+			Stealth attacks throw a large kunai that splits at the end of its trajectory
+			"Reflecting the Four Seasons"
+			''' */
 	}
 
 	WraithKunai: {
 		// DisplayName: Wraith Kunai
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Throws three homing kunai at enemies
+			Stealth attacks summon a group of ghostly daggers hovering around the player
+			''' */
 	}
 
 	CalSelfPortrait: {
-		// DisplayName: The Forgotten Photo
+		// DisplayName: Forgotten Photograph
 		/* Tooltip:
 			'''
-			The Forgotten Photo
+			A forgotten photograph
 			[legend]
 			''' */
 		// Legend: What else do you want to see? :)
 	}
 
 	WUTIVSelfPortrait: {
-		// DisplayName: Thank you, WUTIV
+		// DisplayName: Thank You, Wuti
 		// Tooltip: ""
 	}
 
 	HandmadeDoll: {
-		// DisplayName: Handmade Doll
+		// DisplayName: Handmade Sewn Doll
 		/* Tooltip:
 			'''
-			Used in hell to summon the Wall Of Flesh
-			If the Guide survives, it is sacrificed when used
-			"Made by hand without the knowledge of the Guide."
+			Used in the Underworld to summon the Wall of Flesh
+			If the Guide is alive, he will be sacrificed upon use
+			"Handmade, and the Guide doesn't know"
 			''' */
 	}
 
@@ -702,18 +723,18 @@ Items: {
 		// DisplayName: Focusing Grimoire
 		/* Tooltip:
 			'''
-			Left button to launch the tracking thermal ring
-			Right-click and quickly fire the death ray
-			"One book is better than six."
+			Left click to fire homing thermal rings
+			Right click to rapidly fire death rays
+			"Better than six books combined"
 			''' */
 	}
 
 	CommandersStaff: {
-		// DisplayName: Commanders Staff
+		// DisplayName: Commander's Staff
 		/* Tooltip:
 			'''
-			Fires a thermal disintegration beam that pierces through enemies.  
-			"Torn from the arm of that machine—how about using psionic energy instead of diesel?"
+			Fires a thermal disintegration beam that pierces enemies
+			"Taken from that machine’s arm, how about using psionic energy instead of diesel?"
 			''' */
 	}
 
@@ -721,19 +742,19 @@ Items: {
 		// DisplayName: Raider
 		/* Tooltip:
 			'''
-			Converts musket balls into high-speed bullets.
-			Right-click to perform a roll dash and fully reload the magazine.
-			The first shot after rolling is transformed into a Devastator Grenade.
-			"Highly suitable for indoor hostage rescue."
+			Converts musket balls into high-speed bullets
+			Right click to roll dash and reload the magazine
+			The first bullet fired after rolling is converted into a Destroyer Grenade
+			"Perfect for indoor hostage rescues"
 			''' */
 	}
 
 	HyperionBarrage: {
-		// DisplayName: Hyperion Barrage
+		// DisplayName: Hyperion Auto-Turret
 		/* Tooltip:
 			'''
-			Fire thermal cruise missiles
-			"Make the most of everything."
+			Fires thermal cruise missiles
+			"Make full use of everything"
 			''' */
 	}
 
@@ -741,9 +762,9 @@ Items: {
 		// DisplayName: Raider EX
 		/* Tooltip:
 			'''
-			Convert musket bullets into high velocity bullets
-			Fire extra destroyer homing bombs
-			"Bombard."
+			Converts musket balls into high-speed bullets
+			Additionally fires a barrage of Destroyer Homing Missiles
+			"Carpet bombing"
 			''' */
 	}
 
@@ -751,8 +772,8 @@ Items: {
 		// DisplayName: Commander's Chainsaw
 		/* Tooltip:
 			'''
-			Sparks are generated when the target is hit
-			"Add more diesel."
+			Generates sparks upon hitting a target
+			"Add more diesel"
 			''' */
 	}
 
