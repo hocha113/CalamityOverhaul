@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
         public override bool PreDraw(ref Color lightColor) {
             DrawLine(whipPoints);
             SpriteEffects flip = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
 
             Vector2 pos = whipPoints[0];
 

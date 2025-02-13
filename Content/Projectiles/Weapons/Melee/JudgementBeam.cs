@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             if (ProjColorDate == null) {
-                ProjColorDate = CWRUtils.GetColorDate(CWRUtils.GetT2DValue(Texture));
+                ProjColorDate = CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);

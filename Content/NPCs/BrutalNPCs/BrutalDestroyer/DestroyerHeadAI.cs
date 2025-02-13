@@ -1,8 +1,13 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+﻿using CalamityMod;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Summon;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -39,6 +44,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot) {
+            IItemDropRuleCondition condition = new DropInDeathMode();
+            LeadingConditionRule rule = new LeadingConditionRule(condition);
+            rule.Add(ModContent.ItemType<DestroyersBlade>(), 4);
+            rule.Add(ModContent.ItemType<StaffoftheDestroyer>(), 4);
+            rule.Add(ModContent.ItemType<Observer>(), 4);
+            rule.Add(ModContent.ItemType<ForgedLash>(), 4);
+            npcLoot.Add(rule);
+        }
 
         public override bool AI() {
             CWRUtils.ClockFrame(ref glowFrame, 5, 3);

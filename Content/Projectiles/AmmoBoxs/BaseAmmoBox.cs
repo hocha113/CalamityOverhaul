@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -118,7 +119,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.BottomLeft - new Vector2(0, value.Height) - Main.screenPosition;
             Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value)
                 , mouseInBox ? Color.Gold : lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, SpriteEffects.None, 0);

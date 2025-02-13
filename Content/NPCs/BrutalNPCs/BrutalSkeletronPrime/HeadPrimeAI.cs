@@ -5,9 +5,15 @@ using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -16,6 +22,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -121,6 +128,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = null;
             BSPRAM_ForearmGlow = null;
             canLoaderAssetZunkenUp = false;
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot) {
+            IItemDropRuleCondition condition = new DropInDeathMode();
+            LeadingConditionRule rule = new LeadingConditionRule(condition);
+            rule.Add(ModContent.ItemType<CommandersChainsaw>(), 4);
+            rule.Add(ModContent.ItemType<HyperionBarrage>(), 4);
+            rule.Add(ModContent.ItemType<CommandersStaff>(), 4);
+            rule.Add(ModContent.ItemType<CommandersClaw>(), 4);
+            rule.Add(ModContent.ItemType<RaiderGun>(), 4);
+            npcLoot.Add(rule);
         }
 
         public override void BossHeadSlot(ref int index) {

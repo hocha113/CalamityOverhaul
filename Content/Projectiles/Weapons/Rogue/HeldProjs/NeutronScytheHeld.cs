@@ -1,8 +1,12 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
@@ -10,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
     internal class NeutronScytheHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Item + "Rogue/NeutronScythe";
-
         private Vector2 orig = Vector2.Zero;
         private int fireIndex;
         private int fireIndex2;
@@ -66,8 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                     NPC target = Projectile.Center.FindClosestNPC(11200);
                     if (target != null) {
                         SoundEngine.PlaySound(CWRSound.Pecharge with {
-                            Pitch = -0.6f + Main.rand.NextFloat(-0.1f, 0.2f)
-                            ,
+                            Pitch = -0.6f + Main.rand.NextFloat(-0.1f, 0.2f),
                             Volume = 0.5f
                         }, Projectile.Center);
                         if (Projectile.IsOwnedByLocalPlayer()) {
@@ -77,9 +79,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                         }
                     }
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center
-                        , Vector2.Zero, ModContent.ProjectileType<NeutronExplosionRanged>(), Projectile.damage / 2, 0);
-                        Main.projectile[proj].DamageType = Projectile.DamageType;
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center
+                        , Vector2.Zero, ModContent.ProjectileType<NeutronExplosionRogue>(), Projectile.damage / 2, 0);
                     }
                     fireIndex = 0;
                 }
@@ -94,5 +95,68 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
                 , orig, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
         }
+    }
+
+    internal class NeutronExplosionRogue : ModProjectile , IWarpDrawable
+    {
+        public override string Texture => CWRConstant.Masking + "StarTexture_White";
+        public override void SetDefaults() {
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
+            Projectile.width = Projectile.height = 100;
+            Projectile.timeLeft = 20;
+            Projectile.aiStyle = -1;
+            Projectile.localNPCHitCooldown = 6;
+            Projectile.penetrate = -1;
+            Projectile.friendly = true;
+            Projectile.netImportant = true;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+        }
+
+        public bool CanDrawCustom() => false;
+
+        public override void AI() {
+            if (Projectile.ai[2] == 0) {
+                for (int i = 0; i < 4; i++) {
+                    float rot1 = MathHelper.PiOver2 * i;
+                    Vector2 vr = rot1.ToRotationVector2();
+                    for (int j = 0; j < 13; j++) {
+                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
+                            , vr * (0.24f), false, 30, 1.2f, Color.CadetBlue);
+                        PRTLoader.AddParticle(spark);
+                    }
+                }
+                Projectile.ai[2]++;
+            }
+            Projectile.ai[0] += 0.15f;
+            if (Projectile.timeLeft > 10) {
+                Projectile.localAI[0] += 0.06f;
+                Projectile.ai[1] += 0.1f;
+            }
+            else {
+                Projectile.localAI[0] -= 0.13f;
+                Projectile.ai[1] -= 0.066f;
+            }
+
+            Projectile.localAI[1] += 0.07f;
+            Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
+
+            Lighting.AddLight(Projectile.Center, new Vector3(1, 1, 1));
+        }
+
+        public override bool ShouldUpdatePosition() => false;
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        public void Warp() {
+            Texture2D warpTex = TextureAssets.Projectile[Type].Value;
+            Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
+            for (int i = 0; i < 3; i++) {
+                Main.spriteBatch.Draw(warpTex, Projectile.Center - Main.screenPosition
+                    , null, warpColor, 0, warpTex.Size() / 2, Projectile.localAI[0], SpriteEffects.None, 0f);
+            }
+        }
+
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

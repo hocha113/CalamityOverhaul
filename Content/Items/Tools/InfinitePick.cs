@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -19,13 +20,22 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
-    internal class InfinitePick : ModItem
+    internal class InfinitePick : ModItem, ICWRLoader
     {
-        public override string Texture => CWRConstant.Item + "Tools/" + (IsPick ? "Pickaxe" : "Hammer");
-        private Texture2D value => CWRUtils.GetT2DValue(Texture);
-        private bool IsPick = true;
+        public override string Texture => CWRConstant.Item + "Tools/Pickaxe";
+        private static bool IsPick = true;
+        private static Asset<Texture2D> Pickaxe;
+        private static Asset<Texture2D> Hammer;
         private bool rDown;
         private bool oldRDown;
+        void ICWRLoader.LoadAsset() {
+            Pickaxe = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Pickaxe");
+            Hammer = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Hammer");
+        }
+        void ICWRLoader.UnLoadData() {
+            Pickaxe = null;
+            Hammer = null;
+        }
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
@@ -78,7 +88,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (CWRKeySystem.InfinitePickSkillKey.JustPressed) {
                 IsPick = !IsPick;
                 SoundEngine.PlaySound(!IsPick ? CWRSound.Pecharge : CWRSound.Peuncharge, player.Center);
-                TextureAssets.Item[Type] = CWRUtils.GetT2DAsset(Texture);
+                TextureAssets.Item[Type] = IsPick ? Pickaxe : Hammer;
             }
 
             rDown = player.PressKey(false);

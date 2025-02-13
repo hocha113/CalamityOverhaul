@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 orig = CWRUtils.GetOrig(mainValue);
             float rot = Projectile.rotation + MathHelper.PiOver4;

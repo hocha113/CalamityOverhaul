@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
@@ -139,7 +140,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override bool PreDraw(ref Color lightColor) {
             if (Projectile.ai[1] == 1) {
-                Texture2D value = CWRUtils.GetT2DValue(Texture);
+                Texture2D value = TextureAssets.Projectile[Type].Value;
                 Main.EntitySpriteDraw(
                     value, Projectile.Center - Main.screenPosition, null, lightColor,
                     Projectile.rotation + MathHelper.PiOver4 + (Owner.direction > 0 ? MathHelper.PiOver2 : MathHelper.Pi)

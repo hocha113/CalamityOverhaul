@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
     internal abstract class BaseKnife : BaseSwing
     {
         public override string Texture => CWRConstant.Placeholder3;
-        public override Texture2D TextureValue => TargetID == ItemID.None ? CWRUtils.GetT2DValue(Texture) : TextureAssets.Item[TargetID].Value;
+        public override Texture2D TextureValue => TargetID == ItemID.None ? TextureAssets.Projectile[Type].Value : TextureAssets.Item[TargetID].Value;
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
         protected bool autoSetShoot;

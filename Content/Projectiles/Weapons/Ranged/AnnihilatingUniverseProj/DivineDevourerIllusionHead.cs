@@ -1,6 +1,7 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
@@ -52,9 +53,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         public override bool PreDraw(ref Color lightColor) {
             int tail = ModContent.ProjectileType<DivineDevourerIllusionTail>();
             int body = ModContent.ProjectileType<DivineDevourerIllusionBody>();
-
-            //Main.spriteBatch.SetAdditiveState();
-
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.type == tail || proj.type == body) {
                     Texture2D value = CWRUtils.GetT2DValue(proj.ModProjectile.Texture);
@@ -62,11 +60,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                         , CWRUtils.GetOrig(value), proj.scale, SpriteEffects.None);
                 }
             }
-            Texture2D head = CWRUtils.GetT2DValue(Texture);
+            Texture2D head = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
                 , CWRUtils.GetOrig(head) - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);
-
-            //Main.spriteBatch.ResetBlendState();
             return false;
         }
     }

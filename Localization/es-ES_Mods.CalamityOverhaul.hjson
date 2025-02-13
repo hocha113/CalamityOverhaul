@@ -785,6 +785,31 @@ Items: {
 		// DisplayName: Geminis Tribute E X
 		// Tooltip: ""
 	}
+
+	DestroyersBlade: {
+		// DisplayName: Destroyers Blade
+		// Tooltip: ""
+	}
+
+	Observer: {
+		// DisplayName: Observer
+		// Tooltip: ""
+	}
+
+	StaffoftheDestroyer: {
+		// DisplayName: Staffofthe Destroyer
+		// Tooltip: ""
+	}
+
+	ForgedLash: {
+		// DisplayName: Forged Lash
+		// Tooltip: ""
+	}
+
+	CommandersClaw: {
+		// DisplayName: Commanders Claw
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1075,6 +1100,13 @@ Projectiles: {
 	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	// DicoriaRay.DisplayName: Dicoria Ray
 	// EarlierSwordHeld.DisplayName: Earlier Sword Held
+	// DestroyersBeam.DisplayName: Destroyers Beam
+	// DestroyerBody.DisplayName: Destroyer Body
+	// DestroyerHead.DisplayName: Destroyer Head
+	// DestroyerTail.DisplayName: Destroyer Tail
+	// ForgedLashProjectile.DisplayName: Forged Lash Projectile
+	// CommandersClawThrow.DisplayName: Commanders Claw Throw
+	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
 }
 
 Configs: {
@@ -1248,6 +1280,11 @@ Buffs: {
 	VoidErosion: {
 		DisplayName: Erosión del vacío
 		Description: Gradualmente se convierte en nada
+	}
+
+	DestroyerSummonBuff: {
+		// DisplayName: Destroyer Summon Buff
+		// Description: Mods.CalamityOverhaul.Buffs.DestroyerSummonBuff.Description
 	}
 }
 

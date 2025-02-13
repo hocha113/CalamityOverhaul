@@ -13,9 +13,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DivineSourceBlade : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DivineSourceBlade";
-
-        public Texture2D Value => CWRUtils.GetT2DValue(Texture);
-
         public override void SetDefaults() {
             Item.height = 154;
             Item.width = 154;

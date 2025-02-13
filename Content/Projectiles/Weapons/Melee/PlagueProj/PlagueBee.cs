@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
@@ -75,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             foreach (Bee bee in bees) {
                 bee.Draw(Main.spriteBatch, value);
             }

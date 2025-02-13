@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -86,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool PreDraw(ref Color lightColor) {
             if (Projectile.frameCounter <= 1)
                 return false;
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
             Vector2 position = Projectile.Center - Main.screenPosition + (Projectile.spriteDirection == -1 ? new Vector2(90, 0) : new Vector2(-90, 0));
             Vector2 origin = texture.Size() / new Vector2(2f, 6f) * 0.5f;
             Rectangle frame = texture.Frame(2, 6, frameX, frameY);

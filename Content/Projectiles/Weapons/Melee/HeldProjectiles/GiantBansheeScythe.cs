@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -57,7 +58,7 @@ public class GiantBansheeScythe : ModProjectile
     }
 
     public override bool PreDraw(ref Color lightColor) {
-        Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
+        Texture2D mainValue = TextureAssets.Projectile[Type].Value;
         float alp = Projectile.timeLeft / 30f;
         if (alp > 1) alp = 1;
         Color color = CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f));

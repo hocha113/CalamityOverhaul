@@ -3,6 +3,8 @@ using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
@@ -77,6 +79,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 IItemDropRuleCondition condition = new DropInDeathMode();
                 LeadingConditionRule rule = new LeadingConditionRule(condition);
                 rule.Add(ModContent.ItemType<FocusingGrimoire>(), 4);
+                rule.Add(ModContent.ItemType<GeminisTribute>(), 4);
+                rule.Add(ModContent.ItemType<Dicoria>(), 4);
                 npcLoot.Add(rule);
             }
         }

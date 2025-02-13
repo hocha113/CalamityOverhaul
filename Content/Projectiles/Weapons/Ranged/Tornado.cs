@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -37,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
                 , Projectile.GetAlpha(lightColor), Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, SpriteEffects.None, 0);
             return false;

@@ -790,6 +790,31 @@ Items: {
 		DisplayName: 双生礼赞EX
 		Tooltip: ""
 	}
+
+	DestroyersBlade: {
+		DisplayName: 毁灭者之刃
+		Tooltip: ""
+	}
+
+	Observer: {
+		DisplayName: 观察者
+		Tooltip: ""
+	}
+
+	StaffoftheDestroyer: {
+		DisplayName: 毁灭者召唤杖
+		Tooltip: ""
+	}
+
+	ForgedLash: {
+		DisplayName: 锻钢之鞭
+		Tooltip: ""
+	}
+
+	CommandersClaw: {
+		DisplayName: 统帅之钳
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1080,6 +1105,13 @@ Projectiles: {
 	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	// DicoriaRay.DisplayName: Dicoria Ray
 	// EarlierSwordHeld.DisplayName: Earlier Sword Held
+	// DestroyersBeam.DisplayName: Destroyers Beam
+	// DestroyerBody.DisplayName: Destroyer Body
+	// DestroyerHead.DisplayName: Destroyer Head
+	// DestroyerTail.DisplayName: Destroyer Tail
+	// ForgedLashProjectile.DisplayName: Forged Lash Projectile
+	// CommandersClawThrow.DisplayName: Commanders Claw Throw
+	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
 }
 
 Configs: {
@@ -1253,6 +1285,11 @@ Buffs: {
 	VoidErosion: {
 		DisplayName: 虚空侵蚀
 		Description: 逐渐化为虚无
+	}
+
+	DestroyerSummonBuff: {
+		DisplayName: 毁灭者
+		Description: 迷你毁灭者会跟随你征战
 	}
 }
 

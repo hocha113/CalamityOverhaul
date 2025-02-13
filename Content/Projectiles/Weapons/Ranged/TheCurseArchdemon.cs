@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
+            //Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             //Main.EntitySpriteDraw(
             //    mainValue,
             //    Projectile.Center - Main.screenPosition,

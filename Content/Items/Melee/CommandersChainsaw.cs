@@ -1,12 +1,7 @@
 ﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -38,6 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.channel = true;
             Item.tileBoost = -1;
             Item.axe = 20;
+            Item.CWR().DeathModeItem = true;
         }
     }
 

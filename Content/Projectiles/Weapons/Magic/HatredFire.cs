@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,

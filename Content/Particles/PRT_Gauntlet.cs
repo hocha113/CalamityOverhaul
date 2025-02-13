@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Texture2D value = TexValue;
             Main.EntitySpriteDraw(value, Position - Main.screenPosition, null, Color.Gold * Opacity
                 , Rotation + MathHelper.PiOver4 + MathHelper.Pi + (Velocity.X > 0 ? MathHelper.PiOver2 : 0)
                 , value.Size() / 2, Scale, Velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);

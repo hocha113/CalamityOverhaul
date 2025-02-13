@@ -138,6 +138,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool SoulfireExplosion;
         /// <summary>
+        /// 毁灭者之主
+        /// </summary>
+        public bool DestroyerOwner;
+        /// <summary>
         /// 是否穿戴正义显现
         /// </summary>
         public bool IsJusticeUnveiled;
@@ -198,6 +202,7 @@ namespace CalamityOverhaul.Content
             HasOverhaulTheBibleBook = false;
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
+            DestroyerOwner = false;
         }
 
         /// <summary>

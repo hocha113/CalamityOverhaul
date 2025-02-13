@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -80,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         internal Color ColorFunction(float completionRatio) {
             if (colorDates == null) {
-                colorDates = CWRUtils.GetColorDate(CWRUtils.GetT2DValue(Texture));
+                colorDates = CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
             }
             return VaultUtils.MultiStepColorLerp((150 - Projectile.timeLeft) / 150f, colorDates);
         }
