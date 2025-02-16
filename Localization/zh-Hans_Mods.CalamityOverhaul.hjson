@@ -1269,6 +1269,11 @@ Configs: {
 				预设3:居高
 				'''
 		}
+
+		ModifiIntercept: {
+			Label: 拦截修改[c/06e33f:(开发者选项)]
+			Tooltip: ""
+		}
 	}
 }
 

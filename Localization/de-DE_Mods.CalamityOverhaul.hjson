@@ -1270,6 +1270,11 @@ Configs: {
 				Voreinstellung 3: Oben zentriert
 				'''
 		}
+
+		ModifiIntercept: {
+			// Label: Modifi Intercept
+			// Tooltip: ""
+		}
 	}
 }
 

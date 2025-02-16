@@ -29,7 +29,6 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
         public CompressorTP compressorEntity;
         public List<ItemConversion> conversionList = [];
         public bool onDrag;
-        public bool hoverInMainUI;
         public Vector2 dragOffsetPos;
         public static int Weith => 400;
         public static int Height => 640;
@@ -83,8 +82,8 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
         public override void Update() {
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Weith, Height);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            hoverInMainUI = UIHitBox.Intersects(mouseHit);
-            if (hoverInMainUI) {
+            hoverInMainPage = UIHitBox.Intersects(mouseHit);
+            if (hoverInMainPage) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Held && !onDrag) {
                     if (!onDrag) {

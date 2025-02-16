@@ -11,10 +11,20 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
-    public abstract class ItemOverride : ModType, ILocalizedModType, ICWRLoader
+    public abstract class ItemOverride : ModType, ILocalizedModType
     {
-        public static List<ItemOverride> Instances { get; private set; } = [];
-        public static Dictionary<int, ItemOverride> ByID { get; private set; } = [];
+        /// <summary>
+        /// 所有修改的实例集合
+        /// </summary>
+        public static List<ItemOverride> Instances { get; internal set; } = [];
+        /// <summary>
+        /// 一个字典，可以根据目标ID来获得对应的修改实例
+        /// </summary>
+        public static Dictionary<int, ItemOverride> ByID { get; internal set; } = [];
+        /// <summary>
+        /// 是否受到修改实例的影响?
+        /// </summary>
+        public static Dictionary<int, bool> CanOverrideByID { get; internal set; } = [];
         /// <summary>
         /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
         /// </summary>
@@ -81,20 +91,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
-        void ICWRLoader.LoadData() {
-            Instances = [];
-            ByID = [];
-        }
-
-        void ICWRLoader.SetupData() {
-            CWRMod.Instance.Logger.Info($"{ByID.Count} key pair is loaded into the RItemIndsDict");
-        }
-
-        void ICWRLoader.UnLoadData() {
-            Instances?.Clear();
-            ByID?.Clear();
-        }
-
         protected override void Register() {
             if (CanLoad() && TargetID > ItemID.None) {
                 Instances.Add(this);
@@ -112,6 +108,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             ByID.Add(SetReadonlyTargetID, this);
+            CanOverrideByID.Add(SetReadonlyTargetID, true);
         }
 
         /// <summary>
@@ -133,6 +130,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             bool? canOverride = itemOverride.CanOverride();
+            if (CWRServerConfig.Instance.ModifiIntercept && !canOverride.HasValue) {
+                canOverride = CanOverrideByID[id];
+            }
+
             return canOverride ?? true;  // 如果CanOverride返回null，默认返回true
         }
 

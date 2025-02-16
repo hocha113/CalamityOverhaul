@@ -1271,6 +1271,11 @@ Configs: {
 				Préréglage 3 : Au centre en haut
 				'''
 		}
+
+		ModifiIntercept: {
+			// Label: Modifi Intercept
+			// Tooltip: ""
+		}
 	}
 }
 

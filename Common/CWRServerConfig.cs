@@ -46,6 +46,11 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
+        [DefaultValue(false)]
+        public bool ModifiIntercept { get; set; }//是否开启修改变量拦截
+
+        [BackgroundColor(35, 185, 78, 255)]
+        [ReloadRequired]
         [DefaultValue(true)]
         public bool BiologyOverhaul { get; set; }
 

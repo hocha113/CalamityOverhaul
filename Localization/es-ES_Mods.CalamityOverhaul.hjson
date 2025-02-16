@@ -1285,6 +1285,11 @@ Configs: {
 				Preajuste 3: Arriba
 				'''
 		}
+
+		ModifiIntercept: {
+			// Label: Modifi Intercept
+			// Tooltip: ""
+		}
 	}
 }
 

@@ -65,7 +65,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onItemNamePropertyGetMethod;
         public static MethodBase onAffixNameMethod;
 
+        void ICWRLoader.LoadAsset() {
+            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
+        }
+
+        void ICWRLoader.SetupData() {
+            CWRMod.Instance.Logger.Info($"{ByID.Count} key pair is loaded into the RItemIndsDict");
+        }
+
         void ICWRLoader.LoadData() {
+            Instances ??= [];
+            Instances.Clear();
+            ByID ??= [];
+            ByID.Clear();
+
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
             onShootMethod = itemLoaderType.GetMethod("Shoot", BindingFlags.Public | BindingFlags.Static);
@@ -159,6 +172,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         void ICWRLoader.UnLoadData() {
+            Instances?.Clear();
+            ByID?.Clear();
+
             itemLoaderType = null;
             onSetDefaultsMethod = null;
             onShootMethod = null;
@@ -541,10 +557,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         #endregion
 
         #region Loader Item Hook
-        void ICWRLoader.LoadAsset() {
-            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
-        }
-
         public static void ProcessRemakeAction(Item item, Action<ItemOverride> action) {
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 action(ritem);
