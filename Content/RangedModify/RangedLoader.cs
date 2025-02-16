@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.RangedModify
     public class RangedLoader : ICWRLoader
     {
         public delegate Item On_ChooseAmmo_Delegate(object obj, Item weapon);
+        public static event Func<Item, Player, bool> IsAmmunitionUnlimitedEvent;
         public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
         public static Dictionary<Type, Asset<Texture2D>> TypeToGlowAsset { get; private set; } = [];
         void ICWRLoader.LoadData() {
@@ -34,6 +35,40 @@ namespace CalamityOverhaul.Content.RangedModify
         void ICWRLoader.UnLoadData() {
             GlobalRangeds?.Clear();
             TypeToGlowAsset?.Clear();
+            IsAmmunitionUnlimitedEvent = null;
+        }
+
+        /// <summary>
+        /// 判断该弹药物品是否应该被视为无限弹药
+        /// </summary>
+        /// <param name="ammoItem">要检查的弹药物品</param>
+        /// <param name="owner">要检查的玩家</param>
+        /// <returns>如果弹药物品是无限的，返回<see langword="true"/>；否则返回<see langword="false"/></returns>
+        public static bool IsAmmunitionUnlimited(Item ammoItem, Player owner = null) {
+            if (!ammoItem.consumable) {
+                return true;
+            }
+
+            owner ??= Main.LocalPlayer;
+            Item weapon = owner.GetItem();
+            if (weapon.type == ItemID.None) {
+                return true;
+            }
+
+            if (ModGanged.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK
+                return true;
+            }
+
+            if (ModGanged.ImproveGameSetAmmoIsNoConsume(ammoItem)) {//适配ImproveGame
+                return true;
+            }
+
+            bool reset = false;
+            if (IsAmmunitionUnlimitedEvent != null) {
+                reset = IsAmmunitionUnlimitedEvent.Invoke(ammoItem, owner);
+            }
+
+            return reset;
         }
 
         private static void ModifyInCartridgeGun(Item weapon, ref Item ammo) {
@@ -65,14 +100,14 @@ namespace CalamityOverhaul.Content.RangedModify
                 return;
             }
 
-            if (ArrowHolderUI.targetAmmo == null
-                || ArrowHolderUI.targetAmmo.type == ItemID.None
-                || ArrowHolderUI.targetAmmo.ammo != AmmoID.Arrow) {
+            if (GlobalBow.TargetLockAmmo == null
+                || GlobalBow.TargetLockAmmo.type == ItemID.None
+                || GlobalBow.TargetLockAmmo.ammo != AmmoID.Arrow) {
                 return;
             }
 
             foreach (var item in Main.LocalPlayer.inventory) {
-                if (item.type != ArrowHolderUI.targetAmmo.type) {
+                if (item.type != GlobalBow.TargetLockAmmo.type) {
                     continue;
                 }
                 ammo = item;

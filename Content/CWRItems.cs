@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.MeleeModify.Core;
+using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -260,7 +261,7 @@ namespace CalamityOverhaul.Content
         /// <param name="addStack"></param>
         public void LoadenMagazine(Item addAmmo, int addStack = 0) {
             CalculateNumberBullet();
-            bool isUnlimited = CWRUtils.IsAmmunitionUnlimited(addAmmo);
+            bool isUnlimited = RangedLoader.IsAmmunitionUnlimited(addAmmo);
 
             if (addAmmo.type != ItemID.None && !addAmmo.CWR().AmmoProjectileReturn) {
                 isUnlimited = true;//如果加入的物品本身设置就是不返还，就强行判定为无限弹药

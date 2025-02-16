@@ -681,29 +681,6 @@ namespace CalamityOverhaul
             return result;
         }
 
-        /// <summary>
-        /// 判断该弹药物品是否应该被视为无限弹药
-        /// </summary>
-        /// <param name="ammoItem">要检查的弹药物品</param>
-        /// <returns>如果弹药物品是无限的，返回<see langword="true"/>；否则返回<see langword="false"/></returns>
-        public static bool IsAmmunitionUnlimited(Item ammoItem) {
-            if (!ammoItem.consumable) {
-                return true;
-            }
-
-            Player player = Main.LocalPlayer;
-            Item weapon = Main.LocalPlayer.GetItem();
-            if (weapon.type == ItemID.None) {
-                return true;
-            }
-
-            if (ModGanged.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK
-                return true;
-            }
-
-            return !CombinedHooks.CanConsumeAmmo(player, weapon, ammoItem);
-        }
-
         public static bool IsRangedAmmoFreeThisShot(this Player player, Item ammo) {
             bool flag2 = false;
             if (player.magicQuiver && ammo.ammo == AmmoID.Arrow && Main.rand.NextBool(5)) {

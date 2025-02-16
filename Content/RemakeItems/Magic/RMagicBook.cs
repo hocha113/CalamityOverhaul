@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.Projectiles.Magic;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -18,6 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
         public override int TargetID => ModContent.ItemType<TItem>();
+        public override bool CanLoad() => CWRServerConfig.Instance.WeaponHandheldDisplay;
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
     }
 
@@ -27,6 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool FormulaSubstitution => true;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
+        public override bool CanLoad() => CWRServerConfig.Instance.WeaponHandheldDisplay;
         public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
     }
 

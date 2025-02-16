@@ -9,10 +9,20 @@ namespace CalamityOverhaul.Content.RangedModify
         public static bool BowActive {
             get {
                 Item handItem = Main.LocalPlayer.GetItem();
-                return handItem != null && !CWRLoad.ItemHasCartridgeHolder[handItem.type]
-                && (CWRLoad.ItemIsBow[handItem.type] || CWRLoad.ItemIsCrossBow[handItem.type] || IsArrow());
+                if (handItem == null) {
+                    return false;
+                }
+                if (CWRLoad.ItemHasCartridgeHolder[handItem.type]) {
+                    return false;
+                }
+                if (IsArrow()) {
+                    return true;
+                }
+                return CWRLoad.ItemIsBow[handItem.type] || CWRLoad.ItemIsCrossBow[handItem.type] || handItem.useAmmo == AmmoID.Arrow;
             }
         }
+
+        public static Item TargetLockAmmo { get; set; }
 
         public static bool IsArrow() {
             Item handItem = Main.LocalPlayer.GetItem();

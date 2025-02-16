@@ -1121,6 +1121,7 @@ Projectiles: {
 	// ForgedLashProjectile.DisplayName: Forged Lash Projectile
 	// CommandersClawThrow.DisplayName: Commanders Claw Throw
 	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
+	// PhasebladeHeld.DisplayName: Phaseblade Held
 }
 
 Configs: {

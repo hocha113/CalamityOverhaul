@@ -33,7 +33,8 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             }
             //如果是最开始，没有手持枪械但是拿着子弹时，手动搜索玩家背包里面的枪
             if (targetWeapon == null || cwrWeapon == null || IsAmmo()) {
-                foreach (var item in player.inventory) {
+                for (int i = player.inventory.Length - 1; i >= 0; i--) {
+                    Item item = player.inventory[i];
                     if (!CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
                         continue;
                     }

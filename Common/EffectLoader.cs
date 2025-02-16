@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -23,10 +22,8 @@ namespace CalamityOverhaul.Common
         private static Asset<Effect> getEffect(string key) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.AsyncLoad);
         private static void loadFiltersEffect(string filtersKey, string filename, string passname) {
             Asset<Effect> asset = getEffect(filename);
-            Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
+            Filters.Scene[filtersKey] = new Filter(new ScreenShaderData(asset, passname), EffectPriority.VeryHigh);
         }
-
-        private FieldInfo miscShaderGetFieldInfo(string key) => typeof(MiscShaderData).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
 
         public static void LoadRegularShaders() {
             //Effect实例的获取被修改，它不再需要存储一个外置的字段值，因为这实际上毫无作用，使用CWRUTils.GetEffectValue()来获取这些实例

@@ -4,6 +4,7 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
+using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Mdb;
@@ -93,6 +94,9 @@ namespace CalamityOverhaul.Common
         public static ModConfig LuiAFKConfig_ConfigInstance;
         public static FieldInfo LuiAFKConfig_RangerAmmoInfo;
 
+        public static ModConfig ImproveGameConfig_ConfigInstance;
+        public static FieldInfo ImproveGameConfig_NoConsume_Ammo;
+
         internal static bool InfernumModeOpenState =>
             CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
         #endregion
@@ -143,6 +147,19 @@ namespace CalamityOverhaul.Common
             }
             else {
                 LogModNotLoaded("miningcracks_take_on_luiafk");
+            }
+            #endregion
+
+            #region improveGame
+            if (CWRMod.Instance.improveGame != null) {
+                Type improveGameConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.improveGame), "ImproveConfigs");
+                ImproveGameConfig_NoConsume_Ammo = improveGameConfigType.GetField("NoConsume_Ammo", BindingFlags.Public | BindingFlags.Instance);
+                if (ImproveGameConfig_NoConsume_Ammo == null) {
+                    LogFailedLoad("ImproveGameConfig_NoConsume_Ammo", "ImproveGame.Common.Configs.ImproveConfigs.NoConsume_Ammo");
+                }
+            }
+            else {
+                LogModNotLoaded("ImproveGame");
             }
             #endregion
 
@@ -504,6 +521,32 @@ namespace CalamityOverhaul.Common
                 int rangerAmmo = (int)LuiAFKConfig_RangerAmmoInfo.GetValue(LuiAFKConfig_ConfigInstance);
                 if (ammoItem.stack >= rangerAmmo) {
                     return true;
+                }
+            } catch {
+                return false;
+            }
+
+            return false;
+        }
+
+        internal static bool ImproveGameSetAmmoIsNoConsume(Item ammoItem) {
+            if (CWRMod.Instance.improveGame == null) {
+                return false;
+            }
+
+            if (ImproveGameConfig_NoConsume_Ammo == null) {
+                return false;
+            }
+
+            try {
+                ImproveGameConfig_ConfigInstance ??= CWRMod.Instance.improveGame.Find<ModConfig>("ImproveConfigs");//懒加载一下
+                if ((bool)ImproveGameConfig_NoConsume_Ammo.GetValue(ImproveGameConfig_ConfigInstance)) {
+                    if (ammoItem.stack >= 999 && ammoItem.type == ItemID.FallenStar) {
+                        return true;
+                    }  
+                    if (ammoItem.stack >= 3996 && ammoItem.ammo > 0) {
+                        return true;
+                    }   
                 }
             } catch {
                 return false;

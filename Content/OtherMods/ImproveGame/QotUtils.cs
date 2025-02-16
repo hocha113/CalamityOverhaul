@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.RangedModify;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -101,7 +102,7 @@ public static class QotUtils
                         // 不消耗的独立处理
                         // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
                         // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                        if (CWRUtils.IsAmmunitionUnlimited(item)) {
+                        if (RangedLoader.IsAmmunitionUnlimited(item)) {
                             var clone = new Item(ammoType, times);
                             clone.CWR().AmmoProjectileReturn = false;
                             // 将其压入弹匣
@@ -148,7 +149,7 @@ public static class QotUtils
                     // 不消耗的独立处理
                     // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
                     // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                    if (CWRUtils.IsAmmunitionUnlimited(item)) {
+                    if (RangedLoader.IsAmmunitionUnlimited(item)) {
                         var clone = new Item(ammoType, times);
                         clone.CWR().AmmoProjectileReturn = false;
                         // 将其压入弹匣

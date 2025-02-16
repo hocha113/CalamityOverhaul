@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal abstract class PhasebladeHeld : BaseKnife
+    internal class PhasebladeHeld : BaseKnife
     {
         public override int TargetID => Item.type;
         public override void SetKnifeProperty() {
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailTopWidth = 30;
             drawTrailBtommWidth = 30;
             SwingData.baseSwingSpeed = 4;
-            SwingData.starArg = 66;
+            SwingData.starArg = 46;
             SwingData.ler1_UpSizeSengs = 0.056f;
             SwingData.minClampLength = 70;
             SwingData.maxClampLength = 80;

@@ -56,6 +56,7 @@ namespace CalamityOverhaul.Common
         [Header("CWRWeapon")]
 
         [BackgroundColor(192, 54, 94, 255)]
+        [ReloadRequired]
         [DefaultValue(true)]
         public bool WeaponHandheldDisplay { get; set; }
 

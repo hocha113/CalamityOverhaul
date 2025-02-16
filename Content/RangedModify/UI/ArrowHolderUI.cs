@@ -11,21 +11,44 @@ namespace CalamityOverhaul.Content.RangedModify.UI
     internal class ArrowHolderUI : UIHandle
     {
         public override Texture2D Texture => TextureAssets.Item[ChooseAmmo.type].Value;
-        public override bool Active => ChooseAmmo != null && GlobalBow.BowActive;
-        private static Item handItem => player.GetItem();
-        private static Item ChooseAmmo => player.ChooseAmmo(handItem);
-        public static Item targetAmmo;
+        public override bool Active => GlobalBow.BowActive;
+        private static Item HeldWeapon;
+        private static Item ChooseAmmo;
         private int Weith;
         private int Height;
         public override void Update() {
-            if (ChooseAmmo != null && ChooseAmmo.type != ItemID.None) {
-                Weith = Texture.Width;
-                Height = Texture.Height;
+            HeldWeapon = null;
+            ChooseAmmo = null;
+
+            if (GlobalBow.IsArrow()) {
+                for (int i = player.inventory.Length - 1; i >= 0; i--) {
+                    Item item = player.inventory[i];
+                    if (item.useAmmo != AmmoID.Arrow) {
+                        continue;
+                    }
+                    HeldWeapon = item;
+                }
             }
             else {
-                Weith = 32;
-                Height = 32;
+                HeldWeapon = player.GetItem();
             }
+
+            if (HeldWeapon == null) {
+                return;
+            }
+
+            ChooseAmmo = player.ChooseAmmo(HeldWeapon);
+            if (ChooseAmmo == null) {
+                if (GlobalBow.IsArrow()) {
+                    ChooseAmmo = player.GetItem();
+                }
+                if (ChooseAmmo == null) {
+                    return;
+                }
+            }
+
+            Weith = Texture.Width;
+            Height = Texture.Height;
 
             int arrowDrawStackCount = ChooseAmmo.stack;
             if (arrowDrawStackCount > 6) {
@@ -41,33 +64,46 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             hoverInMainPage = UIHitBox.Intersects(mouseHit);
 
             if (hoverInMainPage) {
+                if (Main.playerInventory) {
+                    player.mouseInterface = true;
+                }
+
                 if (keyLeftPressState == KeyPressState.Pressed && GlobalBow.IsArrow()) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    targetAmmo = handItem.Clone();
+                    GlobalBow.TargetLockAmmo = player.GetItem().Clone();
                 }
                 if (keyRightPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    targetAmmo = new Item();
+                    GlobalBow.TargetLockAmmo = new Item();
                 }
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (ChooseAmmo == null || HeldWeapon == null) {
+                return;
+            }
+
+            int arrowDrawStackCount = ChooseAmmo.stack;
+            if (arrowDrawStackCount > 6) {
+                arrowDrawStackCount = 6;
+            }
+
             Rectangle rectangle = CWRUtils.GetRec(CWRAsset.Quiver_back_Asset.Value, 0, 4);
             spriteBatch.Draw(CWRAsset.Quiver_back_Asset.Value, DrawPosition, rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (GlobalBow.IsArrow()) {
+                Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + arrowDrawStackCount * Weith / 4, Height);
+                //drawPos += TextureAssets.Item[HeldWeapon.type].Value.Size() / 2;
+                VaultUtils.SimpleDrawItem(spriteBatch, HeldWeapon.type, drawPos, 40, rotation: MathHelper.PiOver2, orig: new Vector2(0.001f, 0.001f));
                 if (hoverInMainPage) {
                     Texture2D aim = CWRAsset.AimTarget.Value;
                     spriteBatch.Draw(aim, MousePosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("ArrowHolderUI_Text0")
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ArrowHolderUI_Text0.Value
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                 }
             }
-            else if (ChooseAmmo.type > ItemID.None) {
-                int arrowDrawStackCount = ChooseAmmo.stack;
-                if (arrowDrawStackCount > 6) {
-                    arrowDrawStackCount = 6;
-                }
+
+            if (ChooseAmmo.type > ItemID.None) {
                 for (int i = 0; i < arrowDrawStackCount; i++) {
                     Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + i * Weith / 2, 0);
                     VaultUtils.SimpleDrawItem(spriteBatch, ChooseAmmo.type, drawPos, 40, orig: new Vector2(0.001f, 0.001f));
@@ -81,17 +117,17 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ChooseAmmo.Name
                     , MousePosition.X, MousePosition.Y + 30, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
 
-                    if (targetAmmo != null && targetAmmo.type > ItemID.None) {
-                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("ArrowHolderUI_Text1")
+                    if (GlobalBow.TargetLockAmmo != null && GlobalBow.TargetLockAmmo.type > ItemID.None) {
+                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ArrowHolderUI_Text1.Value
                         , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                     }
                 }
             }
 
-            if (targetAmmo != null && targetAmmo.type > ItemID.None) {
+            if (GlobalBow.TargetLockAmmo != null && GlobalBow.TargetLockAmmo.type > ItemID.None) {
                 Texture2D aim = CWRAsset.AimTarget.Value;
                 spriteBatch.Draw(aim, DrawPosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
-                VaultUtils.SimpleDrawItem(spriteBatch, targetAmmo.type, DrawPosition, 32);
+                VaultUtils.SimpleDrawItem(spriteBatch, GlobalBow.TargetLockAmmo.type, DrawPosition, 32);
             }
         }
     }
