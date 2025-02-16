@@ -96,6 +96,7 @@ namespace CalamityOverhaul.Common
 
         public static ModConfig ImproveGameConfig_ConfigInstance;
         public static FieldInfo ImproveGameConfig_NoConsume_Ammo;
+        internal static bool Suitableversion_improveGame { get; private set; }
 
         internal static bool InfernumModeOpenState =>
             CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
@@ -151,7 +152,10 @@ namespace CalamityOverhaul.Common
             #endregion
 
             #region improveGame
+            Suitableversion_improveGame = false;
             if (CWRMod.Instance.improveGame != null) {
+                Suitableversion_improveGame = CWRMod.Instance.improveGame.Version >= new Version(1, 7, 1, 7);
+
                 Type improveGameConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.improveGame), "ImproveConfigs");
                 ImproveGameConfig_NoConsume_Ammo = improveGameConfigType.GetField("NoConsume_Ammo", BindingFlags.Public | BindingFlags.Instance);
                 if (ImproveGameConfig_NoConsume_Ammo == null) {

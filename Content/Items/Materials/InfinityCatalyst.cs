@@ -31,12 +31,12 @@ namespace CalamityOverhaul.Content.Items.Materials
                     {"MagicBuilder", 0.25f},
                     {"CalamityPostMLBoots", 0.25f},
                 };
-            float overMdgs = LoadMods.Count / 10f;
+            float overMdgs = ModLoader.Mods.Length / 10f;
             overMdgs = overMdgs < 0.5f ? 0 : overMdgs;
             float totalBonus = modBonuses.Sum(pair => hasMod(pair.Key) ? pair.Value : 0);
             QFH = baseBonus + overMdgs + totalBonus;
         }
-        private static bool hasMod(string name) => LoadMods.Any(mod => mod.Name == name);
+        private static bool hasMod(string name) => ModLoader.Mods.Any(mod => mod.Name == name);
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
             ItemID.Sets.AnimatesAsSoul[Type] = true;

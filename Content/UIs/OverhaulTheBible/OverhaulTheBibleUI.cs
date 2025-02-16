@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -188,7 +189,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
         internal void SetItemVidousList() {
             itemVidousList = [];
-            foreach (var rItem in CWRMod.ItemOverrideInstances) {
+            foreach (var rItem in ItemOverride.Instances) {
                 if (rItem.DrawingInfo && rItem.TargetID > 0) {
                     Item ccItem = new Item(rItem.TargetID);
                     if (!tabControlMelee.Tab && (ccItem.DamageType == DamageClass.Melee

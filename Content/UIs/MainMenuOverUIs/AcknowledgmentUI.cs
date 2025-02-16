@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -112,7 +113,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             public static int SpwanItemID() {
-                int id = CWRMod.ItemOverrideInstances[Main.rand.Next(CWRMod.ItemOverrideInstances.Count)].TargetID;
+                int id = ItemOverride.Instances[Main.rand.Next(ItemOverride.Instances.Count)].TargetID;
                 Main.instance.LoadItem(id);
                 return id;
             }

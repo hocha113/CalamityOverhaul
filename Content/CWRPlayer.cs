@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -239,14 +240,14 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
 
-            if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
+            if (!ModGanged.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
-                string text = CWRMod.ItemIDToOverrideDic.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
+                string text = ItemOverride.ByID.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }
 

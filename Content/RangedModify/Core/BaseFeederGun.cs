@@ -649,7 +649,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
             int quantity = LoadingQuantity > 0 ? LoadingQuantity : ModItem.AmmoCapacity;
-            if (CWRMod.Suitableversion_improveGame) {
+            if (ModGanged.Suitableversion_improveGame) {
                 // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
                 var ammoChain = Item.GetQotAmmoChain();
                 if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo

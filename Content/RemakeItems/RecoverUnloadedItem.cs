@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -16,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         /// </summary>
         internal static Dictionary<string, int> RecoverUnloadedItemDic { get; private set; } = [];
         void ICWRLoader.SetupData() {
-            foreach (var rItem in CWRMod.ItemOverrideInstances) {
+            foreach (var rItem in ItemOverride.Instances) {
                 Item ectypeItem = new Item(rItem.TargetID);
                 if (ectypeItem.ModItem != null) {
                     string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";

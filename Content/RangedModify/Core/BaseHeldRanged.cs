@@ -445,13 +445,13 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         internal void ItemLoaderInFireSetBaver() {
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+            foreach (var g in RangedLoader.ItemLoader_CanUse_Hook.Enumerate(Item)) {
                 g.CanUseItem(Item, Owner);
             }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
+            foreach (var g in RangedLoader.ItemLoader_UseItem_Hook.Enumerate(Item)) {
                 g.UseItem(Item, Owner);
             }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+            foreach (var g in RangedLoader.ItemLoader_Shoot_Hook.Enumerate(Item)) {
                 g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType)
                     , ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }

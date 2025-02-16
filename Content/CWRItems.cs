@@ -525,7 +525,7 @@ namespace CalamityOverhaul.Content
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {
-            bool inRItemIndsDict = CWRMod.ItemIDToOverrideDic.ContainsKey(item.type);
+            bool inRItemIndsDict = ItemOverride.ByID.ContainsKey(item.type);
 
             if (CWRLoad.ItemIsGun[item.type]) {
                 if (CWRLoad.ItemIsGunAndMustConsumeAmmunition[item.type] && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
@@ -568,7 +568,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (inRItemIndsDict) {
-                string path = $"Mods.CalamityOverhaul.RemakeItems.{CWRMod.ItemIDToOverrideDic[item.type].GetType().Name}.Tooltip";
+                string path = $"Mods.CalamityOverhaul.RemakeItems.{ItemOverride.ByID[item.type].Name}.Tooltip";
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText(path));
             }
 
@@ -625,7 +625,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && CWRMod.ItemIDToOverrideDic.TryGetValue(item.type, out ItemOverride baseRItem) && baseRItem.DrawingInfo) {
+            if (ItemOverride.TryFetchByID(item.type, out ItemOverride ritem) && ritem.DrawingInfo) {
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                     , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }

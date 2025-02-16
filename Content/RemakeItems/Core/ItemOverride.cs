@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -12,12 +13,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 {
     public abstract class ItemOverride : ModType, ILocalizedModType, ICWRLoader
     {
+        public static List<ItemOverride> Instances { get; private set; } = [];
+        public static Dictionary<int, ItemOverride> ByID { get; private set; } = [];
         /// <summary>
         /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
         /// </summary>
         public int SetReadonlyTargetID;
         /// <summary>
-        /// 重置对象的目标ID，这个字段一般用于重写后指向灾厄本体的物品ID
+        /// 重置对象的目标ID
         /// </summary>
         public virtual int TargetID => SetReadonlyTargetID;
         /// <summary>
@@ -78,13 +81,68 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
+        void ICWRLoader.LoadData() {
+            Instances = [];
+            ByID = [];
+        }
+
+        void ICWRLoader.SetupData() {
+            CWRMod.Instance.Logger.Info($"{ByID.Count} key pair is loaded into the RItemIndsDict");
+        }
+
+        void ICWRLoader.UnLoadData() {
+            Instances?.Clear();
+            ByID?.Clear();
+        }
+
         protected override void Register() {
             if (CanLoad() && TargetID > ItemID.None) {
-                CWRMod.ItemOverrideInstances.Add(this);
+                Instances.Add(this);
             }
         }
 
         public virtual bool CanLoad() => true;
+
+        public override void SetupContent() {
+            SetReadonlyTargetID = TargetID;
+            SetStaticDefaults();
+            if (CanLoadLocalization) {
+                _ = DisplayName;
+                _ = Tooltip;
+            }
+
+            ByID.Add(SetReadonlyTargetID, this);
+        }
+
+        /// <summary>
+        /// 尝试通过ID获取对应的<see cref="ItemOverride"/>对象该方法首先检查服务器配置是否启用了武器大修，如果启用，则从ByID字典中查找对应ID的ItemOverride 
+        /// 如果找到，并且<see cref="ItemOverride"/>的<see cref="CanOverride"/>方法返回值为非空，则决定是否返回找到的ItemOverride
+        /// </summary>
+        /// <param name="id">需要查找的<see cref="ItemOverride"/>的<see cref="TargetID"/></param>
+        /// <param name="itemOverride">查找到的<see cref="ItemOverride"/>对象，如果没有找到则为null</param>
+        /// <returns>如果找到了<see cref="ItemOverride"/>且满足覆盖条件，则返回true，否则返回false</returns>
+        public static bool TryFetchByID(int id, out ItemOverride itemOverride) {
+            itemOverride = null;
+
+            if (!CWRServerConfig.Instance.WeaponOverhaul) {
+                return false;
+            }
+
+            if (!ByID.TryGetValue(id, out itemOverride)) {
+                return false;  // 如果未找到，直接返回false
+            }
+
+            bool? canOverride = itemOverride.CanOverride();
+            return canOverride ?? true;  // 如果CanOverride返回null，默认返回true
+        }
+
+        /// <summary>
+        /// 判断当前<see cref="ItemOverride"/>是否能够进行覆盖默认实现返回null，子类可以重写此方法以实现具体的覆盖逻辑
+        /// </summary>
+        /// <returns>如果可以覆盖，返回true；如果不可以覆盖，返回false；默认返回null</returns>
+        public virtual bool? CanOverride() {
+            return null;
+        }
 
         /// <summary>
         /// 进行背包中的物品绘制，这个函数会执行在Draw之后

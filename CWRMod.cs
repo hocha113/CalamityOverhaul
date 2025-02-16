@@ -24,14 +24,7 @@ namespace CalamityOverhaul
         //-HoCha113 - 2024/9/20/ 14:32
         //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
         internal static CWRMod Instance { get; private set; }
-        internal static bool Suitableversion_improveGame { get; private set; }
-        internal static List<Mod> LoadMods { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
-        internal static List<ItemOverride> ItemOverrideInstances { get; private set; } = [];
-        internal static Dictionary<int, ItemOverride> ItemIDToOverrideDic { get; private set; } = [];
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -57,44 +50,6 @@ namespace CalamityOverhaul
         public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
-            {
-                LoadMods = [.. ModLoader.Mods];
-            }
-
-            {
-                foreach (var rItem in ItemOverrideInstances) {
-                    rItem.SetReadonlyTargetID = rItem.TargetID;
-                    rItem.SetStaticDefaults();
-                    if (rItem.CanLoadLocalization) {
-                        _ = rItem.DisplayName;
-                        _ = rItem.Tooltip;
-                    }
-                }
-            }
-
-            {
-                ItemIDToOverrideDic = [];
-                foreach (ItemOverride ritem in ItemOverrideInstances) {
-                    ItemIDToOverrideDic.Add(ritem.SetReadonlyTargetID, ritem);
-                }
-                Instance.Logger.Info($"{ItemIDToOverrideDic.Count} key pair is loaded into the RItemIndsDict");
-            }
-
-            {
-                GlobalHookList<GlobalItem> getItemLoaderHookTargetValue(string key)
-                    => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
-                CWR_InItemLoader_Set_Shoot_Hook = getItemLoaderHookTargetValue("HookShoot");
-                CWR_InItemLoader_Set_CanUse_Hook = getItemLoaderHookTargetValue("HookCanUseItem");
-                CWR_InItemLoader_Set_UseItem_Hook = getItemLoaderHookTargetValue("HookUseItem");
-            }
-
-            {
-                Suitableversion_improveGame = false;
-                if (improveGame != null) {
-                    Suitableversion_improveGame = improveGame.Version >= new Version(1, 7, 1, 7);
-                }
-            }
-
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Setup();
             foreach (var i in ILoaders) {
@@ -121,13 +76,7 @@ namespace CalamityOverhaul
             }
 
             EmptyMod();
-            LoadMods?.Clear();
             ILoaders?.Clear();
-            ItemOverrideInstances?.Clear();
-            ItemIDToOverrideDic?.Clear();
-            CWR_InItemLoader_Set_Shoot_Hook = null;
-            CWR_InItemLoader_Set_CanUse_Hook = null;
-            CWR_InItemLoader_Set_UseItem_Hook = null;
             CWRLoad.UnLoad();
             Instance = null;
         }
