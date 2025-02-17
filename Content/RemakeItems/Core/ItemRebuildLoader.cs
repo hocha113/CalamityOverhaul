@@ -75,7 +75,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static void NetModifiIntercept_InGame(BinaryReader reader, int whoAmI) {
             int key = reader.ReadInt32();
             bool value = reader.ReadBoolean();
-            int fromePlayer = -1;
 
             if (CanOverrideByID.ContainsKey(key)) {
                 CanOverrideByID[key] = value;
@@ -92,7 +91,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 modPacket.Send(-1, whoAmI);
             }
             else {//如果是客户端，则打印来源端的消息
-                fromePlayer = reader.ReadInt32();//这里接收来自服务端记录的来源玩家索引
+                int fromePlayer = reader.ReadInt32();//这里接收来自服务端记录的来源玩家索引
                 if (CanOverrideByID[key]) {
                     VaultUtils.Text(Main.player[fromePlayer].name + " Modify item enabled " + new Item(key).ToString(), Color.Goldenrod);
                 }
