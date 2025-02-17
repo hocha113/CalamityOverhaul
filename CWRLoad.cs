@@ -25,17 +25,21 @@ using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.MeleeModify.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.RangedModify.Core;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -588,6 +592,7 @@ namespace CalamityOverhaul
                 ProjValue.ImmuneFrozen.TryAdd(i, false);
             }
 
+            LogBoss();
 
             OnLoadContentBool = true;
         }
@@ -604,6 +609,27 @@ namespace CalamityOverhaul
             ItemIsGunAndGetRecoilValue?.Clear();
             ItemIsGunAndGetRecoilLocKey?.Clear();
             ProjValue.ImmuneFrozen?.Clear();
+        }
+
+        public static void LogBoss() {
+            if (CWRMod.Instance.bossChecklist == null) {
+                return;
+            }
+
+            CWRMod.Instance.bossChecklist.Call("LogBoss", CWRMod.Instance, "MachineRebellion", 22.1f
+                , () => CWRWorld.MachineRebellionDowned, NPCID.SkeletronPrime, new Dictionary<string, object>() {
+                ["spawnInfo"] = CWRLocText.Instance.MachineRebellion_SpawnInfo,
+                ["despawnMessage"] = CWRLocText.Instance.MachineRebellion_DespawnMessage,
+                ["displayName"] = CWRLocText.Instance.MachineRebellion_DisplayName,
+                ["spawnItems"] = ItemType<DraedonsRemote>(),
+                ["collectibles"] = new List<int> {ItemType<GeminisTributeEX>(), ItemType<RaiderGunEX>(),},
+                ["customPortrait"] = (SpriteBatch sb, Rectangle rect, Color color) => {
+                    Texture2D texture = HeadPrimeAI.HandAsset.Value;
+                    Vector2 centered = rect.TopLeft() + rect.Size() / 2;
+                    Rectangle rectangle = CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 12), 12);
+                    sb.Draw(texture, centered, rectangle, color, 0, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
+                }
+            });
         }
 
         public static string GetLckRecoilKey(float recoil) {

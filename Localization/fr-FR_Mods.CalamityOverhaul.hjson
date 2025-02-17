@@ -1693,6 +1693,9 @@ TextContent: {
 		CWRGun_Recoil_Level_5: Très fort
 		CWRGun_Recoil_Level_6: Extrême
 		// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
+		// MachineRebellion_SpawnInfo: Use the Garden remote control at night
+		// MachineRebellion_DespawnMessage: Use the Garden remote control at night
+		// MachineRebellion_DisplayName: Machine Rebellion
 	}
 }
 

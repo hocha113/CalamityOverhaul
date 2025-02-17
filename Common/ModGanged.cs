@@ -3,7 +3,11 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -129,6 +133,15 @@ namespace CalamityOverhaul.Common
         private static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
 
         void ICWRLoader.LoadData() {
+            #region BossChecklist
+            if (CWRMod.Instance.bossChecklist != null) {
+
+            }
+            else {
+                LogModNotLoaded("BossChecklist");
+            }
+            #endregion
+
             #region Coralite
             if (CWRMod.Instance.coralite != null) {
                 CWRMod.Instance.coralite.Call("MagikeRecipe:CreateRecipe", "CalamityOverhaul/WastelandFang", "CalamityOverhaul/SandDagger", 1, 1, 1, null);

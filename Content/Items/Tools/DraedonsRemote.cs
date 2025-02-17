@@ -1,10 +1,9 @@
-﻿using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityMod.NPCs.VanillaNPCAIOverrides.Bosses;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool CanUseItem(Player player)
             => !NPC.AnyNPCs(NPCID.SkeletronPrime) && !NPC.AnyNPCs(NPCID.Retinazer) 
-            && !NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.TheDestroyer);
+            && !NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.TheDestroyer) && !Main.dayTime;
 
         public override bool? UseItem(Player player) {
             HeadPrimeAI.MachineRebellion = true;
@@ -42,11 +41,9 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void AddRecipes() {
             _ = CreateRecipe()
-                 .AddIngredient(ItemID.BlackThread, 2)
-                 .AddIngredient(ItemID.Hay, 4)
-                 .AddIngredient(ItemID.SoulofLight, 2)
-                 .AddIngredient(ItemID.SoulofNight, 2)
-                 .AddTile(TileID.Loom)
+                 .AddIngredient(ItemID.LunarBar, 2)
+                 .AddIngredient(ItemID.Wire, 4)
+                 .AddTile(TileID.LunarCraftingStation)
                  .Register();
         }
     }

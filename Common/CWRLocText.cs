@@ -162,6 +162,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText Config_1 { get; private set; }
         public LocalizedText Config_2 { get; private set; }
         public LocalizedText SkeletronPrime_Text { get; private set; }
+        public LocalizedText MachineRebellion_SpawnInfo { get; private set; }
+        public LocalizedText MachineRebellion_DespawnMessage { get; private set; }
+        public LocalizedText MachineRebellion_DisplayName { get; private set; }
         #endregion
         protected override void Register() => Instance = this;
         #region Utils

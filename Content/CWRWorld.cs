@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRWorld : ModSystem
     {
+        public static bool MachineRebellionDowned;
         private static bool _defeatTheTungstenArmy;
         public static bool DefeatTheTungstenArmy {
             get => _defeatTheTungstenArmy;
@@ -31,6 +32,7 @@ namespace CalamityOverhaul.Content
             BitsByte flags1 = new BitsByte();
             flags1[0] = TungstenRiot.Instance.TungstenRiotIsOngoing;
             flags1[1] = DownedBossSystem.downedPrimordialWyrm;
+            flags1[2] = MachineRebellionDowned;
             writer.Write(flags1);
             writer.Write(TungstenRiot.Instance.EventKillPoints);
             writer.Write(InWorldBossPhase.YharonKillCount);
@@ -40,6 +42,7 @@ namespace CalamityOverhaul.Content
             BitsByte flags1 = reader.ReadByte();
             TungstenRiot.Instance.TungstenRiotIsOngoing = flags1[0];
             DownedBossSystem.downedPrimordialWyrm = flags1[1];
+            MachineRebellionDowned = flags1[2];
             TungstenRiot.Instance.EventKillPoints = reader.ReadInt32();
             InWorldBossPhase.YharonKillCount = reader.ReadInt32();
         }
@@ -49,6 +52,7 @@ namespace CalamityOverhaul.Content
             tag.Add("_Event_DefeatTheTungstenArmy_Tag", DefeatTheTungstenArmy);
             tag.Add("_Event_TungstenRiotIsOngoing", TungstenRiot.Instance.TungstenRiotIsOngoing);
             tag.Add("_Event_EventKillPoints", TungstenRiot.Instance.EventKillPoints);
+            tag.Add("_MachineRebellion", MachineRebellionDowned);
         }
 
         public override void LoadWorldData(TagCompound tag) {
@@ -63,6 +67,9 @@ namespace CalamityOverhaul.Content
             }
             if (tag.TryGet("_Event_EventKillPoints", out int _eventKillPoints)) {
                 TungstenRiot.Instance.EventKillPoints = _eventKillPoints;
+            }
+            if (!tag.TryGet("_MachineRebellion", out MachineRebellionDowned)) {
+                MachineRebellionDowned = false;
             }
         }
     }

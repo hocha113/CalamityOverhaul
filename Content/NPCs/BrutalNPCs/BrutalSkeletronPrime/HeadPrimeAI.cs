@@ -1361,6 +1361,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
+            if (machineRebellion_ByNPC) {
+                CWRWorld.MachineRebellionDowned = true;
+                if (Main.dedServ) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+            }
             return base.On_PreKill();
         }
 
