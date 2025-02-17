@@ -1,11 +1,15 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -18,6 +22,94 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     //关于物品重制节点的钩子均挂载于此处
     internal class ItemRebuildLoader : GlobalItem, ICWRLoader
     {
+        #region NetWork
+        public static void SendModifiIntercept(Item handItem, Player player) {
+            if (!CWRServerConfig.Instance.ModifiIntercept) {
+                return;
+            }
+
+            int type = handItem.type;
+            CanOverrideByID[type] = !CanOverrideByID[type];
+            SoundEngine.PlaySound(SoundID.DD2_BetsySummon);
+            //重新设置一次物品的属性
+            handItem.SetDefaults(type);
+            //清理掉可能的手持弹幕
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.hostile || proj.ModProjectile == null || proj.owner != player.whoAmI) {
+                    continue;
+                }
+                if (proj.ModProjectile is BaseHeldProj held) {
+                    held.Projectile.Kill();
+                }
+            }
+
+            if (VaultUtils.isClient) {
+                if (CanOverrideByID[type]) {
+                    VaultUtils.Text(player.name + " Modify item enabled " + handItem.ToString(), Color.Goldenrod);
+                }
+                else {
+                    VaultUtils.Text(player.name + " The modified item was blocked " + handItem.ToString(), Color.Red);
+                }
+
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.ModifiIntercept_InGame);
+                modPacket.Write(type);
+                modPacket.Write(CanOverrideByID[type]);
+                modPacket.Send();
+            }
+        }
+
+        public static void NetModifiIntercept_InGame(BinaryReader reader, int whoAmI) {
+            int key = reader.ReadInt32();
+            bool value = reader.ReadBoolean();
+            if (CanOverrideByID.ContainsKey(key)) {
+                CanOverrideByID[key] = value;
+            }
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.ModifiIntercept_InGame);
+                modPacket.Write(key);
+                modPacket.Write(value);
+                modPacket.Send(-1, whoAmI);
+            }
+        }
+
+        public static void NetModifiInterceptEnterWorld_Server(BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ModifiIntercept_EnterWorld_ToClient);
+            modPacket.Write(CanOverrideByID.Count);
+            foreach (var pair in CanOverrideByID) {
+                modPacket.Write(pair.Key);
+                modPacket.Write(pair.Value);
+            }
+            modPacket.Send(whoAmI);
+        }
+
+        public static void NetModifiInterceptEnterWorld_Client(BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+            CanOverrideByID = [];
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++) {
+                CanOverrideByID.Add(reader.ReadInt32(), reader.ReadBoolean());
+            }
+        }
+
+        public static void ModifiIntercept_OnEnterWorld() {
+            if (!CWRServerConfig.Instance.ModifiIntercept || !VaultUtils.isClient) {
+                return;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ModifiIntercept_EnterWorld_Request);
+            modPacket.Send();
+        }
+        #endregion
+
         #region On and IL
         internal delegate bool On_Item_Dalegate(Item item);
         internal delegate bool On_AllowPrefix_Dalegate(Item item, int pre);

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ModContent.ItemType<SpearOfLonginus>());
             TargetID = ModContent.ItemType<UnloadedItem>();
         }
-        void ICWRLoader.UnLoadData() => RecoverUnloadedItemDic.Clear();
+        void ICWRLoader.UnLoadData() => RecoverUnloadedItemDic?.Clear();
         public static void UpdateInventory(Item item, Player player) {
             if (item.type != TargetID) {
                 return;

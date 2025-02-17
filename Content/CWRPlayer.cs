@@ -271,6 +271,8 @@ namespace CalamityOverhaul.Content
 
             SpearOfLonginus.ZenithWorldAsset();
 
+            ItemRebuildLoader.ModifiIntercept_OnEnterWorld();
+
             //初始化位置信息
             oldPlayerPositionChange = Player.position;
             PlayerPositionChange = Vector2.Zero;

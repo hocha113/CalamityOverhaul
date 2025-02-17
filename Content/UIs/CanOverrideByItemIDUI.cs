@@ -1,12 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using InnoVault.GameContent.BaseEntity;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -24,21 +21,7 @@ namespace CalamityOverhaul.Content.UIs
             hoverInMainPage = MouseHitBox.Intersects(UIHitBox);
 
             if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
-                SoundEngine.PlaySound(SoundID.DD2_BetsySummon);
-                Item handItem = player.GetItem();
-                int type = handItem.type;
-                ItemOverride.CanOverrideByID[type] = !ItemOverride.CanOverrideByID[type];
-                //重新设置一次物品的属性
-                handItem.SetDefaults(type);
-                //清理掉可能的手持弹幕
-                foreach (var proj in Main.ActiveProjectiles) {
-                    if (proj.hostile || proj.ModProjectile == null || proj.owner != player.whoAmI) {
-                        continue;
-                    }
-                    if (proj.ModProjectile is BaseHeldProj held) {
-                        held.Projectile.Kill();
-                    }
-                }
+                ItemRebuildLoader.SendModifiIntercept(player.GetItem(), player);
             }
 
             if (hoverInMainPage) {

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public static Dictionary<int, ItemOverride> ByID { get; internal set; } = [];
         /// <summary>
-        /// 是否受到修改实例的影响?
+        /// 是否受到修改实例的影响，在<see cref="CWRServerConfig.Instance.ModifiIntercept"/>启用后生效
         /// </summary>
         public static Dictionary<int, bool> CanOverrideByID { get; internal set; } = [];
         /// <summary>
