@@ -23,16 +23,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     internal class ItemRebuildLoader : GlobalItem, ICWRLoader
     {
         #region NetWork
-        public static void SendModifiIntercept(Item handItem, Player player) {
-            if (!CWRServerConfig.Instance.ModifiIntercept) {
-                return;
+        public static void ResetValueByWorld(int type, Player player) {
+            //重新设置一次物品的属性
+            foreach (var item in player.inventory) {
+                if (item.type != type) {
+                    continue;
+                }
+                item.SetDefaults(type);
             }
 
-            int type = handItem.type;
-            CanOverrideByID[type] = !CanOverrideByID[type];
-            SoundEngine.PlaySound(SoundID.DD2_BetsySummon);
-            //重新设置一次物品的属性
-            handItem.SetDefaults(type);
             //清理掉可能的手持弹幕
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.hostile || proj.ModProjectile == null || proj.owner != player.whoAmI) {
@@ -40,8 +39,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
                 if (proj.ModProjectile is BaseHeldProj held) {
                     held.Projectile.Kill();
+                    held.Projectile.netUpdate = true;
                 }
             }
+        }
+
+        public static void SendModifiIntercept(Item handItem, Player player) {
+            if (!CWRServerConfig.Instance.ModifiIntercept) {
+                return;
+            }
+
+            int type = handItem.type;
+            CanOverrideByID[type] = !CanOverrideByID[type];
+
+            SoundEngine.PlaySound(SoundID.DD2_BetsySummon);
+
+            ResetValueByWorld(type, player);
 
             if (VaultUtils.isClient) {
                 if (CanOverrideByID[type]) {
@@ -62,15 +75,30 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static void NetModifiIntercept_InGame(BinaryReader reader, int whoAmI) {
             int key = reader.ReadInt32();
             bool value = reader.ReadBoolean();
+            int fromePlayer = -1;
+
             if (CanOverrideByID.ContainsKey(key)) {
                 CanOverrideByID[key] = value;
             }
+
+            ResetValueByWorld(key, Main.LocalPlayer);
+
             if (VaultUtils.isServer) {
                 ModPacket modPacket = CWRMod.Instance.GetPacket();
                 modPacket.Write((byte)CWRMessageType.ModifiIntercept_InGame);
                 modPacket.Write(key);
                 modPacket.Write(value);
+                modPacket.Write(whoAmI);//在服务端上的whoAmI指向发生改动的玩家索引，所以这里自然要记录一下
                 modPacket.Send(-1, whoAmI);
+            }
+            else {//如果是客户端，则打印来源端的消息
+                fromePlayer = reader.ReadInt32();//这里接收来自服务端记录的来源玩家索引
+                if (CanOverrideByID[key]) {
+                    VaultUtils.Text(Main.player[fromePlayer].name + " Modify item enabled " + new Item(key).ToString(), Color.Goldenrod);
+                }
+                else {
+                    VaultUtils.Text(Main.player[fromePlayer].name + " The modified item was blocked " + new Item(key).ToString(), Color.Red);
+                }
             }
         }
 
