@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     internal class SpazmatismAI : NPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.Spazmatism;
+        public static bool MachineRebellion;
+        private bool machineRebellion_ByNPC;
         protected Player player;
         protected bool accompany;
         protected int frameIndex;
@@ -102,14 +104,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 }
             }
             if (accompany) {
-                //for (int i = 0; i < npc.buffImmune.Length; i++) {
-                //    npc.buffImmune[i] = true;
-                //}
                 ai[11] = 0;
                 NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
+            }
+
+            if (MachineRebellion) {
+                npc.life = npc.lifeMax *= 10;
+                npc.defDefense = npc.defense = 40;
+                npc.defDamage = npc.damage *= 2;
+
+                machineRebellion_ByNPC = true;
+                netOtherWorkSend = true;
+                MachineRebellion = false;
             }
         }
 

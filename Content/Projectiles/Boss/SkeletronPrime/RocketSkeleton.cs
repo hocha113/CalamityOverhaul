@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (ModGanged.InfernumModeOpenState) {
                 Projectile.extraUpdates += 1;
             }
-            if (BossRushEvent.BossRushActive || Main.getGoodWorld || Main.zenithWorld) {
+            if (BossRushEvent.BossRushActive || Main.getGoodWorld || Main.zenithWorld || NPC.downedMoonlord) {
                 Projectile.extraUpdates += 1;
             }
 

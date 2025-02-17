@@ -815,6 +815,15 @@ Items: {
 		DisplayName: 统帅之钳
 		Tooltip: ""
 	}
+
+	DraedonsRemote: {
+		DisplayName: 嘉登遥控器
+		Tooltip:
+			'''
+			召唤EX机械三王
+			只能在夜晚使用
+			'''
+	}
 }
 
 Projectiles: {

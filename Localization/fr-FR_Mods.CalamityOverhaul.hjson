@@ -817,6 +817,11 @@ Items: {
 		// DisplayName: Commanders Claw
 		// Tooltip: ""
 	}
+
+	DraedonsRemote: {
+		// DisplayName: Draedons Remote
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
