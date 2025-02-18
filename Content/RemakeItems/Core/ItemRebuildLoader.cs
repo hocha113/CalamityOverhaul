@@ -557,6 +557,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {
+            
+            if (!CanOverrideByID[item.type]) {
+                return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
+            }
+
             bool? rest;
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 rest = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
@@ -577,7 +582,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
             rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
 
-            if ((!rest.HasValue || rest.Value) && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
+            if ((!rest.HasValue || rest.Value)
+                && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 return false;
             }

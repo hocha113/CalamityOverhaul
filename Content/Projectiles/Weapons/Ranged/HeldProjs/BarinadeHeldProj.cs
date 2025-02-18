@@ -17,10 +17,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShoot() {
-            Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.RotatedBy(-0.55f), ShootVelocity.RotatedBy(0.025f)
+            int proj = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.RotatedBy(-0.55f), ShootVelocity.RotatedBy(0.025f)
                 , ModContent.ProjectileType<BarinadeArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
-            Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.RotatedBy(0.55f), ShootVelocity.RotatedBy(-0.025f)
+            Main.projectile[proj].SetArrowRot();
+            proj = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.RotatedBy(0.55f), ShootVelocity.RotatedBy(-0.025f)
                 , ModContent.ProjectileType<BarinadeArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            Main.projectile[proj].SetArrowRot();
         }
     }
 }
