@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<ChickenCannon>();
         public override void SetDefaults(Item item) {
             item.damage = 220;
-            item.SetCartridgeGun<ChickenCannonHeldProj>(25);
+            item.useTime = 28;
+            item.SetCartridgeGun<ChickenCannonHeldProj>(30);
         }
     }
 }

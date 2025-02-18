@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (++swingIndex > 6) {
                 type = ModContent.ProjectileType<DeathSickleThrowable>();
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, type, damage * 3, knockback, player.whoAmI);
                 swingIndex = 0;
                 return false;
             }
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             Projectile.DamageType = DamageClass.Melee;
             HandOnTwringMode = -66;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.scale = 1.5f;
         }
 

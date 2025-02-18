@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 320;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override bool PreAI() {
@@ -84,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 Projectile.ai[1] = 1;
-                Projectile.velocity *= 0.5f;
+                Projectile.velocity *= 0.1f;
                 if (Projectile.ai[0] < 40) {
                     Projectile.ai[0] = 40;
                 }

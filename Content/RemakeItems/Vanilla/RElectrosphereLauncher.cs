@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.ElectrosphereLauncher;
         public override bool FormulaSubstitution => false;
         public override void SetDefaults(Item item) {
-            item.SetHeldProj<ElectrosphereLauncherHeldProj>();
-            item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 20;
+            item.SetCartridgeGun<ElectrosphereLauncherHeldProj>(40);
             item.useTime = 48;
             item.damage = 40;
         }

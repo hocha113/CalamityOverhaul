@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosToMouLengValue = 6;
             ShootPosNorlLengValue = -5;
             HandIdleDistanceX = 20;
-            HandIdleDistanceY = 3;
+            HandIdleDistanceY = 4;
+            HandFireDistanceY = -2;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.6f;

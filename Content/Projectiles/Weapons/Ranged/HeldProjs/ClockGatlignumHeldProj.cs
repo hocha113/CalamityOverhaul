@@ -12,11 +12,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<ClockGatlignum>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
-            FireTime = 8;
-            HandIdleDistanceX = 18;
+            FireTime = 10;
+            HandIdleDistanceX = 20;
             HandIdleDistanceY = 0;
-            HandFireDistanceX = 18;
-            HandFireDistanceY = -10;
+            HandFireDistanceX = 20;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;

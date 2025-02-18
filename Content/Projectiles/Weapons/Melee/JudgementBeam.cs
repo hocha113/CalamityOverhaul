@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityMod;
+using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Projectile_Melee + "JudgementBeam";
         public Color[] ProjColorDate;
+        private int cooldenDamageTime;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -26,15 +28,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.penetrate = 1;
             Projectile.timeLeft = 120;
             Projectile.DamageType = DamageClass.Melee;
+            cooldenDamageTime = Main.rand.Next(10);
+        }
+
+        public override bool? CanHitNPC(NPC target) {
+            if (cooldenDamageTime > 0) {
+                return false;
+            }
+            return base.CanHitNPC(target);
         }
 
         public override void AI() {
-            if (ProjColorDate == null) {
-                ProjColorDate = CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
-            }
+            cooldenDamageTime--;
+            ProjColorDate ??= CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < 5; i++) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);
                     Vector2 particleSpeed = Projectile.velocity * 0.75f;
@@ -57,10 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
             }
 
-            NPC target = Projectile.Center.FindClosestNPC(320);
-            if (target != null) {
-                Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.15f);
-            }
+            CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
         }
 
         // 生成宝石光尘
@@ -77,11 +83,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.numHits == 0) {
                 SoundEngine.PlaySound(SoundID.Item122, Projectile.position);
                 float randNum = Main.rand.NextFloat(MathHelper.TwoPi);
+                int type = ModContent.ProjectileType<OrderbringerWhiteOrbs>();
                 for (int i = 0; i < 3; i++) {
                     Vector2 vr = (MathHelper.TwoPi / 3f * i + randNum).ToRotationVector2() * 3;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vr
-                        , ModContent.ProjectileType<OrderbringerWhiteOrbs>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
-
+                        , type, Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
                 }
             }
         }

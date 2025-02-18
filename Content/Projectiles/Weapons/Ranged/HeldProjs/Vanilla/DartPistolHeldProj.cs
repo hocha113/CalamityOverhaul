@@ -12,37 +12,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DartPistol].Value;
         public override int TargetID => ItemID.DartPistol;
         public override void SetRangedProperty() {
-            FireTime = 20;
+            FireTime = 18;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
-            HandIdleDistanceX = 15;
-            HandIdleDistanceY = 0;
+            HandIdleDistanceX = 22;
+            HandIdleDistanceY = 2;
+            HandFireDistanceX = 22;
+            HandFireDistanceY = -2;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1f;
+            Recoil = 0.3f;
             RangeOfStress = 48;
+            Onehanded = true;
             RepeatedCartridgeChange = true;
             CanCreateCaseEjection = CanCreateSpawnGunDust = false;
-            kreloadMaxTime = 30;
-            LoadingAA_None.Roting = 30;
-            LoadingAA_None.gunBodyX = 0;
-            LoadingAA_None.gunBodyY = 13;
+            kreloadMaxTime = 50;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.gunBodyY = -8;
             if (!MagazineSystem) {
-                FireTime += 1;
+                FireTime += 2;
             }
         }
 
         public override void FiringShoot() {
-            int damage;
-            Item ammoItem = ModItem.GetSelectedBullets();
-            damage = ammoItem.type == ItemID.CursedDart ? (int)(WeaponDamage * 0.7f) : WeaponDamage;
-            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, damage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].velocity *= 0.6f;
             Main.projectile[proj].extraUpdates += 1;
             Main.projectile[proj].timeLeft += 300;
-            if (ammoItem.type == ItemID.IchorDart) {
-                Main.projectile[proj].aiStyle = 1;
-            }
         }
     }
 }

@@ -27,9 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            _ = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0)].SetArrowRot();
             for (int i = 0; i < 3; i++) {
-                Main.projectile[Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0)].SetArrowRot();
+                Vector2 shootVer = ShootVelocity.RotatedByRandom(0.07f) * Main.rand.NextFloat(0.8f, 1f);
+                Main.projectile[Projectile.NewProjectile(Source2, ShootPos, shootVer, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0)].SetArrowRot();
             }
             UpdateConsumeAmmo();
         }

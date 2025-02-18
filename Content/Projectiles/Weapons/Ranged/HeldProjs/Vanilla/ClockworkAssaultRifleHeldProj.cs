@@ -15,32 +15,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.ClockworkAssaultRifle;
         private int chargeAmmoNum;
         public override void SetRangedProperty() {
-            FireTime = 5;
+            FireTime = 3;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
-            HandIdleDistanceX = 15;
+            HandIdleDistanceX = 18;
             HandIdleDistanceY = 0;
             GunPressure = 0.1f;
-            ControlForce = 0.05f;
-            Recoil = 0.8f;
+            ControlForce = 0.02f;
+            Recoil = 0.4f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 45;
+            kreloadMaxTime = 60;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;
+            SpwanGunDustMngsData.splNum = 0.3f;
         }
 
-        public override void PostInOwnerUpdate() {
-        }
+        public override void PostInOwnerUpdate() { }
 
         public override void PostFiringShoot() {
-            FireTime = 5;
+            FireTime = 3;
             chargeAmmoNum++;
             if (chargeAmmoNum >= 3) {
-                FireTime = 20;
+                FireTime = 18;
                 if (!MagazineSystem) {
-                    FireTime += 5;
+                    FireTime += 4;
                 }
                 chargeAmmoNum = 0;
             }

@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ShootState shootState = Owner.GetShootState();
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(shootState.Source, Projectile.Center,
-                        Projectile.rotation.ToRotationVector2().RotatedBy((-15 + i * 15) * CWRUtils.atoR) * 15
+                        Projectile.rotation.ToRotationVector2().RotatedBy((-15 + i * 10) * CWRUtils.atoR) * 15
                     , ModContent.ProjectileType<SporeBombs>(), shootState.WeaponDamage * 3, shootState.WeaponKnockback, Projectile.owner);
                 }
             }

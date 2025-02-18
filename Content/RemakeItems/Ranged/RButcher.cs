@@ -9,6 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RButcher : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<Butcher>();
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ButcherHeldProj>(58);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ButcherHeldProj>(80);
     }
 }

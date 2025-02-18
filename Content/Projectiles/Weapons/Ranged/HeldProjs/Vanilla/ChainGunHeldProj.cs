@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ChainGun].Value;
         private float randomShootRotset;
         public override void SetRangedProperty() {
-            FireTime = 4;
+            FireTime = 3;
             Recoil = 0.3f;
             SpwanGunDustMngsData.splNum = 0.3f;
         }
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void SetShootAttribute() {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                randomShootRotset = Main.rand.NextFloat(-0.16f, 0.16f);
+                randomShootRotset = Main.rand.NextFloat(-0.12f, 0.12f);
                 NetUpdate();
             }
         }

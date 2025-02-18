@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
         public override void SetDefaults(Item item) {
             item.SetHeldProj<ChlorophyteShotbowHeldProj>();
-            item.useTime = 22;
-            item.damage = 35;
+            item.useTime = 24;
+            item.damage = 30;
         }
     }
 }

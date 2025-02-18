@@ -117,9 +117,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public float Recoil = 1.2f;
         /// <summary>
-        /// 止推模长恢复系数，值越接近1恢复的越加缓慢，默认为0.5f
+        /// 止推模长恢复系数，值越接近1恢复的越加缓慢，默认为0.6f
         /// </summary>
-        protected float RecoilOffsetRecoverValue = 0.5f;
+        protected float RecoilOffsetRecoverValue = 0.6f;
         /// <summary>
         /// 该枪械在开火时的一个转动角，用于快捷获取
         /// </summary>

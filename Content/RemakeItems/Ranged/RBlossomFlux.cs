@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             return false;
         }
         public static void SetDefaultsFunc(Item Item) {
-            Item.damage = 50;
+            Item.damage = 35;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 38;
             Item.height = 68;
@@ -35,8 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             Item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             Item.rare = ItemRarityID.Lime;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<BlossomFluxHeldProj>();
-            Item.CWR().hasHeldNoCanUseBool = true;
+            Item.SetHeldProj<BlossomFluxHeldProj>();
         }
     }
 }

@@ -23,21 +23,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.SetArrowRot();
             proj.usesLocalNPCImmunity = true;
-            proj.localNPCHitCooldown = 2;
+            proj.localNPCHitCooldown = 10;
             proj.extraUpdates += 1;
             if (proj.penetrate == 1) {
                 proj.maxPenetrate += 2;
                 proj.penetrate += 2;
             }
             for (int i = 0; i < 3; i++) {
-                int[] arrows = new int[] { ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow };
+                int[] arrows = [ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow];
                 int proj1 = Projectile.NewProjectile(Source, ShootPos
                         , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
                         , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].SetArrowRot();
+                Main.projectile[proj1].usesLocalNPCImmunity = true;
+                Main.projectile[proj1].localNPCHitCooldown = 10;
             }
 
             _ = UpdateConsumeAmmo();

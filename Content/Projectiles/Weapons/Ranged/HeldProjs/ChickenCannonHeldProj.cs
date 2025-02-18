@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private bool spanSound = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 25;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
             HandFireDistanceX = 25;

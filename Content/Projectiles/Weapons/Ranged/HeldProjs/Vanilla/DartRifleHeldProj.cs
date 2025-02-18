@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DartRifle].Value;
         public override int TargetID => ItemID.DartRifle;
         public override void SetRangedProperty() {
-            FireTime = 35;
+            FireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
             HandIdleDistanceX = 15;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.CursedDart) {
                 AmmoTypes = ModContent.ProjectileType<CursedDartRemake>();
             }
-            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Main.rand.Next(20));
+            int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Main.rand.Next(20));
             Main.projectile[proj].ArmorPenetration += 15;
             Main.projectile[proj].extraUpdates += 1;
         }

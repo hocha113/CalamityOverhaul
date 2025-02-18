@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
 
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<DartPistolHeldProj>(12);
+            item.SetCartridgeGun<DartPistolHeldProj>(20);
             item.damage = 30;
         }
     }

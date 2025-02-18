@@ -3484,7 +3484,7 @@ RemakeItems: {
 
 	RBladedgeGreatbow: {
 		DisplayName: 锋叶十字弩
-		Tooltip: "[GFB]"
+		Tooltip: '''"春风似剪刀"'''
 	}
 
 	RBlissfulBombardier: {
@@ -4713,7 +4713,7 @@ RemakeItems: {
 
 	RFlintlockpistol: {
 		DisplayName: 燧发枪
-		Tooltip: ""
+		Tooltip: '''"相信古人的智慧"'''
 	}
 
 	RGatligator: {
@@ -4759,7 +4759,7 @@ RemakeItems: {
 
 	RHandgun: {
 		DisplayName: 手枪
-		Tooltip: ""
+		Tooltip: '''"砰!砰!!砰!!!"'''
 	}
 
 	RHeatRay: {

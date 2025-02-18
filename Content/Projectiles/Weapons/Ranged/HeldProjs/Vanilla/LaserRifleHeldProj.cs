@@ -14,14 +14,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = -50;
             ShootPosNorlLengValue = 0;
-            HandIdleDistanceX = 15;
-            HandIdleDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
+            HandIdleDistanceX = 16;
+            HandIdleDistanceY = 2;
+            HandFireDistanceY = -2;
+            GunPressure = 0.1f;
+            ControlForce = 0.02f;
             Recoil = 0f;
             RangeOfStress = 48;
             CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
+            RecoilOffsetRecoverValue = 0.8f;
         }
 
         public override void FiringShoot() {

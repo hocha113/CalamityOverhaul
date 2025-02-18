@@ -9,6 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBlissfulBombardier : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlissfulBombardier>();
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<BlissfulBombardierHeldProj>(20);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<BlissfulBombardierHeldProj>(40);
     }
 }

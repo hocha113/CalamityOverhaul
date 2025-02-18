@@ -16,11 +16,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public List<ElectrosphereLauncherOrb> Orbs = [];
         public const int MaxOrbNum = 4;
         public override void SetRangedProperty() {
-            FireTime = 3;
+            FireTime = 2;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;
-            HandIdleDistanceX = 15;
-            HandIdleDistanceY = 0;
+            HandIdleDistanceX = 16;
+            HandIdleDistanceY = 4;
+            HandFireDistanceY = 0;
             GunPressure = 0f;
             ControlForce = 0f;
             RepeatedCartridgeChange = true;

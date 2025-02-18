@@ -12,11 +12,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<ClamorRifle>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 50;
-            FireTime = 15;
-            HandIdleDistanceX = 25;
-            HandIdleDistanceY = 5;
-            HandFireDistanceX = 25;
-            HandFireDistanceY = -10;
+            FireTime = 14;
+            HandIdleDistanceX = 24;
+            HandIdleDistanceY = 4;
+            HandFireDistanceX = 24;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -0;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;

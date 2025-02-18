@@ -44,6 +44,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (FireTime < 12) {
                 FireTime = 12;
             }
+            if (!MagazineSystem) {
+                FireTime = 20;
+            }
         }
     }
 }

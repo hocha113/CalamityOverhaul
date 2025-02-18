@@ -9,6 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override bool IsVanilla => true;
         public override int TargetID => ItemID.ChainGun;
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ChainGunHeldProj>(185);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ChainGunHeldProj>(200);
     }
 }
