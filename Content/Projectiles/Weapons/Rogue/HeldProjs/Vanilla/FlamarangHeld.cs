@@ -33,6 +33,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             return base.PreThrowOut();
         }
 
+        public override void FlyToMovementAI() {
+            base.FlyToMovementAI();
+            for (int i = 0; i < 3; i++) {
+                
+            }
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (stealthStrike && Projectile.ai[2] == 0 && onHit) {
                 onHit = false;

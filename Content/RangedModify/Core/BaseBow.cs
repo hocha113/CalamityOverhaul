@@ -335,7 +335,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public override void SpanProj() {
-            if (ShootCoolingValue > Item.useTime && (onFire || onFireR)) {
+            //ShootCoolingValue >= Item.useTime而不是ShootCoolingValue > Item.useTime，后者会让所有弓的攻击看起来都慢一帧
+            if (ShootCoolingValue >= Item.useTime && (onFire || onFireR)) {
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Item.useTime = chargeIndex;
             }
             else if (onFireR) {
-                Item.useTime = 40;
+                Item.useTime = 46;
                 chargeIndex = 35;
             }
             AmmoTypes = ModContent.ProjectileType<DrataliornusFlame>();
@@ -56,13 +56,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Main.rand.NextBool(2)) {
                     ai0 = 2f;
                     speed /= 2f;
+                    WeaponDamage /= 2;
                 }
                 else {
                     ai0 = 1f;
                 }
             }
             FireOffsetPos = ShootVelocity.GetNormalVector() * Main.rand.Next(-20, 20);
-            int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, speed
+            int proj = Projectile.NewProjectile(Source, ShootPos + FireOffsetPos, speed
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
@@ -86,9 +87,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             spinningpoint *= 36f;
             for (int i = 0; i < numFlames; ++i) {
                 float piArrowOffset = i - (numFlames - 1) / 2;
-                Vector2 offsetSpawn = spinningpoint.RotatedBy(fifteenHundredthPi * piArrowOffset, new Vector2());
-                _ = Projectile.NewProjectile(Source, Projectile.Center + offsetSpawn, ShootVelocity
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1, 0);
+                Vector2 offsetSpawn = spinningpoint.RotatedBy(fifteenHundredthPi * piArrowOffset);
+                _ = Projectile.NewProjectile(Source, ShootPos + offsetSpawn, ShootVelocity
+                    , AmmoTypes, (int)(WeaponDamage * 0.75f), WeaponKnockback, Owner.whoAmI, 1, 0);
             }
         }
     }

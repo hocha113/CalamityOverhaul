@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<Drataliornus>();
         public override void SetDefaults(Item item) {
-            item.damage = 162;
+            item.damage = 136;
             item.SetHeldProj<DrataliornusHeldProj>();
         }
     }

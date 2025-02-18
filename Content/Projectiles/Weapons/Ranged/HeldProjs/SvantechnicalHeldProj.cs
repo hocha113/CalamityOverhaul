@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             float sine = (float)Math.Sin(fireIndex * 0.175f / MathHelper.Pi) * 4f;
             float sine2 = (float)Math.Sin(fireIndex * 0.275f / MathHelper.Pi) * 2f;
-            if (++fireIndex % 4 == 0) {
+            if (++fireIndex % 2 == 0) {
                 Vector2 helixVel1 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(sine));
                 Vector2 helixVel2 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(-sine));
                 Vector2 helixVel3 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(sine2));
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
             float sine = (float)Math.Sin(fireIndex * 0.175f / MathHelper.Pi) * 4f;
             float sine2 = (float)Math.Sin(fireIndex * 0.275f / MathHelper.Pi) * 2f;
-            if (++fireIndex % 4 == 0) {
+            if (++fireIndex % 2 == 0) {
                 Vector2 helixVel1 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(sine));
                 Vector2 helixVel2 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(-sine));
                 Vector2 helixVel3 = (ShootVelocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedBy(MathHelper.ToRadians(sine2));
