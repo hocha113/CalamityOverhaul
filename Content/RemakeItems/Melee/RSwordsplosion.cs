@@ -31,44 +31,34 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 3;
             ShootSpeed = 11;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
             ShootSpeed = 16;
-
         }
 
         public override void Shoot() {
-            Vector2 position = ShootSpanPos;
-            Vector2 velocity = ShootVelocity;
             int type = GetRandomProjectileType();
             int damage = Projectile.damage;
             float knockback = Projectile.knockBack;
-            Player player = Owner;
-
             float projSpeed = Main.rand.Next(22, 30);
-            Vector2 realPlayerPos = player.RotatedRelativePoint(player.MountedCenter, true);
-            Vector2 mouseDist = GetMouseDistance(realPlayerPos, player.gravDir);
-            float mouseDistance = projSpeed / mouseDist.Length();
-            mouseDist *= mouseDistance;
 
             for (int i = 0; i < 16; i++) {
-                Vector2 spawnPos = GetRandomSpawnPosition(player, i);
+                Vector2 spawnPos = GetRandomSpawnPosition(Owner, i);
                 Vector2 spawnDist = GetMouseDistance(spawnPos, 1f);
                 spawnDist = AdjustDistanceForSpeed(spawnDist, projSpeed);
 
                 float speedX = spawnDist.X + Main.rand.NextFloat(-7.2f, 7.2f);
                 float speedY = spawnDist.Y + Main.rand.NextFloat(-7.2f, 7.2f);
-                Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, type, damage, knockback, player.whoAmI, 2f, 0f);
+                Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, type, damage, knockback, Owner.whoAmI, 2f, 0f);
             }
         }
 
         private int GetRandomProjectileType() {
-            switch (Main.rand.Next(4)) {
-                case 0: return ModContent.ProjectileType<SwordsplosionBlue>();
-                case 1: return ModContent.ProjectileType<SwordsplosionGreen>();
-                case 2: return ModContent.ProjectileType<SwordsplosionPurple>();
-                case 3: return ModContent.ProjectileType<SwordsplosionRed>();
-                default: return ModContent.ProjectileType<SwordsplosionBlue>();
-            }
+            return Main.rand.Next(4) switch {
+                0 => ModContent.ProjectileType<SwordsplosionBlue>(),
+                1 => ModContent.ProjectileType<SwordsplosionGreen>(),
+                2 => ModContent.ProjectileType<SwordsplosionPurple>(),
+                3 => ModContent.ProjectileType<SwordsplosionRed>(),
+                _ => ModContent.ProjectileType<SwordsplosionBlue>(),
+            };
         }
 
         private Vector2 GetMouseDistance(Vector2 playerPos, float gravDir) {
@@ -100,6 +90,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.dust[swingDust].velocity *= 0.2f;
                 Main.dust[swingDust].noGravity = true;
             }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
     }
