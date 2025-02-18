@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         public override void SetDefaults(Item item) {
             item.UseSound = null;
+            item.damage = 120;
             item.SetKnifeHeld<EarthenPikeHeld>();
         }
         public override bool? AltFunctionUse(Item item, Player player) => true;

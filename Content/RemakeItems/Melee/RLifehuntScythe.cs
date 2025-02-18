@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.useTime = item.useAnimation = 22;
             item.UseSound = null;
+            item.damage = 201;
             item.SetKnifeHeld<LifehuntScytheHeld>();
         }
 

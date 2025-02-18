@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<EssenceFlayer>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
+            item.damage = 180;
             item.shoot = ModContent.ProjectileType<EssencePlunder>();
             item.SetKnifeHeld<EssenceFlayerHeld>();
         }

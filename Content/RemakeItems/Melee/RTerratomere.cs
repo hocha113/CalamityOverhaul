@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.width = 60;
             item.height = 66;
-            item.damage = 230;
+            item.damage = 280;
             item.DamageType = DamageClass.Melee;
             item.useAnimation = 21;
             item.useTime = 21;

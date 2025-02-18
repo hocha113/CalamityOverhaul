@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public static void SetDefaultsFunc(Item Item) {
             Item.UseSound = null;
+            Item.damage = 381;
             Item.SetKnifeHeld<SolsticeClaymoreHeld>();
         }
     }
