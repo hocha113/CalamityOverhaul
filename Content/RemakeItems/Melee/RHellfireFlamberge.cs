@@ -12,7 +12,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RHellfireFlamberge : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<HellfireFlambergeHeld>();
+        public override void SetDefaults(Item item) {
+            item.UseSound = null;
+            item.SetKnifeHeld<HellfireFlambergeHeld>();
+        }
     }
 
     internal class HellfireFlambergeHeld : BaseKnife
@@ -23,26 +26,28 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 66;
             canDrawSlashTrail = true;
+            drawTrailHighlight = false;
             distanceToOwner = -20;
             drawTrailBtommWidth = 20;
             drawTrailTopWidth = 40;
             drawTrailCount = 13;
             Length = 62;
-            SwingData.starArg = 68;
+            SwingData.starArg = 48;
             SwingData.baseSwingSpeed = 3.5f;
             ShootSpeed = 20;
         }
 
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.2f, phase0SwingSpeed: -0.1f
+                , phase1SwingSpeed: 5.2f, phase2SwingSpeed: 2f);
+            return base.PreInOwnerUpdate();
+        }
+
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item20, Owner.Center);
-            Vector2 velocity = ShootVelocity;
-            Vector2 position = ShootSpanPos;
             int type = ModContent.ProjectileType<VolcanicFireball>();
-            for (int index = 0; index < 3; ++index) {
-                float SpeedX = velocity.X + Main.rand.Next(-40, 41) * 0.05f;
-                float SpeedY = velocity.Y + Main.rand.Next(-40, 41) * 0.05f;
-                float damageMult = 0.5f;
-
+            for (int index = 0; index < 6; ++index) {
+                float damageMult = 0.4f;
                 switch (index) {
                     case 0:
                     case 1:
@@ -55,9 +60,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     default:
                         break;
                 }
-                Projectile.NewProjectile(Source, position.X, position.Y, SpeedX, SpeedY
-                    , type, (int)(Projectile.damage * damageMult)
-                    , Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.6f, 3.2f)
+                    , type, (int)(Projectile.damage * damageMult), Projectile.knockBack, Owner.whoAmI, 0f, 0f);
             }
         }
 

@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.Xenopopper;
         public override void SetRangedProperty() {
             FireTime = 15;
-            ControlForce = 0.1f;
+            ControlForce = 0.04f;
             GunPressure = 0.2f;
-            Recoil = 1;
+            Recoil = 0.3f;
             HandIdleDistanceX = 18;
             HandIdleDistanceY = 5;
             HandFireDistanceX = 18;

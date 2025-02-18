@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void SetDefaults(Item item) {
+            item.damage = 580;
             item.SetKnifeHeld<BansheeHookHeld>();
             index = 0;
         }
@@ -89,7 +90,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Length = 52;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             SwingDrawRotingOffset = MathHelper.PiOver2;
-            ShootSpeed = 13;
+            autoSetShoot = true;
         }
 
         public override bool PreSwingAI() {
@@ -127,13 +128,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             if (Projectile.ai[0] == 1 || Projectile.ai[0] == 2) {
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedBy((-1 + i) * 0.1f)
+                    Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedBy((-1 + i) * 0.06f)
                         , ModContent.ProjectileType<BansheeHookScythe>(), Projectile.damage
                         , Projectile.knockBack * 0.85f, Projectile.owner);
                 }
                 return;
             }
-            Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 1.2f
+            Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity
                , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 3.25f)
                , Projectile.knockBack * 0.85f, Projectile.owner);
         }
@@ -243,7 +244,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class BansheeHookHeldAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
-        private Item bansheeHook => Owner.GetItem();
         private int drawUIalp = 0;
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            if (Owner == null || bansheeHook == null || bansheeHook.type != ModContent.ItemType<BansheeHook>()) {
+            if (Owner == null || Item == null || Item.type != ModContent.ItemType<BansheeHook>()) {
                 Projectile.Kill();
                 return;
             }
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 drawUIalp = Math.Min(drawUIalp + 5, 255);
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    bansheeHook.CWR().MeleeCharge += 8.333f;
+                    Item.CWR().MeleeCharge += 8.333f;
                     if (Projectile.localAI[1] % 10 == 0) {
                         for (int i = 0; i < 7; i++) {
                             Vector2 vr = (MathHelper.TwoPi / 7 * i).ToRotationVector2() * 10;
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
                 }
                 if (Projectile.localAI[1] > 60) {
-                    bansheeHook.CWR().MeleeCharge = 500;
+                    Item.CWR().MeleeCharge = 500;
                     Projectile.ai[2] = 1;
                     Projectile.localAI[1] = 0;
                 }
@@ -313,15 +313,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Projectile.rotation = toMous.ToRotation();
                 Projectile.localAI[2]++;
 
-                bansheeHook.CWR().MeleeCharge--;
+                Item.CWR().MeleeCharge--;
 
                 if (Projectile.localAI[1] > 10) {
-                    if (Projectile.localAI[1] % 20 == 0) {
+                    if (Projectile.localAI[1] % 24 == 0) {
                         SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaivePierce with { Pitch = 0.35f, Volume = 0.7f }, Projectile.Center);
-                        int damages = (int)(Owner.GetWeaponDamage(Owner.GetItem()) * 0.5f);
+                        int damages = (int)(base.Owner.GetWeaponDamage(base.Item) * 0.25f);
                         for (int i = 0; i < 3; i++) {
-                            Vector2 spanPos = Main.MouseWorld + CWRUtils.GetRandomVevtor(0, 360, 160);
-                            Projectile.NewProjectile(Owner.FromObjectGetParent(), spanPos, spanPos.To(Main.MouseWorld).UnitVector() * 15f, ModContent.ProjectileType<AbominateHookScythe>(), damages, 0, Owner.whoAmI);
+                            Vector2 spanPos = InMousePos + (MathHelper.TwoPi / 3f * i).ToRotationVector2() * 160;
+                            Projectile.NewProjectile(Owner.FromObjectGetParent(), spanPos, spanPos.To(Main.MouseWorld).UnitVector() * 15f
+                                , ModContent.ProjectileType<AbominateHookScythe>(), damages, 0, Owner.whoAmI);
                         }
                     }
                     if (Projectile.localAI[1] % 15 == 0) {
@@ -332,11 +333,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
                 }
 
-                if (bansheeHook.CWR().MeleeCharge <= 0) {
+                if (Item.CWR().MeleeCharge <= 0) {
                     Projectile.ai[2] = 0;
                     Projectile.localAI[1] = 0;
                     Projectile.netUpdate = true;
-                    bansheeHook.CWR().MeleeCharge = 0;
+                    Item.CWR().MeleeCharge = 0;
                     RBansheeHook.PlaySouldSound(Owner);
                 }
             }
@@ -361,7 +362,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     drawRot, CWRUtils.GetOrig(texture2D), Projectile.scale, spriteEffects);
 
             Main.EntitySpriteDraw(glow, drawPos, null, lightColor,
-                    drawRot, CWRUtils.GetOrig(glow), Projectile.scale, spriteEffects);
+                    drawRot + (Projectile.spriteDirection > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)
+                    , CWRUtils.GetOrig(glow), Projectile.scale, spriteEffects);
 
             if (Projectile.ai[2] == 0) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
@@ -375,7 +377,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             RTerrorBlade.DrawFrightEnergyChargeBar(
                 Main.player[Projectile.owner], drawUIalp / 255f,
-                bansheeHook.CWR().MeleeCharge / 500f);
+                Item.CWR().MeleeCharge / 500f);
 
             if (Projectile.localAI[2] != 0) {
                 Texture2D mainValue = CWRAsset.StarTexture_White.Value;

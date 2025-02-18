@@ -40,6 +40,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void Shoot() => OrigItemShoot();
+        public override void Shoot() {
+            int damage = Item.damage;
+            Item.damage = (int)(damage * 0.7f);
+            OrigItemShoot();
+            Item.damage = damage;
+        }
     }
 }

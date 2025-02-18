@@ -85,8 +85,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool PreInOwnerUpdate() {
             if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer() && Time % (12 * UpdateRate) == 0) {
-                Projectile.NewProjectileDirect(Source, InMousePos + new Vector2(0, 600), new Vector2(0, -22).RotatedByRandom(0.3f)
+                Projectile.NewProjectileDirect(Source, InMousePos, ShootVelocity.RotatedByRandom(0.3f)
                     , ModContent.ProjectileType<GreenWater>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+
             }
 
             if (Projectile.ai[0] == 1) {

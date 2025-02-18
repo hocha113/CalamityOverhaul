@@ -54,6 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (!onTIle) {
+                Projectile.DigByTile();
                 Projectile.velocity /= 10;
                 tileRot = Projectile.rotation;
                 onTIle = true;

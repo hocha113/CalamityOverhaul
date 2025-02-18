@@ -15,11 +15,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.TheUndertaker;
         public override void SetRangedProperty() {
             kreloadMaxTime = 35;
-            FireTime = 12;
+            FireTime = 14;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -3;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 0;
+            HandFireDistanceY = -2;
             RepeatedCartridgeChange = true;
             CanCreateCaseEjection = false;
             GunPressure = 0.3f;

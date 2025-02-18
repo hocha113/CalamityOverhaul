@@ -36,7 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         public override void FlyToMovementAI() {
             base.FlyToMovementAI();
             for (int i = 0; i < 3; i++) {
-                
+                int dust = Dust.NewDust(Projectile.position, (int)Projectile.Size.X, (int)Projectile.Size.Y, DustID.InfernoFork);
+                Main.dust[dust].noGravity = true;
             }
         }
 

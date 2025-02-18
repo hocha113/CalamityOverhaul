@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 for (int i = 0; i < 5; i++) {
                     GuardOfLife guardOfLife = Projectile.NewProjectileDirect(Source
                         , ShootSpanPos, ShootVelocity.RotatedBy((-2 + i) * 0.4f)
-                        , ModContent.ProjectileType<GuardOfLife>(), Projectile.damage
+                        , ModContent.ProjectileType<GuardOfLife>(), (int)(Projectile.damage * 0.6f)
                         , Projectile.knockBack, Owner.whoAmI, ai0: 0, ai1: Projectile.ai[0], ai2: 0)
                         .ModProjectile as GuardOfLife;
                     guardOfLife.targetPos = ShootSpanPos + ShootVelocity.UnitVector() * 900;

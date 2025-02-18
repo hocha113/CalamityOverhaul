@@ -600,7 +600,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.TendonBow: {
-                    player.AddBuff(BuffID.Panic, 60);
+                    player.AddBuff(BuffID.Panic, hit.Crit ? 280 : 120);
                     break;
                 }
 

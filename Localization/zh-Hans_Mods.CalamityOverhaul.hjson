@@ -2961,12 +2961,16 @@ RemakeItems: {
 
 	RHellfireFlamberge: {
 		DisplayName: 狱火重剑
-		Tooltip: ""
+		Tooltip: 发射几团深渊火球
 	}
 
 	RHellionFlowerSpear: {
 		DisplayName: 刺花长矛
-		Tooltip: ""
+		Tooltip:
+			'''
+			挥舞释放伴生之叶
+			跟随生命之叶刺穿敌人
+			'''
 	}
 
 	RHellkite: {

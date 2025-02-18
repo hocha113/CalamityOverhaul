@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = SoundID.DD2_GoblinHurt with { Pitch = -0.2f };
-            FireTime = MagazineSystem ? 40 : 50;
+            FireTime = MagazineSystem ? 60 : 80;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<BloodAmmoBolt>();
         }

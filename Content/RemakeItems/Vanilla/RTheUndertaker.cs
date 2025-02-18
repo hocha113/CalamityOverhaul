@@ -11,9 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.TheUndertaker;
         public override bool FormulaSubstitution => false;
         public override void SetDefaults(Item item) {
-            item.SetHeldProj<TheUndertakerHeldProj>();
-            item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 6;
+            item.SetCartridgeGun<TheUndertakerHeldProj>(6);
             item.CWR().CartridgeType = CartridgeUIEnum.Magazines;
             item.damage = 16;
         }

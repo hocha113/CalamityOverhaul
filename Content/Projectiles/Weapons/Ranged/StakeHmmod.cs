@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -45,6 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.extraUpdates = 0;
                 Projectile.timeLeft = 300;
                 CWRDust.SplashDust(Projectile, 31, DustID.JungleGrass, DustID.JungleGrass, -3, Color.Goldenrod);
+                Projectile.DigByTile();
                 Projectile.ai[0]++;
             }
             return false;

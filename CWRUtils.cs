@@ -334,6 +334,11 @@ namespace CalamityOverhaul
 
         #region 行为部分
 
+        public static void DigByTile(this Projectile projectile, SoundStyle soundStyle = default) {
+            Collision.HitTiles(projectile.position, projectile.velocity, projectile.width, projectile.height);
+            SoundEngine.PlaySound(soundStyle == default ? SoundID.Dig : soundStyle, projectile.position);
+        }
+
         public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
             List<int> SuperchargableEnemies = [
                 ModContent.NPCType<WulfrumDrone>(),
