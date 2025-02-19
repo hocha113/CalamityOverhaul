@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
         public static bool MachineRebellion;
-        private bool machineRebellion_ByNPC;
+        internal bool machineRebellion_ByNPC;
         public ThanatosSmokeParticleSet SmokeDrawer;
         private const int maxfindModes = 6000;
         private Player player;
@@ -397,6 +397,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        public static void SetMachineRebellion(NPC npc) {
+            npc.life = npc.lifeMax *= 10;
+            npc.defDefense = npc.defense = 40;
+            npc.defDamage = npc.damage *= 2;
+        }
+
         public override void SetProperty() {
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
@@ -405,22 +411,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
             if (MachineRebellion) {
-                npc.life = npc.lifeMax = newMaxLife * 10;
-                npc.defDefense = npc.defense = 40;
-                npc.defDamage = npc.damage *= 2;
-
-                machineRebellion_ByNPC = true;
-                netOtherWorkSend = true;
+                SetMachineRebellion(npc);
                 MachineRebellion = false;
             }
-        }
-
-        public override void OtherNetWorkSend(ModPacket netMessage) {
-            netMessage.Write(machineRebellion_ByNPC);
-        }
-
-        public override void OtherNetWorkReceive(BinaryReader reader) {
-            machineRebellion_ByNPC = reader.ReadBoolean();
         }
 
         public override bool AI() {

@@ -34,6 +34,28 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
+    internal class CommandersStaffEX : ModItem
+    {
+        public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEX";
+        public override void SetDefaults() {
+            Item.DamageType = DamageClass.Magic;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.width = 32;
+            Item.height = 32;
+            Item.damage = 202;
+            Item.useTime = 62;
+            Item.useAnimation = 62;
+            Item.mana = 20;
+            Item.shoot = ModContent.ProjectileType<CommandersRay>();
+            Item.shootSpeed = 10;
+            Item.UseSound = SoundID.Item68;
+            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 8, 60, 10);
+            Item.SetHeldProj<CommandersStaffEXHeld>();
+            Item.CWR().DeathModeItem = true;
+        }
+    }
+
     internal class CommandersStaffHeld : BaseMagicStaff<CommandersStaff>
     {
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffHeld";
@@ -41,6 +63,18 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+        }
+    }
+
+    internal class CommandersStaffEXHeld : BaseMagicStaff<CommandersStaffEX>
+    {
+        public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEXHeld";
+        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
+        public override void FiringShoot() {
+            for (int i = 0; i < 5; i++) {
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI, (-2 + i) * 0.01f, 1);
+            }
         }
     }
 
@@ -72,10 +106,15 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void AI() {
+            if (Projectile.ai[2] != 0) {
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = 10;
+                Projectile.ai[1] *= 1.06f;
+            }
             homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
             if (homeProj.Alives()) {
                 Projectile.Center = homeProj.Center;
-                Projectile.rotation = homeProj.rotation;
+                Projectile.rotation = homeProj.rotation + Projectile.ai[1];
             }
 
             Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 60f, Color.IndianRed, Color.Red, Color.DarkRed, Color.Red, Color.IndianRed, Color.OrangeRed);

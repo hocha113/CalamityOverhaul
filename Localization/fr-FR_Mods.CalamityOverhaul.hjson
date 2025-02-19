@@ -822,6 +822,21 @@ Items: {
 		// DisplayName: Draedons Remote
 		// Tooltip: ""
 	}
+
+	CommandersStaffEX: {
+		// DisplayName: Commanders Staff EX
+		// Tooltip: ""
+	}
+
+	CommandersChainsawEX: {
+		// DisplayName: Commanders Chainsaw EX
+		// Tooltip: ""
+	}
+
+	ForgedLashEX: {
+		// DisplayName: Forged Lash EX
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1120,6 +1135,9 @@ Projectiles: {
 	// CommandersClawThrow.DisplayName: Commanders Claw Throw
 	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
 	// PhasebladeHeld.DisplayName: Phaseblade Held
+	// ForgedLasEXhProjectile.DisplayName: Forged Las E Xh Projectile
+	// ForgedLasOrb.DisplayName: Forged Las Orb
+	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
 }
 
 Configs: {

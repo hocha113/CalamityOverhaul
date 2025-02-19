@@ -13,9 +13,12 @@ using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     {
         public override int TargetID => NPCID.Spazmatism;
         public static bool MachineRebellion;
-        private bool machineRebellion_ByNPC;
+        internal bool machineRebellion_ByNPC;
         protected Player player;
         protected bool accompany;
         protected int frameIndex;
@@ -40,6 +43,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private static int retinazerIconIndex;
         private static int spazmatismAltIconIndex;
         private static int retinazerAltIconIndex;
+        private delegate void TwinsBigProgressBarDrawDelegate(TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch);
+        private FieldInfo _cacheField;
+        private FieldInfo _headIndexField;
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/Spazmatism_Head", -1);
             spazmatismIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/Spazmatism_Head");
@@ -50,6 +56,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             spazmatismAltIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/SpazmatismAlt_Head");
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BEYE/RetinazerAlt_Head", -1);
             retinazerAltIconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BEYE/RetinazerAlt_Head");
+
+            MethodInfo methodInfo = typeof(TwinsBigProgressBar).GetMethod("Draw", BindingFlags.Public | BindingFlags.Instance);
+            CWRHook.Add(methodInfo, OnTwinsBigProgressBarDrawHook);
+            _cacheField = typeof(TwinsBigProgressBar).GetField("_cache", BindingFlags.NonPublic | BindingFlags.Instance);
+            _headIndexField = typeof(TwinsBigProgressBar).GetField("_headIndex", BindingFlags.NonPublic | BindingFlags.Instance);
         }
         void ICWRLoader.LoadAsset() {
             SpazmatismAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Spazmatism");
@@ -76,6 +87,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
+        private void OnTwinsBigProgressBarDrawHook(TwinsBigProgressBarDrawDelegate orig
+            , TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch) {
+            Texture2D value = TextureAssets.NpcHeadBoss[(int)_headIndexField.GetValue(inds)].Value;
+            Rectangle barIconFrame = value.Frame();
+            BigProgressBarCache _cache = (BigProgressBarCache)_cacheField.GetValue(inds);
+            BigProgressBarHelper.DrawFancyBar(spriteBatch, _cache.LifeCurrent, _cache.LifeMax, value, barIconFrame);
+        }
+
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
             if (npc.type == NPCID.Spazmatism) {
                 IItemDropRuleCondition condition = new DropInDeathMode();
@@ -85,6 +104,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 rule.Add(ModContent.ItemType<Dicoria>(), 4);
                 npcLoot.Add(rule);
             }
+        }
+
+        public static void SetMachineRebellion(NPC npc) {
+            npc.life = npc.lifeMax *= 10;
+            npc.defDefense = npc.defense = 40;
+            npc.defDamage = npc.damage *= 2;
         }
 
         public override void SetProperty() {
@@ -112,12 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (MachineRebellion) {
-                npc.life = npc.lifeMax *= 10;
-                npc.defDefense = npc.defense = 40;
-                npc.defDamage = npc.damage *= 2;
-
-                machineRebellion_ByNPC = true;
-                netOtherWorkSend = true;
+                SetMachineRebellion(npc);
                 MachineRebellion = false;
             }
         }

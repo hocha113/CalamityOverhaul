@@ -824,6 +824,21 @@ Items: {
 			只能在夜晚使用
 			'''
 	}
+
+	CommandersStaffEX: {
+		DisplayName: 统帅之杖EX
+		Tooltip: ""
+	}
+
+	CommandersChainsawEX: {
+		DisplayName: 统帅链锯EX
+		Tooltip: ""
+	}
+
+	ForgedLashEX: {
+		DisplayName: 钢铁之鞭EX
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1122,6 +1137,9 @@ Projectiles: {
 	// CommandersClawThrow.DisplayName: Commanders Claw Throw
 	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
 	// PhasebladeHeld.DisplayName: Phaseblade Held
+	// ForgedLasEXhProjectile.DisplayName: Forged Las E Xh Projectile
+	// ForgedLasOrb.DisplayName: Forged Las Orb
+	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
 }
 
 Configs: {

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         public override int TargetID => NPCID.TheDestroyer;
         public static bool MachineRebellion;
-        private bool machineRebellion_ByNPC;
+        internal bool machineRebellion_ByNPC;
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
         private static int iconIndex;
@@ -39,13 +39,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Head_Glow = null;
         }
 
+        public static void SetMachineRebellion(NPC npc) {
+            npc.defDefense = npc.defense = 80;
+            npc.defDamage = npc.damage *= 2;
+        }
+
         public override void SetProperty() {
             if (MachineRebellion) {
-                npc.defDefense = npc.defense = 80;
-                npc.defDamage = npc.damage *= 2;
-
-                machineRebellion_ByNPC = true;
-                netOtherWorkSend = true;
+                SetMachineRebellion(npc);
                 MachineRebellion = false;
             }
         }

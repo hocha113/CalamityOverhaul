@@ -27,10 +27,13 @@ using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
@@ -616,13 +619,22 @@ namespace CalamityOverhaul
                 return;
             }
 
-            CWRMod.Instance.bossChecklist.Call("LogBoss", CWRMod.Instance, "MachineRebellion", 22.1f
-                , () => CWRWorld.MachineRebellionDowned, NPCID.SkeletronPrime, new Dictionary<string, object>() {
+            CWRMod.Instance.bossChecklist.Call("LogBoss", CWRMod.Instance, "MachineRebellion", 22.1f, 
+                () => CWRWorld.MachineRebellionDowned, 
+                new List<int> { NPCID.SkeletronPrime, NPCID.Spazmatism, NPCID.Retinazer, NPCID.TheDestroyer },
+                new Dictionary<string, object>() {
                 ["spawnInfo"] = CWRLocText.Instance.MachineRebellion_SpawnInfo,
                 ["despawnMessage"] = CWRLocText.Instance.MachineRebellion_DespawnMessage,
                 ["displayName"] = CWRLocText.Instance.MachineRebellion_DisplayName,
                 ["spawnItems"] = ItemType<DraedonsRemote>(),
-                ["collectibles"] = new List<int> {ItemType<GeminisTributeEX>(), ItemType<RaiderGunEX>(),},
+                ["availability"] = () => true,
+                ["collectibles"] = new List<int> {
+                    ItemType<GeminisTributeEX>(), 
+                    ItemType<RaiderGunEX>(), 
+                    ItemType<ForgedLashEX>(), 
+                    ItemType<CommandersChainsawEX>(), 
+                    ItemType<CommandersStaffEX>() 
+                },
                 ["customPortrait"] = (SpriteBatch sb, Rectangle rect, Color color) => {
                     Texture2D texture = HeadPrimeAI.HandAsset.Value;
                     Vector2 centered = rect.TopLeft() + rect.Size() / 2;
