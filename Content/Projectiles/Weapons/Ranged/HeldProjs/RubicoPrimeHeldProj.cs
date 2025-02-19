@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!onFire && IsKreload && kreloadTimeValue <= 0 && Projectile.IsOwnedByLocalPlayer()) {
                 if (++fireIndex > 50) {
                     NPC target = Projectile.Center.FindClosestNPC(1900, false, true);

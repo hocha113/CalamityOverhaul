@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);

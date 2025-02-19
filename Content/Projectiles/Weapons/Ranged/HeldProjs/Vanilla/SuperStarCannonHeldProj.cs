@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return true;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!CanFire && !MagazineSystem) {
                 FireTime = 15;
             }

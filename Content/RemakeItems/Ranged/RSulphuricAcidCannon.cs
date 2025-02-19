@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<SulphuricAcidCannon>();
 
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<SulphuricAcidCannonHeldProj>(55);
+            item.SetCartridgeGun<SulphuricAcidCannonHeldProj>(80);
             item.useAmmo = AmmoID.Bullet;
         }
     }

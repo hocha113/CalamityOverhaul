@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!IsKreload || ShootCoolingValue > 0) {
                 return;
             }

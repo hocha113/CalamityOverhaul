@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_None.gunBodyX = 20;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
             }

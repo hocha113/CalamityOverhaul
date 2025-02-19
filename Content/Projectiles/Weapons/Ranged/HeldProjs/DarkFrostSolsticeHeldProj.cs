@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpwanGunDustMngsData.dustID3 = 76;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             ArmRotSengsBackNoFireOffset = -50;
             SetCompositeArm();
             if (onFire) {

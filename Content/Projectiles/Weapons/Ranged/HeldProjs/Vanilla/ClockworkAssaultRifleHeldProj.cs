@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.splNum = 0.3f;
         }
 
-        public override void PostInOwnerUpdate() { }
+        public override void PostInOwner() { }
 
         public override void PostFiringShoot() {
             FireTime = 3;

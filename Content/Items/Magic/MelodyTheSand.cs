@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire != oldOnFire && onFire) {
                 chargeIndex = 0;
             }

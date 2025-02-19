@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_None.gunBodyY = 23;
         }
 
-        public override void PreInOwnerUpdate() {
+        public override void PreInOwner() {
             FireTime = MagazineSystem ? 40 : 60;
         }
 

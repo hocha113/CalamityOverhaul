@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire && kreloadTimeValue <= 0) {
                 float minRot = MathHelper.ToRadians(50);
                 float maxRot = MathHelper.ToRadians(130);

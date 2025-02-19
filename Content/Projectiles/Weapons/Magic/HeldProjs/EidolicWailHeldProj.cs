@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             RecoilRetroForceMagnitude = 23;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire) {
                 //OffsetPos += CWRUtils.randVr(0.5f + (Item.useTime - GunShootCoolingValue) * 0.03f);
                 if (Time % 10 == 0) {

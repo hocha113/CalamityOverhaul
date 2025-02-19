@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             CanRightClick = true;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire || onFireR) {
                 CWRUtils.ClockFrame(ref Projectile.frame, intframe, 3);
             }

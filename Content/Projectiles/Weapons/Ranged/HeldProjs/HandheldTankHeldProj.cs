@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_None.gunBodyY = 13;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!DownLeft && kreloadTimeValue == 0) {
                 ArmRotSengsFront = 70 * CWRUtils.atoR;
                 ArmRotSengsBack = 110 * CWRUtils.atoR;

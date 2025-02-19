@@ -4,8 +4,10 @@ using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.ConstrainedExecution;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,8 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 
         private Color tillColor = Color.White;
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 28;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 45;
@@ -58,16 +60,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                 Projectile.timeLeft = 200;
                 Owner.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
                 Vector2 mousePos = ToMouse + Owner.GetPlayerStabilityCenter();
+                Vector2 ver = Projectile.Center.To(mousePos);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.ai[0] += Main.rand.Next(1, 3);
                     Projectile.netUpdate = true;//肮脏的手段——HoCha113, 2024-06-02 02:37
                 }
                 if (Projectile.ai[0] > 30) {
-                    Vector2 ver = Projectile.Center.To(mousePos);
+                    SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);
                     Projectile.velocity = ver.UnitVector() * 45;
                     Projectile.ai[0] = 0;
                 }
                 Projectile.velocity *= 0.98f;
+                if (ver.Length() < 16) {
+                    Projectile.velocity = Projectile.velocity.RotatedByRandom(0.9f);
+                }
             }
 
             if (Projectile.localAI[0] > 0) {
@@ -92,7 +98,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                 Projectile.localAI[1] = 12;
                 Projectile.rotation = (-Projectile.velocity).ToRotation();
                 Vector2 splatterDirection = returnVer.SafeNormalize(Vector2.UnitY);
-                SoundEngine.PlaySound(CWRSound.HitTheSteel with { MaxInstances = 3, Volume = 0.5f }, Projectile.Center);
                 for (int j = 0; j < 3; j++) {
                     float sparkScale = Main.rand.NextFloat(1.2f, 2.33f);
                     int sparkLifetime = Main.rand.Next(22, 36);
@@ -116,29 +121,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
         public override bool OnTileCollide(Vector2 oldVelocity) {
             Projectile.timeLeft = 30;
             Projectile.velocity = -oldVelocity;
+            Projectile.DigByTile(CWRSound.HitTheSteel with { MaxInstances = 3, Volume = 0.5f });
             HitEffet(Projectile.velocity);
             return false;
         }
 
-        public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 22f;
-        public Color PrimitiveColorFunction(float _) => tillColor;
-
-        public void DrawTrild() {
-            float localIdentityOffset = Projectile.identity * 0.1372f;
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetShaderTexture(ModContent.Request<Texture2D>(CWRConstant.Placeholder));
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(tillColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(tillColor);
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (_) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
-        }
-
         public override bool PreDraw(ref Color lightColor) {
-            DrawTrild();
-            Texture2D value = Projectile.T2DValue();
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
-                , Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle rectangle = CWRUtils.GetRec(texture);
+            Vector2 drawOrigin = rectangle.Size() / 2;
+
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
+                Color color = lightColor * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length / 2);
+                Main.EntitySpriteDraw(texture, drawPos, rectangle, color, Projectile.oldRot[k] + MathHelper.PiOver4, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+            }
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation + MathHelper.PiOver4, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

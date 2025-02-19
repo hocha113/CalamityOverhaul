@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = ModContent.ProjectileType<TheArrowPunishment>();
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFireR) {
                 for (int i = 0; i < 2; i++) {
                     Dust chargeMagic = Dust.NewDustPerfect(ShootPos + Main.rand.NextVector2Circular(20f, 20f), 267);

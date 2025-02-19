@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             AngleFirearmRest = 0;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire) {
                 if (Time % 5 == 0) {
                     Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);

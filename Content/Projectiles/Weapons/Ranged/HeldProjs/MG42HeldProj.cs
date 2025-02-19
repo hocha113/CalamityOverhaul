@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return rot;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (shootValue > 0) {
                 shootValue -= 0.02f;
             }

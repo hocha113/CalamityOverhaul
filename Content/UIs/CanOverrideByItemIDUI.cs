@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.UIs
             }
 
             if (hoverInMainPage) {
-                player.mouseInterface = true;
                 if (keyRightPressState == KeyPressState.Held && !onDrag) {
                     if (!onDrag) {
                         dragOffsetPos = DrawPosition - MousePosition;

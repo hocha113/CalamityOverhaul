@@ -246,6 +246,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
+            if (DontReform()) {
+                return false;
+            }
+
             if (type == NPCID.PrimeLaser) {
                 type = 0;
             }

@@ -357,20 +357,20 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 先行调用，重写它以设置一些特殊状态
         /// </summary>
-        public virtual void PreInOwnerUpdate() {
+        public virtual void PreInOwner() {
 
         }
 
         /// <summary>
         /// 最后调用，重写它以设置一些特殊状态
         /// </summary>
-        public virtual void PostInOwnerUpdate() {
+        public virtual void PostInOwner() {
 
         }
 
         public override void InOwner() {
             Projectile.timeLeft = 2;
-            PreInOwnerUpdate();
+            PreInOwner();
 
             if (InOwner_HandState_AlwaysSetInFireRoding) {
                 SetGunBodyInFire();
@@ -392,7 +392,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (AutomaticPolishingEffect) {
                 AutomaticPolishing(Item.useTime);
             }
-            PostInOwnerUpdate();
+            PostInOwner();
         }
         /// <summary>
         /// 一个自动抛科的行为的二次封装

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             CanRightClick = true;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFireR) {
                 if (!colers2) {
                     colers2 = true;

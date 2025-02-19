@@ -622,11 +622,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npcCenter.Y = (int)(npcCenter.Y / 16f) * 16;
             targetCenter.X = (int)(targetCenter.X / 16f) * 16 - npcCenter.X;
             targetCenter.Y = (int)(targetCenter.Y / 16f) * 16 - npcCenter.Y;
-            // 计算段比例缩放
-            int mechdusaSegmentScale = (int)(64f * npc.scale);
-            if (NPC.IsMechQueenUp) {
-                mechdusaSegmentScale = (int)(24f * npc.scale);
+
+            float baseLengBySegment = 64;
+            if (HeadPrimeAI.DontReform()) {
+                baseLengBySegment = 40f;
             }
+            if (NPC.IsMechQueenUp) {
+                baseLengBySegment = 24f;
+            }
+            // 计算段比例缩放
+            int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
+            
             Vector2 segmentTarget = Main.npc[(int)npc.ai[1]].Center - npc.Center;
 
             // 如果当前为曲线段，调整目标点的Y坐标

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_Handgun.slideInShoot = CWRSound.Gun_HandGun_SlideInShoot with { Pitch = -0.3f, Volume = 0.55f };
         }
 
-        public override void PreInOwnerUpdate() {
+        public override void PreInOwner() {
             criticalStrike = BulletNum == 1;
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] > 0) {
                 ShootCoolingValue = 2;

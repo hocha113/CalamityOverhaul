@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetDefaults(Item item) {
             item.damage = 115;
             item.useAmmo = AmmoID.FallenStar;
-            item.SetCartridgeGun<StellarCannonHeldProj>(30);
+            item.SetCartridgeGun<StellarCannonHeldProj>(50);
         }
     }
 }

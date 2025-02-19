@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.CWR().isHeldItem = true;
-            Item.SetKnifeHeld<RebelBladeHeld>();
+            Item.SetKnifeHeld<RebelBladeHeld>(true);
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.GetPlayerStabilityCenter();
@@ -69,6 +70,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                SoundEngine.PlaySound(SoundID.Item1, position);
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RebelBladeFlyAttcke>(), (int)(damage * 0.6f), knockback, player.whoAmI);
                 return false;
             }

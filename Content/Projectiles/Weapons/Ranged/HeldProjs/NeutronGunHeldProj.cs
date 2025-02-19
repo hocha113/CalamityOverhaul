@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateSpawnGunDust = false;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
             CWRUtils.ClockFrame(ref uiframe, 5, 6);
             HandIdleDistanceX = onFireR ? (HandFireDistanceX = 65) : (HandFireDistanceX = 35);

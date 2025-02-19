@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.dustID2 = DustID.Sand;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFireR) {
                 Item.useTime = 64;
                 Recoil = 1.2f;

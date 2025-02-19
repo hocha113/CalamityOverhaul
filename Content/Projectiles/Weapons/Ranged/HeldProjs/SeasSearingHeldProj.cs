@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateSpawnGunDust = false;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (noFireTime > 0) {
                 ShootCoolingValue = 2;
                 noFireTime--;

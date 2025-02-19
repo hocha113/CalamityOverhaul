@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        public override void PreInOwnerUpdate() {
+        public override void PreInOwner() {
             if (MagazineSystem) {
                 CanRightClick = BulletNum >= 6;
                 if (DownRight && BulletNum < 6) {

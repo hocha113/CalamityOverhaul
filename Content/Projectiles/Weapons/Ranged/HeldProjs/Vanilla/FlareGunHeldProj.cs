@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return dustType;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!IsKreload || ShootCoolingValue > 0) {
                 return;
             }

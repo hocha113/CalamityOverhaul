@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 6;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!onFire) {
                 FireTime = maxfireD;
                 fireIndex = 0;

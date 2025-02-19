@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void PreInOwnerUpdate() {
+        public override void PreInOwner() {
             thisTime++;
             if (DownLeft && IsKreload && !Owner.CWR().uiMouseInterface) {
                 if (thisTime % 2 == 0) {
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanMelee = chargeValue > maxChargeValue;
         }
 
-        public override void PostInOwnerUpdate() => onFire = thisOnFire;
+        public override void PostInOwner() => onFire = thisOnFire;
 
         public override void HanderSpwanDust() {
             if (chargeValue > maxChargeValue && chargeAmmo > maxChargeAmmo) {

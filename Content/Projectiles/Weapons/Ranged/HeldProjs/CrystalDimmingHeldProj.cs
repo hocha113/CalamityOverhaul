@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpwanGunDustMngsData.dustID3 = 76;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
             }

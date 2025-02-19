@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanUpdateMagazineContentsInShootBool = false;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFire != oldOnFire && onFire) {
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 chargeIndex = 0;

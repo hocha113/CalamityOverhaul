@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }
 
-        public override void PreInOwnerUpdate() {
+        public override void PreInOwner() {
             if (fireIndex > 0) {
                 fireIndex--;
             }

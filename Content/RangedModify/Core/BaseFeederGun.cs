@@ -346,7 +346,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        private void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
+        private void Get_LoadingAmmoAnimation_PreInOwner() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 LoadingAnimation(LoadingAA_None.Roting, LoadingAA_None.gunBodyX, LoadingAA_None.gunBodyY);
             }
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        private void Get_LoadingAmmoAnimation_PostInOwnerUpdate() {
+        private void Get_LoadingAmmoAnimation_PostInOwner() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return;
             }
@@ -500,8 +500,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public sealed override void InOwner() {
             Projectile.timeLeft = 2;
             SetHeld();
-            Get_LoadingAmmoAnimation_PreInOwnerUpdate();
-            PreInOwnerUpdate();
+            Get_LoadingAmmoAnimation_PreInOwner();
+            PreInOwner();
 
             if (InOwner_HandState_AlwaysSetInFireRoding) {
                 SetGunBodyInFire();
@@ -636,12 +636,12 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 LoadingReminder = true;
             }
 
-            Get_LoadingAmmoAnimation_PostInOwnerUpdate();
+            Get_LoadingAmmoAnimation_PostInOwner();
             if (AutomaticPolishingEffect && automaticPolishingInShootStartFarg) {
                 AutomaticPolishing(FireTime);
             }
 
-            PostInOwnerUpdate();
+            PostInOwner();
         }
 
         /// <summary>

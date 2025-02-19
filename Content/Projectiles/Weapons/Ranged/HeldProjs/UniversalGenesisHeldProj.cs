@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "UniversalGenesis";
         public override int TargetID => ModContent.ItemType<UniversalGenesis>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 120;
+            kreloadMaxTime = 100;
             FireTime = 24;
             HandIdleDistanceX = 20;
             HandIdleDistanceY = 0;
@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 12;
+            RecoilRetroForceMagnitude = 20;
+            RecoilOffsetRecoverValue = 0.8f;
             LoadingAA_None.Roting = 50;
             LoadingAA_None.gunBodyX = 15;
             LoadingAA_None.gunBodyY = 20;

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = ModContent.ProjectileType<RealmRavagerBullet>();
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (onFireR) {
                 GunPressure = 0.7f;
                 Recoil = 6;

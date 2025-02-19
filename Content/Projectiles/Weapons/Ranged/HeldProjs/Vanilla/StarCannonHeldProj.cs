@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 with { Volume = 0.2f, Pitch = -0.3f }, Projectile.Center);
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (!CanFire && !MagazineSystem) {
                 FireTime = 30;
             }

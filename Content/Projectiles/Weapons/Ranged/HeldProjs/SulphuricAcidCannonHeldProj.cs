@@ -12,10 +12,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;
-            HandIdleDistanceX = 25;
-            HandIdleDistanceY = 5;
-            HandFireDistanceX = 25;
-            HandFireDistanceY = -10;
+            HandIdleDistanceX = 26;
+            HandIdleDistanceY = 4;
+            HandFireDistanceX = 26;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -3;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateSpawnGunDust = false;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 1f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
