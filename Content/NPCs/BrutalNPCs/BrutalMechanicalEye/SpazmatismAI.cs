@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
     internal class SpazmatismAI : NPCOverride, ICWRLoader
     {
+        private delegate void TwinsBigProgressBarDrawDelegate(TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch);
         public override int TargetID => NPCID.Spazmatism;
         public static bool MachineRebellion;
         internal bool machineRebellion_ByNPC;
@@ -42,8 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private static int spazmatismIconIndex;
         private static int retinazerIconIndex;
         private static int spazmatismAltIconIndex;
-        private static int retinazerAltIconIndex;
-        private delegate void TwinsBigProgressBarDrawDelegate(TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch);
+        private static int retinazerAltIconIndex;       
         private FieldInfo _cacheField;
         private FieldInfo _headIndexField;
         void ICWRLoader.LoadData() {
@@ -73,6 +73,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             SpazmatismAltAsset = null;
             RetinazerAsset = null;
             RetinazerAltAsset = null;
+            _cacheField = null;
+            _headIndexField = null;
         }
 
         public override void BossHeadSlot(ref int index) {
@@ -86,10 +88,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 index = IsSecondPhase() ? retinazerAltIconIndex : retinazerIconIndex;
             }
         }
-
+        //我不清楚为什么需要反射这个才能保证不报错，反正我反射了之后就没再因为双子血条报错了
         private void OnTwinsBigProgressBarDrawHook(TwinsBigProgressBarDrawDelegate orig
             , TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch) {
-            Texture2D value = TextureAssets.NpcHeadBoss[(int)_headIndexField.GetValue(inds)].Value;
+            int headIndex = (int)_headIndexField.GetValue(inds);
+            if (headIndex < 0 || headIndex >= TextureAssets.NpcHeadBoss.Length) {
+                return;
+            }
+
+            Texture2D value = TextureAssets.NpcHeadBoss[headIndex].Value;
             Rectangle barIconFrame = value.Frame();
             BigProgressBarCache _cache = (BigProgressBarCache)_cacheField.GetValue(inds);
             BigProgressBarHelper.DrawFancyBar(spriteBatch, _cache.LifeCurrent, _cache.LifeMax, value, barIconFrame);
