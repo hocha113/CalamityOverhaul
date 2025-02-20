@@ -97,13 +97,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             OtherMeleeSize = 0.8f;
             if (Projectile.ai[0] == 1) {
                 OtherMeleeSize = 1.1f;
             }
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void MeleeEffect() => Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);

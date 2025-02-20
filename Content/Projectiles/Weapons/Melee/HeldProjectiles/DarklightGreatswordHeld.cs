@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             shootSengs = 0.5f;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase1Ratio: 0.2f, phase0SwingSpeed: -0.2f, phase1SwingSpeed: 1.2f, phase2SwingSpeed: 6f);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

@@ -29,10 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 , (int)(Projectile.damage * 0.8f), Projectile.knockBack * 0.8f, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1Ratio: 0.2f, phase1SwingSpeed: 6.2f
                     , phase2SwingSpeed: 2f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

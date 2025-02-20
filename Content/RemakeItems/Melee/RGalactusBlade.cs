@@ -30,14 +30,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Length = 50;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(4)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 164 : 229);
             }
             if (Time % (12 * UpdateRate) == 0) {
                 canShoot = true;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             OtherMeleeSize += 0.005f;
             if (Time == 0) {
                 SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SwingData.baseSwingSpeed = 9;
                 SwingAIType = SwingAITypeEnum.Down;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void MeleeEffect() {

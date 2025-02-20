@@ -49,9 +49,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase1Ratio: 0.2f, phase0SwingSpeed: -0.1f, phase1SwingSpeed: 4.2f, phase2SwingSpeed: 3f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -64,10 +64,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             autoSetShoot = true;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: -0.3f
                 , phase1SwingSpeed: 5.2f, phase2SwingSpeed: 3f, swingSound: SoundID.Item71);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

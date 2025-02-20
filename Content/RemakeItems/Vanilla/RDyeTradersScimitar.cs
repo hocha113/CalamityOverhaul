@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             Length = 48;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
                 , phase1SwingSpeed: 8f, phase2SwingSpeed: 4f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

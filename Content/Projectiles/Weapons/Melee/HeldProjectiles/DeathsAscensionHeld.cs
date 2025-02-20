@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Time == 0) {
                 Projectile.DamageType = Item.DamageType;
                 SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 OtherMeleeSize -= 0.006f / SwingMultiplication;
             }
 
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

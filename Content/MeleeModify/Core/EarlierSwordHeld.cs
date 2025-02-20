@@ -49,9 +49,9 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             item.SetKnifeHeld<EarlierSwordHeld>();
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f, drawSlash: false);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public static EarliersuitEnum InspectionKit(Suit suit) {

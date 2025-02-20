@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ShootSpeed = 18;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (Main.rand.NextBool(5 * UpdateRate)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FishronWings);
             }

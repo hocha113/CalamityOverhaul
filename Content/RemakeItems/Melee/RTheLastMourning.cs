@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(5)) {
                 int dustType = 5;
                 switch (Main.rand.Next(3)) {
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(3 * UpdateRate)) {
                 int dustType = Main.rand.NextBool() ? DustID.GreenFairy : DustID.Venom;
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, 0f, 0f, 100, default, Main.rand.NextFloat(1.8f, 2.4f));
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 if (dustType == DustID.Venom)
                     Main.dust[dust].fadeIn = 1.5f;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

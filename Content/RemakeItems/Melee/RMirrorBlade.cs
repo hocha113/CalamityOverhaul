@@ -39,11 +39,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

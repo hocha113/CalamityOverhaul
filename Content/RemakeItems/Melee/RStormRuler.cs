@@ -43,14 +43,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(5 * UpdateRate)) {
                 int swingDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.Flare_Blue, Owner.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
             }
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

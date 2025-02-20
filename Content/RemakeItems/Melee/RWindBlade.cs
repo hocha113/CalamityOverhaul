@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(3)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch);
             }
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     , phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             }
 
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

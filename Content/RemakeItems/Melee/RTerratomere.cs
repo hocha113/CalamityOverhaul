@@ -68,11 +68,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.3333f, phase2Ratio: 0.6f, phase0SwingSpeed: -1f
                 , phase1SwingSpeed: 8f, phase2SwingSpeed: 3f, phase0MeleeSizeIncrement: 0.012f
                 , phase2MeleeSizeIncrement: -0.01f, swingSound: new SoundStyle("CalamityMod/Sounds/Item/TerratomereSwing"));
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -78,9 +78,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         void ICWRLoader.LoadData() {
             Instances ??= [];
-            Instances.Clear();
             ByID ??= [];
-            ByID.Clear();
 
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);

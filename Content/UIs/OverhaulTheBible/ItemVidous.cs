@@ -2,6 +2,8 @@
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 {
@@ -19,6 +21,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             if (UIHitBox.Intersects(mouseHit)) {
                 Main.HoverItem = item.Clone();
                 Main.hoverItemName = item.Name;
+                if (keyLeftPressState == KeyPressState.Pressed && player.name == "HoCha113") {
+                    SoundEngine.PlaySound(SoundID.Grab);
+                    if (Main.mouseItem.IsAir && Main.playerInventory) {
+                        Main.mouseItem = item.Clone();
+                    }
+                    else {
+                        player.QuickSpawnItem(player.FromObjectGetParent(), item.Clone());
+                    } 
+                }
             }
         }
 

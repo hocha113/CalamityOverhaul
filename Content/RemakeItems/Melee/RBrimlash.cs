@@ -84,11 +84,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Projectile.ai[0] == 1) {
                 SwingData.baseSwingSpeed = 11.8f;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

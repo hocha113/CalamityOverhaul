@@ -66,9 +66,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
                 , ProjectileID.Meowmere, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.6f, phase1SwingSpeed: 9.2f, phase2SwingSpeed: 8f, swingSound: SoundID.Item58);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

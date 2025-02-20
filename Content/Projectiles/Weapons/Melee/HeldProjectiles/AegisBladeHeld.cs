@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             ShootSpeed = 8;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Projectile.ai[0] == 1) {
                 if (Time == 0) {
                     SoundEngine.PlaySound(SoundID.Item71, Owner.position);

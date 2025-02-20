@@ -36,11 +36,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(5 * UpdateRate)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Lava);
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

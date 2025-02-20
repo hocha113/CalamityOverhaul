@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return distance * (speed / distanceLength);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(5 * UpdateRate)) {
                 int swingDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.RainbowTorch, Owner.direction * 2, 0f, 150, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB), 1.3f);
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.dust[swingDust].noGravity = true;
             }
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f, phase2MeleeSizeIncrement: 0);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

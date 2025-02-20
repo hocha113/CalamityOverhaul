@@ -39,11 +39,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ShootSpeed = 20;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Time % (10 * UpdateRate) == 0) {
                 canShoot = true;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

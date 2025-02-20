@@ -327,11 +327,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         /// <summary>
-        /// 播放抓取音效
-        /// </summary>
-        public static void PlayGrabSound() => SoundEngine.PlaySound(SoundID.Grab);
-
-        /// <summary>
         /// 解析字符串键并获取对应的物品实例
         /// </summary>
         /// <param name="key">用于解析的字符串键，可以是整数类型或模组/物品名称的组合</param>
@@ -513,7 +508,7 @@ End:;
                 }
 
                 if (onSound) {
-                    PlayGrabSound();
+                    SoundEngine.PlaySound(SoundID.Grab);
                 }
             }
         }
@@ -527,7 +522,7 @@ End:;
         private void GetResult(ref Item onitem, ref Item holdItem, ref Item[] arg) {
             if (onitem.type != ItemID.None && StaticFullItemTypes != null) {
                 if (holdItem.type == ItemID.None) {
-                    PlayGrabSound();
+                    SoundEngine.PlaySound(SoundID.Grab);
                     SoundEngine.PlaySound(SoundID.Research);
                     for (int i = 0; i < items.Length; i++) {
                         if (items[i].type == StaticFullItemTypes[i]) {
@@ -543,7 +538,7 @@ End:;
                 }
                 else {
                     if (holdItem.type == onitem.type && holdItem.stack < holdItem.maxStack) {
-                        PlayGrabSound();
+                        SoundEngine.PlaySound(SoundID.Grab);
                         SoundEngine.PlaySound(SoundID.Research);
                         for (int i = 0; i < items.Length; i++) {
                             if (items[i].type == StaticFullItemTypes[i]) {
@@ -575,14 +570,14 @@ End:;
 
             // 捡起物品逻辑
             if (onitem.type != ItemID.None && holdItem.type == ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 holdItem = onitem;
                 onitem = new Item();
                 return;
             }
             // 同种物品堆叠逻辑
             if (onitem.type == holdItem.type && holdItem.type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 //也需要注意物品的最大堆叠上限
                 if (onitem.stack + holdItem.stack <= onitem.maxStack) {
                     onitem.stack += holdItem.stack;
@@ -597,12 +592,12 @@ End:;
             }
             // 不同种物品交换逻辑
             if (onitem.type == ItemID.None && holdItem.type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 Utils.Swap(ref holdItem, ref onitem);
             }
             else {
                 // 不同种物品交换逻辑
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 (holdItem, onitem) = (onitem, holdItem);
             }
         }
@@ -622,7 +617,7 @@ End:;
             }
             //如果鼠标上的物品为空但目标格上不为空，那么执行一次右键拿取的操作
             if (onitem.type != ItemID.None && holdItem.type == ItemID.None && onitem.stack > 1) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 Item item = onitem.Clone();
                 onitem.stack -= 1;
                 if (onitem.stack <= 0) {
@@ -634,7 +629,7 @@ End:;
             }
             // 同种物品右键增加逻辑
             if (onitem.type == holdItem.type && holdItem.type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 // 如果物品堆叠上限为1，则不进行右键增加操作
                 if (onitem.maxStack == 1) {
                     return;
@@ -649,13 +644,13 @@ End:;
             }
             // 不同种物品交换逻辑
             if (onitem.type != holdItem.type && onitem.type != ItemID.None && holdItem.type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 Utils.Swap(ref holdItem, ref onitem);
                 return;
             }
             // 鼠标上有物品且目标格为空物品，进行右键放置逻辑
             if (onitem.type == ItemID.None && holdItem.type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 PlaceItemOnGrid(ref onitem, ref holdItem);
             }
         }
@@ -704,7 +699,7 @@ End:;
         /// <param name="item"></param>
         private void GatheringItem2(int inCoordIndex, ref Item item) {
             if (item.type == ItemID.None && items[inCoordIndex].type != ItemID.None) {
-                PlayGrabSound();
+                SoundEngine.PlaySound(SoundID.Grab);
                 Item item1 = items[inCoordIndex].Clone();
                 player.QuickSpawnItem(player.FromObjectGetParent(), item1, item1.stack);
                 items[inCoordIndex] = new Item();

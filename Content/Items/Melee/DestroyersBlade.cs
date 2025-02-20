@@ -45,11 +45,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             autoSetShoot = true;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 1.6f
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
                 , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash:false);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() => OrigItemShoot();

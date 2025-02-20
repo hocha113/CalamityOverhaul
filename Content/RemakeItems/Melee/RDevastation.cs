@@ -36,11 +36,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ShootSpeed = 11;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(3 * UpdateRate)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PinkFairy);
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {

@@ -32,13 +32,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 , Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             int dustType = Main.rand.NextBool() ? ModContent.DustType<AstralOrange>() : ModContent.DustType<AstralBlue>();
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, dustType);
             if (d != null) {
                 d.customData = 0.03f;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

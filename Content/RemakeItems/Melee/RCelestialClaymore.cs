@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(4)) {
                 int dustType = Main.rand.Next(2);
                 dustType = dustType == 0 ? 15 : dustType == 1 ? 73 : 244;
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
                 }
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
     }
 }

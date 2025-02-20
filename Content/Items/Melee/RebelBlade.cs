@@ -113,13 +113,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             ShootSpeed = 12;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(
             phase0SwingSpeed: -0.4f,
             phase1SwingSpeed: 3.4f,
             phase2SwingSpeed: 7f,
             swingSound: SoundID.Item71 with { Pitch = -0.6f });
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void MeleeEffect() {

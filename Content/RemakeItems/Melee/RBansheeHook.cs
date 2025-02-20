@@ -34,7 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.damage = 580;
             item.SetKnifeHeld<BansheeHookHeld>();
-            index = 0;
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
@@ -67,6 +66,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (++index > 3) {
                 index = 0;
             }
+
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, index);
             return false;
         }

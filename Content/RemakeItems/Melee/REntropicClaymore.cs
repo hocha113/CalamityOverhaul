@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.NewProjectile(Source, spwanPos, ShootVelocity, ModContent.ProjectileType<EntropicClaymoreProj>(), (int)(Projectile.damage * 0.65f), Projectile.knockBack, Projectile.owner);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(3)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame);
             }
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Projectile.ai[1] = 0;
                 Projectile.ai[2]++;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         bool IWarpDrawable.CanDrawCustom() => true;

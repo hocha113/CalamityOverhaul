@@ -62,13 +62,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Main.rand.NextBool(UpdateRate)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.RainbowTorch, 0f, 0f, 0, Color.Plum, Main.rand.NextFloat(0.65f, 1.2f));
                 Main.dust[dust].noGravity = true;
             }
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         private void HitEffect(Entity target, int damageDone) {

@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Length = 50;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (Main.rand.NextBool(4)) {
                 Dust rainbow = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.RainbowMk2, 0f, 0f, 50, Main.DiscoColor, 0.8f)];
                 rainbow.noGravity = true;

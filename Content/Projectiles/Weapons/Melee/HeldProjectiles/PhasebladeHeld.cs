@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             item.SetKnifeHeld<PhasebladeHeld>();
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f, swingSound: SoundID.Item15);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
@@ -133,6 +133,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             LoadGradientTex();
         }
 
-        public override void PostInOwnerUpdate() => AddLight();
+        public override void PostInOwner() => AddLight();
     }
 }

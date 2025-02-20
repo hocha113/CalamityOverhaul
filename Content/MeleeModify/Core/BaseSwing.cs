@@ -578,8 +578,8 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 toOwnerRoding + MathHelper.PiOver4 : toOwnerRoding - MathHelper.Pi - MathHelper.PiOver4;
         }
 
-        public virtual bool PreInOwnerUpdate() { return true; }
-        public virtual void PostInOwnerUpdate() { }
+        public virtual bool PreInOwner() { return true; }
+        public virtual void PostInOwner() { }
         public virtual void UpdateFrame() {
             if (AnimationMaxFrme > 1) {
                 CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
@@ -603,7 +603,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         public sealed override bool PreUpdate() {
             SwingMultiplication = SetSwingSpeed(1f);
             canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * UpdateRate);
-            if (PreInOwnerUpdate()) {
+            if (PreInOwner()) {
                 InOwner();
                 SwingAI();
                 if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
@@ -618,7 +618,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                     UpdateCaches();
                 }
             }
-            PostInOwnerUpdate();
+            PostInOwner();
             UpdateFrame();
             if (!VaultUtils.isServer) {
                 NoServUpdate();

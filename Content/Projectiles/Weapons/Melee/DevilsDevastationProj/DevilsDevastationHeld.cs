@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             return false;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override void PostInOwner() {
             if (canShoot && Projectile.ai[0] == 3) {
                 EXDemonBlastAltEffect();
             }

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             autoSetShoot = true;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Projectile.ai[0] == 1) {
                 distanceToOwner = 100;
                 SwingAIType = SwingAITypeEnum.None;

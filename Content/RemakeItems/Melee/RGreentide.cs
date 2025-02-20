@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, randomDust);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer() && Time % (12 * UpdateRate) == 0) {
                 Projectile.NewProjectileDirect(Source, InMousePos, ShootVelocity.RotatedByRandom(0.3f)
                     , ModContent.ProjectileType<GreenWater>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             ExecuteAdaptiveSwing(phase0SwingSpeed: 0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

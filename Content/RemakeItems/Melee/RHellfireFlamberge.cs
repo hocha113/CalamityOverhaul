@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             ShootSpeed = 20;
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.2f, phase0SwingSpeed: -0.1f
                 , phase1SwingSpeed: 5.2f, phase2SwingSpeed: 2f);
-            return base.PreInOwnerUpdate();
+            return base.PreInOwner();
         }
 
         public override void Shoot() {
