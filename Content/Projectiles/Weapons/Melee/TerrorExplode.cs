@@ -34,19 +34,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            SoundStyle sound = SoundID.Item60;
-            sound.MaxInstances = 6;
-            SoundEngine.PlaySound(sound, Projectile.position);
-            Projectile.width = 400;
-            Projectile.height = 400;
-            Vector2 projCenter = Projectile.position;
-
             for (int i = 0; i < 6; i++) {
-                Dust.NewDust(projCenter, Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
+                Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
             }
 
             for (int i = 0; i < 66; i++) {
-                Vector2 pos = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.Next(-200, 200) + projCenter;
+                Vector2 pos = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.Next(-200, 200) + Projectile.Center;
                 int num = Dust.NewDust(pos, 1, 1, DustID.RedTorch, 0f, 0f, 0, default, 2.5f);
                 Main.dust[num].noGravity = true;
                 Main.dust[num].velocity *= 3f;
@@ -55,8 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[num].noGravity = true;
             }
 
-            Projectile.localAI[0] = 1f;
-            Projectile.Damage();
+            Projectile.Explode();
         }
     }
 }

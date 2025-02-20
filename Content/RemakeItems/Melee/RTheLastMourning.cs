@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.width = 94;
             Item.height = 94;
             Item.DamageType = DamageClass.Melee;
-            Item.damage = 220;
+            Item.damage = 320;
             Item.knockBack = 8.5f;
             Item.useAnimation = 18;
             Item.useTime = 18;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<SoulSeekerSkull>();
             Item.shootSpeed = 15;
-            Item.SetKnifeHeld<TheLastMourningHeld>();
+            Item.SetKnifeHeld<TheLastMourningHeld>(false);
         }
 
         public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<SoulSeekerSkull>()
-                , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
+                , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
 
         public override bool PreInOwner() {

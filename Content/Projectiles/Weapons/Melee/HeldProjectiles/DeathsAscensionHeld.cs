@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             for (int i = 0; i < 3; i++) {
                 Vector2 vr = ((-1 + i) * 0.2f).ToRotationVector2().RotatedBy(ToMouseA);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + vr * Length, vr * 16,
-                ModContent.ProjectileType<DeathsAscensionProjectile>(), (int)(Projectile.damage * 0.15f)
+                ModContent.ProjectileType<DeathsAscensionProjectile>(), (int)(Projectile.damage * 0.25f)
                 , Projectile.knockBack / 2, Projectile.owner);
             }
         }

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailBtommWidth = 30;
             SwingData.baseSwingSpeed = 4f;
             Projectile.width = Projectile.height = 90;
-            Length = 90;
+            Length = 100;
             unitOffsetDrawZkMode = 8;
             SwingDrawRotingOffset = MathHelper.ToRadians(12);
             autoSetShoot = true;

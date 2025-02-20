@@ -4,6 +4,7 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
+using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 8.5f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 80;
             Item.shoot = ModContent.ProjectileType<WraithBeam>();
@@ -116,6 +117,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (rageEnergy < 0) {
                 rageEnergy = 0;
             }
+            SoundStyle sound = SoundID.Item60;
+            sound.MaxInstances = 6;
+            SoundEngine.PlaySound(sound, Projectile.position);
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<WraithBeam>()
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, (rageEnergy > 0) ? 1 : 0);
         }
@@ -125,7 +129,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             target.AddBuff(ModContent.BuffType<SoulBurning>(), 600);
 
             bool oldcharge = rageEnergy > 0;//与OnHitPvp一致，用于判断能量出现的那一刻
-            rageEnergy += hit.Damage / 5;
+            int addDamage = hit.Damage / 3;
+            if (addDamage < 100) {
+                addDamage = 100;
+            }
+            rageEnergy += addDamage;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
                 SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, Owner.Center);
@@ -137,7 +145,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             target.AddBuff(ModContent.BuffType<SoulBurning>(), 600);
 
             bool oldcharge = rageEnergy > 0;//与OnHitPvp一致，用于判断能量出现的那一刻
-            rageEnergy += info.Damage / 5;
+            int addDamage = info.Damage / 2;
+            if (addDamage < 100) {
+                addDamage = 100;
+            }
+            rageEnergy += addDamage;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
                 SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, Owner.Center);

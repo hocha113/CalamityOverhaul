@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.DamageType = DamageClass.Melee;
             HandOnTwringMode = -105;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = 12;
             Projectile.scale = 1.5f;
         }
 
@@ -80,9 +80,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     if (Projectile.Distance(Owner.Center) < 86) {
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Owner.velocity
                             , ModContent.ProjectileType<DeathsAscensionBreakSwing>()
-                            , Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+                            , (int)(Projectile.damage * 2.2f), Projectile.knockBack, Owner.whoAmI, 0f, 0f);
                         Owner.GivePlayerImmuneState(30);
                         Projectile.Kill();
+                        Projectile.netUpdate = true;
                     }
                     Projectile.rotation -= 0.6f * Owner.direction;
                 }

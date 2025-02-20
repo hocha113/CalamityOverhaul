@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 3,
-                ModContent.ProjectileType<StarnightBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack * 0.85f, Projectile.owner);
+                ModContent.ProjectileType<StarnightBeam>(), Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
         public override void MeleeEffect() {

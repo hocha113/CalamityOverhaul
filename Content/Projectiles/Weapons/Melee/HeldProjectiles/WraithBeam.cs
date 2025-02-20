@@ -90,32 +90,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             float rot = toTarget.ToRotation();
                             float offsetrot = MathHelper.ToRadians(35);
                             float lengs = toTarget.Length() / 2;
-                            if (lengs > 160) lengs = 160;
-
+                            if (lengs > 160) {
+                                lengs = 160;
+                            }
                             Vector2 pos = Main.rand.NextFloat(rot - offsetrot, rot + offsetrot)
                                     .ToRotationVector2() * lengs + Main.player[Projectile.owner].Center;
-                            Projectile.NewProjectileDirect(
-                                Projectile.GetSource_FromAI(),
-                                pos,
-                                pos.To(target.Center).UnitVector() * 17,
-                                Type,
-                                Projectile.damage / 2,
-                                0,
-                                Projectile.owner,
-                                2,
-                                Main.rand.Next(2)
-                                ).timeLeft = 60;
-                        }
-
-                        break;
-                    case 2:
-                        switch (Projectile.ai[1]) {
-                            case 0:
-                                break;
-                            case 1:
-                                break;
-                            case 2:
-                                break;
+                            Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), pos, pos.To(target.Center).UnitVector() * 17,
+                                Type, Projectile.damage, 0, Projectile.owner, 2, Main.rand.Next(2)).timeLeft = 60;
                         }
                         break;
                 }
@@ -123,13 +104,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void AI() {
-            if (Projectile.localAI[1] == 0f) {
-                SoundStyle sound = SoundID.Item60;
-                sound.MaxInstances = 6;
-                SoundEngine.PlaySound(sound, Projectile.position);
-                Projectile.localAI[1] += 1f;
-            }
-
             Projectile.alpha -= 40;
             if (Projectile.alpha < 0) {
                 Projectile.alpha = 0;

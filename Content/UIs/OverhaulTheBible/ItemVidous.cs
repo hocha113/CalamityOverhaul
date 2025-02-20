@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             if (UIHitBox.Intersects(mouseHit)) {
                 Main.HoverItem = item.Clone();
                 Main.hoverItemName = item.Name;
-                if (keyLeftPressState == KeyPressState.Pressed && player.name == "HoCha113") {
+                if (keyRightPressState == KeyPressState.Pressed && player.name == "HoCha113") {
                     SoundEngine.PlaySound(SoundID.Grab);
                     if (Main.mouseItem.IsAir && Main.playerInventory) {
                         Main.mouseItem = item.Clone();
@@ -40,9 +40,8 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
                 , 4, DrawPosition, Width, Height, Color.White * OverhaulTheBibleUI.Instance._sengs, Color.White * 0, 1);
 
-            Item item = new Item(BaseRItem.TargetID);
             Main.instance.LoadItem(BaseRItem.TargetID);
-            float size = VaultUtils.GetDrawItemSize(item, Width);
+            float size = VaultUtils.GetDrawItemSize(BaseRItem.TargetID, Width);
             VaultUtils.SimpleDrawItem(spriteBatch, BaseRItem.TargetID, DrawPosition + new Vector2(Width, Height) / 2
                 , size, 0, Color.White * OverhaulTheBibleUI.Instance._sengs, Vector2.Zero);
         }

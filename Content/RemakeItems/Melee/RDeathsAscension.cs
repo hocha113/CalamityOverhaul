@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<DeathsAscension>();
         private int swingIndex = 0;
         public override void SetDefaults(Item item) {
-            swingIndex = 0;
             item.UseSound = null;
             item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             item.SetKnifeHeld<DeathsAscensionHeld>();
@@ -40,6 +39,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             , ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
             Item.useTime = Item.useAnimation = 22;
             Item.GiveMeleeType(true);
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
             if (player.altFunctionUse == 2) {
                 Item.useTime = Item.useAnimation = 16;
                 Item.GiveMeleeType();
@@ -57,11 +58,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Projectile.NewProjectile(source, position, velocity
                     , ModContent.ProjectileType<DeathsAscensionHeld>(), damage / 2, knockback
                 , player.whoAmI, 0, 0, 1);
-                return false;
+            }
+            else {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback
+                    , player.whoAmI, swingIndex % 2 == 0 ? 0 : 1, swingIndex + 1);
             }
 
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback
-                , player.whoAmI, swingIndex % 2 == 0 ? 0 : 1, swingIndex + 1);
             return false;
         }
     }
