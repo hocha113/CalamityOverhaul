@@ -572,7 +572,8 @@ namespace CalamityOverhaul.Content
 
             if (item.CWR().DeathModeItem) {
                 var line = new TooltipLine(CWRMod.Instance, "DeathModeItem", $"--{CWRLocText.Instance.DeathModeItem.Value}--");
-                line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f, Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
+                line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f
+                    , Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
                 tooltips.Add(line);
             }
         }

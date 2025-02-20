@@ -65,6 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal ref float ai10 => ref ai[10];
         internal ref float ai11 => ref ai[11];
         internal static bool canLoaderAssetZunkenUp;
+        internal static Asset<Texture2D> MachineRebellionAsset;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
         internal static Asset<Texture2D> BSPlaser;
@@ -90,6 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         void ICWRLoader.LoadAsset() {
             string path = CWRConstant.NPC + "BSP/";
+            MachineRebellionAsset = CWRUtils.GetT2DAsset(path + "MachineRebellion");
             HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
             BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
             BSPlaser = CWRUtils.GetT2DAsset(path + "BSPlaser");
@@ -114,6 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         void ICWRLoader.UnLoadData() {
+            MachineRebellionAsset = null;
             HandAsset = null;
             BSPCannon = null;
             BSPlaser = null;

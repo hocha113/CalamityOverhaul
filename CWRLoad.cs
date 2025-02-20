@@ -636,10 +636,11 @@ namespace CalamityOverhaul
                     ItemType<CommandersStaffEX>() 
                 },
                 ["customPortrait"] = (SpriteBatch sb, Rectangle rect, Color color) => {
-                    Texture2D texture = HeadPrimeAI.HandAsset.Value;
+                    Texture2D texture = HeadPrimeAI.MachineRebellionAsset.Value;
                     Vector2 centered = rect.TopLeft() + rect.Size() / 2;
-                    Rectangle rectangle = CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 12), 12);
-                    sb.Draw(texture, centered, rectangle, color, 0, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
+                    Rectangle rectangle = CWRUtils.GetRec(texture);
+                    float scale = rect.Width / (float)rectangle.Width;
+                    sb.Draw(texture, centered, rectangle, color, 0, rectangle.Size() / 2, scale, SpriteEffects.None, 0);
                 }
             });
         }
