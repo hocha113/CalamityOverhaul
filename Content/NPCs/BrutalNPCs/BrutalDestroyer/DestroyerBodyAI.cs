@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
+        internal static bool MachineRebellion;
         internal static Asset<Texture2D> Body_Stingless;
         internal static Asset<Texture2D> Body;
         internal static Asset<Texture2D> Body_Glow;
@@ -118,6 +119,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.scale = 2;
                 }
             }
+        }
+
+        public override bool? CanOverride() {
+            if (MachineRebellion) {
+                return true;
+            }
+            return base.CanOverride();
         }
 
         public override bool AI() {

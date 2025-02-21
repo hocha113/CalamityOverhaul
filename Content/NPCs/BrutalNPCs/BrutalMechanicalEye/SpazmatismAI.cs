@@ -77,6 +77,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             _headIndexField = null;
         }
 
+        public override bool? CanOverride() {
+            if (MachineRebellion) {
+                return true;
+            }
+            return base.CanOverride();
+        }
+
         public override void BossHeadSlot(ref int index) {
             if (HeadPrimeAI.DontReform()) {
                 return;
@@ -114,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public static void SetMachineRebellion(NPC npc) {
-            npc.life = npc.lifeMax *= 10;
+            npc.life = npc.lifeMax *= 20;
             npc.defDefense = npc.defense = 40;
             npc.defDamage = npc.damage *= 2;
         }
@@ -141,11 +148,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
-            }
-
-            if (MachineRebellion) {
-                SetMachineRebellion(npc);
-                MachineRebellion = false;
             }
         }
 

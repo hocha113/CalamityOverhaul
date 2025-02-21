@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        internal void fireSlowerAttack() {
+        internal void FireSlowerAttack() {
             if (head.ai[1] == 3f && npc.timeLeft > 10)
                 npc.timeLeft = 10;
 
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Movement();
 
             if (fireSlower) {
-                fireSlowerAttack();
+                FireSlowerAttack();
             }
             else {
                 OtherFireSlowerAttack();

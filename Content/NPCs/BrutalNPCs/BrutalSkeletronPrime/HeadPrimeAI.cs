@@ -157,6 +157,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override bool CanLoad() => true;
 
+        public override bool? CanOverride() {
+            if (MachineRebellion) {
+                return true;
+            }
+            return base.CanOverride();
+        }
+
         internal static bool DontReform() {
             if (!Main.expertMode) {
                 return true;
@@ -409,7 +416,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public static void SetMachineRebellion(NPC npc) {
-            npc.life = npc.lifeMax *= 10;
+            npc.life = npc.lifeMax *= 22;
             npc.defDefense = npc.defense = 40;
             npc.defDamage = npc.damage *= 2;
         }
@@ -421,10 +428,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
-            if (MachineRebellion) {
-                SetMachineRebellion(npc);
-                MachineRebellion = false;
-            }
         }
 
         public override bool AI() {
@@ -587,7 +590,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
             }
             if (ai0 == 180 && !VaultUtils.isClient) {
-                spanArm();
+                SpawnArm();
             }
 
             if (ai0 > 220) {
@@ -1296,9 +1299,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void spanArm(int limit = 0) {
+        internal void SpawnArm(int limit = 0) {
             if (VaultUtils.isClient) {
                 return;
+            }
+            if (machineRebellion_ByNPC) {
+                PrimeArm.MachineRebellion = true;
             }
             if (limit == 1 || limit == 0) {
                 primeCannon = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeCannon, npc.whoAmI);
@@ -1306,10 +1312,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeCannon].ai[1] = npc.whoAmI;
                 Main.npc[primeCannon].target = npc.target;
                 Main.npc[primeCannon].netUpdate = true;
-                if (machineRebellion_ByNPC) {
-                    Main.npc[primeCannon].life = Main.npc[primeCannon].lifeMax *= 6;
-                    Main.npc[primeCannon].damage = Main.npc[primeCannon].defDamage *= 2;
-                }
             }
             if (limit == 2 || limit == 0) {
                 primeSaw = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeSaw, npc.whoAmI);
@@ -1317,10 +1319,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeSaw].ai[1] = npc.whoAmI;
                 Main.npc[primeSaw].target = npc.target;
                 Main.npc[primeSaw].netUpdate = true;
-                if (machineRebellion_ByNPC) {
-                    Main.npc[primeSaw].life = Main.npc[primeSaw].lifeMax *= 6;
-                    Main.npc[primeSaw].damage = Main.npc[primeSaw].defDamage *= 2;
-                }
             }
             if (limit == 3 || limit == 0) {
                 primeVice = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeVice, npc.whoAmI);
@@ -1329,10 +1327,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeVice].target = npc.target;
                 Main.npc[primeVice].ai[3] = 150f;
                 Main.npc[primeVice].netUpdate = true;
-                if (machineRebellion_ByNPC) {
-                    Main.npc[primeVice].life = Main.npc[primeVice].lifeMax *= 6;
-                    Main.npc[primeVice].damage = Main.npc[primeVice].defDamage *= 2;
-                }
             }
             if (limit == 4 || limit == 0) {
                 primeLaser = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeLaser, npc.whoAmI);
@@ -1341,11 +1335,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeLaser].target = npc.target;
                 Main.npc[primeLaser].ai[3] = 150f;
                 Main.npc[primeLaser].netUpdate = true;
-                if (machineRebellion_ByNPC) {
-                    Main.npc[primeLaser].life = Main.npc[primeLaser].lifeMax *= 6;
-                    Main.npc[primeLaser].damage = Main.npc[primeLaser].defDamage *= 2;
-                }
             }
+            PrimeArm.MachineRebellion = false;
         }
         #endregion
 

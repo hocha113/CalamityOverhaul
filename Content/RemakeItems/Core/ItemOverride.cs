@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 {
     public abstract class ItemOverride : ModType, ILocalizedModType
     {
+        #region Data
         /// <summary>
         /// 所有修改的实例集合
         /// </summary>
@@ -90,7 +91,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 return this.GetLocalization(nameof(Tooltip), () => content.Value);
             }
         }
-
+        #endregion
         protected override void Register() {
             if (CanLoad() && TargetID > ItemID.None) {
                 Instances.Add(this);

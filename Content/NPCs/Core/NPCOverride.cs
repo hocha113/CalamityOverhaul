@@ -1,4 +1,5 @@
 ﻿using CalamityMod.NPCs;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -85,11 +86,33 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         /// <returns></returns>
         public virtual bool CanLoad() { return true; }
+        /// <summary>
+        /// 是否修改该npc，返回null则不进行拦截操作
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool? CanOverride() {
+            return null;
+        }
+
+        public static bool TryFetchByID(int id, out NPCOverride npcOverride) {
+            npcOverride = null;
+            
+            if (!NPCSystem.IDToNPCSetDic.TryGetValue(id, out var value)) {
+                return false;
+            }
+
+            bool canOverrideByNPC = value.CanOverride() ?? CWRServerConfig.Instance.BiologyOverhaul;
+            if (canOverrideByNPC) {
+                npcOverride = value.Clone();
+                return true;
+            }
+            
+            return false;
+        }
 
         public static void SetDefaults(NPC npc, CWRNpc cwr, CalamityGlobalNPC cal) {
-            NPCOverride inds = npc.CWR().NPCOverride;
-            if (NPCSystem.IDToNPCSetDic.TryGetValue(npc.type, out var npcOverride)) {
-                inds = npcOverride.Clone();
+            if (!TryFetchByID(npc.type, out NPCOverride inds) || inds == null) {
+                return;
             }
             inds.ai = new float[MaxAISlot];
             inds.localAI = new float[MaxAISlot];

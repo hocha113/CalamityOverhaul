@@ -1,11 +1,13 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -21,10 +23,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
         private static int iconIndex;
+        private const int maxFindMode = 20000 * 20000;
         private int frame;
         private int glowFrame;
         private bool openMouth;
         private int dontOpenMouthTime;
+        private Player player;
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
@@ -40,15 +44,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public static void SetMachineRebellion(NPC npc) {
+            npc.life = npc.lifeMax *= 22;
             npc.defDefense = npc.defense = 80;
             npc.defDamage = npc.damage *= 2;
         }
 
-        public override void SetProperty() {
+        public override void SetProperty() { }
+
+        public override bool? CanOverride() {
             if (MachineRebellion) {
-                SetMachineRebellion(npc);
-                MachineRebellion = false;
+                return true;
             }
+            return base.CanOverride();
         }
 
         public override void BossHeadSlot(ref int index) {
@@ -70,36 +77,123 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
-            CWRUtils.ClockFrame(ref glowFrame, 5, 3);
-            Player target = CWRUtils.GetPlayerInstance(npc.target);
-            if (target.Alives()) {
-                float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(target.Center).UnitVector());
-                float toPlayerLang = npc.Distance(target.Center);
-                if (toPlayerLang < 660 && toPlayerLang > 100 && dotProduct > 0.8f) {
-                    if (dontOpenMouthTime <= 0) {
-                        openMouth = true;
-                    }
-                }
-                else {
-                    openMouth = false;
-                }
-
-                if (openMouth) {
-                    if (frame < 3) {
-                        frame++;
-                    }
-                    dontOpenMouthTime = 120;
-                }
-                else {
-                    if (frame > 0) {
-                        frame--;
-                    }
+            if (npc.target < 0 || npc.target >= 255) {
+                npc.FindClosestPlayer();
+                player = Main.player[npc.target];
+            }
+            if (!player.Alives() || player.DistanceSQ(npc.Center) > maxFindMode) {
+                npc.FindClosestPlayer();
+                player = Main.player[npc.target];
+                if (!player.Alives() || player.DistanceSQ(npc.Center) > maxFindMode) {
+                    npc.ai[0] = 99;
                 }
             }
+
+            HandleMouth();
+
+            if (machineRebellion_ByNPC) {
+                MachineRebellionAI();
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static void SpawnBody(NPC npc) {
+            DestroyerBodyAI.MachineRebellion = true;
+
+            // 生成毁灭者身体的多个部分
+            if (!VaultUtils.isClient) {
+                int index = npc.whoAmI;
+                for (int i = 0; i < 88; i++) {
+                    index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
+                        , i == 87 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody, 0, 0, index);
+                    Main.npc[index].realLife = npc.whoAmI;
+                }
+            }
+
+            foreach (var body in Main.ActiveNPCs) {
+                if (body.type == NPCID.TheDestroyerBody || body.type == NPCID.TheDestroyerTail) {
+                    SetDefaults(body, body.CWR(), body.Calamity());
+                }
+            }
+
+            DestroyerBodyAI.MachineRebellion = false;
+        }
+
+        private void MachineRebellionAI() {
+            if (npc.ai[0] == 99) {
+                npc.velocity = new Vector2(0, 56);
+                if (++ai[0] > 280) {
+                    npc.active = false;
+                }
+                return;
+            }
+            // 初始化时进行冲刺操作
+            if (npc.ai[0] == 0) {
+                npc.ai[0] = 1;
+                
+            }
+
+            // 设置npc的朝向
+            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+
+            // 计算与玩家的距离
+            float distanceToPlayer = Vector2.Distance(npc.Center, player.Center);
+
+            // 冲刺行为（当玩家距离较近时）
+            if (distanceToPlayer < 400f) {
+                // 设置冲刺速度
+                float dashSpeed = 12f;
+                Vector2 dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.Zero);
+                npc.velocity = dashDirection * dashSpeed;
+            }
+            // 迂回巡空行为（当玩家距离较远时）
+            else {
+                // 按常规速度巡航并绕开障碍物
+                npc.ChasingBehavior(player.Center, 23);
+
+                // 随机改变方向模拟迂回行为
+                if (Main.rand.NextBool(60)) {
+                    float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
+                    Vector2 newVelocity = npc.velocity.RotatedBy(randomAngle);
+                    npc.velocity = newVelocity.SafeNormalize(Vector2.Zero) * 6f; // 6f为巡航速度
+                }
+            }
+
+            // 每帧微调，防止卡住
+            npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * Math.Min(npc.velocity.Length(), 12f); // 最大冲刺速度限制
+        }
+
+        private void HandleMouth() {
+            CWRUtils.ClockFrame(ref glowFrame, 5, 3);
+
+            float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(player.Center).UnitVector());
+            float toPlayerLang = npc.Distance(player.Center);
+            if (toPlayerLang < 660 && toPlayerLang > 100 && dotProduct > 0.8f) {
+                if (dontOpenMouthTime <= 0) {
+                    openMouth = true;
+                }
+            }
+            else {
+                openMouth = false;
+            }
+
+            if (openMouth) {
+                if (frame < 3) {
+                    frame++;
+                }
+                dontOpenMouthTime = 120;
+            }
+            else {
+                if (frame > 0) {
+                    frame--;
+                }
+            }
+
             if (dontOpenMouthTime > 0) {
                 dontOpenMouthTime--;
             }
-            return true;
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

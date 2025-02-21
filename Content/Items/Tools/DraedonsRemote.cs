@@ -1,6 +1,8 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
+﻿using CalamityMod;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -34,25 +36,38 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public static void SetMachineRebellion() {
             foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type == NPCID.SkeletronPrime && npc.CWR().NPCOverride is HeadPrimeAI head) {
+                if (npc.type == NPCID.SkeletronPrime) {
                     HeadPrimeAI.MachineRebellion = true;
+                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
                     HeadPrimeAI.SetMachineRebellion(npc);
-                    head.machineRebellion_ByNPC = true;
+                    if (npc.CWR().NPCOverride is HeadPrimeAI head) {
+                        head.machineRebellion_ByNPC = true;
+                    }
                 }
-                if (npc.type == NPCID.Retinazer && npc.CWR().NPCOverride is RetinazerAI retinazer) {
+                if (npc.type == NPCID.Retinazer) {
                     RetinazerAI.MachineRebellion = true;
+                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
                     RetinazerAI.SetMachineRebellion(npc);
-                    retinazer.machineRebellion_ByNPC = true;
+                    if (npc.CWR().NPCOverride is RetinazerAI retinazer) {
+                        retinazer.machineRebellion_ByNPC = true;
+                    }
                 }
-                if (npc.type == NPCID.Spazmatism && npc.CWR().NPCOverride is SpazmatismAI spazmatism) {
+                if (npc.type == NPCID.Spazmatism) {
                     SpazmatismAI.MachineRebellion = true;
+                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
                     SpazmatismAI.SetMachineRebellion(npc);
-                    spazmatism.machineRebellion_ByNPC = true;
+                    if (npc.CWR().NPCOverride is SpazmatismAI spazmatism) {
+                        spazmatism.machineRebellion_ByNPC = true;
+                    }
                 }
-                if (npc.type == NPCID.TheDestroyer && npc.CWR().NPCOverride is DestroyerHeadAI destroyer) {
+                if (npc.type == NPCID.TheDestroyer) {
                     DestroyerHeadAI.MachineRebellion = true;
+                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
                     DestroyerHeadAI.SetMachineRebellion(npc);
-                    destroyer.machineRebellion_ByNPC = true;
+                    if (npc.CWR().NPCOverride is DestroyerHeadAI destroyer) {
+                        destroyer.machineRebellion_ByNPC = true;
+                        DestroyerHeadAI.SpawnBody(npc);
+                    }
                 }
             }
 

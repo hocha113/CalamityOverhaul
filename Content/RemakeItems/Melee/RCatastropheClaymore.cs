@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
         public override void SetDefaults(Item item) {
             item.UseSound = null;
+            item.useTime = 16;
             item.SetKnifeHeld<CatastropheClaymoreHeld>();
         }
     }
@@ -27,10 +28,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             drawTrailTopWidth = 60;
             distanceToOwner = -22;
             drawTrailBtommWidth = 0;
-            SwingData.baseSwingSpeed = 4f;
+            SwingData.baseSwingSpeed = 5f;
             Projectile.width = Projectile.height = 46;
             Length = 56;
-            ShootSpeed = 11;
+            autoSetShoot = true;
         }
 
         public override void MeleeEffect() {
@@ -46,8 +47,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             int type = ModContent.ProjectileType<CatastropheClaymoreSparkle>();
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, type
+            int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, type
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, Main.rand.Next(3));
+            Main.projectile[proj].extraUpdates = 2;
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
