@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void MeleeEffect() {
             if (Main.rand.NextBool(3)) {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PinkFairy);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PinkFairy);
             }
         }
 

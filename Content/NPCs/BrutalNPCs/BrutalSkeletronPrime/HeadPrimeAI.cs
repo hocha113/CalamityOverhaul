@@ -5,6 +5,7 @@ using CalamityMod.Particles;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
@@ -17,7 +18,6 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -135,14 +135,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            IItemDropRuleCondition condition = new DropInDeathMode();
-            LeadingConditionRule rule = new LeadingConditionRule(condition);
+            LeadingConditionRule rule = new LeadingConditionRule(new DropInDeathMode());
             rule.Add(ModContent.ItemType<CommandersChainsaw>(), 4);
             rule.Add(ModContent.ItemType<HyperionBarrage>(), 4);
             rule.Add(ModContent.ItemType<CommandersStaff>(), 4);
             rule.Add(ModContent.ItemType<CommandersClaw>(), 4);
             rule.Add(ModContent.ItemType<RaiderGun>(), 4);
             npcLoot.Add(rule);
+            LeadingConditionRule rule2 = new LeadingConditionRule(new DropInMachineRebellion());
+            rule2.Add(ModContent.ItemType<SoulofFrightEX>());
+            rule2.Add(ModContent.ItemType<SoulofMightEX>());
+            rule2.Add(ModContent.ItemType<SoulofSightEX>());
+            npcLoot.Add(rule2);
         }
 
         public override void BossHeadSlot(ref int index) {

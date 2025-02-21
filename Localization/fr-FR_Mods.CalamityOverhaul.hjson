@@ -837,6 +837,26 @@ Items: {
 		// DisplayName: Forged Lash EX
 		// Tooltip: ""
 	}
+
+	SoulofFrightEX: {
+		// DisplayName: Soulof Fright E X
+		// Tooltip: ""
+	}
+
+	SoulofMightEX: {
+		// DisplayName: Soulof Might E X
+		// Tooltip: ""
+	}
+
+	SoulofSightEX: {
+		// DisplayName: Soulof Sight E X
+		// Tooltip: ""
+	}
+
+	DestroyersBladeEX: {
+		// DisplayName: Destroyers Blade E X
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -10,6 +10,7 @@
         public const string Masking = "CalamityOverhaul/Assets/Masking/";
         public const string ColorBar = "CalamityOverhaul/Assets/ColorBar/";
         public const string Item = "CalamityOverhaul/Assets/Items/";
+        public const string Item_Material = "CalamityOverhaul/Assets/Items/Materials/";
         public const string Item_Magic = "CalamityOverhaul/Assets/Items/Magic/";
         public const string Item_Melee = "CalamityOverhaul/Assets/Items/Melee/";
         public const string Item_Ranged = "CalamityOverhaul/Assets/Items/Ranged/";

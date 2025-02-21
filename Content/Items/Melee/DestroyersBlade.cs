@@ -28,6 +28,27 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
+    internal class DestroyersBladeEX : ModItem
+    {
+        public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
+        public override void SetDefaults() {
+            Item.width = Item.height = 108;
+            Item.damage = 890;
+            Item.knockBack = 8;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.UseSound = null;
+            Item.useTime = Item.useAnimation = 14;
+            Item.DamageType = DamageClass.Melee;
+            Item.useTurn = true;
+            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 8, 60, 5);
+            Item.shoot = ModContent.ProjectileType<DestroyersBeam>();
+            Item.shootSpeed = 15;
+            Item.CWR().DeathModeItem = true;
+            Item.SetKnifeHeld<DestroyersBladeEXHeld>();
+        }
+    }
+
     internal class DestroyersBladeHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<DestroyersBlade>();
@@ -53,14 +74,33 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void Shoot() => OrigItemShoot();
+    }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+    internal class DestroyersBladeEXHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<DestroyersBladeEX>();
+        public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 112;
+            canDrawSlashTrail = false;
+            drawTrailCount = 34;
+            distanceToOwner = -20;
+            drawTrailTopWidth = 86;
+            ownerOrientationLock = true;
+            SwingData.starArg = 50;
+            SwingData.baseSwingSpeed = 4.65f;
+            Length = 124;
+            autoSetShoot = true;
         }
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            
+        public override bool PreInOwner() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 1.6f
+                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash: false);
+            return base.PreInOwner();
         }
+
+        public override void Shoot() => OrigItemShoot();
     }
 
     internal class DestroyersBeam : ModProjectile
