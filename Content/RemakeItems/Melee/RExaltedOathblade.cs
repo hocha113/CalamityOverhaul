@@ -16,7 +16,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RExaltedOathblade : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ExaltedOathblade>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<ExaltedOathbladeHeld>();
+        public override void SetDefaults(Item item) {
+            item.damage = 300;
+            item.SetKnifeHeld<ExaltedOathbladeHeld>();
+        }
     }
 
     internal class ExaltedOathbladeHeld : BaseKnife
@@ -40,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
-                , ModContent.ProjectileType<EXOathblade2>(), (int)(Projectile.damage * 2.55f)
+                , ModContent.ProjectileType<EXOathblade2>(), Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI);
         }
 
@@ -50,7 +53,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (hit.Crit) {
                 target.AddBuff(BuffID.ShadowFlame, 450);
                 target.AddBuff(BuffID.OnFire, 900);
-                Owner.ApplyDamageToNPC(target, Projectile.damage * 2, 0f, 0, false);
+                Owner.ApplyDamageToNPC(target, Projectile.damage, 0f, 0, false);
                 float firstDustScale = 1.7f;
                 float secondDustScale = 0.8f;
                 float thirdDustScale = 2f;

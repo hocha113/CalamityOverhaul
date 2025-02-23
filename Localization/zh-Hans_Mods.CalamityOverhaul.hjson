@@ -584,7 +584,7 @@ Items: {
 	}
 
 	WeaverGrievances: {
-		DisplayName: 怨念编织者
+		DisplayName: 纠缠之怨
 		Tooltip:
 			'''
 			释放大量怨灵之爪，在地狱、地牢环境中拥有特殊效果
