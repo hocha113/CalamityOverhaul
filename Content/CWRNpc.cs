@@ -222,6 +222,19 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override bool SpecialOnKill(NPC npc) {
+            if (npc.type == CWRLoad.AstrumDeusHead) {
+                // 啊，经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
+                // 真是不可思议，怎么这么多年过去了，原灾厄那个bug竟然还没修复？
+                // 写这个Boss的程序员脑袋肯定有问题，性能优化根本不在他们的词典里
+                // 一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
+                // DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
+                // 哇哦，n³复杂度，绝对是天才级别的优化
+                return false;
+            }
+            return base.SpecialOnKill(npc);
+        }
+
         public override bool PreKill(NPC npc) {
             if (ContagionOnHitNum > 0 && CreateHitPlayer != null) {
                 if (Main.myPlayer == CreateHitPlayer.whoAmI && CreateHitPlayer.ownedProjectileCounts[ModContent.ProjectileType<NurgleSoul>()] <= 13) {
