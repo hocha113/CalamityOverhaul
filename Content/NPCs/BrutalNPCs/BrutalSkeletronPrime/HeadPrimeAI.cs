@@ -31,8 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     {
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
-        public static bool MachineRebellion;
-        internal bool machineRebellion_ByNPC;
         public ThanatosSmokeParticleSet SmokeDrawer;
         private const int maxfindModes = 6000;
         private Player player;
@@ -158,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool CanLoad() => true;
 
         public override bool? CanOverride() {
-            if (MachineRebellion) {
+            if (CWRWorld.MachineRebellion) {
                 return true;
             }
             return base.CanOverride();
@@ -415,12 +413,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public static void SetMachineRebellion(NPC npc) {
-            npc.life = npc.lifeMax *= 22;
-            npc.defDefense = npc.defense = 40;
-            npc.defDamage = npc.damage *= 2;
-        }
-
         public override void SetProperty() {
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
@@ -428,11 +420,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
+            if (CWRWorld.MachineRebellion) {
+                npc.life = npc.lifeMax *= 22;
+                npc.defDefense = npc.defense = 40;
+                npc.defDamage = npc.damage *= 2;
+            }
         }
 
         public override bool AI() {
             SmokeDrawer.ParticleSpawnRate = 99999;
-            bossRush = BossRushEvent.BossRushActive || machineRebellion_ByNPC;
+            bossRush = BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
             death = CalamityWorld.death || bossRush;
             player = Main.player[npc.target];
             npc.defense = npc.defDefense;
@@ -537,15 +534,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (bossRush || NPC.IsMechQueenUp) {
                 return;
             }
-            foreach (var findN in Main.npc) {
-                if (findN.active && findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
+
+            foreach (var findN in Main.ActiveNPCs) {//在召唤前先清除所有已经有了的眼睛
+                if (findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
                     findN.active = false;
                 }
             }
-            SpazmatismAI.MachineRebellion = machineRebellion_ByNPC;
-            VaultUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
-            SpazmatismAI.MachineRebellion = machineRebellion_ByNPC;
-            VaultUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
+
+            if (!VaultUtils.isClient) {
+                VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Retinazer, false);
+                VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Spazmatism, false);
+            }
         }
 
         private void Debut() {
@@ -1303,9 +1302,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (VaultUtils.isClient) {
                 return;
             }
-            if (machineRebellion_ByNPC) {
-                PrimeArm.MachineRebellion = true;
-            }
+
             if (limit == 1 || limit == 0) {
                 primeCannon = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeCannon, npc.whoAmI);
                 Main.npc[primeCannon].ai[0] = -1f;
@@ -1336,7 +1333,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeLaser].ai[3] = 150f;
                 Main.npc[primeLaser].netUpdate = true;
             }
-            PrimeArm.MachineRebellion = false;
         }
         #endregion
 
@@ -1356,7 +1352,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
-            if (machineRebellion_ByNPC) {
+            if (CWRWorld.MachineRebellion) {
                 CWRWorld.MachineRebellionDowned = true;
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);

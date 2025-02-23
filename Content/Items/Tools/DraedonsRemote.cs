@@ -1,9 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,69 +11,23 @@ namespace CalamityOverhaul.Content.Items.Tools
             Projectile.width = Projectile.height = 64;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 180;
+            Projectile.timeLeft = 90;
         }
 
         public override void AI() {
             Projectile.velocity = new Vector2(0, -6);
-            Projectile.timeLeft = 2;
+        }
 
-            if (++Projectile.ai[0] == 90 && !VaultUtils.isClient) {
+        public override void OnKill(int timeLeft) {
+            CWRWorld.MachineRebellion = true;
+            //设置成1秒的锁定时间，因为服务器那边的生成是请求状态，大概会有一帧到两帧的广播延迟
+            //这导致服务器生成的时候标签已经被关闭了，所以需要一个时间锁
+            CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇搞的鬼
+            if (!VaultUtils.isClient) {
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.SkeletronPrime, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Retinazer, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Spazmatism, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.TheDestroyer, false);
-                SetMachineRebellion();
-                Projectile.Kill();
-                Projectile.netUpdate = true;
-            }
-        }
-
-        public static void SetMachineRebellion() {
-            foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type == NPCID.SkeletronPrime) {
-                    HeadPrimeAI.MachineRebellion = true;
-                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
-                    HeadPrimeAI.SetMachineRebellion(npc);
-                    if (npc.CWR().NPCOverride is HeadPrimeAI head) {
-                        head.machineRebellion_ByNPC = true;
-                    }
-                }
-                if (npc.type == NPCID.Retinazer) {
-                    RetinazerAI.MachineRebellion = true;
-                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
-                    RetinazerAI.SetMachineRebellion(npc);
-                    if (npc.CWR().NPCOverride is RetinazerAI retinazer) {
-                        retinazer.machineRebellion_ByNPC = true;
-                    }
-                }
-                if (npc.type == NPCID.Spazmatism) {
-                    SpazmatismAI.MachineRebellion = true;
-                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
-                    SpazmatismAI.SetMachineRebellion(npc);
-                    if (npc.CWR().NPCOverride is SpazmatismAI spazmatism) {
-                        spazmatism.machineRebellion_ByNPC = true;
-                    }
-                }
-                if (npc.type == NPCID.TheDestroyer) {
-                    DestroyerHeadAI.MachineRebellion = true;
-                    NPCOverride.SetDefaults(npc, npc.CWR(), npc.Calamity());
-                    DestroyerHeadAI.SetMachineRebellion(npc);
-                    if (npc.CWR().NPCOverride is DestroyerHeadAI destroyer) {
-                        destroyer.machineRebellion_ByNPC = true;
-                        DestroyerHeadAI.SpawnBody(npc);
-                    }
-                }
-            }
-
-            HeadPrimeAI.MachineRebellion = false;
-            SpazmatismAI.MachineRebellion = false;
-            DestroyerHeadAI.MachineRebellion = false;
-
-            if (VaultUtils.isServer) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.MachineRebellion);
-                modPacket.Send();
             }
         }
     }

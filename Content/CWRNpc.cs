@@ -54,8 +54,17 @@ namespace CalamityOverhaul.Content
         /// 携序之刃攻击计数
         /// </summary>
         public byte OrderbringerOnHitNum = 0;
+        /// <summary>
+        /// 阳炎命中次数
+        /// </summary>
         public bool TheEndSunOnHitNum;
+        /// <summary>
+        /// 鞭子击中次数
+        /// </summary>
         public byte WhipHitNum = 0;
+        /// <summary>
+        /// 鞭子击中类型
+        /// </summary>
         public byte WhipHitType = 0;
         /// <summary>
         /// 如果为<see langword="true"/>，将停止该NPC的大部分活动以模拟冻结效果

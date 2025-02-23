@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
-        internal static bool MachineRebellion;
         internal static Asset<Texture2D> Body_Stingless;
         internal static Asset<Texture2D> Body;
         internal static Asset<Texture2D> Body_Glow;
@@ -122,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool? CanOverride() {
-            if (MachineRebellion) {
+            if (CWRWorld.MachineRebellion) {
                 return true;
             }
             return base.CanOverride();

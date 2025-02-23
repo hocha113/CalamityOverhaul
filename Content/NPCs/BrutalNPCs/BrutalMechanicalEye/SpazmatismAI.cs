@@ -28,8 +28,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     {
         private delegate void TwinsBigProgressBarDrawDelegate(TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch);
         public override int TargetID => NPCID.Spazmatism;
-        public static bool MachineRebellion;
-        internal bool machineRebellion_ByNPC;
         protected Player player;
         protected bool accompany;
         protected int frameIndex;
@@ -78,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public override bool? CanOverride() {
-            if (MachineRebellion) {
+            if (CWRWorld.MachineRebellion) {
                 return true;
             }
             return base.CanOverride();
@@ -148,6 +146,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
+            }
+
+            if (CWRWorld.MachineRebellion) {
+                npc.life = npc.lifeMax *= 22;
+                npc.defDefense = npc.defense = 40;
+                npc.defDamage = npc.damage *= 2;
             }
         }
 

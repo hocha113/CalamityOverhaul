@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
-using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System.IO;
@@ -17,7 +16,6 @@ namespace CalamityOverhaul
         ModifiIntercept_InGame,
         ModifiIntercept_EnterWorld_Request,
         ModifiIntercept_EnterWorld_ToClient,
-        MachineRebellion,
     }
 
     public class CWRNetWork : ICWRLoader
@@ -45,9 +43,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ModifiIntercept_EnterWorld_ToClient) {
                 ItemRebuildLoader.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.MachineRebellion) {
-                DraedonsRemoteSpawn.SetMachineRebellion();
             }
         }
     }

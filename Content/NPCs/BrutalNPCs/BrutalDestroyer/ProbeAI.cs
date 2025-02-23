@@ -9,6 +9,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class ProbeAI : NPCOverride
     {
         public override int TargetID => NPCID.Probe;
+        public override bool? CanOverride() {
+            if (CWRWorld.MachineRebellion) {
+                return true;
+            }
+            return base.CanOverride();
+        }
         public override bool AI() => true;
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {

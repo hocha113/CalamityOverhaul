@@ -20,17 +20,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal Player player;
         internal int frame;
         internal bool dontAttack;
-        internal static bool MachineRebellion;
         public sealed override bool? CanOverride() {
-            if (MachineRebellion) {
+            if (CWRWorld.MachineRebellion) {
                 return true;
             }
             return base.CanOverride();
         }
 
         public sealed override void SetProperty() {
-            if (MachineRebellion) {
-                npc.life = npc.lifeMax *= 10;
+            if (CWRWorld.MachineRebellion) {
+                npc.life = npc.lifeMax *= 20;
                 npc.damage = npc.defDamage *= 2;
             }
         }

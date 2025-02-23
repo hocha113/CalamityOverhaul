@@ -18,8 +18,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class DestroyerHeadAI : NPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.TheDestroyer;
-        public static bool MachineRebellion;
-        internal bool machineRebellion_ByNPC;
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
         private static int iconIndex;
@@ -49,10 +47,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.defDamage = npc.damage *= 2;
         }
 
-        public override void SetProperty() { }
+        public override void SetProperty() {
+            if (CWRWorld.MachineRebellion) {
+                npc.life = npc.lifeMax *= 22;
+                npc.defDefense = npc.defense = 40;
+                npc.defDamage = npc.damage *= 2;
+            }
+        }
 
         public override bool? CanOverride() {
-            if (MachineRebellion) {
+            if (CWRWorld.MachineRebellion) {
                 return true;
             }
             return base.CanOverride();
@@ -91,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             HandleMouth();
 
-            if (machineRebellion_ByNPC) {
+            if (CWRWorld.MachineRebellion) {
                 MachineRebellionAI();
                 return false;
             }
@@ -100,8 +104,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         internal static void SpawnBody(NPC npc) {
-            DestroyerBodyAI.MachineRebellion = true;
-
             // 生成毁灭者身体的多个部分
             if (!VaultUtils.isClient) {
                 int index = npc.whoAmI;
@@ -109,6 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
                         , i == 87 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody, 0, 0, index);
                     Main.npc[index].realLife = npc.whoAmI;
+                    Main.npc[index].netUpdate = true;
                 }
             }
 
@@ -117,8 +120,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     SetDefaults(body, body.CWR(), body.Calamity());
                 }
             }
-
-            DestroyerBodyAI.MachineRebellion = false;
         }
 
         private void MachineRebellionAI() {
@@ -132,7 +133,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             // 初始化时进行冲刺操作
             if (npc.ai[0] == 0) {
                 npc.ai[0] = 1;
-                
+                SpawnBody(npc);
             }
 
             // 设置npc的朝向
