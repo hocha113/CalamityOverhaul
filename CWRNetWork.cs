@@ -36,13 +36,13 @@ namespace CalamityOverhaul
                 NPCOverride.OtherNetWorkReceiveHander(reader);
             }
             else if (type == CWRMessageType.ModifiIntercept_InGame) {
-                ItemRebuildLoader.NetModifiIntercept_InGame(reader, whoAmI);
+                HandlerCanOverride.NetModifiIntercept_InGame(reader, whoAmI);
             }
             else if (type == CWRMessageType.ModifiIntercept_EnterWorld_Request) {
-                ItemRebuildLoader.NetModifiInterceptEnterWorld_Server(reader, whoAmI);
+                HandlerCanOverride.NetModifiInterceptEnterWorld_Server(reader, whoAmI);
             }
             else if (type == CWRMessageType.ModifiIntercept_EnterWorld_ToClient) {
-                ItemRebuildLoader.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
+                HandlerCanOverride.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
             }
         }
     }

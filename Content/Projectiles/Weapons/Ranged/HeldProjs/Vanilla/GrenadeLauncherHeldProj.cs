@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RepeatedCartridgeChange = true;
             Recoil = 1.6f;
             RangeOfStress = 5;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 7;

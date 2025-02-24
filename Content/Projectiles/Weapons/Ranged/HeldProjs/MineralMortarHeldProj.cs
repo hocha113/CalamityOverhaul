@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private bool oldOnFire;
         private int chargeIndex;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 15;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 5;

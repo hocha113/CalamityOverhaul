@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetRangedProperty() {
             Recoil = 1.8f;
             HandIdleDistanceX = 20;
-            kreloadMaxTime = 80;
+            KreloadMaxTime = 80;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 12;
             RecoilOffsetRecoverValue = 0.9f;

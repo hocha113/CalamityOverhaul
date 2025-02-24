@@ -1329,11 +1329,6 @@ Configs: {
 				Preset 3: Top Center
 				'''
 		}
-
-		ModifiIntercept: {
-			Label: Modifi Intercept
-			Tooltip: ""
-		}
 	}
 }
 
@@ -5499,6 +5494,15 @@ RemakeItems: {
 			The Nebula Beam sweeps slightly while firing.  
 			The Vortex Beam inflicts an electrified debuff.  
 			The Stardust Beam generates homing meteors upon hitting an enemy.
+			'''
+	}
+
+	RShroomiteMask: {
+		DisplayName: 蘑菇矿面具
+		Tooltip:
+			'''
+			枪的伤害增加15%
+			远程暴击率增加5%
 			'''
 	}
 }

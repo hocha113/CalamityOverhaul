@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
             RangeOfStress = 25;
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             HandFireDistanceX = 25;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -2;

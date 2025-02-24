@@ -5464,4 +5464,13 @@ RemakeItems: {
 			The Stardust Beam generates homing meteors upon hitting an enemy.
 			''' */
 	}
+
+	RShroomiteMask: {
+		// DisplayName: 蘑菇矿面具
+		/* Tooltip:
+			'''
+			枪的伤害增加15%
+			远程暴击率增加5%
+			''' */
+	}
 }

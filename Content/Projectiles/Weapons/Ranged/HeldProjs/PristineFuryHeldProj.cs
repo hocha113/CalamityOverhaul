@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0.5f;
             RangeOfStress = 28;
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
             CanRightClick = true;

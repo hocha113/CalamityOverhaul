@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             Onehanded = InOwner_HandState_AlwaysSetInFireRoding = true;
-            kreloadMaxTime = 45;
+            KreloadMaxTime = 45;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

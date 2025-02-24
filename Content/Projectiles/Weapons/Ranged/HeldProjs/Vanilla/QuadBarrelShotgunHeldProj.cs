@@ -26,13 +26,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 2.8f;
             RangeOfStress = 10;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 20;
+            KreloadMaxTime = 20;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f, Pitch = -0.3f };
             LoadingAA_Shotgun.pumpCoolingValue = 15;
             if (!MagazineSystem) {
-                FireTime += kreloadMaxTime;
+                FireTime += KreloadMaxTime;
             }
         }
 

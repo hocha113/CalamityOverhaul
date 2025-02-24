@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SuperStarCannon].Value;
         public override int TargetID => ItemID.SuperStarCannon;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             FireTime = 15;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;

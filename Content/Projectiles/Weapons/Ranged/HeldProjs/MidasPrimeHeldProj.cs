@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private bool oldRsD;
         private bool nextShotGoldCoin = false;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 22;
             HandIdleDistanceX = 24;
             HandIdleDistanceY = 4;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Onehanded = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
             if (Type == ModContent.ProjectileType<CrackshotColtHeld>()) {
-                kreloadMaxTime = 50;
+                KreloadMaxTime = 50;
                 FireTime = 24;
                 HandIdleDistanceX = 22;
                 HandIdleDistanceY = 2;

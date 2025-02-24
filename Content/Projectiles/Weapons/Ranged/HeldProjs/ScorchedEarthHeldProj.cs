@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
         public override int TargetID => ModContent.ItemType<ScorchedEarth>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 45;
             HandIdleDistanceX = 10;
             HandIdleDistanceY = -5;

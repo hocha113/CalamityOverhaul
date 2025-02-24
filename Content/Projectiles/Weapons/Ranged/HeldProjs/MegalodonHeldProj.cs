@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Megalodon";
         public override int TargetID => ModContent.ItemType<Megalodon>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 4;
             HandIdleDistanceX = 22;
             HandIdleDistanceY = 5;

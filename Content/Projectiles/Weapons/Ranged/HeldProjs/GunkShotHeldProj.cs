@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<GunkShot>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 18;
+            KreloadMaxTime = 18;
             FireTime = 30;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Shotgun.gunBodyX = 3;
             LoadingAA_Shotgun.gunBodyY = 25;
             if (!MagazineSystem) {
-                FireTime += kreloadMaxTime;
+                FireTime += KreloadMaxTime;
             }
         }
 

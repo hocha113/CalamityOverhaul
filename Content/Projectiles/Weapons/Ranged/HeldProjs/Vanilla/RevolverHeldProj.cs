@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Revolver].Value;
         public override int TargetID => ItemID.Revolver;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 30;
+            KreloadMaxTime = 30;
             FireTime = 8;
             HandIdleDistanceX = 18;
             HandIdleDistanceY = 3;

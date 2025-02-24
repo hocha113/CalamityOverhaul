@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.FlareGun].Value;
         public override int TargetID => ItemID.FlareGun;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 32;
+            KreloadMaxTime = 32;
             ShootPosToMouLengValue = 10;
             ShootPosNorlLengValue = -6;
             HandIdleDistanceX = 17;

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shredder";
         public override int TargetID => ModContent.ItemType<Shredder>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 5;
             HandIdleDistanceX = 24;
             HandIdleDistanceY = 4;

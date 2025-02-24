@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.OnyxBlaster;
         public override void SetRangedProperty() {
             FireTime = 18;
-            kreloadMaxTime = 18;
+            KreloadMaxTime = 18;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandIdleDistanceX = 18;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             if (!MagazineSystem) {
-                FireTime += kreloadMaxTime;
+                FireTime += KreloadMaxTime;
             }
         }
 

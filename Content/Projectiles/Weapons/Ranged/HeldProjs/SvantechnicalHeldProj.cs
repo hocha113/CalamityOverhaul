@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Svantechnical>();
         int useAnimation;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 1;
             HandIdleDistanceX = 24;
             HandIdleDistanceY = 4;

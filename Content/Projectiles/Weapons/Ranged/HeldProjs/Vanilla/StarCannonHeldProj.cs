@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.StarCannon;
         public override void SetRangedProperty() {
             ArmRotSengsBackNoFireOffset = -30;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             FireTime = 30;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             FireTime = 50;
             Recoil = 2.2f;
-            kreloadMaxTime = 25;
+            KreloadMaxTime = 25;
             RangeOfStress = 25;
             GunPressure = 0.3f;
             ControlForce = 0.05f;

@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public static Dictionary<int, ItemOverride> ByID { get; internal set; } = [];
         /// <summary>
-        /// 是否受到修改实例的影响，在<see cref="CWRServerConfig.Instance.ModifiIntercept"/>启用后生效
-        /// </summary>
-        public static Dictionary<int, bool> CanOverrideByID { get; internal set; } = [];
-        /// <summary>
         /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
         /// </summary>
         public int SetReadonlyTargetID;
@@ -37,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 是否是一个关于原版物品的重制节点
         /// </summary>
-        public virtual bool IsVanilla => false;
+        public virtual bool IsVanilla => TargetID < ItemID.Count;
         /// <summary>
         /// 是否参与配方替换，默认为<see langword="true"/>，如果<see cref="IsVanilla"/>为<see langword="true"/>，那么该属性自动返回<see langword="false"/>
         /// </summary>
@@ -109,7 +105,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             ByID.Add(SetReadonlyTargetID, this);
-            CanOverrideByID.Add(SetReadonlyTargetID, true);
+            HandlerCanOverride.CanOverrideByID.Add(SetReadonlyTargetID, true);
         }
 
         /// <summary>
@@ -131,8 +127,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             bool? canOverride = itemOverride.CanOverride();
-            if (CWRServerConfig.Instance.ModifiIntercept && !canOverride.HasValue) {
-                canOverride = CanOverrideByID[id];
+            if (HandlerCanOverride.CanLoad && !canOverride.HasValue) {
+                canOverride = HandlerCanOverride.CanOverrideByID[id];
             }
 
             return canOverride ?? true;  // 如果CanOverride返回null，默认返回true
@@ -807,6 +803,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="player"></param>
         /// <param name="hideVisual"></param>
         public virtual void UpdateAccessory(Item item, Player player, bool hideVisual) {
+
+        }
+        /// <summary>
+        /// 用于设置盔甲套装效果，这个钩子只在头盔上生效
+        /// </summary>
+        public virtual void UpdateArmorByHead(Player player, Item body, Item legs) {
+
+        }
+        /// <summary>
+        /// 用于设置装备效果，比如伤害加成
+        /// </summary>
+        public virtual void UpdateEquip(Item item, Player player) {
 
         }
         /// <summary>

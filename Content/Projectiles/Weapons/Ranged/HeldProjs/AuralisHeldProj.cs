@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Auralis>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 32;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;

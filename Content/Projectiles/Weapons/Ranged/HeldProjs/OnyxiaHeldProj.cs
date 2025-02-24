@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private const int maxfireD = 15;
         private const int minfireD = 6;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 150;
+            KreloadMaxTime = 150;
             FireTime = maxfireD;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Leviatitan";
         public override int TargetID => ModContent.ItemType<Leviatitan>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 100;
+            KreloadMaxTime = 100;
             FireTime = 9;
             ControlForce = 0.1f;
             GunPressure = 0.2f;

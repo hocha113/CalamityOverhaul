@@ -39,6 +39,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float PressureIncrease;
         /// <summary>
+        /// 装弹时间缩放
+        /// </summary>
+        public float KreloadTimeIncrease;
+        /// <summary>
         /// 摄像头位置额外矫正值
         /// </summary>
         public Vector2 OffsetScreenPos;
@@ -194,6 +198,7 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
+            KreloadTimeIncrease = 1;
             HeldStyle = -1;
             OnHit = false;
             InFoodStallChair = false;
@@ -271,7 +276,7 @@ namespace CalamityOverhaul.Content
 
             SpearOfLonginus.ZenithWorldAsset();
 
-            ItemRebuildLoader.ModifiIntercept_OnEnterWorld();
+            HandlerCanOverride.ModifiIntercept_OnEnterWorld();
 
             //初始化位置信息
             oldPlayerPositionChange = Player.position;

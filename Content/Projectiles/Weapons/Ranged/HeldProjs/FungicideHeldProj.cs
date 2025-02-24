@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 30;
+            KreloadMaxTime = 30;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

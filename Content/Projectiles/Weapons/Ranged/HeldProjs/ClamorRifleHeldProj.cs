@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClamorRifle";
         public override int TargetID => ModContent.ItemType<ClamorRifle>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 50;
+            KreloadMaxTime = 50;
             FireTime = 14;
             HandIdleDistanceX = 24;
             HandIdleDistanceY = 4;

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Voidragon>();
         private int chargeIndex;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 6;
             HandIdleDistanceX = 35;
             HandIdleDistanceY = 5;

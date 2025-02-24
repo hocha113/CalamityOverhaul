@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.TacticalShotgun;
         public override void SetRangedProperty() {
             FireTime = 20;
-            kreloadMaxTime = 25;
+            KreloadMaxTime = 25;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -4;
             HandIdleDistanceX = 17;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilRetroForceMagnitude = 7;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             if (!MagazineSystem) {
-                FireTime += kreloadMaxTime;
+                FireTime += KreloadMaxTime;
             }
         }
 

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<CoralCannon>();
         public override void SetRangedProperty() {
             HandIdleDistanceX = 20;
-            kreloadMaxTime = 80;
+            KreloadMaxTime = 80;
             Recoil = 2.8f;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             EnableRecoilRetroEffect = true;

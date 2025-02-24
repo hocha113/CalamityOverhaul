@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             EjectCasingProjSize = 2;
             Recoil = 3f;
             RangeOfStress = 10;
-            kreloadMaxTime = 80;
+            KreloadMaxTime = 80;
             LoadingAA_None.Roting = -30;
             LoadingAA_None.gunBodyX = 3;
             LoadingAA_None.gunBodyY = -3;

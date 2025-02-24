@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
         }
 
         public override bool KreLoadFulfill() {

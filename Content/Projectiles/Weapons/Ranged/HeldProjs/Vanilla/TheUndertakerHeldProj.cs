@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.TheUndertaker].Value;
         public override int TargetID => ItemID.TheUndertaker;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 35;
+            KreloadMaxTime = 35;
             FireTime = 14;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -3;

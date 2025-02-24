@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilOffsetRecoverValue = 0.9f;
             Recoil = 4.8f;
             RangeOfStress = 48;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             EjectCasingProjSize = 2;
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;

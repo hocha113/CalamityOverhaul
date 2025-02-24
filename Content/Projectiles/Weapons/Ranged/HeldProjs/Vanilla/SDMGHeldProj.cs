@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.8f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 45;
+            KreloadMaxTime = 45;
             SpwanGunDustMngsData.dustID1 = DustID.PinkStarfish;
             SpwanGunDustMngsData.dustID2 = DustID.PinkStarfish;
             SpwanGunDustMngsData.dustID3 = DustID.PinkStarfish;

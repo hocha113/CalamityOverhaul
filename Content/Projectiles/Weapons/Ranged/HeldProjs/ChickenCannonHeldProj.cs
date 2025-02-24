@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<ChickenCannon>();
         private bool spanSound = false;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 120;
+            KreloadMaxTime = 120;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
             HandFireDistanceX = 25;

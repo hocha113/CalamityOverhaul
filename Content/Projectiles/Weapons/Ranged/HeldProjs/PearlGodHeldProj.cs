@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PearlGod";
         public override int TargetID => ModContent.ItemType<PearlGod>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 15;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;

@@ -76,8 +76,12 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 装弹所需要的时间，默认为60
         /// </summary>
-        protected int kreloadMaxTime {
-            get => _kreloadMaxTime + extraKreloadMaxTime;
+        protected int KreloadMaxTime {
+            get {
+                float newTime = _kreloadMaxTime + extraKreloadMaxTime;
+                newTime *= ModOwner.KreloadTimeIncrease;
+                return (int)MathHelper.Max(newTime, 4);
+            }
             set => _kreloadMaxTime = value;
         }
         /// <summary>
@@ -326,7 +330,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.hoverInMainPage
                 && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
-                kreloadTimeValue = kreloadMaxTime;
+                kreloadTimeValue = KreloadMaxTime;
             }
         }
 
@@ -391,8 +395,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     Projectile.Center = GetGunBodyPos();
                 }
 
-                int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
-                int value2 = (int)(kreloadMaxTime * LoadingAA_Handgun.level3);
+                int value1 = (int)(KreloadMaxTime * LoadingAA_Handgun.level1);
+                int value2 = (int)(KreloadMaxTime * LoadingAA_Handgun.level3);
                 if (kreloadTimeValue >= value1) {
                     ArmRotSengsFront += (kreloadTimeValue - value1) * CWRUtils.atoR * 6 * SafeGravDir;
                 }
@@ -429,7 +433,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                     else {
                         OnKreload = true;
-                        kreloadTimeValue = kreloadMaxTime;
+                        kreloadTimeValue = KreloadMaxTime;
                         extraKreloadMaxTime = 0;
                     }
                 }
@@ -564,7 +568,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     AmmoState = Owner.GetAmmoState();
                     if (AmmoState.CurrentAmount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
                         OnKreload = true;
-                        kreloadTimeValue = kreloadMaxTime;
+                        kreloadTimeValue = KreloadMaxTime;
                         extraKreloadMaxTime = 0;
                     }
                 }
@@ -584,19 +588,19 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 }
                 kreloadTimeValue--;
 
-                bool result = PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                bool result = PreReloadEffects(kreloadTimeValue, KreloadMaxTime);
                 if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
-                    bool? result5 = Get_LoadingAmmoAnimation_PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                    bool? result5 = Get_LoadingAmmoAnimation_PreReloadEffects(kreloadTimeValue, KreloadMaxTime);
                     if (result5.HasValue) {
                         result = result5.Value;
                     }
                 }
 
                 if (result) {
-                    if (kreloadTimeValue == kreloadMaxTime - 1) {
+                    if (kreloadTimeValue == KreloadMaxTime - 1) {
                         KreloadSoundCaseEjection();
                     }
-                    if (kreloadTimeValue == kreloadMaxTime / 2) {
+                    if (kreloadTimeValue == KreloadMaxTime / 2) {
                         KreloadSoundloadTheRounds();
                     }
                 }

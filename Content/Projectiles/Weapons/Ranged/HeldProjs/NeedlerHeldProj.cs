@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Needler";
         public override int TargetID => ModContent.ItemType<Needler>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 12;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 5;

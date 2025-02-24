@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.Shotgun;
         public override void SetRangedProperty() {
             FireTime = 20;
-            kreloadMaxTime = 20;
+            KreloadMaxTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -4;
             HandIdleDistanceX = 17;

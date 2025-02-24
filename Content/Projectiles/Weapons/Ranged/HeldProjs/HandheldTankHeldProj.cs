@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<HandheldTank>();
         public override void SetRangedProperty() {
             FireTime = 30;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandIdleDistanceX = 60;

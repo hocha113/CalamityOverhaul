@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<AuroraBlazer>();
         private int soundPma;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
             HandFireDistanceX = 25;

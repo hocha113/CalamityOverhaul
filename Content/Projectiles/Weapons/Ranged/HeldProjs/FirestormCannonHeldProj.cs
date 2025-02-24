@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FirestormCannon";
         public override int TargetID => ModContent.ItemType<FirestormCannon>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 8;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 5;

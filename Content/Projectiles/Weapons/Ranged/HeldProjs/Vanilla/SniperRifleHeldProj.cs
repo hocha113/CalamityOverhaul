@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0f;
             Recoil = 3f;
             RangeOfStress = 48;
-            kreloadMaxTime = 120;
+            KreloadMaxTime = 120;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.Roting = -15;
             LoadingAA_Handgun.clipOut = CWRSound.Gun_Musket_ClipOut with { Volume = 0.65f };

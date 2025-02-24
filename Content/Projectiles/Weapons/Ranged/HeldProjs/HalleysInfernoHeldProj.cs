@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             LoadingAA_None.Roting = 30;

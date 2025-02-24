@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ThePack";
         public override int TargetID => ModContent.ItemType<ThePack>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 130;
+            KreloadMaxTime = 130;
             FireTime = 38;
             HandIdleDistanceX = 12;
             HandIdleDistanceY = 5;

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
             Recoil = 0f;
-            kreloadMaxTime = 60;
+            KreloadMaxTime = 60;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.22f;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 45;
+            KreloadMaxTime = 45;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ProjectileID.BulletHighVelocity;
             SpwanGunDustMngsData.splNum = 0.3f;

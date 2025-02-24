@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AntiMaterielRifle";
         public override int TargetID => ModContent.ItemType<AntiMaterielRifle>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 120;
+            KreloadMaxTime = 120;
             FireTime = 60;
             ControlForce = 0.04f;
             GunPressure = 0.25f;

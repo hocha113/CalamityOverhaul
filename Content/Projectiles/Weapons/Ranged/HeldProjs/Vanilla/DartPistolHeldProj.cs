@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Onehanded = true;
             RepeatedCartridgeChange = true;
             CanCreateCaseEjection = CanCreateSpawnGunDust = false;
-            kreloadMaxTime = 50;
+            KreloadMaxTime = 50;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.gunBodyY = -8;
             if (!MagazineSystem) {

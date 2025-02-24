@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
         public override int TargetID => ModContent.ItemType<ClockGatlignum>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 100;
+            KreloadMaxTime = 100;
             FireTime = 10;
             HandIdleDistanceX = 20;
             HandIdleDistanceY = 0;

@@ -1316,11 +1316,6 @@ Configs: {
 				预设3:居高
 				'''
 		}
-
-		ModifiIntercept: {
-			Label: 拦截修改[c/06e33f:(开发者选项)]
-			Tooltip: ""
-		}
 	}
 }
 
@@ -5468,5 +5463,14 @@ RemakeItems: {
 			星旋射线会造成带电减益
 			星尘射线在击中敌人敌怪时会生成追踪流星
 			'''
+	}
+
+	RShroomiteMask: {
+		// DisplayName: 蘑菇矿面具
+		/* Tooltip:
+			'''
+			枪的伤害增加15%
+			远程暴击率增加5%
+			''' */
 	}
 }

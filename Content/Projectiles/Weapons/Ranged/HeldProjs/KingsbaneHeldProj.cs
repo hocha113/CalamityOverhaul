@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private int thisTime;
         private bool thisOnFire;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 110;
+            KreloadMaxTime = 110;
             FireTime = 1;
             HandIdleDistanceX = 40;
             HandIdleDistanceY = 5;

@@ -21,12 +21,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 0.8f;
             RangeOfStress = 28;
-            kreloadMaxTime = 20;
+            KreloadMaxTime = 20;
             ArmRotSengsBackNoFireOffset = 30;
             RepeatedCartridgeChange = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             if (!MagazineSystem) {
-                FireTime += kreloadMaxTime;
+                FireTime += KreloadMaxTime;
             }
         }
 

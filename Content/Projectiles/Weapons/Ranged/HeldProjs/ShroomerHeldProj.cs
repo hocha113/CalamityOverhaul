@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shroomer";
         public override int TargetID => ModContent.ItemType<Shroomer>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 20;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = 5;

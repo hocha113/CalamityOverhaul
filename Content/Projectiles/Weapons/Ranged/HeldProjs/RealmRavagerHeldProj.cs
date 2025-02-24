@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RealmRavager";
         public override int TargetID => ModContent.ItemType<RealmRavager>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 122;
+            KreloadMaxTime = 122;
             FireTime = 20;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;

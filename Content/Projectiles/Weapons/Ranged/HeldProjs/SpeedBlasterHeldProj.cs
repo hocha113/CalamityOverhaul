@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public float FireRatePowerup = 1.15f;
         public float ColorValue = 0f;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            KreloadMaxTime = 90;
             FireTime = 15;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
