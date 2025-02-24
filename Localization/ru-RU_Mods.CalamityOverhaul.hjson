@@ -5584,6 +5584,6 @@ RemakeItems: {
 	// ModifyOrichalcumHelmet.UpdateArmorText: During the reloading process, taking damage will cause a large number of petals to scatter and splatter.
 	// ModifyPalladiumHelmet.UpdateArmorText: During the reloading process, health will be restored more quickly.
 	// ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
-
-	// NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer
 }
+
+NPCs.DestroyerDrawHeadIconNPC.DisplayName: Уничтожитель
