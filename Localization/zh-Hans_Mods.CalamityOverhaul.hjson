@@ -11,15 +11,6 @@ Items: {
 			'''
 	}
 
-	ElementalShivEcType: {
-		DisplayName: 元素短剑
-		Tooltip:
-			'''
-
-			"很遗憾，即使结合了宇宙的能量，它也没有变长"
-			'''
-	}
-
 	TheRelicLuxor: {
 		DisplayName: 卢克索的圣物
 		Tooltip:
@@ -5467,12 +5458,10 @@ RemakeItems: {
 			'''
 	}
 
-	RShroomiteMask: {
-		// DisplayName: 蘑菇矿面具
-		/* Tooltip:
-			'''
-			枪的伤害增加15%
-			远程暴击率增加5%
-			''' */
-	}
+	ModifyShroomiteMask.UpdateArmorText: 在换弹过程中将生成滞留的蘑菇弹幕
+	ModifyMythrilHood.UpdateArmorText: 在换弹过程中如果受到伤害将生成大量秘银火花
+	ModifyCobaltMask.UpdateArmorText: 在换弹过程中提高15%移动速度
+	ModifyOrichalcumHelmet.UpdateArmorText: 在换弹过程中如果受到伤害会四散溅射出大量花瓣
+	ModifyPalladiumHelmet.UpdateArmorText: 在换弹过程中如果会更快的恢复生命
+	ModifyChlorophyteHelmet.UpdateArmorText: 在换弹过程中将生成滞留的孢子云
 }

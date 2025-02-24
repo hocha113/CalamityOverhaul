@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -285,11 +286,13 @@ namespace CalamityOverhaul.Content
 
         public override void SaveData(TagCompound tag) {
             OverhaulTheBibleUI.Instance?.SaveData(tag);
+            CanOverrideByItemUI.Instance?.SaveData(tag);
             SupertableUI.Instance?.SaveData(tag);
         }
 
         public override void LoadData(TagCompound tag) {
             OverhaulTheBibleUI.Instance?.LoadData(tag);
+            CanOverrideByItemUI.Instance?.LoadData(tag);
             SupertableUI.Instance?.LoadData(tag);
         }
 

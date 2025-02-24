@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
@@ -137,6 +138,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
     internal class CanOverrideByItemUI : UIHandle
     {
+        internal static CanOverrideByItemUI Instance => UIHandleLoader.GetUIHandleOfType<CanOverrideByItemUI>();
         public override bool Active => HandlerCanOverride.CanLoad && ItemOverride.ByID.ContainsKey(player.GetItem().type);
         public bool onDrag;
         public Vector2 dragOffsetPos;
@@ -167,6 +169,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 if (keyRightPressState == KeyPressState.Released) {
                     onDrag = false;
                 }
+            }
+        }
+        public void SaveData(TagCompound tag) {
+            tag["CanOverrideByItemUI_DrawPos_X"] = DrawPosition.X;
+            tag["CanOverrideByItemUI_DrawPos_Y"] = DrawPosition.Y;
+        }
+
+        public void LoadData(TagCompound tag) {
+            if (tag.TryGet("CanOverrideByItemUI_DrawPos_X", out float x)) {
+                DrawPosition.X = x;
+            }
+            else {
+                DrawPosition.X = 500;
+            }
+
+            if (tag.TryGet("CanOverrideByItemUI_DrawPos_Y", out float y)) {
+                DrawPosition.Y = y;
+            }
+            else {
+                DrawPosition.Y = 300;
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {

@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <br>直观来讲，一个负责改变UI上显示的名字(OnAffixNameHook)，一个负责改变逻辑数据，使其在搜索框之类的功能中能够被以新名字检索到(OnAffixNameHook)</br> 
         /// </summary>
         public string On_Name_Get_Hook(On_GetItemName_get_Delegate orig, Item item) {
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
+            if (TryFetchByID(item.type, out ItemOverride ritem) && ritem.CanLoadLocalization) {
                 return ritem.DisplayName.Value;
             }
             return orig.Invoke(item);
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public string OnAffixNameHook(On_GetItemName_get_Delegate orig, Item item) {
             bool onOverd = false;
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
+            if (TryFetchByID(item.type, out ItemOverride ritem) && ritem.CanLoadLocalization) {
                 item.SetNameOverride(ritem.DisplayName.Value);
                 onOverd = true;
             }

@@ -565,9 +565,8 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (inRItemIndsDict) {
-                string path = $"Mods.CalamityOverhaul.RemakeItems.{ItemOverride.ByID[item.type].Name}.Tooltip";
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, Language.GetText(path));
+            if (inRItemIndsDict && ItemOverride.ByID[item.type].CanLoadLocalization) {
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, ItemOverride.ByID[item.type].Tooltip);
             }
 
             if (item.CWR().DeathModeItem) {

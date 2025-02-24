@@ -11,11 +11,6 @@ Items: {
 			'''
 	}
 
-	ElementalShivEcType: {
-		DisplayName: Dague Élémentaire
-		Tooltip: '''"Malheureusement, même en combinant l'énergie cosmique, elle n'a pas grandi"'''
-	}
-
 	TheRelicLuxor: {
 		DisplayName: Relique de Luxor
 		Tooltip:
@@ -5415,12 +5410,10 @@ RemakeItems: {
 			''' */
 	}
 
-	RShroomiteMask: {
-		// DisplayName: 蘑菇矿面具
-		/* Tooltip:
-			'''
-			枪的伤害增加15%
-			远程暴击率增加5%
-			''' */
-	}
+	// ModifyShroomiteMask.UpdateArmorText: A lingering mushroom barrage is generated during reloading
+	// ModifyMythrilHood.UpdateArmorText: During the reloading process, taking damage will release a large number of Mythril Sparks.
+	// ModifyCobaltMask.UpdateArmorText: During the reloading process, 15% increased movement speed.
+	// ModifyOrichalcumHelmet.UpdateArmorText: During the reloading process, taking damage will cause a large number of petals to scatter and splatter.
+	// ModifyPalladiumHelmet.UpdateArmorText: During the reloading process, health will be restored more quickly.
+	// ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
 }

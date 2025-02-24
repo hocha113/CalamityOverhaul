@@ -208,8 +208,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧
                 Owner.GivePlayerImmuneState(30);
-                //设置时期对应的升龙冷却
-                //Owner.CWR().RisingDragonCoolDownTime = MurasamaEcType.GetOnRDCD;
 
                 Vector2 ver = target.Center.To(Owner.Center).UnitVector();
 
