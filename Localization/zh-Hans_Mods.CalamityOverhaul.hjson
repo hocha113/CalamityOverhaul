@@ -850,6 +850,11 @@ Items: {
 		// DisplayName: Destroyers Blade E X
 		// Tooltip: ""
 	}
+
+	ThermalGenerator: {
+		DisplayName: 火力发电机
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1329,6 +1334,11 @@ Buffs: {
 	DestroyerSummonBuff: {
 		DisplayName: 毁灭者
 		Description: 迷你毁灭者会跟随你征战
+	}
+
+	FrenziedMachineSoul: {
+		DisplayName: 狂热机魂
+		Description: 机魂大悦!
 	}
 }
 
@@ -5465,3 +5475,5 @@ RemakeItems: {
 	ModifyPalladiumHelmet.UpdateArmorText: 在换弹过程中如果会更快的恢复生命
 	ModifyChlorophyteHelmet.UpdateArmorText: 在换弹过程中将生成滞留的孢子云
 }
+
+// NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

@@ -12,6 +12,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         }
 
+        public virtual void PreInOwnerByFeederGun(BaseFeederGun gun) {
+
+        }
+
+        public virtual void PostInOwnerByFeederGun(BaseFeederGun gun) {
+
+        }
+
         public virtual bool? CanUpdateMagazine(BaseFeederGun baseFeederGun) {
             return null;
         }

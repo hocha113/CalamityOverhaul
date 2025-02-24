@@ -133,6 +133,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
             IDToNPCSetDic?.Clear();
         }
 
+        //public static void OnDrawNPCHeadBossHook(On_DrawNPCHeadBossDelegate orig, Entity theNPC, byte alpha
+        //    , float headScale, float rotation, SpriteEffects effects, int bossHeadId, float x, float y) {
+        //    bool reset = true;
+        //    if (theNPC is NPC npc && NPCOverride.TryFetchByID(npc.type, out var npcOverride)) {
+        //        reset = npcOverride.PreDrawNPCHeadBoss(npc, alpha, headScale, rotation, effects, bossHeadId, x, y);
+        //    }
+        //    if (reset) {
+        //        orig.Invoke(theNPC, alpha, headScale, rotation, effects, bossHeadId, x, y);
+        //    }
+        //}
+
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
             if (npc.type == NPCID.None || !npc.active) {
                 return orig.Invoke(npc);

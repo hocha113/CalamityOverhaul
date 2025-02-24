@@ -26,6 +26,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static Asset<Texture2D> BodyAlt_Glow;
         internal static Asset<Texture2D> Tail;
         internal static Asset<Texture2D> Tail_Glow;
+        internal static Asset<Texture2D> Head;
+        internal static Asset<Texture2D> Head_Glow;
+        private static int iconIndex;
         private const float BeamWarningDuration = 120f;
         private const float SparkWarningDuration = 30f;
         private const float AerialPhaseThreshold = 900f;
@@ -68,6 +71,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
         #endregion
+        void ICWRLoader.LoadData() {
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Body", -1);
+            iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Body");
+        }
         void ICWRLoader.LoadAsset() {
             Body_Stingless = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body_Stingless");
             Body = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body");
@@ -86,6 +93,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Tail = null;
             Tail_Glow = null;
         }
+
+        public override void BossHeadSlot(ref int index) {
+            if (!HeadPrimeAI.DontReform()) {
+                index = iconIndex;
+            }
+        }
+
+        public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
 
         private void SetMechQueenUp() {
             mechdusaCurvedSpineSegmentIndex = 0;

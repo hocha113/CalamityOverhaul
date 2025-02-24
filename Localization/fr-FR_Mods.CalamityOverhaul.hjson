@@ -852,6 +852,11 @@ Items: {
 		// DisplayName: Destroyers Blade E X
 		// Tooltip: ""
 	}
+
+	ThermalGenerator: {
+		// DisplayName: Thermal Generator
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1331,6 +1336,11 @@ Buffs: {
 	DestroyerSummonBuff: {
 		// DisplayName: Destroyer Summon Buff
 		// Description: Mods.CalamityOverhaul.Buffs.DestroyerSummonBuff.Description
+	}
+
+	FrenziedMachineSoul: {
+		// DisplayName: Frenzied Machine Soul
+		// Description: Mods.CalamityOverhaul.Buffs.FrenziedMachineSoul.Description
 	}
 }
 
@@ -5417,3 +5427,5 @@ RemakeItems: {
 	// ModifyPalladiumHelmet.UpdateArmorText: During the reloading process, health will be restored more quickly.
 	// ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
 }
+
+// NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

@@ -1,14 +1,14 @@
 ﻿using CalamityOverhaul.Content.Tiles;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Painting
+namespace CalamityOverhaul.Content.Items.Painting
 {
-    internal class CalSelfPortrait : ModItem
+    internal class WUTIVSelfPortrait : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "Painting/CalSelfPortrait";
+        public override string Texture => CWRConstant.Asset + "Painting/WUTIVSelfPortrait";
+        public const int DropProbabilityDenominator = 10000;
         public override void SetDefaults() {
             Item.width = 102;
             Item.height = 126;
@@ -20,10 +20,8 @@ namespace CalamityOverhaul.Content.Painting
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
-            Item.rare = ItemRarityID.Purple;
-            Item.createTile = ModContent.TileType<CalSelfPortraitTile>();
+            Item.rare = ItemRarityID.Quest;
+            Item.createTile = ModContent.TileType<WUTIVSelfPortraitTile>();
         }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
     }
 }

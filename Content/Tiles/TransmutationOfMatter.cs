@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.Height = Height;
             TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
@@ -109,9 +109,7 @@ namespace CalamityOverhaul.Content.Tiles
                 if (TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                     ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
                     if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
-                        if (SupertableUI.tramModuleEntity == null) {
-                            SupertableUI.tramModuleEntity = tram;
-                        }
+                        SupertableUI.tramModuleEntity ??= tram;
                         SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
                     }
                     else {

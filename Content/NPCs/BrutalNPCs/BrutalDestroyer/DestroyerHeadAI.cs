@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
@@ -18,18 +17,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class DestroyerHeadAI : NPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.TheDestroyer;
-        internal static Asset<Texture2D> Head;
-        internal static Asset<Texture2D> Head_Glow;
-        private static int iconIndex;
         private const int maxFindMode = 20000 * 20000;
         private int frame;
         private int glowFrame;
         private bool openMouth;
         private int dontOpenMouthTime;
         private Player player;
+        internal static Asset<Texture2D> Head;
+        internal static Asset<Texture2D> Head_Glow;
+        internal static int iconIndex;
+        internal static int iconIndex_Void;
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
+            iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
         }
 
         void ICWRLoader.LoadAsset() {
@@ -64,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override void BossHeadSlot(ref int index) {
             if (!HeadPrimeAI.DontReform()) {
-                index = iconIndex;
+                index = iconIndex_Void;
             }
         }
 
@@ -81,6 +83,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            if (ai[0] == 0) {
+                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
+                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
+                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
+                }
+                ai[0] = 1;
+            }
+
             if (npc.target < 0 || npc.target >= 255) {
                 npc.FindClosestPlayer();
                 player = Main.player[npc.target];

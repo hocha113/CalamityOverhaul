@@ -249,5 +249,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
 
         public virtual bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
+
+        //public virtual bool PreDrawNPCHeadBoss(NPC theNPC, byte alpha, float headScale, float rotation, SpriteEffects effects, int bossHeadId, float x, float y) {
+        //    return true;
+        //}
     }
 }

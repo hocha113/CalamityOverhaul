@@ -16,6 +16,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Placeholder_ERROR;
         public static Asset<Texture2D> SemiCircularSmear;
         public static Asset<Texture2D> UI_JAR;
+        public static Asset<Texture2D> UI_JMF;
         public static Asset<Texture2D> AimTarget;
         public static Asset<Texture2D> GenericBarBack;
         public static Asset<Texture2D> GenericBarFront;
@@ -36,6 +37,7 @@ namespace CalamityOverhaul
             Placeholder_ERROR = CWRUtils.GetT2DAsset(CWRConstant.Placeholder3);
             SemiCircularSmear = CWRUtils.GetT2DAsset("CalamityMod/Particles/SemiCircularSmear");
             UI_JAR = CWRUtils.GetT2DAsset(CWRConstant.UI + "JAR");
+            UI_JMF = CWRUtils.GetT2DAsset(CWRConstant.UI + "JMF");
             AimTarget = CWRUtils.GetT2DAsset(CWRConstant.Other + "AimTarget");
             GenericBarBack = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarBack");
             GenericBarFront = CWRUtils.GetT2DAsset("CalamityMod/UI/MiscTextures/GenericBarFront");
@@ -57,6 +59,7 @@ namespace CalamityOverhaul
             Placeholder_ERROR = null;
             SemiCircularSmear = null;
             UI_JAR = null;
+            UI_JMF = null;
             AimTarget = null;
             GenericBarBack = null;
             GenericBarFront = null;
