@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using System.IO;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -22,13 +23,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public string UpgradeWorldName = "";
 
         public static void Create(Item item) {
-            if (item.type == ModContent.ItemType<Murasama>()) {
-                item.CWR().LegendData = new MuraData();
-            }
-            else if (item.type == ModContent.ItemType<SHPC>()) {
+            if (item.type == ModContent.ItemType<SHPC>()) {
                 item.CWR().LegendData = new LegendData();
             }
-            else if (item.type == ModContent.ItemType<HalibutCannon>()) {
+            else (item.type == ModContent.ItemType<HalibutCannon>()) {
                 item.CWR().LegendData = new LegendData();
             }
         }
@@ -57,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             string worldName = cwrItem.LegendData.UpgradeWorldName;
             string text = "";
             if (Main.worldName != worldName && worldName != "" && worldName != null) {
-                text = CWRUtils.FormatColorTextMultiLine($"--{MuraText.GetTextValue("World_Text0")}:<{worldName}>", Color.Gold);
+                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue("Mods.CalamityOverhaul.Legend.MuraText.World_Text0", worldName)}", Color.Gold);
             }
             return text;
         }
