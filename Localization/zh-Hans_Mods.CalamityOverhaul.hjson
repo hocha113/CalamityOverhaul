@@ -1356,6 +1356,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		KreloadTimeAddText: 弹药装填时间增加
+		KreloadTimeLessenText: 弹药装填时间减少
 		DeathModeItem: 死亡模式
 		DontUseMagicConch: 你被一个强大的生物盯住了...
 		OnlyZenith: 仅在天顶世界

@@ -1369,6 +1369,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		KreloadTimeAddText: "Ammunition reloading time increased "
+		KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Only in Zenith World

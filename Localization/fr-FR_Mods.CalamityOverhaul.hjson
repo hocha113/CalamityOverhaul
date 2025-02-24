@@ -1314,11 +1314,6 @@ Configs: {
 				Préréglage 3 : Au centre en haut
 				'''
 		}
-
-		ModifiIntercept: {
-			// Label: Modifi Intercept
-			// Tooltip: ""
-		}
 	}
 }
 
@@ -1359,6 +1354,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// KreloadTimeAddText: "Ammunition reloading time increased "
+		// KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Death Mode Item
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Uniquement dans le monde de Zenith

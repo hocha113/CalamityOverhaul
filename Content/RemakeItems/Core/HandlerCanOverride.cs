@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
+    //老实说我没想好是否开放这个功能，所以将相关的代码集中到一起，方便决定是否加载到线上版本里面去
     internal class HandlerCanOverride
     {
         /// <summary>
@@ -123,7 +124,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public static void ModifiIntercept_OnEnterWorld() {
-            if (!CanLoad && !VaultUtils.isClient) {
+            if (!CanLoad || !VaultUtils.isClient) {
                 return;
             }
 
@@ -144,7 +145,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 DrawPosition = new Vector2(Main.screenWidth, Main.screenHeight) / 2;
             }
 
-            UIHitBox = DrawPosition.GetRectangle(100, 40);
+            UIHitBox = DrawPosition.GetRectangle(80, 30);
             hoverInMainPage = MouseHitBox.Intersects(UIHitBox);
 
             if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
@@ -169,9 +170,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
-            VaultUtils.SimpleDrawItem(spriteBatch, player.GetItem().type, DrawPosition + UIHitBox.Size() / 2, 40);
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 2, UIHitBox, Color.AliceBlue
                 , HandlerCanOverride.CanOverrideByID[player.GetItem().type] ? Color.Goldenrod : Color.White * 0.1f);
+            VaultUtils.SimpleDrawItem(spriteBatch, player.GetItem().type, DrawPosition + UIHitBox.Size() / 2, 40);
             if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, "左键点击切换拦截状态，右键拖动按钮位置"
                         , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);

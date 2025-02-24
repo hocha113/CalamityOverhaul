@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 return false;  // 如果未找到，直接返回false
             }
 
-            bool? canOverride = itemOverride.CanOverride();
+            bool? canOverride = itemOverride.CanOverride(id);
             if (HandlerCanOverride.CanLoad && !canOverride.HasValue) {
                 canOverride = HandlerCanOverride.CanOverrideByID[id];
             }
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// 判断当前<see cref="ItemOverride"/>是否能够进行覆盖默认实现返回null，子类可以重写此方法以实现具体的覆盖逻辑
         /// </summary>
         /// <returns>如果可以覆盖，返回true；如果不可以覆盖，返回false；默认返回null</returns>
-        public virtual bool? CanOverride() {
+        public virtual bool? CanOverride(int id) {
             return null;
         }
 
