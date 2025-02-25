@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;

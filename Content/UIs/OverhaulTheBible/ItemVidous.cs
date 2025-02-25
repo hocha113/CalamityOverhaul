@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     }
                     else {
                         player.QuickSpawnItem(player.FromObjectGetParent(), item.Clone());
-                    } 
+                    }
                 }
             }
         }

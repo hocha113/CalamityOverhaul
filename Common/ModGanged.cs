@@ -2,16 +2,9 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Items.Rogue;
-using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Mdb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -560,10 +553,10 @@ namespace CalamityOverhaul.Common
                 if ((bool)ImproveGameConfig_NoConsume_Ammo.GetValue(ImproveGameConfig_ConfigInstance)) {
                     if (ammoItem.stack >= 999 && ammoItem.type == ItemID.FallenStar) {
                         return true;
-                    }  
+                    }
                     if (ammoItem.stack >= 3996 && ammoItem.ammo > 0) {
                         return true;
-                    }   
+                    }
                 }
             } catch {
                 return false;

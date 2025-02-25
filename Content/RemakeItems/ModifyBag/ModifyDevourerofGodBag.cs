@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.TreasureBags;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.TreasureBags;
 using Terraria;
 using Terraria.ModLoader;
 

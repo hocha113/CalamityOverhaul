@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader.Core;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul.Content.RangedModify
 {

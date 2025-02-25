@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
     {
         public override int TargetID => ItemID.MythrilHat;
         public static LocalizedText UpdateArmorText { get; private set; }
-        public override bool CanLoadLocalization => false; 
-        public override void SetStaticDefaults() => UpdateArmorText = this.GetLocalization("UpdateArmorText", 
+        public override bool CanLoadLocalization => false;
+        public override void SetStaticDefaults() => UpdateArmorText = this.GetLocalization("UpdateArmorText",
             () => "During the reloading process, taking damage will release a large number of Mythril Sparks.");
         public override void UpdateArmorByHead(Player player, Item body, Item legs) => UpdateArmor(player, body, legs);
         public static void UpdateArmor(Player player, Item body, Item legs) {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         public override int TargetID => ItemID.OrichalcumHelmet;
         public static LocalizedText UpdateArmorText { get; private set; }
         public override bool CanLoadLocalization => false;
-        public override void SetStaticDefaults() => UpdateArmorText = this.GetLocalization("UpdateArmorText", 
+        public override void SetStaticDefaults() => UpdateArmorText = this.GetLocalization("UpdateArmorText",
             () => "During the reloading process, taking damage will cause a large number of petals to scatter and splatter.");
         public override void UpdateArmorByHead(Player player, Item body, Item legs) => UpdateArmor(player, body, legs);
         public static void UpdateArmor(Player player, Item body, Item legs) {

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private static int spazmatismIconIndex;
         private static int retinazerIconIndex;
         private static int spazmatismAltIconIndex;
-        private static int retinazerAltIconIndex;       
+        private static int retinazerAltIconIndex;
         private FieldInfo _cacheField;
         private FieldInfo _headIndexField;
         void ICWRLoader.LoadData() {

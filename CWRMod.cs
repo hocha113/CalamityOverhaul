@@ -1,14 +1,9 @@
 global using InnoVault;
 global using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul
 {

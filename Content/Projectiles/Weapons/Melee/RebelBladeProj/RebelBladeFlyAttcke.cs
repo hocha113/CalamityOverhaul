@@ -1,14 +1,11 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.ConstrainedExecution;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 

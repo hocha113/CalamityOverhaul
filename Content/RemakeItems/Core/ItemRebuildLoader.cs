@@ -440,7 +440,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {
-            
+
             if (HandlerCanOverride.CanOverrideByID.TryGetValue(item.type, out bool value) && !value) {
                 return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
             }

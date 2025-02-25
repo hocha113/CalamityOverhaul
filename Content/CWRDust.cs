@@ -1,7 +1,6 @@
 ﻿using InnoVault.PRT;
 using Terraria;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content
 {

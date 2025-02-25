@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
@@ -292,7 +291,7 @@ namespace CalamityOverhaul.Content
             List<Item> newMagazine = MagazineContents.ToList();
             bool onAdds = false;
             foreach (var item in newMagazine) {
-                if (item.type == newAmmo.type && item.stack < item.maxStack 
+                if (item.type == newAmmo.type && item.stack < item.maxStack
                     && item.CWR().AmmoProjectileReturn == newAmmo.CWR().AmmoProjectileReturn) {
                     item.stack += newAmmo.stack;
                     onAdds = true;

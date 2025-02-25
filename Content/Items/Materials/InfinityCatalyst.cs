@@ -8,7 +8,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityOverhaul.CWRMod;
 using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.Items.Materials

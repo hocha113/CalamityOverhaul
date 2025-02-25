@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void HitEffect() {
             Projectile.Center += CWRUtils.randVr(2);
-            
+
             if (Owner.name == "CHAINSAW DEVIL") {
                 Owner.HealEffect(2, true);
                 Owner.Heal(2);

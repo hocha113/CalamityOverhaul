@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                             Owner.statMana = 0;
                         }
                     }
-                    
+
                     ShootCoolingValue += Item.useTime;
                     onFireR = onFire = false;
                     PostShootEverthing();

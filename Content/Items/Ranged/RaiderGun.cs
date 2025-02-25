@@ -10,7 +10,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using tModPorter;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.RangedModify.UI;
 using System;
@@ -8,7 +7,6 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RangedModify.Core
 {

@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public static bool TryFetchByID(int id, out NPCOverride npcOverride) {
             npcOverride = null;
-            
+
             if (!NPCSystem.IDToNPCSetDic.TryGetValue(id, out var value)) {
                 return false;
             }
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 npcOverride = value.Clone();
                 return true;
             }
-            
+
             return false;
         }
 

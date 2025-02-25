@@ -1,15 +1,9 @@
-﻿using CalamityMod.CalPlayer;
-using CalamityMod.Projectiles.Summon;
-using CalamityMod;
-using InnoVault.GameContent.BaseEntity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityMod.Buffs.Summon;
 
 namespace CalamityOverhaul.Content.Items.Summon
 {
@@ -133,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
             if (Owner.dead) {
                 Owner.CWR().DestroyerOwner = false;
-            } 
+            }
             if (Owner.CWR().DestroyerOwner) {
                 Projectile.timeLeft = 2;
             }

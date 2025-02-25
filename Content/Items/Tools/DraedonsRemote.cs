@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanUseItem(Player player)
-            => !NPC.AnyNPCs(NPCID.SkeletronPrime) && !NPC.AnyNPCs(NPCID.Retinazer) 
+            => !NPC.AnyNPCs(NPCID.SkeletronPrime) && !NPC.AnyNPCs(NPCID.Retinazer)
             && !NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.TheDestroyer) && !Main.dayTime;
 
         public override void AddRecipes() {

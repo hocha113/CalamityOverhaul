@@ -2,7 +2,6 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.MeleeModify.Core
 {
@@ -18,7 +17,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
         internal struct Suit
         {
-            internal Item head; 
+            internal Item head;
             internal Item body;
             internal Item legs;
             public Suit(Item head, Item body, Item legs) {

@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
     }
 
-    internal class NeutronExplosionRogue : ModProjectile , IWarpDrawable
+    internal class NeutronExplosionRogue : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public override void SetDefaults() {

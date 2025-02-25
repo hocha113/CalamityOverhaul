@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
         public override void Update() {
             InitializeElement();
-            
+
             int itemVidousListCount = itemVidousList.Count > 0 ? itemVidousList.Count : 1;
             elementsPerRow = boxWeith / ItemVidous.Width; // 每行最多元素数
             if (elementsPerRow <= 0) {

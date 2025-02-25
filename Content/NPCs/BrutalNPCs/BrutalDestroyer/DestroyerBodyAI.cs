@@ -654,7 +654,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
             // 计算段比例缩放
             int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
-            
+
             Vector2 segmentTarget = Main.npc[(int)npc.ai[1]].Center - npc.Center;
 
             // 如果当前为曲线段，调整目标点的Y坐标
