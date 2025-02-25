@@ -2,6 +2,7 @@
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -28,33 +29,6 @@ namespace CalamityOverhaul.Content.Generator
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalGeneratorTile>();
-        }
-    }
-
-    internal class ThermalGeneratorUI : UIHandle
-    {
-        internal static bool IsActive;
-        public override bool Active => IsActive;
-        public override void Update() {
-            DrawPosition = new Vector2(Main.screenWidth, Main.screenHeight) / 2;
-            UIHitBox = DrawPosition.GetRectangle(400, 400);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch) {
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JMF.Value, 4, UIHitBox, Color.White, Color.White, 1);
-        }
-    }
-
-    internal class ThermalGeneratorTP : TileProcessor
-    {
-        public override int TargetTileID => ModContent.TileType<ThermalGeneratorTile>();
-        public int frame;
-        public override void Update() {
-            CWRUtils.ClockFrame(ref frame, 5, 6);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch) {
-            base.Draw(spriteBatch);
         }
     }
 
@@ -104,6 +78,7 @@ namespace CalamityOverhaul.Content.Generator
 
         public override bool RightClick(int i, int j) {
             ThermalGeneratorUI.IsActive = !ThermalGeneratorUI.IsActive;
+            SoundEngine.PlaySound(SoundID.MenuOpen);
             return true;
         }
 

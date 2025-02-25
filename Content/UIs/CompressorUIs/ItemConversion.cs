@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
         public int Level { get; set; }
         public float Charge;
         public Item TargetItem { get; set; }
-        internal ItemContainer ContainerLeft = new ItemContainer();
-        internal ItemContainer ContainerRight = new ItemContainer();
+        internal ItemAccept ContainerLeft = new ItemAccept();
+        internal ItemAccept ContainerRight = new ItemAccept();
         internal ArrowLock ArrowLock = new ArrowLock();
         internal ItemConversion NextConversion;
         public ItemConversion Clone() {

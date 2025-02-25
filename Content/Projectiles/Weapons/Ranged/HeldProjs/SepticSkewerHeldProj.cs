@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
@@ -37,6 +38,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Handgun.slideInShoot = CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.75f, Pitch = 0.2f };
             if (!MagazineSystem) {
                 FireTime = 30;
+            }
+        }
+
+        public override void SetShootAttribute() {
+            if (MagazineSystem && Owner.Calamity().adrenalineModeActive) {
+                FireTime = 6;
+            }
+        }
+
+        public override void PostShootEverthing() {
+            if (MagazineSystem) {
+                FireTime = 1;
             }
         }
 

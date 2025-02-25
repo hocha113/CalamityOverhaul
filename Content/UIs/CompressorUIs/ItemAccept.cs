@@ -7,14 +7,13 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.CompressorUIs
 {
-    internal class ItemContainer : UIHandle
+    internal class ItemAccept : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ItemConversion FaterConversion;
         public Item Item { get; set; } = new Item();
         public int TargetID { get; set; }
         internal bool IsRight;
-        internal bool hoverInMainUI;
         public override void Update() {
             if (!IsRight) {
                 if (FaterConversion != null && FaterConversion.NextConversion != null) {
@@ -26,11 +25,11 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
                     TargetID = FaterConversion.TargetItem.type;
                 }
             }
-
+            
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, ItemConversion.Weith, ItemConversion.Height);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            hoverInMainUI = UIHitBox.Intersects(mouseHit);
-            if (hoverInMainUI) {
+            hoverInMainPage = UIHitBox.Intersects(mouseHit);
+            if (hoverInMainPage) {
                 player.mouseInterface = true;
 
                 if (keyLeftPressState == KeyPressState.Pressed) {
