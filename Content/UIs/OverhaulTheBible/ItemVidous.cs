@@ -15,10 +15,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         public static int Height => 66;
         public static Vector2 handerOffsetTopL => new Vector2(6, 6);
         public override void Update() {
-            Item item = new Item(BaseRItem.TargetID);
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Width, Height);
-            Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            if (UIHitBox.Intersects(mouseHit)) {
+            Rectangle mouseHit = MousePosition.GetRectangle(1);
+            if (UIHitBox.Intersects(mouseHit) && UIHandleLoader.GetUIHandleInstance<OverhaulTheBibleUI>().UIHitBox.Intersects(mouseHit)) {
+                Item item = new Item(BaseRItem.TargetID);
                 Main.HoverItem = item.Clone();
                 Main.hoverItemName = item.Name;
                 if (keyRightPressState == KeyPressState.Pressed && player.name == "HoCha113") {

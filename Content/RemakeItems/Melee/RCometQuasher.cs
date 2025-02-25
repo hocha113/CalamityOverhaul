@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.width = 46;
             Item.height = 62;
             Item.scale = 1.5f;
-            Item.damage = 80;
+            Item.damage = 96;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 15;
             Item.useStyle = ItemUseStyleID.Swing;

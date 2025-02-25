@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Item.initialize();
             if (++Item.CWR().ai[0] > 3) {
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<AnarchyBeam>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<AnarchyBeam>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
                 Item.CWR().ai[0] = 0;
             }
         }

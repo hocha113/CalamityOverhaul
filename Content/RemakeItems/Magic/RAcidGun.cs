@@ -9,6 +9,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RAcidGun : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<AcidGun>();
-        public override void SetDefaults(Item item) => item.SetHeldProj<AcidGunHeldProj>();
+        public override void SetDefaults(Item item) {
+            item.damage = 16;
+            item.SetHeldProj<AcidGunHeldProj>();
+        }
     }
 }

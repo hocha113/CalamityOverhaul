@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.rare = ItemRarityID.Red;
             item.UseSound = null;
             item.useStyle = ItemUseStyleID.Swing;
-            item.damage = 130;
+            item.damage = 180;
             item.useAnimation = 9;
             item.useTime = 9;
             item.width = 30;

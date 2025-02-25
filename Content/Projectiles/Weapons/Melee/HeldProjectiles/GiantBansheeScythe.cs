@@ -25,7 +25,7 @@ public class GiantBansheeScythe : ModProjectile
         Projectile.DamageType = DamageClass.Melee;
         Projectile.tileCollide = false;
         Projectile.ignoreWater = true;
-        Projectile.penetrate = -1;
+        Projectile.penetrate = 11;
         Projectile.timeLeft = 90;
         Projectile.usesLocalNPCImmunity = true;
         Projectile.localNPCHitCooldown = 10;

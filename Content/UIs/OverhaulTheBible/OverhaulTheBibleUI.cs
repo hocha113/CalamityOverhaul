@@ -97,8 +97,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         }
 
         public override void Update() {
+            
             InitializeElement();
-
+            
             int itemVidousListCount = itemVidousList.Count > 0 ? itemVidousList.Count : 1;
             elementsPerRow = boxWeith / ItemVidous.Width; // 每行最多元素数
             if (elementsPerRow <= 0) {
@@ -118,7 +119,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     onDrag = true;
                 }
             }
-
+            
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
             rollerValue -= scrollWheelDelta;
@@ -154,10 +155,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     onTopDarg = false;
                 }
             }
-
+            
             sliderUI.Update();
             UpdateTabControl();
-
+            
             for (int i = 0; i < itemVidousList.Count; i++) {
                 ItemVidous itemV = itemVidousList[i];
                 int width = ItemVidous.Width;

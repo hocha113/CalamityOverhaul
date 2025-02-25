@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return;
             }
             Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity
-               , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 3.25f)
+               , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 2.25f)
                , Projectile.knockBack * 0.85f, Projectile.owner);
         }
 

@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Generator
 
         public sealed override void OnKill() {
             GeneratorKill();
-            GeneratorUI.ByTPCloaseFunc();
+            GeneratorUI?.ByTPCloaseFunc();
         }
 
         public virtual void GeneratorKill() {
