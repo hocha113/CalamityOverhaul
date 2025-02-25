@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.TileModules;
+using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -11,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Generator.Thermal
 {
     internal class ThermalGenerator : ModItem
     {
@@ -32,9 +33,12 @@ namespace CalamityOverhaul.Content.Generator
         }
     }
 
-    internal class ThermalGeneratorTile : ModTile
+    internal class ThermalGeneratorTile : BaseGeneratorTile
     {
         public override string Texture => CWRConstant.Asset + "Generator/ThermalGeneratorTile";
+        public override int GeneratorTP => TileProcessorLoader.GetModuleID<ThermalGeneratorTP>();
+        public override int GeneratorUI => UIHandleLoader.GetUIHandleID<ThermalGeneratorUI>();
+        public override int TargetItem => ModContent.ItemType<ThermalGenerator>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -53,33 +57,6 @@ namespace CalamityOverhaul.Content.Generator
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
-        }
-        public override bool CanExplode(int i, int j) => false;
-
-        public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
-            return false;
-        }
-
-        public override void MouseOver(int i, int j) {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.mouseInterface = true;
-            player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<ThermalGenerator>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
-        }
-
-        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
-
-        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
-
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-        }
-
-        public override bool RightClick(int i, int j) {
-            ThermalGeneratorUI.IsActive = !ThermalGeneratorUI.IsActive;
-            SoundEngine.PlaySound(SoundID.MenuOpen);
-            return true;
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {

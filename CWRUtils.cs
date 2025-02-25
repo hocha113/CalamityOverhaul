@@ -1269,6 +1269,23 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
+        /// 对帧数索引进行走表
+        /// </summary>
+        /// <param name="frameCounter"></param>
+        /// <param name="intervalFrame"></param>
+        /// <param name="Maxframe"></param>
+        /// <param name="startCounter"></param>
+        public static void ClockFrame(ref int frameCounter, int intervalFrame, int maxFrame, int startCounter = 0) {
+            if (Main.GameUpdateCount % intervalFrame == 0) {
+                frameCounter++;
+            }
+
+            if (frameCounter > maxFrame) {
+                frameCounter = startCounter;
+            }
+        }
+
+        /// <summary>
         /// 便捷的获取模组内的Effect实例
         /// </summary>
         /// <param name="name"></param>

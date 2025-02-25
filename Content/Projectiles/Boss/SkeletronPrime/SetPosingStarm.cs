@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
                 }
             }
-
+            Projectile.timeLeft = 31;
             if (Projectile.timeLeft <= 30) {
                 modeings = 1200 * (Projectile.timeLeft / 30f);
             }
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             var shader = CWRUtils.GetEffectValue("PrimeHaloShader");
             shader.Parameters["colorMult"].SetValue(11);
             shader.Parameters["time"].SetValue(drawTime * 0.1f);
-            shader.Parameters["radius"].SetValue(modeings + 50);
+            shader.Parameters["radius"].SetValue(modeings - 50);
             shader.Parameters["anchorPoint"].SetValue(Projectile.Center);
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
@@ -208,8 +208,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.spriteBatch.Draw(CWRAsset.Placeholder_White.Value, rekt, null, default, 0f, CWRAsset.Placeholder_White.Value.Size() / 2, 0, 0f);
             Main.spriteBatch.ExitShaderRegion();
 
+            Color fireColor = Color.DarkRed;
             Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)
-                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Red * sengs);
+                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), fireColor * sengs * 0.8f);
 
             if (sengs > 0) {
                 float num1 = Main.screenWidth * 0.6f;
