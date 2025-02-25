@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1801,7 +1801,7 @@ Legend: {
 			A decisive battle is coming. Those piles of scrap metal are planning to unite in an attempt to stop us.
 			With blades and blood, let them know our expedition will crush all alien abominations and hateful intelligences.
 			'''
-		World_Text0: Last Upgraded World
+		World_Text0: " Last Upgraded World: {0}"
 	}
 }
 

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
 Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
@@ -1776,7 +1776,7 @@ Legend: {
 			Eine entscheidende Schlacht steht bevor. Diese Haufen von Schrott planen, sich zu vereinen, um uns aufzuhalten.
 			Mit Klingen und Blut lasst sie wissen, dass unsere Expedition alle fremden Abscheulichkeiten und hassvollen Intelligenzen zerschmettern wird.
 			'''
-		// World_Text0: Last Upgraded World
+		// World_Text0: " Last Upgraded World: {0}"
 	}
 }
 
