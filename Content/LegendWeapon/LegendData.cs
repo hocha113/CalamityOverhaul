@@ -23,10 +23,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public string UpgradeWorldName = "";
 
         public static void Create(Item item) {
+            if (item.type == ModContent.ItemType<Murasama>()) {
+                item.CWR().LegendData = new MuraData();
+            }
             if (item.type == ModContent.ItemType<SHPC>()) {
                 item.CWR().LegendData = new LegendData();
             }
-            else (item.type == ModContent.ItemType<HalibutCannon>()) {
+            else if(item.type == ModContent.ItemType<HalibutCannon>()) {
                 item.CWR().LegendData = new LegendData();
             }
         }
@@ -54,8 +57,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public static string GetWorldUpLines(CWRItems cwrItem) {
             string worldName = cwrItem.LegendData.UpgradeWorldName;
             string text = "";
-            if (Main.worldName != worldName && worldName != "" && worldName != null) {
-                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue("Mods.CalamityOverhaul.Legend.MuraText.World_Text0", worldName)}", Color.Gold);
+            if (worldName != null && Main.worldName != worldName && worldName != "") {
+                string key = MuraText.GetTextKey("World_Text0");
+                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName)}", Color.Gold);
             }
             return text;
         }
