@@ -79,16 +79,29 @@ namespace CalamityOverhaul.Content.Generator.Thermal
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            // 绘制主UI背景
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
-            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueFull");
-            Rectangle full = (DrawPosition + new Vector2(8, 14)).GetRectangle(texture2.Size());
-            float sengs = ThermalData.Temperature / 1000f;
-            full.Height = (int)(full.Height * sengs);
-            Main.spriteBatch.Draw(texture2, full, Color.White);
 
+            // 获取纹理和计算需要绘制的矩形区域
+            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueFull");
+            float temperatureRatio = ThermalData.Temperature / 1000f;  // 计算温度的比率
+            float sengs = 1 - temperatureRatio;
+
+            // 计算绘制区域的Y值和高度，避免重复计算
+            Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * temperatureRatio));
+
+            // 绘制温度相关的图像
+            Vector2 position = DrawPosition + new Vector2(8, 10 + full.Y);
+            Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+            Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueGlow"), UIHitBox, Color.White);
+
+            // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, (ThermalData.Temperature + "/1000°C").ToString()
-                    , MousePosition.X, MousePosition.Y + 40, Color.White, Color.Black, new Vector2(0.3f), 1f);
+                string temperatureText = $"{ThermalData.Temperature}/1000°C";
+                Vector2 textPosition = new Vector2(MousePosition.X, MousePosition.Y + 40);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, temperatureText
+                    , textPosition.X, textPosition.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
             }
         }
     }
@@ -114,12 +127,19 @@ namespace CalamityOverhaul.Content.Generator.Thermal
         public override void Draw(SpriteBatch spriteBatch) {
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
             Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerFull");
-            
-            Rectangle full = (DrawPosition + new Vector2(8, 40)).GetRectangle(texture2.Size());
-            float sengs = ThermalData.UEvalue / 6000f;
-            full.Height = (int)(full.Height * sengs);
-            Main.spriteBatch.Draw(texture2, full, Color.White);
+            float ueRatio = ThermalData.UEvalue / 6000f;
+            float sengs = 1 - ueRatio;
 
+            // 计算绘制区域的Y值和高度，避免重复计算
+            Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * ueRatio));
+
+            // 绘制温度相关的图像
+            Vector2 position = DrawPosition + new Vector2(8, 36 + full.Y);
+            Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+            Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerGlow"), UIHitBox, Color.White);
+
+            // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, (ThermalData.UEvalue + "/6000UE").ToString()
                     , MousePosition.X, MousePosition.Y + 40, Color.White, Color.Black, new Vector2(0.3f), 1f);
