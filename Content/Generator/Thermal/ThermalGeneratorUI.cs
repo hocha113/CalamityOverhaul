@@ -20,19 +20,28 @@ namespace CalamityOverhaul.Content.Generator.Thermal
                 player.mouseInterface = true;
 
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    Item mouseItem = Main.mouseItem.Clone();
-                    Item uiItem = ThermalData.FuelItem.Clone();
-
-                    if (mouseItem.type > ItemID.None || uiItem.type > ItemID.None) {
+                    if (FuelItems.FuelItemToCombustion.ContainsKey(Main.mouseItem.type) || Main.mouseItem.type == ItemID.None) {
                         SoundEngine.PlaySound(SoundID.Grab);
-                    }
-                    if (mouseItem.type != uiItem.type) {
-                        Main.mouseItem = uiItem.Clone();
-                        ThermalData.FuelItem = mouseItem.Clone();
-                    }
-                    else if (mouseItem.type == uiItem.type) {
-                        ThermalData.FuelItem.stack += Main.mouseItem.stack;
-                        Main.mouseItem.TurnToAir();
+                        if (ThermalData.FuelItem.type == ItemID.None) {
+                            ThermalData.FuelItem = Main.mouseItem.Clone();
+                            Main.mouseItem.TurnToAir();
+                        }
+                        else {
+                            if (Main.mouseItem.IsAir) {
+                                Main.mouseItem = ThermalData.FuelItem.Clone();
+                                ThermalData.FuelItem.TurnToAir();
+                            }
+                            else {
+                                if (Main.mouseItem.type == ThermalData.FuelItem.type) {
+                                    ThermalData.FuelItem.stack += Main.mouseItem.stack;
+                                    Main.mouseItem.TurnToAir();
+                                }
+                                else if (Main.mouseItem.type != ItemID.None) {
+                                    ThermalData.FuelItem = Main.mouseItem.Clone();
+                                    Main.mouseItem = ThermalData.FuelItem.Clone();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -139,6 +148,10 @@ namespace CalamityOverhaul.Content.Generator.Thermal
         }
 
         public override void RightClickByTile(bool newTP) {
+            Item item = Main.LocalPlayer.GetItem();
+            if ((!item.IsAir || Main.keyState.PressingShift()) && FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
+                return;
+            }
             if (!newTP) {
                 IsActive = !IsActive;
             }

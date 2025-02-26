@@ -110,18 +110,20 @@ namespace CalamityOverhaul.Content.RangedModify
         }
 
         private static void ModifyInBow(Item weapon, ref Item ammo) {
-            if (!GlobalBow.BowActive) {
+            if ((!GlobalBow.IsBow && !GlobalBow.IsArrow) || weapon.type == ItemID.None) {
                 return;
             }
 
-            if (GlobalBow.TargetLockAmmo == null
-                || GlobalBow.TargetLockAmmo.type == ItemID.None
-                || GlobalBow.TargetLockAmmo.ammo != AmmoID.Arrow) {
+            Item targetLockAmmo = weapon.CWR().TargetLockAmmo;
+
+            if (targetLockAmmo == null
+                || targetLockAmmo.type == ItemID.None
+                || targetLockAmmo.ammo != AmmoID.Arrow) {
                 return;
             }
 
             foreach (var item in Main.LocalPlayer.inventory) {
-                if (item.type != GlobalBow.TargetLockAmmo.type) {
+                if (item.type != targetLockAmmo.type) {
                     continue;
                 }
                 ammo = item;

@@ -176,6 +176,10 @@ namespace CalamityOverhaul.Content
         /// 弹匣内容，管理装填后的弹药部分
         /// </summary>
         internal Item[] MagazineContents;
+        /// <summary>
+        /// 需要锁定的弹药类型
+        /// </summary>
+        internal Item TargetLockAmmo;
         #endregion
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
@@ -229,6 +233,7 @@ namespace CalamityOverhaul.Content
 
             ai = new float[MaxAISlot];
 
+            TargetLockAmmo = new Item();
             InitializeMagazine();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);

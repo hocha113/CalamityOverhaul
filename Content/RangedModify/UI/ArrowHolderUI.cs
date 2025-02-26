@@ -11,16 +11,20 @@ namespace CalamityOverhaul.Content.RangedModify.UI
     internal class ArrowHolderUI : UIHandle
     {
         public override Texture2D Texture => TextureAssets.Item[ChooseAmmo.type].Value;
-        public override bool Active => GlobalBow.BowActive;
+        public override bool Active => GlobalBow.IsBow || GlobalBow.IsArrow;
         private static Item HeldWeapon;
         private static Item ChooseAmmo;
         private int Weith;
         private int Height;
         public override void Update() {
-            HeldWeapon = null;
+            if (GlobalBow.IsBow) {//如果拿着的是弓，就赋值
+                HeldWeapon = player.GetItem();
+            }
+            
             ChooseAmmo = null;
 
-            if (GlobalBow.IsArrow()) {
+            //如果到这里没有找到有效的弓，就手动遍历
+            if (HeldWeapon == null || HeldWeapon.type == ItemID.None) {
                 for (int i = player.inventory.Length - 1; i >= 0; i--) {
                     Item item = player.inventory[i];
                     if (item.useAmmo != AmmoID.Arrow) {
@@ -29,17 +33,14 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     HeldWeapon = item;
                 }
             }
-            else {
-                HeldWeapon = player.GetItem();
-            }
-
-            if (HeldWeapon == null) {
+            
+            if (HeldWeapon == null || HeldWeapon.type == ItemID.None) {
                 return;
             }
 
             ChooseAmmo = player.ChooseAmmo(HeldWeapon);
             if (ChooseAmmo == null) {
-                if (GlobalBow.IsArrow()) {
+                if (GlobalBow.IsArrow) {
                     ChooseAmmo = player.GetItem();
                 }
                 if (ChooseAmmo == null) {
@@ -68,19 +69,19 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     player.mouseInterface = true;
                 }
 
-                if (keyLeftPressState == KeyPressState.Pressed && GlobalBow.IsArrow()) {
+                if (keyLeftPressState == KeyPressState.Pressed && GlobalBow.IsArrow) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    GlobalBow.TargetLockAmmo = player.GetItem().Clone();
+                    HeldWeapon.CWR().TargetLockAmmo = player.GetItem().Clone();
                 }
                 if (keyRightPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    GlobalBow.TargetLockAmmo = new Item();
+                    HeldWeapon.CWR().TargetLockAmmo = new Item();
                 }
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (ChooseAmmo == null || HeldWeapon == null) {
+            if (ChooseAmmo == null || HeldWeapon == null || HeldWeapon.type == ItemID.None || ChooseAmmo.type == ItemID.None) {
                 return;
             }
 
@@ -91,10 +92,15 @@ namespace CalamityOverhaul.Content.RangedModify.UI
 
             Rectangle rectangle = CWRUtils.GetRec(CWRAsset.Quiver_back_Asset.Value, 0, 4);
             spriteBatch.Draw(CWRAsset.Quiver_back_Asset.Value, DrawPosition, rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
-            if (GlobalBow.IsArrow()) {
+            if (GlobalBow.IsArrow) {
                 Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + arrowDrawStackCount * Weith / 4, Height);
                 //drawPos += TextureAssets.Item[HeldWeapon.type].Value.Size() / 2;
-                VaultUtils.SimpleDrawItem(spriteBatch, HeldWeapon.type, drawPos, 40, rotation: MathHelper.PiOver2, orig: new Vector2(0.001f, 0.001f));
+                float rotOffset = MathHelper.PiOver2;
+                if (CWRLoad.ItemIsCrossBow[HeldWeapon.type]) {
+                    rotOffset = 0;
+                    drawPos += new Vector2(-16, 16);
+                }
+                VaultUtils.SimpleDrawItem(spriteBatch, HeldWeapon.type, drawPos, 40, rotation: rotOffset, orig: new Vector2(0.001f, 0.001f));
                 if (hoverInMainPage) {
                     Texture2D aim = CWRAsset.AimTarget.Value;
                     spriteBatch.Draw(aim, MousePosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
@@ -102,6 +108,8 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                 }
             }
+
+            Item targetLockAmmo = HeldWeapon.CWR().TargetLockAmmo;
 
             if (ChooseAmmo.type > ItemID.None) {
                 for (int i = 0; i < arrowDrawStackCount; i++) {
@@ -117,17 +125,17 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ChooseAmmo.Name
                     , MousePosition.X, MousePosition.Y + 30, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
 
-                    if (GlobalBow.TargetLockAmmo != null && GlobalBow.TargetLockAmmo.type > ItemID.None) {
+                    if (targetLockAmmo != null && targetLockAmmo.type > ItemID.None) {
                         Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ArrowHolderUI_Text1.Value
                         , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                     }
                 }
             }
 
-            if (GlobalBow.TargetLockAmmo != null && GlobalBow.TargetLockAmmo.type > ItemID.None) {
+            if (targetLockAmmo != null && targetLockAmmo.type > ItemID.None) {
                 Texture2D aim = CWRAsset.AimTarget.Value;
                 spriteBatch.Draw(aim, DrawPosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
-                VaultUtils.SimpleDrawItem(spriteBatch, GlobalBow.TargetLockAmmo.type, DrawPosition, 32);
+                VaultUtils.SimpleDrawItem(spriteBatch, targetLockAmmo.type, DrawPosition, 32);
             }
         }
     }

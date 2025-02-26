@@ -61,5 +61,9 @@ namespace CalamityOverhaul.Content.Generator
         public virtual void GeneratorKill() {
 
         }
+
+        public virtual void RightClickByTile(bool newTP) {
+
+        }
     }
 }

@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Generator
             baseGeneratorUI.GeneratorTP = baseGeneratorTP;
             baseGeneratorTP.GeneratorUI = baseGeneratorUI;
             baseGeneratorUI?.RightClickByTile(newTP);
+            baseGeneratorTP?.RightClickByTile(newTP);
             return true;
         }
     }
