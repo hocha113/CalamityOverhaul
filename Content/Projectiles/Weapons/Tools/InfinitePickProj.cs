@@ -92,19 +92,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         }
 
         private void ProcessTile(Tile tile, Vector2 tilePos) {
-            int dorptype = CWRUtils.GetTileDorp(tile);
-            if (dorptype != 0) {
-                dorpTypes.Add(dorptype);
-            }
-
             tile.LiquidAmount = 0;
-            tile.HasTile = false;
-            if (tile.WallType != 0 && CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
-                dorpTypes.Add(wallValue);
+            if (WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
+                if (VaultUtils.IsTopLeft((int)tilePos.X, (int)tilePos.Y, out _)) {
+                    int dorptype = tile.GetTileDorp();
+                    if (dorptype != 0) {
+                        dorpTypes.Add(dorptype);
+                    }
+                }
+                WorldGen.KillTile((int)tilePos.X, (int)tilePos.Y, noItem: true);
+            }
+            if (tile.WallType != 0) {
+                if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
+                    dorpTypes.Add(wallValue);
+                }
                 tile.WallType = 0;
             }
-
-            CWRUtils.SafeSquareTileFrame(tilePos);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

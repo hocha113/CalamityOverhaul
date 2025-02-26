@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                         Tile tile = CWRUtils.GetTile(pos2);
                         if (tile.HasTile) {
                             if (Main.rand.NextBool(6)) {
-                                int dorptype = CWRUtils.GetTileDorp(tile);
+                                int dorptype = tile.GetTileDorp();
                                 if (dorptype != 0) {
                                     darkMatterBall.DorpItems.Add(new Item(dorptype));
                                 }

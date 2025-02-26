@@ -102,16 +102,6 @@ namespace CalamityOverhaul
         //    }
         //}
 
-
-        public static int GetTileDorp(Tile tile) {
-            int stye = TileObjectData.GetTileStyle(tile);
-            if (stye == -1) {
-                stye = 0;
-            }
-
-            return TileLoader.GetItemDropFromTypeAndStyle(tile.TileType, stye);
-        }
-
         public static Player InPosFindPlayer(Vector2 position, int maxRange = 3000) {
             foreach (Player player in Main.player) {
                 if (!player.Alives()) {
@@ -1298,31 +1288,6 @@ namespace CalamityOverhaul
         #endregion
 
         #region TileUtils
-        public static void SafeSquareTileFrame(int x, int y, bool resetFrame = true)
-            => SafeSquareTileFrame(new Point(x, y), resetFrame);
-
-        public static void SafeSquareTileFrame(Vector2 tilePos, bool resetFrame = true)
-            => SafeSquareTileFrame(new Point((int)tilePos.X, (int)tilePos.Y), resetFrame);
-
-        public static void SafeSquareTileFrame(Point tilePos, bool resetFrame = true) {
-            int i = tilePos.X;
-            int j = tilePos.Y;
-            TMLPatchedTileUtils.TileFrame(i - 1, j - 1);
-            TMLPatchedTileUtils.TileFrame(i - 1, j);
-            TMLPatchedTileUtils.TileFrame(i - 1, j + 1);
-            TMLPatchedTileUtils.TileFrame(i, j - 1);
-            try {
-                TMLPatchedTileUtils.TileFrame(i, j, resetFrame);
-            } catch {
-                TMLPatchedTileUtils.DoErrorTile(tilePos, Main.tile[tilePos.X, tilePos.Y]);
-                return;
-            }
-            TMLPatchedTileUtils.TileFrame(i, j + 1);
-            TMLPatchedTileUtils.TileFrame(i + 1, j - 1);
-            TMLPatchedTileUtils.TileFrame(i + 1, j);
-            TMLPatchedTileUtils.TileFrame(i + 1, j + 1);
-        }
-
         /// <summary>
         /// 将可能越界的方块坐标收值为非越界坐标
         /// </summary>

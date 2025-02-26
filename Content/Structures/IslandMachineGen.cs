@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Structures
                 Tile tile = Main.tile[j, Y + (sizeY - 1)];
                 tile.HasTile = true;
                 tile.TileType = (ushort)type;
-                CWRUtils.SafeSquareTileFrame(j, Y + (sizeY - 1));
+                WorldGen.KillTile(j, Y + (sizeY - 1));
             }
 
             WorldGen.PlaceTile(X + sizeX - 2, Y + sizeY - 1, type);

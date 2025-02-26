@@ -106,7 +106,7 @@ namespace CalamityOverhaul
             }
             tile.TileFrameX = frameX;
             tile.TileFrameY = frameY;
-            CWRUtils.SafeSquareTileFrame(tilePosX, tilePosY);
+            WorldGen.KillTile(tilePosX, tilePosY);
         }
 
         public override bool? UseItem(Player player) {
