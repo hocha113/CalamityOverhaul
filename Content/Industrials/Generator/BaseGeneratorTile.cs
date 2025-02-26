@@ -5,7 +5,7 @@ using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Industrials.Generator
 {
     internal abstract class BaseGeneratorTile : ModTile
     {

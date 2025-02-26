@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Generator.Thermal
+namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class ThermalData : GeneratorData
     {

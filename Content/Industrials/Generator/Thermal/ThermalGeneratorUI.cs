@@ -1,11 +1,12 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.Industrials.Generator;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Generator.Thermal
+namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class FuelElementUI : UIHandle
     {

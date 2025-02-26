@@ -4,7 +4,7 @@ using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Industrials.Generator
 { 
     internal abstract class BaseGeneratorTP : TileProcessor
     {

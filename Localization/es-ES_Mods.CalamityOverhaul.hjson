@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -869,6 +869,16 @@ Items: {
 
 	ThermalGenerator: {
 		// DisplayName: Thermal Generator
+		// Tooltip: ""
+	}
+
+	BasicPipeline: {
+		// DisplayName: Basic Pipeline
+		// Tooltip: ""
+	}
+
+	ThermalBattery: {
+		// DisplayName: Thermal Battery
 		// Tooltip: ""
 	}
 }

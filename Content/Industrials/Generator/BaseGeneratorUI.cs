@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Industrials.Generator
 {
     internal abstract class BaseGeneratorUI : UIHandle
     {

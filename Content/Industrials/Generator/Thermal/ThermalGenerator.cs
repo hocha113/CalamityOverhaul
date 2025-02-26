@@ -1,18 +1,15 @@
-﻿using CalamityOverhaul.Content.TileModules;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
-using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Generator.Thermal
+namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class ThermalGenerator : ModItem
     {

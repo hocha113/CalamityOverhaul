@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Industrials.Generator
 {
     internal class FuelItems
     {

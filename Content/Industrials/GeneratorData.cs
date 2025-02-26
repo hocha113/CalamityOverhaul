@@ -2,7 +2,7 @@
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.Generator
+namespace CalamityOverhaul.Content.Industrials
 {
     public class GeneratorData
     {

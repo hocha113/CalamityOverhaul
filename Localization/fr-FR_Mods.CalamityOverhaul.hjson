@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 Tools.RecipesLoseText: Vous ne pouvez pas faire cet objet directement
 
 Items: {
@@ -855,6 +855,16 @@ Items: {
 
 	ThermalGenerator: {
 		// DisplayName: Thermal Generator
+		// Tooltip: ""
+	}
+
+	BasicPipeline: {
+		// DisplayName: Basic Pipeline
+		// Tooltip: ""
+	}
+
+	ThermalBattery: {
+		// DisplayName: Thermal Battery
 		// Tooltip: ""
 	}
 }

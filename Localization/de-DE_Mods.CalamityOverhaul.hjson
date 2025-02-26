@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
 Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
@@ -854,6 +854,16 @@ Items: {
 
 	ThermalGenerator: {
 		// DisplayName: Thermal Generator
+		// Tooltip: ""
+	}
+
+	BasicPipeline: {
+		// DisplayName: Basic Pipeline
+		// Tooltip: ""
+	}
+
+	ThermalBattery: {
+		// DisplayName: Thermal Battery
 		// Tooltip: ""
 	}
 }

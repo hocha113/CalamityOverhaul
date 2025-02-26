@@ -5,7 +5,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Generator.Thermal
+namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class ThermalGeneratorTP : BaseGeneratorTP
     {

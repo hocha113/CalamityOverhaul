@@ -78,6 +78,7 @@
     <Folder Include="Assets\Players\" />
     <Folder Include="Assets\TileModules\" />
     <Folder Include="Assets\Painting\" />
+    <Folder Include="Assets\MaterialFlow\" />
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />

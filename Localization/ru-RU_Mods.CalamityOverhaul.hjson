@@ -868,6 +868,16 @@ Items: {
 		// DisplayName: Thermal Generator
 		// Tooltip: ""
 	}
+
+	BasicPipeline: {
+		// DisplayName: Basic Pipeline
+		// Tooltip: ""
+	}
+
+	ThermalBattery: {
+		// DisplayName: Thermal Battery
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
