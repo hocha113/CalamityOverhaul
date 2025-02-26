@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
                 return false;
             }
 
-            BaseGeneratorTP baseGeneratorTP = TileProcessorLoader.FindModulePreciseSearch(GeneratorTP, point.X, point.Y) as BaseGeneratorTP;
+            BaseGeneratorTP baseGeneratorTP = TileProcessorLoader.FindModulePreciseSearch(GeneratorTP, point) as BaseGeneratorTP;
             BaseGeneratorUI baseGeneratorUI = UIHandleLoader.GetUIHandleInstance(GeneratorUI) as BaseGeneratorUI;
             bool newTP = baseGeneratorUI.GeneratorTP != baseGeneratorTP;
             baseGeneratorUI.GeneratorTP = baseGeneratorTP;

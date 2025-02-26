@@ -549,7 +549,7 @@ namespace CalamityOverhaul
                         shootProj.SetDefaults(item.shoot);
                         if (shootProj.ModProjectile != null && shootProj.ModProjectile is BaseSwing swing) {
                             if (!cwrItem.WeaponInSetKnifeHeld) {
-                                throw new InvalidOperationException($"The Sword is not initialized correctly：{item})。" +
+                                throw new InvalidOperationException($"The Sword is not initialized correctly：{item} by {swing})。" +
                                     $"Please check that the initialization function is called correctly"
                                     + "SetKnifeHeld must be used to set the BaseSwing item");
                             }

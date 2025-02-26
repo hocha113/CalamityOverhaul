@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             }
 
             if (ThermalData.Temperature > 0) {
-                CWRUtils.ClockFrame(ref frame, 5, 7, 1);
+                CWRUtils.ClockFrame(ref frame, 5, 4, 1);
             }
             else {
                 frame = 0;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 return;
             }
 
-            if (item.IsAir) {
+            if (item.IsAir || !FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
                 return;
             }
 
@@ -93,6 +93,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 if (!VaultUtils.isSinglePlayer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                 }
+                ThermalData.FuelItem.TurnToAir();
             }
 
             if (FuelItems.FuelItemToCombustion.TryGetValue(item.type, out _)) {

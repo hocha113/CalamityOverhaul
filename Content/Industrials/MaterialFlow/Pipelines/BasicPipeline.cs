@@ -56,47 +56,52 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
-        internal Tile Tile;
-        internal TileProcessor TileProcessor;
+        /// <summary>
+        /// 对于外部的物块数据
+        /// </summary>
+        internal Tile externalTile;
+        /// <summary>
+        /// 对于外部的TP实体
+        /// </summary>
+        internal TileProcessor externalTP;
+        /// <summary>
+        /// 自身的核心TP实体
+        /// </summary>
         internal BasicPipelineTP coreTP;
+        /// <summary>
+        /// 更新逻辑
+        /// </summary>
         public void Update() {
             // 初始化
-            Tile = default;
-            TileProcessor = null;
+            externalTile = default;
+            externalTP = null;
 
             // 获取当前 Tile 和相邻的 TileProcessor
-            Tile = Framing.GetTileSafely(Position + Offset);
+            externalTile = Framing.GetTileSafely(Position + Offset);
 
-            if (Tile.HasTile && VaultUtils.SafeGetTopLeft(Position.X + Offset.X, Position.Y + Offset.Y, out var point)) {
-                // 寻找相邻的 TileProcessor
-                foreach (var tp in TileProcessorLoader.TP_InWorld) {
-                    if (tp.Position != point) {
-                        continue;
+            if (externalTile.HasTile && VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
+                && TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
+                // 如果相邻的 TileProcessor 是发电机
+                if (externalTP is BaseGeneratorTP baseGeneratorTP) {
+                    // 如果发电机的 UEvalue 大于 0，从发电机到管道传递值
+                    if (baseGeneratorTP.GeneratorData.UEvalue > 0) {
+                        baseGeneratorTP.GeneratorData.UEvalue--;  // 从发电机减去能量
+                        coreTP.GeneratorData.UEvalue++;      // 给管道增加能量
                     }
-                    TileProcessor = tp;
                 }
-            }
 
-            // 如果相邻的 TileProcessor 是发电机
-            if (TileProcessor is BaseGeneratorTP baseGeneratorTP) {
-                // 如果发电机的 UEvalue 大于 0，从发电机到管道传递值
-                if (baseGeneratorTP.GeneratorData.UEvalue > 0) {
-                    baseGeneratorTP.GeneratorData.UEvalue--;  // 从发电机减去能量
-                    coreTP.GeneratorData.UEvalue++;      // 给管道增加能量
-                }
-            }
-
-            // 如果有能量传递的需求，且相邻的是管道
-            if (coreTP.GeneratorData.UEvalue > 0) {
-                if (TileProcessor is BasicPipelineTP basicPipelineTP) {
-                    if (basicPipelineTP.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue) {
-                        basicPipelineTP.GeneratorData.UEvalue++;
+                // 如果有能量传递的需求，且相邻的是管道
+                if (coreTP.GeneratorData.UEvalue > 0) {
+                    if (externalTP is BasicPipelineTP basicPipelineTP) {
+                        if (basicPipelineTP.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue) {
+                            basicPipelineTP.GeneratorData.UEvalue++;
+                            coreTP.GeneratorData.UEvalue--;
+                        }
+                    }//如果挨着的是电池
+                    else if (externalTP is BaseBattery baseBattery) {
+                        baseBattery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
-                }//如果挨着的是电池
-                else if (TileProcessor is BaseBattery baseBattery) {
-                    baseBattery.GeneratorData.UEvalue++;
-                    coreTP.GeneratorData.UEvalue--;
                 }
             }
         }
@@ -110,7 +115,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         void ICWRLoader.UnLoadData() => PipelineAsset = null;
         internal List<SideState> SideState;
         internal GeneratorData GeneratorData;
-        internal bool links;
         public override void SetProperty() {
             SideState = new List<SideState>() {
             new SideState(new Point16(0, -1)),
@@ -126,22 +130,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 side.Position = Position;
                 side.Update();
             }
-
-            int linkCount = 0;
-            foreach (var side in SideState) {
-                if (side.TileProcessor != null) {
-                    linkCount++;
-                }
-            }
-
-            links = linkCount >= 2;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (links) {
-                Main.spriteBatch.Draw(PipelineAsset.Value, PosInWorld - Main.screenPosition
-                , null, Color.Blue, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            }
             if (GeneratorData != null) {
                 Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(0, -6);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, GeneratorData.UEvalue.ToString()

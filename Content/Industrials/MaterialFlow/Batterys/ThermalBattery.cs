@@ -55,19 +55,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     internal class ThermalBatteryTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<ThermalBatteryTile>();
+        private bool hoverInTP;
         public override void SetProperty() {
             GeneratorData = new GeneratorData();
         }
 
         public override void Update() {
-            base.Update();
+            hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (GeneratorData != null) {
-                Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(0, -6);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, GeneratorData.UEvalue.ToString()
-                    , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
+            if (GeneratorData != null && hoverInTP) {
+                Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -6);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, GeneratorData.UEvalue.ToString() + "UE"
+                    , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.8f);
             }
         }
     }
