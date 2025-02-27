@@ -881,6 +881,21 @@ Items: {
 		// DisplayName: Thermal Battery
 		// Tooltip: ""
 	}
+
+	WindGrivenGenerator: {
+		// DisplayName: Wind Griven Generator
+		// Tooltip: ""
+	}
+
+	WindGrivenGeneratorMK2: {
+		// DisplayName: Wind Griven Generator MK2
+		// Tooltip: ""
+	}
+
+	ThermalGeneratorMK2: {
+		// DisplayName: Thermal Generator MK2
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

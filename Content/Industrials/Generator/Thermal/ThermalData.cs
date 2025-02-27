@@ -7,6 +7,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class ThermalData : GeneratorData
     {
+        internal int MaxChargeCool;
+        internal float MaxTemperature;
+        internal float MaxUEValue;
         internal int ChargeCool;
         internal float Temperature;
         internal Item FuelItem = new Item();

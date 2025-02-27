@@ -865,6 +865,21 @@ Items: {
 		DisplayName: 热能电池
 		Tooltip: ""
 	}
+
+	WindGrivenGenerator: {
+		DisplayName: 风力发电机
+		Tooltip: ""
+	}
+
+	WindGrivenGeneratorMK2: {
+		DisplayName: 风力发电机MK2
+		Tooltip: ""
+	}
+
+	ThermalGeneratorMK2: {
+		DisplayName: 火力发电机MK2
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

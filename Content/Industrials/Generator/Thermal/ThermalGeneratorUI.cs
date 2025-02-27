@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (ThermalData.Temperature > 0) {
                 Texture2D fire = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/FirePower");
                 Rectangle fireRect = (DrawPosition + new Vector2(16, 56)).GetRectangle(fire.Size());
-                Main.spriteBatch.Draw(fire, fireRect, Color.White * (ThermalData.Temperature / 1000f));
+                Main.spriteBatch.Draw(fire, fireRect, Color.White * (ThermalData.Temperature / ThermalData.MaxTemperature));
             }
 
             if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None) {
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             // 获取纹理和计算需要绘制的矩形区域
             Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueFull");
-            float temperatureRatio = ThermalData.Temperature / 1000f;  // 计算温度的比率
+            float temperatureRatio = ThermalData.Temperature / ThermalData.MaxTemperature;  // 计算温度的比率
             float sengs = 1 - temperatureRatio;
 
             // 计算绘制区域的Y值和高度，避免重复计算
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
-                string temperatureText = $"{ThermalData.Temperature}/1000°C";
+                string temperatureText = $"{ThermalData.Temperature}/{ThermalData.MaxTemperature}°C";
                 Vector2 textPosition = new Vector2(MousePosition.X, MousePosition.Y + 40);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, temperatureText
                     , textPosition.X, textPosition.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void Draw(SpriteBatch spriteBatch) {
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
             Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerFull");
-            float ueRatio = ThermalData.UEvalue / 6000f;
+            float ueRatio = ThermalData.UEvalue / ThermalData.MaxUEValue;
             float sengs = 1 - ueRatio;
 
             // 计算绘制区域的Y值和高度，避免重复计算
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, (ThermalData.UEvalue + "/6000UE").ToString()
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, (ThermalData.UEvalue + "/" + ThermalData.MaxUEValue + "UE").ToString()
                     , MousePosition.X, MousePosition.Y + 40, Color.White, Color.Black, new Vector2(0.3f), 1f);
             }
         }

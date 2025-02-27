@@ -1,27 +1,26 @@
 ﻿using InnoVault.UIHandles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
-    internal class ThermalGeneratorTP : BaseGeneratorTP
+    internal class ThermalGeneratorMK2TP : BaseGeneratorTP
     {
-        public override int TargetTileID => ModContent.TileType<ThermalGeneratorTile>();
-        internal int frame;
+        public override int TargetTileID => ModContent.TileType<ThermalGeneratorMK2Tile>();
         internal ThermalData ThermalData => GeneratorData as ThermalData;
         public override GeneratorData GetGeneratorDataInds() {
             var inds = new ThermalData();
-            inds.MaxChargeCool = 6;
-            inds.MaxTemperature = 600;
-            inds.MaxUEValue = 1000;
+            inds.MaxChargeCool = 4;
+            inds.MaxTemperature = 2000;
+            inds.MaxUEValue = 10000;
             return inds;
         }
         public override void GeneratorUpdate() {
             if (PosInWorld.Distance(Main.LocalPlayer.Center) > maxFindMode) {
-                if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this 
+                if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
                     && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
                     UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
                     SoundEngine.PlaySound(SoundID.MenuClose);
@@ -48,14 +47,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             if (ThermalData.Temperature > 0 && ThermalData.UEvalue <= ThermalData.MaxUEValue) {
                 ThermalData.Temperature--;
-                ThermalData.UEvalue++;
-            }
-
-            if (ThermalData.Temperature > 0) {
-                CWRUtils.ClockFrame(ref frame, 5, 4, 1);
-            }
-            else {
-                frame = 0;
+                ThermalData.UEvalue += 2;
             }
         }
 

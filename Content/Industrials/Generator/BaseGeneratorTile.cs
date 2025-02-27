@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator
     internal abstract class BaseGeneratorTile : ModTile
     {
         public virtual int TargetItem => ItemID.None;
-        public virtual int GeneratorUI => 0;
-        public virtual int GeneratorTP => 0;
+        public virtual int GeneratorUI => -1;
+        public virtual int GeneratorTP => -1;
         public override bool CanExplode(int i, int j) => false;
 
         public override bool CreateDust(int i, int j, ref int type) {
@@ -36,13 +36,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator
                 return false;
             }
 
-            BaseGeneratorTP baseGeneratorTP = TileProcessorLoader.FindModulePreciseSearch(GeneratorTP, point) as BaseGeneratorTP;
-            BaseGeneratorUI baseGeneratorUI = UIHandleLoader.GetUIHandleInstance(GeneratorUI) as BaseGeneratorUI;
-            bool newTP = baseGeneratorUI.GeneratorTP != baseGeneratorTP;
-            baseGeneratorUI.GeneratorTP = baseGeneratorTP;
-            baseGeneratorTP.GeneratorUI = baseGeneratorUI;
-            baseGeneratorUI?.RightClickByTile(newTP);
-            baseGeneratorTP?.RightClickByTile(newTP);
+            BaseGeneratorTP baseGeneratorTP = GeneratorTP == -1
+                ? null : TileProcessorLoader.FindModulePreciseSearch(GeneratorTP, point) as BaseGeneratorTP;
+            BaseGeneratorUI baseGeneratorUI = GeneratorUI == -1
+                ? null : UIHandleLoader.GetUIHandleInstance(GeneratorUI) as BaseGeneratorUI;
+
+            bool newTP = baseGeneratorUI != null && baseGeneratorUI.GeneratorTP != baseGeneratorTP;
+            if (baseGeneratorUI != null) {
+                baseGeneratorUI.GeneratorTP = baseGeneratorTP;
+                baseGeneratorUI.RightClickByTile(newTP);
+            }
+            if (baseGeneratorTP != null) {
+                baseGeneratorTP.GeneratorUI = baseGeneratorUI;
+                baseGeneratorTP.RightClickByTile(newTP);
+            }
             return true;
         }
     }
