@@ -64,6 +64,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
         }
 
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (GeneratorData != null && hoverInTP) {
                 Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -6);
