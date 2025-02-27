@@ -1,33 +1,30 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
-using InnoVault.TileProcessors;
-using Microsoft.Xna.Framework.Input;
-using System;
+﻿using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria;
+using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    public class WorldGenTutorialWorld : ModSystem
+    internal class IndustrializationGen
     {
-        public static bool JustPressed(Keys key) {
-            return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
+        public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
+            progress.Message = "正在让世界变得工业化";
+            SpawnWindGrivenGenerator();
         }
 
-        public override void PostUpdateWorld() {
-            if (JustPressed(Keys.D1)) {
-                TestMethod((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-            }
+        public static int GetWorldSize() {
+            return Main.maxTilesX <= 4200 ? 1 : Main.maxTilesX <= 6400 ? 2 : Main.maxTilesX <= 8400 ? 3 : 1;
         }
 
-        private void TestMethod(int x, int y) {
-            Point16 targetPos = new Point16(Main.maxTilesX / 2, 0);
+        private static void SpawnWindGrivenGenerator() {
+            Point16 targetPos = new Point16(WorldGen.genRand.Next(Main.maxTilesX / 2 - 300, Main.maxTilesX / 2 + 300), 0);
 
-            int maxFindWidth = 1000;
+            int maxFindWidth = 600 + GetWorldSize() * 200;
             int maxFindHeight = 500;
             targetPos -= new Point16(maxFindWidth / 2, maxFindHeight / 2);
             int tileIsAirCount = 0;
@@ -40,7 +37,7 @@ namespace CalamityOverhaul.Content.Structures
                 for (int j = 0; j < maxFindHeight; j++) {
                     Point16 newPos = targetPos + new Point16(i, j);
 
-                    if (tile.IsTileSolid()) {
+                    if (tile.HasSolidTile()) {
                         tileIsAirCount = 0;
                     }
                     else {
@@ -49,7 +46,7 @@ namespace CalamityOverhaul.Content.Structures
 
                     tile = Framing.GetTileSafely(newPos);
 
-                    if (tileIsAirCount > 12 && tile.IsTileSolid() && !dontFindByY) {
+                    if (tileIsAirCount > 12 && tile.HasSolidTile() && !dontFindByY) {
                         scheduledPosList.Add(newPos);
                         dontFindByY = true;
                     }
@@ -66,8 +63,8 @@ namespace CalamityOverhaul.Content.Structures
                 Point16 pos = scheduledPosList[i];
                 Point16 pos2 = scheduledPosList[i - 1];
                 Point16 pos3 = scheduledPosList[i + 1];
-                if (pos.Y == pos2.Y && pos2.Y == pos3.Y 
-                    && Framing.GetTileSafely(pos2).IsTileSolid() && Framing.GetTileSafely(pos3).IsTileSolid()
+                if (pos.Y == pos2.Y && pos2.Y == pos3.Y
+                    && Framing.GetTileSafely(pos2).HasSolidTile() && Framing.GetTileSafely(pos3).HasSolidTile()
                     && Math.Abs(oldPos.X - pos.X) > 32) {
                     WorldGen.KillTile(pos.X, pos3.Y - 1);
                     WorldGen.KillTile(pos2.X, pos2.Y - 1);
