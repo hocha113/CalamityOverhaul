@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             modplayer.LoadMuzzleBrakeLevel = 1;
             modplayer.PressureIncrease -= 0.4f;
             player.GetDamage<RangedDamageClass>() -= 0.15f;
+            player.aggro -= 200;
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {

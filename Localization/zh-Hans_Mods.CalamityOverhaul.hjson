@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -334,6 +334,7 @@ Items: {
 			减少65%后坐力与膛压
 			远程伤害降低5%
 			远程暴击率增加15%
+			敌人将更不容易发现你
 			'''
 	}
 
@@ -356,6 +357,7 @@ Items: {
 			减少55%后坐力与膛压
 			远程伤害降低10%
 			远程暴击率增加10%
+			敌人将更不容易发现你
 			'''
 	}
 
@@ -366,6 +368,7 @@ Items: {
 			减少40%后坐力与膛压
 			远程伤害降低15%
 			远程暴击率增加5%
+			敌人将更不容易发现你
 			'''
 	}
 
