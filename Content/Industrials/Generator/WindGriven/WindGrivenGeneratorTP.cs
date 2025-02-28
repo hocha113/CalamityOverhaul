@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);
             for (int i = 0; i < 3; i++) {
                 float drawRot = (MathHelper.TwoPi) / 3f * i + rotition;
-                spriteBatch.Draw(blade, drawPos, null, Color.White, drawRot, drawOrig, 1, SpriteEffects.None, 0);
+                Color color = Lighting.GetColor(Position.ToPoint() + drawRot.ToRotationVector2().ToPoint());
+                spriteBatch.Draw(blade, drawPos, null, color, drawRot, drawOrig, 1, SpriteEffects.None, 0);
             }
         }
     }

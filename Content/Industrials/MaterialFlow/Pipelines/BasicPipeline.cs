@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     internal class BasicPipeline : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/Pipeline";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineGoden";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
     internal class BasicPipelineTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/Pipeline";
+        public override string Texture => CWRConstant.Placeholder;
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -69,13 +69,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// </summary>
         internal BasicPipelineTP coreTP;
         /// <summary>
+        /// 链接ID
+        /// </summary>
+        internal int linkID = 0;
+        internal bool canDraw;
+        /// <summary>
         /// 更新逻辑
         /// </summary>
         public void Update() {
             // 初始化
             externalTile = default;
             externalTP = null;
-
+            linkID = 0;
             // 获取当前 Tile 和相邻的 TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
 
@@ -88,42 +93,85 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                         baseGeneratorTP.GeneratorData.UEvalue--;  // 从发电机减去能量
                         coreTP.GeneratorData.UEvalue++;      // 给管道增加能量
                     }
+                    linkID = 1;
                 }
 
                 // 如果有能量传递的需求，且相邻的是管道
-                if (coreTP.GeneratorData.UEvalue > 0) {
-                    if (externalTP is BasicPipelineTP basicPipelineTP) {
-                        if (basicPipelineTP.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue) {
-                            basicPipelineTP.GeneratorData.UEvalue++;
-                            coreTP.GeneratorData.UEvalue--;
-                        }
-                    }//如果挨着的是电池
-                    else if (externalTP is BaseBattery baseBattery) {
+                if (externalTP is BasicPipelineTP basicPipelineTP) {
+                    if (basicPipelineTP.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue && coreTP.GeneratorData.UEvalue > 0) {
+                        basicPipelineTP.GeneratorData.UEvalue++;
+                        coreTP.GeneratorData.UEvalue--;
+                    }
+                    linkID = 2;
+                }
+                //如果挨着的是电池
+                else if (externalTP is BaseBattery baseBattery) {
+                    if (coreTP.GeneratorData.UEvalue > 0) {
                         baseBattery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
+                    
+                    linkID = 3;
                 }
             }
+
+            canDraw = true;
+            if (linkID == 0) {
+                canDraw = false;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch) {
+            if (coreTP == null || coreTP.GeneratorData == null) {
+                return;
+            }
+
+            Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
+            float drawRot = Offset.ToVector2().ToRotation();
+
+            Vector2 orig = BasicPipelineTP.PipelineChannelGoden.Size() / 2;
+            Color color = Color.White * (coreTP.GeneratorData.UEvalue / 10f);
+            spriteBatch.Draw(BasicPipelineTP.PipelineChannelGoden.Value, drawPos + orig, null, color
+                , drawRot, orig, 1, SpriteEffects.None, 0);
+
+            color = Lighting.GetColor(Position.ToPoint());
+            spriteBatch.Draw(BasicPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, color
+                , drawRot, orig, 1, SpriteEffects.None, 0);
         }
     }
 
     internal class BasicPipelineTP : TileProcessor, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<BasicPipelineTile>();
-        public static Asset<Texture2D> PipelineAsset;
-        void ICWRLoader.LoadAsset() => PipelineAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/Pipeline");
-        void ICWRLoader.UnLoadData() => PipelineAsset = null;
+        public static Asset<Texture2D> PipelineChannelGoden;
+        public static Asset<Texture2D> PipelineChannelSide;
+        public static Asset<Texture2D> PipelineGoden;
+        public static Asset<Texture2D> PipelineSide;
         internal List<SideState> SideState;
         internal GeneratorData GeneratorData;
+        void ICWRLoader.LoadAsset() {
+            PipelineChannelGoden = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineChannelGoden");
+            PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineChannelSide");
+            PipelineGoden = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineGoden");
+            PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineSide");
+        }
+        void ICWRLoader.UnLoadData() {
+            PipelineChannelGoden = null;
+            PipelineChannelSide = null;
+            PipelineGoden = null;
+            PipelineSide = null;
+        }
+        
         public override void SetProperty() {
             SideState = new List<SideState>() {
-            new SideState(new Point16(0, -1)),
-            new SideState(new Point16(0, 1)),
-            new SideState(new Point16(-1, 0)),
-            new SideState(new Point16(1, 0))
+            new (new Point16(0, -1)),
+            new (new Point16(0, 1)),
+            new (new Point16(-1, 0)),
+            new (new Point16(1, 0))
             };
             GeneratorData = new GeneratorData();
         }
+
         public override void Update() {
             foreach (var side in SideState) {
                 side.coreTP = this;
@@ -132,12 +180,32 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (GeneratorData != null) {
-                Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(0, -6);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, GeneratorData.UEvalue.ToString()
-                    , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            foreach (var side in SideState) {
+                if (side.canDraw) {
+                    side.Draw(spriteBatch);
+                }
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
+            int linkCount = 0;
+            foreach (var side in SideState) {
+                if (side.linkID != 0) {
+                    linkCount++;
+                }
+            }
+
+            if (linkCount != 2) {
+                spriteBatch.Draw(PipelineGoden.Value, drawPos.GetRectangle(Size), Color.White * (GeneratorData.UEvalue / 10f));
+                spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
+            }
+
+            //if (GeneratorData != null) {
+            //    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, GeneratorData.UEvalue.ToString()
+            //        , drawPos.X + 6, drawPos.Y - 8, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
+            //}
         }
     }
 }
