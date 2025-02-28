@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 36;
             canDrawSlashTrail = true;
+            drawTrailHighlight = false;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
             drawTrailBtommWidth = 20;

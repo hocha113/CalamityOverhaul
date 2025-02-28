@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
         public override void SetDefaults(Item item) {
+            item.damage = 80;
             item.UseSound = null;
             item.SetKnifeHeld<HellfireFlambergeHeld>();
         }

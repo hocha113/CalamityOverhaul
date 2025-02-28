@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void SetBox() {
-
+            
         }
 
         public override bool PreUpdate() {
@@ -137,6 +137,15 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
             if (ToMouse.Length() > 200) {
                 return false;
+            }
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Rectangle mouseBox = (setAmmoBoxPos - TextureValue.Size() / 2).GetRectangle(TextureValue.Size());
+                foreach (var proj in Main.ActiveProjectiles) {
+                    if (proj.ModProjectile is BaseAmmoBox && proj.Hitbox.Intersects(mouseBox)) {
+                        return false;
+                    }
+                }
             }
 
             return !Owner.CWR().uiMouseInterface && noCanUseTime <= 0;

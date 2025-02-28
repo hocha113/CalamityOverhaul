@@ -74,9 +74,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 return false;
             }
             if (!Main.dedServ) {
-                SoundStyle sound = MurasamaOverride.BigSwing with { Pitch = (0.3f + Level * 0.25f) };
+                SoundStyle sound = SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.2f };
                 if (Level == 3) {
-                    sound = SoundID.Item71 with { Volume = 1.5f, Pitch = 0.75f };
+                    sound = SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f, Pitch = -0.1f };
                 }
                 SoundEngine.PlaySound(sound, player.position);
             }

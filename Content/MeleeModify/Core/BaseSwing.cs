@@ -150,9 +150,9 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         /// </summary>
         protected float[] oldDistanceToOwner;
         /// <summary>
-        /// 绘制刀光时是否应用高光渲染，默认为<see langword="true"/>
+        /// 绘制刀光时是否应用高光渲染，默认为<see langword="false"/>
         /// </summary>
-        protected bool drawTrailHighlight = true;
+        protected bool drawTrailHighlight = false;
         /// <summary>
         /// 更新率，值为<see cref="Projectile.extraUpdates"/>+1，使用之前请注意<see cref="Projectile.extraUpdates"/>是否已经被正确设置
         /// </summary>

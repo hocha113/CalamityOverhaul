@@ -17,20 +17,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 44;
             canDrawSlashTrail = true;
+            drawTrailHighlight = false;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 4f;
             drawTrailBtommWidth = 50;
             distanceToOwner = 26;
-            drawTrailTopWidth = 20;
+            drawTrailTopWidth = 18;
             Incandescence = true;
             SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if ((CWRLoad.WormBodys.Contains(target.type) || target.type == NPCID.Probe) && !Main.rand.NextBool(5)) {
+            if ((CWRLoad.WormBodys.Contains(target.type) || target.type == NPCID.Probe) && !Main.rand.NextBool(2)) {
                 return;
             }
-            var source = Owner.GetSource_ItemUse(Item);
+            if (Projectile.numHits > 0) {
+                return;
+            }
+            Projectile.numHits++;
             int totalProjectiles = 4;
             float radians = MathHelper.TwoPi / totalProjectiles;
             int type = ModContent.ProjectileType<IceBombFriendly>();
@@ -42,12 +46,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 spinningPoint = Main.rand.NextBool() ? new Vector2(0f, -velocity) : new Vector2(-velocityX, -velocity);
             for (int k = 0; k < totalProjectiles; k++) {
                 Vector2 projRotation = spinningPoint.RotatedBy(radians * k);
-                Projectile.NewProjectile(source, target.Center, projRotation, type, bombDamage, hit.Knockback, Main.myPlayer);
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, projRotation, type, bombDamage, hit.Knockback, Main.myPlayer);
             }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            var source = Owner.GetSource_ItemUse(Item);
             int totalProjectiles = 4;
             float radians = MathHelper.TwoPi / totalProjectiles;
             int type = ModContent.ProjectileType<IceBombFriendly>();
@@ -59,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 spinningPoint = Main.rand.NextBool() ? new Vector2(0f, -velocity) : new Vector2(-velocityX, -velocity);
             for (int k = 0; k < totalProjectiles; k++) {
                 Vector2 projRotation = spinningPoint.RotatedBy(radians * k);
-                Projectile.NewProjectile(source, target.Center, projRotation, type, bombDamage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, projRotation, type, bombDamage, 0f, Main.myPlayer);
             }
         }
     }

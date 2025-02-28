@@ -70,8 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             int dustIndex = Dust.NewDust(position, width, height, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 0.8f);
             Dust dust = Main.dust[dustIndex];
             dust.noGravity = true;
-            dust.velocity *= 0.5f;
-            dust.velocity += velocity * 0.1f;
+            dust.velocity = velocity.RotatedByRandom(0.4f) * -0.5f;
         }
 
         private void CreateScatterDust(Vector2 center, int amount) {

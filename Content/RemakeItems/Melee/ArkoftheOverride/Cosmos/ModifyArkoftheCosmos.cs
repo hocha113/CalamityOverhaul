@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
     {
         public override int TargetID => ItemType<ArkoftheCosmos>();
         public override bool CanLoadLocalization => false;
-        public override void SetDefaults(Item item) => item.DamageType = GetInstance<TrueMeleeDamageClass>();
+        public override void SetDefaults(Item item) => item.DamageType = DamageClass.Melee;
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ProjectileType<ModifyCosmosSwungBladeHeld>()] == 0;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

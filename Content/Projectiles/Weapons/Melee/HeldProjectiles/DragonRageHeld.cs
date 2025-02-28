@@ -333,6 +333,34 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         //模拟出一个勉强符合物理逻辑的命中粒子效果，最好不要动这些，这个效果是我凑出来的，我也不清楚这具体的数学逻辑，代码太乱了
         private void HitEffect(Entity target, bool theofSteel) {
+            if (target.Distance(Owner.Center) < Owner.width * 2) {
+                return;
+            }
+
+            int type = ModContent.ProjectileType<DragonRageFireOrb>();
+            if (Projectile.ai[0] == 3) {
+                float OrbSize = Main.rand.NextFloat(0.5f, 0.8f) * Projectile.numHits;
+                if (OrbSize > 2.2f) {
+                    OrbSize = 2.2f;
+                }
+                CalamityMod.Particles.Particle orb = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
+                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
+                CalamityMod.Particles.Particle orb2 = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8, true);
+                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb2);
+
+                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
+                    , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4
+                    , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
+                Main.projectile[proj].DamageType = DamageClass.Melee;
+            }
+            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && RDragonRage.coolWorld) {
+                for (int i = 0; i < 3; i++) {
+                    Vector2 vr = (MathHelper.TwoPi / 3f * i + Main.GameUpdateCount * 0.1f).ToRotationVector2();
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
+                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
+                }
+            }
+
             HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
             if (theofSteel) {
                 SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = 0.75f }, target.Center);
@@ -373,45 +401,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            int type = ModContent.ProjectileType<DragonRageFireOrb>();
             if (Projectile.ai[0] == 3) {
-                float OrbSize = Main.rand.NextFloat(0.5f, 0.8f) * Projectile.numHits;
-                if (OrbSize > 2.2f) {
-                    OrbSize = 2.2f;
-                }
-                CalamityMod.Particles.Particle orb = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
-                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
-                CalamityMod.Particles.Particle orb2 = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8, true);
-                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb2);
-
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
-                    , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4
-                    , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
-                Main.projectile[proj].DamageType = DamageClass.Melee;
-
                 target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             }
-
-            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && RDragonRage.coolWorld) {
-                for (int i = 0; i < 3; i++) {
-                    Vector2 vr = (MathHelper.TwoPi / 3f * i + Main.GameUpdateCount * 0.1f).ToRotationVector2();
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
-                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
-                }
-            }
-
             HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target));
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             if (Projectile.ai[0] == 3) {
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
-                    , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4
-                    , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
-                Main.projectile[proj].DamageType = DamageClass.Melee;
+                target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             }
-
             HitEffect(target, false);
         }
 
@@ -440,7 +439,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             float rotding = Owner.Center.To(Projectile.Center).ToRotation();
             float size = Projectile.scale * MeleeSize;
             Vector2 endPos = rotding.ToRotationVector2() * Length * size * 1.3f + Projectile.Center;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, 25 * size, ref point);
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Owner.Center, endPos, 25 * size, ref point)) {
+                return true;
+            }
+            return null;
         }
 
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {
