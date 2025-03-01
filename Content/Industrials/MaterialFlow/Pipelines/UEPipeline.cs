@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
+﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -7,14 +8,36 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
+    internal class GlobalUEPipeline : GlobalItem
+    {
+        public override bool InstancePerEntity => true;
+        public float UEValue;
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == UEPipeline.ID;
+        public override void SaveData(Item item, TagCompound tag) => tag["UEValue"] = UEValue;
+        public override void LoadData(Item item, TagCompound tag) {
+            if (!tag.TryGet("UEValue", out UEValue)) {
+                UEValue = 0;
+            }
+        }
+    }
+
     internal class UEPipeline : ModItem
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
+        public static int ID { get; private set; }
+        public static LocalizedText InternalStoredEnergy { get; private set; }
+        public ref float UEValue => ref Item.GetGlobalItem<GlobalUEPipeline>().UEValue;
+        public override void SetStaticDefaults() {
+            InternalStoredEnergy = this.GetLocalization(nameof(InternalStoredEnergy), () => "Internal Stored Energy");
+            ID = Type;
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -29,6 +52,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<UEPipelineTile>();
         }
+
+        public override void OnStack(Item source, int numToTransfer) 
+            => UEValue += source.GetGlobalItem<GlobalUEPipeline>().UEValue;
+
+        public override void OnConsumeItem(Player player) {
+            UEValue -= UEPipelineTP.MaxUEValue;
+            if (UEValue < 0) {
+                UEValue = 0;
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) 
+            => tooltips.ReplaceTooltip("[UEValue]", $"{InternalStoredEnergy.Value}:{UEValue}UE");
     }
 
     internal class UEPipelineTile : ModTile
@@ -49,6 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             localPlayer.cursorItemIconID = ModContent.ItemType<UEPipeline>();
             localPlayer.noThrow = 2;
         }
+        public override bool CanDrop(int i, int j) => false;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
@@ -90,7 +127,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 // 如果相邻的 TileProcessor 是发电机
                 if (externalTP is BaseGeneratorTP baseGeneratorTP) {
                     // 如果发电机的 UEvalue 大于 0，从发电机到管道传递值
-                    if (baseGeneratorTP.GeneratorData.UEvalue > 0) {
+                    if (baseGeneratorTP.GeneratorData.UEvalue > 0 && coreTP.GeneratorData.UEvalue < UEPipelineTP.MaxUEValue) {
                         baseGeneratorTP.GeneratorData.UEvalue--;  // 从发电机减去能量
                         coreTP.GeneratorData.UEvalue++;      // 给管道增加能量
                     }
@@ -103,7 +140,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                         battery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
-                    if (battery.decussation || battery.turning) {
+                    if (battery.Decussation || battery.Turning) {
                         canDraw = false;
                     }
                     linkID = 2;
@@ -153,16 +190,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     internal class UEPipelineTP : TileProcessor, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
-        public static Asset<Texture2D> Pipeline;
-        public static Asset<Texture2D> PipelineSide;
-        public static Asset<Texture2D> PipelineCross;
-        public static Asset<Texture2D> PipelineCrossSide;
-        public static Asset<Texture2D> PipelineChannel;
-        public static Asset<Texture2D> PipelineChannelSide;
-        internal List<SideState> SideState;
-        internal GeneratorData GeneratorData;
-        internal bool turning;
-        internal bool decussation;
+        public static Asset<Texture2D> Pipeline { get; private set; }
+        public static Asset<Texture2D> PipelineSide { get; private set; }
+        public static Asset<Texture2D> PipelineCross { get; private set; }
+        public static Asset<Texture2D> PipelineCrossSide { get; private set; }
+        public static Asset<Texture2D> PipelineChannel { get; private set; }
+        public static Asset<Texture2D> PipelineChannelSide { get; private set; }
+        internal List<SideState> SideState { get; private set; }
+        internal GeneratorData GeneratorData { get; private set; }
+        internal bool Turning { get; private set; }
+        internal bool Decussation { get; private set; }
+        internal const float MaxUEValue = 20;
         void ICWRLoader.LoadAsset() {
             PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel");
             PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide");
@@ -186,6 +224,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             new (new Point16(1, 0))//右3
             };
             GeneratorData = new GeneratorData();
+            if (TrackItem != null && TrackItem.type == UEPipeline.ID) {
+                GeneratorData.UEvalue = TrackItem.GetGlobalItem<GlobalUEPipeline>().UEValue;
+                if (GeneratorData.UEvalue > MaxUEValue) {
+                    GeneratorData.UEvalue = MaxUEValue;
+                }
+            }
         }
 
         public override void Update() {
@@ -195,23 +239,34 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 side.Update();
             }
 
-            turning = false;
-            decussation = false;
+            Turning = false;
+            Decussation = false;
 
             if (SideState[0].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
-                turning = true;//这种情况判定为拐角
+                Turning = true;//这种情况判定为拐角
             }
             if (SideState[1].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
-                turning = true;//这种情况判定为拐角
+                Turning = true;//这种情况判定为拐角
             }
 
             if (SideState[0].linkID == 2 && SideState[1].linkID == 2 && SideState[2].linkID == 2 && SideState[3].linkID == 2) {
-                decussation = true;//这种情况判定为十字交叉
+                Decussation = true;//这种情况判定为十字交叉
+            }
+        }
+
+        public override void OnKill() {
+            if (!VaultUtils.isClient) {
+                Item item = new Item(ModContent.ItemType<UEPipeline>());
+                item.GetGlobalItem<GlobalUEPipeline>().UEValue = GeneratorData.UEvalue;
+                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
+                if (!VaultUtils.isSinglePlayer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                }
             }
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            if (decussation) {
+            if (Decussation) {
                 return;//十字交叉下不能进行边缘绘制
             }
             foreach (var side in SideState) {
@@ -230,14 +285,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
 
-            if (decussation) {
+            if (Decussation) {
                 drawPos = CenterInWorld - Main.screenPosition;
                 spriteBatch.Draw(PipelineCross.Value, drawPos, null, Color.White * (GeneratorData.UEvalue / 10f), 0, PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineCrossSide.Value, drawPos, null, Lighting.GetColor(Position.ToPoint()), 0, PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
                 return;
             }
 
-            if (turning) {
+            if (Turning) {
                 spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), Color.White * (GeneratorData.UEvalue / 10f));
                 spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
                 return;

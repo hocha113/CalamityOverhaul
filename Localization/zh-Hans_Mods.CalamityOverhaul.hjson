@@ -886,7 +886,12 @@ Items: {
 
 	UEPipeline: {
 		DisplayName: 能量管道
-		Tooltip: ""
+		Tooltip:
+			'''
+			传输电能
+			[UEValue]
+			'''
+		InternalStoredEnergy: 能量存储
 	}
 }
 

@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -899,7 +899,12 @@ Items: {
 
 	UEPipeline: {
 		DisplayName: UE Pipeline
-		Tooltip: ""
+		Tooltip:
+			'''
+			Transmission Power
+			[UEValue]
+			'''
+		InternalStoredEnergy: Internal Stored Energy
 	}
 }
 

@@ -898,8 +898,13 @@ Items: {
 	}
 
 	UEPipeline: {
-		// DisplayName: U E Pipeline
-		// Tooltip: ""
+		// DisplayName: UE Pipeline
+		/* Tooltip:
+			'''
+			Transmission Power
+			[UEValue]
+			''' */
+		// InternalStoredEnergy: Internal Stored Energy
 	}
 }
 
