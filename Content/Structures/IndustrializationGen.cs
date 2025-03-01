@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
+using CalamityMod.Tiles.DraedonStructures;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 
 namespace CalamityOverhaul.Content.Structures
 {
@@ -21,12 +23,23 @@ namespace CalamityOverhaul.Content.Structures
             return Main.maxTilesX <= 4200 ? 1 : Main.maxTilesX <= 6400 ? 2 : Main.maxTilesX <= 8400 ? 3 : 1;
         }
 
-        private static void SpawnWindGrivenGenerator() {
-            Point16 targetPos = new Point16(WorldGen.genRand.Next(Main.maxTilesX / 2 - 300, Main.maxTilesX / 2 + 300), 0);
-
+        internal static void SpawnWindGrivenGenerator() {
+            Point16 asteroidCoreTopPoint = default;
+            int labHologramProjector = ModContent.TileType<LabHologramProjector>();
+            for (int x = 0; x < Main.maxTilesX; x++) {
+                for (int y = 0; y < 500; y++) {
+                    Point16 newPoint = new Point16(x, y);
+                    if (Framing.GetTileSafely(newPoint).TileType == labHologramProjector) {
+                        asteroidCoreTopPoint = new Point16(newPoint.X, (short)0);
+                    }
+                }
+            }
+            
             int maxFindWidth = 600 + GetWorldSize() * 200;
             int maxFindHeight = 500;
-            targetPos -= new Point16(maxFindWidth / 2, maxFindHeight / 2);
+
+            Point16 asteroidCoreTopPoint2 = asteroidCoreTopPoint;
+            asteroidCoreTopPoint -= new Point16(maxFindWidth / 2, maxFindHeight / 2);
             int tileIsAirCount = 0;
             bool dontFindByY = false;
             Tile tile = default;
@@ -35,7 +48,7 @@ namespace CalamityOverhaul.Content.Structures
 
             for (int i = 0; i < maxFindWidth; i++) {
                 for (int j = 0; j < maxFindHeight; j++) {
-                    Point16 newPos = targetPos + new Point16(i, j);
+                    Point16 newPos = asteroidCoreTopPoint + new Point16(i, j);
 
                     if (tile.HasSolidTile()) {
                         tileIsAirCount = 0;
@@ -56,7 +69,16 @@ namespace CalamityOverhaul.Content.Structures
                 dontFindByY = false;
             }
 
+            Point16 mainPos = scheduledPosList[0]; // 初始化为第一个点
+
+            foreach (var point in scheduledPosList) {
+                if (Math.Abs(point.X - asteroidCoreTopPoint2.X) < Math.Abs(mainPos.X - asteroidCoreTopPoint2.X)) {
+                    mainPos = point; // 选择 X 轴距离更小的点
+                }
+            }
+
             Point16 oldPos = default;
+
             for (int i = 0; i < scheduledPosList.Count; i++) {
                 if (i == 0 || i == scheduledPosList.Count - 1) {
                     continue;
@@ -80,10 +102,50 @@ namespace CalamityOverhaul.Content.Structures
                     tileFind = Framing.GetTileSafely(pos3);
                     tileFind.Slope = SlopeType.Solid;
                     WorldGen.PlaceTile(pos3.X, pos3.Y, tileFind.TileType);
-                    WorldGen.PlaceTile(pos.X, pos.Y - 1, ModContent.TileType<WindGrivenGeneratorTile>());
+
+                    if (pos != mainPos) {
+                        WorldGen.PlaceTile(pos.X, pos.Y - 1, ModContent.TileType<WindGrivenGeneratorTile>());
+                    }
                     oldPos = pos;
                 }
             }
+
+            int maxExcavateY = 6;
+            for (int z = 0; z < maxExcavateY + 2; z++) {
+                for (int q = 0; q < 5; q++) {
+                    Point16 newPos = mainPos + new Point16(q - 2, z - 1);
+                    WorldGen.KillTile(newPos.X, newPos.Y);
+                }
+            }
+
+            //放置底座
+            int laboratoryPipePlating = ModContent.TileType<LaboratoryPipePlating>();
+            for (int z = 0; z < 2; z++) {
+                for (int q = 0; q < 5; q++) {
+                    Point16 newPos = mainPos + new Point16(q - 2, z + maxExcavateY - 1);
+                    WorldGen.PlaceTile(newPos.X, newPos.Y, laboratoryPipePlating);
+                }
+            }
+
+            //放置管道
+            //int uePipelineTile = ModContent.TileType<UEPipelineTile>();
+            //for (int y = 0; y < 55; y++) {
+            //    Point16 newPos = mainPos + new Point16(-3, y + maxExcavateY - 3);
+            //    int tileID = Framing.GetTileSafely(newPos).TileType;
+            //    if (y == 0) {
+            //        newPos = mainPos + new Point16(-2, y + maxExcavateY - 2);
+            //        WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
+            //        WorldGen.KillWall(newPos.X, newPos.Y);
+            //    }
+            //    if (tileID is 0 or 1 || y < 6) {
+            //        WorldGen.KillTile(newPos.X, newPos.Y);
+            //        WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
+            //        WorldGen.KillWall(newPos.X, newPos.Y);
+            //    }
+            //}
+
+            //我不太清除为什么要减4，一般来讲减2就够了，可能是因为建筑太大的原因吧
+            WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 4, ModContent.TileType<WindGrivenGeneratorMK2Tile>());
         }
     }
 }
