@@ -881,6 +881,11 @@ Items: {
 		// DisplayName: Thermal Generator MK2
 		// Tooltip: ""
 	}
+
+	UEPipeline: {
+		// DisplayName: U E Pipeline
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

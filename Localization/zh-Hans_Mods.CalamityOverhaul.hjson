@@ -883,6 +883,11 @@ Items: {
 		DisplayName: 火力发电机MK2
 		Tooltip: ""
 	}
+
+	UEPipeline: {
+		DisplayName: 能量管道
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

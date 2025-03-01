@@ -6,16 +6,15 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    internal class BasicPipeline : ModItem
+    internal class UEPipeline : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineGoden";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -28,13 +27,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
-            Item.createTile = ModContent.TileType<BasicPipelineTile>();
+            Item.createTile = ModContent.TileType<UEPipelineTile>();
         }
     }
 
-    internal class BasicPipelineTile : ModTile
+    internal class UEPipelineTile : ModTile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -47,9 +46,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void MouseOver(int i, int j) {
             Player localPlayer = Main.LocalPlayer;
             localPlayer.cursorItemIconEnabled = true;
-            localPlayer.cursorItemIconID = ModContent.ItemType<BasicPipeline>();
+            localPlayer.cursorItemIconID = ModContent.ItemType<UEPipeline>();
             localPlayer.noThrow = 2;
         }
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
     internal class SideState(Point16 point16)
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// <summary>
         /// 自身的核心TP实体
         /// </summary>
-        internal BasicPipelineTP coreTP;
+        internal UEPipelineTP coreTP;
         /// <summary>
         /// 链接ID
         /// </summary>
@@ -81,6 +81,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             externalTile = default;
             externalTP = null;
             linkID = 0;
+            canDraw = true;
             // 获取当前 Tile 和相邻的 TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
 
@@ -97,10 +98,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
 
                 // 如果有能量传递的需求，且相邻的是管道
-                if (externalTP is BasicPipelineTP basicPipelineTP) {
-                    if (basicPipelineTP.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue && coreTP.GeneratorData.UEvalue > 0) {
-                        basicPipelineTP.GeneratorData.UEvalue++;
+                if (externalTP is UEPipelineTP battery) {
+                    if (battery.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue && coreTP.GeneratorData.UEvalue > 0) {
+                        battery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
+                    }
+                    if (battery.decussation || battery.turning) {
+                        canDraw = false;
                     }
                     linkID = 2;
                 }
@@ -115,59 +119,71 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
 
-            canDraw = true;
             if (linkID == 0) {
                 canDraw = false;
             }
         }
 
         public void Draw(SpriteBatch spriteBatch) {
-            if (coreTP == null || coreTP.GeneratorData == null) {
+            if (coreTP == null || coreTP.GeneratorData == null || externalTP == null) {
                 return;
             }
 
-            Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
+            Vector2 drawPos = coreTP.PosInWorld - Main.screenPosition;
+
+            if (linkID == 3) {
+                spriteBatch.Draw(UEPipelineTP.Pipeline.Value, drawPos.GetRectangle(coreTP.Size), Color.White * (coreTP.GeneratorData.UEvalue / 10f));
+                spriteBatch.Draw(UEPipelineTP.PipelineSide.Value, drawPos.GetRectangle(coreTP.Size), Lighting.GetColor(Position.ToPoint()));
+            }
+
+            drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = Offset.ToVector2().ToRotation();
 
-            Vector2 orig = BasicPipelineTP.PipelineChannelGoden.Size() / 2;
+            Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
             Color color = Color.White * (coreTP.GeneratorData.UEvalue / 10f);
-            spriteBatch.Draw(BasicPipelineTP.PipelineChannelGoden.Value, drawPos + orig, null, color
+            spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
 
             color = Lighting.GetColor(Position.ToPoint());
-            spriteBatch.Draw(BasicPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, color
+            spriteBatch.Draw(UEPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
         }
     }
 
-    internal class BasicPipelineTP : TileProcessor, ICWRLoader
+    internal class UEPipelineTP : TileProcessor, ICWRLoader
     {
-        public override int TargetTileID => ModContent.TileType<BasicPipelineTile>();
-        public static Asset<Texture2D> PipelineChannelGoden;
-        public static Asset<Texture2D> PipelineChannelSide;
-        public static Asset<Texture2D> PipelineGoden;
+        public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
+        public static Asset<Texture2D> Pipeline;
         public static Asset<Texture2D> PipelineSide;
+        public static Asset<Texture2D> PipelineCross;
+        public static Asset<Texture2D> PipelineCrossSide;
+        public static Asset<Texture2D> PipelineChannel;
+        public static Asset<Texture2D> PipelineChannelSide;
         internal List<SideState> SideState;
         internal GeneratorData GeneratorData;
+        internal bool turning;
+        internal bool decussation;
         void ICWRLoader.LoadAsset() {
-            PipelineChannelGoden = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineChannelGoden");
-            PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineChannelSide");
-            PipelineGoden = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineGoden");
-            PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/PipelineSide");
+            PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel");
+            PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide");
+            Pipeline = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipeline");
+            PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineSide");
+            PipelineCross = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCross");
+            PipelineCrossSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide");
         }
         void ICWRLoader.UnLoadData() {
-            PipelineChannelGoden = null;
+            PipelineChannel = null;
             PipelineChannelSide = null;
-            PipelineGoden = null;
+            Pipeline = null;
             PipelineSide = null;
         }
         
         public override void SetProperty() {
             SideState = new List<SideState>() {
-            new (new Point16(0, -1)),
-            new (new Point16(0, 1)),
-            new (new Point16(-1, 0)),
-            new (new Point16(1, 0))
+            new (new Point16(0, -1)),//上0
+            new (new Point16(0, 1)),//下1
+            new (new Point16(-1, 0)),//左2
+            new (new Point16(1, 0))//右3
             };
             GeneratorData = new GeneratorData();
         }
@@ -178,9 +194,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 side.Position = Position;
                 side.Update();
             }
+
+            turning = false;
+            decussation = false;
+
+            if (SideState[0].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
+                turning = true;//这种情况判定为拐角
+            }
+            if (SideState[1].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
+                turning = true;//这种情况判定为拐角
+            }
+
+            if (SideState[0].linkID == 2 && SideState[1].linkID == 2 && SideState[2].linkID == 2 && SideState[3].linkID == 2) {
+                decussation = true;//这种情况判定为十字交叉
+            }
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
+            if (decussation) {
+                return;//十字交叉下不能进行边缘绘制
+            }
             foreach (var side in SideState) {
                 if (side.canDraw) {
                     side.Draw(spriteBatch);
@@ -197,8 +230,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
 
+            if (decussation) {
+                drawPos = CenterInWorld - Main.screenPosition;
+                spriteBatch.Draw(PipelineCross.Value, drawPos, null, Color.White * (GeneratorData.UEvalue / 10f), 0, PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(PipelineCrossSide.Value, drawPos, null, Lighting.GetColor(Position.ToPoint()), 0, PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
+                return;
+            }
+
+            if (turning) {
+                spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), Color.White * (GeneratorData.UEvalue / 10f));
+                spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
+                return;
+            }
+
             if (linkCount != 2) {
-                spriteBatch.Draw(PipelineGoden.Value, drawPos.GetRectangle(Size), Color.White * (GeneratorData.UEvalue / 10f));
+                spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), Color.White * (GeneratorData.UEvalue / 10f));
                 spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
             }
 
