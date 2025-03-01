@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.TileModules
 
         public override void Update() {
             CWRUtils.ClockFrame(ref frame, 6, 10);
-
+            Time++;
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {
                 return;
@@ -152,8 +152,6 @@ namespace CalamityOverhaul.Content.TileModules
                 tpEntityLoadenItems();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
-
-            Time++;
         }
 
         public override void OnKill() {
