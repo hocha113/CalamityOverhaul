@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Common
     {
         #region Data
         public delegate bool On_BOOL_Dalegate();
+        public delegate void On_Void_Dalegate(object obj);
         public delegate void On_PostAI_Dalegate(object obj, Projectile projectile);
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
@@ -123,6 +124,14 @@ namespace CalamityOverhaul.Common
 
         void ICWRLoader.LoadData() {
             #region
+            if (ModLoader.TryGetMod("Calamity" + "Throwing" + "Spear", out Mod mod)) {
+                Type targetClass = GetTargetTypeInStringKey(GetModType(mod), "FinishingTouch1");
+                MethodInfo methodInfo = targetClass.GetMethod("OnModLoad", BindingFlags.Public | BindingFlags.Instance);
+                CWRHook.Add(methodInfo, FuncByLoadenSmd);
+            }
+            #endregion
+
+            #region Luiafk
             if (CWRMod.Instance.luiafk != null) {
                 Type luiAFKConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.luiafk), "LuiAFKConfig");
                 LuiAFKConfig_RangerAmmoInfo = luiAFKConfigType.GetField("rangerAmmo", BindingFlags.Public | BindingFlags.Instance);
@@ -702,5 +711,7 @@ namespace CalamityOverhaul.Common
 
             return orig.Invoke(player, item) && result;
         }
+
+        private static void FuncByLoadenSmd(On_Void_Dalegate orig, object obj) { }
     }
 }
