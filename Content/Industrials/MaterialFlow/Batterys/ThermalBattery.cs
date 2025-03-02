@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalBatteryTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = ThermalBatteryTP._maxUEValue;
         }
     }
 
@@ -83,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Color drawColor = Lighting.GetColor(i, j);
             Texture2D glow = CWRUtils.GetT2DValue(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull");
             if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, thermal.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
                 spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , thermal.drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
@@ -104,17 +106,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal Color drawColor;
         internal float oldUEValue;
         internal int activeTime;
-        public override void SetProperty() {
-            GeneratorData = new GeneratorData();
-        }
-
+        internal const float _maxUEValue = 6000;
+        internal override float MaxUEValue => _maxUEValue;
+        internal bool fullLoad;
+        public override void SetProperty() => GeneratorData = new MachineData();
         public override void Update() {
+            fullLoad = GeneratorData.UEvalue >= MaxUEValue;
             hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
-            if (--activeTime > 0) {
+            if (--activeTime > 0 || fullLoad) {
                 CWRUtils.ClockFrame(ref frame, 5, 5);
             }
             
-            drawColor = Color.White * (GeneratorData.UEvalue / 6000f);
+            drawColor = Color.White * (GeneratorData.UEvalue / MaxUEValue);
             if (oldUEValue != GeneratorData.UEvalue) {
                 activeTime = 60;
                 oldUEValue = GeneratorData.UEvalue;

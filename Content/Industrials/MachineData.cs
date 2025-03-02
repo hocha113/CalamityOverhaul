@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials
 {
-    public class GeneratorData
+    public class MachineData
     {
         internal float UEvalue;
         internal string Name => GetType().Name;

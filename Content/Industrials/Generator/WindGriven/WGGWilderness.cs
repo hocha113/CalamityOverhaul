@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -25,6 +26,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<WGGWildernessTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 200;
         }
     }
 
@@ -62,10 +65,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override int TargetTileID => ModContent.TileType<WGGWildernessTile>();
         private float rotition;
         private float rotSpeed;
+        public override float MaxUEValue => 200;
+        public override bool CanDrop => false;
+        public override int TargetItem => ModContent.ItemType<WGGWilderness>();
         public override void GeneratorUpdate() {
             rotSpeed = 0.02f;
             rotition += rotSpeed;
-            if (GeneratorData.UEvalue < 1000) {
+            if (GeneratorData.UEvalue < MaxUEValue) {
                 GeneratorData.UEvalue += rotSpeed * 10;
             }
         }

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Common
         public static CWRLocText Instance { get; private set; }
         //不要被吓到，这些只是必须的
         #region 字段内容
+        public LocalizedText InternalStoredEnergy { get; private set; }
         public LocalizedText KreloadTimeAddText { get; private set; }
         public LocalizedText KreloadTimeLessenText { get; private set; }
         public LocalizedText DeathModeItem { get; private set; }

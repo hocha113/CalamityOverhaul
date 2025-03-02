@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -859,29 +859,24 @@ Items: {
 		Tooltip: ""
 	}
 
-	BasicPipeline: {
-		DisplayName: 基础管道
-		Tooltip: ""
-	}
-
 	ThermalBattery: {
 		DisplayName: 热能电池
-		Tooltip: ""
+		Tooltip: "[UEValue]"
 	}
 
 	WindGrivenGenerator: {
 		DisplayName: 风力发电机
-		Tooltip: ""
+		Tooltip: "[UEValue]"
 	}
 
 	WindGrivenGeneratorMK2: {
 		DisplayName: 风力发电机MK2
-		Tooltip: ""
+		Tooltip: "[UEValue]"
 	}
 
 	ThermalGeneratorMK2: {
 		DisplayName: 火力发电机MK2
-		Tooltip: ""
+		Tooltip: "[UEValue]"
 	}
 
 	UEPipeline: {
@@ -891,7 +886,6 @@ Items: {
 			传输电能
 			[UEValue]
 			'''
-		InternalStoredEnergy: 能量存储
 	}
 
 	WGGMK2Wilderness: {
@@ -1405,6 +1399,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		InternalStoredEnergy: 能量存储
 		KreloadTimeAddText: 弹药装填时间增加
 		KreloadTimeLessenText: 弹药装填时间减少
 		DeathModeItem: 死亡模式

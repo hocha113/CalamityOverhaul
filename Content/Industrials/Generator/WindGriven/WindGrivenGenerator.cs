@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -25,6 +26,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<WindGrivenGeneratorTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 200;
         }
     }
 
@@ -54,6 +57,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
+        public override bool CanDrop(int i, int j) => false;
     }
 
     internal class WindGrivenGeneratorTP : BaseGeneratorTP
@@ -61,10 +65,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorTile>();
         private float rotition;
         private float rotSpeed;
+        public override float MaxUEValue => 200f;
+        public override int TargetItem => ModContent.ItemType<WindGrivenGenerator>();
         public override void GeneratorUpdate() {
             rotSpeed = 0.02f;
             rotition += rotSpeed;
-            if (GeneratorData.UEvalue < 1000) {
+            if (GeneratorData.UEvalue < MaxUEValue) {
                 GeneratorData.UEvalue += rotSpeed * 10;
             }
         }

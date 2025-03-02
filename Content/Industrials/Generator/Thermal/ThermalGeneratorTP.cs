@@ -12,15 +12,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override int TargetTileID => ModContent.TileType<ThermalGeneratorTile>();
         internal int frame;
         internal ThermalData ThermalData => GeneratorData as ThermalData;
-        public override GeneratorData GetGeneratorDataInds() {
+        public override float MaxUEValue => 1000;
+        public override int TargetItem => ModContent.ItemType<ThermalGenerator>();
+        public override MachineData GetGeneratorDataInds() {
             var inds = new ThermalData();
             inds.MaxChargeCool = 6;
             inds.MaxTemperature = 600;
-            inds.MaxUEValue = 1000;
+            inds.MaxUEValue = MaxUEValue;
             return inds;
         }
         public override void GeneratorUpdate() {
-            if (PosInWorld.Distance(Main.LocalPlayer.Center) > maxFindMode) {
+            if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
                 if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this 
                     && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
                     UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;

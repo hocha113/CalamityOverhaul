@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalGeneratorMK2Tile>();
+            Item.CWR().StorageUE = true;
         }
     }
 
@@ -54,5 +55,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
+        public override bool CanDrop(int i, int j) => false;
     }
 }

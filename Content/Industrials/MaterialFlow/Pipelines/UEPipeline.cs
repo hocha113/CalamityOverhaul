@@ -1,45 +1,24 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    internal class GlobalUEPipeline : GlobalItem
-    {
-        public override bool InstancePerEntity => true;
-        public float UEValue;
-        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == UEPipeline.ID;
-        public override void SaveData(Item item, TagCompound tag) => tag["UEValue"] = UEValue;
-        public override void LoadData(Item item, TagCompound tag) {
-            if (!tag.TryGet("UEValue", out UEValue)) {
-                UEValue = 0;
-            }
-        }
-    }
-
     internal class UEPipeline : ModItem
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
         public static int ID { get; private set; }
-        public static LocalizedText InternalStoredEnergy { get; private set; }
-        public ref float UEValue => ref Item.GetGlobalItem<GlobalUEPipeline>().UEValue;
-        public override void SetStaticDefaults() {
-            InternalStoredEnergy = this.GetLocalization(nameof(InternalStoredEnergy), () => "Internal Stored Energy");
-            ID = Type;
-        }
+        public ref float UEValue => ref Item.CWR().UEValue;
+        public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -53,20 +32,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<UEPipelineTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = UEPipelineTP.MaxUEValue;
         }
-
-        public override void OnStack(Item source, int numToTransfer) 
-            => UEValue += source.GetGlobalItem<GlobalUEPipeline>().UEValue;
-
-        public override void OnConsumeItem(Player player) {
-            UEValue -= UEPipelineTP.MaxUEValue;
-            if (UEValue < 0) {
-                UEValue = 0;
-            }
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips) 
-            => tooltips.ReplaceTooltip("[UEValue]", $"{InternalStoredEnergy.Value}:{UEValue}UE");
     }
 
     internal class UEPipelineTile : ModTile
@@ -159,7 +127,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
                 //如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (coreTP.GeneratorData.UEvalue > 0 && baseBattery.GeneratorData.UEvalue < 6000) {
+                    if (coreTP.GeneratorData.UEvalue > 0 && baseBattery.GeneratorData.UEvalue < baseBattery.MaxUEValue) {
                         baseBattery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
@@ -203,7 +171,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public static Asset<Texture2D> PipelineChannel { get; private set; }
         public static Asset<Texture2D> PipelineChannelSide { get; private set; }
         internal List<SideState> SideState { get; private set; }
-        internal GeneratorData GeneratorData { get; private set; }
+        internal MachineData GeneratorData { get; private set; }
         internal bool Turning { get; private set; }
         internal bool Decussation { get; private set; }
         internal const float MaxUEValue = 20;
@@ -229,9 +197,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             new (new Point16(-1, 0)),//左2
             new (new Point16(1, 0))//右3
             };
-            GeneratorData = new GeneratorData();
+            GeneratorData = new MachineData();
             if (TrackItem != null && TrackItem.type == UEPipeline.ID) {
-                GeneratorData.UEvalue = TrackItem.GetGlobalItem<GlobalUEPipeline>().UEValue;
+                GeneratorData.UEvalue = TrackItem.CWR().UEValue;
                 if (GeneratorData.UEvalue > MaxUEValue) {
                     GeneratorData.UEvalue = MaxUEValue;
                 }
@@ -263,7 +231,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void OnKill() {
             if (!VaultUtils.isClient) {
                 Item item = new Item(ModContent.ItemType<UEPipeline>());
-                item.GetGlobalItem<GlobalUEPipeline>().UEValue = GeneratorData.UEvalue;
+                item.CWR().UEValue = GeneratorData.UEvalue;
                 int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
                 if (!VaultUtils.isSinglePlayer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);

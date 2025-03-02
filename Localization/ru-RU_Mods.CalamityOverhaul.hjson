@@ -869,29 +869,24 @@ Items: {
 		// Tooltip: ""
 	}
 
-	BasicPipeline: {
-		// DisplayName: Basic Pipeline
-		// Tooltip: ""
-	}
-
 	ThermalBattery: {
 		// DisplayName: Thermal Battery
-		// Tooltip: ""
+		// Tooltip: "[UEValue]"
 	}
 
 	WindGrivenGenerator: {
 		// DisplayName: Wind Griven Generator
-		// Tooltip: ""
+		// Tooltip: "[UEValue]"
 	}
 
 	WindGrivenGeneratorMK2: {
 		// DisplayName: Wind Griven Generator MK2
-		// Tooltip: ""
+		// Tooltip: "[UEValue]"
 	}
 
 	ThermalGeneratorMK2: {
 		// DisplayName: Thermal Generator MK2
-		// Tooltip: ""
+		// Tooltip: "[UEValue]"
 	}
 
 	UEPipeline: {
@@ -901,7 +896,6 @@ Items: {
 			Transmission Power
 			[UEValue]
 			''' */
-		// InternalStoredEnergy: Internal Stored Energy
 	}
 
 	WGGMK2Wilderness: {
@@ -1430,6 +1424,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// InternalStoredEnergy: Internal Stored Energy
 		// KreloadTimeAddText: "Ammunition reloading time increased "
 		// KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Предмет режима Смерть

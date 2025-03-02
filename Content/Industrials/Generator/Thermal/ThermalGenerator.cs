@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalGeneratorTile>();
+            Item.CWR().StorageUE = true;
         }
     }
 
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             TileObjectData.addTile(Type);
         }
-
+        public override bool CanDrop(int i, int j) => false;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;

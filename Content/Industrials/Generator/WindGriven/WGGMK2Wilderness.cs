@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<WGGMK2WildernessTile>();
+            Item.CWR().StorageUE = true;
         }
     }
 
@@ -64,10 +65,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override int TargetTileID => ModContent.TileType<WGGMK2WildernessTile>();
         private float rotition;
         private float rotSpeed;
+        public override float MaxUEValue => 800f;
+        public override bool CanDrop => false;
+        public override int TargetItem => ModContent.ItemType<WGGMK2Wilderness>();
         public override void GeneratorUpdate() {
             rotSpeed = 0.012f;
             rotition += rotSpeed;
-            if (GeneratorData.UEvalue < 8000) {
+            if (GeneratorData.UEvalue < MaxUEValue) {
                 GeneratorData.UEvalue += rotSpeed * 120;
             }
         }

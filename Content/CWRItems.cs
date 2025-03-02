@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
@@ -105,6 +106,18 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal int destructTime;
         /// <summary>
+        /// 是否存储UE
+        /// </summary>
+        public bool StorageUE;
+        /// <summary>
+        /// UE储能
+        /// </summary>
+        public float UEValue;
+        /// <summary>
+        /// 当这个物品被消耗时，会消耗的UE值
+        /// </summary>
+        public float ConsumeUseUE;
+        /// <summary>
         /// 用于存储一个手持挥舞类的原生射弹ID
         /// </summary>
         internal int SetHeldSwingOrigShootID;
@@ -203,6 +216,9 @@ namespace CalamityOverhaul.Content
             cwr.isInfiniteItem = isInfiniteItem;
             cwr.NoDestruct = NoDestruct;
             cwr.destructTime = destructTime;
+            cwr.StorageUE = StorageUE;
+            cwr.UEValue = UEValue;
+            cwr.ConsumeUseUE = ConsumeUseUE;
             cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.IsBow = IsBow;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
@@ -443,8 +459,37 @@ namespace CalamityOverhaul.Content
         }
         #endregion
 
-        public override string IsArmorSet(Item head, Item body, Item legs) {
-            return base.IsArmorSet(head, body, legs);
+        public override void SplitStack(Item destination, Item source, int numToTransfer) {
+            if (destination.type != ItemID.None && source.type != ItemID.None) {
+                CWRItems cwrDestination = destination.CWR();
+                CWRItems cwrSource = source.CWR();
+                if (cwrDestination.StorageUE && cwrSource.StorageUE) {
+                    cwrDestination.UEValue = cwrSource.UEValue;
+                    cwrDestination.UEValue = MathHelper.Clamp(cwrDestination.UEValue, 0, cwrDestination.ConsumeUseUE);
+                    cwrSource.UEValue -= cwrSource.ConsumeUseUE;
+                    cwrSource.UEValue = MathHelper.Clamp(cwrSource.UEValue, 0, int.MaxValue);
+                }
+            }
+        }
+
+        public override void OnStack(Item destination, Item source, int numToTransfer) {
+            if (destination.type != ItemID.None && source.type != ItemID.None) {
+                CWRItems cwrDestination = destination.CWR();
+                CWRItems cwrSource = source.CWR();
+                if (cwrDestination.StorageUE && cwrSource.StorageUE) {
+                    cwrDestination.UEValue += cwrSource.UEValue;
+                }
+            }
+        }
+
+        public override void OnConsumeItem(Item item, Player player) {
+            if (item.type != ItemID.None) {
+                CWRItems cwrItem = item.CWR();
+                if (cwrItem.StorageUE) {
+                    cwrItem.UEValue -= cwrItem.ConsumeUseUE;
+                    cwrItem.UEValue = MathHelper.Clamp(cwrItem.UEValue, 0, int.MaxValue);
+                }
+            }
         }
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
@@ -470,6 +515,10 @@ namespace CalamityOverhaul.Content
             }
 
             LegendData?.SaveData(item, tag);
+
+            if (StorageUE) {
+                tag["UEValue"] = UEValue;
+            }
         }
 
         public override void LoadData(Item item, TagCompound tag) {
@@ -503,6 +552,12 @@ namespace CalamityOverhaul.Content
             }
 
             LegendData?.LoadData(item, tag);
+
+            if (StorageUE) {
+                if (!tag.TryGet("UEValue", out UEValue)) {
+                    UEValue = 0;
+                }
+            }
         }
 
         public override void HoldItem(Item item, Player player) {
@@ -571,6 +626,10 @@ namespace CalamityOverhaul.Content
 
             if (inRItemIndsDict && ItemOverride.ByID[item.type].CanLoadLocalization) {
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, ItemOverride.ByID[item.type].Tooltip);
+            }
+
+            if (item.CWR().StorageUE) {
+                tooltips.ReplaceTooltip("[UEValue]", $"{CWRLocText.Instance.InternalStoredEnergy.Value}:{(int)item.CWR().UEValue}UE");
             }
 
             if (item.CWR().DeathModeItem) {

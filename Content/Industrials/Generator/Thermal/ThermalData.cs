@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
-    internal class ThermalData : GeneratorData
+    internal class ThermalData : MachineData
     {
         internal int MaxChargeCool;
         internal float MaxTemperature;
@@ -17,14 +17,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             base.SendData(data);
             data.Write(ChargeCool);
             data.Write(Temperature);
-            ItemIO.Send(FuelItem, data);
+            data.Write(FuelItem.type);
+            data.Write(FuelItem.stack);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
             ChargeCool = reader.ReadInt32();
             Temperature = reader.ReadSingle();
-            FuelItem = ItemIO.Receive(reader);
+            int itemID = reader.ReadInt32();
+            int stact = reader.ReadInt32();
+            if (itemID > 0 && itemID < ItemLoader.ItemCount) {
+                FuelItem = new Item(itemID);
+                FuelItem.stack = stact;
+            }
         }
 
         public override void SaveData(TagCompound tag) {
