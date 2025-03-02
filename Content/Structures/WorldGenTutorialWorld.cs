@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Structures
 
         public override void PostUpdateWorld() {
             if (JustPressed(Keys.D1)) {
-                IndustrializationGen.SpawnWindGrivenGenerator();
+                //IndustrializationGen.SpawnWindGrivenGenerator();
             }
         }
     }

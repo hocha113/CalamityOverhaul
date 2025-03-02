@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.TileModules;
+using InnoVault.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -28,15 +31,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
     }
 
-    internal class ThermalBatteryTile : ModTile
+    internal class ThermalBatteryTile : ModTile, ICWRLoader
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
+        public const int Width = 3;
+        public const int Height = 4;
+        public const int OriginOffsetX = 1;
+        public const int OriginOffsetY = 1;
+        public const int SheetSquare = 18;
+        private static Asset<Texture2D> tileAsset;
+        void ICWRLoader.LoadAsset() => tileAsset = ModContent.Request<Texture2D>(Texture);
+        void ICWRLoader.UnLoadData() => tileAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
+            Main.tileSolidTop[Type] = true;
+
+            AnimationFrameHeight = 72;
 
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<ThermalBattery>());
 
@@ -50,29 +64,68 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
             TileObjectData.addTile(Type);
         }
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return false;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out ThermalBatteryTP thermal)) {
+                return false;
+            }
+
+            Tile t = Main.tile[i, j];
+            int frameXPos = t.TileFrameX;
+            int frameYPos = t.TileFrameY;
+            frameYPos += thermal.frame * (Height * SheetSquare);
+            Texture2D tex = tileAsset.Value;
+            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
+            Color drawColor = Lighting.GetColor(i, j);
+            Texture2D glow = CWRUtils.GetT2DValue(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull");
+            if (!t.IsHalfBlock && t.Slope == 0) {
+                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , thermal.drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            else if (t.IsHalfBlock) {
+                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            return false;
+        }
     }
 
     internal class ThermalBatteryTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<ThermalBatteryTile>();
         private bool hoverInTP;
+        internal int frame;
+        internal Color drawColor;
+        internal float oldUEValue;
+        internal int activeTime;
         public override void SetProperty() {
             GeneratorData = new GeneratorData();
         }
 
         public override void Update() {
             hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
-        }
-
-        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            if (--activeTime > 0) {
+                CWRUtils.ClockFrame(ref frame, 5, 5);
+            }
             
+            drawColor = Color.White * (GeneratorData.UEvalue / 6000f);
+            if (oldUEValue != GeneratorData.UEvalue) {
+                activeTime = 60;
+                oldUEValue = GeneratorData.UEvalue;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (GeneratorData != null && hoverInTP) {
                 Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -6);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, GeneratorData.UEvalue.ToString() + "UE"
-                    , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.8f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, GeneratorData.UEvalue.ToString() + "UE"
+                    , drawPos.X - 6, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
             }
         }
     }

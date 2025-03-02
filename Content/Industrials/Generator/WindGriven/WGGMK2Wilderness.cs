@@ -9,9 +9,9 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {
-    internal class WindGrivenGeneratorMK2 : ModItem
+    internal class WGGMK2Wilderness : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Item";
+        public override string Texture => CWRConstant.Asset + "Generator/WGGMK2Wilderness";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -24,16 +24,16 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
-            Item.createTile = ModContent.TileType<WindGrivenGeneratorMK2Tile>();
+            Item.createTile = ModContent.TileType<WGGMK2WildernessTile>();
         }
     }
 
-    internal class WindGrivenGeneratorMK2Tile : BaseGeneratorTile
+    internal class WGGMK2WildernessTile : BaseGeneratorTile
     {
-        public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Tile";
-        public override int GeneratorTP => TileProcessorLoader.GetModuleID<WindGrivenGeneratorMK2TP>();
+        public override string Texture => CWRConstant.Asset + "Generator/WGGMK2WildernessTile";
+        public override int GeneratorTP => TileProcessorLoader.GetModuleID<WGGMK2WildernessTP>();
         public override int GeneratorUI => 0;
-        public override int TargetItem => ModContent.ItemType<WindGrivenGeneratorMK2>();
+        public override int TargetItem => ModContent.ItemType<WGGMK2Wilderness>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -41,15 +41,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<WindGrivenGeneratorMK2>());
+            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<WGGMK2Wilderness>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 27;
-            TileObjectData.newTile.Origin = new Point16(1, 24);
+            TileObjectData.newTile.Height = 18;
+            TileObjectData.newTile.Origin = new Point16(1, 16);
             TileObjectData.newTile.CoordinateHeights = [
                 16, 16, 16, 16, 16, 16, 16, 16, 16
-                , 16, 16, 16, 16, 16, 16, 16, 16, 16
                 , 16, 16, 16, 16, 16, 16, 16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
@@ -57,11 +56,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
+        public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WindGrivenGeneratorMK2TP : BaseGeneratorTP
+    internal class WGGMK2WildernessTP : BaseGeneratorTP
     {
-        public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorMK2Tile>();
+        public override int TargetTileID => ModContent.TileType<WGGMK2WildernessTile>();
         private float rotition;
         private float rotSpeed;
         public override void GeneratorUpdate() {
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/MK2Blade");
+            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/MK2BladeWilderness");
             Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(24, 28);
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);
             for (int i = 0; i < 3; i++) {

@@ -2,11 +2,13 @@
 using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -110,6 +112,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// </summary>
         internal int linkID = 0;
         internal bool canDraw;
+        internal int dontLinkUETime;
         /// <summary>
         /// 更新逻辑
         /// </summary>
@@ -122,7 +125,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             // 获取当前 Tile 和相邻的 TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
 
-            if (externalTile.HasTile && VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
+            if (externalTile.HasTile 
+                && VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
                 && TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
                 // 如果相邻的 TileProcessor 是发电机
                 if (externalTP is BaseGeneratorTP baseGeneratorTP) {
@@ -136,18 +140,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
                 // 如果有能量传递的需求，且相邻的是管道
                 if (externalTP is UEPipelineTP battery) {
-                    if (battery.GeneratorData.UEvalue < coreTP.GeneratorData.UEvalue && coreTP.GeneratorData.UEvalue > 0) {
-                        battery.GeneratorData.UEvalue++;
-                        coreTP.GeneratorData.UEvalue--;
-                    }
+                    // 计算总能量
+                    float totalUE = coreTP.GeneratorData.UEvalue + battery.GeneratorData.UEvalue;
+
+                    // 计算均衡后应该有多少能量
+                    float averageUE = totalUE / 2;
+
+                    // 直接平衡
+                    coreTP.GeneratorData.UEvalue = averageUE;
+                    battery.GeneratorData.UEvalue = averageUE;
+
                     if (battery.Decussation || battery.Turning) {
                         canDraw = false;
                     }
+
                     linkID = 2;
                 }
+
                 //如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (coreTP.GeneratorData.UEvalue > 0) {
+                    if (coreTP.GeneratorData.UEvalue > 0 && baseBattery.GeneratorData.UEvalue < 6000) {
                         baseBattery.GeneratorData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
@@ -166,18 +178,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 return;
             }
 
-            Vector2 drawPos = coreTP.PosInWorld - Main.screenPosition;
-
-            if (linkID == 3) {
-                spriteBatch.Draw(UEPipelineTP.Pipeline.Value, drawPos.GetRectangle(coreTP.Size), Color.White * (coreTP.GeneratorData.UEvalue / 10f));
-                spriteBatch.Draw(UEPipelineTP.PipelineSide.Value, drawPos.GetRectangle(coreTP.Size), Lighting.GetColor(Position.ToPoint()));
-            }
-
-            drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
+            Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = Offset.ToVector2().ToRotation();
 
             Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
             Color color = Color.White * (coreTP.GeneratorData.UEvalue / 10f);
+
             spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
 
@@ -270,13 +276,22 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 return;//十字交叉下不能进行边缘绘制
             }
             foreach (var side in SideState) {
-                if (side.canDraw) {
+                if (side.canDraw && side.linkID != 2) {//链接其他时绘制在后面
                     side.Draw(spriteBatch);
                 }
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (!Decussation) {//十字交叉下不能进行边缘绘制
+                foreach (var side in SideState) {
+                    if (side.canDraw && side.linkID == 2) {//链接管道自己时绘制在前面
+                        side.Draw(spriteBatch);
+                    }
+                }
+            }
+            
+
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             int linkCount = 0;
             foreach (var side in SideState) {
@@ -304,7 +319,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             //if (GeneratorData != null) {
-            //    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, GeneratorData.UEvalue.ToString()
+            //    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ((int)GeneratorData.UEvalue).ToString()
             //        , drawPos.X + 6, drawPos.Y - 8, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
             //}
         }

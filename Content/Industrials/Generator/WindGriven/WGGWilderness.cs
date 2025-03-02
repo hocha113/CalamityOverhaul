@@ -9,9 +9,9 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {
-    internal class WindGrivenGeneratorMK2 : ModItem
+    internal class WGGWilderness : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Item";
+        public override string Texture => CWRConstant.Asset + "Generator/WGGWilderness";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -24,16 +24,16 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
-            Item.createTile = ModContent.TileType<WindGrivenGeneratorMK2Tile>();
+            Item.createTile = ModContent.TileType<WGGWildernessTile>();
         }
     }
 
-    internal class WindGrivenGeneratorMK2Tile : BaseGeneratorTile
+    internal class WGGWildernessTile : BaseGeneratorTile
     {
-        public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Tile";
-        public override int GeneratorTP => TileProcessorLoader.GetModuleID<WindGrivenGeneratorMK2TP>();
+        public override string Texture => CWRConstant.Asset + "Generator/WGGWildernessTile";
+        public override int GeneratorTP => TileProcessorLoader.GetModuleID<WGGWildernessTP>();
         public override int GeneratorUI => 0;
-        public override int TargetItem => ModContent.ItemType<WindGrivenGeneratorMK2>();
+        public override int TargetItem => ModContent.ItemType<WGGWilderness>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -41,40 +41,38 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<WindGrivenGeneratorMK2>());
+            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<WGGWilderness>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 27;
-            TileObjectData.newTile.Origin = new Point16(1, 24);
-            TileObjectData.newTile.CoordinateHeights = [
-                16, 16, 16, 16, 16, 16, 16, 16, 16
-                , 16, 16, 16, 16, 16, 16, 16, 16, 16
-                , 16, 16, 16, 16, 16, 16, 16, 16, 16];
+            TileObjectData.newTile.Height = 9;
+            TileObjectData.newTile.Origin = new Point16(1, 8);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
+        public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WindGrivenGeneratorMK2TP : BaseGeneratorTP
+    internal class WGGWildernessTP : BaseGeneratorTP
     {
-        public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorMK2Tile>();
+        public override int TargetTileID => ModContent.TileType<WGGWildernessTile>();
         private float rotition;
         private float rotSpeed;
         public override void GeneratorUpdate() {
-            rotSpeed = 0.012f;
+            rotSpeed = 0.02f;
             rotition += rotSpeed;
-            if (GeneratorData.UEvalue < 8000) {
-                GeneratorData.UEvalue += rotSpeed * 120;
+            if (GeneratorData.UEvalue < 1000) {
+                GeneratorData.UEvalue += rotSpeed * 10;
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/MK2Blade");
-            Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(24, 28);
+            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/BladeWilderness");
+            Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(26, 20);
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);
             for (int i = 0; i < 3; i++) {
                 float drawRot = (MathHelper.TwoPi) / 3f * i + rotition;

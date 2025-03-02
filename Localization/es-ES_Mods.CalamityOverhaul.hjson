@@ -906,6 +906,16 @@ Items: {
 			''' */
 		// InternalStoredEnergy: Internal Stored Energy
 	}
+
+	WGGMK2Wilderness: {
+		// DisplayName: Giant Wind Turbines In The Wilderness
+		// Tooltip: ""
+	}
+
+	WGGWilderness: {
+		// DisplayName: Wind Turbines In The Wilderness
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Structures
                 dontFindByY = false;
             }
 
-            Point16 mainPos = scheduledPosList[0]; // 初始化为第一个点
+            Point16 mainPos = scheduledPosList.Count == 0 ? default : scheduledPosList[0]; // 初始化为第一个点
 
             foreach (var point in scheduledPosList) {
                 if (Math.Abs(point.X - asteroidCoreTopPoint2.X) < Math.Abs(mainPos.X - asteroidCoreTopPoint2.X)) {
@@ -104,17 +104,18 @@ namespace CalamityOverhaul.Content.Structures
                     WorldGen.PlaceTile(pos3.X, pos3.Y, tileFind.TileType);
 
                     if (pos != mainPos) {
-                        WorldGen.PlaceTile(pos.X, pos.Y - 1, ModContent.TileType<WindGrivenGeneratorTile>());
+                        WorldGen.PlaceTile(pos.X, pos.Y - 1, ModContent.TileType<WGGWildernessTile>());
                     }
                     oldPos = pos;
                 }
             }
 
-            int maxExcavateY = 6;
-            for (int z = 0; z < maxExcavateY + 2; z++) {
+            int maxExcavateY = 2;
+            for (int z = -10; z < maxExcavateY + 2; z++) {
                 for (int q = 0; q < 5; q++) {
                     Point16 newPos = mainPos + new Point16(q - 2, z - 1);
                     WorldGen.KillTile(newPos.X, newPos.Y);
+                    WorldGen.KillWall(newPos.X, newPos.Y);
                 }
             }
 
@@ -128,24 +129,22 @@ namespace CalamityOverhaul.Content.Structures
             }
 
             //放置管道
-            //int uePipelineTile = ModContent.TileType<UEPipelineTile>();
-            //for (int y = 0; y < 55; y++) {
-            //    Point16 newPos = mainPos + new Point16(-3, y + maxExcavateY - 3);
-            //    int tileID = Framing.GetTileSafely(newPos).TileType;
-            //    if (y == 0) {
-            //        newPos = mainPos + new Point16(-2, y + maxExcavateY - 2);
-            //        WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
-            //        WorldGen.KillWall(newPos.X, newPos.Y);
-            //    }
-            //    if (tileID is 0 or 1 || y < 6) {
-            //        WorldGen.KillTile(newPos.X, newPos.Y);
-            //        WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
-            //        WorldGen.KillWall(newPos.X, newPos.Y);
-            //    }
-            //}
+            int uePipelineTile = ModContent.TileType<UEPipelineTile>();
+            for (int y = 0; y < 55; y++) {
+                Point16 newPos = mainPos + new Point16(-3, y + maxExcavateY - 3);
+                int tileID = Framing.GetTileSafely(newPos).TileType;
+                if (y == 0) {
+                    newPos = mainPos + new Point16(-2, y + maxExcavateY - 2);
+                    WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
+                }
+                if (tileID <= 2 || y < 6) {
+                    WorldGen.KillTile(newPos.X, newPos.Y);
+                    WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
+                }
+            }
 
-            //我不太清除为什么要减4，一般来讲减2就够了，可能是因为建筑太大的原因吧
-            WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 4, ModContent.TileType<WindGrivenGeneratorMK2Tile>());
+            //我不太清除为什么要减3，一般来讲减2就够了，可能是因为建筑太大的原因吧
+            WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 3, ModContent.TileType<WGGMK2WildernessTile>());
         }
     }
 }

@@ -893,6 +893,16 @@ Items: {
 			'''
 		InternalStoredEnergy: 能量存储
 	}
+
+	WGGMK2Wilderness: {
+		DisplayName: 荒野中的巨型风力发电机
+		Tooltip: ""
+	}
+
+	WGGWilderness: {
+		DisplayName: 荒野中的风力发电机
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

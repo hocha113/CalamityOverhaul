@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -905,6 +905,16 @@ Items: {
 			[UEValue]
 			'''
 		InternalStoredEnergy: Internal Stored Energy
+	}
+
+	WGGMK2Wilderness: {
+		DisplayName: Giant Wind Turbines In The Wilderness
+		Tooltip: ""
+	}
+
+	WGGWilderness: {
+		DisplayName: Wind Turbines In The Wilderness
+		Tooltip: ""
 	}
 }
 
