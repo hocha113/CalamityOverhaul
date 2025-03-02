@@ -1,7 +1,9 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -65,6 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorTile>();
         private float rotition;
         private float rotSpeed;
+        private int soundCount;
         public override float MaxUEValue => 200f;
         public override int TargetItem => ModContent.ItemType<WindGrivenGenerator>();
         public override void GeneratorUpdate() {
@@ -72,6 +75,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             rotition += rotSpeed;
             if (GeneratorData.UEvalue < MaxUEValue) {
                 GeneratorData.UEvalue += rotSpeed * 10;
+            }
+
+            if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {
+                SoundEngine.PlaySound(CWRSound.Windmill with { Volume = 0.35f, MaxInstances = 12 }, CenterInWorld);
+                soundCount = 0;
             }
         }
 

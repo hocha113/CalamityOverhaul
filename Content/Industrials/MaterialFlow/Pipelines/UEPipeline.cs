@@ -1,14 +1,15 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.Generator;
+﻿using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
@@ -43,6 +44,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
+            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<UEPipeline>());
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.None, 0, 0);
@@ -204,6 +206,22 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     GeneratorData.UEvalue = MaxUEValue;
                 }
             }
+        }
+
+        public override void SendData(ModPacket data) {
+            GeneratorData?.SendData(data);
+        }
+
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            GeneratorData?.ReceiveData(reader, whoAmI);
+        }
+
+        public override void SaveData(TagCompound tag) {
+            GeneratorData?.SaveData(tag);
+        }
+
+        public override void LoadData(TagCompound tag) {
+            GeneratorData?.LoadData(tag);
         }
 
         public override void Update() {
