@@ -125,9 +125,17 @@ namespace CalamityOverhaul.Common
         void ICWRLoader.LoadData() {
             #region
             if (ModLoader.TryGetMod("Calamity" + "Throwing" + "Spear", out Mod mod)) {
-                Type targetClass = GetTargetTypeInStringKey(GetModType(mod), "FinishingTouch1");
-                MethodInfo methodInfo = targetClass.GetMethod("OnModLoad", BindingFlags.Public | BindingFlags.Instance);
-                CWRHook.Add(methodInfo, FuncByLoadenSmd);
+                try {
+                    Type targetClass = GetTargetTypeInStringKey(GetModType(mod), "FinishingTouch1");
+                    if (targetClass != null) {
+                        MethodInfo methodInfo = targetClass.GetMethod("OnModLoad", BindingFlags.Public | BindingFlags.Instance);
+                        if (methodInfo != null) {
+                            CWRHook.Add(methodInfo, FuncByLoadenSmd);
+                        }
+                    }
+                } catch {
+
+                }
             }
             #endregion
 
