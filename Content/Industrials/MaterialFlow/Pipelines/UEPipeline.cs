@@ -129,8 +129,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
                 //如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (coreTP.GeneratorData.UEvalue > 0 && baseBattery.GeneratorData.UEvalue < baseBattery.MaxUEValue) {
-                        baseBattery.GeneratorData.UEvalue++;
+                    if (coreTP.GeneratorData.UEvalue > 0 && baseBattery.MachineData.UEvalue < baseBattery.MaxUEValue) {
+                        baseBattery.MachineData.UEvalue++;
                         coreTP.GeneratorData.UEvalue--;
                     }
                     

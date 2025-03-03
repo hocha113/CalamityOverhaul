@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -61,7 +62,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WGGWildernessTP : BaseGeneratorTP
+    internal class WGGWildernessTP : BaseGeneratorTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<WGGWildernessTile>();
         private float rotition;
@@ -70,7 +71,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override float MaxUEValue => 200;
         public override bool CanDrop => false;
         public override int TargetItem => ModContent.ItemType<WGGWilderness>();
-        //public override void SetGenerator() => LoadenWorldSendData = false;
+        internal static Asset<Texture2D> BladeWilderness { get; private set; }
+        void ICWRLoader.LoadAsset() => BladeWilderness = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/BladeWilderness");
+        void ICWRLoader.UnLoadData() => BladeWilderness = null;
         public override void GeneratorUpdate() {
             rotSpeed = 0.02f;
             rotition += rotSpeed;
@@ -85,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/BladeWilderness");
+            Texture2D blade = BladeWilderness.Value;
             Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(26, 20);
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);
             for (int i = 0; i < 3; i++) {

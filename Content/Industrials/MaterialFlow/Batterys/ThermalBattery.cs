@@ -107,27 +107,27 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal float oldUEValue;
         internal int activeTime;
         internal const float _maxUEValue = 6000;
-        internal override float MaxUEValue => _maxUEValue;
+        public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
-        public override void SetProperty() => GeneratorData = new MachineData();
+        public override void SetProperty() => MachineData = new MachineData();
         public override void Update() {
-            fullLoad = GeneratorData.UEvalue >= MaxUEValue;
+            fullLoad = MachineData.UEvalue >= MaxUEValue;
             hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (--activeTime > 0 || fullLoad) {
                 CWRUtils.ClockFrame(ref frame, 5, 5);
             }
             
-            drawColor = Color.White * (GeneratorData.UEvalue / MaxUEValue);
-            if (oldUEValue != GeneratorData.UEvalue) {
+            drawColor = Color.White * (MachineData.UEvalue / MaxUEValue);
+            if (oldUEValue != MachineData.UEvalue) {
                 activeTime = 60;
-                oldUEValue = GeneratorData.UEvalue;
+                oldUEValue = MachineData.UEvalue;
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (GeneratorData != null && hoverInTP) {
+            if (MachineData != null && hoverInTP) {
                 Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -6);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, GeneratorData.UEvalue.ToString() + "UE"
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, MachineData.UEvalue.ToString() + "UE"
                     , drawPos.X - 6, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
             }
         }

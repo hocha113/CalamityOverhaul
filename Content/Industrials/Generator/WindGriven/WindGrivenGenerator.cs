@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -62,7 +63,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WindGrivenGeneratorTP : BaseGeneratorTP
+    internal class WindGrivenGeneratorTP : BaseGeneratorTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorTile>();
         private float rotition;
@@ -70,6 +71,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         private int soundCount;
         public override float MaxUEValue => 200f;
         public override int TargetItem => ModContent.ItemType<WindGrivenGenerator>();
+        internal static Asset<Texture2D> Blade { get; private set; }
+        void ICWRLoader.LoadAsset() => Blade = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/Blade");
+        void ICWRLoader.UnLoadData() => Blade = null;
         public override void GeneratorUpdate() {
             rotSpeed = 0.02f;
             rotition += rotSpeed;
@@ -84,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D blade = CWRUtils.GetT2DValue(CWRConstant.Asset + "Generator/Blade");
+            Texture2D blade = Blade.Value;
             Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(26, 20);
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);
             for (int i = 0; i < 3; i++) {
