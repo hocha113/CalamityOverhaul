@@ -1398,6 +1398,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// IndustrializationGenMessage: Industrializing The World
 		// InternalStoredEnergy: Internal Stored Energy
 		// KreloadTimeAddText: "Ammunition reloading time increased "
 		// KreloadTimeLessenText: "Ammunition reloading time is reduced "

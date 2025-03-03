@@ -9,13 +9,14 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Structures
 {
     internal class IndustrializationGen
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
-            progress.Message = "正在让世界变得工业化";
+            progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
             SpawnWindGrivenGenerator();
         }
 
@@ -114,6 +115,9 @@ namespace CalamityOverhaul.Content.Structures
             for (int z = -10; z < maxExcavateY + 2; z++) {
                 for (int q = 0; q < 5; q++) {
                     Point16 newPos = mainPos + new Point16(q - 2, z - 1);
+                    if (!WorldGen.InWorld(newPos.X, newPos.Y)) {
+                        continue;
+                    }
                     WorldGen.KillTile(newPos.X, newPos.Y);
                     WorldGen.KillWall(newPos.X, newPos.Y);
                 }
@@ -124,6 +128,9 @@ namespace CalamityOverhaul.Content.Structures
             for (int z = 0; z < 2; z++) {
                 for (int q = 0; q < 5; q++) {
                     Point16 newPos = mainPos + new Point16(q - 2, z + maxExcavateY - 1);
+                    if (!WorldGen.InWorld(newPos.X, newPos.Y)) {
+                        continue;
+                    }
                     WorldGen.PlaceTile(newPos.X, newPos.Y, laboratoryPipePlating);
                 }
             }
@@ -132,6 +139,9 @@ namespace CalamityOverhaul.Content.Structures
             int uePipelineTile = ModContent.TileType<UEPipelineTile>();
             for (int y = 0; y < 55; y++) {
                 Point16 newPos = mainPos + new Point16(-3, y + maxExcavateY - 3);
+                if (!WorldGen.InWorld(newPos.X, newPos.Y)) {
+                    continue;
+                }
                 int tileID = Framing.GetTileSafely(newPos).TileType;
                 if (y == 0) {
                     newPos = mainPos + new Point16(-2, y + maxExcavateY - 2);
@@ -144,7 +154,9 @@ namespace CalamityOverhaul.Content.Structures
             }
 
             //我不太清除为什么要减3，一般来讲减2就够了，可能是因为建筑太大的原因吧
-            WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 3, ModContent.TileType<WGGMK2WildernessTile>());
+            if (WorldGen.InWorld(mainPos.X, mainPos.Y + maxExcavateY - 3)) {
+                WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 3, ModContent.TileType<WGGMK2WildernessTile>());
+            }
         }
     }
 }

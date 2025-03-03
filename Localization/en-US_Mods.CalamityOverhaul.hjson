@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1413,6 +1413,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		IndustrializationGenMessage: Industrializing The World
 		InternalStoredEnergy: Internal Stored Energy
 		KreloadTimeAddText: "Ammunition reloading time increased "
 		KreloadTimeLessenText: "Ammunition reloading time is reduced "

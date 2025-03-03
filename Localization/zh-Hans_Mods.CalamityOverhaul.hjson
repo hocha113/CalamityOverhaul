@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1399,6 +1399,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		IndustrializationGenMessage: 正在让世界工业化
 		InternalStoredEnergy: 能量存储
 		KreloadTimeAddText: 弹药装填时间增加
 		KreloadTimeLessenText: 弹药装填时间减少
