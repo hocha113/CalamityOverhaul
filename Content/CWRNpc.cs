@@ -164,6 +164,7 @@ namespace CalamityOverhaul.Content
             SoulfireExplosion = false;
             FrozenActivity = false;
         }
+
         public override void SetDefaults(NPC npc) {
             NPCOverride.SetDefaults(npc, this, npc.Calamity());
             TungstenRiot.SetEventNPC(npc);
@@ -220,6 +221,14 @@ namespace CalamityOverhaul.Content
                     WhipHitNum = 10;
                 }
             }
+        }
+
+        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
+            NPCOverride.ModifyHitByItem(player, item, ref modifiers);
+        }
+
+        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
+            NPCOverride.ModifyHitByProjectile(projectile, ref modifiers);
         }
 
         public override bool SpecialOnKill(NPC npc) {

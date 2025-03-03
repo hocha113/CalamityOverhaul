@@ -61,6 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private int mechdusaCurvedSpineSegmentIndex;
         private int mechdusaCurvedSpineSegments;
         private float phaseTransitionColorAmount;
+        private int time;
         protected int frame;
         internal Player Target {
             get {
@@ -206,6 +207,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             //冲刺！冲刺！冲刺！冲！冲！冲！
             Move(segmentVelocity);
+
+            time++;
             return false;
         }
 
@@ -691,6 +694,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
+        public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) {
+            if (time < DestroyerHeadAI.StretchTime) {
+                modifiers.FinalDamage /= 100f;
+                modifiers.SetMaxDamage(90);
+            }
+        }
+
+        public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) {
+            if (time < DestroyerHeadAI.StretchTime) {
+                modifiers.FinalDamage /= 100f;
+                modifiers.SetMaxDamage(82);
+            }
+        }
+
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {
                 return true;
@@ -706,11 +723,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 rectangle = CWRUtils.GetRec(value);
             }
 
-            spriteBatch.Draw(value, npc.Center - Main.screenPosition
+            if (time < DestroyerHeadAI.StretchTime) {
+                value = Body_Stingless.Value;
+                spriteBatch.Draw(value, npc.Center - Main.screenPosition
+                , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);
+            }
+            else {
+                spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
-
-            spriteBatch.Draw(value2, npc.Center - Main.screenPosition
+                spriteBatch.Draw(value2, npc.Center - Main.screenPosition
                 , rectangle, Color.White, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
+            }
+
             return false;
         }
 

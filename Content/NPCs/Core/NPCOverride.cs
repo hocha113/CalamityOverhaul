@@ -235,23 +235,61 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         /// <returns></returns>
         public virtual bool AI() { return true; }
-
+        /// <summary>
+        /// 允许编辑死亡事件，返回非null值可以阻断后续逻辑的运行
+        /// </summary>
+        /// <returns></returns>
         public virtual bool? On_PreKill() { return null; }
-
+        /// <summary>
+        /// 允许编辑死亡检测逻辑，返回非null值可以阻断后续逻辑的运行
+        /// </summary>
+        /// <returns></returns>
         public virtual bool? CheckDead() { return null; }
-
+        /// <summary>
+        /// 编辑NPC在地图上的图标ID
+        /// </summary>
+        /// <param name="index"></param>
         public virtual void BossHeadSlot(ref int index) { }
-
+        /// <summary>
+        /// 编辑NPC在地图上的头像旋转角
+        /// </summary>
+        /// <param name="rotation"></param>
         public virtual void BossHeadRotation(ref float rotation) { }
-
+        /// <summary>
+        /// 编辑NPC的掉落，注意这个不会被设置阻止
+        /// </summary>
+        /// <param name="npcLoot"></param>
         public virtual void ModifyNPCLoot(NPCLoot npcLoot) { }
-
+        /// <summary>
+        /// 修改被物品击中的伤害
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="player"></param>
+        /// <param name="item"></param>
+        /// <param name="modifiers"></param>
+        public virtual void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) { }
+        /// <summary>
+        /// 修改被弹幕击中的伤害
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="projectile"></param>
+        /// <param name="modifiers"></param>
+        public virtual void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) { }
+        /// <summary>
+        /// 修改绘制
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="screenPos"></param>
+        /// <param name="drawColor"></param>
+        /// <returns></returns>
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
-
+        /// <summary>
+        /// 修改后层绘制
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="screenPos"></param>
+        /// <param name="drawColor"></param>
+        /// <returns></returns>
         public virtual bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
-
-        //public virtual bool PreDrawNPCHeadBoss(NPC theNPC, byte alpha, float headScale, float rotation, SpriteEffects effects, int bossHeadId, float x, float y) {
-        //    return true;
-        //}
     }
 }

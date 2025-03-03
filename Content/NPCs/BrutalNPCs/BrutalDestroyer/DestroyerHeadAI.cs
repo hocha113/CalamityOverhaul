@@ -23,10 +23,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool openMouth;
         private int dontOpenMouthTime;
         private Player player;
+        internal static Asset<Texture2D> HeadIcon;
         internal static Asset<Texture2D> Head;
         internal static Asset<Texture2D> Head_Glow;
         internal static int iconIndex;
         internal static int iconIndex_Void;
+        internal const int StretchTime = 300;
+        private int time;
+        private Vector2 dashVer;
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
@@ -37,6 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.LoadAsset() {
             Head = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head");
             Head_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head_Glow");
+            HeadIcon = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BTD_Head");
         }
         void ICWRLoader.UnLoadData() {
             Head = null;
@@ -83,6 +88,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            time++;
+
             if (ai[0] == 0) {
                 if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
                     NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
@@ -104,6 +111,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             HandleMouth();
+
+            //这里判定一个时间进行冲刺，用于展开体节，实际冲刺的时间需要比预定的展开时间长一些
+            if (time < StretchTime + 60 && time > 10) {
+                if (dashVer == Vector2.Zero) {
+                    dashVer = npc.Center.To(player.Center).UnitVector();
+                }
+                npc.velocity = dashVer * 32;
+                npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+                return false;
+            }
 
             if (CWRWorld.MachineRebellion) {
                 MachineRebellionAI();
@@ -215,11 +232,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Texture2D value = Head.Value;
             Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
             Rectangle glowRectangle = CWRUtils.GetRec(value, glowFrame, 4);
+
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
-            Texture2D value2 = Head_Glow.Value;
-            spriteBatch.Draw(value2, npc.Center - Main.screenPosition
-                , glowRectangle, Color.White, npc.rotation + MathHelper.Pi, glowRectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
+
+            if (time >= StretchTime) {
+                Texture2D value2 = Head_Glow.Value;
+                spriteBatch.Draw(value2, npc.Center - Main.screenPosition
+                    , glowRectangle, Color.White, npc.rotation + MathHelper.Pi, glowRectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
+            }
+            
             return false;
         }
 
