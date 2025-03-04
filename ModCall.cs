@@ -17,6 +17,7 @@ namespace CalamityOverhaul
             Config_AddExtrasContent,
             SupertableRecipeDate_ZenithWorld,
             IsAmmunitionUnlimitedEvent,
+            SetSupertableRecipeDate,
         }
 
         public static object Hander(params object[] args) {
@@ -116,6 +117,9 @@ namespace CalamityOverhaul
                     return null;
                 }
                 RangedLoader.IsAmmunitionUnlimitedEvent += (Func<Item, Player, bool>)args[1];
+            }
+            else if (callType == CallType.SetSupertableRecipeDate) {
+                
             }
 
             return null;
