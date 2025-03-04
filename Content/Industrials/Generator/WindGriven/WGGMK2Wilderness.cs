@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -87,6 +88,23 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {
                 SoundEngine.PlaySound(CWRSound.Windmill with { Volume = 0.65f, MaxInstances = 12 }, CenterInWorld);
                 soundCount = 0;
+            }
+        }
+
+        public override void GeneratorKill() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            int dropNum = Main.rand.Next(8, 12);
+            for (int i = 0; i < dropNum; i++) {
+                DropItem(ModContent.ItemType<DubiousPlating>());
+            }
+            dropNum = Main.rand.Next(10, 15);
+            for (int i = 0; i < dropNum; i++) {
+                DropItem(ModContent.ItemType<MysteriousCircuitry>());
+            }
+            if (Main.rand.NextBool(5)) {
+                DropItem(ModContent.ItemType<SuspiciousScrap>());
             }
         }
 

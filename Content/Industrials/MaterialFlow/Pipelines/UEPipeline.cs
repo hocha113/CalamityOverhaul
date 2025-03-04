@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.addTile(Type);
         }
+        public override bool CreateDust(int i, int j, ref int type) {
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.GreenTorch);
+            return false;
+        }
         public override void MouseOver(int i, int j) {
             Player localPlayer = Main.LocalPlayer;
             localPlayer.cursorItemIconEnabled = true;
@@ -82,7 +86,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// </summary>
         internal int linkID = 0;
         internal bool canDraw;
-        internal int dontLinkUETime;
         /// <summary>
         /// 更新逻辑
         /// </summary>

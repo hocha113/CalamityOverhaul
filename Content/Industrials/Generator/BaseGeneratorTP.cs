@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityMod.Items.Materials;
+using InnoVault.TileProcessors;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
@@ -64,14 +65,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator
 
         }
 
+        public void DropItem(int id) => DropItem(new Item(id));
+
+        public void DropItem(Item item) {
+            int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
+            if (VaultUtils.isServer) {
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+            }
+        }
+
         public sealed override void OnKill() {
             if (!VaultUtils.isClient && CanDrop) {
                 Item item = new Item(TargetItem);
                 item.CWR().UEValue = GeneratorData.UEvalue;
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                }
+                DropItem(item);
             }
 
             GeneratorKill();

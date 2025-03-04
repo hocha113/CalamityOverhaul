@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
@@ -395,12 +396,13 @@ namespace CalamityOverhaul.Content
         public override void NetSend(Item item, BinaryWriter writer) {
             LegendData?.NetSend(item, writer);
 
-            if (ai == null) {
-                ai = new float[MaxAISlot];
-            }
+            ai ??= new float[MaxAISlot];
             for (int i = 0; i < MaxAISlot; i++) {
                 writer.Write(ai[i]);
             }
+
+            writer.Write(StorageUE);
+            writer.Write(UEValue);
 
             if (HasCartridgeHolder) {
                 if (MagazineContents == null) {
@@ -434,12 +436,13 @@ namespace CalamityOverhaul.Content
         public override void NetReceive(Item item, BinaryReader reader) {
             LegendData?.NetReceive(item, reader);
 
-            if (ai == null) {
-                ai = new float[MaxAISlot];
-            }
+            ai ??= new float[MaxAISlot];
             for (int i = 0; i < MaxAISlot; i++) {
                 ai[i] = reader.ReadSingle();
             }
+
+            StorageUE = reader.ReadBoolean();
+            UEValue = reader.ReadSingle();
 
             if (HasCartridgeHolder) {
                 NumberBullets = reader.ReadInt32();
