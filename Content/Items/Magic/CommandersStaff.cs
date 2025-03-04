@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using InnoVault.PRT;
 using InnoVault.Trails;

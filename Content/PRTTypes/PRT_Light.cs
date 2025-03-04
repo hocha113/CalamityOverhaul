@@ -4,7 +4,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Particles
+namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_Light : BasePRT, ICWRLoader
     {

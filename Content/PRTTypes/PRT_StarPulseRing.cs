@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using static CalamityMod.CalamityUtils;
 
-namespace CalamityOverhaul.Content.Particles
+namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_StarPulseRing : BasePRT
     {

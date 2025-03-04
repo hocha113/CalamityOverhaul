@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Particles
+namespace CalamityOverhaul.Content.PRTTypes
 {
-    internal class PRT_LonginusStar : BasePRT
+    internal class PRT_HeavenfallStar : BasePRT
     {
         public Color InitialColor;
         public bool AffectedByGravity;
@@ -13,20 +13,16 @@ namespace CalamityOverhaul.Content.Particles
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }
-        public override string Texture => "CalamityMod/Projectiles/StarProj";
-        private Entity Entity;
-        private Vector2 EntityPos;
-        private Vector2 OldEntityPos;
-        private Vector2 EntityVariation;
+        public override string Texture => CWRConstant.Masking + "StarTexture_White";
 
-        public PRT_LonginusStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity) {
+        public PRT_HeavenfallStar(Vector2 relativePosition, Vector2 velocity
+            , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
             Scale = scale;
             Lifetime = lifetime;
             Color = InitialColor = color;
-            Entity = entity;
         }
 
         public override void AI() {
@@ -38,25 +34,17 @@ namespace CalamityOverhaul.Content.Particles
                 Velocity.Y += 0.25f;
             }
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
-
-            if (Entity != null) {
-                OldEntityPos = EntityPos;
-                EntityPos = Entity.Center;
-                if (OldEntityPos != Vector2.Zero) {
-                    EntityVariation = OldEntityPos.To(EntityPos);
-                    Position += EntityVariation;
-                }
-            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
+            Vector2 scale = new Vector2(0.2f, 1.6f) * Scale;
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
 
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color
                 , Rotation, texture.Size() * 0.5f, scale, 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color
                 , Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);
+
             return false;
         }
     }

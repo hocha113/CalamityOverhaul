@@ -1,5 +1,5 @@
 ﻿
-namespace CalamityOverhaul.Content.Particles
+namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_HeavenfallStarAlpha : PRT_HeavenfallStar
     {

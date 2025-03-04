@@ -4,7 +4,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Particles
+namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_SoulLight : BasePRT
     {

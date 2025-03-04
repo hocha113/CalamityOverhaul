@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

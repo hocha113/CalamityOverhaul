@@ -4,7 +4,7 @@ using CalamityMod.Projectiles.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Rogue;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.GameContent.BaseEntity;

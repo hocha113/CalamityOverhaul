@@ -2,7 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

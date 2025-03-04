@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

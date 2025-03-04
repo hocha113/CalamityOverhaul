@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.Items.Rogue;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;

@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Tiles;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;

@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;

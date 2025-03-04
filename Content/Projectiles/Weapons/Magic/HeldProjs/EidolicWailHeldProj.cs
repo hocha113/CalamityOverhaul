@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;

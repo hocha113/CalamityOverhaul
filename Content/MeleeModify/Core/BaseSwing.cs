@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;

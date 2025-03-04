@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Events;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;

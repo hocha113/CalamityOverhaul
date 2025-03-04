@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System.Linq;
 using Terraria;

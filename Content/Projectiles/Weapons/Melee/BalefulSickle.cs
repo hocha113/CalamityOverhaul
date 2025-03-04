@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
