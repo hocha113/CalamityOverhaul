@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.RemakeItems.Core.ItemOverride;

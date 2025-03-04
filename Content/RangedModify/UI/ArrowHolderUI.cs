@@ -17,10 +17,24 @@ namespace CalamityOverhaul.Content.RangedModify.UI
         private int Weith;
         private int Height;
         public override void Update() {
+            bool weaponIsHand = false;
             if (GlobalBow.IsBow) {//如果拿着的是弓，就赋值
                 HeldWeapon = player.GetItem();
+                weaponIsHand = true;
             }
-            
+
+            if (!weaponIsHand) {//如果武器不在手上
+                bool weaponIsBackpack = false;
+                foreach (var item in player.inventory) {
+                    if (item.Equals(HeldWeapon)) {
+                        weaponIsBackpack = true;
+                    }
+                }
+                if (!weaponIsBackpack) {//并且也不在背包里面
+                    HeldWeapon = null;//那么就设置回默认值
+                }
+            }
+
             ChooseAmmo = null;
 
             //如果到这里没有找到有效的弓，就手动遍历

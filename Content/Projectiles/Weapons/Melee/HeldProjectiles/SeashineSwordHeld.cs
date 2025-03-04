@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 4f;
+            SwingData.baseSwingSpeed = 3.2f;
             drawTrailBtommWidth = 16;
             distanceToOwner = 10;
             drawTrailTopWidth = 30;

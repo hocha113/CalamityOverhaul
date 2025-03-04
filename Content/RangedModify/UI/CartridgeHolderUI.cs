@@ -27,10 +27,26 @@ namespace CalamityOverhaul.Content.RangedModify.UI
         public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[heldItem.type] || IsAmmo());
         public bool IsAmmo() => heldItem.ammo != AmmoID.None && heldItem.ammo != AmmoID.Arrow;
         public override void Update() {
+            bool weaponIsHand = false;
             if (CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
                 targetWeapon = heldItem;
                 cwrWeapon = targetWeapon.CWR();
+                weaponIsHand = true;
             }
+
+            if (!weaponIsHand) {//如果武器不在手上
+                bool weaponIsBackpack = false;
+                foreach (var item in player.inventory) {
+                    if (item.Equals(targetWeapon)) {
+                        weaponIsBackpack = true;
+                    }
+                }
+                if (!weaponIsBackpack) {//并且也不在背包里面
+                    targetWeapon = null;//那么就设置回默认值
+                    cwrWeapon = null;
+                }
+            }
+
             //如果是最开始，没有手持枪械但是拿着子弹时，手动搜索玩家背包里面的枪
             if (targetWeapon == null || cwrWeapon == null || IsAmmo()) {
                 for (int i = player.inventory.Length - 1; i >= 0; i--) {

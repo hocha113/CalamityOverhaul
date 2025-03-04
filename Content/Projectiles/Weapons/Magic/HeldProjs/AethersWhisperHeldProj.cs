@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             HandIdleDistanceY = 9;
             HandFireDistanceX = 45;
             HandFireDistanceY = -5;
+            HandheldDisplay = false;
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;

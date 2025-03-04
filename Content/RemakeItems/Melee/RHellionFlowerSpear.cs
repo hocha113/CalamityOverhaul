@@ -45,11 +45,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.width = 10;
             Projectile.height = 10;
             Projectile.friendly = true;
+            Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 3;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
@@ -98,6 +99,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             if (Projectile.ai[2] == 2) {
+                Projectile.tileCollide = true;
                 if (Projectile.timeLeft > 80) {
                     Projectile.SmoothHomingBehavior(targetPos, 1, 0.1f);
                 }
@@ -114,7 +116,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 6; i++) {
+            Lighting.AddLight(Projectile.Center, Color.Green.ToVector3());
+            for (int i = 0; i < 16; i++) {
                 CWRDust.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
             }
         }
