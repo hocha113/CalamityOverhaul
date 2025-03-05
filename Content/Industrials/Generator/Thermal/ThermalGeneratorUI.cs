@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
@@ -166,6 +167,29 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             electricPower.thermalGenerator = this;
             electricPower.DrawPosition = DrawPosition + new Vector2(200, 20);
             electricPower.Update();
+        }
+
+        public override void OnEnterWorld() => IsActive = false;
+
+        public override void SaveUIData(TagCompound tag) {
+            tag["ThermalGeneratorUI_DrawPos_X"] = DrawPosition.X;
+            tag["ThermalGeneratorUI_DrawPos_Y"] = DrawPosition.Y;
+        }
+
+        public override void LoadUIData(TagCompound tag) {
+            if (tag.TryGet("ThermalGeneratorUI_DrawPos_X", out float x)) {
+                DrawPosition.X = x;
+            }
+            else {
+                DrawPosition.X = 500;
+            }
+
+            if (tag.TryGet("ThermalGeneratorUI_DrawPos_Y", out float y)) {
+                DrawPosition.Y = y;
+            }
+            else {
+                DrawPosition.Y = 300;
+            }
         }
 
         public override void RightClickByTile(bool newTP) {

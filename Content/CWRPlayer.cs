@@ -184,12 +184,17 @@ namespace CalamityOverhaul.Content
         /// 自定义冷却计数器，用于记录额外冷却的剩余帧数
         /// </summary>
         public int CustomCooldownCounter;
+        /// <summary>
+        /// 大于0时不能使用物品，该值每帧减一直至归零
+        /// </summary>
+        public int DontUseItemTime;
         #endregion
 
         public override void Initialize() {
             SwingIndex = 0;
             TETramContrType = 0;
             ReceivingPlatformTime = 0;
+            DontUseItemTime = 0;
             Reset();
         }
 
@@ -224,6 +229,13 @@ namespace CalamityOverhaul.Content
                 }
             }
             return false;
+        }
+
+        public override bool CanUseItem(Item item) {
+            if (DontUseItemTime > 0) {
+                return false;
+            }
+            return base.CanUseItem(item);
         }
 
         public override void PostUpdateMiscEffects() {
@@ -274,8 +286,6 @@ namespace CalamityOverhaul.Content
                 OverhaulTheBibleUI.Instance.Active = false;
             }
 
-            UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-
             SupertableUI.LoadenWorld();
 
             SpearOfLonginus.ZenithWorldAsset();
@@ -285,18 +295,6 @@ namespace CalamityOverhaul.Content
             //初始化位置信息
             oldPlayerPositionChange = Player.position;
             PlayerPositionChange = Vector2.Zero;
-        }
-
-        public override void SaveData(TagCompound tag) {
-            OverhaulTheBibleUI.Instance?.SaveData(tag);
-            CanOverrideByItemUI.Instance?.SaveData(tag);
-            SupertableUI.Instance?.SaveData(tag);
-        }
-
-        public override void LoadData(TagCompound tag) {
-            OverhaulTheBibleUI.Instance?.LoadData(tag);
-            CanOverrideByItemUI.Instance?.LoadData(tag);
-            SupertableUI.Instance?.LoadData(tag);
         }
 
         public override void OnHurt(Player.HurtInfo info) {
@@ -363,6 +361,9 @@ namespace CalamityOverhaul.Content
         public override void PostUpdate() {
             SetScope();
 
+            if (DontUseItemTime > 0) {
+                DontUseItemTime--;
+            }
             if (DontSwitchWeaponTime > 0) {
                 DontSwitchWeaponTime--;
             }

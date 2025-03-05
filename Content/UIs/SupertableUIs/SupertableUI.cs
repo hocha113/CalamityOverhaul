@@ -233,12 +233,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             RecipeUI.LoadAllRecipes();
         }
 
-        public void SaveData(TagCompound tag) {
+        public override void SaveUIData(TagCompound tag) {
             tag["SupertableUI_DrawPos_X"] = DrawPosition.X;
             tag["SupertableUI_DrawPos_Y"] = DrawPosition.Y;
         }
 
-        public void LoadData(TagCompound tag) {
+        public override void LoadUIData(TagCompound tag) {
             if (tag.TryGet("SupertableUI_DrawPos_X", out float x)) {
                 DrawPosition.X = x;
             }

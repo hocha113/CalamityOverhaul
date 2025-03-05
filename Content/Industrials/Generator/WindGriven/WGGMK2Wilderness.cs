@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
+        public override void FrontDraw(SpriteBatch spriteBatch) {
             Texture2D blade = MK2BladeWilderness.Value;
             Vector2 drawPos = PosInWorld - Main.screenPosition + new Vector2(24, 28);
             Vector2 drawOrig = new Vector2(blade.Width / 2, blade.Height);

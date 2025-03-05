@@ -36,12 +36,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         private TabControl tabControlClose;
         internal int elementsPerRow;
         internal int elementsPerColumn;
-        public void SaveData(TagCompound tag) {
+        public override void SaveUIData(TagCompound tag) {
             tag["OverhaulTheBibleUI_DrawPos_X"] = DrawPosition.X;
             tag["OverhaulTheBibleUI_DrawPos_Y"] = DrawPosition.Y;
         }
 
-        public void LoadData(TagCompound tag) {
+        public override void LoadUIData(TagCompound tag) {
             if (tag.TryGet("OverhaulTheBibleUI_DrawPos_X", out float x)) {
                 DrawPosition.X = x;
             }

@@ -171,12 +171,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
             }
         }
-        public void SaveData(TagCompound tag) {
+        public override void SaveUIData(TagCompound tag) {
             tag["CanOverrideByItemUI_DrawPos_X"] = DrawPosition.X;
             tag["CanOverrideByItemUI_DrawPos_Y"] = DrawPosition.Y;
         }
 
-        public void LoadData(TagCompound tag) {
+        public override void LoadUIData(TagCompound tag) {
             if (tag.TryGet("CanOverrideByItemUI_DrawPos_X", out float x)) {
                 DrawPosition.X = x;
             }
