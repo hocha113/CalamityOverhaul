@@ -135,6 +135,8 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
+            //找到实验室镀板
+            int laboratoryPlating = ModContent.TileType<LaboratoryPlating>();
             //放置管道
             int uePipelineTile = ModContent.TileType<UEPipelineTile>();
             for (int y = 0; y < 55; y++) {
@@ -147,7 +149,7 @@ namespace CalamityOverhaul.Content.Structures
                     newPos = mainPos + new Point16(-2, y + maxExcavateY - 2);
                     WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
                 }
-                if (tileID <= 2 || y < 6) {
+                if (tileID <= 2 || y < 6 || tileID == laboratoryPlating) {
                     WorldGen.KillTile(newPos.X, newPos.Y);
                     WorldGen.PlaceTile(newPos.X, newPos.Y, uePipelineTile);
                 }

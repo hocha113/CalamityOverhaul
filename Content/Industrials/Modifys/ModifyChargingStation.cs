@@ -370,14 +370,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (OpenUI || sengs > 0) {
-                DrawUI(spriteBatch);
-            }
-
             Vector2 drawPos = CenterInWorld + new Vector2(0, -24);
             if (Item.type > ItemID.None) {
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, drawPos - Main.screenPosition
                     , 1f, 0, Lighting.GetColor((int)(drawPos.X / 16), (int)(drawPos.Y / 16)));
+            }
+        }
+
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            if (OpenUI || sengs > 0) {
+                DrawUI(spriteBatch);
             }
         }
     }
