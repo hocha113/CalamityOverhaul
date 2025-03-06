@@ -121,6 +121,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int PlayerIsKreLoadTime;
         /// <summary>
+        /// 玩家装弹时间完成比例
+        /// </summary>
+        public float ReloadingRatio;
+        /// <summary>
         /// 不能拥有暗影克隆体的时间，这个值每帧会自动减1
         /// </summary>
         public int DontHasSemberDarkMasterCloneTime;
@@ -207,6 +211,7 @@ namespace CalamityOverhaul.Content
             PressureIncrease = 1;
             KreloadTimeIncrease = 1;
             HeldStyle = -1;
+            ReloadingRatio = 0;
             OnHit = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;

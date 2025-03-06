@@ -36,6 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         /// 这个角度用于设置箱体在玩家非使用阶段的仰角，这个角度是周角而非弧度角，默认为20f
         /// </summary>
         public float AngleFirearmRest = 20f;
+        /// <summary>
+        /// 被放置的声音
+        /// </summary>
         public SoundStyle DeploymentSound = CWRSound.DeploymentSound;
         /// <summary>
         /// 是否启用手持开关

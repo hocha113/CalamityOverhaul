@@ -610,6 +610,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 }
 
                 ModOwner.PlayerIsKreLoadTime = 2;
+                ModOwner.ReloadingRatio = kreloadTimeValue / (float)KreloadMaxTime;
 
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态

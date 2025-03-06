@@ -902,6 +902,15 @@ Items: {
 		DisplayName: 荒野中的风力发电机
 		Tooltip: ""
 	}
+
+	MedicalBox: {
+		DisplayName: 医疗补给箱
+		Tooltip:
+			'''
+			长按部署至地面
+			右键部署后的医疗箱可以治疗自己
+			'''
+	}
 }
 
 Projectiles: {
@@ -1203,6 +1212,8 @@ Projectiles: {
 	// ForgedLasEXhProjectile.DisplayName: Forged Las E Xh Projectile
 	// ForgedLasOrb.DisplayName: Forged Las Orb
 	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
+	// MedicalBoxHeld.DisplayName: Medical Box Held
+	// MedicalBoxProj.DisplayName: Medical Box Proj
 }
 
 Configs: {
@@ -1358,6 +1369,11 @@ Configs: {
 				预设2:左下
 				预设3:居高
 				'''
+		}
+
+		ShowReloadingProgressUI: {
+			Label: 显示装弹进度
+			Tooltip: 开启后会让弹药装填的进度被显示出来
 		}
 	}
 }

@@ -895,6 +895,11 @@ Items: {
 		// DisplayName: Wind Turbines In The Wilderness
 		// Tooltip: ""
 	}
+
+	MedicalBox: {
+		// DisplayName: Medical Box
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1196,6 +1201,8 @@ Projectiles: {
 	// ForgedLasEXhProjectile.DisplayName: Forged Las E Xh Projectile
 	// ForgedLasOrb.DisplayName: Forged Las Orb
 	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
+	// MedicalBoxHeld.DisplayName: Medical Box Held
+	// MedicalBoxProj.DisplayName: Medical Box Proj
 }
 
 Configs: {
@@ -1351,6 +1358,11 @@ Configs: {
 				Voreinstellung 2: Unten links
 				Voreinstellung 3: Oben zentriert
 				'''
+		}
+
+		ShowReloadingProgressUI: {
+			// Label: Show Reloading Progress
+			// Tooltip: When opened, the ammo loading progress will be displayed
 		}
 	}
 }

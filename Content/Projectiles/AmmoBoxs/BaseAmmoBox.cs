@@ -75,7 +75,46 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public virtual bool ClickBehavior(Player player, CWRItems cwr) => true;
 
-        private bool TileIndsdm(Tile tile) => tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
+        public override void AI() {
+            Projectile.timeLeft = 2;
+            Player player = Main.LocalPlayer;
+            float inPlayer = player.Distance(Projectile.Center);
+            bool rightPrmd = !oldDownRight && DownRight;
+            oldDownRight = DownRight;
+            mouseInBox = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
+            if (inPlayer < 100 && mouseInBox) {
+                player.noThrow = 2;
+                player.cursorItemIconEnabled = true;
+                if (FromeThisTImeID == 0) {
+                    FromeThisTImeID = ModContent.ItemType<AmmoBoxFire>();
+                }
+                player.cursorItemIconID = FromeThisTImeID;
+                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                    gun.ShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
+                }
+                if (rightPrmd && Projectile.IsOwnedByLocalPlayer()) {
+                    Item item = player.GetItem();
+                    if (CanClick(item)) {
+                        Preprocessing(player, item);
+                        if (ClickBehavior(player, item.IsAir ? null : item.CWR())) {
+                            Projectile.Kill();
+                        }
+                    }
+                    else {
+                        player.QuickSpawnItem(Projectile.FromObjectGetParent(), new Item(FromeThisTImeID));
+                        Projectile.Kill();
+                    }
+                    Projectile.netUpdate = true;
+                    return;
+                }
+            }
+            if (player.Hitbox.Intersects(Projectile.Hitbox) && !player.controlDown) {
+                player.CWR().ReceivingPlatformTime = 2;
+            }
+            Dorp();
+        }
+
+        private static bool TileIndsdm(Tile tile) => tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
 
         public virtual void Dorp() {
             Projectile indsdmProj = null;
@@ -97,9 +136,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
 
                 bool indsdm = false;
-                if (TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16)) 
-                    || TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16)) 
-                    || TileIndsdm(CWRUtils.GetTile(Projectile.BottomRight / 16))){
+                if (TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16))
+                    || TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16))
+                    || TileIndsdm(CWRUtils.GetTile(Projectile.BottomRight / 16))) {
                     indsdm = true;
                 }
 
@@ -132,45 +171,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     }
                 }
             }
-        }
-
-        public override void AI() {
-            Projectile.timeLeft = 2;
-            Player player = Main.LocalPlayer;
-            float inPlayer = player.Distance(Projectile.Center);
-            bool rightPrmd = !oldDownRight && DownRight;
-            oldDownRight = DownRight;
-            mouseInBox = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
-            if (inPlayer < 100 && mouseInBox) {
-                player.noThrow = 2;
-                player.cursorItemIconEnabled = true;
-                if (FromeThisTImeID == 0) {
-                    FromeThisTImeID = ModContent.ItemType<AmmoBoxFire>();
-                }
-                player.cursorItemIconID = FromeThisTImeID;
-                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    gun.ShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
-                }
-                if (rightPrmd && Projectile.IsOwnedByLocalPlayer()) {
-                    Item item = player.GetItem();
-                    if (CanClick(item)) {
-                        Preprocessing(player, item);
-                        if (ClickBehavior(player, item.CWR())) {
-                            Projectile.Kill();
-                        }
-                    }
-                    else {
-                        player.QuickSpawnItem(Projectile.FromObjectGetParent(), new Item(FromeThisTImeID));
-                        Projectile.Kill();
-                    }
-                    Projectile.netUpdate = true;
-                    return;
-                }
-            }
-            if (player.Hitbox.Intersects(Projectile.Hitbox) && !player.controlDown) {
-                player.CWR().ReceivingPlatformTime = 2;
-            }
-            Dorp();
         }
 
         public override bool PreDraw(ref Color lightColor) {

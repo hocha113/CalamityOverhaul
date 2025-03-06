@@ -835,7 +835,7 @@ namespace CalamityOverhaul
 
         public static CWRItems CWR(this Item item) {
             if (item.type == ItemID.None) {
-                VaultUtils.Text("ERROR!发生了一次空传递，该物品为None!");
+                VaultUtils.Text("ERROR!发生了一次空传递，该物品为None!", Color.Red);
                 CWRMod.Instance.Logger.Info("ERROR!发生了一次空传递，该物品为None!");
                 return null;
             }
