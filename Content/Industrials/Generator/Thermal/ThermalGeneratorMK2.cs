@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             }
 
             if (ThermalData.Temperature > 0) {
-                CWRUtils.ClockFrame(ref frame, 5, 5);
+                CWRUtils.ClockFrame(ref frame, 5, 5, 1);
             }
             else {
                 frame = 0;

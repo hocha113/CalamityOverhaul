@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;
-            TileObjectData.newTile.Height = 9;
-            TileObjectData.newTile.Origin = new Point16(1, 8);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16, 16];
+            TileObjectData.newTile.Height = 8;
+            TileObjectData.newTile.Origin = new Point16(1, 7);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;
             TileObjectData.newTile.Height = 27;
-            TileObjectData.newTile.Origin = new Point16(1, 24);
+            TileObjectData.newTile.Origin = new Point16(1, 25);
             TileObjectData.newTile.CoordinateHeights = [
                 16, 16, 16, 16, 16, 16, 16, 16, 16
                 , 16, 16, 16, 16, 16, 16, 16, 16, 16

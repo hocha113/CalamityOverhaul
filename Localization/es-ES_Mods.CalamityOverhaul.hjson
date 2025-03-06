@@ -5506,6 +5506,16 @@ RemakeItems: {
 	// ModifyOrichalcumHelmet.UpdateArmorText: During the reloading process, taking damage will cause a large number of petals to scatter and splatter.
 	// ModifyPalladiumHelmet.UpdateArmorText: During the reloading process, health will be restored more quickly.
 	// ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
+
+	ModifyChargingStationItem: {
+		// DisplayName: 充能站
+		/* Tooltip:
+			'''
+			The use of energy batteries to recharge the Garden creation
+			Put the item into the charging station with the energy battery for charging
+			[UEValue]
+			''' */
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer
