@@ -74,5 +74,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle JustStrike = new SoundStyle(CWRConstant.Asset + "Sounds/JustStrike");
         public static SoundStyle Dash = new SoundStyle(CWRConstant.Asset + "Sounds/Dash");
         public static SoundStyle Windmill = new SoundStyle(CWRConstant.Asset + "Sounds/Windmill");
+        public static SoundStyle TeslaOpen = new SoundStyle(CWRConstant.Asset + "Sounds/TeslaOpen");
+        public static SoundStyle MagneticBurst = new SoundStyle(CWRConstant.Asset + "Sounds/MagneticBurst");
     }
 }

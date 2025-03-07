@@ -27,6 +27,7 @@
         public const string NPC = Asset + "NPCs/";
         public const string Sound = Asset + "Sounds/";
         public const string Turrets = Asset + "Turrets/";
+        public const string ElectricPowers = Asset + "ElectricPowers/";
         public const string Other = Asset + "Others/";
 
         public const string Cay_Item = "CalamityMod/Items/";

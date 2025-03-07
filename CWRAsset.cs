@@ -25,6 +25,8 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Extra_193;
         public static Asset<Texture2D> DraedonContactPanel;
         public static Asset<Texture2D> StarTexture_White;
+        public static Asset<Texture2D> StarTexture;
+        public static Asset<Texture2D> ThunderTrail;//这个纹理来自珊瑚石，谢谢你瓶中微光 :)
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -46,6 +48,8 @@ namespace CalamityOverhaul
             Extra_193 = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_193");
             DraedonContactPanel = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonSummoning/DraedonContactPanel");
             StarTexture_White = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture_White");
+            StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
+            ThunderTrail = CWRUtils.GetT2DAsset(CWRConstant.Masking + "ThunderTrail");
         }
         void ICWRLoader.UnLoadData() {
             icon_small = null;

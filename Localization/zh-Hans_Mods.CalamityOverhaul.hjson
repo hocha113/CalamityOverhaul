@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -913,6 +913,11 @@ Items: {
 			右键部署后的医疗箱可以治疗自己
 			'''
 	}
+
+	TeslaElectromagneticTower: {
+		DisplayName: 特斯拉电磁塔
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1216,6 +1221,8 @@ Projectiles: {
 	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
 	// MedicalBoxHeld.DisplayName: Medical Box Held
 	// MedicalBoxProj.DisplayName: Medical Box Proj
+	// TeslaBall.DisplayName: Tesla Ball
+	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 }
 
 Configs: {

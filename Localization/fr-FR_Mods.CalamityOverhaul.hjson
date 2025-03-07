@@ -903,6 +903,11 @@ Items: {
 		// DisplayName: Medical Box
 		// Tooltip: ""
 	}
+
+	TeslaElectromagneticTower: {
+		// DisplayName: Tesla Electromagnetic Tower
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1206,6 +1211,8 @@ Projectiles: {
 	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
 	// MedicalBoxHeld.DisplayName: Medical Box Held
 	// MedicalBoxProj.DisplayName: Medical Box Proj
+	// TeslaBall.DisplayName: Tesla Ball
+	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 }
 
 Configs: {
