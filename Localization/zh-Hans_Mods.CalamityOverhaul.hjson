@@ -1223,6 +1223,7 @@ Projectiles: {
 	// MedicalBoxProj.DisplayName: Medical Box Proj
 	// TeslaBall.DisplayName: Tesla Ball
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
+	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
 }
 
 Configs: {

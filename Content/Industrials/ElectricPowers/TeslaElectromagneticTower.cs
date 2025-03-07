@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.PRTTypes;
@@ -67,6 +69,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             TileObjectData.addTile(Type);
         }
 
+        public override bool CreateDust(int i, int j, ref int type) {
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
+            return false;
+        }
+
         public override bool CanDrop(int i, int j) => false;
 
         public override bool RightClick(int i, int j) {
@@ -114,6 +121,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public bool AttackPattern { get; set; }
         public NPC TargetByNPC { get; set; }
         public int FireCoolden { get; set; }
+        public float GuardValue { get; set; }
         /// <summary>
         /// 鼠标是否悬停在TP实体之上
         /// </summary>
@@ -127,6 +135,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (AttackPattern) {
+                GuardValue = 0;
                 if (MachineData.UEvalue >= 60 && ++FireCoolden > 60) {
                     TargetByNPC = CenterInWorld.FindClosestNPC(700, false, true);
                     if (TargetByNPC != null) {
@@ -145,6 +154,61 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     FireCoolden = 0;
                 }
             }
+            else if (MachineData.UEvalue > 2) {
+                if (GuardValue < 800) {
+                    GuardValue += 10;
+                }
+
+                if (!VaultUtils.isServer) {
+                    for (int i = 0; i < 33; i++) {
+                        int dust = Dust.NewDust(CenterInWorld + CWRUtils.randVr(GuardValue, GuardValue + 2), 1, 1, DustID.Electric);
+                        Main.dust[dust].noGravity = true;
+                    }
+                }
+
+                foreach (var npc in Main.ActiveNPCs) {
+                    if (npc.friendly) {
+                        continue;
+                    }
+                    if (npc.Distance(CenterInWorld) > GuardValue) {
+                        continue;
+                    }
+                    npc.AddBuff(BuffID.Electrified, 30);
+                }
+
+                if (++FireCoolden > 40) {
+                    ArcCharging();
+                    FireCoolden = 0;
+                }
+
+                MachineData.UEvalue -= 0.5f;
+            }
+        }
+
+        public void ArcCharging() {
+            Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
+            if (player == null) {
+                return;
+            }
+
+            Item handItem = player.GetItem();
+            if (handItem.type <= ItemID.None) {
+                return;
+            }
+
+            CalamityGlobalItem calamityItem = handItem.Calamity();
+            if (!calamityItem.UsesCharge || calamityItem.Charge >= calamityItem.MaxCharge) {
+                return;
+            }
+
+            SoundEngine.PlaySound(CWRSound.ArcCharging, CenterInWorld);
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            Vector2 dir = CenterInWorld.To(player.Center).UnitVector();
+            Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
+                , dir * 8, ModContent.ProjectileType<TeslaBallByGuard>(), 0, 0, player.whoAmI);
         }
 
         public void RightEvent() {
@@ -152,7 +216,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             for (int i = 0; i < 20; i++) {
                 int dust = Dust.NewDust(PosInWorld, Width, Height, DustID.Electric);
                 Main.dust[dust].noGravity = true;
-                
+
             }
             for (int x = 0; x < Width / 16; x++) {
                 for (int y = 0; y < Height / 16; y++) {
@@ -186,7 +250,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     //来自珊瑚石，谢谢你瓶中微光 :)
     internal class TeslaBallByAttack : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.Masking + "StarTexture";
         public ref float PointDistance => ref Projectile.ai[2];
         public override bool CanFire => true;
         public ref float ThunderWidth => ref Projectile.localAI[1];
@@ -197,9 +261,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public int NPCIndex = -1;
         public float Alpha;
         public float fade = 0;
-        private Vector2 TargetCenter;
+        public Vector2 TargetCenter;
         public ThunderTrail trail;
-        private LinkedList<Vector2> trailList;
+        public LinkedList<Vector2> trailList;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
             Projectile.friendly = true;
@@ -210,9 +274,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.localNPCHitCooldown = 30;
         }
 
-        public override bool? CanDamage() {
-            return State == 1 && Hited == 0;
-        }
+        public override bool? CanDamage() => State == 1 && Hited == 0;
 
         public float GetAlpha(float factor) {
             if (factor < fade)
@@ -221,9 +283,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return ThunderAlpha * (factor - fade) / (1 - fade);
         }
 
-        public virtual Color ThunderColorFunc(float factor) {
-            return new Color(103, 255, 255);
-        }
+        public virtual Color ThunderColorFunc(float factor) => new Color(103, 255, 255);
 
         public static bool TryFindClosestEnemy(Vector2 position, float maxDistance, Func<NPC, bool> predicate, out NPC target) {
             float maxDis = maxDistance;
@@ -286,9 +346,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return factor * factor;
         }
 
-        public virtual float ThunderWidthFunc_Sin(float factor) {
-            return MathF.Sin(factor * MathHelper.Pi) * ThunderWidth;
-        }
+        public virtual float ThunderWidthFunc_Sin(float factor) => MathF.Sin(factor * MathHelper.Pi) * ThunderWidth;
 
         public void StartAttack() {
             Projectile.tileCollide = true;
@@ -299,7 +357,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.timeLeft = 10 * 100;
             trailList = new LinkedList<Vector2>();
 
-            Projectile.velocity = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero) * 16;
+            Projectile.velocity = (InMousePos - Projectile.Center).SafeNormalize(Vector2.Zero) * 16;
 
             trail = new ThunderTrail(CWRAsset.ThunderTrail, ThunderWidthFunc_Sin, ThunderColorFunc, GetAlpha) {
                 CanDraw = true,
@@ -332,15 +390,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return true;
         }
 
-        public void Chase() {
+        public virtual void Chase() {
             Timer++;
             Vector2 targetCenter = TargetCenter;
 
             if (GetNPCOwner(NPCIndex, out NPC target)) {
                 float speed = Projectile.velocity.Length();
-
-                if (Projectile.Center.Distance(targetCenter) < speed * 4)//距离目标点近了就换一个
-                {
+                //距离目标点近了就换一个
+                if (Projectile.Center.Distance(targetCenter) < speed * 4) {
                     if (Projectile.Center.Distance(target.Center) < speed * 10) {
                         targetCenter = target.Center;
                         TargetCenter = target.Center;
@@ -372,8 +429,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             Projectile.velocity = selfAngle.AngleLerp(targetAngle, 0.5f + 0.5f * factor).ToRotationVector2() * 24f;
 
-            //if (Main.rand.NextBool(8))
-            //    Projectile.SpawnTrailDust(DustID.Electric, Main.rand.NextFloat(0.1f, 0.3f), Scale: Main.rand.NextFloat(0.4f, 0.8f));
+            if (Main.rand.NextBool(2)) {
+                Projectile.SpawnTrailDust(DustID.Electric, Main.rand.NextFloat(0.1f, 0.3f), Scale: Main.rand.NextFloat(0.4f, 0.8f));
+            }
 
             trailList.AddLast(Projectile.Center);
 
@@ -409,9 +467,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return false;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Fade();
-        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => Fade();
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 5; i++) {
@@ -421,8 +477,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (Hited == 0)//没碰到任何东西就绘制本体
-            {
+            //没碰到任何东西就绘制本体
+            if (Hited == 0) {
                 Texture2D mainTex = TextureAssets.Projectile[Type].Value;
 
                 Color c = Lighting.GetColor(Projectile.Center.ToTileCoordinates(), new Color(103, 255, 255));
@@ -437,24 +493,136 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Texture2D exTex = CWRAsset.StarTexture.Value;
 
                 Vector2 origin = exTex.Size() / 2;
-                Main.spriteBatch.Draw(exTex, position, null, c, 0,
-                    origin, 0.5f, 0, 0);
+                Main.spriteBatch.Draw(exTex, position, null, c, 0, origin, 0.5f, 0, 0);
 
                 c = lightColor;
                 c.A = 0;
                 c *= Alpha;
-                Main.spriteBatch.Draw(exTex, position, null, c, 0,
-                    origin, 0.2f, 0, 0);
+                Main.spriteBatch.Draw(exTex, position, null, c, 0, origin, 0.2f, 0, 0);
             }
 
             if (State > 0) {
-                if (State == 1 && Timer < 3)
+                if (State == 1 && Timer < 3) {
                     return false;
+                }
 
                 trail?.DrawThunder(Main.instance.GraphicsDevice);
             }
 
             return false;
+        }
+    }
+
+    internal class TeslaBallByGuard : TeslaBallByAttack
+    {
+        private Player TargetPlayer { get; set; }
+        public override void SetDefaults() {
+            base.SetDefaults();
+            Projectile.friendly = false;
+            Projectile.hostile = false;
+        }
+
+        public override void Chase() {
+            Timer++;
+            Vector2 targetCenter = TargetCenter;
+
+            if (TargetPlayer != null) {
+                float speed = Projectile.velocity.Length();
+                //距离目标点近了就换一个
+                if (Projectile.Center.Distance(targetCenter) < speed * 4) {
+                    if (Projectile.Center.Distance(TargetPlayer.Center) < speed) {
+                        targetCenter = TargetPlayer.Center;
+                        TargetCenter = TargetPlayer.Center;
+                        State = 2;
+                    }
+                    else {
+                        Vector2 dir2 = TargetPlayer.Center - Projectile.Center;
+                        float length2 = dir2.Length();
+                        if (length2 > 100) {
+                            length2 = 100;
+                        }
+
+                        dir2 = dir2.SafeNormalize(Vector2.Zero);
+                        Vector2 center2 = Projectile.Center + dir2 * length2;
+                        Vector2 pos = center2 + dir2.RotatedBy(Main.rand.NextFromList(1.57f, -1.57f)) * length2;
+
+                        targetCenter = pos;
+                        TargetCenter = pos;
+                        Projectile.velocity = (targetCenter - Projectile.Center).SafeNormalize(Vector2.Zero) * speed;
+                    }
+                }
+            }
+            else {
+                Fade();
+                return;
+            }
+
+            float selfAngle = Projectile.velocity.ToRotation();
+            float targetAngle = (targetCenter - Projectile.Center).ToRotation();
+
+            float factor = 1 - Math.Clamp(Vector2.Distance(targetCenter, Projectile.Center) / 500, 0, 1);
+
+            Projectile.velocity = selfAngle.AngleLerp(targetAngle, 0.5f + 0.5f * factor).ToRotationVector2() * 24f;
+
+            if (Main.rand.NextBool(6)) {
+                Projectile.SpawnTrailDust(DustID.Electric, Main.rand.NextFloat(0.1f, 0.3f), Scale: Main.rand.NextFloat(0.4f, 0.8f));
+            }
+
+            trailList.AddLast(Projectile.Center);
+
+            if (Timer % Projectile.MaxUpdates == 0) {
+                trail.BasePositions = [.. trailList];//消失的时候不随机闪电
+                trail.RandomThunder();
+            }
+        }
+
+        private void HandlerPlayerCharge() {
+            for (int i = 0; i < 3; i++) {
+                Vector2 spanPos = Owner.position + new Vector2(Main.rand.Next(Owner.width), Main.rand.Next(Owner.height));
+                PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White);
+            }
+
+            float singleCharge = 0.1f;
+            Item handItem = Owner.GetItem();
+            if (handItem.type > ItemID.None) {
+                CalamityGlobalItem calamityItem = handItem.Calamity();
+                if (calamityItem.UsesCharge && calamityItem.Charge < calamityItem.MaxCharge) {
+                    calamityItem.Charge += singleCharge;
+                    calamityItem.Charge = MathHelper.Clamp(calamityItem.Charge, 0, calamityItem.MaxCharge);
+                }
+            }
+        }
+
+        public override void AI() {
+            Lighting.AddLight(Projectile.Center, new Color(103, 255, 255).ToVector3());
+            //生成后以极快的速度前进
+            switch (State) {
+                default:
+                case 0://刚生成，等待透明度变高后开始寻敌
+                    Player player = CWRUtils.InPosFindPlayer(Projectile.Center, 800);
+                    if (player != null) {
+                        TargetPlayer = player;
+                        TargetCenter = Projectile.Center + (Projectile.Center - Owner.Center).SafeNormalize(Vector2.Zero) * 125;
+                        StartAttack();
+                    }
+                    else {
+                        Projectile.Kill();
+                    }
+                    break;
+                case 1://找到敌人，以极快的速度追踪
+                    Chase();
+                    break;
+                case 2://后摇，闪电逐渐消失
+                    Timer++;
+                    fade = Smoother((int)Timer, 30);
+                    ThunderWidth = Smoother(60 - (int)Timer, 60) * 14;
+
+                    if (Timer > 30) {
+                        HandlerPlayerCharge();
+                        Projectile.Kill();
+                    }
+                    break;
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                     Frame.Y++;
                     if (Frame.Y > 2) {
                         active = false;
-                    }   
+                    }
                 }
             }
         }

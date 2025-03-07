@@ -324,6 +324,18 @@ namespace CalamityOverhaul
             SoundEngine.PlaySound(soundStyle == default ? SoundID.Dig : soundStyle, projectile.position);
         }
 
+        public static void SpawnTrailDust(this Projectile Projectile, int type, float velocityMult
+            , int Alpha = 0, Color newColor = default, float Scale = 1f, bool noGravity = true) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width
+                , Projectile.height, type, Alpha: Alpha, newColor: newColor, Scale: Scale);
+            dust.noGravity = noGravity;
+            dust.velocity = -Projectile.velocity * velocityMult;
+        }
+
         public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
             List<int> SuperchargableEnemies = [
                 ModContent.NPCType<WulfrumDrone>(),
