@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override int TargetTileID => ModContent.TileType<ThermalGeneratorTile>();
         internal int frame;
-        internal ThermalData ThermalData => GeneratorData as ThermalData;
+        internal ThermalData ThermalData => MachineData as ThermalData;
         public override float MaxUEValue => 1000;
         public override int TargetItem => ModContent.ItemType<ThermalGenerator>();
         public override MachineData GetGeneratorDataInds() {

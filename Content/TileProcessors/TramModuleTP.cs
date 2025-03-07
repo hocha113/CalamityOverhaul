@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.TileModules
+namespace CalamityOverhaul.Content.TileProcessors
 {
     public class TramModuleTP : TileProcessor, ICWRLoader
     {

@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.TileModules
+namespace CalamityOverhaul.Content.TileProcessors
 {
     internal class FoodStallChairTP : TileProcessor
     {

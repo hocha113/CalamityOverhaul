@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/PlaceItem");
         internal ThermalGeneratorUI thermalGenerator;
-        private ThermalData ThermalData => thermalGenerator.GeneratorTP.GeneratorData as ThermalData;
+        private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ThermalGeneratorUI thermalGenerator;
-        private ThermalData ThermalData => thermalGenerator.GeneratorTP.GeneratorData as ThermalData;
+        private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValue");
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ThermalGeneratorUI thermalGenerator;
-        private ThermalData ThermalData => thermalGenerator.GeneratorTP.GeneratorData as ThermalData;
+        private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPower");
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());

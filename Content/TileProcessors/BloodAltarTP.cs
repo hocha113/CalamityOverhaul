@@ -14,7 +14,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.TileModules
+namespace CalamityOverhaul.Content.TileProcessors
 {
     internal class BloodAltarTP : TileProcessor, ICWRLoader
     {

@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.TileModules
+namespace CalamityOverhaul.Content.TileProcessors
 {
     internal class CompressorTP : TileProcessor
     {

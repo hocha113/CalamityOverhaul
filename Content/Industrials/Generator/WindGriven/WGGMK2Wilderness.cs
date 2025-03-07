@@ -81,8 +81,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override void GeneratorUpdate() {
             rotSpeed = 0.012f;
             rotition += rotSpeed;
-            if (GeneratorData.UEvalue < MaxUEValue) {
-                GeneratorData.UEvalue += rotSpeed * 6;
+            if (MachineData.UEvalue < MaxUEValue) {
+                MachineData.UEvalue += rotSpeed * 6;
             }
 
             if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {

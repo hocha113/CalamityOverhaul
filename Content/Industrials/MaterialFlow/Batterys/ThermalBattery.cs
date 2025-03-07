@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.TileModules;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -109,7 +108,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal const float _maxUEValue = 6000;
         public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
-        public override void SetProperty() => MachineData = new MachineData();
         public override void Update() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
             hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));

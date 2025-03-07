@@ -1,10 +1,13 @@
-﻿using InnoVault.TileProcessors;
-
-namespace CalamityOverhaul.Content.Industrials.MaterialFlow
+﻿namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 {
-    internal class BaseBattery : TileProcessor
+    internal class BaseBattery : MachineTP
     {
-        public MachineData MachineData;
-        public virtual float MaxUEValue => 6000f;
+        public sealed override void SetMachine() {
+            SetBattery();
+        }
+
+        public virtual void SetBattery() {
+
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.TileModules;
+using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

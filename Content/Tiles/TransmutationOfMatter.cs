@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.TileModules;
+using CalamityOverhaul.Content.TileProcessors;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;

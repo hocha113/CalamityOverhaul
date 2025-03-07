@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.TileModules;
+using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
