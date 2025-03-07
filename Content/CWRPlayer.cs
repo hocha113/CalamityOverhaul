@@ -79,7 +79,15 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同
         /// </summary>
-        public bool uiMouseInterface => Player.mouseInterface;
+        public bool UIMouseInterface => Player.mouseInterface;
+        /// <summary>
+        /// 是否了解了风力
+        /// </summary>
+        public bool UnderstandWindGriven;
+        /// <summary>
+        /// 是否了解了风力MK2
+        /// </summary>
+        public bool UnderstandWindGrivenMK2;
         /// <summary>
         /// 手持状态
         /// </summary>
@@ -221,6 +229,20 @@ namespace CalamityOverhaul.Content
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
             DestroyerOwner = false;
+        }
+
+        public override void SaveData(TagCompound tag) {
+            tag["UnderstandWindGriven"] = UnderstandWindGriven;
+            tag["UnderstandWindGrivenMK2"] = UnderstandWindGrivenMK2;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            if (!tag.TryGet("UnderstandWindGriven", out UnderstandWindGriven)) {
+                UnderstandWindGriven = false;
+            }
+            if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
+                UnderstandWindGrivenMK2 = false;
+            }
         }
 
         /// <summary>

@@ -1,13 +1,17 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Generator.Thermal;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -16,6 +20,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     internal class WindGrivenGenerator : ModItem
     {
         public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGenerator";
+        public static LocalizedText UnderstandWindGriven { get; private set; }
+        public override void SetStaticDefaults() {
+            UnderstandWindGriven = this.GetLocalization(nameof(UnderstandWindGriven), 
+                () => "An initial understanding of how wind power works is required");
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -31,6 +40,22 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.createTile = ModContent.TileType<WindGrivenGeneratorTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 200;
+        }
+
+        public static LocalizedText WindGrivenRecipeCondition(out Func<bool> condition) {
+            condition = new Func<bool>(() => Main.LocalPlayer.CWR().UnderstandWindGriven);
+            return UnderstandWindGriven;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(8).
+                AddIngredient<MysteriousCircuitry>(8).
+                AddIngredient(ItemID.CopperBar, 15).
+                AddIngredient(ItemID.IronBar, 5).
+                AddCondition(WindGrivenRecipeCondition(out var condition), condition).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

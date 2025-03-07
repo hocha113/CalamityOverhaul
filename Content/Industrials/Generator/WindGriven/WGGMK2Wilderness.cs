@@ -92,9 +92,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void GeneratorKill() {
+            if (!VaultUtils.isServer) {
+                Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 1200);
+                if (player != null && !player.CWR().UnderstandWindGrivenMK2) {
+                    player.CWR().UnderstandWindGrivenMK2 = true;
+                    int text = CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.WindGriven_Text2.Value, false);
+                    Main.combatText[text].lifeTime = 300;
+                }
+            }
+
             if (VaultUtils.isClient) {
                 return;
             }
+
             int dropNum = Main.rand.Next(8, 12);
             for (int i = 0; i < dropNum; i++) {
                 DropItem(ModContent.ItemType<DubiousPlating>());

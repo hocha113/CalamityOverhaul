@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Common
 {
     internal class OnCalamityReforgeEvent
     {
-        private static CalamityMod.CalamityMod mod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
+        private static CalamityMod.CalamityMod CalamityMod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
 
         // 获取当前前缀在指定前缀层级中的层级索引
         private static int GetPrefixTier(int[][] tiers, int currentPrefix) {
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Common
             return rand.Next(reforgeTiers[newTier]);
         }
 
-        private static int GetCalPrefix(string name) => mod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
+        private static int GetCalPrefix(string name) => CalamityMod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
 
         //修改的关键，决定什么物品可以获得近战加成前缀
         private static bool OverWeaponFixMeleePerg(Item item) {

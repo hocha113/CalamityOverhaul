@@ -1,15 +1,14 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
@@ -35,6 +34,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.createTile = ModContent.TileType<UEPipelineTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe(333).
+                AddIngredient<DubiousPlating>(5).
+                AddIngredient<MysteriousCircuitry>(5).
+                AddIngredient(ItemID.CopperBar, 5).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

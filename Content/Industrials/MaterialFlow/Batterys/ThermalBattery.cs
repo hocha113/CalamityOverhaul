@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityMod.Items.Materials;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -29,6 +30,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Item.createTile = ModContent.TileType<ThermalBatteryTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = ThermalBatteryTP._maxUEValue;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(15).
+                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient(ItemID.Glass, 50).
+                AddIngredient(ItemID.CopperBar, 5).
+                AddIngredient(ItemID.GoldBar, 5).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

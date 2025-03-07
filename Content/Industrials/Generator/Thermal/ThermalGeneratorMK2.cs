@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityMod.Items.Materials;
+using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -29,6 +30,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalGeneratorMK2Tile>();
             Item.CWR().StorageUE = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<ThermalGenerator>().
+                AddIngredient<DubiousPlating>(20).
+                AddIngredient<MysteriousCircuitry>(20).
+                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
+                AddIngredient(ItemID.GoldBar, 10).
+                AddTile(TileID.MythrilAnvil).
+                Register();
         }
     }
 

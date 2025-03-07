@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         private void UpdateSafeMouseInterfaceValue() {
             if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    _safeMouseInterfaceValue = !Owner.CWR().uiMouseInterface;
+                    _safeMouseInterfaceValue = !Owner.CWR().UIMouseInterface;
                     if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {
                         NetUpdate();
                     }

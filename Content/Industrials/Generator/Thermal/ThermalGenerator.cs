@@ -1,6 +1,10 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityMod.CustomRecipes;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables.Plates;
+using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -29,6 +33,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<ThermalGeneratorTile>();
             Item.CWR().StorageUE = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient(ItemID.Furnace).
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
+                AddIngredient(ItemID.CopperBar, 5).
+                AddIngredient(ItemID.IronBar, 5).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

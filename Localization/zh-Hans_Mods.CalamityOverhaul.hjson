@@ -872,11 +872,13 @@ Items: {
 	WindGrivenGenerator: {
 		DisplayName: 风力发电机
 		Tooltip: "[UEValue]"
+		UnderstandWindGriven: 需要对风力发电的工作原理有初步的了解
 	}
 
 	WindGrivenGeneratorMK2: {
 		DisplayName: 风力发电机MK2
 		Tooltip: "[UEValue]"
+		UnderstandWindGrivenMK2: 需要对风力发电的工作原理有深入的了解
 	}
 
 	ThermalGeneratorMK2: {
@@ -1420,6 +1422,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		WindGriven_Text1: 你觉得这种随风而动的机械很有趣，寻思自己也得整几个...
+		WindGriven_Text2: 你被这种巨大的机械震撼到了，你觉得自己也该尝试制作一个...
 		Turret_Text1: 电量耗尽
 		Turret_Text2: 侦察到入侵者!
 		IndustrializationGenMessage: 正在让世界工业化

@@ -89,6 +89,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void GeneratorKill() {
+            if (!VaultUtils.isServer) {
+                Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 1200);
+                if (player != null && (!player.CWR().UnderstandWindGriven || Main.rand.NextBool(3))) {
+                    player.CWR().UnderstandWindGriven = true;
+                    int text = CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.WindGriven_Text1.Value, false);
+                    Main.combatText[text].lifeTime = 300;
+                }
+            }
+
             if (VaultUtils.isClient) {
                 return;
             }

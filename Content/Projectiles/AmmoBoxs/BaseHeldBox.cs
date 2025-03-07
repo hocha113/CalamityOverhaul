@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void InOwner() {
-            uiMouseInterface = Owner.CWR().uiMouseInterface;
+            uiMouseInterface = Owner.CWR().UIMouseInterface;
             Projectile.timeLeft = 2;
             SetHandBox();
             SetHeld();
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
             }
 
-            return !Owner.CWR().uiMouseInterface && noCanUseTime <= 0;
+            return !Owner.CWR().UIMouseInterface && noCanUseTime <= 0;
         }
 
         public virtual void OnUse() {

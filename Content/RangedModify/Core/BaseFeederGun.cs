@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
 
             if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed
-                && CurrentAmountIsZero() && !ModOwner.uiMouseInterface && kreloadTimeValue <= 0) {
+                && CurrentAmountIsZero() && !ModOwner.UIMouseInterface && kreloadTimeValue <= 0) {
                 HandleEmptyAmmoEjection();
             }
 
@@ -635,7 +635,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
             if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
-                    if (!ModOwner.uiMouseInterface && kreloadTimeValue <= 0 && CurrentAmountIsZero()) {
+                    if (!ModOwner.UIMouseInterface && kreloadTimeValue <= 0 && CurrentAmountIsZero()) {
                         HandleEmptyAmmoEjection();
                     }
                     LoadingReminder = false;

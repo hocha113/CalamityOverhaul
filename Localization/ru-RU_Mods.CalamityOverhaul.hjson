@@ -877,11 +877,13 @@ Items: {
 	WindGrivenGenerator: {
 		// DisplayName: Wind Griven Generator
 		// Tooltip: "[UEValue]"
+		// UnderstandWindGriven: An initial understanding of how wind power works is required
 	}
 
 	WindGrivenGeneratorMK2: {
 		// DisplayName: Wind Griven Generator MK2
 		// Tooltip: "[UEValue]"
+		// UnderstandWindGrivenMK2: A deep understanding of wind power is required
 	}
 
 	ThermalGeneratorMK2: {
@@ -1436,6 +1438,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+		// WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
 		// Turret_Text1: Battery Runs Out
 		// Turret_Text2: Intruder Detected!
 		// IndustrializationGenMessage: Industrializing The World

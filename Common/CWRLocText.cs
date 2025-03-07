@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Common
         public static CWRLocText Instance { get; private set; }
         //不要被吓到，这些只是必须的
         #region 字段内容
+        public LocalizedText WindGriven_Text1 { get; private set; }
+        public LocalizedText WindGriven_Text2 { get; private set; }
         public LocalizedText Turret_Text1 { get; private set; }
         public LocalizedText Turret_Text2 { get; private set; }
         public LocalizedText IndustrializationGenMessage { get; private set; }

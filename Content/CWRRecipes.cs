@@ -13,6 +13,7 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup GodDWGroup;
         public static RecipeGroup FishGroup;
         public static RecipeGroup AdamantiteBarGroup;
+        public static RecipeGroup MythrilBarGroup;
         public static int[] Gemstones;
         public static int[] Emblems;
 
@@ -555,6 +557,13 @@ namespace CalamityOverhaul.Content
                 ItemID.TitaniumBar,
             ]);
             RecipeGroup.RegisterGroup("CWRMod:AdamantiteBarGroup", AdamantiteBarGroup);
+
+            MythrilBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.MythrilBar)}",
+            [
+                ItemID.MythrilBar,
+                ItemID.OrichalcumBar,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:MythrilBarGroup", MythrilBarGroup);
 
             ARGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_ApostolicRelics")}",
             [
