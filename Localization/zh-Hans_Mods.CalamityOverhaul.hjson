@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1420,6 +1420,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		Turret_Text1: 电量耗尽
+		Turret_Text2: 侦察到入侵者!
 		IndustrializationGenMessage: 正在让世界工业化
 		InternalStoredEnergy: 能量存储
 		KreloadTimeAddText: 弹药装填时间增加
@@ -5561,57 +5563,63 @@ RemakeItems: {
 	}
 
 	ModifyLabTurret: {
-		// DisplayName: 实验室炮塔
-		/* Tooltip:
+		DisplayName: 实验室炮塔
+		Tooltip:
 			'''
 			向附近敌怪发射激光
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 
 	ModifyIceTurret: {
-		// DisplayName: 冰球炮塔
-		/* Tooltip:
+		DisplayName: 冰球炮塔
+		Tooltip:
 			'''
 			向附近敌怪投掷易碎的冰雾炸弹
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 
 	ModifyOnyxTurret: {
-		// DisplayName: 玛瑙炮塔
-		/* Tooltip:
+		DisplayName: 玛瑙炮塔
+		Tooltip:
 			'''
 			以霰弹枪的方式向附近的敌怪发射子弹
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 
 	ModifyPlagueTurret: {
-		// DisplayName: 瘟疫爆弹炮塔
-		/* Tooltip:
+		DisplayName: 瘟疫爆弹炮塔
+		Tooltip:
 			'''
 			向附近的敌怪发射追踪瘟疫导弹
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 
 	ModifyWaterTurret: {
-		// DisplayName: 水流炮塔
-		/* Tooltip:
+		DisplayName: 水流炮塔
+		Tooltip:
 			'''
 			向附近的敌怪喷射高速水流
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 
 	ModifyFireTurret: {
-		// DisplayName: 火焰喷射炮塔
-		/* Tooltip:
+		DisplayName: 火焰喷射炮塔
+		Tooltip:
 			'''
 			用最大功率的喷火器烤熟附近敌怪
-			有Boss存活时无法攻击
-			''' */
+			需要电量才能运行
+			[UEValue]
+			'''
 	}
 }
 

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1425,6 +1425,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		Turret_Text1: Battery Runs Out
+		Turret_Text2: Intruder Detected!
 		IndustrializationGenMessage: Industrializing The World
 		InternalStoredEnergy: Internal Stored Energy
 		KreloadTimeAddText: "Ammunition reloading time increased "
@@ -5565,11 +5567,11 @@ RemakeItems: {
 	ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
 
 	ModifyChargingStationItem: {
-		DisplayName: 充能站
+		DisplayName: Charging Station
 		Tooltip:
 			'''
-			The use of energy batteries to recharge the Garden creation
-			Put the item into the charging station with the energy battery for charging
+			Use energy cells to charge Garde creations
+			Place items and energy cells into the charging station to begin charging
 			[UEValue]
 			'''
 	}
@@ -5578,63 +5580,69 @@ RemakeItems: {
 		DisplayName: Laser Turret
 		Tooltip:
 			'''
-			Bombard nearby enemies with lightning-fast lasers
-			It requires electricity to run
+			Fires lightning-fast lasers at nearby enemies
+			Requires energy to operate
 			[UEValue]
 			'''
 	}
 
 	ModifyLabTurret: {
-		DisplayName: 实验室炮塔
+		DisplayName: Lab Turret
 		Tooltip:
 			'''
-			向附近敌怪发射激光
-			有Boss存活时无法攻击
+			Fires lasers at nearby enemies
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 
 	ModifyIceTurret: {
-		DisplayName: 冰球炮塔
+		DisplayName: Ice Ball Turret
 		Tooltip:
 			'''
-			向附近敌怪投掷易碎的冰雾炸弹
-			有Boss存活时无法攻击
+			Throws fragile ice mist bombs at nearby enemies
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 
 	ModifyOnyxTurret: {
-		DisplayName: 玛瑙炮塔
+		DisplayName: Onyx Turret
 		Tooltip:
 			'''
-			以霰弹枪的方式向附近的敌怪发射子弹
-			有Boss存活时无法攻击
+			Fires bullets at nearby enemies in a shotgun spread
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 
 	ModifyPlagueTurret: {
-		DisplayName: 瘟疫爆弹炮塔
+		DisplayName: Plague Bomb Turret
 		Tooltip:
 			'''
-			向附近的敌怪发射追踪瘟疫导弹
-			有Boss存活时无法攻击
+			Fires tracking plague missiles at nearby enemies
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 
 	ModifyWaterTurret: {
-		DisplayName: 水流炮塔
+		DisplayName: Water Stream Turret
 		Tooltip:
 			'''
-			向附近的敌怪喷射高速水流
-			有Boss存活时无法攻击
+			Sprays high-speed water streams at nearby enemies
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 
 	ModifyFireTurret: {
-		DisplayName: 火焰喷射炮塔
+		DisplayName: Flamethrower Turret
 		Tooltip:
 			'''
-			用最大功率的喷火器烤熟附近敌怪
-			有Boss存活时无法攻击
+			Incinerates nearby enemies with a high-powered flamethrower
+			Requires energy to operate
+			[UEValue]
 			'''
 	}
 }

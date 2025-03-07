@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -140,7 +141,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
             if (MachineData.UEvalue <= SingleEnergyConsumption) {
                 CanFire = false;
                 if (!BatteryPrompt) {
-                    CombatText.NewText(HitBox, new Color(111, 247, 200), "电量耗尽", false);
+                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
                     BatteryPrompt = true;
                 }
             }
@@ -157,7 +158,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
                 }
             }
             else if (!AttackPrompt) {
-                CombatText.NewText(HitBox, Color.IndianRed, "侦察到入侵者!", false);
+                CombatText.NewText(HitBox, Color.OrangeRed, CWRLocText.Instance.Turret_Text2.Value, false);
                 AttackPrompt = true;
             }
 
