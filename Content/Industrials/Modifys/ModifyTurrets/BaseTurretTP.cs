@@ -158,7 +158,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
                 }
             }
             else if (!AttackPrompt) {
-                CombatText.NewText(HitBox, Color.OrangeRed, CWRLocText.Instance.Turret_Text2.Value, false);
+                if (!Friend) {
+                    CombatText.NewText(HitBox, Color.OrangeRed, CWRLocText.Instance.Turret_Text2.Value, false);
+                }
                 AttackPrompt = true;
             }
 

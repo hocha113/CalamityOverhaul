@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 targetElmt.DrawPosition = DrawPosition + new Vector2(4, i * targetElmt.UIHitBox.Height - rollerValue);
                 targetElmt.Update();
             }
+            
             siderHeight = recipeTargetElmts.Count * 64 / recipeTargetElmts.Count * 7;
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
@@ -34,6 +35,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             rollerSengs = (rollerValue / recipeTargetElmts.Count * 64) * siderHeight;
             UIHitBox = new Rectangle((int)DrawPosition.X - 4, (int)DrawPosition.Y, 72, siderHeight);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                Terraria.GameInput.PlayerInput.LockVanillaMouseScroll(Mod.Name + "/" + GetType().Name);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (recipeSidebarListView.PreviewTargetPecipePointer != this) {
                     SoundStyle sound = SoundID.Grab;
                     sound.Pitch = -0.6f;
-                    sound.Volume = 0.6f;
+                    sound.Volume = 0.4f;
                     SoundEngine.PlaySound(sound);
                     recipeSidebarListView.PreviewTargetPecipePointer = this;
                 }
@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         recipeSidebarListView.TargetPecipePointer = this;
                         SoundStyle sound = SoundID.Grab;
                         sound.Pitch = 0.6f;
+                        sound.Volume = 0.8f;
                         SoundEngine.PlaySound(sound);
 
                         for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {

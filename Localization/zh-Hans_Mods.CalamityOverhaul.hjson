@@ -118,7 +118,7 @@ Items: {
 	}
 
 	TransmutationOfMatterItem: {
-		DisplayName: 欧米茄物质聚合仪
+		DisplayName: 终焉物质聚合仪
 		Tooltip:
 			'''
 			放置后右键打开合成台
