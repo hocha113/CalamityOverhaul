@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5558,6 +5558,60 @@ RemakeItems: {
 			需要电量才能运行
 			[UEValue]
 			'''
+	}
+
+	ModifyLabTurret: {
+		// DisplayName: 实验室炮塔
+		/* Tooltip:
+			'''
+			向附近敌怪发射激光
+			有Boss存活时无法攻击
+			''' */
+	}
+
+	ModifyIceTurret: {
+		// DisplayName: 冰球炮塔
+		/* Tooltip:
+			'''
+			向附近敌怪投掷易碎的冰雾炸弹
+			有Boss存活时无法攻击
+			''' */
+	}
+
+	ModifyOnyxTurret: {
+		// DisplayName: 玛瑙炮塔
+		/* Tooltip:
+			'''
+			以霰弹枪的方式向附近的敌怪发射子弹
+			有Boss存活时无法攻击
+			''' */
+	}
+
+	ModifyPlagueTurret: {
+		// DisplayName: 瘟疫爆弹炮塔
+		/* Tooltip:
+			'''
+			向附近的敌怪发射追踪瘟疫导弹
+			有Boss存活时无法攻击
+			''' */
+	}
+
+	ModifyWaterTurret: {
+		// DisplayName: 水流炮塔
+		/* Tooltip:
+			'''
+			向附近的敌怪喷射高速水流
+			有Boss存活时无法攻击
+			''' */
+	}
+
+	ModifyFireTurret: {
+		// DisplayName: 火焰喷射炮塔
+		/* Tooltip:
+			'''
+			用最大功率的喷火器烤熟附近敌怪
+			有Boss存活时无法攻击
+			''' */
 	}
 }
 
