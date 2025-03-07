@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Tiles.Core
 
             bool? reset = null;
 
-            if (TileOverrideDic.TryGetValue(tile.TileType, out var rTile)){
+            if (TileOverrideDic.TryGetValue(tile.TileType, out var rTile)) {
                 reset = rTile.RightClick(i, j, tile);
             }
 

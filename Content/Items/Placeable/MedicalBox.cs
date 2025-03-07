@@ -1,7 +1,6 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
-using Terraria.Audio;
+﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 

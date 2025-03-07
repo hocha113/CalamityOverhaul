@@ -1,10 +1,10 @@
 ﻿using InnoVault.TileProcessors;
 using System.IO;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials
 {

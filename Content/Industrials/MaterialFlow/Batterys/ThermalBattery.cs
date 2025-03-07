@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             if (--activeTime > 0 || fullLoad) {
                 CWRUtils.ClockFrame(ref frame, 5, 5);
             }
-            
+
             drawColor = Color.White * (MachineData.UEvalue / MaxUEValue);
             if (oldUEValue != MachineData.UEvalue) {
                 activeTime = 60;

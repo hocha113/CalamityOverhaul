@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

@@ -119,7 +119,7 @@ namespace CalamityOverhaul
                 RangedLoader.IsAmmunitionUnlimitedEvent += (Func<Item, Player, bool>)args[1];
             }
             else if (callType == CallType.SetSupertableRecipeDate) {
-                
+
             }
 
             return null;

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
                     TargetID = FaterConversion.TargetItem.type;
                 }
             }
-            
+
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, ItemConversion.Weith, ItemConversion.Height);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
             hoverInMainPage = UIHitBox.Intersects(mouseHit);

@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void SetBox() {
-            
+
         }
 
         public override bool PreUpdate() {

@@ -1,7 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.Generator.Thermal;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -22,7 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGenerator";
         public static LocalizedText UnderstandWindGriven { get; private set; }
         public override void SetStaticDefaults() {
-            UnderstandWindGriven = this.GetLocalization(nameof(UnderstandWindGriven), 
+            UnderstandWindGriven = this.GetLocalization(nameof(UnderstandWindGriven),
                 () => "An initial understanding of how wind power works is required");
         }
         public override void SetDefaults() {

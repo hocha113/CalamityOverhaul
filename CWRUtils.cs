@@ -17,7 +17,6 @@ using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul

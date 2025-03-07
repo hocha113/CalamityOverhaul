@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Terraria;
-using Terraria.ModLoader.IO;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Tiles.Core;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content

@@ -1,15 +1,15 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
-using System.Collections.Generic;
+﻿using CalamityMod.Tiles.DraedonStructures;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using System;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
-using CalamityMod.Tiles.DraedonStructures;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Structures
 {
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Structures
                     }
                 }
             }
-            
+
             int maxFindWidth = 600 + GetWorldSize() * 200;
             int maxFindHeight = 500;
 
@@ -60,8 +60,8 @@ namespace CalamityOverhaul.Content.Structures
 
                     tile = Framing.GetTileSafely(newPos);
 
-                    if (tileIsAirCount > 12 && tile.HasSolidTile() && !dontFindByY 
-                        && tile.TileType != 189 && tile.TileType != 460 
+                    if (tileIsAirCount > 12 && tile.HasSolidTile() && !dontFindByY
+                        && tile.TileType != 189 && tile.TileType != 460
                         && tile.TileType != 196 && tile.TileType != 202) {
                         scheduledPosList.Add(newPos);
                         dontFindByY = true;

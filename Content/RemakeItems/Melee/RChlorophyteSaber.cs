@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool PreSwingAI() {
-            StabBehavior(initialLength: 10, lifetime: maxSwingTime, scaleFactorDenominator: 420f, minLength: 10, maxLength: 60, ignoreUpdateCount:true);
+            StabBehavior(initialLength: 10, lifetime: maxSwingTime, scaleFactorDenominator: 420f, minLength: 10, maxLength: 60, ignoreUpdateCount: true);
             return false;
         }
 

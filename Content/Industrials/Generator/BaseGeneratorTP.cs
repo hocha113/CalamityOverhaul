@@ -1,5 +1,5 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.Generator
-{ 
+{
     internal abstract class BaseGeneratorTP : MachineTP
     {
         public virtual int MaxFindMode => 300;

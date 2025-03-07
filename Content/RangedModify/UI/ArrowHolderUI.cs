@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     HeldWeapon = item;
                 }
             }
-            
+
             if (HeldWeapon == null || HeldWeapon.type == ItemID.None) {
                 return;
             }

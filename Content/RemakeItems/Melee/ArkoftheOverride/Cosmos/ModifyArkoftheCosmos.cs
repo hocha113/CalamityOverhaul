@@ -42,10 +42,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
 
                     arkofthe.Charge = 0;
                 }
-                else if (!Main.projectile.Any(n => n.active && n.owner == player.whoAmI 
-                && (n.type == ProjectileType<ArkoftheAncientsParryHoldout>() 
-                || n.type == ProjectileType<TrueArkoftheAncientsParryHoldout>() 
-                || n.type == ProjectileType<ArkoftheElementsParryHoldout>() 
+                else if (!Main.projectile.Any(n => n.active && n.owner == player.whoAmI
+                && (n.type == ProjectileType<ArkoftheAncientsParryHoldout>()
+                || n.type == ProjectileType<TrueArkoftheAncientsParryHoldout>()
+                || n.type == ProjectileType<ArkoftheElementsParryHoldout>()
                 || n.type == ProjectileType<ModifyCosmosParryHoldout>())))
                     Projectile.NewProjectile(source, player.Center, velocity
                         , ProjectileType<ModifyCosmosParryHoldout>(), damage, 0, player.whoAmI, 0, 0);
@@ -87,13 +87,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 sword.Combo = 0f;
             }
             SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
-            SoundEngine.PlaySound(CommonCalamitySounds.ScissorGuillotineSnapSound 
+            SoundEngine.PlaySound(CommonCalamitySounds.ScissorGuillotineSnapSound
                 with { Volume = CommonCalamitySounds.ScissorGuillotineSnapSound.Volume * 1.3f }, Projectile.Center);
 
             CombatText.NewText(Projectile.Hitbox, new Color(111, 247, 200), GetTextValue("Misc.ArkParry"), true);
 
-            for (int i = 0; i < 5; i++)
-            {
+            for (int i = 0; i < 5; i++) {
                 Vector2 particleDispalce = Main.rand.NextVector2Circular(Owner.Hitbox.Width * 2f, Owner.Hitbox.Height * 1.2f);
                 float particleScale = Main.rand.NextFloat(0.5f, 1.4f);
                 Particle shine = new FlareShine(OwnerConter + particleDispalce, particleDispalce * 0.01f, Color.White, Color.Red, 0f, new Vector2(0.6f, 1f) * particleScale, new Vector2(1.5f, 2.7f) * particleScale, 20 + Main.rand.Next(6), bloomScale: 3f, spawnDelay: Main.rand.Next(7) * 2);
@@ -398,9 +397,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), OwnerConter + holdPoint
                 , OwnerConter + holdPoint + Projectile.rotation.ToRotationVector2() * bladeLength, 24, ref collisionPoint);
         }
-        
+
         internal float SwirlRatio() => PiecewiseAnimation(SwingCompletion, [startup, swing]);
-        
+
         public override void Initialize() {
             Projectile.timeLeft = Thrown ? (int)MaxThrowTime : (int)MaxSwingTime;
             SoundStyle sound = (Charge > 0 || Thrown) ? CommonCalamitySounds.LouderPhantomPhoenix : SoundID.Item71;

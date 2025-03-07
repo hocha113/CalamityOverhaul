@@ -106,8 +106,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             // 获取当前 Tile 和相邻的 TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
 
-            if (externalTile.HasTile 
-                && VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
+            if (externalTile.HasTile
+                && VaultUtils.SafeGetTopLeft(Position + Offset, out var point)
                 && TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
                 // 如果相邻的 TileProcessor 是发电机
                 if (externalTP is BaseGeneratorTP baseGeneratorTP) {
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                         baseBattery.MachineData.UEvalue++;
                         coreTP.MachineData.UEvalue--;
                     }
-                    
+
                     linkID = 3;
                 }
             }
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     }
                 }
             }
-            
+
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             int linkCount = 0;

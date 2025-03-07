@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

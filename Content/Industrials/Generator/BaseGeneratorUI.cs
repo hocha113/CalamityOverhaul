@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
         }
 
         public virtual void RightClickByTile(bool newTP) {
-            
+
         }
 
         public virtual void ByTPCloaseFunc() {
