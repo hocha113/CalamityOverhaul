@@ -5549,6 +5549,16 @@ RemakeItems: {
 			[UEValue]
 			'''
 	}
+
+	ModifyLaserTurret: {
+		DisplayName: 激光炮塔
+		Tooltip:
+			'''
+			用闪电般快速的激光轰击附近敌怪
+			需要电量才能运行
+			[UEValue]
+			'''
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

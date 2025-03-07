@@ -21,6 +21,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         /// </summary>
         public NPC TargetByNPC;
         /// <summary>
+        /// 是否有开火欲望？
+        /// </summary>
+        public bool CanFire;
+        /// <summary>
         /// 是否友好
         /// </summary>
         public virtual bool Friend => true;
@@ -57,6 +61,14 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         /// </summary>
         public float Recoil = 12;
         /// <summary>
+        /// 这个炮塔将要对准的点
+        /// </summary>
+        public Vector2 TargetCenter;
+        /// <summary>
+        /// 这个炮塔将要对准的点，在Ai中时机使用的值，会自动渐变靠拢<see cref="TargetCenter"/>
+        /// </summary>
+        public Vector2 NewTargetCenter;
+        /// <summary>
         /// 朝向的单位向量
         /// </summary>
         public Vector2 UnitToTarget;
@@ -68,10 +80,14 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         /// 炮塔身体中心和TP实体中心的矫正值
         /// </summary>
         public virtual Vector2 Offset => new Vector2(0, -24);
+        public override float MaxUEValue => 1000;
         public virtual Asset<Texture2D> GetBodyAsset => CWRAsset.Placeholder_ERROR;
         public virtual Asset<Texture2D> GetBarrelAsset => null;
         #endregion
         public override void SetBattery() {
+            if (TargetCenter == default) {
+                TargetCenter = Center + new Vector2(111, 80f);
+            }
             SetTurret();
         }
 
@@ -80,39 +96,39 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         public override void Update() {
             PreUpdate();
 
+            CanFire = false;
             if (Friend) {
-                TargetByNPC = CenterInWorld.FindClosestNPC(800, false, true);
+                TargetByNPC = Center.FindClosestNPC(800, false, true);
                 if (TargetByNPC != null) {
-                    UnitToTarget = CenterInWorld.To(TargetByNPC.Center).UnitVector();
-                    Rotation = UnitToTarget.ToRotation();
-                    Dir = Math.Sign(UnitToTarget.X);
-
-                    if (++FireStorage > FireTime) {
-                        RecoilValue -= Recoil;
-                        if (PreShoot()) {
-                            Projectile.NewProjectile(new EntitySource_WorldEvent()
-                                , Center + UnitToTarget * 64, UnitToTarget * 9, ShootID, Damage, 4, -1);
-                        }
-                        FireStorage = 0;
-                    }
+                    TargetCenter = TargetByNPC.Center;
+                    CanFire = true;
                 }
             }
             else {
-                TargetByPlayer = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
+                TargetByPlayer = CWRUtils.InPosFindPlayer(Center, 800);
                 if (TargetByPlayer != null) {
-                    UnitToTarget = CenterInWorld.To(TargetByPlayer.Center).UnitVector();
-                    Rotation = UnitToTarget.ToRotation();
-                    Dir = Math.Sign(UnitToTarget.X);
-
-                    if (++FireStorage > FireTime) {
-                        RecoilValue -= Recoil;
-                        if (PreShoot()) {
-                            Projectile.NewProjectile(new EntitySource_WorldEvent(), Center + UnitToTarget * 64
-                            , UnitToTarget * 9, ModContent.ProjectileType<LaserShotBuffer>(), Damage, 0, -1);
-                        }
-                        FireStorage = 0;
-                    }
+                    TargetCenter = TargetByPlayer.Center;
+                    CanFire = true;
                 }
+            }
+
+            if (!CanFire) {
+                TargetCenter = Center + new Vector2(Dir * 111, 80f);
+            }
+
+            NewTargetCenter = Vector2.Lerp(NewTargetCenter, TargetCenter, 0.1f);
+
+            UnitToTarget = Center.To(NewTargetCenter).UnitVector();
+            Rotation = UnitToTarget.ToRotation();
+            Dir = Math.Sign(UnitToTarget.X);
+
+            if (CanFire && ++FireStorage > FireTime) {
+                RecoilValue -= Recoil;
+                if (PreShoot() && !VaultUtils.isClient) {
+                    Projectile.NewProjectile(new EntitySource_WorldEvent()
+                        , Center + UnitToTarget * 64, UnitToTarget * 9, ShootID, Damage, Friend ? 4 : 0, -1);
+                }
+                FireStorage = 0;
             }
 
             RecoilValue *= 0.8f;
@@ -127,6 +143,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 
         public virtual void PostUpdate() { }
 
+        /// <summary>
+        /// 运行与默认发射逻辑之前，该函数运行在所有端上，所以编写弹幕生成代码时需要注意是否是客户端
+        /// </summary>
+        /// <returns></returns>
         public virtual bool PreShoot() => true;
 
         public virtual void ModifyDrawData(ref Vector2 drawPos, ref Vector2 drawBarrelPos) { }
@@ -134,8 +154,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         public override void Draw(SpriteBatch spriteBatch) {
             Vector2 drawPos = Center - Main.screenPosition + UnitToTarget * RecoilValue * 0.6f;
             Color drawColor = Lighting.GetColor(Position.X, Position.Y);
-            Vector2 drawBarrelPos = drawPos + UnitToTarget * (46 + RecoilValue);
-            drawBarrelPos += UnitToTarget.GetNormalVector() * (Dir > 0 ? -8 : -10);
+            Vector2 drawBarrelPos = drawPos + UnitToTarget * (30 + RecoilValue);
 
             ModifyDrawData(ref drawPos, ref drawBarrelPos);
 

@@ -5647,6 +5647,16 @@ RemakeItems: {
 			[UEValue]
 			''' */
 	}
+
+	ModifyLaserTurret: {
+		// DisplayName: Laser Turret
+		/* Tooltip:
+			'''
+			Bombard nearby enemies with lightning-fast lasers
+			It requires electricity to run
+			[UEValue]
+			''' */
+	}
 }
 
 NPCs.DestroyerDrawHeadIconNPC.DisplayName: Уничтожитель

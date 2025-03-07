@@ -80,7 +80,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         private Vector2 MousePos;
         internal Item Item = new Item();
         internal Item Empty = new Item();
+        public override bool CanDrop => false;
         public override float MaxUEValue => 1000;
+        public override int TargetItem => ModContent.ItemType<ChargingStationItem>();
         void ICWRLoader.LoadAsset() {
             Panel = CWRUtils.GetT2DAsset(CWRConstant.UI + "Generator/GeneratorPanel");
             SlotTex = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonsArsenal/ChargerWeaponSlot");
@@ -94,16 +96,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             BarTop = null;
             BarFull = null;
             EmptySlot = null;
-        }
-
-        public override void SetProperty() {
-            MachineData = new MachineData();
-            if (TrackItem != null && TrackItem.type == ModContent.ItemType<ChargingStationItem>()) {
-                MachineData.UEvalue = TrackItem.CWR().UEValue;
-                if (MachineData.UEvalue > MaxUEValue) {
-                    MachineData.UEvalue = MaxUEValue;
-                }
-            }
         }
 
         public void RightEvent() {
@@ -261,7 +253,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void OnKill() {
+        public override void MachineKill() {
             if (VaultUtils.isClient) {
                 return;
             }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Industrials
 {
     public abstract class MachineTP : TileProcessor
     {
-        public MachineData MachineData;
+        public MachineData MachineData { get; set; }
         public virtual float MaxUEValue => 1000;
         public virtual int TargetItem => ItemID.None;
         public virtual bool CanDrop => true;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public sealed override void OnKill() {
-            if (!VaultUtils.isClient && CanDrop) {
+            if (!VaultUtils.isClient && CanDrop && TargetItem > ItemID.None) {
                 Item item = new Item(TargetItem);
                 item.CWR().UEValue = MachineData.UEvalue;
                 DropItem(item);

@@ -100,6 +100,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     internal class ThermalBatteryTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<ThermalBatteryTile>();
+        public override int TargetItem => ModContent.ItemType<ThermalBattery>();
         private bool hoverInTP;
         internal int frame;
         internal Color drawColor;

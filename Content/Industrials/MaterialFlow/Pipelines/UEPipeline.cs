@@ -178,6 +178,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         internal List<SideState> SideState { get; private set; }
         internal bool Turning { get; private set; }
         internal bool Decussation { get; private set; }
+        public override int TargetItem => ModContent.ItemType<UEPipeline>();
         public override float MaxUEValue => 20;
         void ICWRLoader.LoadAsset() {
             PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel");
@@ -201,13 +202,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             new (new Point16(-1, 0)),//左2
             new (new Point16(1, 0))//右3
             };
-            MachineData = new MachineData();
-            if (TrackItem != null && TrackItem.type == UEPipeline.ID) {
-                MachineData.UEvalue = TrackItem.CWR().UEValue;
-                if (MachineData.UEvalue > MaxUEValue) {
-                    MachineData.UEvalue = MaxUEValue;
-                }
-            }
         }
 
         public override void Update() {
