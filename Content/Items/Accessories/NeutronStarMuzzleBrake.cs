@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             player.moveSpeed += 0.25f;
             player.magicQuiver = true;
             player.GetDamage<RangedDamageClass>() += 1f;
+            player.GetCritChance<RangedDamageClass>() += 100f;
             player.aggro -= 1200;
 
             calPlayer.voidField = true;

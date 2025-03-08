@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             modplayer.LoadMuzzleBrakeLevel = 1;
             modplayer.PressureIncrease -= 0.4f;
             player.GetDamage<RangedDamageClass>() -= 0.15f;
+            player.GetCritChance<RangedDamageClass>() += 5f;
             player.aggro -= 200;
         }
 

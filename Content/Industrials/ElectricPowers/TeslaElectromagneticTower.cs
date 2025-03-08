@@ -165,8 +165,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                             Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
                                 , dir * 8, ModContent.ProjectileType<TeslaBallByAttack>(), 32, 2, -1);
                         }
+                        MachineData.UEvalue -= 60;
                     }
-                    MachineData.UEvalue -= 60;
                     FireCoolden = 0;
                 }
             }

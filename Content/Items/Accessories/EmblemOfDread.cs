@@ -30,7 +30,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
-            
+            player.GetDamage<MeleeDamageClass>() += 1f;
+            player.GetAttackSpeed<MeleeDamageClass>() += 1f;
+            player.GetCritChance<MeleeDamageClass>() += 100f;
+            player.aggro += 9999;
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {

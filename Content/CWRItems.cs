@@ -656,26 +656,6 @@ namespace CalamityOverhaul.Content
             return base.PreDrawTooltipLine(item, line, ref yOffset);
         }
 
-        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
-            CWRPlayer modPlayer = player.CWR();
-            if (modPlayer.LoadMuzzleBrakeLevel > 0) {
-                if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
-                    if (modPlayer.LoadMuzzleBrakeLevel == 1) {
-                        crit += 5;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
-                        crit += 10;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
-                        crit += 15;
-                    }
-                    else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
-                        crit += 100;
-                    }
-                }
-            }
-        }
-
         public override bool CanUseItem(Item item, Player player) {
             if (IsShootCountCorlUse) {
                 return player.ownedProjectileCounts[item.shoot] <= 0;
