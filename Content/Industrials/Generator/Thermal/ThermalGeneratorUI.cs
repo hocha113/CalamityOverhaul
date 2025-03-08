@@ -193,15 +193,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         public override void RightClickByTile(bool newTP) {
             Item item = Main.LocalPlayer.GetItem();
-            if ((!item.IsAir || Main.keyState.PressingShift()) && FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
+            if ((!item.IsAir) && FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
                 return;
             }
-            if (!newTP) {
-                IsActive = !IsActive;
+
+            if (!Main.keyState.PressingShift()) {
+                if (!newTP) {
+                    IsActive = !IsActive;
+                }
+                else {
+                    IsActive = true;
+                }
             }
-            else {
-                IsActive = true;
-            }
+            
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
 

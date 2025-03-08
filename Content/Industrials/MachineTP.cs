@@ -88,9 +88,10 @@ namespace CalamityOverhaul.Content.Industrials
             Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
 
             if (Main.keyState.PressingShift()) {
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value
-                            , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
-                            , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                string textContent = (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString();
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(textContent);
+                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, textContent
+                            , drawPos.X - textSize.X / 2 + 18, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
             }
         }
     }

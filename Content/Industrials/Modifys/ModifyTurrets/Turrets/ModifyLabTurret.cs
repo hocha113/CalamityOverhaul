@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override void SetTurret() {
             Damage = 24;
             ShootID = ModContent.ProjectileType<DraedonLaserBuffer>();
+            BarrelOffsetY = 2;
+            BarrelOffsetX = 28;
         }
     }
 }
