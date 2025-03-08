@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 {
-    internal abstract class BaseBaseTurretTile : TileOverride
+    internal abstract class BaseTurretTile : TileOverride
     {
         public virtual int TargetTPID => 0;
         public override bool? CanDrop(int i, int j, int type) => false;

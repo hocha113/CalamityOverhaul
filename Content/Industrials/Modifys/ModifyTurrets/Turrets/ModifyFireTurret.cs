@@ -1,29 +1,23 @@
 ﻿using CalamityMod.Items.Placeables.PlaceableTurrets;
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.PlayerTurrets;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.TileProcessors;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyFireTurret : ItemOverride
+    internal class ModifyFireTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<FireTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyFireTurretTile : BaseBaseTurretTile
+    internal class ModifyFireTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerFireTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<FireTurretByFriendTP>();
     }
 
-    internal class ModifyFireTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyFireTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileFireTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<FireTurretTP>();

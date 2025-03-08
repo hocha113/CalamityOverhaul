@@ -1,29 +1,23 @@
 ﻿using CalamityMod.Items.Placeables.PlaceableTurrets;
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.PlayerTurrets;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.TileProcessors;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyWaterTurret : ItemOverride
+    internal class ModifyWaterTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<WaterTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyWaterTurretTile : BaseBaseTurretTile
+    internal class ModifyWaterTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerWaterTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<WaterTurretByFriendTP>();
     }
 
-    internal class ModifyWaterTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyWaterTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileWaterTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<WaterTurretTP>();
@@ -50,6 +44,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override void SetTurret() {
             Damage = 24;
             ShootID = ModContent.ProjectileType<WaterShotBuffer>();
+            BarrelOffsetY = -2;
+            BarrelOffsetX = 22;
         }
     }
 }

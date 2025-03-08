@@ -8,22 +8,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyPlagueTurret : ItemOverride
+    internal class ModifyPlagueTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<PlagueTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyPlagueTurretTile : BaseBaseTurretTile
+    internal class ModifyPlagueTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerPlagueTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<PlagueTurretByFriendTP>();
     }
 
-    internal class ModifyPlagueTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyPlagueTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostilePlagueTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<PlagueTurretTP>();

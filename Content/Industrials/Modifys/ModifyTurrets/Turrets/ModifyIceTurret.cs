@@ -8,22 +8,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyIceTurret : ItemOverride
+    internal class ModifyIceTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<IceTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyIceTurretTile : BaseBaseTurretTile
+    internal class ModifyIceTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerIceTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<IceTurretByFriendTP>();
     }
 
-    internal class ModifyIceTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyIceTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileIceTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<IceTurretTP>();
@@ -50,6 +46,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override void SetTurret() {
             Damage = 24;
             ShootID = ModContent.ProjectileType<IceShotBuffer>();
+            BarrelOffsetY = -4;
+            BarrelOffsetX = 22;
         }
     }
 }

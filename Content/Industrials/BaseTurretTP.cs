@@ -89,9 +89,17 @@ namespace CalamityOverhaul.Content.Industrials
         /// </summary>
         public Vector2 Center => CenterInWorld + Offset;
         /// <summary>
-        /// 炮塔身体中心和TP实体中心的矫正值
+        /// 炮塔身体中心和TP实体中心的矫正值, 默认为(0, -24)
         /// </summary>
-        public virtual Vector2 Offset => new Vector2(0, -24);
+        public Vector2 Offset = new Vector2(0, -24);
+        /// <summary>
+        /// 横向管道矫正，默认为30
+        /// </summary>
+        public float BarrelOffsetX = 30;
+        /// <summary>
+        /// 纵向管道矫正，默认为0
+        /// </summary>
+        public float BarrelOffsetY = 0;
         public override float MaxUEValue => 1000;
         public virtual string BodyPath => "";
         public virtual string BodyGlowPath => "";
@@ -103,6 +111,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic[ID];
         #endregion
         public override void SetBattery() {
+            Offset = new Vector2(0, -24);
             if (TargetCenter == default) {
                 TargetCenter = Center + new Vector2(111, 80f);
             }
@@ -176,7 +185,7 @@ namespace CalamityOverhaul.Content.Industrials
                 RecoilValue -= Recoil;
                 if (PreShoot() && !VaultUtils.isClient) {
                     Projectile.NewProjectile(new EntitySource_WorldEvent()
-                        , Center + UnitToTarget * 64, UnitToTarget * 9, ShootID, Damage, Friend ? 4 : 0, -1);
+                        , Center + UnitToTarget * BarrelOffsetX, UnitToTarget * 9, ShootID, Damage, Friend ? 4 : 0, -1);
                 }
                 MachineData.UEvalue -= SingleEnergyConsumption;
                 MachineData.UEvalue = MathHelper.Clamp(MachineData.UEvalue, 0, MaxUEValue);
@@ -210,7 +219,8 @@ namespace CalamityOverhaul.Content.Industrials
         public override void FrontDraw(SpriteBatch spriteBatch) {
             Vector2 drawPos = Center + UnitToTarget * RecoilValue * 0.6f - Main.screenPosition;
             Color drawColor = Lighting.GetColor(Position.X, Position.Y);
-            Vector2 drawBarrelPos = drawPos + UnitToTarget * (30 + RecoilValue);
+            Vector2 drawBarrelPos = drawPos + UnitToTarget * (BarrelOffsetX + RecoilValue);
+            drawBarrelPos += UnitToTarget.GetNormalVector() * BarrelOffsetY * Dir;
 
             ModifyDrawData(ref drawPos, ref drawBarrelPos);
 

@@ -8,22 +8,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyLaserTurret : ItemOverride
+    internal class ModifyLaserTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<LaserTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyPlayerLaserTurret : BaseBaseTurretTile
+    internal class ModifyPlayerLaserTurret : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerLaserTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<LaserTurretByFriendTP>();
     }
 
-    internal class ModifyPlayerLaserByHostileTurret : BaseBaseTurretTile
+    internal class ModifyPlayerLaserByHostileTurret : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileLaserTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<LaserTurretByHostileTP>();

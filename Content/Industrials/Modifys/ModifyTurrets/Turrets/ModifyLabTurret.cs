@@ -9,22 +9,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyLabTurret : ItemOverride
+    internal class ModifyLabTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<LabTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyLabTurretTile : BaseBaseTurretTile
+    internal class ModifyLabTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerLabTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<LabTurretByFriendTP>();
     }
 
-    internal class ModifyLabTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyLabTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<DraedonLabTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<LabTurretTP>();
@@ -41,10 +37,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
     internal class LabTurretTP : BaseTurretTP
     {
         public override int TargetTileID => ModContent.TileType<DraedonLabTurret>();
-        public override string BodyPath => CWRConstant.Turrets + "LaserTurretBody";
-        public override string BodyGlowPath => CWRConstant.Turrets + "LaserTurretBodyGlow";
-        public override string BarrelPath => CWRConstant.Turrets + "LaserTurretBarrel";
-        public override string BarrelGlowPath => CWRConstant.Turrets + "LaserTurretBarrelGlow";
+        public override string BodyPath => CWRConstant.Turrets + "LabTurretBody";
+        public override string BodyGlowPath => CWRConstant.Turrets + "LabTurretBodyGlow";
+        public override string BarrelPath => CWRConstant.Turrets + "LabTurretBarrel";
+        public override string BarrelGlowPath => CWRConstant.Turrets + "LabTurretBarrelGlow";
         public override bool Friend => false;
         public override bool CanDrop => false;
         public override int TargetItem => ModContent.ItemType<HostileLabTurret>();

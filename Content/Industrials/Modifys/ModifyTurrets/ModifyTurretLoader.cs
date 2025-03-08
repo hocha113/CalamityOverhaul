@@ -62,6 +62,11 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 
                 TextureAssets.Tile[tp.TargetTileID] = TurretBase;
             }
+
+            List<BaseTurretItem> baseTurretItem = VaultUtils.GetSubclassInstances<BaseTurretItem>();
+            foreach (var item in baseTurretItem) {
+                TextureAssets.Item[item.TargetID] = CWRUtils.GetT2DAsset(string.Concat(CWRConstant.Turrets, item.Name.AsSpan(6), "Item"));
+            }
         }
 
         void ICWRLoader.UnLoadData() {

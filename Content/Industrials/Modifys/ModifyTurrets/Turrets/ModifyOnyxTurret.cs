@@ -8,22 +8,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
 {
-    internal class ModifyOnyxTurret : ItemOverride
+    internal class ModifyOnyxTurret : BaseTurretItem
     {
         public override int TargetID => ModContent.ItemType<OnyxTurret>();
-        public override void SetDefaults(Item item) {
-            item.CWR().StorageUE = true;
-            item.CWR().ConsumeUseUE = 1000;
-        }
     }
 
-    internal class ModifyOnyxTurretTile : BaseBaseTurretTile
+    internal class ModifyOnyxTurretTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerOnyxTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<OnyxTurretByFriendTP>();
     }
 
-    internal class ModifyOnyxTurretByHostileTile : BaseBaseTurretTile
+    internal class ModifyOnyxTurretByHostileTile : BaseTurretTile
     {
         public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileOnyxTurret>();
         public override int TargetTPID => TileProcessorLoader.GetModuleID<OnyxTurretTP>();
@@ -50,6 +46,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override void SetTurret() {
             Damage = 24;
             ShootID = ModContent.ProjectileType<OnyxShotBuffer>();
+            BarrelOffsetY = 2;
+            BarrelOffsetX = 22;
         }
     }
 }
