@@ -266,6 +266,20 @@
             "CalamityOverhaul/NeutronStarMuzzleBrake"
         };
         /// <summary>
+        /// 惧亡者之证
+        /// </summary>
+        public static string[] FullItems_EmblemOfDread = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/ElementalGauntlet", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/Affliction", "CalamityMod/DarkSunRing", "CalamityMod/DraedonsHeart", "CalamityOverhaul/NeutronStarIngot", "0", "0",
+            "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/AsgardianAegis", "CalamityMod/Radiance", "CalamityMod/YharimsGift", "CalamityMod/TheSponge", "CalamityMod/TheAmalgam", "CalamityOverhaul/NeutronStarIngot", "0",
+            "0", "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/WarbanneroftheSun", "CalamityMod/ReaperToothNecklace", "CalamityMod/OccultSkullCrown", "CalamityOverhaul/NeutronStarIngot", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "CalamityMod/ChaliceOfTheBloodGod", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/EmblemOfDread"
+        };
+        /// <summary>
         /// 天堂陨落
         /// </summary>
         public static string[] FullItems_HeavenfallLongbow = new string[] {"0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0",

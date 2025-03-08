@@ -3,18 +3,21 @@ using CalamityMod.Items;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles.Core;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
@@ -98,6 +101,34 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             EmptySlot = null;
         }
 
+        public override void SendData(ModPacket data) {
+            base.SendData(data);
+            ItemIO.Send(Item, data, true);
+            ItemIO.Send(Empty, data, true);
+        }
+
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
+            Item = ItemIO.Receive(reader, true);
+            Empty = ItemIO.Receive(reader, true);
+        }
+
+        public override void SaveData(TagCompound tag) {
+            base.SaveData(tag);
+            tag["Item"] = Item;
+            tag["Empty"] = Empty;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            base.LoadData(tag);
+            if (!tag.TryGet("Item", out Item)) {
+                Item = new Item();
+            }
+            if (!tag.TryGet("Empty", out Empty)) {
+                Empty = new Item();
+            }
+        }
+
         public void RightEvent() {
             Item item = Main.LocalPlayer.GetItem();
 
@@ -176,25 +207,23 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             bool justDown = !oldLeftDown && Main.mouseLeft;
             oldLeftDown = Main.mouseLeft;
 
-            if (!Main.mouseItem.IsAir) {
-                if (hoverSlot && justDown) {
-                    if (Main.mouseItem.Calamity().UsesCharge) {
-                        HandlerSlotItem(ref Item);
-                    }
-                    else {
-                        SoundEngine.PlaySound(SoundID.MenuClose);
-                        CombatText.NewText(HitBox, new Color(111, 247, 200), "需要放入能够接收能量的物品", false);
-                    }
+            if (hoverSlot && justDown) {
+                if (Main.mouseItem.type == ItemID.None || Main.mouseItem.Calamity().UsesCharge) {
+                    HandlerSlotItem(ref Item);
                 }
+                else {
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+                }
+            }
 
-                if (hoverEmptySlot && justDown) {
-                    if (Main.mouseItem.type == ModContent.ItemType<DraedonPowerCell>()) {
-                        HandlerSlotItem(ref Empty);
-                    }
-                    else {
-                        SoundEngine.PlaySound(SoundID.MenuClose);
-                        CombatText.NewText(HitBox, new Color(111, 247, 200), "需要放入电池", false);
-                    }
+            if (hoverEmptySlot && justDown) {
+                if (Main.mouseItem.type == ModContent.ItemType<DraedonPowerCell>()) {
+                    HandlerSlotItem(ref Empty);
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text4.Value, false);
                 }
             }
         }
@@ -291,28 +320,29 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             float uiRatio = 1 - ueRatio;
             Rectangle full = new Rectangle(0, (int)(texture2.Height * uiRatio), texture2.Width, (int)(texture2.Height * ueRatio));
 
-            drawPos += new Vector2(40, -30);
+            drawPos += new Vector2(40, -30) * sengs;
             Vector2 position = drawPos + new Vector2(8, 36 + full.Y) / 2;
 
-            Main.spriteBatch.Draw(texture, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(texture2, position, full, Color.White * sengs, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(texture3, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture2, position, full, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(texture3, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
         }
 
         public void DrawUI(SpriteBatch spriteBatch) {
             Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -120) * sengs;
-            Vector2 emptyPos = drawPos + new Vector2(-56, 0);
+            Vector2 emptyPos = drawPos + new Vector2(-56, 0) * sengs;
             spriteBatch.Draw(Panel.Value, drawPos, null, Color.White, 0, Panel.Size() / 2, 0.75f * sengs, SpriteEffects.None, 0);
             spriteBatch.Draw(SlotTex.Value, drawPos, null, Color.White, 0, SlotTex.Size() / 2, sengs, SpriteEffects.None, 0);
             spriteBatch.Draw(EmptySlot.Value, emptyPos, null, Color.White, 0, SlotTex.Size() / 2, sengs, SpriteEffects.None, 0);
 
             Vector2 origDrawPos = drawPos;
-            drawPos += new Vector2(-30, 30);
+            
+            drawPos += (new Vector2(-30, 30) * sengs);
             int uiBarByWidthSengs = (int)(BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
             // 绘制温度相关的图像
             Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, BarFull.Value.Height);
-            Main.spriteBatch.Draw(BarTop.Value, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White * sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(BarTop.Value, drawPos, null, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(BarFull.Value, drawPos + new Vector2(10, 0) * sengs, fullRec, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
 
             if (!Item.IsAir) {
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, origDrawPos, 34);
@@ -351,12 +381,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
 
             if (hoverSlot && Item.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, "放入充能物品"
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text1.Value
                     , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
             }
 
             if (hoverEmptySlot && Empty.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, "放入电池"
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text2.Value
                     , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
             }
         }

@@ -922,6 +922,11 @@ Items: {
 		// DisplayName: Tesla Electromagnetic Tower
 		// Tooltip: ""
 	}
+
+	EmblemOfDread: {
+		// DisplayName: Emblem Of Dread
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1434,6 +1439,10 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// ChargingStation_Text1: Put in charge items
+		// ChargingStation_Text2: Put in battery
+		// ChargingStation_Text3: Need to put in something that can receive energy
+		// ChargingStation_Text4: Need to put in batteries
 		// WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
 		// WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
 		// Turret_Text1: Battery Runs Out

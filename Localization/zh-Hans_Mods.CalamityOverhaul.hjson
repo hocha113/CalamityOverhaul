@@ -918,6 +918,11 @@ Items: {
 		DisplayName: 特斯拉电磁塔
 		Tooltip: ""
 	}
+
+	EmblemOfDread: {
+		DisplayName: 惧亡者之证
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1430,6 +1435,10 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		ChargingStation_Text1: 放入充能物品
+		ChargingStation_Text2: 放入电池
+		ChargingStation_Text3: 需要放入能够接收能量的物品
+		ChargingStation_Text4: 需要放入电池
 		WindGriven_Text1: 你觉得这种随风而动的机械很有趣，寻思自己也得整几个...
 		WindGriven_Text2: 你被这种巨大的机械震撼到了，你觉得自己也该尝试制作一个...
 		Turret_Text1: 电量耗尽

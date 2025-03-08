@@ -147,13 +147,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (MachineData != null && hoverInTP) {
-                Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -6);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, MachineData.UEvalue.ToString() + "UE"
-                    , drawPos.X - 6, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
-            }
-        }
+        public override void Draw(SpriteBatch spriteBatch) { }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
