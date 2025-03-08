@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 {
@@ -58,6 +59,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
                 else {
                     BarrelGlowAssetDic.Add(tp.ID, null);
                 }
+
+                TextureAssets.Tile[tp.TargetTileID] = TurretBase;
             }
         }
 
