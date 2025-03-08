@@ -336,7 +336,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             spriteBatch.Draw(EmptySlot.Value, emptyPos, null, Color.White, 0, SlotTex.Size() / 2, sengs, SpriteEffects.None, 0);
 
             Vector2 origDrawPos = drawPos;
-            
+
             drawPos += (new Vector2(-30, 30) * sengs);
             int uiBarByWidthSengs = (int)(BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
             // 绘制温度相关的图像

@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
     internal class ModifyTurretLoader : ICWRLoader
     {
         public delegate void UpdateDelegate(TEBaseTurret turret);
+        public static Asset<Texture2D> TurretBase { get; set; }
         public static Dictionary<int, Asset<Texture2D>> BodyAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BodyGlowAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
@@ -26,6 +27,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         }
 
         void ICWRLoader.LoadAsset() {
+            TurretBase = CWRUtils.GetT2DAsset(CWRConstant.Turrets + "TurretBase");
+
             List<BaseTurretTP> baseTurretTPs = VaultUtils.GetSubclassInstances<BaseTurretTP>();
             foreach (var tp in baseTurretTPs) {
                 if (tp.BodyPath != "") {
@@ -59,6 +62,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
         }
 
         void ICWRLoader.UnLoadData() {
+            TurretBase = null;
             BodyAssetDic?.Clear();
             BodyGlowAssetDic?.Clear();
             BarrelAssetDic?.Clear();

@@ -3,7 +3,7 @@ using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityMod.Tiles.PlayerTurrets;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Tiles.Core;
+using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -18,16 +18,22 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         }
     }
 
-    internal class ModifyLabTurretTile : TileOverride
+    internal class ModifyLabTurretTile : BaseBaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerLabTurret>();
-        public override bool? CanDrop(int i, int j, int type) => false;
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<LabTurretByFriendTP>();
     }
 
-    internal class LabTurretByFriendTP : LaserTurretByHostileTP
+    internal class ModifyLabTurretByHostileTile : BaseBaseTurretTile
+    {
+        public override int TargetID => ModContent.TileType<DraedonLabTurret>();
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<LabTurretTP>();
+    }
+
+    internal class LabTurretByFriendTP : LabTurretTP
     {
         public override int TargetTileID => ModContent.TileType<PlayerLabTurret>();
-        public override int TargetItem => ModContent.ItemType<LaserTurret>();
+        public override int TargetItem => ModContent.ItemType<LabTurret>();
         public override bool Friend => true;
         public override bool CanDrop => true;
     }

@@ -2,7 +2,7 @@
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.PlayerTurrets;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Tiles.Core;
+using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -17,16 +17,22 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         }
     }
 
-    internal class ModifyPlagueTurretTile : TileOverride
+    internal class ModifyPlagueTurretTile : BaseBaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerPlagueTurret>();
-        public override bool? CanDrop(int i, int j, int type) => false;
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<PlagueTurretByFriendTP>();
     }
 
-    internal class PlagueTurretByFriendTP : LaserTurretByHostileTP
+    internal class ModifyPlagueTurretByHostileTile : BaseBaseTurretTile
+    {
+        public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostilePlagueTurret>();
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<PlagueTurretTP>();
+    }
+
+    internal class PlagueTurretByFriendTP : PlagueTurretTP
     {
         public override int TargetTileID => ModContent.TileType<PlayerPlagueTurret>();
-        public override int TargetItem => ModContent.ItemType<IceTurret>();
+        public override int TargetItem => ModContent.ItemType<PlagueTurret>();
         public override bool Friend => true;
         public override bool CanDrop => true;
     }

@@ -2,7 +2,7 @@
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.PlayerTurrets;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Tiles.Core;
+using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -17,13 +17,19 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         }
     }
 
-    internal class ModifyIceTurretTile : TileOverride
+    internal class ModifyIceTurretTile : BaseBaseTurretTile
     {
         public override int TargetID => ModContent.TileType<PlayerIceTurret>();
-        public override bool? CanDrop(int i, int j, int type) => false;
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<IceTurretByFriendTP>();
     }
 
-    internal class IceTurretByFriendTP : LaserTurretByHostileTP
+    internal class ModifyIceTurretByHostileTile : BaseBaseTurretTile
+    {
+        public override int TargetID => ModContent.TileType<CalamityMod.Tiles.DraedonStructures.HostileIceTurret>();
+        public override int TargetTPID => TileProcessorLoader.GetModuleID<IceTurretTP>();
+    }
+
+    internal class IceTurretByFriendTP : IceTurretTP
     {
         public override int TargetTileID => ModContent.TileType<PlayerIceTurret>();
         public override int TargetItem => ModContent.ItemType<IceTurret>();
