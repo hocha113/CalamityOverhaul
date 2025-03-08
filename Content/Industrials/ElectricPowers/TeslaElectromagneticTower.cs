@@ -11,6 +11,7 @@ using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -18,6 +19,7 @@ using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
@@ -122,18 +124,32 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public NPC TargetByNPC { get; set; }
         public int FireCoolden { get; set; }
         public float GuardValue { get; set; }
-        /// <summary>
-        /// 鼠标是否悬停在TP实体之上
-        /// </summary>
-        public bool HoverTP;
-        public override void Update() {
-            if (InScreen) {
-                HoverTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
+        public override void SendData(ModPacket data) {
+            base.SendData(data);
+            data.Write(AttackPattern);
+        }
+
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
+            AttackPattern = reader.ReadBoolean();
+        }
+
+        public override void SaveData(TagCompound tag) {
+            base.SaveData(tag);
+            tag["AttackPattern"] = AttackPattern;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            base.LoadData(tag);
+            if (tag.TryGet("AttackPattern", out bool _ttackPattern)) {
+                AttackPattern = _ttackPattern;
             }
             else {
-                HoverTP = false;
+                AttackPattern = false;
             }
+        }
 
+        public override void Update() {
             if (AttackPattern) {
                 GuardValue = 0;
                 if (MachineData.UEvalue >= 60 && ++FireCoolden > 60) {
@@ -227,23 +243,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SoundEngine.PlaySound(CWRSound.TeslaOpen);
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (!HoverTP) {
-                return;
-            }
-
-            Vector2 drawPos = CenterInWorld + new Vector2(-30, 50) - Main.screenPosition;
-            int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-            // 绘制温度相关的图像
-            Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
-            Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-            if (Main.keyState.PressingShift()) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
-                            , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
-                            , drawPos.X + 10, drawPos.Y + 10, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
-            }
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawChargeBar();
         }
     }
 

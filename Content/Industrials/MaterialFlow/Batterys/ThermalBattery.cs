@@ -53,8 +53,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
         private static Asset<Texture2D> tileAsset;
-        void ICWRLoader.LoadAsset() => tileAsset = ModContent.Request<Texture2D>(Texture);
-        void ICWRLoader.UnLoadData() => tileAsset = null;
+        private static Asset<Texture2D> tileFullAsset;
+        void ICWRLoader.LoadAsset() {
+            tileAsset = CWRUtils.GetT2DAsset(Texture);
+            tileFullAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull");
+        }
+        void ICWRLoader.UnLoadData() {
+            tileAsset = null;
+            tileFullAsset = null;
+        }
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -78,6 +85,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             TileObjectData.addTile(Type);
         }
 
+        public override bool CreateDust(int i, int j, ref int type) {
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
+            return false;
+        }
+
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
@@ -94,7 +106,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
-            Texture2D glow = CWRUtils.GetT2DValue(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull");
+            Texture2D glow = tileFullAsset.Value;
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, thermal.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
@@ -141,6 +153,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, MachineData.UEvalue.ToString() + "UE"
                     , drawPos.X - 6, drawPos.Y, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
             }
+        }
+
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawChargeBar();
         }
     }
 }

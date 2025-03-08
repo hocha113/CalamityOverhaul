@@ -5573,6 +5573,11 @@ RemakeItems: {
 			[UEValue]
 			''' */
 	}
+
+	RCoal: {
+		// DisplayName: Coal
+		// Tooltip: Good for fuel
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

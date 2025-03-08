@@ -179,11 +179,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
         public static Asset<Texture2D> Pipeline { get; private set; }
         public static Asset<Texture2D> PipelineSide { get; private set; }
+        public static Asset<Texture2D> PipelineCorner { get; private set; }
+        public static Asset<Texture2D> PipelineCornerSide { get; private set; }
         public static Asset<Texture2D> PipelineCross { get; private set; }
         public static Asset<Texture2D> PipelineCrossSide { get; private set; }
         public static Asset<Texture2D> PipelineChannel { get; private set; }
         public static Asset<Texture2D> PipelineChannelSide { get; private set; }
         internal List<SideState> SideState { get; private set; }
+        internal int TurningID { get; private set; }
         internal bool Turning { get; private set; }
         internal bool Decussation { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
@@ -193,6 +196,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide");
             Pipeline = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipeline");
             PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineSide");
+            PipelineCorner = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCorner");
+            PipelineCornerSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCornerSide");
             PipelineCross = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCross");
             PipelineCrossSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide");
         }
@@ -201,6 +206,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             PipelineChannelSide = null;
             Pipeline = null;
             PipelineSide = null;
+            PipelineCorner = null;
+            PipelineCornerSide = null;
+            PipelineCross = null;
+            PipelineCrossSide = null;
         }
 
         public override void SetMachine() {
@@ -219,14 +228,27 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 side.Update();
             }
 
+            TurningID = 0;
             Turning = false;
             Decussation = false;
 
             if (SideState[0].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
                 Turning = true;//这种情况判定为拐角
+                if (SideState[2].linkID == 2) {//上左
+                    TurningID = 2;
+                }
+                else if (SideState[3].linkID == 2) {//上右
+                    TurningID = 0;
+                }
             }
             if (SideState[1].linkID == 2 && (SideState[2].linkID == 2 || SideState[3].linkID == 2)) {
                 Turning = true;//这种情况判定为拐角
+                if (SideState[2].linkID == 2) {//下左
+                    TurningID = 3;
+                }
+                else if (SideState[3].linkID == 2) {//下右
+                    TurningID = 1;
+                }
             }
 
             if (SideState[0].linkID == 2 && SideState[1].linkID == 2 && SideState[2].linkID == 2 && SideState[3].linkID == 2) {
@@ -254,7 +276,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
 
-
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             int linkCount = 0;
             foreach (var side in SideState) {
@@ -271,8 +292,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             if (Turning) {
-                spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), Color.White * (MachineData.UEvalue / 10f));
-                spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
+                Rectangle rectangle = CWRUtils.GetRec(PipelineCorner.Value, TurningID, 4);
+                spriteBatch.Draw(PipelineCorner.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(PipelineCornerSide.Value, drawPos, rectangle, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 return;
             }
 

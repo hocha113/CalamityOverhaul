@@ -1,13 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
-using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Industrials
 {
@@ -22,10 +20,6 @@ namespace CalamityOverhaul.Content.Industrials
         /// 目标NPC
         /// </summary>
         public NPC TargetByNPC;
-        /// <summary>
-        /// 鼠标是否悬停在TP实体之上
-        /// </summary>
-        public bool HoverTP;
         /// <summary>
         /// 是否有开火欲望？
         /// </summary>
@@ -213,7 +207,7 @@ namespace CalamityOverhaul.Content.Industrials
 
         public virtual void ModifyDrawData(ref Vector2 drawPos, ref Vector2 drawBarrelPos) { }
 
-        public override void Draw(SpriteBatch spriteBatch) {
+        public override void FrontDraw(SpriteBatch spriteBatch) {
             Vector2 drawPos = Center + UnitToTarget * RecoilValue * 0.6f - Main.screenPosition;
             Color drawColor = Lighting.GetColor(Position.X, Position.Y);
             Vector2 drawBarrelPos = drawPos + UnitToTarget * (30 + RecoilValue);
@@ -223,25 +217,6 @@ namespace CalamityOverhaul.Content.Industrials
             DrawTurret(drawPos, drawBarrelPos, drawColor);
 
             DrawChargeBar();
-        }
-
-        public virtual void DrawChargeBar() {
-            if (!HoverTP) {
-                return;
-            }
-
-            Vector2 drawPos = Center + new Vector2(-30, 40) - Main.screenPosition;
-            int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-            // 绘制温度相关的图像
-            Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
-            Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-            if (Main.keyState.PressingShift()) {
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value
-                            , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
-                            , drawPos.X + 10, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
-            }
         }
 
         public virtual void DrawTurret(Vector2 drawPos, Vector2 drawBarrelPos, Color drawColor) {

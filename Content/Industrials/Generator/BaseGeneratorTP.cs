@@ -1,4 +1,6 @@
-﻿namespace CalamityOverhaul.Content.Industrials.Generator
+﻿using Microsoft.Xna.Framework.Graphics;
+
+namespace CalamityOverhaul.Content.Industrials.Generator
 {
     internal abstract class BaseGeneratorTP : MachineTP
     {

@@ -1,7 +1,10 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Content.Industrials.Modifys;
+using InnoVault.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -67,6 +70,28 @@ namespace CalamityOverhaul.Content.Industrials
 
         public virtual void MachineKill() {
 
+        }
+
+        /// <summary>
+        /// 不会自动调用，需要在子类中手动调用
+        /// </summary>
+        public virtual void DrawChargeBar() {
+            if (!HoverTP) {
+                return;
+            }
+
+            Vector2 drawPos = CenterInWorld + new Vector2(0, Height / 2 + 20) - Main.screenPosition;
+            int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
+            // 绘制温度相关的图像
+            Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
+            Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
+
+            if (Main.keyState.PressingShift()) {
+                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value
+                            , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
+                            , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+            }
         }
     }
 }
