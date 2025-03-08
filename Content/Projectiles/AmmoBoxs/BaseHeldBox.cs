@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public Vector2 DrawBoxOffsetPos;
         public int TargetItemID;
         /// <summary>
+        /// 最大存在数量
+        /// </summary>
+        public int MaxBoxCount = 25;
+        /// <summary>
         /// 右手角度值，这个值被自动设置，不要手动给它赋值
         /// </summary>
         public float ArmRotSengsFront;
@@ -60,9 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             SetBox();
         }
 
-        public virtual void SetBox() {
-
-        }
+        public virtual void SetBox() { }
 
         public override bool PreUpdate() {
             if (Item.type > ItemID.None) {
@@ -155,7 +157,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void OnUse() {
-            if (Owner.ownedProjectileCounts[Item.shoot] >= 25) {
+            if (Owner.ownedProjectileCounts[AmmoBoxID] >= MaxBoxCount) {
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f }, Owner.Center);
                 CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
                 noCanUseTime += 60;
                 return;

@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
-        private int level => HalibutCannonOverride.Level;
         public override void SetRangedProperty() {
             ControlForce = 0.05f;
             GunPressure = 0.2f;
@@ -56,8 +55,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <param name="target"></param>
         /// <param name="modifiers"></param>
         public static void ModifyHalibutAmmoHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
-            bool isTorrentialBullet = projectile.type == ModContent.ProjectileType<TorrentialBullet>();
-
             if (projectile.penetrate > 1 || projectile.penetrate == -1) {
                 if (target.IsWormBody()) {
                     if (projectile.penetrate == -1) {
@@ -74,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 AmmoTypes = ModContent.ProjectileType<TorrentialBullet>();
             }
 
-            switch (level) {
+            switch (HalibutCannonOverride.Level) {
                 case 0:
                     Shoot(1);
                     break;

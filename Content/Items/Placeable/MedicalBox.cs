@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             TargetItemID = ModContent.ItemType<MedicalBox>();
             AmmoBoxID = ModContent.ProjectileType<MedicalBoxProj>();
             MaxCharge = 80;
+            MaxBoxCount = 3;
         }
     }
 
@@ -50,8 +51,12 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override bool ClickBehavior(Player player, CWRItems cwr) {
             _ = SoundEngine.PlaySound(SoundID.Item3, Projectile.Center);
             Owner.Heal(150);
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 30; i++) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.VampireHeal);
+            }
+            for (int i = 0; i < 6; i++) {
+                Vector2 spanPos = Owner.position + new Vector2(Main.rand.Next(Owner.width), Main.rand.Next(Owner.height));
+                Gore.NewGore(Projectile.FromObjectGetParent(), spanPos, new Vector2(0, -1), 331, 1);
             }
             return true;
         }
