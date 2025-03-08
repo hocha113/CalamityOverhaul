@@ -795,7 +795,7 @@ Items: {
 	}
 
 	GeminisTributeEX: {
-		// DisplayName: Geminis Tribute E X
+		// DisplayName: Geminis Tribute EX
 		// Tooltip: ""
 	}
 
@@ -845,22 +845,22 @@ Items: {
 	}
 
 	SoulofFrightEX: {
-		// DisplayName: Soulof Fright E X
+		// DisplayName: Soulof Fright EX
 		// Tooltip: ""
 	}
 
 	SoulofMightEX: {
-		// DisplayName: Soulof Might E X
+		// DisplayName: Soulof Might EX
 		// Tooltip: ""
 	}
 
 	SoulofSightEX: {
-		// DisplayName: Soulof Sight E X
+		// DisplayName: Soulof Sight EX
 		// Tooltip: ""
 	}
 
 	DestroyersBladeEX: {
-		// DisplayName: Destroyers Blade E X
+		// DisplayName: Destroyers Blade EX
 		// Tooltip: ""
 	}
 
@@ -924,6 +924,11 @@ Items: {
 		// DisplayName: Emblem Of Dread
 		// Tooltip: ""
 	}
+
+	ElectricMinRocket: {
+		// DisplayName: Electric Min Rocket
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -952,7 +957,7 @@ Projectiles: {
 	// BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
 	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
 	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
-	// EXOathblade2.DisplayName: E X Oathblade2
+	// EXOathblade2.DisplayName: EX Oathblade2
 	// FlawlessHeld.DisplayName: Flawless Held
 	// WastelandFangProj.DisplayName: Wasteland Fang Proj
 	// WeaverBeam.DisplayName: Weaver Beam
@@ -1048,7 +1053,7 @@ Projectiles: {
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
 	// HyperBlade.DisplayName: Hyper Blade
 	// JudgementBeam.DisplayName: Judgement Beam
-	// EXNeutronExplode.DisplayName: E X Neutron Explode
+	// EXNeutronExplode.DisplayName: EX Neutron Explode
 	// NeutronExplode.DisplayName: Neutron Explode
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
@@ -1210,7 +1215,7 @@ Projectiles: {
 	// RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
 	// GeminisTributeHeld.DisplayName: Geminis Tribute Held
 	// GeminisTributeAlt.DisplayName: Geminis Tribute Alt
-	// GeminisTributeEXHeld.DisplayName: Geminis Tribute E X Held
+	// GeminisTributeEXHeld.DisplayName: Geminis Tribute EX Held
 	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
 	// DicoriaRay.DisplayName: Dicoria Ray
 	// EarlierSwordHeld.DisplayName: Earlier Sword Held
@@ -1222,7 +1227,7 @@ Projectiles: {
 	// CommandersClawThrow.DisplayName: Commanders Claw Throw
 	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
 	// PhasebladeHeld.DisplayName: Phaseblade Held
-	// ForgedLasEXhProjectile.DisplayName: Forged Las E Xh Projectile
+	// ForgedLasEXhProjectile.DisplayName: Forged Las EXh Projectile
 	// ForgedLasOrb.DisplayName: Forged Las Orb
 	// DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
 	// MedicalBoxHeld.DisplayName: Medical Box Held

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using CalamityOverhaul.Content.Structures.DatIO;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Structures
 
         public override void PostUpdateWorld() {
             if (JustPressed(Keys.D1)) {
-                //IndustrializationGen.SpawnWindGrivenGenerator();
+                //RocketHut.SpawnRocketHut();
             }
         }
     }

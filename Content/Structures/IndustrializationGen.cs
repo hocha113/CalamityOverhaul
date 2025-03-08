@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Structures.DatIO;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -18,10 +19,7 @@ namespace CalamityOverhaul.Content.Structures
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
             SpawnWindGrivenGenerator();
-        }
-
-        public static int GetWorldSize() {
-            return Main.maxTilesX <= 4200 ? 1 : Main.maxTilesX <= 6400 ? 2 : Main.maxTilesX <= 8400 ? 3 : 1;
+            RocketHut.SpawnRocketHut();
         }
 
         internal static void SpawnWindGrivenGenerator() {
@@ -36,7 +34,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            int maxFindWidth = 600 + GetWorldSize() * 200;
+            int maxFindWidth = 600 + WorldGen.GetWorldSize() * 200;
             int maxFindHeight = 500;
 
             Point16 asteroidCoreTopPoint2 = asteroidCoreTopPoint;

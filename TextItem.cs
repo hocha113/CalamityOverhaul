@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.Structures.DatIO;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -36,7 +38,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -72,69 +74,32 @@ namespace CalamityOverhaul
         public override void HoldItem(Player player) {
         }
 
-        private void WriteTile(BinaryWriter writer, Tile tile, Point offsetPoint) {
-            writer.Write(offsetPoint.X);
-            writer.Write(offsetPoint.Y);
-            writer.Write(tile.WallType);
-            writer.Write(tile.TileType);
-            writer.Write(tile.TileFrameX);
-            writer.Write(tile.TileFrameY);
-            writer.Write(tile.HasTile);
-            writer.Write((byte)tile.Slope);
-        }
-
-        private void SetTile(BinaryReader reader) {
-            int tilePosX = reader.ReadInt32() + 3720;
-            int tilePosY = reader.ReadInt32() + 400;
-            ushort wallType = reader.ReadUInt16();
-            ushort tileType = reader.ReadUInt16();
-            short frameX = reader.ReadInt16();
-            short frameY = reader.ReadInt16();
-            bool hasTile = reader.ReadBoolean();
-            byte slope = reader.ReadByte();
-            Tile tile = Main.tile[tilePosX, tilePosY];
-            if (wallType > 1) {
-                tile.WallType = wallType;
-                tile.LiquidAmount = 255;
-            }
-
-            tile.HasTile = hasTile;
-            tile.Slope = (SlopeType)slope;
-
-            if (tileType > 0) {
-                tile.TileType = tileType;
-            }
-            tile.TileFrameX = frameX;
-            tile.TileFrameY = frameY;
-            WorldGen.KillTile(tilePosX, tilePosY);
-        }
-
         public override bool? UseItem(Player player) {
-            Projectile.NewProjectile(player.GetSource_FromAI(), player.Center, new Vector2(0, 0)
-                            , ModContent.ProjectileType<SetPosingStarm>(), 22, 2, -1, 0, 0);
-            //Point startPoint = new Point(1720, 400);
-            //Point endPoint = new Point(1720, 400);
-            //int heiget = 2000;
-            //int wid = 1400;
-            //using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
-            //    for (int x = 0; x < wid; x++) {
-            //        for (int y = 0; y < heiget; y++) {
-            //            Point offsetPoint = new Point(x, y);
-            //            WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
-            //        }
-            //    }
-            //}
-            //Point point = new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-            //point.Domp();
+            bool copy = false;
+            if (copy) {
+                Point startPoint = new Point(4187, 576);
+                Point endPoint = new Point(4202, 586);
+                int heiget = Math.Abs(startPoint.Y - endPoint.Y);
+                int wid = Math.Abs(startPoint.X - endPoint.X);
+                using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
+                    writer.Write(wid * heiget);
+                    for (int x = 0; x < wid; x++) {
+                        for (int y = 0; y < heiget; y++) {
+                            Point offsetPoint = new Point(x, y);
+                            DatIOLoader.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
+                        }
+                    }
+                }
+            }
+            else {
+                using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
+                    int count = reader.ReadInt32();
+                    for (int x = 0; x < count; x++) {
+                        DatIOLoader.SetTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
+                    }
+                }
+            }
 
-            //using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
-            //    for (int x = 0; x < wid; x++) {
-            //        for (int y = 0; y < heiget; y++) {
-            //            SetTile(reader);
-            //        }
-            //    }
-            //}
-            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             return true;
         }
     }
