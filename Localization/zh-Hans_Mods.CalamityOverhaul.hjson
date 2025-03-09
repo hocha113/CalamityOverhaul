@@ -939,7 +939,7 @@ Items: {
 
 	ElectricMinRocket: {
 		DisplayName: 电动迷你火箭
-		Tooltip: ""
+		Tooltip: "[UEValue]"
 	}
 }
 
@@ -1247,6 +1247,7 @@ Projectiles: {
 	// TeslaBall.DisplayName: Tesla Ball
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
+	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
 }
 
 Configs: {

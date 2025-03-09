@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
@@ -10,9 +11,11 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -86,6 +89,10 @@ namespace CalamityOverhaul.Content
         /// 是否了解了风力MK2
         /// </summary>
         public bool UnderstandWindGrivenMK2;
+        /// <summary>
+        /// 是否使用了电动火箭
+        /// </summary>
+        public bool RideElectricMinRocket;
         /// <summary>
         /// 手持状态
         /// </summary>
@@ -227,6 +234,7 @@ namespace CalamityOverhaul.Content
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
             DestroyerOwner = false;
+            RideElectricMinRocket = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -415,24 +423,37 @@ namespace CalamityOverhaul.Content
             }
 
             Player player = drawInfo.drawPlayer;
+            Texture2D value = null;
+            Rectangle frame = new Rectangle(0, 0, 1, 1);
+            Vector2 orig = Vector2.Zero;
+            Vector2 offsetPos = Vector2.Zero;
+            Vector2 drawPos;
+            float size = 1;
+            float offsetRot = 0;
+            int frameindex = 0;
+            SpriteEffects spriteEffects = Player.direction == player.gravDir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
             SpecialDrawPositionOffset.Y -= 2 * player.gravDir;//乘以一个重力矫正，这是一个无视偏转的值，所以需要考虑重力方向
+            
+            if (RideElectricMinRocket) {//添加小火箭相关的绘制
+                drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
+                drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y * player.gravDir;
+                drawPos.Y += SpecialDrawPositionOffset.Y;
+                value = TextureAssets.Projectile[ModContent.ProjectileType<ElectricMinRocketHeld>()].Value;
+                frame = CWRUtils.GetRec(value);
+                orig = CWRUtils.GetOrig(value);
+                DrawData electricMinRocketDraw = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation + offsetRot, orig, size, spriteEffects, 0) {
+                    shader = 0,
+                };
+                drawInfo.DrawDataCache.Add(electricMinRocketDraw);
+            }
 
             Item item = player.GetItem();
             if (HeldStyle >= 0) {
                 player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
             }
             if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {
-                Texture2D value = null;
-                Rectangle frame = new Rectangle(0, 0, 1, 1);
-                Vector2 orig = Vector2.Zero;
-                Vector2 offsetPos = Vector2.Zero;
-                Vector2 drawPos;
-                float size = 1;
-                float offsetRot = 0;
-                int frameindex = 0;
-                SpriteEffects spriteEffects = Player.direction == player.gravDir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 if (player.gravDir < 0) {
                     offsetRot = MathHelper.Pi;
                 }
@@ -468,6 +489,7 @@ namespace CalamityOverhaul.Content
                 DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation + offsetRot, orig, size, spriteEffects, 0) {
                     shader = 0
                 };
+
                 drawInfo.DrawDataCache.Add(howDoIDrawThings);
             }
         }
