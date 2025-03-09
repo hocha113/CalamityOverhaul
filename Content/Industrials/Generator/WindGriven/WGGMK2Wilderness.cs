@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {
     internal class WGGMK2Wilderness : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "Generator/WGGMK2Wilderness";
+        public override string Texture => CWRConstant.Asset + "Generator/WGGMK2WildernessItem";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             rotSpeed = 0.012f;
             rotition += rotSpeed;
             if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += rotSpeed * 6;
+                MachineData.UEvalue += rotSpeed * 0.8f;
             }
 
             if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Armor.Plaguebringer;
+using CalamityMod.Items.Armor.SnowRuffian;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Fishing.BrimstoneCragCatches;
 using CalamityMod.Items.Fishing.SunkenSeaCatches;
@@ -131,6 +132,21 @@ namespace CalamityOverhaul.Content
         }
 
         private void ModifyResultContent(Recipe recipe) {
+            //修改雪境暴徒的合成
+            {
+                if (recipe.HasResult(ItemType<SnowRuffianMask>())) {//面具
+                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
+                    recipe.AddIngredient(ItemID.Leather, 2);//添加皮革
+                }
+                if (recipe.HasResult(ItemType<SnowRuffianChestplate>())) {//胸甲
+                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
+                    recipe.AddIngredient(ItemID.Leather, 4);//添加皮革
+                }
+                if (recipe.HasResult(ItemType<SnowRuffianGreaves>())) {//护腿
+                    recipe.RemoveIngredient(ItemID.FlinxFur);//移除雪怪皮毛的配方
+                    recipe.AddIngredient(ItemID.Leather, 2);//添加皮革
+                }
+            }
             //修改凤凰爆破枪的合成
             {
                 if (recipe.HasResult(ItemID.PhoenixBlaster)) {

@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 if (projToOwnerLeng < 233) {
                     Owner.GivePlayerImmuneState(5, false);
                 }
-                if (!Owner.PressKey(false)) {
+                if (!DownRight) {
                     Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<DawnshatterSwing>(), Projectile.damage, 0, Owner.whoAmI);
                     spanSwing = false;

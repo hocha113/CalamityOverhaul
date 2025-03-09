@@ -113,6 +113,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float UEValue;
         /// <summary>
+        /// 单件物品的最大UE电力容量，如果为默认0，则会自动设置为<see cref="ConsumeUseUE"/>的值，如果ConsumeUseUE也为0，则设置为20
+        /// </summary>
+        public float MaxUEValue;
+        /// <summary>
         /// 当这个物品被消耗时，会消耗的UE值
         /// </summary>
         public float ConsumeUseUE;
@@ -244,6 +248,13 @@ namespace CalamityOverhaul.Content
             }
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
+            }
+
+            if (MaxUEValue <= 0) {
+                MaxUEValue = ConsumeUseUE;
+            }
+            if (MaxUEValue <= 0) {
+                MaxUEValue = 20;
             }
 
             ai = new float[MaxAISlot];

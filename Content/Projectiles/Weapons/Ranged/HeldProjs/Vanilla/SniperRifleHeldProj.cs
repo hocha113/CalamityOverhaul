@@ -61,7 +61,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] == 0) {
                 Projectile.NewProjectile(Source, ShootPos, Vector2.Zero
-                    , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI, soundtype);
+                    , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage
+                    , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI, soundtype);
             }
             return;
         }

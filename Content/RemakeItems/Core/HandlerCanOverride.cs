@@ -147,6 +147,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 DrawPosition = new Vector2(Main.screenWidth, Main.screenHeight) / 2;
             }
 
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 110, Main.screenWidth - 110);
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 110, Main.screenHeight - 110);
+
             UIHitBox = DrawPosition.GetRectangle(80, 30);
             hoverInMainPage = MouseHitBox.Intersects(UIHitBox);
 

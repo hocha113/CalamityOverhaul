@@ -11,14 +11,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Disseminator>();
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;
-            ShootPosNorlLengValue = -8;
+            ShootPosNorlLengValue = -4;
             ControlForce = 0.05f;
             GunPressure = 0.12f;
             Recoil = 1.2f;
             HandIdleDistanceX = 20;
             HandIdleDistanceY = 6;
             HandFireDistanceX = 20;
-            HandFireDistanceY = -4;
+            HandFireDistanceY = 0;
             CanRightClick = true;//可以右键使用
         }
 

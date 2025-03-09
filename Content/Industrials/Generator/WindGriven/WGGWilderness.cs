@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             rotSpeed = 0.02f;
             rotition += rotSpeed;
             if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += rotSpeed * 2;
+                MachineData.UEvalue += rotSpeed * 0.4f;
             }
 
             if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {

@@ -21,6 +21,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             }
         }
 
+        public override void FlyToMovementAI() {
+            base.FlyToMovementAI();
+            int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FungiHit);
+            Main.dust[dust].noGravity = true;
+        }
+
         public override bool PreDeparture() {
             if (stealthStrike) {
                 if (++Projectile.ai[2] > 6 && Projectile.IsOwnedByLocalPlayer()) {

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 40;
             Item.height = 60;
-            Item.damage = 12;
+            Item.damage = 15;
             Item.DamageType = DamageClass.MeleeNoSpeed;
             Item.useTime = 50;
             Item.useAnimation = 50;
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] > 36) {
-                if (Projectile.ai[0] > 160) {//如果时间太长了就设置弹幕可以穿墙收回防止卡墙角
+                if (Projectile.ai[0] > 80) {//如果时间太长了就设置弹幕可以穿墙收回防止卡墙角
                     Projectile.tileCollide = false;
                 }
                 if (isShoot) {

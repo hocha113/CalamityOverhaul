@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
     internal class ModifyChargingStationItem : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<ChargingStationItem>();
+        public override bool DrawingInfo => false;
         public override void SetDefaults(Item item) {
             item.CWR().StorageUE = true;
             item.CWR().ConsumeUseUE = 1000;
@@ -148,17 +149,23 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
 
-            if (!Item.IsAir && !VaultUtils.isClient) {
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, Item.Clone());
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+            if (ItemIsCharge(item, out _, out _)) {
+                if (!Item.IsAir && !VaultUtils.isClient) {
+                    int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, Item.Clone());
+                    if (!VaultUtils.isSinglePlayer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                    }
+                    Item.TurnToAir();
                 }
-                Item.TurnToAir();
-            }
 
-            Item = item.Clone();
-            item.TurnToAir();
-            SoundEngine.PlaySound(SoundID.Grab);
+                Item = item.Clone();
+                item.TurnToAir();
+                SoundEngine.PlaySound(SoundID.Grab);
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuClose);
+                CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+            }
         }
 
         public override void Update() {
@@ -187,6 +194,28 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
+        public static bool ItemIsCharge(Item item, out float ueValue, out float maxUEValue) {
+            ueValue = 0;
+            maxUEValue = 1;//无论如何不要返回0，因为这个数很可能被拿去做除数
+            if (item.type <= ItemID.None) {
+                return false;
+            }
+
+            if (item.CWR().StorageUE) {
+                ueValue = item.CWR().UEValue;
+                maxUEValue = item.CWR().MaxUEValue * item.stack;
+                return true;
+            }
+
+            if (item.Calamity().UsesCharge) {
+                ueValue = item.Calamity().Charge;
+                maxUEValue = item.Calamity().MaxCharge;
+                return true;
+            }
+
+            return false;
+        }
+
         private void UpdateUI() {
             Vector2 drawPos = CenterInWorld + new Vector2(0, -120) * sengs;
             Rectangle mouseRec = Main.MouseWorld.GetRectangle(1);
@@ -208,7 +237,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             oldLeftDown = Main.mouseLeft;
 
             if (hoverSlot && justDown) {
-                if (Main.mouseItem.type == ItemID.None || Main.mouseItem.Calamity().UsesCharge) {
+                if (ItemIsCharge(Main.mouseItem, out _, out _) || Main.mouseItem.IsAir) {
                     HandlerSlotItem(ref Item);
                 }
                 else {
@@ -228,7 +257,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        private void HandlerSlotItem(ref Item setItem) {
+        private static void HandlerSlotItem(ref Item setItem) {
             SoundEngine.PlaySound(SoundID.Grab);
 
             if (setItem.type == ItemID.None) {
@@ -252,14 +281,23 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             if (MachineData.UEvalue < 0.1f) {
                 return;
             }
-            CalamityGlobalItem calamityItem = Item.Calamity();
-            if (calamityItem.UsesCharge) {
-                if (calamityItem.Charge < calamityItem.MaxCharge) {
-                    calamityItem.Charge += 0.1f;
+            if (ItemIsCharge(Item, out float ueValue, out float maxValue)) {
+                float value = 0;
+                ref float setUE = ref value;
+                if (Item.CWR().StorageUE) {
+                    setUE = ref Item.CWR().UEValue;
+                }
+                else {
+                    setUE = ref Item.Calamity().Charge;
+                }
+
+                if (ueValue < maxValue) {
+                    setUE += 0.1f;
                     MachineData.UEvalue -= 0.1f;
                     SpawnDust();
                 }
-                calamityItem.Charge = MathHelper.Clamp(calamityItem.Charge, 0, calamityItem.MaxCharge);
+
+                setUE = MathHelper.Clamp(setUE, 0, maxValue);
             }
         }
 
@@ -313,19 +351,19 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
 
         private void DrawChargeBar(SpriteBatch spriteBatch, Vector2 drawPos, float ueRatio) {
-            Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPower");
-            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerFull");
-            Texture2D texture3 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerGlow");
+            Texture2D electricPower = CWRAsset.ElectricPower.Value;
+            Texture2D electricPowerFull = CWRAsset.ElectricPowerFull.Value;
+            Texture2D electricPowerGlow = CWRAsset.ElectricPowerGlow.Value;
 
             float uiRatio = 1 - ueRatio;
-            Rectangle full = new Rectangle(0, (int)(texture2.Height * uiRatio), texture2.Width, (int)(texture2.Height * ueRatio));
+            Rectangle full = new Rectangle(0, (int)(electricPowerFull.Height * uiRatio), electricPowerFull.Width, (int)(electricPowerFull.Height * ueRatio));
 
             drawPos += new Vector2(40, -30) * sengs;
             Vector2 position = drawPos + new Vector2(8, 36 + full.Y) / 2;
 
-            Main.spriteBatch.Draw(texture, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(texture2, position, full, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
-            Main.spriteBatch.Draw(texture3, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(electricPower, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(electricPowerFull, position, full, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(electricPowerGlow, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
         }
 
         public void DrawUI(SpriteBatch spriteBatch) {
@@ -351,13 +389,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     , origDrawPos.X - 10, origDrawPos.Y + 12, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
                 }
 
-                CalamityGlobalItem calamityItem = Item.Calamity();
-                if (calamityItem.UsesCharge) {
-                    DrawChargeBar(spriteBatch, origDrawPos, calamityItem.Charge / calamityItem.MaxCharge);
+                if (ItemIsCharge(Item, out float ueValue, out float maxValue)) {
+                    DrawChargeBar(spriteBatch, origDrawPos, ueValue / maxValue);
                     // 如果鼠标在主页面中，显示信息
                     if (hoverChargeBar) {
                         Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
-                            , (((int)calamityItem.Charge) + "/" + ((int)calamityItem.MaxCharge) + "UE").ToString()
+                            , (((int)ueValue) + "/" + ((int)maxValue) + "UE").ToString()
                             , origDrawPos.X + 40, origDrawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.5f);
                     }
                 }

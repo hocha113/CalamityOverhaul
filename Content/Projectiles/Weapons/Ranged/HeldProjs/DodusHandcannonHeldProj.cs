@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<DodusHandcannon>();
         public override void SetRangedProperty() {
             KreloadMaxTime = 90;
-            FireTime = 18;
+            FireTime = 22;
             HandIdleDistanceX = 25;
             HandIdleDistanceY = 5;
             HandFireDistanceX = 25;
-            HandFireDistanceY = -4;
-            ShootPosNorlLengValue = -10;
-            ShootPosToMouLengValue = 20;
+            HandFireDistanceY = -2;
+            ShootPosNorlLengValue = -8;
+            ShootPosToMouLengValue = 18;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBow";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AnnihilatingUniverse>();
-        public override bool CanFire => (Projectile.ai[2] == 0 && Owner.PressKey()) || (Projectile.ai[2] == 1 && Owner.PressKey(false));
+        public override bool CanFire => true;
         private float Time;
         private float Time2;
         public override void SetDefaults() {

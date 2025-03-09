@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int TargetID => ItemID.SDMG;
         public override void SetRangedProperty() {
             FireTime = 4;
-            ShootPosToMouLengValue = 15;
+            ShootPosToMouLengValue = 12;
             ShootPosNorlLengValue = 10;
             HandIdleDistanceX = 15;
             HandIdleDistanceY = 0;
@@ -25,9 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             KreloadMaxTime = 45;
-            SpwanGunDustMngsData.dustID1 = DustID.PinkStarfish;
-            SpwanGunDustMngsData.dustID2 = DustID.PinkStarfish;
-            SpwanGunDustMngsData.dustID3 = DustID.PinkStarfish;
+            CanCreateSpawnGunDust = false;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

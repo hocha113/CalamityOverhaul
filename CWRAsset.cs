@@ -27,6 +27,9 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> StarTexture_White;
         public static Asset<Texture2D> StarTexture;
         public static Asset<Texture2D> ThunderTrail;//这个纹理来自珊瑚石，谢谢你瓶中微光 :)
+        public static Asset<Texture2D> ElectricPower;
+        public static Asset<Texture2D> ElectricPowerFull;
+        public static Asset<Texture2D> ElectricPowerGlow;
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -50,6 +53,9 @@ namespace CalamityOverhaul
             StarTexture_White = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture_White");
             StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
             ThunderTrail = CWRUtils.GetT2DAsset(CWRConstant.Masking + "ThunderTrail");
+            ElectricPower = CWRUtils.GetT2DAsset(CWRConstant.UI + "Generator/ElectricPower");
+            ElectricPowerFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "Generator/ElectricPowerFull");
+            ElectricPowerGlow = CWRUtils.GetT2DAsset(CWRConstant.UI + "Generator/ElectricPowerGlow");
         }
         void ICWRLoader.UnLoadData() {
             icon_small = null;
@@ -71,6 +77,9 @@ namespace CalamityOverhaul
             Extra_193 = null;
             DraedonContactPanel = null;
             StarTexture_White = null;
+            ElectricPower = null;
+            ElectricPowerFull = null;
+            ElectricPowerGlow = null;
         }
     }
 }

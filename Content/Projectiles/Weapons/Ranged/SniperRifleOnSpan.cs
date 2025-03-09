@@ -61,7 +61,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (++Projectile.ai[0] > 10) {
                 onFire = true;
             }
-            if (!Owner.PressKey()) {
+
+            if (!DownLeft) {
                 Projectile.Kill();
             }
         }
@@ -81,6 +82,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 lastdamage = 6;
             }
 
+            lastdamage *= 0.8f;
+
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                 if (onFire) {
                     if (Projectile.IsOwnedByLocalPlayer()) {
@@ -89,9 +92,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
                             ammo = ProjectileID.BulletHighVelocity;
                         }
-                        else {
-                            lastdamage *= 0.8f;
-                        }
+
                         baseFeederGun.Recoil = 3;
                         baseFeederGun.GunPressure = 0.5f;
                         baseFeederGun.ControlForce = 0.05f;

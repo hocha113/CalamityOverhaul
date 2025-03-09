@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void BowShootR() {
             AmmoTypes = ModContent.ProjectileType<FeatherLarge>();
             int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
-                , AmmoTypes, WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
+                , AmmoTypes, WeaponDamage / 3 + 2, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].SetArrowRot();
         }
 
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = -8; i <= 8; i += 8) {
                 Vector2 perturbedSpeed = ShootVelocity.RotatedBy(MathHelper.ToRadians(i));
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, perturbedSpeed
-                    , ModContent.ProjectileType<FeatherLarge>(), WeaponDamage / 2, 0f, Owner.whoAmI);
+                    , ModContent.ProjectileType<FeatherLarge>(), WeaponDamage / 3, 0f, Owner.whoAmI);
                 Main.projectile[proj].SetArrowRot();
             }
         }

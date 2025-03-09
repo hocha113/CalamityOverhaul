@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ControlForce = 0;
                 RecoilRetroForceMagnitude = 14;
                 Recoil = 2.3f;
-                EjectCasingProjSize = 2;
+                EjectCasingProjSize = 1.4f;
                 SpwanGunDustMngsData.splNum = 1.3f;
                 SpwanGunDustMngsData.dustID1 = 262;
                 SpwanGunDustMngsData.dustID2 = 54;

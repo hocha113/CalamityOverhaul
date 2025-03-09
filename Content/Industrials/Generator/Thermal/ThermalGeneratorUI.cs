@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ThermalGeneratorUI thermalGenerator;
         private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
-        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPower");
+        public override Texture2D Texture => CWRAsset.ElectricPower.Value;
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         public override void Draw(SpriteBatch spriteBatch) {
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
-            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerFull");
+            Texture2D texture2 = CWRAsset.ElectricPowerFull.Value;
             float ueRatio = ThermalData.UEvalue / ThermalData.MaxUEValue;
             float sengs = 1 - ueRatio;
 
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Vector2 position = DrawPosition + new Vector2(8, 36 + full.Y);
             Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-            Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ElectricPowerGlow"), UIHitBox, Color.White);
+            Main.spriteBatch.Draw(CWRAsset.ElectricPowerGlow.Value, UIHitBox, Color.White);
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
@@ -155,6 +155,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal ElectricPowerUI electricPower = new ElectricPowerUI();
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/GeneratorPanel");
         public override void UpdateElement() {
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 110, Main.screenWidth - 110);
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 110, Main.screenHeight - 110);
+
             fuelElement.thermalGenerator = this;
             fuelElement.DrawPosition = DrawPosition + new Vector2(100, 50);
             fuelElement.Update();

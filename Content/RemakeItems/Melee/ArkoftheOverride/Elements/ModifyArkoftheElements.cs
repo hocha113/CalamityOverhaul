@@ -25,7 +25,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
     {
         public override int TargetID => ItemType<ArkoftheElements>();
         public override bool CanLoadLocalization => false;
-        public override void SetDefaults(Item item) => item.DamageType = DamageClass.Melee;
+        public override void SetDefaults(Item item) {
+            item.damage = 400;
+            item.DamageType = DamageClass.Melee;
+        }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[ProjectileType<ModifyElementsSwungHeld>()] == 0;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -337,7 +340,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         public override string Texture => ProjectileLoader.GetProjectile(ProjectileType<ArkoftheElementsSwungBlade>()).Texture;
         public virtual int TargetItem => ItemType<ArkoftheElements>();
         public Vector2 OwnerConter => Owner.GetPlayerStabilityCenter();
-        public float SwingMultiplication => 1 / Owner.GetWeaponAttackSpeed(Item);
+        public virtual float SwingMultiplication => 1 / Owner.GetWeaponAttackSpeed(Item);
         public Vector2 direction = Vector2.Zero;
         public ref float Combo => ref Projectile.ai[0];
         public ref float Charge => ref Projectile.ai[1];

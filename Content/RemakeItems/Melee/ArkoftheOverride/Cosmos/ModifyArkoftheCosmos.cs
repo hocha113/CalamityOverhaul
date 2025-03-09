@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         private void HandleLocalPlayerInput() {
-            if (Projectile.IsOwnedByLocalPlayer() && !Owner.channel && Projectile.timeLeft > 20) {
+            if (Projectile.IsOwnedByLocalPlayer() && !DownLeft && Projectile.timeLeft > 20) {
                 Projectile.timeLeft = 20;
                 NetUpdate();
             }
@@ -356,6 +356,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         public override string Texture => ProjectileLoader.GetProjectile(ProjectileType<ArkoftheCosmosSwungBlade>()).Texture;
         public override int TargetItem => ItemType<ArkoftheCosmos>();
         private Particle smear;
+        public override float SwingMultiplication => 1f;//这个武器不适合吃攻速
         public override float MaxSwingTime => (SwirlSwing ? 55 : 35) * SwingMultiplication;
         public bool SwirlSwing => Combo == 1;
         public ref float HasFired => ref Projectile.localAI[0];

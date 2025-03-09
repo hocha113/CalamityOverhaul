@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 4.8f;
             RangeOfStress = 48;
             KreloadMaxTime = 60;
-            EjectCasingProjSize = 2;
+            EjectCasingProjSize = 1.6f;
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;
             SpwanGunDustMngsData.dustID3 = 76;
@@ -61,7 +61,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     Main.projectile[proj2].scale *= 1.5f;
                     Main.projectile[proj2].usesLocalNPCImmunity = true;
                     Main.projectile[proj2].localNPCHitCooldown = 5;
-                    _ = UpdateConsumeAmmo();
                 }
                 for (int i = 0; i < 2; i++) {
                     int proj3 = Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 1.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
@@ -69,7 +68,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     Main.projectile[proj3].scale *= 1f;
                     Main.projectile[proj3].usesLocalNPCImmunity = true;
                     Main.projectile[proj3].localNPCHitCooldown = 5;
-                    _ = UpdateConsumeAmmo();
                 }
                 for (int i = 0; i < 2; i++) {
                     int proj4 = Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.2f, 0.2f, i)) * 0.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
@@ -77,7 +75,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     Main.projectile[proj4].timeLeft += 3600;
                     Main.projectile[proj4].usesLocalNPCImmunity = true;
                     Main.projectile[proj4].localNPCHitCooldown = 5;
-                    _ = UpdateConsumeAmmo();
                 }
                 ModOwner.SetScreenShake(3);
             }
