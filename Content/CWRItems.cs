@@ -661,7 +661,7 @@ namespace CalamityOverhaul.Content
                 VaultUtils.DrawBorderedRectangle(Main.spriteBatch, value, 4
                     , new Vector2(line.X, line.Y), (int)(200 * item.Calamity().ChargeRatio), 28, Color.White * 0, color, 1);
                 ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, new Vector2(line.X + 16, line.Y + 6)
-                , Color.White, line.Rotation, line.Origin, line.BaseScale * 0.8f, line.MaxWidth, line.Spread);
+                , Color.White, line.Rotation, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
                 return false;
             }
             return base.PreDrawTooltipLine(item, line, ref yOffset);

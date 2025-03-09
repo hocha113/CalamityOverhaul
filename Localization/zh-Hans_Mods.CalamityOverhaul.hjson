@@ -993,6 +993,15 @@ Items: {
 			[UEValue]
 			'''
 	}
+
+	EnergySword: {
+		DisplayName: 能量剑
+		Tooltip:
+			'''
+			消耗能量发射激光，穿透多个敌人
+			"利用率并不高"
+			'''
+	}
 }
 
 Projectiles: {

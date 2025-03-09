@@ -993,6 +993,11 @@ Items: {
 			[UEValue]
 			''' */
 	}
+
+	EnergySword: {
+		// DisplayName: Energy Sword
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
