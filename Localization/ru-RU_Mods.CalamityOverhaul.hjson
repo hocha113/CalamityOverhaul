@@ -996,7 +996,11 @@ Items: {
 
 	EnergySword: {
 		// DisplayName: Energy Sword
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Expend energy to shoot lasers and penetrate multiple enemies
+			"Utilization is not high."
+			''' */
 	}
 }
 
