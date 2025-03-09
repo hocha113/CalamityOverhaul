@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 0, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.value = Item.buyPrice(0, 2, 40, 0);
+            Item.rare = ItemRarityID.LightRed;
             Item.createTile = ModContent.TileType<TeslaElectromagneticTowerTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 1200;

@@ -947,6 +947,7 @@ Items: {
 			In attack mode, it emits electric arcs to nearby enemies
 			In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
 			and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
+			"Engineers, stay away"
 			[UEValue]
 			''' */
 	}

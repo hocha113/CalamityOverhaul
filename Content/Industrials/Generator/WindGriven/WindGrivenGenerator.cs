@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 0, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.value = Item.buyPrice(0, 1, 0, 0);
+            Item.rare = ItemRarityID.Orange;
             Item.createTile = ModContent.TileType<WindGrivenGeneratorTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 200;

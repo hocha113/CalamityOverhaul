@@ -163,34 +163,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 SpawnBody(npc);
             }
 
-            // 设置npc的朝向
-            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
-
-            // 计算与玩家的距离
-            float distanceToPlayer = Vector2.Distance(npc.Center, player.Center);
-
-            // 冲刺行为（当玩家距离较近时）
-            if (distanceToPlayer < 400f) {
-                // 设置冲刺速度
-                float dashSpeed = 12f;
-                Vector2 dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.Zero);
-                npc.velocity = dashDirection * dashSpeed;
+            if (--ai[4] > 0) {
+                npc.VanillaAI();
             }
-            // 迂回巡空行为（当玩家距离较远时）
             else {
-                // 按常规速度巡航并绕开障碍物
-                npc.ChasingBehavior(player.Center, 23);
+                if (ai[2] == 0) {
+                    if (++ai[1] > 120) {
+                        ai[1] = 0;
+                        ai[2] = 1;
+                        NetAISend();
+                    }
+                }
 
-                // 随机改变方向模拟迂回行为
-                if (Main.rand.NextBool(60)) {
-                    float randomAngle = MathHelper.ToRadians(Main.rand.NextFloat(-45f, 45f));
-                    Vector2 newVelocity = npc.velocity.RotatedBy(randomAngle);
-                    npc.velocity = newVelocity.SafeNormalize(Vector2.Zero) * 6f; // 6f为巡航速度
+                if (ai[2] == 1) {
+                    dashVer = npc.Center.To(player.Center).UnitVector();
+                    ai[2] = 2;
+                    NetAISend();
+                }
+
+                if (ai[2] == 2) {
+                    npc.velocity = dashVer * 44;
+                    if (npc.Distance(player.Center) > maxFindMode / 4) {
+                        dashVer = npc.Center.To(player.Center).UnitVector();
+                    }
+                    if (++ai[3] > 180) {
+                        ai[4] = 300;
+                        ai[3] = 0;
+                        ai[2] = 0;
+                        ai[1] = 0;
+                        NetAISend();
+                    }
                 }
             }
-
-            // 每帧微调，防止卡住
-            npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * Math.Min(npc.velocity.Length(), 12f); // 最大冲刺速度限制
         }
 
         private void HandleMouth() {

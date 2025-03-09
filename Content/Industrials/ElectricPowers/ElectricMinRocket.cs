@@ -26,8 +26,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.Quest;
+            Item.value = Item.buyPrice(0, 1, 10, 0);
+            Item.rare = ItemRarityID.Orange;
             Item.createTile = ModContent.TileType<ElectricMinRocketTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 600;
@@ -46,22 +46,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Owner.CWR().RideElectricMinRocket = true;
             Projectile.velocity = new Vector2(Owner.velocity.X / 6, -6);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Vector2 spanPos = Projectile.position - new Vector2(Owner.direction * 22, -20);
-            //Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.Smoke, 0, 6);
-            spanPos = Projectile.Bottom - new Vector2(Owner.direction * 20, 60);
-            PRT_LavaFire lavaFire = new PRT_LavaFire {
-                Velocity = Projectile.velocity * -10,
-                Position = spanPos,
-                Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                maxLifeTime = 30,
-                minLifeTime = 18,
-                Color = Color.Gold
-            };
-            PRTLoader.AddParticle(lavaFire);
-        }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            return base.OnTileCollide(oldVelocity);
+            if (Projectile.position.Y < 480) {
+                Projectile.Kill();
+            }
+
+            if (!VaultUtils.isServer) {
+                Vector2 spanPos = Projectile.Bottom - new Vector2(Owner.direction * 20, 60);
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
+                    Velocity = Projectile.velocity * -10,
+                    Position = spanPos,
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    maxLifeTime = 30,
+                    minLifeTime = 18,
+                    Color = Color.Gold
+                };
+                PRTLoader.AddParticle(lavaFire);
+            }
         }
 
         public override void OnKill(int timeLeft) {

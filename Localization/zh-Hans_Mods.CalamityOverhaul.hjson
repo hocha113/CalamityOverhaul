@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -948,6 +948,7 @@ Items: {
 			攻击模式会向附近的敌人发射电弧
 			护卫模式会对范围内的所有敌人造成带电减益，如果玩家在范围内，
 			并手持可充能物品，电磁塔将发射电弧为玩家远程充能
+			"工程师请勿靠近"
 			[UEValue]
 			'''
 	}
