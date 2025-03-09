@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.MeleeModify.Core;
+﻿using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.MeleeModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -44,8 +46,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.value = Item.buyPrice(0, 8, 60, 5);
             Item.shoot = ModContent.ProjectileType<DestroyersBeam>();
             Item.shootSpeed = 15;
-            Item.CWR().DeathModeItem = true;
             Item.SetKnifeHeld<DestroyersBladeEXHeld>();
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DestroyersBlade>().
+                AddIngredient<SoulofMightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 

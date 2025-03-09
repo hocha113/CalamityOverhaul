@@ -1,4 +1,6 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,7 +57,14 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.CWR().DeathModeItem = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<GeminisTribute>().
+                AddIngredient<SoulofSightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 

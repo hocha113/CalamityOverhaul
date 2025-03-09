@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -60,7 +62,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.channel = true;
             Item.tileBoost = 2;
             Item.axe = 32;
-            Item.CWR().DeathModeItem = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<CommandersChainsaw>().
+                AddIngredient<SoulofFrightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 

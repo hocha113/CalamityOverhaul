@@ -840,28 +840,33 @@ Items: {
 	}
 
 	SoulofFrightEX: {
-		// DisplayName: Soulof Fright EX
-		// Tooltip: ""
+		DisplayName: 恐惧之魂EX
+		Tooltip: ""
 	}
 
 	SoulofMightEX: {
-		// DisplayName: Soulof Might EX
-		// Tooltip: ""
+		DisplayName: 力量之魂EX
+		Tooltip: ""
 	}
 
 	SoulofSightEX: {
-		// DisplayName: Soulof Sight EX
-		// Tooltip: ""
+		DisplayName: 视域之魂EX
+		Tooltip: ""
 	}
 
 	DestroyersBladeEX: {
-		// DisplayName: Destroyers Blade EX
-		// Tooltip: ""
+		DisplayName: 毁灭者之刃EX
+		Tooltip: ""
 	}
 
 	ThermalGenerator: {
 		DisplayName: 火力发电机
-		Tooltip: ""
+		Tooltip:
+			'''
+			放入燃料进行发电
+			右键物块可以快速放入燃料，Shft右键取出
+			[UEValue]
+			'''
 	}
 
 	ThermalBattery: {
@@ -883,14 +888,20 @@ Items: {
 
 	ThermalGeneratorMK2: {
 		DisplayName: 火力发电机MK2
-		Tooltip: "[UEValue]"
+		Tooltip:
+			'''
+			放入燃料进行发电
+			右键物块可以快速放入燃料，Shft右键取出
+			[UEValue]
+			'''
 	}
 
 	UEPipeline: {
-		DisplayName: 能量管道
+		DisplayName: 能量输入管道
 		Tooltip:
 			'''
 			传输电能
+			从发电机等能量输出端传输电能到电池等用电设施上
 			[UEValue]
 			'''
 	}
@@ -923,6 +934,7 @@ Items: {
 			攻击模式会向附近的敌人发射电弧
 			护卫模式会对范围内的所有敌人造成带电减益，如果玩家在范围内，
 			并手持可充能物品，电磁塔将发射电弧为玩家远程充能
+			[UEValue]
 			'''
 	}
 
@@ -939,7 +951,22 @@ Items: {
 
 	ElectricMinRocket: {
 		DisplayName: 电动迷你火箭
-		Tooltip: "[UEValue]"
+		Tooltip:
+			'''
+			放置在地上后右键可以启动飞行
+			在空中按住左右键可以调整飞行方向
+			[UEValue]
+			'''
+	}
+
+	UEPipelineInput: {
+		DisplayName: 能量抽取管道
+		Tooltip:
+			'''
+			传输电能
+			从电池等电力存储设施上抽取能源
+			[UEValue]
+			'''
 	}
 }
 

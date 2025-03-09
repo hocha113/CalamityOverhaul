@@ -4,7 +4,6 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;

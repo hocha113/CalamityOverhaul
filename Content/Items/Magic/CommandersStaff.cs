@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -52,7 +54,14 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 8, 60, 10);
             Item.SetHeldProj<CommandersStaffEXHeld>();
-            Item.CWR().DeathModeItem = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<CommandersStaff>().
+                AddIngredient<SoulofFrightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 

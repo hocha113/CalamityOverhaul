@@ -1,5 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.CustomRecipes;
 using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables.Ores;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.PRTTypes;
@@ -41,6 +44,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.createTile = ModContent.TileType<TeslaElectromagneticTowerTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 1200;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(15).
+                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient<AerialiteBar>(10).
+                AddIngredient<StormlionMandible>(4).
+                AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

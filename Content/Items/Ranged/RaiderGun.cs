@@ -1,6 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -76,7 +78,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 12, 60, 10);
             Item.SetCartridgeGun<RaiderGunEXHeld>(680);
-            Item.CWR().DeathModeItem = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<RaiderGun>().
+                AddIngredient<SoulofFrightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 
@@ -314,7 +323,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int j = 0; j < 5; j++) {
-                    Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(8f, 10f);
+                    Vector2 velocity = CWRUtils.randVr(6, 9);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
                         , ModContent.ProjectileType<PunisherGrenade>(), (int)(Projectile.damage * 0.25), Projectile.knockBack * 0.25f, Projectile.owner);
                 }

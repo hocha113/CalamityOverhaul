@@ -13,9 +13,9 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    internal class UEPipeline : ModItem
+    internal class UEPipelineInput : ModItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineInput";
         public static int ID { get; private set; }
         public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() {
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Quest;
-            Item.createTile = ModContent.TileType<UEPipelineTile>();
+            Item.createTile = ModContent.TileType<UEPipelineInputTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
         }
@@ -39,19 +39,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             CreateRecipe(333).
                 AddIngredient<DubiousPlating>(5).
                 AddIngredient<MysteriousCircuitry>(5).
-                AddIngredient(ItemID.CopperBar, 5).
+                AddIngredient(ItemID.GoldBar).
                 AddTile(TileID.Anvils).
                 Register();
         }
     }
 
-    internal class UEPipelineTile : ModTile
+    internal class UEPipelineInputTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineInput";
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<UEPipeline>());
+            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<UEPipelineInput>());
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.None, 0, 0);
@@ -65,14 +65,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void MouseOver(int i, int j) {
             Player localPlayer = Main.LocalPlayer;
             localPlayer.cursorItemIconEnabled = true;
-            localPlayer.cursorItemIconID = ModContent.ItemType<UEPipeline>();
+            localPlayer.cursorItemIconID = ModContent.ItemType<UEPipelineInput>();
             localPlayer.noThrow = 2;
         }
         public override bool CanDrop(int i, int j) => false;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
-    internal class SideState(Point16 point16)
+    internal class SideStateInput(Point16 point16)
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// <summary>
         /// 自身的核心TP实体
         /// </summary>
-        internal UEPipelineTP coreTP;
+        internal UEPipelineInputTP coreTP;
         /// <summary>
         /// 链接ID
         /// </summary>
@@ -111,15 +111,15 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 // 如果相邻的 TileProcessor 是发电机
                 if (externalTP is BaseGeneratorTP baseGeneratorTP) {
                     // 如果发电机的 UEvalue 大于 0，从发电机到管道传递值
-                    if (baseGeneratorTP.MachineData.UEvalue > 0 && coreTP.MachineData.UEvalue < 20) {
-                        baseGeneratorTP.MachineData.UEvalue--;  // 从发电机减去能量
-                        coreTP.MachineData.UEvalue++;      // 给管道增加能量
+                    if (baseGeneratorTP.MachineData.UEvalue < baseGeneratorTP.MaxUEValue && coreTP.MachineData.UEvalue > 0) {
+                        baseGeneratorTP.MachineData.UEvalue++;  // 从发电机增加能量
+                        coreTP.MachineData.UEvalue--;      // 给管道减去能量
                     }
                     linkID = 1;
                 }
 
                 // 如果有能量传递的需求，且相邻的是管道
-                if (externalTP is UEPipelineTP battery) {
+                if (externalTP is UEPipelineInputTP battery) {
                     // 计算总能量
                     float totalUE = coreTP.MachineData.UEvalue + battery.MachineData.UEvalue;
 
@@ -139,9 +139,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
                 //如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (coreTP.MachineData.UEvalue > 0 && baseBattery.MachineData.UEvalue < baseBattery.MaxUEValue) {
-                        baseBattery.MachineData.UEvalue++;
-                        coreTP.MachineData.UEvalue--;
+                    if (baseBattery.MachineData.UEvalue > 0 && coreTP.MachineData.UEvalue < coreTP.MaxUEValue) {
+                        baseBattery.MachineData.UEvalue--;
+                        coreTP.MachineData.UEvalue++;
                     }
 
                     linkID = 3;
@@ -161,21 +161,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = Offset.ToVector2().ToRotation();
 
-            Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
+            Vector2 orig = UEPipelineInputTP.PipelineChannel.Size() / 2;
             Color color = Color.White * (coreTP.MachineData.UEvalue / 10f);
 
-            spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, color
+            spriteBatch.Draw(UEPipelineInputTP.PipelineChannel.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
 
             color = Lighting.GetColor(Position.ToPoint());
-            spriteBatch.Draw(UEPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, color
+            spriteBatch.Draw(UEPipelineInputTP.PipelineChannelSide.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
         }
     }
 
-    internal class UEPipelineTP : MachineTP, ICWRLoader
+    internal class UEPipelineInputTP : MachineTP, ICWRLoader
     {
-        public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
+        public override int TargetTileID => ModContent.TileType<UEPipelineInputTile>();
         public static Asset<Texture2D> Pipeline { get; private set; }
         public static Asset<Texture2D> PipelineSide { get; private set; }
         public static Asset<Texture2D> PipelineCorner { get; private set; }
@@ -184,20 +184,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public static Asset<Texture2D> PipelineCrossSide { get; private set; }
         public static Asset<Texture2D> PipelineChannel { get; private set; }
         public static Asset<Texture2D> PipelineChannelSide { get; private set; }
-        internal List<SideState> SideState { get; private set; }
+        internal List<SideStateInput> SideState { get; private set; }
         internal int TurningID { get; private set; }
         internal bool Turning { get; private set; }
         internal bool Decussation { get; private set; }
-        public override int TargetItem => ModContent.ItemType<UEPipeline>();
+        public override int TargetItem => ModContent.ItemType<UEPipelineInput>();
         public override float MaxUEValue => 20;
         void ICWRLoader.LoadAsset() {
-            PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel");
+            PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineInputChannel");
             PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide");
-            Pipeline = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipeline");
+            Pipeline = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineInput");
             PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineSide");
-            PipelineCorner = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCorner");
+            PipelineCorner = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineInputCorner");
             PipelineCornerSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCornerSide");
-            PipelineCross = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCross");
+            PipelineCross = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineInputCross");
             PipelineCrossSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide");
         }
         void ICWRLoader.UnLoadData() {
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         public override void SetMachine() {
-            SideState = new List<SideState>() {
+            SideState = new List<SideStateInput>() {
             new (new Point16(0, -1)),//上0
             new (new Point16(0, 1)),//下1
             new (new Point16(-1, 0)),//左2

@@ -915,21 +915,49 @@ Items: {
 
 	MedicalBox: {
 		// DisplayName: Medical Box
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Press and hold to deploy to the ground
+			Right-click on the medical box after deployment to heal yourself
+			''' */
 	}
 
 	TeslaElectromagneticTower: {
 		// DisplayName: Tesla Electromagnetic Tower
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Requires electrical energy to operate
+			Right-click after placing on the ground to switch between attack mode and guard mode
+			In attack mode, it emits electric arcs to nearby enemies
+			In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
+			and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
+			[UEValue]
+			''' */
 	}
 
 	EmblemOfDread: {
-		// DisplayName: Emblem Of Dread
-		// Tooltip: ""
+		// DisplayName: Emblem of Dread
+		/* Tooltip:
+			'''
+			Increases melee damage by 100%
+			Increases melee critical strike chance by 100%
+			Increases melee attack speed by 100%
+			Enemies are more likely to target you
+			''' */
 	}
 
 	ElectricMinRocket: {
-		// DisplayName: Electric Min Rocket
+		// DisplayName: Electric Mini Rocket
+		/* Tooltip:
+			'''
+			Place on the ground and right-click to initiate flight
+			Hold left and right mouse buttons in the air to adjust flight direction
+			[UEValue]
+			''' */
+	}
+
+	UEPipelineInput: {
+		// DisplayName: Mods.CalamityOverhaul.Items.UEPipelineInput.DisplayName
 		// Tooltip: ""
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.BaseProjectiles;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -62,7 +64,6 @@ namespace CalamityOverhaul.Content.Items.Summon
             Item.shoot = ModContent.ProjectileType<ForgedLasEXhProjectile>();
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 8, 65, 0);
-            Item.CWR().DeathModeItem = true;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
@@ -75,6 +76,14 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override bool MeleePrefix() => true;
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<ForgedLash>().
+                AddIngredient<SoulofMightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+        }
     }
 
     internal class ForgedLashProjectile : BaseWhipProjectile
