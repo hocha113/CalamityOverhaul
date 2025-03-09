@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -825,10 +825,7 @@ Items: {
 
 	Observer: {
 		DisplayName: Observer
-		Tooltip:
-			'''
-			"It's still watching you"
-			'''
+		Tooltip: '''"It's still watching you"'''
 	}
 
 	StaffoftheDestroyer: {
@@ -870,10 +867,7 @@ Items: {
 
 	CommandersChainsawEX: {
 		DisplayName: Commander's Chainsaw EX
-		Tooltip:
-			'''
-			"Shreds everything in your path"
-			'''
+		Tooltip: '''"Shreds everything in your path"'''
 	}
 
 	ForgedLashEX: {
@@ -983,7 +977,7 @@ Items: {
 
 	UEPipeline: {
 		DisplayName: Energy Input Pipeline
-		Tooltip: 
+		Tooltip:
 			'''
 			Transmits electrical energy
 			Transfers electrical energy from generators and other energy output 
@@ -994,13 +988,13 @@ Items: {
 
 	UEPipelineInput: {
 		DisplayName: Energy Extraction Pipeline
-		Tooltip: 
+		Tooltip:
 			'''
 			Transmits electrical energy
 			Extracts energy from batteries and other energy storage facilities
 			[UEValue]
 			'''
-	} 
+	}
 }
 
 Projectiles: {
@@ -5666,8 +5660,11 @@ RemakeItems: {
 		DisplayName: Charging Station
 		Tooltip:
 			'''
-			Use energy cells to charge Garde creations
-			Place items and energy cells into the charging station to begin charging
+			Uses electricity to charge electrical devices  
+			Batteries can be placed inside to store electricity  
+			Can be connected to pipelines for power transmission  
+			Right-click the block while holding a rechargeable item to quickly insert it  
+			Shift + Right-click to retrieve items
 			[UEValue]
 			'''
 	}

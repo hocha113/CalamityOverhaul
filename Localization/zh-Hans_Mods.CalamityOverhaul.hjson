@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -813,10 +813,7 @@ Items: {
 
 	Observer: {
 		DisplayName: 观察者
-		Tooltip:
-			'''
-			"它还在盯着你"
-			'''
+		Tooltip: '''"它还在盯着你"'''
 	}
 
 	StaffoftheDestroyer: {
@@ -858,10 +855,7 @@ Items: {
 
 	CommandersChainsawEX: {
 		DisplayName: 统帅链锯EX
-		Tooltip:
-			'''
-			"切碎挡在你面前的一切"
-			'''
+		Tooltip: '''"切碎挡在你面前的一切"'''
 	}
 
 	ForgedLashEX: {
@@ -5643,8 +5637,11 @@ RemakeItems: {
 		DisplayName: 充能站
 		Tooltip:
 			'''
-			使用能源电池以对嘉登造物进行充能
-			将物品和能源电池一起放入充能站中以进行充能
+			使用电力对电器进行充能
+			可以将电池放入其中灌输电力
+			也可以连接管道进行电力输送
+			手持需要充能的物品右键物块可以快捷放入
+			Shft右键可以拿出物品
 			[UEValue]
 			'''
 	}

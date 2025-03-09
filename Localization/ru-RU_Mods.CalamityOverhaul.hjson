@@ -785,33 +785,53 @@ Items: {
 	}
 
 	GeminisTribute: {
-		// DisplayName: Geminis Tribute
-		// Tooltip: ""
+		// DisplayName: Geminis' Tribute
+		/* Tooltip:
+			'''
+			Throws a fast-moving scythe that slices back and forth
+			Stealth attacks will generate a large number of Destroyer Cruise Missiles
+			''' */
 	}
 
 	Dicoria: {
 		// DisplayName: Dicoria
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires double bullets and can be charged
+			When fully charged, fires a thermal beam
+			''' */
 	}
 
 	GeminisTributeEX: {
-		// DisplayName: Geminis Tribute EX
-		// Tooltip: ""
+		// DisplayName: Geminis' Tribute EX
+		/* Tooltip:
+			'''
+			Throws a fast-moving scythe that slices back and forth
+			After hitting an enemy, generates two additional companion scythes
+			''' */
 	}
 
 	DestroyersBlade: {
-		// DisplayName: Destroyers Blade
-		// Tooltip: ""
+		// DisplayName: Destroyer's Blade
+		/* Tooltip:
+			'''
+			Fires thermal barrages
+			"Endless!"
+			''' */
 	}
 
 	Observer: {
 		// DisplayName: Observer
-		// Tooltip: ""
+		// Tooltip: '''"It's still watching you"'''
 	}
 
 	StaffoftheDestroyer: {
-		// DisplayName: Staffofthe Destroyer
-		// Tooltip: ""
+		// DisplayName: Staff of the Destroyer
+		/* Tooltip:
+			'''
+			Summons a miniature Destroyer to fight for you
+			The higher the summon limit, the stronger the Destroyer
+			''' */
 	}
 
 	ForgedLash: {
@@ -820,23 +840,31 @@ Items: {
 	}
 
 	CommandersClaw: {
-		// DisplayName: Commanders Claw
+		// DisplayName: Commander's Claw
 		// Tooltip: ""
 	}
 
 	DraedonsRemote: {
-		// DisplayName: Draedons Remote
-		// Tooltip: ""
+		// DisplayName: Draedon's Remote
+		/* Tooltip:
+			'''
+			Summons the EX Mechanical Trio
+			Can only be used at night
+			''' */
 	}
 
 	CommandersStaffEX: {
-		// DisplayName: Commanders Staff EX
-		// Tooltip: ""
+		// DisplayName: Commander's Staff EX
+		/* Tooltip:
+			'''
+			Fires multiple spreading thermal beams
+			"Suitable for cutting metal"
+			''' */
 	}
 
 	CommandersChainsawEX: {
-		// DisplayName: Commanders Chainsaw EX
-		// Tooltip: ""
+		// DisplayName: Commander's Chainsaw EX
+		// Tooltip: '''"Shreds everything in your path"'''
 	}
 
 	ForgedLashEX: {
@@ -889,15 +917,6 @@ Items: {
 	ThermalGeneratorMK2: {
 		// DisplayName: Thermal Generator MK2
 		// Tooltip: "[UEValue]"
-	}
-
-	UEPipeline: {
-		// DisplayName: UE Pipeline
-		/* Tooltip:
-			'''
-			Transmission Power
-			[UEValue]
-			''' */
 	}
 
 	WGGMK2Wilderness: {
@@ -953,9 +972,25 @@ Items: {
 			''' */
 	}
 
+	UEPipeline: {
+		// DisplayName: Energy Input Pipeline
+		/* Tooltip:
+			'''
+			Transmits electrical energy
+			Transfers electrical energy from generators and other energy output 
+			sources to batteries and other power-consuming facilities
+			[UEValue]
+			''' */
+	}
+
 	UEPipelineInput: {
-		// DisplayName: Mods.CalamityOverhaul.Items.UEPipelineInput.DisplayName
-		// Tooltip: ""
+		// DisplayName: Energy Extraction Pipeline
+		/* Tooltip:
+			'''
+			Transmits electrical energy
+			Extracts energy from batteries and other energy storage facilities
+			[UEValue]
+			''' */
 	}
 }
 
@@ -5699,8 +5734,11 @@ RemakeItems: {
 		// DisplayName: Charging Station
 		/* Tooltip:
 			'''
-			Use energy cells to charge Garde creations
-			Place items and energy cells into the charging station to begin charging
+			Uses electricity to charge electrical devices  
+			Batteries can be placed inside to store electricity  
+			Can be connected to pipelines for power transmission  
+			Right-click the block while holding a rechargeable item to quickly insert it  
+			Shift + Right-click to retrieve items
 			[UEValue]
 			''' */
 	}
