@@ -6,8 +6,9 @@ Items: {
 		DisplayName: Элементальных хлыст
 		Tooltip:
 			'''
-			Пусть враги горят от огня элементов.
-			"Источник Терры, пронизывающий мир вместе с элементами вселенной."
+			{$CommonItemTooltip.Whips}
+			И пусть враги мои сгорят в элементальном пламени
+			«Источник Терры, пронизывающий мир вместе с элементами вселенной»
 			'''
 	}
 
@@ -30,21 +31,30 @@ Items: {
 	}
 
 	AzureDragonRage: {
-		DisplayName: Гнев зелёного дракона
-		Tooltip: Там был густой запах травы
+		DisplayName: Ярость Цин Луна
+		Tooltip:
+			'''
+			{$CommonItemTooltip.Whips}
+			«Отнего исходит ароматный запах травы»
+			'''
 	}
 
 	BleedingScourge: {
-		DisplayName: Кровавая петарда
-		Tooltip: Нанести смертельный удар после удара по врагу и вызвать кровавый дождь
+		DisplayName: Кровавый хрестатель
+		Tooltip:
+			'''
+			{$CommonItemTooltip.Whips}
+			Атаки по врагам вызывают на них кровавый дождь
+			'''
 	}
 
 	GhostFireWhip: {
-		DisplayName: Хлыст
+		DisplayName: Хлыст призрачного огня
 		Tooltip:
 			'''
-			Длинный хлыст, сделанный из ярости злых духов подземелья
-			[c/d4bc75:Чистая страсть, исходящая из Ада, побуждает тебя выяснить, кто сделал тебе больно]
+			{$CommonItemTooltip.Whips}
+			Длинный хлыст, сделанный из гнева злых духов Темницы
+			[c/d4bc75:«Недра ада наделят вас энтузиазмом найти того, кто причинил вам эту боль»]
 			'''
 	}
 
@@ -718,11 +728,12 @@ Items: {
 	}
 
 	WhiplashGalactica: {
-		DisplayName: Галактические петарды
+		DisplayName: Галактический хлыстатель
 		Tooltip:
 			'''
-			Нанести смертельный удар после удара по врагу и запустить космический шар
-			"Позвоночник гигантской космической змеи, наполненный космической энергией, направляющей космический огонь".
+			{$CommonItemTooltip.Whips}
+			Атаки призывают самонаводящиеся галактические шары
+			«Этот позвоночник гигантской космической змеи переполнен космической энергией и излучает гнев самой Вселенной»
 			'''
 	}
 
@@ -2039,8 +2050,8 @@ RemakeItems: {
 	}
 
 	AbyssalTomeRItem: {
-		DisplayName: Abyssal Tome
-		Tooltip: Casts a slow-moving ball of dark energy
+		DisplayName: Глубинный фолиант
+		Tooltip: Запускает медленный шар тёмной энергии
 	}
 
 	AmberStaffRItem: {
@@ -2059,11 +2070,11 @@ RemakeItems: {
 	}
 
 	ApotheosisRItem: {
-		DisplayName: Apotheosis
+		DisplayName: Апофеоз
 		Tooltip:
 			'''
-			Unleashes interdimensional projection magic
-			Eat worms
+			Высвобождает магию межпространственной проекции
+			Поедание червей
 			'''
 	}
 
@@ -2073,22 +2084,22 @@ RemakeItems: {
 	}
 
 	AsteroidStaffRItem: {
-		DisplayName: Asteroid Staff
-		Tooltip: Summons asteroids from the sky
+		DisplayName: Астероидный посох
+		Tooltip: Призывает с неба астероиды
 	}
 
 	AstralachneaStaffRItem: {
-		DisplayName: Astralachnea Staff
-		Tooltip: Fires a spread of homing astral spider fangs
+		DisplayName: Посох астралакнеи
+		Tooltip: Стреляет разбросом самонаводящихся астральных паучьих клыков
 	}
 
 	AstralStaffRItem: {
-		DisplayName: Astral Staff
-		Tooltip: Summons a large crystal from the sky that has a large area of effect on impact
+		DisplayName: Астральный посох
+		Tooltip: Призывает с неба большой кристалл, который имеет большую зону поражения при столкновении
 	}
 
 	AtlantisRItem: {
-		DisplayName: Atlantis
+		DisplayName: Атлантида
 		Tooltip: "[GFB]"
 	}
 
@@ -3551,43 +3562,43 @@ RemakeItems: {
 	}
 
 	ModifyAquaticScourgeBag: {
-		DisplayName: Treasure Bag (Aquatic Scourge)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Мешок с сокровищами (Акватический бич)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDesertScourgeBag: {
-		DisplayName: Treasure Bag (Desert Scourge)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName:  Мешок с сокровищами (Пустынный бич)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDevourerofGodBag: {
-		DisplayName: Treasure Bag (The Devourer of Gods)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Мешок с сокровищами (Пожиратель богов)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyExoBag: {
-		DisplayName: Treasure Box (Exo Mechs)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Ящик с сокровищами (Экзо-механизмы)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyOldDukeBag: {
-		DisplayName: Treasure Bag (The Old Duke)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Мешок с сокровищами (Старый герцог)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyPolterghastBag: {
-		DisplayName: Treasure Bag (Polterghast)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Мешок с сокровищами (Полтергаст)
+		Tooltip "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyStarterBag: {
-		DisplayName: Starter Bag
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Стартовый мешок
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyYharonBag: {
-		DisplayName: Treasure Bag (Yharon)
-		Tooltip: Нажмите <right>, чтобы открыть
+		DisplayName: Мешок с сокровищами (Ярон)
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	RAcesHigh: {
@@ -3682,8 +3693,8 @@ RemakeItems: {
 	}
 
 	RAstralRepeater: {
-		DisplayName: Astral Bow
-		Tooltip: Fires a burst of three arrows
+		DisplayName: Астральный лук
+		Tooltip: Стреляет очередью из трёх стрел
 	}
 
 	RAstrealDefeat: {
@@ -4761,11 +4772,11 @@ RemakeItems: {
 	}
 
 	RAestheticus: {
-		DisplayName: Aestheticus
+		DisplayName: Эстетикус
 		Tooltip:
 			'''
-			Fires crystals that explode and slow enemies down
-			This weapon scales with all your damage stats at once
+			Стреляет кристаллами, которые взрываются и замедляют врагов
+			На урон оружия влияют все бонусы, увеличивающие урон
 			'''
 	}
 
