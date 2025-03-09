@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.Structures
         }
 
         public override void PostUpdateWorld() {
-            if (JustPressed(Keys.D1)) {
-                //RocketHut.SpawnRocketHut();
-            }
+            //if (JustPressed(Keys.D1)) {
+            //    RocketHut.Create((Main.MouseWorld / 16).ToPoint());
+            //}
         }
     }
 }

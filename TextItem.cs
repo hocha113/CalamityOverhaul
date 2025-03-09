@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.Structures.DatIO;
+using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -36,9 +38,9 @@ namespace CalamityOverhaul
     {
         public override string Texture => "CalamityOverhaul/icon";
 
-        //private bool old;
+        private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {
@@ -60,9 +62,14 @@ namespace CalamityOverhaul
 
         public override void UpdateInventory(Player player) {
             //player.velocity.Domp();
-            //bool news = player.PressKey(false);
+            //bool news = player.PressKey();
             //if (news && !old) {
-            //    player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
+            //    if (Main.HoverItem.type < ItemID.Count) {
+            //        Main.HoverItem.type.Domp();
+            //    }
+            //    else {
+            //        ItemLoader.GetItem(Main.HoverItem.type).FullName.Domp();
+            //    }
             //}
             //old = news;
         }
@@ -75,30 +82,32 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            bool copy = false;
-            if (copy) {
-                Point startPoint = new Point(4187, 576);
-                Point endPoint = new Point(4202, 586);
-                int heiget = Math.Abs(startPoint.Y - endPoint.Y);
-                int wid = Math.Abs(startPoint.X - endPoint.X);
-                using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
-                    writer.Write(wid * heiget);
-                    for (int x = 0; x < wid; x++) {
-                        for (int y = 0; y < heiget; y++) {
-                            Point offsetPoint = new Point(x, y);
-                            DatIOLoader.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
-                        }
-                    }
-                }
-            }
-            else {
-                using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
-                    int count = reader.ReadInt32();
-                    for (int x = 0; x < count; x++) {
-                        DatIOLoader.SetTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
-                    }
-                }
-            }
+            //Framing.GetTileSafely((Main.MouseWorld / 16).ToPoint()).Domp();
+            //bool copy = false;
+            //if (copy) {
+            //    RocketHut.InitializeData();
+            //    Point startPoint = new Point(4187, 576);
+            //    Point endPoint = new Point(4203, 587);
+            //    int heiget = Math.Abs(startPoint.Y - endPoint.Y);
+            //    int wid = Math.Abs(startPoint.X - endPoint.X);
+            //    using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
+            //        writer.Write(wid * heiget);
+            //        for (int x = 0; x < wid; x++) {
+            //            for (int y = 0; y < heiget; y++) {
+            //                Point offsetPoint = new Point(x, y);
+            //                RocketHut.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
+            //            }
+            //        }
+            //    }
+            //}
+            //else {
+            //    using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
+            //        int count = reader.ReadInt32();
+            //        for (int x = 0; x < count; x++) {
+            //            RocketHut.ReadTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
+            //        }
+            //    }
+            //}
 
             return true;
         }

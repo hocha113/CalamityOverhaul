@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -10,7 +11,8 @@ namespace CalamityOverhaul.Common
     [BackgroundColor(49, 32, 36, 216)]
     public class CWRServerConfig : ModConfig
     {
-        public static CWRServerConfig Instance { get; private set; }
+        //提醒自己不要用懒加载
+        public static CWRServerConfig Instance => ModContent.GetInstance<CWRServerConfig>();
 
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
@@ -186,8 +188,6 @@ namespace CalamityOverhaul.Common
             }
             set => Date.CartridgeUI_Offset_Y = value;
         }
-
-        public override void OnLoaded() => Instance = this;
 
         public override void OnChanged() {
             if (Main.gameMenu) {
