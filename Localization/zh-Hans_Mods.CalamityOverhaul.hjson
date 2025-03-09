@@ -777,32 +777,55 @@ Items: {
 
 	GeminisTribute: {
 		DisplayName: 双生礼赞
-		Tooltip: ""
+		Tooltip:
+			'''
+			投掷出一把快速来回切割的镰刀
+			潜伏攻击会生成大量毁灭者巡航弹
+			'''
 	}
 
 	Dicoria: {
 		DisplayName: 重瞳
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射双发子弹，射击可以蓄力
+			蓄力满后会发射一道热能射线
+			'''
 	}
 
 	GeminisTributeEX: {
 		DisplayName: 双生礼赞EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			投掷出一把快速来回切割的镰刀
+			击中敌人后会生成两把额外的伴生之镰
+			'''
 	}
 
 	DestroyersBlade: {
 		DisplayName: 毁灭者之刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射热能弹幕
+			"永无止境!"
+			'''
 	}
 
 	Observer: {
 		DisplayName: 观察者
-		Tooltip: ""
+		Tooltip:
+			'''
+			"它还在盯着你"
+			'''
 	}
 
 	StaffoftheDestroyer: {
 		DisplayName: 毁灭者召唤杖
-		Tooltip: ""
+		Tooltip:
+			'''
+			召唤一条微型毁灭者为你而战
+			召唤栏上限越高毁灭者越强
+			'''
 	}
 
 	ForgedLash: {
@@ -826,12 +849,19 @@ Items: {
 
 	CommandersStaffEX: {
 		DisplayName: 统帅之杖EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射多道扩散的热能射线
+			"适合切割金属"
+			'''
 	}
 
 	CommandersChainsawEX: {
 		DisplayName: 统帅链锯EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			"切碎挡在你面前的一切"
+			'''
 	}
 
 	ForgedLashEX: {
@@ -896,16 +926,6 @@ Items: {
 			'''
 	}
 
-	UEPipeline: {
-		DisplayName: 能量输入管道
-		Tooltip:
-			'''
-			传输电能
-			从发电机等能量输出端传输电能到电池等用电设施上
-			[UEValue]
-			'''
-	}
-
 	WGGMK2Wilderness: {
 		DisplayName: 荒野中的巨型风力发电机
 		Tooltip: ""
@@ -955,6 +975,16 @@ Items: {
 			'''
 			放置在地上后右键可以启动飞行
 			在空中按住左右键可以调整飞行方向
+			[UEValue]
+			'''
+	}
+
+	UEPipeline: {
+		DisplayName: 能量输入管道
+		Tooltip:
+			'''
+			传输电能
+			从发电机等能量输出端传输电能到电池等用电设施上
 			[UEValue]
 			'''
 	}
