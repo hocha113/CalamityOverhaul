@@ -3567,7 +3567,7 @@ RemakeItems: {
 	}
 
 	ModifyDesertScourgeBag: {
-		DisplayName:  Мешок с сокровищами (Пустынный бич)
+		DisplayName: Мешок с сокровищами (Пустынный бич)
 		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
@@ -3588,7 +3588,7 @@ RemakeItems: {
 
 	ModifyPolterghastBag: {
 		DisplayName: Мешок с сокровищами (Полтергаст)
-		Tooltip "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyStarterBag: {

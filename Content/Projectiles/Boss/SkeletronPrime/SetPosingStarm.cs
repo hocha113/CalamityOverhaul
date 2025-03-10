@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
                 }
             }
-            Projectile.timeLeft = 31;
+
             if (Projectile.timeLeft <= 30) {
                 modeings = 1200 * (Projectile.timeLeft / 30f);
             }

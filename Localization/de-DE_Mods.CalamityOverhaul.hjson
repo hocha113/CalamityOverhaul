@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
 Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
@@ -3493,42 +3493,42 @@ RemakeItems: {
 
 	ModifyAquaticScourgeBag: {
 		DisplayName: Treasure Bag (Aquatic Scourge)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDesertScourgeBag: {
 		DisplayName: Treasure Bag (Desert Scourge)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDevourerofGodBag: {
 		DisplayName: Treasure Bag (The Devourer of Gods)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyExoBag: {
 		DisplayName: Treasure Box (Exo Mechs)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyOldDukeBag: {
 		DisplayName: Treasure Bag (The Old Duke)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyPolterghastBag: {
 		DisplayName: Treasure Bag (Polterghast)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyStarterBag: {
 		DisplayName: Starter Bag
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyYharonBag: {
 		DisplayName: Treasure Bag (Yharon)
-		Tooltip: <rechts> zum Öffnen
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	RAcesHigh: {

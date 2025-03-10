@@ -6,6 +6,7 @@ Items: {
 		DisplayName: 元素长鞭
 		Tooltip:
 			'''
+			{$CommonItemTooltip.Whips}
 			让敌人被元素之火灼烧
 			"泰拉的本源连同宇宙的元素一同贯穿世界"
 			'''
@@ -31,7 +32,11 @@ Items: {
 
 	AzureDragonRage: {
 		DisplayName: 青龙之怒
-		Tooltip: 有一股浓厚的青草气味
+		Tooltip:
+			'''
+			{$CommonItemTooltip.Whips}
+			有一股浓厚的青草气味
+			'''
 	}
 
 	BleedingScourge: {
@@ -43,6 +48,7 @@ Items: {
 		DisplayName: 鬼火鞭
 		Tooltip:
 			'''
+			{$CommonItemTooltip.Whips}
 			一把很长的鞭子，由地牢冤魂的怒火编制而成
 			[c/d4bc75:纯粹的热情从地狱散发出来，鼓励你找出谁冤枉了你]
 			'''
@@ -712,6 +718,7 @@ Items: {
 		DisplayName: 银河鞭挞
 		Tooltip:
 			'''
+			{$CommonItemTooltip.Whips}
 			击中敌人后进行死亡标记，并发射宇宙火球
 			"那条宇宙巨蛇的脊柱，充盈着宇宙能量，引导着宇宙的怒火"
 			'''
@@ -3502,42 +3509,42 @@ RemakeItems: {
 
 	ModifyAquaticScourgeBag: {
 		DisplayName: 宝藏袋（渊海灾虫）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyDesertScourgeBag: {
 		DisplayName: 宝藏袋（荒漠灾虫）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyDevourerofGodBag: {
 		DisplayName: 宝藏袋（神明吞噬者）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyExoBag: {
 		DisplayName: 宝藏盒（星流巨械）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyOldDukeBag: {
 		DisplayName: 宝藏袋（硫海遗爵）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyPolterghastBag: {
 		DisplayName: 宝藏袋（噬魂幽花）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyStarterBag: {
 		DisplayName: 新手礼包
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	ModifyYharonBag: {
 		DisplayName: 宝藏袋（犽戎）
-		Tooltip: <right>可打开
+		Tooltip: 右键点击可以打开
 	}
 
 	RAcesHigh: {

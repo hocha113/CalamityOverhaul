@@ -3527,42 +3527,42 @@ RemakeItems: {
 
 	ModifyAquaticScourgeBag: {
 		DisplayName: Treasure Bag (Aquatic Scourge)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDesertScourgeBag: {
 		DisplayName: Treasure Bag (Desert Scourge)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyDevourerofGodBag: {
 		DisplayName: Treasure Bag (The Devourer of Gods)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyExoBag: {
 		DisplayName: Treasure Box (Exo Mechs)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyOldDukeBag: {
 		DisplayName: Treasure Bag (The Old Duke)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyPolterghastBag: {
 		DisplayName: Treasure Bag (Polterghast)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyStarterBag: {
 		DisplayName: Starter Bag
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	ModifyYharonBag: {
 		DisplayName: Treasure Bag (Yharon)
-		Tooltip: <right> to open
+		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 	}
 
 	RAcesHigh: {

@@ -79,7 +79,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         protected int KreloadMaxTime {
             get {
                 float newTime = _kreloadMaxTime + extraKreloadMaxTime;
-                newTime *= ModOwner.KreloadTimeIncrease;
+                if (ModOwner != null) {
+                    newTime *= ModOwner.KreloadTimeIncrease;
+                }
                 return (int)MathHelper.Max(newTime, 4);
             }
             set => _kreloadMaxTime = value;
