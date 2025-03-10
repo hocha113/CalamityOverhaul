@@ -203,11 +203,12 @@ namespace CalamityOverhaul.Common
                 if (proj.ModProjectile is BaseFeederGun gun) {
                     Item item = Main.player[proj.owner].GetItem();
                     if (item.type != ItemID.None) {
-                        item.CWR().IsKreload = false;
+                        item.CWR().InitializeMagazine();
                     }
                     gun.SetRangedProperty();
                 }
             }
+            
         }
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {

@@ -42,6 +42,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         protected bool IsKreload {
             get {
+                if (!MagazineSystem) {//如果关闭了弹匣系统就无脑返回true
+                    return true;
+                }
                 if (ModItem == null) {
                     return false;
                 }

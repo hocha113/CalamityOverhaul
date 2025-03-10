@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                                 }
                             }
                         }
+                        thermalGenerator.GeneratorTP.SendData();
                     }
                 }
             }
@@ -117,12 +118,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
 
-            if (hoverInMainPage) {
-                if (keyRightPressState == KeyPressState.Pressed) {
-                    ThermalData.UEvalue = 0;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                }
-            }
+            //if (hoverInMainPage) {
+            //    if (keyRightPressState == KeyPressState.Pressed) {
+            //        ThermalData.UEvalue = 0;
+            //        SoundEngine.PlaySound(SoundID.MenuClose);
+            //    }
+            //}
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 118;
+            Item.height = 52;
             Item.damage = 98;
             Item.useTime = 18;
             Item.useAnimation = 18;
