@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 118;
             Item.height = 52;
-            Item.damage = 98;
+            Item.damage = 48;
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.useAmmo = AmmoID.Bullet;

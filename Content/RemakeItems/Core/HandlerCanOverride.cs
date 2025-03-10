@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public static Dictionary<int, bool> CanOverrideByID { get; internal set; } = [];
         /// <summary>
-        /// 这个功能是否启用?
+        /// 这个功能是否启用
         /// </summary>
         public static bool CanLoad => false;//在线上版本中设置为false
         #region NetWork
