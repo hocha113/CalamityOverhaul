@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         (UnitToMouseV * 15).RotatedByRandom(rot * 0.01f), ammo,
                         (int)(shootState.WeaponDamage * lastdamage), 0, Projectile.owner);
                         if (proj > 0 && proj < Main.maxProjectiles) {
-                            Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
+                            Main.projectile[proj].CWR().HitAttribute.OnHitBlindArmor = true;
                         }
                     }
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);

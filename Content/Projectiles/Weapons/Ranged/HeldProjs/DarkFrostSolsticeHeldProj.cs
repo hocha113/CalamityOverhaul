@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     proj.usesLocalNPCImmunity = true;
                     proj.localNPCHitCooldown = -1;
                     proj.light = 0.75f;
-                    proj.CWR().GetHitAttribute.SuperAttack = true;
+                    proj.CWR().HitAttribute.SuperAttack = true;
                 }
 
                 targetPos.Y -= 700;

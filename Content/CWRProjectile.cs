@@ -78,6 +78,16 @@ namespace CalamityOverhaul.Content
         /// 是否是一次超级攻击
         /// </summary>
         public bool SuperAttack;
+        /// <summary>
+        /// 是否具备蠕虫抗性，如果为<see langword="true"/>，对于蠕虫的身体部位将会有伤害衰减，编辑衰减系数可以设置<see cref="WormResistanceACValue"/>
+        /// </summary>
+        public bool WormResistance;
+        /// <summary>
+        /// 蠕虫抗性衰减系数，默认为0.15f，即对蠕虫只造成15%的伤害，这个属性的启用需要设置<see cref="WormResistance"/>
+        /// </summary>
+        public float WormResistanceACValue = 0.15f;
+
+        public HitAttributeStruct() { }
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -85,7 +95,7 @@ namespace CalamityOverhaul.Content
         public override bool InstancePerEntity => true;
         public CWRItems cwrItem;
         public byte SpanTypes;
-        public HitAttributeStruct GetHitAttribute;
+        public HitAttributeStruct HitAttribute;
         public IEntitySource Source;
         private Vector2 offsetHitPos;
         public bool NotSubjectToSpecialEffects;
@@ -251,13 +261,13 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
-            if (GetHitAttribute.CertainCrit) {
+            if (HitAttribute.CertainCrit) {
                 modifiers.SetCrit();
             }
-            if (GetHitAttribute.NeverCrit) {
+            if (HitAttribute.NeverCrit) {
                 modifiers.DisableCrit();
             }
-            if (GetHitAttribute.OnHitBlindArmor) {
+            if (HitAttribute.OnHitBlindArmor) {
                 if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
                     return;
                 }
@@ -274,6 +284,10 @@ namespace CalamityOverhaul.Content
 
             if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {
                 modifiers.FinalDamage /= 2;
+            }
+
+            if (HitAttribute.WormResistance && target.IsWormBody()) {
+                modifiers.FinalDamage *= HitAttribute.WormResistanceACValue;
             }
 
             InProjTypeSetHitNPC(projectile, target, ref modifiers);
@@ -304,7 +318,7 @@ namespace CalamityOverhaul.Content
         }
 
         private void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
-            if (GetHitAttribute.SuperAttack) {
+            if (HitAttribute.SuperAttack) {
                 if (projectile.type == 961) {
                     if (!target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
                         Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero
@@ -326,7 +340,7 @@ namespace CalamityOverhaul.Content
                             proj.usesLocalNPCImmunity = true;
                             proj.localNPCHitCooldown = -1;
                             proj.ArmorPenetration = 15;
-                            proj.CWR().GetHitAttribute.NeverCrit = true;
+                            proj.CWR().HitAttribute.NeverCrit = true;
                         }
                     }
                 }
@@ -457,7 +471,7 @@ namespace CalamityOverhaul.Content
                         proj.localNPCHitCooldown = 20;
                         proj.light = 0.75f;
                         if (isSuper) {
-                            proj.CWR().GetHitAttribute.SuperAttack = true;
+                            proj.CWR().HitAttribute.SuperAttack = true;
                         }
                     }
                     break;
@@ -535,7 +549,7 @@ namespace CalamityOverhaul.Content
                             Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ProjectileID.CopperCoin, 2, projectile.knockBack, projectile.owner, 1);
                             proj6.penetrate = 1;
-                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                            proj6.CWR().HitAttribute.NeverCrit = true;
                         }
                     }
                     break;
@@ -549,7 +563,7 @@ namespace CalamityOverhaul.Content
                             Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ProjectileID.SilverCoin, 2, projectile.knockBack, projectile.owner, 1);
                             proj6.penetrate = 1;
-                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                            proj6.CWR().HitAttribute.NeverCrit = true;
                         }
                     }
                     break;
@@ -564,7 +578,7 @@ namespace CalamityOverhaul.Content
                             , ProjectileID.GoldCoin, 2, projectile.knockBack, projectile.owner, 1);
                             proj6.penetrate = 1;
                             proj6.extraUpdates = 1;
-                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                            proj6.CWR().HitAttribute.NeverCrit = true;
                         }
                     }
                     break;
@@ -579,7 +593,7 @@ namespace CalamityOverhaul.Content
                             , ModContent.ProjectileType<AstralStar>(), projectile.damage / 4, projectile.knockBack, projectile.owner, 1);
                             proj7.DamageType = DamageClass.Ranged;
                             proj7.extraUpdates = 1;
-                            proj7.CWR().GetHitAttribute.NeverCrit = true;
+                            proj7.CWR().HitAttribute.NeverCrit = true;
                         }
                         bool blue = Main.rand.NextBool();
                         float multiplier = 1.9f;

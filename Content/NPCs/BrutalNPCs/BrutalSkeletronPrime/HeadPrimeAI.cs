@@ -77,6 +77,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPSAWGlow;
         internal static Asset<Texture2D> BSPRAMGlow;
         internal static Asset<Texture2D> BSPRAM_ForearmGlow;
+        internal static Asset<Texture2D> Vanilla_TwinsBossBag;
+        internal static Asset<Texture2D> Vanilla_DestroyerBossBag;
+        internal static Asset<Texture2D> Vanilla_SkeletronPrimeBossBag;
         private static int iconIndex;
         #endregion
 
@@ -105,10 +108,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
             canLoaderAssetZunkenUp = true;
 
+            //先缓存原版的纹理
+            Vanilla_TwinsBossBag = TextureAssets.Item[ItemID.TwinsBossBag];
+            Vanilla_DestroyerBossBag = TextureAssets.Item[ItemID.DestroyerBossBag];
+            Vanilla_SkeletronPrimeBossBag = TextureAssets.Item[ItemID.SkeletronPrimeBossBag];
             if (CWRServerConfig.Instance.BiologyOverhaul) {
                 TextureAssets.Item[ItemID.TwinsBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/TwinBag");
                 TextureAssets.Item[ItemID.DestroyerBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/DestroyerBag");
                 TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/PrimeBag");
+            }
+            else {//无论在什么情况下，修改了原版纹理都需要恢复它，这里考虑的是中途关闭了生物大修后的需要的恢复操作
+                TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
+                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_DestroyerBossBag;
+                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
             }
         }
 
@@ -129,6 +141,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = null;
             BSPRAM_ForearmGlow = null;
             canLoaderAssetZunkenUp = false;
+
+            //无论在什么情况下，修改了原版纹理都需要恢复它
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
+            }
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
+            }
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
+            }
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot) {

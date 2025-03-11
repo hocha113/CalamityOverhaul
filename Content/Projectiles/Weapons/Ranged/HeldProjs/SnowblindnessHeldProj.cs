@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj].Calamity().allProjectilesHome = true;
-            Main.projectile[proj].CWR().GetHitAttribute.SuperAttack = true;
+            Main.projectile[proj].CWR().HitAttribute.SuperAttack = true;
             Main.projectile[proj].extraUpdates = 1;
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = -1;

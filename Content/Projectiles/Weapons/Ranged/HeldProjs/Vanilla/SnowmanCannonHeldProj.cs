@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 Main.projectile[proj5].scale *= 3f;
                 Main.projectile[proj5].usesLocalNPCImmunity = true;
                 Main.projectile[proj5].localNPCHitCooldown = 5;
-                Main.projectile[proj5].CWR().GetHitAttribute.NeverCrit = true;
+                Main.projectile[proj5].CWR().HitAttribute.NeverCrit = true;
                 ModOwner.SetScreenShake(3.5f);
             }
         }
