@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Materials;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Item.Calamity().Charge < 0.2f) {
                 return;
             }
-            
+
             int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
                 , ProjectileID.MiniRetinaLaser
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI);

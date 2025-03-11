@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     }
                     Time2 = 0;
                 }
-                
+
                 if (Time > 0) {
                     Time--;
                 }

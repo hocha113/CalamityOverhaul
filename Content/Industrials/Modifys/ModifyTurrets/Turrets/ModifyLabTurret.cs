@@ -2,9 +2,7 @@
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityMod.Tiles.PlayerTurrets;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.TileProcessors;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets

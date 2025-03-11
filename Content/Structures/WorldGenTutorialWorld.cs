@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Structures.DatIO;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.ModLoader;
 

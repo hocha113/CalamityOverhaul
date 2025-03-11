@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             }
         }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
             => VaultUtils.CircleIntersectsRectangle(Projectile.Center, Rots, targetHitbox);
 
         public override void OnKill(int timeLeft) {

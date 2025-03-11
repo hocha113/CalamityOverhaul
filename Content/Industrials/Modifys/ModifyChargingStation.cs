@@ -10,7 +10,6 @@ using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -175,7 +174,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                             chargingStation.OpenUI = false;
                         }
                     }
-                    
+
                 }
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }

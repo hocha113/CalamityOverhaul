@@ -1,13 +1,11 @@
 ﻿using CalamityMod.Tiles.DraedonStructures;
 using CalamityMod.Walls.DraedonStructures;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Structures.DatIO
 {
@@ -102,14 +100,14 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             if (wallType > 0) {
                 tile.WallType = wallType;
             }
-            
+
             tile.LiquidAmount = liquidAmount;
 
             //只在有墙或者有方块的时候才设置物块的存在性
             if (wallType > 0 || tileType > 0) {
                 tile.HasTile = hasTile;
             }
-            
+
             tile.Slope = (SlopeType)slope;
 
             tile.TileType = tileType;

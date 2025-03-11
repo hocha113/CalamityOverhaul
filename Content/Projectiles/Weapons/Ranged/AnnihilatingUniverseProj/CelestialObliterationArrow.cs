@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     Main.projectile[proj].scale = 0.3f;
                 }
             }
-            if (target.type == ModContent.NPCType<SepulcherHead>() 
-                || target.type == ModContent.NPCType<SepulcherBody>() 
+            if (target.type == ModContent.NPCType<SepulcherHead>()
+                || target.type == ModContent.NPCType<SepulcherBody>()
                 || target.type == ModContent.NPCType<SepulcherTail>()) {
                 foreach (NPC targetHead in Main.npc) {
                     if (targetHead.type == ModContent.NPCType<SepulcherHead>()) {

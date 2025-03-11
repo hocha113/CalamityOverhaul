@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
-            
+
             if (ThreeCrutchesID >= 0) {
                 Rectangle rectangle = CWRUtils.GetRec(PipelineThreeCrutches.Value, ThreeCrutchesID, 4);
                 spriteBatch.Draw(PipelineThreeCrutches.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);

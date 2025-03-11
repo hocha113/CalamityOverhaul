@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -435,7 +434,7 @@ namespace CalamityOverhaul.Content
 
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
             SpecialDrawPositionOffset.Y -= 2 * player.gravDir;//乘以一个重力矫正，这是一个无视偏转的值，所以需要考虑重力方向
-            
+
             if (RideElectricMinRocket) {//添加小火箭相关的绘制
                 drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
                 drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y * player.gravDir;

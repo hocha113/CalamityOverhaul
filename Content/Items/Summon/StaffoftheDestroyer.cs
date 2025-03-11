@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                         offsetByAttackPos = CWRUtils.randVr(target.width * 2);
                         NetUpdate();
                     }
-                    
+
                     Projectile.ai[2]++;
                 }
 

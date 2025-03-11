@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     IsActive = true;
                 }
             }
-            
+
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
 

@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;

@@ -3,8 +3,6 @@ using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Common
                     gun.SetRangedProperty();
                 }
             }
-            
+
         }
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {

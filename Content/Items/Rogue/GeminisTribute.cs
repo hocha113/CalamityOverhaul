@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;

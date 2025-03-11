@@ -1,11 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.Content.Structures.DatIO;
-using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

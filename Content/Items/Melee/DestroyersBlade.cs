@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

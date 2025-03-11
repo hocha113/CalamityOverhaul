@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
