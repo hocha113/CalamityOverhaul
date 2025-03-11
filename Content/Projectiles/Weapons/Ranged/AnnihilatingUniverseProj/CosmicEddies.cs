@@ -59,13 +59,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 Projectile.velocity = Projectile.Center.To(targetPos);
                 Projectile.EntityToRot(ownerProj.rotation, 0.1f);
 
-                if (Time % 100 == 0 && Time > 0 && Projectile.IsOwnedByLocalPlayer()) {
-                    float pwer = Time / 20;
-                    if (pwer > 40) {
-                        pwer = 40;
+                if (Time % 100 == 0 && Time > 0) {
+                    SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.4f });
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        float pwer = Time / 20;
+                        if (pwer > 40) {
+                            pwer = 40;
+                        }
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, UnitToMouseV * 23
+                        , ModContent.ProjectileType<DivineDevourerIllusionHead>(), Projectile.damage / 2, 3, Projectile.owner, pwer);
                     }
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.Center.To(Main.MouseWorld).UnitVector() * 23
-                    , ModContent.ProjectileType<DivineDevourerIllusionHead>(), Projectile.damage / 2, 3, Projectile.owner, ai1: pwer);
                 }
             }
             else {

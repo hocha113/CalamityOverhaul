@@ -900,7 +900,11 @@ Items: {
 
 	DestroyersBladeEX: {
 		// DisplayName: Destroyers Blade EX
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Launch a thermal barrage
+			"It's always easier to destroy than to build"
+			''' */
 	}
 
 	ThermalGenerator: {
@@ -1007,6 +1011,15 @@ Items: {
 
 	EnergySword: {
 		// DisplayName: Energy Sword
+		/* Tooltip:
+			'''
+			Expend energy to shoot lasers and penetrate multiple enemies
+			"Utilization is not high."
+			''' */
+	}
+
+	LaserPistol: {
+		// DisplayName: Laser Pistol
 		/* Tooltip:
 			'''
 			Expend energy to shoot lasers and penetrate multiple enemies

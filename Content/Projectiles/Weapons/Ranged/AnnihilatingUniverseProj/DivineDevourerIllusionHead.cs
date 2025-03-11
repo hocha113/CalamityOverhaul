@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityMod;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -9,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class DivineDevourerIllusionHead : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/" + "DivineDevourerIllusionHead";
+        private bool spawn;
         private Vector2 targetPos;
         private Vector2 targetOffsetPos {
             get => new Vector2(Projectile.ai[1], Projectile.ai[2]);
@@ -30,11 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void AI() {
-            if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer()) {
+            if (!spawn && Projectile.IsOwnedByLocalPlayer()) {
                 targetOffsetPos = Vector2.Zero;
                 targetPos = Owner.Center;
                 int index = Projectile.whoAmI;
-                int maxnum = (int)Projectile.ai[1];
+                int maxnum = (int)Projectile.ai[0];
                 for (int i = 0; i < maxnum; i++) {
                     int types = i == (maxnum - 1) ? ModContent.ProjectileType<DivineDevourerIllusionTail>()
                         : ModContent.ProjectileType<DivineDevourerIllusionBody>();
@@ -44,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     Main.projectile[proj].netUpdate2 = true;
                     index = proj;
                 }
-                Projectile.ai[0] = 1;
+                spawn = true;
             }
 
             NPC target = Projectile.Center.FindClosestNPC(1900);
@@ -62,6 +64,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         public override bool PreDraw(ref Color lightColor) {
             int tail = ModContent.ProjectileType<DivineDevourerIllusionTail>();
             int body = ModContent.ProjectileType<DivineDevourerIllusionBody>();
+            Texture2D head = TextureAssets.Projectile[Type].Value;
+
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.type == tail || proj.type == body) {
                     Texture2D value = TextureAssets.Projectile[proj.type].Value;
@@ -69,7 +73,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                         , CWRUtils.GetOrig(value), proj.scale, SpriteEffects.None);
                 }
             }
-            Texture2D head = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null
                 , Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
                 , CWRUtils.GetOrig(head) - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);

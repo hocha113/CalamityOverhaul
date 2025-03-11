@@ -450,6 +450,22 @@ namespace CalamityOverhaul
             return speed;
         }
 
+        /// <summary>
+        /// 更加缓和的追逐行为
+        /// </summary>
+        /// <param name="entity">需要操纵的实体</param>
+        /// <param name="TargetCenter">目标地点</param>
+        /// <param name="SpeedUpdates">速度的更新系数</param>
+        /// <param name="HomingStrenght">追击力度</param>
+        /// <returns></returns>
+        public static Vector2 SmoothHomingBehavior(this Entity entity, float speedMode, float HomingStrenght = 0.1f) {
+            float targetAngle = entity.AngleTo(entity.Center);
+            float f = entity.velocity.ToRotation().RotTowards(targetAngle, HomingStrenght);
+            Vector2 speed = f.ToRotationVector2() * speedMode;
+            entity.velocity = speed;
+            return speed;
+        }
+
         public static void EntityToRot(this NPC entity, float ToRot, float rotSpeed) {
             //entity.rotation = MathHelper.SmoothStep(entity.rotation, ToRot, rotSpeed);
 

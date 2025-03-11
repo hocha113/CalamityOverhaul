@@ -887,7 +887,11 @@ Items: {
 
 	DestroyersBladeEX: {
 		DisplayName: 毁灭者之刃EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射热能弹幕
+			"摧毁永远比建造容易"
+			'''
 	}
 
 	ThermalGenerator: {
@@ -1003,6 +1007,15 @@ Items: {
 
 	EnergySword: {
 		DisplayName: 能量剑
+		Tooltip:
+			'''
+			消耗能量发射激光，穿透多个敌人
+			"利用率并不高"
+			'''
+	}
+
+	LaserPistol: {
+		DisplayName: 镭射手枪
 		Tooltip:
 			'''
 			消耗能量发射激光，穿透多个敌人

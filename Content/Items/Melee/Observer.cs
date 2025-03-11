@@ -65,8 +65,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
-            if ((Projectile.position - Owner.position).Length() > 3200f) {
+            if (Projectile.Distance(Owner.Center) > 3200f) {
                 Projectile.Kill();
+            }
+            NPC target = Projectile.Center.FindClosestNPC(100);
+            if (target != null) {
+                Projectile.SmoothHomingBehavior(9, 0.3f);
             }
             Time++;
         }

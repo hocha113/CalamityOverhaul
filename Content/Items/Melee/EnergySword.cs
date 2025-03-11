@@ -33,6 +33,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.Calamity().MaxCharge = 40;
         }
 
+        public override bool CanUseItem(Player player) {
+            Item.Calamity().Charge -= 0.12f;
+            if (Item.Calamity().Charge < 0) {
+                Item.Calamity().Charge = 0;
+            }
+            return base.CanUseItem(player);
+        }
+
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<DubiousPlating>(5).
@@ -64,7 +72,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Item.Calamity().Charge < 0.2f) {
                 return;
             }
-            Item.Calamity().Charge -= 0.2f;
+            
             int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
                 , ProjectileID.MiniRetinaLaser
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI);

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 8;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = null;
-            Item.useTime = Item.useAnimation = 14;
+            Item.useTime = Item.useAnimation = 12;
             Item.DamageType = DamageClass.Melee;
             Item.useTurn = true;
             Item.rare = ItemRarityID.Red;
@@ -64,25 +64,28 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;
-            canDrawSlashTrail = false;
+            canDrawSlashTrail = true;
             drawTrailCount = 34;
             distanceToOwner = -20;
             drawTrailTopWidth = 86;
             ownerOrientationLock = true;
             SwingData.starArg = 50;
-            SwingData.baseSwingSpeed = 4.65f;
+            SwingData.baseSwingSpeed = 4f;
             Length = 124;
             autoSetShoot = true;
         }
 
         public override bool PreInOwner() {
-            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 1.6f
-                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
-                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash: false);
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 1.2f
+                , phase1SwingSpeed: 8f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash: true);
             return base.PreInOwner();
         }
 
-        public override void Shoot() => OrigItemShoot();
+        public override void Shoot() {
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ShootID
+                , Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+        }
     }
 
     internal class DestroyersBladeEXHeld : BaseKnife
@@ -91,7 +94,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;
-            canDrawSlashTrail = false;
+            canDrawSlashTrail = true;
+            drawTrailHighlight = true;
             drawTrailCount = 34;
             distanceToOwner = -20;
             drawTrailTopWidth = 86;
@@ -105,11 +109,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool PreInOwner() {
             ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 1.6f
                 , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
-                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash: false);
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, drawSlash: true);
             return base.PreInOwner();
         }
 
-        public override void Shoot() => OrigItemShoot();
+        public override void Shoot() {
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ShootID
+                , (int)(Projectile.damage * 0.75f), Projectile.knockBack, Owner.whoAmI);
+        }
     }
 
     internal class DestroyersBeam : ModProjectile

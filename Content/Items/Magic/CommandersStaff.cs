@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -22,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 32;
             Item.height = 32;
-            Item.damage = 82;
+            Item.damage = 72;
             Item.useTime = 62;
             Item.useAnimation = 62;
             Item.mana = 20;

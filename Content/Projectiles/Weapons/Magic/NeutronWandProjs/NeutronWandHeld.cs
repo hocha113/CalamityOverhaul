@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             GunPressure = 0;
             Recoil = 0;
             ControlForce = 0;
-            AngleFirearmRest = -20;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
+            Onehanded = true;
             ArmRotSengsBackNoFireOffset = -20;
             ShootPosToMouLengValue = 20;
             CanRightClick = true;

@@ -1,17 +1,16 @@
 ﻿using CalamityMod;
-using CalamityMod.Items;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles.Core;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -42,28 +41,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             if (!TileProcessorLoader.AutoPositionGetTP<ChargingStationTP>(i, j, out var tp)) {
                 return false;
             }
-            //在没打开UI的情况下，如果拿着东西右键可以直接放上去
-            if ((!tp.OpenUI && !Main.LocalPlayer.GetItem().IsAir) || Main.keyState.PressingShift()) {
-                if (tp is ChargingStationTP chargingStation) {
-                    chargingStation.RightEvent();
-                }
-                return false;
+            if (tp is ChargingStationTP chargingStation) {
+                chargingStation.RightEvent();
             }
-
-            tp.OpenUI = !tp.OpenUI;
-            //如果是开启，就先关掉其他所有的同类实体的UI
-            if (tp.OpenUI) {
-                foreach (var tp2 in TileProcessorLoader.TP_InWorld) {
-                    if (tp2.ID != tp.ID || tp2.WhoAmI == tp.WhoAmI) {
-                        continue;
-                    }
-                    if (tp2 is ChargingStationTP chargingStation) {
-                        chargingStation.OpenUI = false;
-                    }
-                }
-            }
-
-            SoundEngine.PlaySound(SoundID.MenuTick);
             return false;
         }
 
@@ -80,7 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     continue;
                 }
                 if (tp is ChargingStationTP charging && charging.OpenUI && charging.sengs >= 1f) {
-                    charging.UpdateUI();
+                    charging.UpdateUI(charging.DrawPos);
                 }
             }
         }
@@ -102,8 +82,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         private bool hoverSlot;
         private bool hoverEmptySlot;
         private bool boverPanel;
-        private Vector2 MousePos;
-        private Vector2 MouseWorld;
+        internal Vector2 DrawPos;
+        internal Vector2 MousePos;
         internal Item Item = new Item();
         internal Item Empty = new Item();
         public override bool CanDrop => false;
@@ -169,10 +149,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
 
-            if (item.IsAir) {
-                return;
-            }
-
             if (ItemIsCharge(item, out _, out _)) {
                 if (!Item.IsAir && !VaultUtils.isClient) {
                     int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, Item.Clone());
@@ -189,23 +165,25 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             else {
                 //SoundEngine.PlaySound(SoundID.MenuClose);
                 //CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
-                OpenUI = true;
-                foreach (var tp2 in TileProcessorLoader.TP_InWorld) {
-                    if (tp2.ID != ID || tp2.WhoAmI == WhoAmI) {
-                        continue;
+                OpenUI = !OpenUI;
+                if (OpenUI) {
+                    foreach (var tp2 in TileProcessorLoader.TP_InWorld) {
+                        if (tp2.ID != ID || tp2.WhoAmI == WhoAmI) {
+                            continue;
+                        }
+                        if (tp2 is ChargingStationTP chargingStation) {
+                            chargingStation.OpenUI = false;
+                        }
                     }
-                    if (tp2 is ChargingStationTP chargingStation) {
-                        chargingStation.OpenUI = false;
-                    }
+                    
                 }
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 
         public override void Update() {
-            MouseWorld = Main.MouseWorld;
-            MousePos = Main.MouseScreen;
-
+            MousePos = Main.MouseWorld;
+            DrawPos = CenterInWorld + new Vector2(0, -120) * sengs;
             if (OpenUI) {
                 if (sengs < 1f) {
                     sengs += 0.1f;
@@ -231,7 +209,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static bool ItemIsCharge(Item item, out float ueValue, out float maxUEValue) {
             ueValue = 0;
             maxUEValue = 1;//无论如何不要返回0，因为这个数很可能被拿去做除数
-            if (item.type <= ItemID.None) {
+            if (item.IsAir || item.type <= ItemID.None) {
                 return false;
             }
 
@@ -250,9 +228,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             return false;
         }
 
-        internal void UpdateUI() {
-            Vector2 drawPos = CenterInWorld + new Vector2(0, -120) * sengs;
-            Rectangle mouseRec = MouseWorld.GetRectangle(1);
+        internal void UpdateUI(Vector2 drawPos) {
+            Rectangle mouseRec = MousePos.GetRectangle(1);
             hoverSlot = (drawPos - SlotTex.Size() / 2).GetRectangle(SlotTex.Size()).Intersects(mouseRec);
             hoverEmptySlot = (drawPos - SlotTex.Size() / 2 + new Vector2(-56, 0)).GetRectangle(EmptySlot.Size()).Intersects(mouseRec);
             boverPanel = (drawPos - Panel.Size() / 2 * 0.75f).GetRectangle(Panel.Size() * 0.75f).Intersects(mouseRec);
@@ -423,8 +400,11 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Main.spriteBatch.Draw(electricPowerGlow, drawPos, null, Color.White * sengs, 0, Vector2.Zero, 0.5f * sengs, SpriteEffects.None, 0);
         }
 
-        public void DrawUI(SpriteBatch spriteBatch) {
-            Vector2 drawPos = CenterInWorld - Main.screenPosition + new Vector2(0, -120) * sengs;
+        public void DrawUI(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 MousePos) {
+            if (!OpenUI && sengs <= 0) {
+                return;
+            }
+
             Vector2 emptyPos = drawPos + new Vector2(-56, 0) * sengs;
             spriteBatch.Draw(Panel.Value, drawPos, null, Color.White, 0, Panel.Size() / 2, 0.75f * sengs, SpriteEffects.None, 0);
             spriteBatch.Draw(SlotTex.Value, drawPos, null, Color.White, 0, SlotTex.Size() / 2, sengs, SpriteEffects.None, 0);
@@ -440,7 +420,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Main.spriteBatch.Draw(BarFull.Value, drawPos + new Vector2(10, 0) * sengs, fullRec, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
 
             if (!Item.IsAir) {
-                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, origDrawPos, 34);
+                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, origDrawPos, 34, color: Color.White * sengs);
                 if (Item.stack > 1) {
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, Item.stack.ToString()
                     , origDrawPos.X - 10, origDrawPos.Y + 12, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
@@ -461,7 +441,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
 
             if (!Empty.IsAir) {
-                VaultUtils.SimpleDrawItem(spriteBatch, Empty.type, emptyPos + new Vector2(-1, 1), 34);
+                VaultUtils.SimpleDrawItem(spriteBatch, Empty.type, emptyPos + new Vector2(-1, 1), 34, color: Color.White * sengs);
                 if (Empty.stack > 1) {
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, Empty.stack.ToString()
                     , emptyPos.X - 10, emptyPos.Y + 12, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
@@ -493,10 +473,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void FrontDraw(SpriteBatch spriteBatch) {
-            if (OpenUI || sengs > 0) {
-                DrawUI(spriteBatch);
-            }
-        }
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos);
     }
 }
