@@ -508,6 +508,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                     ai[3] = 420;
                                 }
                             }
+
                             if (++ai[4] > 7) {
                                 ai[4] = 0;
                                 ai[3] = 0;
@@ -539,8 +540,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 ai[3] = 0;
                                 ai[2] = 0;
                                 ai[1] = 0;
-                                if (ai[6] >= 2) {
-                                    ai[1] = 2;//如果轮回了2次，那么就切换到2吧，开始冲刺
+                                if (ai[6] >= 1) {
+                                    ai[1] = 2;//如果轮回了1次，那么就切换到2吧，开始冲刺
                                 }
                             }
                             NetAISend();
