@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (Projectile.ai[0] < DontAttackTime) {
                 float point = 0f;
                 return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , Projectile.Center, Projectile.rotation.ToRotationVector2() * -3000 + Projectile.Center, 64, ref point);
+                    , Projectile.Center, Projectile.rotation.ToRotationVector2() * -3000 + Projectile.Center, 124, ref point);
             }
             return base.Colliding(projHitbox, targetHitbox);
         }

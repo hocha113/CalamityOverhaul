@@ -970,35 +970,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        private void KillArm() {
-            foreach (NPC index in Main.ActiveNPCs) {
-                if (index.type == NPCID.PrimeCannon) {
-                    index.life = 0;
-                    index.HitEffect();
-                    index.active = false;
-                    index.netUpdate = true;
-                }
-                else if (index.type == NPCID.PrimeVice) {
-                    index.life = 0;
-                    index.HitEffect();
-                    index.active = false;
-                    index.netUpdate = true;
-                }
-                else if (index.type == NPCID.PrimeSaw) {
-                    index.life = 0;
-                    index.HitEffect();
-                    index.active = false;
-                    index.netUpdate = true;
-                }
-                else if (index.type == NPCID.PrimeLaser) {
-                    index.life = 0;
-                    index.HitEffect();
-                    index.active = false;
-                    index.netUpdate = true;
-                }
-            }
-        }
-
         private void KillArm_OneToTwoStages() {
             if (npc.ai[0] != 2) {//2表明是初元阶段，这个杀死手臂的函数在这个时候才能运行
                 return;
@@ -1185,18 +1156,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     if (++calNPC.newAI[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
-                        npc.velocity += toD * 20;
+                        float baseDashSpeed = 20f;
+                        if (bossRush) {
+                            baseDashSpeed *= 2;
+                        }
+                        npc.velocity += toD * baseDashSpeed;
+                        baseDashSpeed += 6;
                         if (Main.npc[primeCannon].active) {
-                            Main.npc[primeCannon].velocity += toD * 26;
+                            Main.npc[primeCannon].velocity += toD * baseDashSpeed;
                         }
                         if (Main.npc[primeSaw].active) {
-                            Main.npc[primeSaw].velocity += toD * 26;
+                            Main.npc[primeSaw].velocity += toD * baseDashSpeed;
                         }
                         if (Main.npc[primeLaser].active) {
-                            Main.npc[primeLaser].velocity += toD * 26;
+                            Main.npc[primeLaser].velocity += toD * baseDashSpeed;
                         }
                         if (Main.npc[primeVice].active) {
-                            Main.npc[primeVice].velocity += toD * 26;
+                            Main.npc[primeVice].velocity += toD * baseDashSpeed;
                         }
 
                         calNPC.newAI[2] = 60;

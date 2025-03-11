@@ -82,6 +82,7 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
+            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<SetPosingStarm>(), 100, 0);
             //Framing.GetTileSafely((Main.MouseWorld / 16).ToPoint()).Domp();
             //bool copy = false;
             //if (copy) {
