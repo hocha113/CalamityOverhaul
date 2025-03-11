@@ -142,15 +142,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAM_ForearmGlow = null;
             canLoaderAssetZunkenUp = false;
 
-            //无论在什么情况下，修改了原版纹理都需要恢复它
-            if (Vanilla_TwinsBossBag != null) {
-                TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
-            }
-            if (Vanilla_TwinsBossBag != null) {
-                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
-            }
-            if (Vanilla_TwinsBossBag != null) {
-                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
+            if (!VaultUtils.isServer) {//下面的操作不能在服务器上运行
+                //无论在什么情况下，修改了原版纹理都需要恢复它
+                if (Vanilla_TwinsBossBag != null) {
+                    TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
+                }
+                if (Vanilla_TwinsBossBag != null) {
+                    TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
+                }
+                if (Vanilla_TwinsBossBag != null) {
+                    TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
+                }
             }
         }
 
