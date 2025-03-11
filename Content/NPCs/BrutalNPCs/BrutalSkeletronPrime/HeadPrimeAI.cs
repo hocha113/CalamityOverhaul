@@ -443,9 +443,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
             if (CWRWorld.MachineRebellion) {
-                npc.life = npc.lifeMax *= 22;
+                npc.life = npc.lifeMax *= 28;
                 npc.defDefense = npc.defense = 40;
-                npc.defDamage = npc.damage *= 2;
+                npc.defDamage = npc.damage *= 3;
             }
         }
 

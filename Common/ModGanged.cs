@@ -94,9 +94,10 @@ namespace CalamityOverhaul.Common
         public static ModConfig ImproveGameConfig_ConfigInstance;
         public static FieldInfo ImproveGameConfig_NoConsume_Ammo;
         internal static bool Suitableversion_improveGame { get; private set; }
-
-        internal static bool InfernumModeOpenState =>
-            CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
+        /// <summary>
+        /// 炼狱模式是否开启
+        /// </summary>
+        internal static bool InfernumModeOpenState => CWRMod.Instance.infernum != null && (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
         #endregion
         public static Type[] GetModType(Mod mod) {
             return AssemblyManager.GetLoadableTypes(mod.Code);

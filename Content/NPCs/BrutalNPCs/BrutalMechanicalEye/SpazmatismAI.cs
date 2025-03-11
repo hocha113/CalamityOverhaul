@@ -118,12 +118,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        public static void SetMachineRebellion(NPC npc) {
-            npc.life = npc.lifeMax *= 20;
-            npc.defDefense = npc.defense = 40;
-            npc.defDamage = npc.damage *= 2;
-        }
-
         public override void SetProperty() {
             npc.realLife = -1;
 
@@ -149,7 +143,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (CWRWorld.MachineRebellion) {
-                npc.life = npc.lifeMax *= 22;
+                npc.life = npc.lifeMax *= 32;
                 npc.defDefense = npc.defense = 40;
                 npc.defDamage = npc.damage *= 2;
             }
@@ -204,7 +198,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
             int projDamage = 36;
             if (CWRWorld.MachineRebellion) {
-                projDamage = 80;
+                projDamage = 92;
             }
 
             player = skeletronPrimeIsDead ? Main.player[npc.target] : Main.player[skeletronPrime.target];
@@ -315,8 +309,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
                     if (++ai[5] > fireTime && ai[4] > 30) {//这里需要停一下，不要立即开火
                         if (!VaultUtils.isClient) {
+                            float shootSpeed = 9;
+                            if (CWRWorld.MachineRebellion) {
+                                shootSpeed = 12;
+                            }
                             Projectile.NewProjectile(npc.GetSource_FromAI()
-                                , npc.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
+                                , npc.Center, toTarget.UnitVector() * shootSpeed, projType, projDamage, 0);
                         }
                         ai[5] = 0;
                         NetAISend();
@@ -350,6 +348,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         }
                         if (ai[2] == 30 && !VaultUtils.isClient) {
                             float shootSpeed = death ? 8 : 6;
+                            if (CWRWorld.MachineRebellion) {
+                                shootSpeed = 12;
+                            }
                             for (int i = 0; i < 6; i++) {
                                 Vector2 ver = (MathHelper.TwoPi / 6f * i).ToRotationVector2() * shootSpeed;
                                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);

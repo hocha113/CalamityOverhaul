@@ -158,6 +158,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             skeletronAlive = CheckSkeletronAlive();
 
+            npc.timeLeft = 1800;//愚蠢的自然脱战
+
             if (npc.localAI[3] == 0f) {
                 npc.localAI[3] = skeletronAlive ? 1f : -1f;
                 npc.SyncExtraAI();

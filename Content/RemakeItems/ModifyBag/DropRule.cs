@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
     public class DropInDeathMode : IItemDropRuleCondition, IProvideItemConditionDescription
     {
         public bool CanDrop(DropAttemptInfo info) => CalamityWorld.death;
-        public bool CanShowItemDropInUI() => CalamityWorld.death;
+        public bool CanShowItemDropInUI() => CalamityWorld.death || ModGanged.InfernumModeOpenState;
         public string GetConditionDescription() => CWRLocText.Instance.DeathModeItem.Value;
     }
 

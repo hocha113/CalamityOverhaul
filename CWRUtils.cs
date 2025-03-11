@@ -625,7 +625,7 @@ namespace CalamityOverhaul
         }
 
         public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) =>
-            recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
+             recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
             .AddOnCraftCallback(CWRRecipes.SpawnAction);
 
         /// <summary>

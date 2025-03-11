@@ -6,10 +6,12 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.IO;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
@@ -47,17 +49,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Head_Glow = null;
         }
 
-        public static void SetMachineRebellion(NPC npc) {
-            npc.life = npc.lifeMax *= 22;
-            npc.defDefense = npc.defense = 80;
-            npc.defDamage = npc.damage *= 2;
+        public override void OtherNetWorkSend(ModPacket netMessage) {
+            netMessage.WriteVector2(dashVer);
+        }
+
+        public override void OtherNetWorkReceive(BinaryReader reader) {
+            dashVer = reader.ReadVector2();
         }
 
         public override void SetProperty() {
             if (CWRWorld.MachineRebellion) {
-                npc.life = npc.lifeMax *= 22;
+                npc.life = npc.lifeMax *= 32;
                 npc.defDefense = npc.defense = 40;
-                npc.defDamage = npc.damage *= 2;
+                npc.defDamage = npc.damage *= 3;
             }
         }
 
@@ -86,8 +90,55 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npcLoot.Add(rule);
         }
 
+        private static void SendBodyNetWork() {
+            int npcCount = 0;
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type != NPCID.TheDestroyerBody && npc.type != NPCID.TheDestroyerTail) {
+                    continue;
+                }
+                npcCount++;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+
+            modPacket.Write((byte)CWRMessageType.DestroyerData);
+
+            modPacket.Write(npcCount);
+
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type != NPCID.TheDestroyerBody && npc.type != NPCID.TheDestroyerTail) {
+                    continue;
+                }
+                modPacket.Write(npc.whoAmI);
+                modPacket.WriteVector2(npc.position);
+                modPacket.Write(npc.rotation);
+            }
+
+            modPacket.Send();//发送给所有客户端
+        }
+
+        internal static void HandlerBodyNetWork(BinaryReader reader) {
+            int npcCount = reader.ReadInt32();
+            for (int i = 0; i < npcCount; i++) {
+                int whoAmI = reader.ReadInt32();
+                Vector2 npcPos = reader.ReadVector2();
+                float npcRot = reader.ReadSingle();
+                NPC body = CWRUtils.GetNPCInstance(whoAmI);
+                if (body != null && (body.type == NPCID.TheDestroyerBody || body.type == NPCID.TheDestroyerTail)) {
+                    body.position = npcPos;
+                    body.rotation = npcRot;
+                }
+            }
+        }
+
         public override bool AI() {
             time++;
+
+            if (VaultUtils.isServer && time % 300 == 0) {//在多人模式下，每间隔5秒发送一次体节的信息
+                SendBodyNetWork();
+            }
+
+            npc.timeLeft = 1800;//愚蠢的自然脱战
 
             if (ai[0] == 0) {
                 if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
@@ -115,6 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (time < StretchTime + 60 && time > 10) {
                 if (dashVer == Vector2.Zero) {
                     dashVer = npc.Center.To(player.Center).UnitVector();
+                    netOtherWorkSend = true;
                 }
                 npc.velocity = dashVer * 32;
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
@@ -160,10 +212,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (npc.ai[0] == 0) {
                 npc.ai[0] = 1;
                 SpawnBody(npc);
+                npc.netUpdate = true;
             }
 
             if (--ai[4] > 0) {
                 npc.VanillaAI();
+                if (npc.Distance(player.Center) > maxFindMode / 4) {//如果发现跑远了就里面切换阶段向玩家冲刺回来
+                    dashVer = npc.Center.To(player.Center).UnitVector();
+                    netOtherWorkSend = true;
+                    ai[4] = 0;
+                    ai[2] = 2;
+                    NetAISend();
+                }
             }
             else {
                 if (ai[2] == 0) {
@@ -176,6 +236,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
                 if (ai[2] == 1) {
                     dashVer = npc.Center.To(player.Center).UnitVector();
+                    netOtherWorkSend = true;
                     ai[2] = 2;
                     NetAISend();
                 }
@@ -184,6 +245,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.velocity = dashVer * 44;
                     if (npc.Distance(player.Center) > maxFindMode / 4) {
                         dashVer = npc.Center.To(player.Center).UnitVector();
+                        netOtherWorkSend = true;
                     }
                     if (++ai[3] > 180) {
                         ai[4] = 300;

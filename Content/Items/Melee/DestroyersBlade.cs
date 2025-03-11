@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -8,11 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    internal class DestroyersBlade : ModItem
+    internal class DestroyersBlade : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetDefaults() {
-            Item.width = Item.height = 88;
+            Item.width = Item.height = 120;
             Item.damage = 90;
             Item.knockBack = 6;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -27,13 +31,23 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.CWR().DeathModeItem = true;
             Item.SetKnifeHeld<DestroyersBladeHeld>();
         }
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition, null, Color.White
+                , rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
+        }
     }
 
-    internal class DestroyersBladeEX : ModItem
+    internal class DestroyersBladeEX : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetDefaults() {
-            Item.width = Item.height = 108;
+            Item.height = 132;
+            Item.width = 134;
             Item.damage = 890;
             Item.knockBack = 8;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -48,6 +62,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetKnifeHeld<DestroyersBladeEXHeld>();
         }
 
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+           , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition, null, Color.White
+                , rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
+        }
+
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<DestroyersBlade>().
@@ -60,6 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DestroyersBladeHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<DestroyersBlade>();
+        public override string GlowTexturePath => CWRConstant.Item_Melee + "DestroyersBladeGlow";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;
@@ -90,6 +111,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DestroyersBladeEXHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<DestroyersBladeEX>();
+        public override string GlowTexturePath => CWRConstant.Item_Melee + "DestroyersBladeEXGlow";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;

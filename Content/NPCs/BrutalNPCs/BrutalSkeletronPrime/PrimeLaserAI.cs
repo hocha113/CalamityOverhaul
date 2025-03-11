@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         if (death) {
                             totalProjectiles = bossRush ? 12 : 6;
                             radians = MathHelper.TwoPi / totalProjectiles;
-                            if (ModGanged.InfernumModeOpenState) {
+                            if (ModGanged.InfernumModeOpenState || CWRWorld.MachineRebellion) {
                                 for (int j = 0; j < 5; j++) {
                                     for (int k = 0; k < totalProjectiles; k++) {
                                         float speedMode = 1.55f + j * 0.3f;

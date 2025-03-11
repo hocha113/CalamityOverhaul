@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override string Texture => CWRConstant.Item_Material + "SoulofFrightEX";
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 64;
+            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.SoulofFright;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 8));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }

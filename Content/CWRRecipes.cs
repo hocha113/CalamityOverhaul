@@ -334,11 +334,13 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemType<BloodSample>(), 50)
                     .AddIngredient(ItemType<BlightedGel>(), 75)
                     .AddTile(TileID.DemonAltar)
+                    .DisableDecraft()
                     .Register();
                 Recipe.Create(ItemID.BloodMoonStarter)
                     .AddIngredient(ItemType<RottenMatter>(), 50)
                     .AddIngredient(ItemType<BlightedGel>(), 75)
                     .AddTile(TileID.DemonAltar)
+                    .DisableDecraft()
                     .Register();
             }
 
