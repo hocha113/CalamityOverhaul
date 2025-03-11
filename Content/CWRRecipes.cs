@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content
             Emblems = null;
         }
 
-        private void ModifyResultContent(Recipe recipe) {
+        private static void ModifyResultContent(Recipe recipe) {
             //修改雪境暴徒的合成
             {
                 if (recipe.HasResult(ItemType<SnowRuffianMask>())) {//面具
@@ -287,7 +287,15 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void AddResultContent() {
+        private static void AddResultContent() {
+            //添加煤炭的合成
+            //{//添加这个不是个好主意，因为这个“煤”应该不是木炭
+            //    Recipe.Create(ItemID.Coal)
+            //        .AddRecipeGroup(RecipeGroupID.Wood, 2)
+            //        .AddTile(TileID.Furnaces)
+            //        .Register();
+            //}
+
             //添加地狱熔炉的合成
             {
                 Recipe.Create(ItemID.Hellforge)

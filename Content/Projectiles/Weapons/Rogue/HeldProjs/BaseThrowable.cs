@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
     internal abstract class BaseThrowable : BaseHeldProj
     {
+        #region Data
         protected float OverallProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 总体进度
         protected float CurrentThrowProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 当前投掷进度
         protected float ThrowStorageProgress => 1 - ThrowStorage / (float)ChargeUpTime; // 投掷存储进度
@@ -46,6 +47,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         /// </summary>
         public int TotalLifetime = 240;
         /// <summary>
+        /// 使用拖尾绘制
+        /// </summary>
+        public bool UseDrawTrail;
+        /// <summary>
+        /// 拖尾颜色衰减，默认为0.8f
+        /// </summary>
+        public float TrailColorAttenuation = 0.8f;
+        /// <summary>
         /// 关于收手的曲线动画拟合数据体
         /// </summary>
         protected static StartData startDataPullback = new StartData() {
@@ -54,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             heightShift = MathHelper.PiOver4 * -1.2f,
             degree = 2
         };
-        private AnimationCurvePart pullback = new AnimationCurvePart(part, startDataPullback);
+        private AnimationCurvePart pullback = new AnimationCurvePart(PartValue, startDataPullback);
         /// <summary>
         /// 关于出手的曲线动画拟合数据体
         /// </summary>
@@ -64,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             heightShift = MathHelper.PiOver4 * 1.2f + MathHelper.PiOver2,
             degree = 3
         };
-        private AnimationCurvePart throwout = new AnimationCurvePart(part, startDataThrowout);
+        private AnimationCurvePart throwout = new AnimationCurvePart(PartValue, startDataThrowout);
 
         private Func<float, Vector2> _onThrowingGetCenter;
         /// <summary>
@@ -95,8 +104,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             set => _onThrowingGetRotation = value;
         }
 
-        private static float part(float amount, int degree) => 1f - (float)Math.Pow(1f - amount, degree);
-
         protected delegate float ToFloatData();
 
         private ToFloatData armAnticipationMovement;
@@ -114,12 +121,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 armAnticipationMovement = value;
             }
         }
+        #endregion
+        private static float PartValue(float amount, int degree) => 1f - (float)Math.Pow(1f - amount, degree);
         /// <summary>
         /// 更新<see cref="pullback"/>与<see cref="throwout"/>的值，目前为止没有地方会调用它，一般用于调试时调用
         /// </summary>
         protected void UpdatePartFunc() {
-            pullback = new AnimationCurvePart(part, startDataPullback);
-            throwout = new AnimationCurvePart(part, startDataThrowout);
+            pullback = new AnimationCurvePart(PartValue, startDataPullback);
+            throwout = new AnimationCurvePart(PartValue, startDataThrowout);
         }
 
         public sealed override void SetDefaults() {
@@ -238,6 +247,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 
             if (ThrowStorageProgress < 1) {
                 OnThrowing();
+                if (UseDrawTrail) {//锁定所有拖尾位置到弹幕自身，防止丢出的瞬间影响视觉效果
+                    for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                        Projectile.oldPos[i] = Projectile.position;
+                    }
+                }
                 return;
             }
 
@@ -268,7 +282,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        public virtual void DrawTrail(Color lightColor) {
+            float sengs = 1f;
+            foreach (var pos in Projectile.oldPos) {
+                sengs *= TrailColorAttenuation;
+                Main.EntitySpriteDraw(TextureValue, pos + Projectile.Size / 2 - Main.screenPosition, null, lightColor * sengs
+                , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
+                , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+            }
+        }
+
+        public sealed override bool PreDraw(ref Color lightColor) {
+            if (UseDrawTrail && ThrowStorageProgress >= 1) {
+                DrawTrail(lightColor);
+            }
             DrawThrowable(lightColor);
             return false;
         }

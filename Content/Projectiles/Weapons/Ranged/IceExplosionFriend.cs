@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = -1;
             Projectile.timeLeft = 90;
             Projectile.hide = true;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 20;
             Projectile.localAI[1] = Projectile.timeLeft;

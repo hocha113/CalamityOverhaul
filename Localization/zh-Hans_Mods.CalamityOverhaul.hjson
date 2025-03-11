@@ -1329,6 +1329,9 @@ Projectiles: {
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
 	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
+	// BananarangHeld.DisplayName: Bananarang Held
+	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
+	// TrimarangHeld.DisplayName: Trimarang Held
 }
 
 Configs: {
@@ -4928,7 +4931,7 @@ RemakeItems: {
 
 	RFlamarang: {
 		DisplayName: 烈焰回旋镖
-		Tooltip: 潜伏攻击将快速投掷三个回旋镖
+		Tooltip: 潜伏攻击将快速投掷三个回旋镖，击中敌人后产生一次爆燃
 	}
 
 	RFlareGun: {
@@ -5750,6 +5753,35 @@ RemakeItems: {
 	RCoal: {
 		DisplayName: 煤
 		Tooltip: 很适合充当燃料
+	}
+
+	ModifyBananarang: {
+		DisplayName: 香蕉回旋镖
+		Tooltip:
+			'''
+			潜伏攻击会丢出三个巨大的回旋镖，击中敌人后向空中抛出大量快乐炸弹
+			快乐炸弹会对敌人造成大量伤害，但同时也会伤害玩家和友好生物
+			"快乐与危险总是共存的，不是吗?"
+			'''
+	}
+
+	ModifyIceBoomerang: {
+		DisplayName: 冰雪回旋镖
+		Tooltip:
+			'''
+			潜伏攻击会丢出三个巨大的回旋镖，击中敌人后向生成一片冰雾
+			"很冻手"
+			'''
+	}
+
+	ModifyTrimarang: {
+		DisplayName: 三尖回旋镖
+		Tooltip:
+			'''
+			分别向三个方向投掷出回旋镖
+			潜伏攻击会将回旋镖巨大化，并在击中敌人后随机生成三种不同的效果
+			"成年人是不会做选择的，于是你将三个喜欢的回旋镖绑在了一起"
+			'''
 	}
 }
 

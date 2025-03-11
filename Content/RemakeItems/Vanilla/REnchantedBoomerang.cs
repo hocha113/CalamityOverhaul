@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
 
         public override void SetDefaults(Item item) {
+            item.damage = 18;
             item.DamageType = CWRLoad.RogueDamageClass;
             item.shoot = ModContent.ProjectileType<EnchantedBoomerangHeld>();
         }

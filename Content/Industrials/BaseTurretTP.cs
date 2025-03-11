@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,6 +7,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials
 {
@@ -213,6 +215,25 @@ namespace CalamityOverhaul.Content.Industrials
         /// </summary>
         /// <returns></returns>
         public virtual bool PreShoot() => true;
+
+        public sealed override void MachineKill() {
+            TurretKill();
+
+            if (VaultUtils.isClient || Friend) {
+                return;
+            }
+
+            int dropNum = Main.rand.Next(2, 4);
+            for (int i = 0; i < dropNum; i++) {
+                DropItem(ModContent.ItemType<DubiousPlating>());
+            }
+            dropNum = Main.rand.Next(2, 4);
+            for (int i = 0; i < dropNum; i++) {
+                DropItem(ModContent.ItemType<MysteriousCircuitry>());
+            }
+        }
+
+        public virtual void TurretKill() { }
 
         public virtual void ModifyDrawData(ref Vector2 drawPos, ref Vector2 drawBarrelPos) { }
 

@@ -9,12 +9,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Flamarang].Value;
-
-        private bool onHit = true;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 4;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
         public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.Flamarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
+            Projectile.CWR().HitAttribute.WormResistance = true;
+            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
+            Projectile.CWR().HitAttribute.NeverCrit = true;
+            UseDrawTrail = true;
         }
 
         public override void PostSetThrowable() {
@@ -42,11 +48,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (stealthStrike && Projectile.ai[2] == 0 && onHit) {
-                onHit = false;
+            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.numHits == 0) {
+                Projectile.numHits++;
                 Projectile.Explode();
-                Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.Bottom, new Vector2(0, -6)
+                Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.Bottom, new Vector2(0, -6)
                         , ProjectileID.DD2ExplosiveTrapT3Explosion, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);
+                projectile.CWR().HitAttribute.WormResistance = true;
+                projectile.CWR().HitAttribute.WormResistanceACValue = 0.4f;
             }
         }
     }

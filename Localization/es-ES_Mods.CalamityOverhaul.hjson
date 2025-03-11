@@ -1325,6 +1325,9 @@ Projectiles: {
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
 	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
+	// BananarangHeld.DisplayName: Bananarang Held
+	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
+	// TrimarangHeld.DisplayName: Trimarang Held
 }
 
 Configs: {
@@ -5721,6 +5724,35 @@ RemakeItems: {
 	RCoal: {
 		// DisplayName: Coal
 		// Tooltip: Good for fuel
+	}
+
+	ModifyBananarang: {
+		// DisplayName: Bananarang
+		/* Tooltip:
+			'''
+			Stealth attacks throw three massive boomerangs that launch a large number of Happy Bombs into the air upon hitting enemies.
+			Happy Bombs deal significant damage to enemies but can also harm players and friendly creatures.
+			"Happiness and danger always coexist, don't they?"
+			''' */
+	}
+
+	ModifyIceBoomerang: {
+		// DisplayName: Ice Boomerang
+		/* Tooltip:
+			'''
+			Stealth attacks throw three massive boomerangs that create a freezing mist upon hitting enemies.
+			"Quite chilly to hold."
+			''' */
+	}
+
+	ModifyTrimarang: {
+		// DisplayName: Trimarang
+		/* Tooltip:
+			'''
+			Throws boomerangs in three different directions.
+			Stealth attacks enlarge the boomerangs and cause them to generate three random effects upon hitting enemies.
+			"Adults don’t make choices, so you tied your three favorite boomerangs together."
+			''' */
 	}
 }
 
