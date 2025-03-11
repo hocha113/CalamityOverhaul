@@ -9,6 +9,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class DivineDevourerIllusionHead : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/" + "DivineDevourerIllusionHead";
+        private Vector2 targetPos;
+        private Vector2 targetOffsetPos {
+            get => new Vector2(Projectile.ai[1], Projectile.ai[2]);
+            set {
+                Projectile.ai[1] = value.X;
+                Projectile.ai[2] = value.Y;
+            }
+        }
         public override void SetDefaults() {
             Projectile.height = 54;
             Projectile.width = 54;
@@ -21,11 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.localNPCHitCooldown = 15;
         }
 
-        private Vector2 targetPos;
-
         public override void AI() {
             if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer()) {
-                targetPos = Main.player[Projectile.owner].Center;
+                targetOffsetPos = Vector2.Zero;
+                targetPos = Owner.Center;
                 int index = Projectile.whoAmI;
                 int maxnum = (int)Projectile.ai[1];
                 for (int i = 0; i < maxnum; i++) {
@@ -39,15 +46,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 }
                 Projectile.ai[0] = 1;
             }
-            NPC target = Projectile.Center.FindClosestNPC(1900);
-            if (target != null) {
-                Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
-            }
-            else {
-                Projectile.SmoothHomingBehavior(InMousePos, 1, 0.2f);
-            }
 
+            NPC target = Projectile.Center.FindClosestNPC(1900);
+            targetPos = (target != null ? target.Center : InMousePos) + targetOffsetPos;
+            Projectile.SmoothHomingBehavior(targetPos, 1, 0.2f);
             Projectile.rotation = Projectile.velocity.ToRotation();
+
+            if (Projectile.IsOwnedByLocalPlayer() && ++Projectile.localAI[0] > 30) {
+                targetOffsetPos = CWRUtils.randVr(180, 300);
+                NetUpdate();
+                Projectile.localAI[0] = 0;
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -55,13 +64,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             int body = ModContent.ProjectileType<DivineDevourerIllusionBody>();
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.type == tail || proj.type == body) {
-                    Texture2D value = CWRUtils.GetT2DValue(proj.ModProjectile.Texture);
+                    Texture2D value = TextureAssets.Projectile[proj.type].Value;
                     Main.EntitySpriteDraw(value, proj.Center - Main.screenPosition, null, Color.White * (proj.timeLeft / 60f), proj.rotation
                         , CWRUtils.GetOrig(value), proj.scale, SpriteEffects.None);
                 }
             }
             Texture2D head = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
+            Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null
+                , Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
                 , CWRUtils.GetOrig(head) - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);
             return false;
         }

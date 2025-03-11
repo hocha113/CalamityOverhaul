@@ -1522,6 +1522,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		EnergyShortage: 能量不足
 		ChargingStation_Text1: 放入充能物品
 		ChargingStation_Text2: 放入电池
 		ChargingStation_Text3: 需要放入能够接收能量的物品

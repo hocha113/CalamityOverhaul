@@ -1,10 +1,13 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -37,10 +40,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class ElectricMinRocketHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
-        public override void SetDefaults() {
-            Projectile.width = Projectile.height = 32;
-        }
-
+        public override void SetDefaults() => Projectile.width = Projectile.height = 32;
         public override void AI() {
             Owner.Center = Projectile.Center;
             Owner.CWR().RideElectricMinRocket = true;
@@ -74,9 +74,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return false;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 
     internal class ElectricMinRocketTile : ModTile
@@ -113,12 +111,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override bool CanDrop(int i, int j) => false;
 
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<ElectricMinRocket>());
+
         public override bool RightClick(int i, int j) {
             Player player = CWRUtils.TileFindPlayer(i, j);
             if (player != null) {
                 if (TileProcessorLoader.AutoPositionGetTP<ElectricMinRocketTP>(i, j, out var tp)) {
                     if (tp.MachineData.UEvalue < 200) {
-                        CombatText.NewText(tp.HitBox, Color.DimGray, "能量不足");
+                        CombatText.NewText(tp.HitBox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
+                        SoundEngine.PlaySound(SoundID.MenuClose);
                         return false;
                     }
                     Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
@@ -141,12 +142,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void SetBattery() {
             InDrop = true;
             if (TrackItem == null) {
-                MachineData.UEvalue = MaxUEValue;
+                Tile tile = Framing.GetTileSafely(Position);
+                if (tile.WallType > 0) {
+                    MachineData.UEvalue = MaxUEValue;
+                }
             }
         }
 
-        public override void FrontDraw(SpriteBatch spriteBatch) {
-            DrawChargeBar();
-        }
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
 }

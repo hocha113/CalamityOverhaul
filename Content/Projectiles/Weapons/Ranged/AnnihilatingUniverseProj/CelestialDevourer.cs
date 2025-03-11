@@ -55,9 +55,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 36; i++)//生成这种粒子不是好主意
-                {
+            if (!VaultUtils.isServer) {//生成这种粒子不是好主意
+                for (int i = 0; i < 36; i++) {
                     Vector2 particleSpeed = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(16, 49));
                     Vector2 pos = Projectile.Center;
                     BasePRT energyLeak = new PRT_Light(pos, particleSpeed

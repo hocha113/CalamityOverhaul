@@ -14,6 +14,12 @@ namespace CalamityOverhaul.Content
             return reset ?? base.CanDrop(i, j, type);
         }
 
+        public override void MouseOver(int i, int j, int type) {
+            if (TileModifyLoader.TileOverrideDic.TryGetValue(type, out var rTile)) {
+                rTile.MouseOver(i, j);
+            }
+        }
+
         public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch) {
             bool? reset = null;
             if (TileModifyLoader.TileOverrideDic.TryGetValue(type, out var rTile)) {

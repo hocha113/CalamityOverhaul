@@ -4,6 +4,7 @@ using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
+using CalamityOverhaul.Content.Items.Placeable;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -505,6 +506,20 @@ namespace CalamityOverhaul
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
 
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
+
+        /// <summary>
+        /// 设置玩家鼠标指向物块的信息状态
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="itemID"></param>
+        public static void SetMouseOverByTile(this Player player, int itemID = ItemID.None) {
+            player.noThrow = 2;
+            player.mouseInterface = true;
+            player.cursorItemIconEnabled = true;
+            if (itemID > 0) {
+                player.cursorItemIconID = itemID;//当玩家鼠标悬停在物块之上时，显示该物品的材质
+            }
+        }
 
         /// <summary>
         /// 目标弹药是否应该判定为一个木箭

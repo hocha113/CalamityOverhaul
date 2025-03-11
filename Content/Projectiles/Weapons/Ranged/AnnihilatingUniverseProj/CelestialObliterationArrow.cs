@@ -69,7 +69,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     Main.projectile[proj].scale = 0.3f;
                 }
             }
-            if (target.type == ModContent.NPCType<SepulcherHead>() || target.type == ModContent.NPCType<SepulcherBody>() || target.type == ModContent.NPCType<SepulcherTail>()) {
+            if (target.type == ModContent.NPCType<SepulcherHead>() 
+                || target.type == ModContent.NPCType<SepulcherBody>() 
+                || target.type == ModContent.NPCType<SepulcherTail>()) {
                 foreach (NPC targetHead in Main.npc) {
                     if (targetHead.type == ModContent.NPCType<SepulcherHead>()) {
                         ModNPC modNPC = targetHead.ModNPC;
@@ -84,14 +86,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void OnKill(int timeLeft) {
-            if (Main.netMode != NetmodeID.Server) {
-                for (int i = 0; i < 16; i++) {
-                    Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
-                    Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
-                }
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
+                Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
+                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                    , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
+                PRTLoader.AddParticle(energyLeak);
             }
         }
 

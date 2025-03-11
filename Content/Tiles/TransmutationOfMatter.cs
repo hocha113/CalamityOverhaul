@@ -86,13 +86,7 @@ namespace CalamityOverhaul.Content.Tiles
             return false;
         }
 
-        public override void MouseOver(int i, int j) {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.mouseInterface = true;
-            player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<TransmutationOfMatterItem>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
-        }
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<TransmutationOfMatterItem>());
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 

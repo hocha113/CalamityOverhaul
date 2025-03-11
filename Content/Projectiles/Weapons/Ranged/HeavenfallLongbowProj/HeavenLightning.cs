@@ -25,10 +25,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
+            Projectile.hostile = false;
             Projectile.DamageType = EndlessDamageClass.Instance;
             Projectile.MaxUpdates = 5;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 13 * Projectile.MaxUpdates;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.timeLeft = Projectile.MaxUpdates * Lifetime;
         }
 
@@ -62,17 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public float GetWidthFunc(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            List<Vector2> checkPoints = Projectile.oldPos.Where(oldPos => oldPos != Vector2.Zero).ToList();
-            if (checkPoints.Count <= 2)
-                return false;
-
-            for (int i = 0; i < checkPoints.Count - 1; i++) {
-                float _ = 0f;
-                float width = GetWidthFunc(i / (float)checkPoints.Count);
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), checkPoints[i], checkPoints[i + 1], width * 0.8f, ref _))
-                    return true;
-            }
-            return false;
+            return null;
         }
     }
 }

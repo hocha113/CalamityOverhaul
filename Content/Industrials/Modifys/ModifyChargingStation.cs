@@ -5,9 +5,11 @@ using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles.Core;
 using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.IO;
@@ -35,6 +37,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
     {
         public override int TargetID => ModContent.TileType<ChargingStation>();
         public override bool? CanDrop(int i, int j, int type) => false;
+
         public override bool? RightClick(int i, int j, Tile tile) {
             if (!TileProcessorLoader.AutoPositionGetTP<ChargingStationTP>(i, j, out var tp)) {
                 return false;
@@ -63,11 +66,30 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             SoundEngine.PlaySound(SoundID.MenuTick);
             return false;
         }
+
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<ChargingStationItem>());
+    }
+
+    internal class HandlerChargingStationUI : UIHandle
+    {
+        //更新所有充能站的UI逻辑
+        public override bool Active => TileProcessorLoader.TP_ID_To_InWorld_Count[ChargingStationTP.StaticID] > 0;
+        public override void Update() {
+            foreach (var tp in TileProcessorLoader.TP_InWorld) {
+                if (!tp.Active || tp.ID != ChargingStationTP.StaticID) {
+                    continue;
+                }
+                if (tp is ChargingStationTP charging && charging.OpenUI && charging.sengs >= 1f) {
+                    charging.UpdateUI();
+                }
+            }
+        }
     }
 
     internal class ChargingStationTP : BaseBattery, ICWRLoader//是的，把这个东西当成是一个电池会更好写
     {
         public override int TargetTileID => ModContent.TileType<ChargingStation>();
+        public static int StaticID { get; private set; }
         internal static Asset<Texture2D> Panel { get; private set; }
         internal static Asset<Texture2D> SlotTex { get; private set; }
         internal static Asset<Texture2D> BarTop { get; private set; }
@@ -80,8 +102,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         private bool hoverSlot;
         private bool hoverEmptySlot;
         private bool boverPanel;
-        private bool oldLeftDown;
         private Vector2 MousePos;
+        private Vector2 MouseWorld;
         internal Item Item = new Item();
         internal Item Empty = new Item();
         public override bool CanDrop => false;
@@ -130,6 +152,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
+        public override void SetStaticProperty() => StaticID = ID;
+
         public void RightEvent() {
             Item item = Main.LocalPlayer.GetItem();
 
@@ -163,18 +187,28 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 SoundEngine.PlaySound(SoundID.Grab);
             }
             else {
-                SoundEngine.PlaySound(SoundID.MenuClose);
-                CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+                //SoundEngine.PlaySound(SoundID.MenuClose);
+                //CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+                OpenUI = true;
+                foreach (var tp2 in TileProcessorLoader.TP_InWorld) {
+                    if (tp2.ID != ID || tp2.WhoAmI == WhoAmI) {
+                        continue;
+                    }
+                    if (tp2 is ChargingStationTP chargingStation) {
+                        chargingStation.OpenUI = false;
+                    }
+                }
+                SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 
         public override void Update() {
+            MouseWorld = Main.MouseWorld;
+            MousePos = Main.MouseScreen;
+
             if (OpenUI) {
                 if (sengs < 1f) {
                     sengs += 0.1f;
-                }
-                else {
-                    UpdateUI();
                 }
             }
             else if (sengs > 0f) {
@@ -216,9 +250,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             return false;
         }
 
-        private void UpdateUI() {
+        internal void UpdateUI() {
             Vector2 drawPos = CenterInWorld + new Vector2(0, -120) * sengs;
-            Rectangle mouseRec = Main.MouseWorld.GetRectangle(1);
+            Rectangle mouseRec = MouseWorld.GetRectangle(1);
             hoverSlot = (drawPos - SlotTex.Size() / 2).GetRectangle(SlotTex.Size()).Intersects(mouseRec);
             hoverEmptySlot = (drawPos - SlotTex.Size() / 2 + new Vector2(-56, 0)).GetRectangle(EmptySlot.Size()).Intersects(mouseRec);
             boverPanel = (drawPos - Panel.Size() / 2 * 0.75f).GetRectangle(Panel.Size() * 0.75f).Intersects(mouseRec);
@@ -226,38 +260,56 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             drawPos += new Vector2(-30, 30);
             hoverBar = drawPos.GetRectangle(60, 22).Intersects(mouseRec);
             hoverChargeBar = barChargePos.GetRectangle(30, 62).Intersects(mouseRec);
-            MousePos = Main.MouseScreen;
 
             if (boverPanel) {
                 Main.LocalPlayer.mouseInterface = true;
                 Main.LocalPlayer.CWR().DontUseItemTime = 2;
             }
 
-            bool justDown = !oldLeftDown && Main.mouseLeft;
-            oldLeftDown = Main.mouseLeft;
+            bool justDown = UIHandleLoader.GetUIHandleInstance<HandlerChargingStationUI>().keyLeftPressState == KeyPressState.Pressed;
 
-            if (hoverSlot && justDown) {
-                if (ItemIsCharge(Main.mouseItem, out _, out _) || Main.mouseItem.IsAir) {
-                    HandlerSlotItem(ref Item);
+            if (hoverSlot) {
+                if (justDown) {
+                    if (ItemIsCharge(Main.mouseItem, out _, out _) || Main.mouseItem.IsAir) {
+                        HandlerSlotItem(ref Item);
+                        SendData();
+                    }
+                    else {
+                        SoundEngine.PlaySound(SoundID.MenuClose);
+                        CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+                    }
                 }
-                else {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text3.Value, false);
+
+                if (!Item.IsAir) {
+                    Main.HoverItem = Item.Clone();
+                    Main.hoverItemName = Item.Name;
                 }
             }
 
-            if (hoverEmptySlot && justDown) {
-                if (Main.mouseItem.type == ModContent.ItemType<DraedonPowerCell>()) {
-                    HandlerSlotItem(ref Empty);
+            if (hoverEmptySlot) {
+                if (justDown) {
+                    if (Main.mouseItem.type == ModContent.ItemType<DraedonPowerCell>() || Main.mouseItem.IsAir) {
+                        HandlerSlotItem(ref Empty);
+                        SendData();
+                    }
+                    else {
+                        SoundEngine.PlaySound(SoundID.MenuClose);
+                        CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text4.Value, false);
+                    }
                 }
-                else {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.ChargingStation_Text4.Value, false);
+
+                if (!Empty.IsAir) {
+                    Main.HoverItem = Empty.Clone();
+                    Main.hoverItemName = Empty.Name;
                 }
             }
         }
 
         private static void HandlerSlotItem(ref Item setItem) {
+            if (setItem.IsAir && Main.mouseItem.IsAir) {
+                return;//不要进行空气交互
+            }
+
             SoundEngine.PlaySound(SoundID.Grab);
 
             if (setItem.type == ItemID.None) {
@@ -265,11 +317,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 Main.mouseItem.TurnToAir();
             }
             else {
-                if (setItem.type == Main.mouseItem.type) {
+                if (setItem.type == Main.mouseItem.type && setItem.stack < setItem.maxStack) {
                     setItem.stack += Main.mouseItem.stack;
                     Main.mouseItem.TurnToAir();
                 }
                 else {
+                    if (Main.mouseItem.IsAir && Main.keyState.PressingShift()) {//空手Shft能直接放到背包里面
+                        Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), setItem, setItem.stack);
+                        setItem.TurnToAir();
+                        return;
+                    }
                     Item swopItem = setItem.Clone();
                     setItem = Main.mouseItem.Clone();
                     Main.mouseItem = swopItem;
@@ -395,7 +452,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     if (hoverChargeBar) {
                         Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                             , (((int)ueValue) + "/" + ((int)maxValue) + "UE").ToString()
-                            , origDrawPos.X + 40, origDrawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.5f);
+                            , origDrawPos.X + 40, origDrawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
                     }
                 }
             }
@@ -407,24 +464,24 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 VaultUtils.SimpleDrawItem(spriteBatch, Empty.type, emptyPos + new Vector2(-1, 1), 34);
                 if (Empty.stack > 1) {
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, Empty.stack.ToString()
-                    , emptyPos.X - 10, emptyPos.Y + 12, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                    , emptyPos.X - 10, emptyPos.Y + 12, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
                 }
             }
 
             if (hoverBar) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                     , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
 
             if (hoverSlot && Item.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text1.Value
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
 
             if (hoverEmptySlot && Empty.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text2.Value
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
         }
 

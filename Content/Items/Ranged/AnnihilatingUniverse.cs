@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAnimation = 12;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 4f;
-            Item.UseSound = SoundID.Item5;
+            Item.UseSound = null;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.DamageType = DamageClass.Ranged;

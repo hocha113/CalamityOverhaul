@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Items.Placeable;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -84,10 +85,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             TileObjectData.addTile(Type);
         }
 
+        public override void MouseOver(int i, int j) {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.mouseInterface = true;
+            player.cursorItemIconEnabled = true;
+            player.cursorItemIconID = ModContent.ItemType<ThermalBattery>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+        }
+
         public override bool CreateDust(int i, int j, ref int type) {
             Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
             return false;
         }
+
+        public override bool CanDrop(int i, int j) => false;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {

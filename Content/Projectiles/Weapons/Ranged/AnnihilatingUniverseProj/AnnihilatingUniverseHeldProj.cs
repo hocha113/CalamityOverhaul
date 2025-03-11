@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBow";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AnnihilatingUniverse>();
-        public override bool CanFire => (Projectile.ai[2] == 0 && DownLeft) || (Projectile.ai[2] == 1 && DownRight);
         private float Time;
         private float Time2;
+        private float Time3;
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;
@@ -35,60 +35,59 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
             CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
-            if (Owner == null || Owner.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()) {
+            if (Owner == null || Owner.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()
+                || (Projectile.ai[2] == 0 && !DownLeft) || (Projectile.ai[2] == 1 && !DownRight)) {
                 Projectile.Kill();
                 return;
             }
-
+            StickToOwner();
             if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();
             }
-
-            StickToOwner();
-
-            Time++;
-            Time2++;
         }
 
         public void SpanProj() {
             ShootState shootState = Owner.GetShootState();
             if (Projectile.ai[2] == 0) {
-                if (Time > 30) {
-                    SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
+                if (Time == 0) {
                     Time2 = 0;
-                    Time = 0;
+                    Time = 40;
+                    SoundEngine.PlaySound(HeavenlyGale.FireSound with { Pitch = -0.2f, Volume = 0.8f }, Projectile.Center);
                 }
-                if (Time2 % 5 == 0 && Time2 > 0 && Time2 < 20) {
+
+                if (Time > 16 && ++Time2 > 3) {
                     for (int i = 0; i < 3; i++) {
                         Vector2 offset = (Projectile.rotation + Main.rand.Next(-35, 35) * CWRUtils.atoR).ToRotationVector2() * 56;
-                        Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
+                        Projectile.NewProjectile(shootState.Source, Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
                         , ModContent.ProjectileType<CelestialObliterationArrow>()
                         , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     }
+                    Time2 = 0;
+                }
+                
+                if (Time > 0) {
+                    Time--;
                 }
             }
             else {
                 int types = ModContent.ProjectileType<CosmicEddies>();
                 if (!Main.projectile.Any((Projectile n) => n.Alives() && n.ai[2] == 0 && n.type == types)) {
-                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
                         , types, (int)(shootState.WeaponDamage * 1.25f), shootState.WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
                 }
             }
         }
 
         public void StickToOwner() {
-            if (CanFire) {
-                Projectile.timeLeft = 2;
-                Owner.itemTime = 2;
-                Owner.itemAnimation = 2;
-                float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
-            }
+            Projectile.timeLeft = 2;
+            Owner.itemTime = 2;
+            float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
             Projectile.position = Owner.GetPlayerStabilityCenter() - Projectile.Size / 2f + ToMouse.UnitVector() * 5;
             Projectile.rotation = ToMouse.ToRotation();
             Projectile.spriteDirection = Projectile.direction = Math.Sign(ToMouse.X);
             Owner.ChangeDir(Projectile.direction);
-            Owner.heldProj = Projectile.whoAmI;
+            SetHeld();
         }
 
         public override void PostDraw(Color lightColor) {

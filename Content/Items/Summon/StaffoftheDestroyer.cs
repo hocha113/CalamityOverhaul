@@ -1,5 +1,6 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         public override void SetDefaults() {
             Item.width = 60;
             Item.height = 60;
-            Item.damage = 60;
+            Item.damage = 36;
             Item.mana = 10;
             Item.useTime = Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -31,18 +32,25 @@ namespace CalamityOverhaul.Content.Items.Summon
 
         public override bool CanUseItem(Player player) {
             float neededSlots = 4;
-            float foundSlotsCount = 0;
+            float foundSlotsCount = neededSlots;
+
+            if (Main.projectile == null || Main.projectile.Length == 0) {
+                return false;
+            }
+
             foreach (Projectile p in Main.ActiveProjectiles) {
                 if (p.minion && p.owner == player.whoAmI) {
                     foundSlotsCount += p.minionSlots;
-                    if (foundSlotsCount + neededSlots > player.maxMinions) {
-                        return false;
-                    }
                 }
                 if (p.type == ModContent.ProjectileType<DestroyerHead>()) {
                     return false;
                 }
             }
+
+            if (foundSlotsCount > player.maxMinions) {
+                return false;
+            }
+
             return true;
         }
 
@@ -102,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 18000;
+            Projectile.timeLeft = 10086;
             Projectile.alpha = 255;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true;
@@ -145,6 +153,16 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.localAI[0]++;
         }
 
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.WriteVector2(offsetByIdlePos);
+            writer.WriteVector2(offsetByAttackPos);
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            offsetByIdlePos = reader.ReadVector2();
+            offsetByAttackPos = reader.ReadVector2();
+        }
+
         private void AttackAI() {
             if (Projectile.ai[0] == 0) {
                 if (Projectile.ai[2] == 0) {
@@ -153,14 +171,22 @@ namespace CalamityOverhaul.Content.Items.Summon
 
                 Projectile.SmoothHomingBehavior(target.Center + offsetByAttackPos, 1, 0.2f);
                 if (Projectile.localAI[0] % 20 == 0) {
-                    offsetByAttackPos = CWRUtils.randVr(target.width * 2);
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        offsetByAttackPos = CWRUtils.randVr(target.width * 2);
+                        NetUpdate();
+                    }
+                    
                     Projectile.ai[2]++;
                 }
 
                 if (Projectile.ai[2] > 3) {
                     Projectile.ai[2] = 0;
                     Projectile.ai[0] = 1;
-                    offsetByAttackPos = CWRUtils.randVr(520, 600 + target.width * 2);
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        offsetByAttackPos = CWRUtils.randVr(520, 600 + target.width * 2);
+                        NetUpdate();
+                    }
+
                     Projectile.velocity = Projectile.velocity.UnitVector() * 13;
                 }
             }
@@ -174,12 +200,17 @@ namespace CalamityOverhaul.Content.Items.Summon
                     Projectile.ai[0] = 0;
                     offsetByAttackPos = Vector2.Zero;
                     Projectile.velocity = Projectile.Center.To(target.Center + offsetByAttackPos).UnitVector() * Projectile.velocity.Length() * 2.5f;
-                    for (int i = 0; i < 3; i++) {
-                        int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent()
-                            , Projectile.Center, Projectile.velocity.RotatedBy((-1 + i) * 0.12f)
-                            , ProjectileID.DeathLaser, Projectile.damage, Projectile.knockBack, Projectile.owner);
-                        Main.projectile[proj].friendly = true;
-                        Main.projectile[proj].hostile = false;
+
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        for (int i = 0; i < 3; i++) {
+                            int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent()
+                                , Projectile.Center, Projectile.velocity.RotatedBy((-1 + i) * 0.12f)
+                                , ProjectileID.DeathLaser, Projectile.damage, Projectile.knockBack, Projectile.owner);
+                            Main.projectile[proj].friendly = true;
+                            Main.projectile[proj].hostile = false;
+                            Main.projectile[proj].tileCollide = false;
+                            Main.projectile[proj].netUpdate = true;
+                        }
                     }
                 }
             }
@@ -187,8 +218,9 @@ namespace CalamityOverhaul.Content.Items.Summon
 
         private void IdleAI() {
             Projectile.SmoothHomingBehavior(Owner.Center + offsetByIdlePos, 1, 0.1f);
-            if (Projectile.localAI[0] % 20 == 0) {
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.localAI[0] % 20 == 0) {
                 offsetByIdlePos = CWRUtils.randVr(360);
+                NetUpdate();
             }
         }
 

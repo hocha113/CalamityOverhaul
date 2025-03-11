@@ -1519,6 +1519,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		EnergyShortage: Energy Shortage
 		ChargingStation_Text1: Put in charge items
 		ChargingStation_Text2: Put in battery
 		ChargingStation_Text3: Need to put in something that can receive energy
