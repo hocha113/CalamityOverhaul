@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 这个功能是否启用
         /// </summary>
-        public static bool CanLoad => true;//在线上版本中设置为false
+        public static bool CanLoad => false;//在线上版本中设置为false
         #region NetWork
         public static void ResetValueByWorld(int type, Player player) {
             //重新设置一次物品的属性
