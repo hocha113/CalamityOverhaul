@@ -17,7 +17,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineInput";
         public static int ID { get; private set; }
-        public override void SetStaticDefaults() => ID = Type;
+        public override void SetStaticDefaults() {
+            ID = Type;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -28,11 +31,32 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 0, 0);
+            Item.value = Item.buyPrice(0, 0, 0, 75);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<UEPipelineInputTile>();
+            Item.tileBoost = 12;
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
+        }
+
+        public override void GrabRange(Player player, ref int grabRange) {
+            if (player.altFunctionUse == 2) {
+                grabRange *= 100;
+            }
+        }
+
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool? UseItem(Player player) {
+            if (player.altFunctionUse == 2) {
+                Point16 point = (Main.MouseWorld / 16).ToPoint16();
+                Tile tile = Framing.GetTileSafely(point);
+                if (tile.TileType == ModContent.TileType<UEPipelineInputTile>()) {
+                    WorldGen.KillTile(point.X, point.Y);
+                }
+                return false;
+            }
+            return base.UseItem(player);
         }
 
         public override void AddRecipes() {
@@ -139,7 +163,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
                 //如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (baseBattery.MachineData.UEvalue > 0 && coreTP.MachineData.UEvalue < coreTP.MaxUEValue) {
+                    if (baseBattery.ReceivedEnergy) {//首先判断是否是一个需要被抽取能量的电源
+                        if (baseBattery.MachineData.UEvalue < baseBattery.MaxUEValue && coreTP.MachineData.UEvalue > 0) {
+                            baseBattery.MachineData.UEvalue++;
+                            coreTP.MachineData.UEvalue--;
+                        }
+                    }
+                    else if (baseBattery.MachineData.UEvalue > 0 && coreTP.MachineData.UEvalue < coreTP.MaxUEValue) {
                         baseBattery.MachineData.UEvalue--;
                         coreTP.MachineData.UEvalue++;
                     }

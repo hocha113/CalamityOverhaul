@@ -79,13 +79,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool SuperAttack;
         /// <summary>
-        /// 是否具备蠕虫抗性，如果为<see langword="true"/>，对于蠕虫的身体部位将会有伤害衰减，编辑衰减系数可以设置<see cref="WormResistanceACValue"/>
+        /// 蠕虫抗性衰减系数，默认为0.0f，即对不启用，如果设置为大于0的数则会换算成百分比进行伤害缩放，比如0.15f，则只造成15%伤害
         /// </summary>
-        public bool WormResistance;
-        /// <summary>
-        /// 蠕虫抗性衰减系数，默认为0.15f，即对蠕虫只造成15%的伤害，这个属性的启用需要设置<see cref="WormResistance"/>
-        /// </summary>
-        public float WormResistanceACValue = 0.15f;
+        public float WormResistance = 0f;
 
         public HitAttributeStruct() { }
     }
@@ -286,8 +282,8 @@ namespace CalamityOverhaul.Content
                 modifiers.FinalDamage /= 2;
             }
 
-            if (HitAttribute.WormResistance && target.IsWormBody()) {
-                modifiers.FinalDamage *= HitAttribute.WormResistanceACValue;
+            if (HitAttribute.WormResistance > 0f && target.IsWormBody()) {
+                modifiers.FinalDamage *= HitAttribute.WormResistance;
             }
 
             InProjTypeSetHitNPC(projectile, target, ref modifiers);

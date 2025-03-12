@@ -131,6 +131,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override int TargetTileID => ModContent.TileType<TeslaElectromagneticTowerTile>();
         public override int TargetItem => ModContent.ItemType<TeslaElectromagneticTower>();
+        public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1200;
         public bool AttackPattern { get; set; }
         public NPC TargetByNPC { get; set; }

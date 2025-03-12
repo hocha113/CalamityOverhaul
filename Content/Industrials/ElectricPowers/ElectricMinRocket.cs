@@ -135,6 +135,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override int TargetTileID => ModContent.TileType<ElectricMinRocketTile>();
         public override int TargetItem => ModContent.ItemType<ElectricMinRocket>();
+        public override bool ReceivedEnergy => true;
         public bool InDrop = true;
         public override bool CanDrop => InDrop;
         public override float MaxUEValue => 600;

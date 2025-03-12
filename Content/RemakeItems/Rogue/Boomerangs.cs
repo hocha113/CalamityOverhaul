@@ -38,9 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             CWRUtils.SafeLoadItem(ItemID.Bananarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
-            Projectile.CWR().HitAttribute.WormResistance = true;
-            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
-            Projectile.CWR().HitAttribute.NeverCrit = true;
+            Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
         }
 
@@ -75,8 +73,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
                     Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), spanPos
                         , new Vector2(Main.rand.NextFloat(-6, 6), -6), ProjectileID.HappyBomb, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);
                     projectile.friendly = true;
-                    projectile.CWR().HitAttribute.WormResistance = true;
-                    projectile.CWR().HitAttribute.WormResistanceACValue = 0.4f;
+                    projectile.CWR().HitAttribute.WormResistance = 0.4f;
                 }
             }
         }
@@ -110,9 +107,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             CWRUtils.SafeLoadItem(ItemID.Trimarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
-            Projectile.CWR().HitAttribute.WormResistance = true;
-            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
-            Projectile.CWR().HitAttribute.NeverCrit = true;
+            Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
         }
 
@@ -158,8 +153,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
                         proj.extraUpdates = 3;
                         proj.scale *= Main.rand.NextFloat(0.3f, 0.6f);
                         proj.DamageType = CWRLoad.RogueDamageClass;
-                        proj.CWR().HitAttribute.WormResistance = true;
-                        proj.CWR().HitAttribute.NeverCrit = true;
+                        proj.CWR().HitAttribute.WormResistance = 0.4f;
                     }
                 }
                 else if (num == 1) {
@@ -207,9 +201,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             CWRUtils.SafeLoadItem(ItemID.IceBoomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
-            Projectile.CWR().HitAttribute.WormResistance = true;
-            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
-            Projectile.CWR().HitAttribute.NeverCrit = true;
+            Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
         }
 

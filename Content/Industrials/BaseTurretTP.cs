@@ -102,6 +102,7 @@ namespace CalamityOverhaul.Content.Industrials
         /// 纵向管道矫正，默认为0
         /// </summary>
         public float BarrelOffsetY = 0;
+        public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1000;
         public virtual string BodyPath => "";
         public virtual string BodyGlowPath => "";

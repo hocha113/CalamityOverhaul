@@ -23,10 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.localNPCHitCooldown = 15;
         }
 
-        internal float GetExpodMode() {
-            int level = SHPCOverride.GetLevel(Main.player[Projectile.owner].GetItem());
-            return 1f + level * 0.08f;
-        }
+        internal float GetExpodMode() => 1f + (int)Projectile.ai[2] * 0.08f;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float size = 62f + (160f * (GetExpodMode() - 1f));

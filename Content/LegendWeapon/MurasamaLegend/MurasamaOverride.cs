@@ -105,6 +105,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// 是否解锁终结技
         /// </summary>
         public static bool UnlockSkill3(Item item) => GetLevel(item) >= 9;
+        /// <summary>
+        /// 获得成长等级
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static int GetLevel(Item item) {
             if (item.type != ModContent.ItemType<Murasama>()) {
                 return 0;

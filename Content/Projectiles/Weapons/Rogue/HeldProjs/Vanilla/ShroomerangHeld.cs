@@ -18,10 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             UseDrawTrail = true;
-            Projectile.CWR().HitAttribute.WormResistance = true;
-            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
-            Projectile.CWR().HitAttribute.NeverCrit = true;
-            UseDrawTrail = true;
+            Projectile.CWR().HitAttribute.WormResistance = 0.6f;
         }
 
         public override void PostSetThrowable() {

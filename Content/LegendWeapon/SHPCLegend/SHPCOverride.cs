@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
@@ -25,16 +26,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static int GetStartDamage => DamageDictionary[0];
         public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
         public override int TargetID => ModContent.ItemType<SHPC>();
-        private static void onSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
+        private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
             MethodInfo methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-            CWRHook.Add(methodInfo, onSHPCToolFunc);
+            CWRHook.Add(methodInfo, OnSHPCToolFunc);
         }
+        /// <summary>
+        /// 获得成长等级
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type == ItemID.None) {
+            if (item.type != ModContent.ItemType<SHPC>()) {
                 return 0;
             }
-            return item.CWR().LegendData.Level;
+            CWRItems cwrItem = item.CWR();
+            if (cwrItem == null) {
+                return 0;
+            }
+            if (cwrItem.LegendData == null) {
+                return 0;
+            }
+            return cwrItem.LegendData.Level;
         }
         /// <summary>
         /// 获取时期对应的伤害

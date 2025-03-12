@@ -17,9 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             CWRUtils.SafeLoadItem(ItemID.Flamarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
-            Projectile.CWR().HitAttribute.WormResistance = true;
-            Projectile.CWR().HitAttribute.WormResistanceACValue = 0.6f;
-            Projectile.CWR().HitAttribute.NeverCrit = true;
+            Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
         }
 
@@ -53,8 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
                 Projectile.Explode();
                 Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.Bottom, new Vector2(0, -6)
                         , ProjectileID.DD2ExplosiveTrapT3Explosion, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);
-                projectile.CWR().HitAttribute.WormResistance = true;
-                projectile.CWR().HitAttribute.WormResistanceACValue = 0.4f;
+                projectile.CWR().HitAttribute.WormResistance = 0.4f;
             }
         }
     }

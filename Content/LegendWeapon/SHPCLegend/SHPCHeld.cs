@@ -98,25 +98,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 case 2:
                 case 3:
                     Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                    , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Level);
                     break;
                 case 4:
                 case 5:
                 case 6:
                     if (Level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
                         Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                        , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Level);
                         break;
                     }
                     for (int i = 0; i < 2; i++) {
                         Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
-                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Level);
                     }
                     break;
                 default:
                     for (int i = 0; i < 3; i++) {
                         Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.22f) * Main.rand.NextFloat(0.8f, 1f)
-                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Level);
                     }
                     break;
             }

@@ -155,7 +155,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), ShootSpanPos
                     , ShootVelocity.RotatedByRandom(0.2f).UnitVector() * Main.rand.NextFloat(16.6f, 28f),
-                ModContent.ProjectileType<WeaverBeam>(), Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner, 0, 0, i);
+                ModContent.ProjectileType<WeaverBeam>(), (int)(Projectile.damage * 0.4f)
+                , Projectile.knockBack / 2, Projectile.owner, 0, 0, i);
             }
         }
 
@@ -350,6 +351,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
+            Projectile.CWR().HitAttribute.WormResistance = 0.4f;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

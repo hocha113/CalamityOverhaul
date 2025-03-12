@@ -17,7 +17,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
         public static int ID { get; private set; }
-        public override void SetStaticDefaults() => ID = Type;
+        public override void SetStaticDefaults() {
+            ID = Type;
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -25,14 +28,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.useAnimation = 16;
-            Item.useTime = 4;
+            Item.useTime = 2;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 0, 0);
+            Item.value = Item.buyPrice(0, 0, 0, 75);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<UEPipelineTile>();
+            Item.tileBoost = 12;
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
+        }
+
+        public override void GrabRange(Player player, ref int grabRange) {
+            if (player.altFunctionUse == 2) {
+                grabRange *= 100;
+            }
         }
 
         public override bool AltFunctionUse(Player player) => true;
@@ -41,7 +51,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             if (player.altFunctionUse == 2) {
                 Point16 point = (Main.MouseWorld / 16).ToPoint16();
                 Tile tile = Framing.GetTileSafely(point);
-                if (tile.TileType == ModContent.TileType<UEPipelineTile>()) {
+                if (tile.HasTile && tile.TileType == ModContent.TileType<UEPipelineTile>()) {
                     WorldGen.KillTile(point.X, point.Y);
                 }
                 return false;

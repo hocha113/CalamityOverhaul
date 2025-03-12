@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
@@ -16,6 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     internal class HalibutCannonOverride : ItemOverride
     {
         #region Data
+        public override int TargetID => ModContent.ItemType<HalibutCannon>();
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -29,11 +31,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
         #endregion
+        /// <summary>
+        /// 获得成长等级
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static int GetLevel(Item item) {
-            if (item.type == ItemID.None) {
+            if (item.type != ModContent.ItemType<HalibutCannon>()) {
                 return 0;
             }
-            return item.CWR().LegendData.Level;
+            CWRItems cwrItem = item.CWR();
+            if (cwrItem == null) {
+                return 0;
+            }
+            if (cwrItem.LegendData == null) {
+                return 0;
+            }
+            return cwrItem.LegendData.Level;
         }
         /// <summary>
         /// 获取时期对应的伤害
@@ -88,7 +102,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {14, 20 }
             };
         }
-        public override int TargetID => ModContent.ItemType<HalibutCannon>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += GetOnCrit(item);

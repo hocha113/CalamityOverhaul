@@ -86,6 +86,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         internal Item Item = new Item();
         internal Item Empty = new Item();
         public override bool CanDrop => false;
+        public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1000;
         public override int TargetItem => ModContent.ItemType<ChargingStationItem>();
         void ICWRLoader.LoadAsset() {
@@ -418,6 +419,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Main.spriteBatch.Draw(BarTop.Value, drawPos, null, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
             Main.spriteBatch.Draw(BarFull.Value, drawPos + new Vector2(10, 0) * sengs, fullRec, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
 
+            string textContent;
+            Vector2 textSize;
+            float textScale;
+
             if (!Item.IsAir) {
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, origDrawPos, 34, color: Color.White * sengs);
                 if (Item.stack > 1) {
@@ -429,9 +434,11 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                     DrawChargeBar(spriteBatch, origDrawPos, ueValue / maxValue);
                     // 如果鼠标在主页面中，显示信息
                     if (hoverChargeBar) {
-                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
-                            , (((int)ueValue) + "/" + ((int)maxValue) + "UE").ToString()
-                            , origDrawPos.X + 40, origDrawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+                        textContent = (((int)ueValue) + "/" + ((int)maxValue) + "UE").ToString();
+                        textScale = 0.8f;
+                        textSize = FontAssets.MouseText.Value.MeasureString(textContent) * textScale;
+                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
+                            , MousePos.X - textSize.X / 2, MousePos.Y + 20, Color.Goldenrod, Color.Black, new Vector2(0.3f), textScale);
                     }
                 }
             }
@@ -448,19 +455,27 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
 
             if (hoverBar) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
-                    , (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString()
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                textContent = (((int)MachineData.UEvalue) + "/" + ((int)MaxUEValue) + "UE").ToString();
+                textScale = 0.8f;
+                textSize = FontAssets.MouseText.Value.MeasureString(textContent) * textScale;
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
+                    , MousePos.X - textSize.X / 2, MousePos.Y + 20, Color.Goldenrod, Color.Black, new Vector2(0.3f), textScale);
             }
 
             if (hoverSlot && Item.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text1.Value
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                textContent = CWRLocText.Instance.ChargingStation_Text1.Value;
+                textScale = 0.8f;
+                textSize = FontAssets.MouseText.Value.MeasureString(textContent) * textScale;
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
+                    , MousePos.X - textSize.X / 2, MousePos.Y + 20, Color.OrangeRed, Color.Black, new Vector2(0.3f), textScale);
             }
 
             if (hoverEmptySlot && Empty.type == ItemID.None && Main.mouseItem.type == ItemID.None) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ChargingStation_Text2.Value
-                    , MousePos.X - 10, MousePos.Y + 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                textContent = CWRLocText.Instance.ChargingStation_Text2.Value;
+                textScale = 0.8f;
+                textSize = FontAssets.MouseText.Value.MeasureString(textContent) * textScale;
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, textContent
+                    , MousePos.X - textSize.X / 2, MousePos.Y + 20, Color.OrangeRed, Color.Black, new Vector2(0.3f), textScale);
             }
         }
 
@@ -472,6 +487,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void FrontDraw(SpriteBatch spriteBatch) => DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos);
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos - Main.screenPosition);
     }
 }

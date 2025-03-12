@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
             SoundEngine.PlaySound(SoundID.Item105, Projectile.Center);
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<PhaseBlasting>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
+                    , ModContent.ProjectileType<PhaseBlasting>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f, Projectile.ai[2]);
             }
         }
     }
