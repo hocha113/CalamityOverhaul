@@ -36,11 +36,11 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 是否开始装弹
         /// </summary>
-        protected bool OnKreload;
+        internal bool OnKreload;
         /// <summary>
         /// 是否已经装好了弹药
         /// </summary>
-        protected bool IsKreload {
+        internal bool IsKreload {
             get {
                 if (!MagazineSystem) {//如果关闭了弹匣系统就无脑返回true
                     return true;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 装弹所需要的时间，默认为60
         /// </summary>
-        protected int KreloadMaxTime {
+        internal int KreloadMaxTime {
             get {
                 float newTime = _kreloadMaxTime + extraKreloadMaxTime;
                 if (ModOwner != null) {
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 开火间隔，默认为0，如果该值不大于0，则会自动设置为<see cref="Item.useTime"/>的值
         /// </summary>
-        protected int FireTime = 0;
+        internal int FireTime = 0;
         /// <summary>
         /// 是否可以重复换弹，默认为<see cref="true"/>
         /// </summary>

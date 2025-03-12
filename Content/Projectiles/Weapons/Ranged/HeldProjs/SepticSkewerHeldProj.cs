@@ -41,12 +41,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void SetShootAttribute() {
-            if (MagazineSystem && Owner.Calamity().adrenalineModeActive) {
-                FireTime = 6;
-            }
-        }
-
         public override void PostShootEverthing() {
             if (MagazineSystem) {
                 FireTime = 1;
