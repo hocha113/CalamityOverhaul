@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;

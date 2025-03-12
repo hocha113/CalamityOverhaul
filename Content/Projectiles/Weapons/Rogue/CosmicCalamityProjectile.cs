@@ -163,11 +163,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                     }
                     SoundEngine.PlaySound(BelCanto, Projectile.Center);
                     target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 1300);
-                    Projectile.Explode(190, DevourerofGodsHead.DeathExplosionSound);
+                    Projectile.Explode(190, DevourerofGodsHead.DeathExplosionSound with { Volume = 0.8f });
                     Projectile.Kill();
                 }
                 else {
-                    Projectile.Explode(90, DevourerofGodsHead.DeathAnimationSound);
+                    Projectile.Explode(90, DevourerofGodsHead.DeathAnimationSound with { Volume = 0.8f });
                     target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
                 }
             }

@@ -966,7 +966,17 @@ Items: {
 			Increases melee damage by 100%
 			Increases melee critical strike chance by 100%
 			Increases melee attack speed by 100%
+			Grants 100 defense, ignoring all defense reduction
+			Reduces damage taken by 75%, and inflicts 100x reflected damage to attackers
+			All melee attacks inflict the Void Corrosion debuff on enemies
+			If an enemy's health is below 250,000, true melee attacks may directly erase them
+			While moving at high speeds, leaves behind multiple warp points that deal immense damage to enemies on contact
+			Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
+			Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
 			Enemies are more likely to target you
+			[c/d94fff:"The sacred angel veils your eyes, whispering the falsehood of eternal salvation."]  
+			[c/ff4d4d:"The bloodstained butcher lays a hand on your shoulder, proclaiming slaughter as the path to glory."]  
+			[c/4da6ff:"The cerulean pigeon perches upon your brow, mocking your futile struggles."]
 			''' */
 	}
 
@@ -1329,6 +1339,9 @@ Projectiles: {
 	// BananarangHeld.DisplayName: Bananarang Held
 	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	// TrimarangHeld.DisplayName: Trimarang Held
+	// EmblemOfDreadProj.DisplayName: Emblem Of Dread Proj
+	// TheGravityShield.DisplayName: The Gravity Shield
+	// WarpingPoint.DisplayName: Warping Point
 }
 
 Configs: {
