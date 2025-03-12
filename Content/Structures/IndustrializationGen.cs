@@ -86,12 +86,25 @@ namespace CalamityOverhaul.Content.Structures
                 Point16 pos = scheduledPosList[i];
                 Point16 pos2 = scheduledPosList[i - 1];
                 Point16 pos3 = scheduledPosList[i + 1];
+
+                if (!WorldGen.InWorld(pos.X, pos.Y)//检测这三个点是否在世界内
+                    || !WorldGen.InWorld(pos2.X, pos2.Y)
+                    || !WorldGen.InWorld(pos3.X, pos3.Y)) {
+                    continue;
+                }
+
                 if (pos.Y == pos2.Y && pos2.Y == pos3.Y
                     && Framing.GetTileSafely(pos2).HasSolidTile() && Framing.GetTileSafely(pos3).HasSolidTile()
                     && Math.Abs(oldPos.X - pos.X) > 32) {
-                    WorldGen.KillTile(pos.X, pos3.Y - 1);
-                    WorldGen.KillTile(pos2.X, pos2.Y - 1);
-                    WorldGen.KillTile(pos3.X, pos3.Y - 1);
+                    if (WorldGen.InWorld(pos.X, pos3.Y - 1)) {
+                        WorldGen.KillTile(pos.X, pos3.Y - 1);
+                    }
+                    if (WorldGen.InWorld(pos2.X, pos2.Y - 1)) {
+                        WorldGen.KillTile(pos2.X, pos2.Y - 1);
+                    }
+                    if (WorldGen.InWorld(pos3.X, pos3.Y - 1)) {
+                        WorldGen.KillTile(pos3.X, pos3.Y - 1);
+                    } 
                     Tile tileFind = Framing.GetTileSafely(pos);
                     tileFind.Slope = SlopeType.Solid;
                     WorldGen.PlaceTile(pos.X, pos.Y, tileFind.TileType);
@@ -102,7 +115,7 @@ namespace CalamityOverhaul.Content.Structures
                     tileFind.Slope = SlopeType.Solid;
                     WorldGen.PlaceTile(pos3.X, pos3.Y, tileFind.TileType);
 
-                    if (pos != mainPos) {
+                    if (pos != mainPos && WorldGen.InWorld(pos.X, pos.Y - 1)) {
                         WorldGen.PlaceTile(pos.X, pos.Y - 1, ModContent.TileType<WGGWildernessTile>());
                     }
                     oldPos = pos;

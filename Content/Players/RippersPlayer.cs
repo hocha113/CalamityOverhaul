@@ -10,15 +10,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Players
 {
-    internal class RippersPlayer : PlayerSet
+    internal class RippersPlayer : PlayerSet, ICWRLoader
     {
         public static List<int> noRippersProj = [];
 
         public static RippersPlayer Instance;
 
-        public override void Load() {
+        void ICWRLoader.SetupData() {
             Instance = this;
-            noRippersProj = [];
             noRippersProj = [
                 ModContent.ProjectileType<CosmicDischargeFlail>(),
                 ModContent.ProjectileType<CosmicIceBurst>(),
@@ -29,9 +28,9 @@ namespace CalamityOverhaul.Content.Players
             ];
         }
 
-        public override bool On_ModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers) {
-            //CalamityPlayer mp = player.Calamity();
-            return base.On_ModifyHitNPCWithItem(player, item, target, ref modifiers);
+        void ICWRLoader.UnLoadData() {
+            Instance = null;
+            noRippersProj?.Clear();
         }
 
         public override bool On_ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers) {

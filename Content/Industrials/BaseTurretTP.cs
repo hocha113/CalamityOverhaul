@@ -191,7 +191,6 @@ namespace CalamityOverhaul.Content.Industrials
                         , Center + UnitToTarget * BarrelOffsetX, UnitToTarget * 9, ShootID, Damage, Friend ? 4 : 0, -1);
                 }
                 MachineData.UEvalue -= SingleEnergyConsumption;
-                MachineData.UEvalue = MathHelper.Clamp(MachineData.UEvalue, 0, MaxUEValue);
                 FireStorage += FireTime;
             }
 
@@ -205,6 +204,10 @@ namespace CalamityOverhaul.Content.Industrials
             }
 
             PostUpdate();
+
+            if (MachineData != null) {
+                MachineData.UEvalue = MathHelper.Clamp(MachineData.UEvalue, 0, MaxUEValue);
+            }
         }
 
         public virtual void PreUpdate() { }

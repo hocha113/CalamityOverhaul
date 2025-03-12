@@ -471,7 +471,7 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemType<PlasmaDriveCore>(), 1)
                     .AddIngredient(ItemType<MysteriousCircuitry>(), 5)
                     .AddIngredient(ItemID.CrimtaneBar, 15)
-                    .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    .AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => {
                         if (type == murasamaItem)
                             amount = 0;
                     })
@@ -482,7 +482,7 @@ namespace CalamityOverhaul.Content
                 Recipe.Create(_Mould)
                     .AddIngredient(ItemType<EncryptedSchematicHell>(), 1)
                     .AddIngredient(ItemID.CrimtaneBar, 15)
-                    .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    .AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => {
                         if (type == murasamaItem)
                             amount = 0;
                     })

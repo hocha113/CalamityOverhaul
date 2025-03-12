@@ -288,12 +288,6 @@ namespace CalamityOverhaul.Content.Players.Core
             onModifyHitNPCWithProjMethod = null;
         }
 
-        public override void PostSetupContent() {
-            foreach (var playerSet in PlayerSets) {
-                playerSet.Load();
-            }
-        }
-
         private static void OnModifyHitNPCWithItemHook(On_ModifyHitNPCWithItem_Dalegate orig, Player player, Item item, NPC target, ref NPC.HitModifiers modifiers) {
             foreach (var pset in PlayerSets) {
                 bool reset = pset.On_ModifyHitNPCWithItem(player, item, target, ref modifiers);

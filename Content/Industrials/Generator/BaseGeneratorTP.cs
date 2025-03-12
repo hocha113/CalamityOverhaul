@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.Generator
 {
-    internal abstract class BaseGeneratorTP : MachineTP
+    public abstract class BaseGeneratorTP : MachineTP
     {
         public virtual int MaxFindMode => 300;
         public BaseGeneratorUI GeneratorUI;
@@ -23,6 +23,10 @@
             if (PreGeneratorUpdate()) {
                 MachineData?.Update();
                 GeneratorUpdate();
+            }
+
+            if (MachineData != null) {
+                MachineData.UEvalue = MathHelper.Clamp(MachineData.UEvalue, 0, MaxUEValue);
             }
         }
 

@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Industrials.Generator
 {
-    internal abstract class BaseGeneratorUI : UIHandle
+    public abstract class BaseGeneratorUI : UIHandle
     {
         internal bool IsActive;
         public override bool Active => IsActive;

@@ -86,28 +86,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WindGrivenGeneratorTP : BaseGeneratorTP, ICWRLoader
+    internal class WindGrivenGeneratorTP : BaseWindGrivenTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorTile>();
-        private float rotition;
-        private float rotSpeed;
-        private int soundCount;
         public override float MaxUEValue => 200f;
         public override int TargetItem => ModContent.ItemType<WindGrivenGenerator>();
         internal static Asset<Texture2D> Blade { get; private set; }
         void ICWRLoader.LoadAsset() => Blade = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/Blade");
         void ICWRLoader.UnLoadData() => Blade = null;
-        public override void GeneratorUpdate() {
-            rotSpeed = 0.02f;
-            rotition += rotSpeed;
-            if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += rotSpeed * 10;
-            }
-
-            if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {
-                SoundEngine.PlaySound(CWRSound.Windmill with { Volume = 0.35f, MaxInstances = 12 }, CenterInWorld);
-                soundCount = 0;
-            }
+        public override void SetWindGriven() {
+            baseRotSpeed = 0.016f;
+            energyConversion = 1.6f;
+            baseSoundPith = 0.45f;
+            baseVolume = 0.6f;
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
@@ -119,6 +110,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 Color color = Lighting.GetColor(Position.ToPoint() + drawRot.ToRotationVector2().ToPoint());
                 spriteBatch.Draw(blade, drawPos, null, color, drawRot, drawOrig, 1, SpriteEffects.None, 0);
             }
+
+            DrawChargeBar();
         }
     }
 }

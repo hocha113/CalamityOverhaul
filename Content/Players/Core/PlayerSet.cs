@@ -4,10 +4,6 @@ namespace CalamityOverhaul.Content.Players.Core
 {
     internal abstract class PlayerSet
     {
-        public virtual void Load() {
-
-        }
-
         public virtual bool On_ModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers) {
             return true;
         }

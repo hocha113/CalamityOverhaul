@@ -13,52 +13,10 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    internal class UEPipelineInput : ModItem
+    internal class UEPipelineInput : BasePipelineItem
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineInput";
-        public static int ID { get; private set; }
-        public override void SetStaticDefaults() {
-            ID = Type;
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-        public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
-            Item.maxStack = 9999;
-            Item.useTurn = true;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.consumable = true;
-            Item.value = Item.buyPrice(0, 0, 0, 75);
-            Item.rare = ItemRarityID.Quest;
-            Item.createTile = ModContent.TileType<UEPipelineInputTile>();
-            Item.tileBoost = 12;
-            Item.CWR().StorageUE = true;
-            Item.CWR().ConsumeUseUE = 20;
-        }
-
-        public override void GrabRange(Player player, ref int grabRange) {
-            if (player.altFunctionUse == 2) {
-                grabRange *= 100;
-            }
-        }
-
-        public override bool AltFunctionUse(Player player) => true;
-
-        public override bool? UseItem(Player player) {
-            if (player.altFunctionUse == 2) {
-                Point16 point = (Main.MouseWorld / 16).ToPoint16();
-                Tile tile = Framing.GetTileSafely(point);
-                if (tile.TileType == ModContent.TileType<UEPipelineInputTile>()) {
-                    WorldGen.KillTile(point.X, point.Y);
-                }
-                return false;
-            }
-            return base.UseItem(player);
-        }
-
+        public override int CreateTileID => ModContent.TileType<UEPipelineInputTile>();
         public override void AddRecipes() {
             CreateRecipe(333).
                 AddIngredient<DubiousPlating>(5).

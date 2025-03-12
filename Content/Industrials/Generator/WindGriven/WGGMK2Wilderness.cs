@@ -65,29 +65,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WGGMK2WildernessTP : BaseGeneratorTP, ICWRLoader
+    internal class WGGMK2WildernessTP : BaseWindGrivenTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<WGGMK2WildernessTile>();
-        private float rotition;
-        private float rotSpeed;
-        private int soundCount;
         public override float MaxUEValue => 800f;
         public override bool CanDrop => false;
         public override int TargetItem => ModContent.ItemType<WGGMK2Wilderness>();
         internal static Asset<Texture2D> MK2BladeWilderness { get; private set; }
         void ICWRLoader.LoadAsset() => MK2BladeWilderness = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/MK2BladeWilderness");
         void ICWRLoader.UnLoadData() => MK2BladeWilderness = null;
-        public override void GeneratorUpdate() {
-            rotSpeed = 0.012f;
-            rotition += rotSpeed;
-            if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += rotSpeed * 0.8f;
-            }
-
-            if (++soundCount > 160 && Main.LocalPlayer.Distance(CenterInWorld) < 600) {
-                SoundEngine.PlaySound(CWRSound.Windmill with { Volume = 0.65f, MaxInstances = 12 }, CenterInWorld);
-                soundCount = 0;
-            }
+        public override void SetWindGriven() {
+            baseRotSpeed = 0.012f;
+            energyConversion = 0.12f;
+            baseSoundPith = 0.5f;
+            baseVolume = 0.85f;
         }
 
         public override void GeneratorKill() {
