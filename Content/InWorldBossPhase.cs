@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content
         void ICWRLoader.LoadData() => Instance = new InWorldBossPhase();
         void ICWRLoader.UnLoadData() => Instance = null;
 
-        public int SHPC_Level() {
+        public static int SHPC_Level() {
             int level = 0;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 14;
@@ -361,7 +361,7 @@ namespace CalamityOverhaul.Content
             return level;
         }
 
-        public int Halibut_Level() {
+        public static int Halibut_Level() {
             int level = 0;
 
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
@@ -469,7 +469,7 @@ namespace CalamityOverhaul.Content
             return level;
         }
 
-        public int Mura_Level() {
+        public static int Mura_Level() {
             int level = 0;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;

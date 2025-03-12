@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
-        /// <summary>
-        /// 获取时期对应的伤害
-        /// </summary>
-        public static int GetOnDamage => DamageDictionary[Instance.SHPC_Level()];
         public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
         public override int TargetID => ModContent.ItemType<SHPC>();
         private static void onSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
@@ -34,6 +30,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             MethodInfo methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(methodInfo, onSHPCToolFunc);
         }
+        public static int GetLevel(Item item) {
+            if (item.type == ItemID.None) {
+                return 0;
+            }
+            return item.CWR().LegendData.Level;
+        }
+        /// <summary>
+        /// 获取时期对应的伤害
+        /// </summary>
+        public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 8 },
@@ -69,11 +75,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (!IsLegend) {
                 return false;
             }
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage(Item), GetStartDamage, ref damage);
             return false;
         }
 
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData.Update(Instance.SHPC_Level());
+        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData.Update(SHPC_Level());
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = item.CWR().LegendData.Level;

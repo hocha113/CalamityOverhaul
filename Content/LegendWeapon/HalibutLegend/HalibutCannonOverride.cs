@@ -24,28 +24,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
         private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
-        public static int Level => Instance.Halibut_Level();
         /// <summary>
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
+        #endregion
+        public static int GetLevel(Item item) {
+            if (item.type == ItemID.None) {
+                return 0;
+            }
+            return item.CWR().LegendData.Level;
+        }
         /// <summary>
         /// 获取时期对应的伤害
         /// </summary>
-        public static int GetOnDamage => DamageDictionary[Level];
+        public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
         /// <summary>
         /// 计算伤害比例
         /// </summary>
-        public static float GetSengsDamage => GetOnDamage / (float)GetStartDamage;
+        public static float GetSengsDamage(Item item) => GetOnDamage(item) / (float)GetStartDamage;
         /// <summary>
         /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="RangedDamageClass"/>相关的乘算伤害
         /// </summary>
-        public static int ActualTrueMeleeDamage => (int)(GetOnDamage * Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive);
+        public static int ActualTrueMeleeDamage(Item item) => (int)(GetOnDamage(item) * Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive);
         /// <summary>
         /// 获取时期对应的额外暴击
         /// </summary>
-        public static int GetOnCrit => SetLevelCritDictionary[Level];
-        #endregion
+        public static int GetOnCrit(Item item) => SetLevelCritDictionary[GetLevel(item)];
+
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
@@ -85,11 +91,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
-            crit += GetOnCrit;
+            crit += GetOnCrit(item);
             return false;
         }
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage, GetStartDamage, ref damage);
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage(item), GetStartDamage, ref damage);
             return false;
         }
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
@@ -118,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.SetHeldProj<HalibutCannonHeld>();
         }
 
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(Instance.Halibut_Level());
+        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(Halibut_Level());
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = item.CWR().LegendData.Level;

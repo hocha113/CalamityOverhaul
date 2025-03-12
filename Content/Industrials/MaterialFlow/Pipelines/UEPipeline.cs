@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.maxStack = 9999;
             Item.useTurn = true;
             Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
+            Item.useAnimation = 16;
+            Item.useTime = 4;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 0, 0);
@@ -33,6 +33,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Item.createTile = ModContent.TileType<UEPipelineTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
+        }
+
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool? UseItem(Player player) {
+            if (player.altFunctionUse == 2) {
+                Point16 point = (Main.MouseWorld / 16).ToPoint16();
+                Tile tile = Framing.GetTileSafely(point);
+                if (tile.TileType == ModContent.TileType<UEPipelineTile>()) {
+                    WorldGen.KillTile(point.X, point.Y);
+                }
+                return false;
+            }
+            return base.UseItem(player);
         }
 
         public override void AddRecipes() {

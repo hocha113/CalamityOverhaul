@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public override int TargetID => ModContent.ItemType<SHPC>();
-        private int level => InWorldBossPhase.Instance.SHPC_Level();
+        private int Level => SHPCOverride.GetLevel(Item);
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 Item.mana = 20;
                 GunPressure = 0.3f;
                 RecoilRetroForceMagnitude = 0;
-                switch (level) {
+                switch (Level) {
                     case 0:
                         Item.useTime = 60;
                         break;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 Item.mana = 6;
                 GunPressure = 0f;
                 RecoilRetroForceMagnitude = 6;
-                switch (level) {
+                switch (Level) {
                     case 0:
                         Item.mana = 3;
                         Item.useTime = 10;
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void FiringShoot() {
             int type = ModContent.ProjectileType<PhaseEnergySphere>();
-            switch (level) {
+            switch (Level) {
                 case 0:
                 case 1:
                 case 2:
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 case 4:
                 case 5:
                 case 6:
-                    if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
+                    if (Level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
                         Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                         , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void FiringShootR() {
             int type = ModContent.ProjectileType<PhaseLaser>();
-            switch (level) {
+            switch (Level) {
                 case 0:
                 case 1:
                 case 2:
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 case 4:
                 case 5:
                 case 6:
-                    if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
+                    if (Level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
                         Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                         , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;

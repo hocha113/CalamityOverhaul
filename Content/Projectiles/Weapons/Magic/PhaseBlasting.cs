@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
@@ -22,18 +23,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.localNPCHitCooldown = 15;
         }
 
-        internal float getMode() {
-            int level = InWorldBossPhase.Instance.SHPC_Level();
+        internal float GetExpodMode() {
+            int level = SHPCOverride.GetLevel(Main.player[Projectile.owner].GetItem());
             return 1f + level * 0.08f;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float size = 62f + (160f * (getMode() - 1f));
+            float size = 62f + (160f * (GetExpodMode() - 1f));
             return VaultUtils.CircleIntersectsRectangle(Projectile.Center, size, targetHitbox);
         }
 
         public override void AI() {
-            float mode = getMode();
+            float mode = GetExpodMode();
             float lights = Main.rand.Next(30, 62) * 0.01f;
             lights *= Main.essScale;
             lights *= mode;

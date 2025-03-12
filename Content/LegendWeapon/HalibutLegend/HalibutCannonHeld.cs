@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 AmmoTypes = ModContent.ProjectileType<TorrentialBullet>();
             }
 
-            switch (HalibutCannonOverride.Level) {
+            switch (HalibutCannonOverride.GetLevel(Item)) {
                 case 0:
                     Shoot(1);
                     break;

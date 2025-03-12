@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
             => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback(item), GetStartKnockback, ref knockback);
 
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(InWorldBossPhase.Instance.Mura_Level());
+        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(InWorldBossPhase.Mura_Level());
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += GetOnCrit(item);
