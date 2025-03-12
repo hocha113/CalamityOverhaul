@@ -318,14 +318,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public const int DashUp = 1;
         public const int DashRight = 2;
         public const int DashLeft = 3;
-        public int DashCooldown = 50;
-        public int DashDuration = 35;
+        public const float DashVelocity = 100f;
+        public const int KilllineByLife = 250000;
+        public const int DashCooldown = 50;
+        public const int DashDuration = 35;
         public int DashDir = -1;
         public int DashDelay = 0;
         public int DashTimer = 0;
         public int TheGravityShieldTime;
-        public float DashVelocity = 100f;
-        public const int KilllineByLife = 250000;
         public SlotId SlotId;
         public override void Initialize() => Alive = false;
         public override void ResetEffects() {
@@ -333,7 +333,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (TheGravityShieldTime > 0) {
                 TheGravityShieldTime--;
             }
-            DashVelocity = 100f;
 
             if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[DashDown] < 15) {
                 DashDir = DashDown;
