@@ -144,7 +144,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
+            bool oldAttackPattern = AttackPattern;
             AttackPattern = reader.ReadBoolean();
+            if (oldAttackPattern != AttackPattern) {
+                TeslaOpenEffect();//如果判断出切换了形态就调用这个方法生成粒子效果和音效
+            }
         }
 
         public override void SaveData(TagCompound tag) {
@@ -172,8 +176,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                             Vector2 spanPos = PosInWorld + new Vector2(Main.rand.Next(Width), Main.rand.Next(Height / 2)) + new Vector2(8, 8);
                             PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White);
                         }
+
                         SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld);
-                        if (!VaultUtils.isClient) {
+                        //这里选择从某个玩家的端口上生成弹幕，因为未知原因从服务端上无法生成闪电，这是一个临时的解决方法
+                        Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
+                        if (player != null && player.whoAmI == Main.myPlayer) {
                             Vector2 dir = CenterInWorld.To(TargetByNPC.Center).UnitVector();
                             Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
                                 , dir * 8, ModContent.ProjectileType<TeslaBallByAttack>(), 32, 2, -1);
@@ -216,7 +223,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public void ArcCharging() {
             Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
-            if (player == null) {
+            if (player == null || player.whoAmI != Main.myPlayer) {
                 return;
             }
 
@@ -231,17 +238,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             SoundEngine.PlaySound(CWRSound.ArcCharging, CenterInWorld);
-            if (VaultUtils.isClient) {
-                return;
-            }
 
             Vector2 dir = CenterInWorld.To(player.Center).UnitVector();
             Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
                 , dir * 8, ModContent.ProjectileType<TeslaBallByGuard>(), 0, 0, player.whoAmI);
         }
 
-        public void RightEvent() {
-            AttackPattern = !AttackPattern;
+        public void TeslaOpenEffect() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
             for (int i = 0; i < 20; i++) {
                 int dust = Dust.NewDust(PosInWorld, Width, Height, DustID.Electric);
                 Main.dust[dust].noGravity = true;
@@ -254,6 +261,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
             }
             SoundEngine.PlaySound(CWRSound.TeslaOpen);
+        }
+
+        public void RightEvent() {
+            AttackPattern = !AttackPattern;
+            SendData();
+            TeslaOpenEffect();
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
@@ -274,10 +287,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public ref float Timer => ref Projectile.localAI[0];
         public int NPCIndex = -1;
         public float Alpha;
-        public float fade = 0;
+        public float FadeValue = 0;
         public Vector2 TargetCenter;
         public ThunderTrail trail;
-        public LinkedList<Vector2> trailList;
+        public LinkedList<Vector2> trailList = new LinkedList<Vector2>();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
             Projectile.friendly = true;
@@ -291,10 +304,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool? CanDamage() => State == 1 && Hited == 0;
 
         public float GetAlpha(float factor) {
-            if (factor < fade)
+            if (factor < FadeValue)
                 return 0;
 
-            return ThunderAlpha * (factor - fade) / (1 - fade);
+            return ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
         }
 
         public virtual Color ThunderColorFunc(float factor) => new Color(103, 255, 255);
@@ -320,6 +333,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return true;
         }
 
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.Write(Timer);
+            writer.Write(NPCIndex);
+            writer.Write(Alpha);
+            writer.Write(FadeValue);
+            writer.WriteVector2(TargetCenter);
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            Timer = reader.ReadSingle();
+            NPCIndex = reader.ReadInt32();
+            Alpha = reader.ReadSingle();
+            FadeValue = reader.ReadSingle();
+            TargetCenter = reader.ReadVector2();
+        }
+
         public override void AI() {
             Lighting.AddLight(Projectile.Center, new Color(103, 255, 255).ToVector3());
             //生成后以极快的速度前进
@@ -328,8 +357,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 case 0://刚生成，等待透明度变高后开始寻敌
                     if (TryFindClosestEnemy(Projectile.Center, 800, n => n.CanBeChasedBy() && Collision.CanHit(Projectile, n), out NPC target)) {
                         NPCIndex = target.whoAmI;
-                        TargetCenter = Projectile.Center + (Projectile.Center - Main.player[Projectile.owner].Center).SafeNormalize(Vector2.Zero) * 125;
+                        TargetCenter = Projectile.Center + Projectile.velocity.UnitVector() * 126;
                         StartAttack();
+                        Projectile.netUpdate = true;
                     }
                     else {
                         Projectile.Kill();
@@ -341,9 +371,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 case 2://后摇，闪电逐渐消失
                     {
                     Timer++;
-                    fade = Smoother((int)Timer, 30);
+                    FadeValue = Smoother((int)Timer, 30);
                     ThunderWidth = Smoother(60 - (int)Timer, 60) * 14;
-
+                    Projectile.netUpdate = true;
                     float factor = Timer / 30;
                     float sinFactor = MathF.Sin(factor * MathHelper.Pi);
 
@@ -429,6 +459,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         TargetCenter = pos;
                         Projectile.velocity = (targetCenter - Projectile.Center).SafeNormalize(Vector2.Zero) * speed;
                     }
+                    Projectile.netUpdate = true;
                 }
             }
             else {
@@ -447,11 +478,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.SpawnTrailDust(DustID.Electric, Main.rand.NextFloat(0.1f, 0.3f), Scale: Main.rand.NextFloat(0.4f, 0.8f));
             }
 
-            trailList.AddLast(Projectile.Center);
+            if (trail != null && trailList != null) {
+                trailList.AddLast(Projectile.Center);
 
-            if (Timer % Projectile.MaxUpdates == 0) {
-                trail.BasePositions = [.. trailList];//消失的时候不随机闪电
-                trail.RandomThunder();
+                if (Timer % Projectile.MaxUpdates == 0) {
+                    trail.BasePositions = [.. trailList];//消失的时候不随机闪电
+                    trail.RandomThunder();
+                }
             }
         }
 
@@ -469,7 +502,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Timer = 0;
             State = 2;
 
-            if (trail != null) {
+            if (trail != null && trailList != null) {
                 trail.BasePositions = [.. trailList];
                 if (trail.BasePositions.Length > 3)
                     trail.RandomThunder();
@@ -582,11 +615,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.SpawnTrailDust(DustID.Electric, Main.rand.NextFloat(0.1f, 0.3f), Scale: Main.rand.NextFloat(0.4f, 0.8f));
             }
 
-            trailList.AddLast(Projectile.Center);
+            if (trail != null && trailList != null) {
+                trailList.AddLast(Projectile.Center);
 
-            if (Timer % Projectile.MaxUpdates == 0) {
-                trail.BasePositions = [.. trailList];//消失的时候不随机闪电
-                trail.RandomThunder();
+                if (Timer % Projectile.MaxUpdates == 0) {
+                    trail.BasePositions = [.. trailList];//消失的时候不随机闪电
+                    trail.RandomThunder();
+                }
             }
         }
 
@@ -616,7 +651,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     Player player = CWRUtils.InPosFindPlayer(Projectile.Center, 800);
                     if (player != null) {
                         TargetPlayer = player;
-                        TargetCenter = Projectile.Center + (Projectile.Center - Owner.Center).SafeNormalize(Vector2.Zero) * 125;
+                        TargetCenter = Projectile.Center + Projectile.velocity.UnitVector() * 126;
                         StartAttack();
                     }
                     else {
@@ -628,7 +663,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     break;
                 case 2://后摇，闪电逐渐消失
                     Timer++;
-                    fade = Smoother((int)Timer, 30);
+                    FadeValue = Smoother((int)Timer, 30);
                     ThunderWidth = Smoother(60 - (int)Timer, 60) * 14;
 
                     if (Timer > 30) {

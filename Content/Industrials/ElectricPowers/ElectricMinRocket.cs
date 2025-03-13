@@ -5,6 +5,8 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using Stubble.Core.Classes;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -56,7 +58,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     Velocity = Projectile.velocity * -10,
                     Position = spanPos,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    maxLifeTime = 30,
+                    maxLifeTime = 24,
                     minLifeTime = 18,
                     Color = Color.Gold
                 };
@@ -69,6 +71,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Item item = new Item(ModContent.ItemType<ElectricMinRocket>());
                 item.CWR().UEValue = Projectile.ai[0] - 200;
+                if (item.CWR().UEValue < 0) {
+                    item.CWR().UEValue = 0;
+                }
                 Owner.QuickSpawnItem(Owner.FromObjectGetParent(), item);
             }
         }
@@ -114,19 +119,31 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override bool RightClick(int i, int j) {
             Player player = CWRUtils.TileFindPlayer(i, j);
-            if (player != null) {
-                if (TileProcessorLoader.AutoPositionGetTP<ElectricMinRocketTP>(i, j, out var tp)) {
-                    if (tp.MachineData.UEvalue < 200) {
-                        CombatText.NewText(tp.HitBox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
-                        SoundEngine.PlaySound(SoundID.MenuClose);
-                        return false;
-                    }
-                    Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<ElectricMinRocketHeld>(), 0, 0, player.whoAmI, tp.MachineData.UEvalue);
-                    tp.InDrop = false;
-                    WorldGen.KillTile(i, j);
-                }
+            if (player == null) {
+                return false;
             }
+
+            if (!TileProcessorLoader.AutoPositionGetTP<ElectricMinRocketTP>(i, j, out var tp)) {
+                return false;
+            }
+
+            if (tp.MachineData.UEvalue < 200) {
+                CombatText.NewText(tp.HitBox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
+                SoundEngine.PlaySound(SoundID.MenuClose);
+                return false;
+            }
+
+            Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
+            , ModContent.ProjectileType<ElectricMinRocketHeld>(), 0, 0, player.whoAmI, tp.MachineData.UEvalue);
+
+            tp.InDrop = false;
+            tp.SendData();
+
+            WorldGen.KillTile(i, j);
+            if (!VaultUtils.isSinglePlayer) {
+                NetMessage.SendTileSquare(player.whoAmI, i, j);
+            }
+
             return base.RightClick(i, j);
         }
     }
@@ -139,6 +156,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public bool InDrop = true;
         public override bool CanDrop => InDrop;
         public override float MaxUEValue => 600;
+        public override void SendData(ModPacket data) {
+            base.SendData(data);
+            data.Write(InDrop);
+        }
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
+            InDrop = reader.ReadBoolean();
+        }
+
         public override void SetBattery() {
             InDrop = true;
             if (TrackItem == null) {
