@@ -1,8 +1,6 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
@@ -257,10 +255,12 @@ namespace CalamityOverhaul.Content
         /// </summary>
         /// <returns></returns>
         public static bool CanTimeFrozen() {
-            if (Main.LocalPlayer != null && Main.LocalPlayer.active) {
-                if (Main.LocalPlayer.CWR().TimeFrozenTick > 0) {
-                    return true;
-                }
+            if (Main.gameMenu) {
+                return false;
+            }
+            if (Main.LocalPlayer != null && Main.LocalPlayer.active 
+                && Main.LocalPlayer.CWR().TimeFrozenTick > 0) {
+                return true;
             }
             return false;
         }

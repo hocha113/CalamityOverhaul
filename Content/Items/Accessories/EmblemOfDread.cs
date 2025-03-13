@@ -108,15 +108,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 100;
+            Projectile.width = Projectile.height = 300;
             Projectile.timeLeft = 120;
             Projectile.aiStyle = -1;
-            Projectile.localNPCHitCooldown = 6;
             Projectile.penetrate = -1;
             Projectile.friendly = true;
             Projectile.netImportant = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 6;
         }
 
         public bool CanDrawCustom() => false;
@@ -126,9 +126,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 for (int i = 0; i < 4; i++) {
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
-                    for (int j = 0; j < 23; j++) {
+                    for (int j = 0; j < 33; j++) {
                         BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
-                            , vr * (0.24f), false, 30, Main.rand.NextFloat(1.2f, 2f), Color.CadetBlue);
+                            , vr * (0.14f), false, 30, 1.2f * Projectile.localAI[2], Color.CadetBlue);
                         PRTLoader.AddParticle(spark);
                     }
                 }
@@ -146,6 +146,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             Projectile.localAI[1] += 0.07f;
+            if (Projectile.localAI[2] < 1f) {
+                Projectile.localAI[2] += 0.02f;
+            }
             Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
 
             Lighting.AddLight(Projectile.Center, new Vector3(1, 1, 1));
@@ -159,8 +162,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Texture2D warpTex = TextureAssets.Projectile[Type].Value;
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             for (int i = 0; i < 3; i++) {
-                Main.spriteBatch.Draw(warpTex, Projectile.Center - Main.screenPosition
-                    , null, warpColor, 0, warpTex.Size() / 2, Projectile.localAI[0], SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(warpTex, Projectile.Center - Main.screenPosition, null, warpColor, 0
+                    , warpTex.Size() / 2, Projectile.localAI[0] * 0.6f * Projectile.localAI[2], SpriteEffects.None, 0f);
             }
         }
 
@@ -181,12 +184,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void AI() {
             Projectile.timeLeft = 2;
             Projectile.Center = Owner.Center;
-            Owner.statDefense += 60;
             Projectile.localAI[0] = MathF.Abs(MathF.Sin(Time * 0.02f)) * 0.4f + 0.2f;
 
             if (Projectile.IsOwnedByLocalPlayer() && Owner.velocity.Length() > 12 && Time % 15 == 0) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center
                         , Vector2.Zero, ModContent.ProjectileType<WarpingPoint>(), 800, 0);
+            }
+
+            if (Owner.GetModPlayer<EmblemOfDreadPlayer>().TheGravityShieldTime > 0) {
+                Owner.statDefense += 60;
             }
 
             if (!Owner.Alives() || !Owner.GetModPlayer<EmblemOfDreadPlayer>().Alive) {
@@ -198,6 +204,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             else if (Projectile.localAI[1] < 1f) {
                 Projectile.localAI[1] += 0.1f;
             }
+
             Time++;
         }
 
@@ -308,6 +315,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<VoidErosion>(), 1300);
+            if (Projectile.numHits == 0) {
+                SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = 0.3f }, target.Center);
+            }
         }
     }
 
@@ -356,6 +366,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Alive && TheGravityShieldTime <= 0) {
                 TheGravityShieldTime = 3600;
                 Player.Heal(Player.statLifeMax2);
+                SoundEngine.PlaySound(SoundID.DD2_BetsySummon with { Pitch = 0.2f, Volume = 2.6f });
                 return false;
             }
             TheGravityShieldTime = 0;
@@ -410,6 +421,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
+            Player.maxFallSpeed = DashVelocity;
+
             if (!Player.mount.Active && !Player.setSolar 
                 && Player.dashType == DashID.None 
                 && DashDir != -1 && DashDelay == 0) {
@@ -435,7 +448,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 DashDelay = DashCooldown;
                 DashTimer = DashDuration;
                 Player.velocity = newVelocity;
-                Player.maxFallSpeed = 80f;
+                
                 SlotId = SoundEngine.PlaySound(DevourerofGodsHead.DeathAnimationSound with { Pitch = -0.2f }, Player.Center);
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                     , ModContent.ProjectileType<EmblemOfDreadProj>(), 8000, 8, Player.whoAmI);
@@ -464,7 +477,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     PRTLoader.AddParticle(spark);
                 }
 
-                Player.maxFallSpeed = 80f;
                 Player.eocDash = DashTimer;
                 Player.armorEffectDrawShadowEOCShield = true;
                 DashTimer--;

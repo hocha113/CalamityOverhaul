@@ -974,9 +974,9 @@ Items: {
 			Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
 			Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
 			Enemies are more likely to target you
-			[c/d94fff:"The sacred angel veils your eyes, whispering the falsehood of eternal salvation."]  
-			[c/ff4d4d:"The bloodstained butcher lays a hand on your shoulder, proclaiming slaughter as the path to glory."]  
-			[c/4da6ff:"The cerulean pigeon perches upon your brow, mocking your futile struggles."]
+			[c/d94fff:"A radiant angel veils your sight, whispering sweet lies of eternal salvation."]
+			[c/ff4d4d:"A bloodied butcher lifts your blades, proclaiming slaughter as the path to glory."]
+			[c/4da6ff:"A sapphire dove pecks your brow, mocking your feeble struggle against fate."]
 			''' */
 	}
 

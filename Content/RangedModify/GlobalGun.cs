@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.RangedModify
 
             //由这个计算一个枪械在一个发射周期内多久可以打完弹匣
             float value = gun.FireTime * gun.Item.CWR().AmmoCapacity + gun.KreloadMaxTime;
-            float value2 = 240;//先假设一个肾上腺素的逼近值，一个周期下来大概4秒
+            float value2 = 220;//先假设一个肾上腺素的逼近值，一个周期下来大概4秒
             float value3 = value2 / value;//最后除出来的值就是这个枪械的伤害溢出系数
             //伤害溢出小于或等于1的枪械说明不能在这个机制下吃到什么便宜，所以不管，
             //而大于1的枪械就或多或少的会因为火力强但持续力差等原因在这个机制上吃到便宜，
