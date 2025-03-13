@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content
                 // 写这个Boss的程序员脑袋肯定有问题，性能优化根本不在他们的词典里
                 // 一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
                 // DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
-                // 哇哦，n³复杂度，绝对是天才级别的优化
+                // 哇，n³复杂度，绝对是天才级别的优化
                 return false;
             }
             return base.SpecialOnKill(npc);

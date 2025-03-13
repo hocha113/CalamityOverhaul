@@ -1347,9 +1347,9 @@ Projectiles: {
 	// BananarangHeld.DisplayName: Bananarang Held
 	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	// TrimarangHeld.DisplayName: Trimarang Held
-	// EmblemOfDreadProj.DisplayName: Emblem Of Dread Proj
 	// TheGravityShield.DisplayName: The Gravity Shield
 	// WarpingPoint.DisplayName: Warping Point
+	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
 }
 
 Configs: {

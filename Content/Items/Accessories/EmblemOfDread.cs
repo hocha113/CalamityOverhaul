@@ -62,8 +62,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
             player.aggro += 9999;
             player.statDefense += 100;
             if (player.ownedProjectileCounts[ModContent.ProjectileType<TheGravityShield>()] == 0) {
-                Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
+                if (player.whoAmI == Main.myPlayer) {
+                    Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
                     , ModContent.ProjectileType<TheGravityShield>(), 0, 0, player.whoAmI);
+                }
             }
             else {
                 foreach (var proj in Main.ActiveProjectiles) {
@@ -280,9 +282,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    public class EmblemOfDreadProj : BaseHeldProj
+    public class EmblemOfDreadDashProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
+        public int DashDir = -1;
+        public SlotId SlotId { get; private set; }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 330;
             Projectile.DamageType = DamageClass.Melee;
@@ -294,8 +298,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override bool ShouldUpdatePosition() => false;
 
+        public override void Initialize() {
+            SlotId = SoundEngine.PlaySound(DevourerofGodsHead.DeathAnimationSound with { Pitch = -0.2f }, Owner.Center);
+            Owner.GetModPlayer<EmblemOfDreadPlayer>().SetDash((int)Projectile.ai[0]);
+        }
+
         public override void AI() {
+            if (!Owner.GetModPlayer<EmblemOfDreadPlayer>().Alive
+                || Owner.GetModPlayer<EmblemOfDreadPlayer>().DashTimer <= 0) {
+                Projectile.Kill();
+                return;
+            }
+
             Projectile.Center = Owner.Center;
+            Owner.maxFallSpeed = EmblemOfDreadPlayer.DashVelocity;
             Owner.GivePlayerImmuneState(6);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -305,11 +321,27 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Projectile.NewProjectile(Owner.GetSource_FromThis(), Owner.Center
                 , Owner.velocity.GetNormalVector() * -22
                 , ModContent.ProjectileType<NeutronLaser>(), 800, 0);
+                //只设置冲刺玩家的镜头，不要把别的玩家的镜头也设置了
+                if (CWRServerConfig.Instance.LensEasing) {
+                    Main.SetCameraLerp(0.1f, 60);
+                }
             }
 
-            if (!Owner.GetModPlayer<EmblemOfDreadPlayer>().Alive 
-                || Owner.GetModPlayer<EmblemOfDreadPlayer>().DashTimer <= 0) {
-                Projectile.Kill();
+            if (SoundEngine.TryGetActiveSound(SlotId, out var sound)) {
+                sound.Position = Owner.Center;
+            }
+
+            if (!VaultUtils.isServer) {
+                for (int j = 0; j < 53; j++) {
+                    BasePRT spark = new PRT_HeavenfallStar(Owner.Center
+                        , Owner.velocity.UnitVector() * (0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    PRTLoader.AddParticle(spark);
+                }
+                for (int j = 0; j < 53; j++) {
+                    BasePRT spark = new PRT_HeavenfallStar(Owner.Center
+                        , Owner.velocity.UnitVector() * -(0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    PRTLoader.AddParticle(spark);
+                }
             }
         }
 
@@ -336,12 +368,54 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public int DashDelay = 0;
         public int DashTimer = 0;
         public int TheGravityShieldTime;
-        public SlotId SlotId;
         public override void Initialize() => Alive = false;
         public override void ResetEffects() {
             Alive = false;
             if (TheGravityShieldTime > 0) {
                 TheGravityShieldTime--;
+            }
+            if (DashDelay > 0) {
+                DashDelay--;
+            }
+            if (DashTimer > 0) {
+                DashTimer--;
+            }
+
+            UpdateDashState();
+        }
+
+        /// <summary>
+        /// 设置冲刺时的各种信息
+        /// </summary>
+        /// <param name="dashDir"></param>
+        public void SetDash(int dashDir) {
+            Vector2 newVelocity = Player.velocity;
+            switch (dashDir) {
+                case DashUp when Player.velocity.Y > -DashVelocity:
+                case DashDown when Player.velocity.Y < DashVelocity: {
+                    float dashDirection = dashDir == DashDown ? 1 : -1.3f;
+                    newVelocity.Y = dashDirection * DashVelocity;
+                    break;
+                }
+                case DashLeft when Player.velocity.X > -DashVelocity:
+                case DashRight when Player.velocity.X < DashVelocity: {
+                    float dashDirection = dashDir == DashRight ? 1 : -1;
+                    newVelocity.X = dashDirection * DashVelocity;
+                    break;
+                }
+                default:
+                    return;
+            }
+
+            Player.maxFallSpeed = DashVelocity;
+            Player.GetModPlayer<EmblemOfDreadPlayer>().DashDelay = DashCooldown;
+            Player.GetModPlayer<EmblemOfDreadPlayer>().DashTimer = DashDuration;
+            Player.velocity = newVelocity;
+        }
+
+        public void UpdateDashState() {
+            if (Main.myPlayer != Player.whoAmI) {
+                return;
             }
 
             if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[DashDown] < 15) {
@@ -421,65 +495,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            Player.maxFallSpeed = DashVelocity;
-
-            if (!Player.mount.Active && !Player.setSolar 
-                && Player.dashType == DashID.None 
-                && DashDir != -1 && DashDelay == 0) {
-                Vector2 newVelocity = Player.velocity;
-
-                switch (DashDir) {
-                    case DashUp when Player.velocity.Y > -DashVelocity:
-                    case DashDown when Player.velocity.Y < DashVelocity: {
-                        float dashDirection = DashDir == DashDown ? 1 : -1.3f;
-                        newVelocity.Y = dashDirection * DashVelocity;
-                        break;
-                    }
-                    case DashLeft when Player.velocity.X > -DashVelocity:
-                    case DashRight when Player.velocity.X < DashVelocity: {
-                        float dashDirection = DashDir == DashRight ? 1 : -1;
-                        newVelocity.X = dashDirection * DashVelocity;
-                        break;
-                    }
-                    default:
-                        return;
-                }
-
-                DashDelay = DashCooldown;
-                DashTimer = DashDuration;
-                Player.velocity = newVelocity;
-                
-                SlotId = SoundEngine.PlaySound(DevourerofGodsHead.DeathAnimationSound with { Pitch = -0.2f }, Player.Center);
+            if (!Player.mount.Active && !Player.setSolar && DashDir != -1 
+                && DashDelay == 0 && Player.whoAmI == Main.myPlayer) {
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<EmblemOfDreadProj>(), 8000, 8, Player.whoAmI);
-            }
-
-            if (DashDelay > 0) {
-                DashDelay--;
+                    , ModContent.ProjectileType<EmblemOfDreadDashProj>(), 8000, 8, Player.whoAmI, DashDir);
             }
 
             if (DashTimer > 0) {
-                if (SoundEngine.TryGetActiveSound(SlotId, out var sound)) {
-                    sound.Position = Player.Center;
-                }
-                if (CWRServerConfig.Instance.LensEasing) {
-                    Main.SetCameraLerp(0.1f, 60);
-                }
-
-                for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Player.Center
-                        , Player.velocity.UnitVector() * (0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
-                    PRTLoader.AddParticle(spark);
-                }
-                for (int j = 0; j < 53; j++) {
-                    BasePRT spark = new PRT_HeavenfallStar(Player.Center
-                        , Player.velocity.UnitVector() * -(0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
-                    PRTLoader.AddParticle(spark);
-                }
-
                 Player.eocDash = DashTimer;
                 Player.armorEffectDrawShadowEOCShield = true;
-                DashTimer--;
             }
         }
     }

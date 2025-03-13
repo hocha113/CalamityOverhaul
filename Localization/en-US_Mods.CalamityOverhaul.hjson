@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1339,9 +1339,9 @@ Projectiles: {
 	BananarangHeld.DisplayName: Bananarang Held
 	IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	TrimarangHeld.DisplayName: Trimarang Held
-	EmblemOfDreadProj.DisplayName: Emblem Of Dread Proj
 	TheGravityShield.DisplayName: The Gravity Shield
 	WarpingPoint.DisplayName: Warping Point
+	EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
 }
 
 Configs: {
