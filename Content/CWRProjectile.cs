@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -19,6 +20,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -110,21 +112,23 @@ namespace CalamityOverhaul.Content
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
+
             if (source?.Context == "CWRGunShoot") {
                 Item heldItem = Main.player[projectile.owner].GetItem();
                 if (heldItem.type != ItemID.None) {
                     cwrItem = heldItem.CWR();
                 }
             }
-            if (!projectile.hide && projectile.friendly) {
+
+            if (projectile.IsOwnedByLocalPlayer() && !projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
-                if (projectile.DamageType == DamageClass.Ranged) {
-                    if (modPlayer.LoadMuzzleBrakeLevel == 4) {
-                        projectile.extraUpdates += 2;
-                        if (Main.rand.NextBool(5)) {
-                            projectile.scale *= 2.25f;
-                        }
+                if (modPlayer.LoadMuzzleBrakeLevel == 4 
+                    && projectile.DamageType.CountsAsClass<RangedDamageClass>()) {
+                    projectile.extraUpdates += 2;
+                    if (Main.rand.NextBool(5)) {
+                        projectile.scale *= 2.25f;
                     }
+                    projectile.netUpdate = true;
                 }
             }
         }
@@ -286,13 +290,13 @@ namespace CalamityOverhaul.Content
                 modifiers.FinalDamage *= HitAttribute.WormResistance;
             }
 
-            InProjTypeSetHitNPC(projectile, target, ref modifiers);
+            ModifyProjectileHitNPC(projectile, target, ref modifiers);
             JusticeUnveiled.ModifyHitNPC(projectile, target, ref modifiers);
         }
 
-        private void InProjTypeSetHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+        internal static void ModifyProjectileHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
             if (projectile.type == ProjectileID.FinalFractal) {
-                if (CWRLoad.WormBodys.Contains(target.type)) {
+                if (target.IsWormBody()) {
                     modifiers.FinalDamage *= 0.75f;
                 }
                 if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
@@ -313,37 +317,40 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
-            if (HitAttribute.SuperAttack) {
-                if (projectile.type == 961) {
-                    if (!target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
-                        Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero
-                            , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
-                    }
+        internal void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
+            if (projectile.type <= 0 || !HitAttribute.SuperAttack) {
+                return;
+            }
+
+            if (projectile.type == ProjectileID.DeerclopsIceSpike) {
+                if (!target.boss && !target.IsWormBody() && !target.CWR().IceParclose) {
+                    int type = ModContent.ProjectileType<IceParclose>();
+                    Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero
+                        , type, 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
                 }
-                else if (projectile.type == ProjectileID.SnowBallFriendly) {
-                    if (projectile.numHits == 0) {
-                        for (int i = 0; i < 3; i++) {
-                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
-                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
-                            Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
-                            , ProjectileID.FrostBeam, projectile.damage / 2, 0, projectile.owner, 1);
-                            proj.penetrate = -1;
-                            proj.extraUpdates = 6;
-                            proj.hostile = false;
-                            proj.friendly = true;
-                            proj.timeLeft /= 2;
-                            proj.usesLocalNPCImmunity = true;
-                            proj.localNPCHitCooldown = -1;
-                            proj.ArmorPenetration = 15;
-                            proj.CWR().HitAttribute.NeverCrit = true;
-                        }
+            }
+            else if (projectile.type == ProjectileID.SnowBallFriendly) {
+                if (projectile.numHits == 0) {
+                    for (int i = 0; i < 3; i++) {
+                        Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
+                        Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
+                        Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                        , ProjectileID.FrostBeam, projectile.damage / 2, 0, projectile.owner, 1);
+                        proj.penetrate = -1;
+                        proj.extraUpdates = 6;
+                        proj.hostile = false;
+                        proj.friendly = true;
+                        proj.timeLeft /= 2;
+                        proj.usesLocalNPCImmunity = true;
+                        proj.localNPCHitCooldown = -1;
+                        proj.ArmorPenetration = 15;
+                        proj.CWR().HitAttribute.NeverCrit = true;
                     }
                 }
             }
         }
 
-        private void RustyMedallionEffect(Player player, Projectile projectile) {
+        internal void RustyMedallionEffect(Player player, Projectile projectile) {
             if (player.CWR().RustyMedallion_Value && Source != null) {
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<AcidEtchedTearDrop>()] < 8) {
                     if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
@@ -362,7 +369,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void SpanTypesOnHitNPC(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
+        internal void SpanTypesOnHitNPC(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             switch ((SpanTypesEnum)SpanTypes) {
                 case SpanTypesEnum.DeadWing: {
                     int types = ModContent.ProjectileType<DeadWave>();
@@ -631,7 +638,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void WhipHit(Projectile projectile, NPC target) {
+        internal static void WhipHit(Projectile projectile, NPC target) {
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
                 CWRNpc npc = target.CWR();
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
@@ -660,73 +667,76 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void SpecialAmmoStateOnHitEffect(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
-            if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
-                    target.AddBuff(BuffID.OnFire3, 60);
-                    player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 5, 0f, 0, false, DamageClass.Default, true);
-                    float thirdDustScale = Main.rand.NextFloat(2, 4);
-                    Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
-                    Vector2 dustVelocity = dustRotation * target.velocity.Length();
-                    _ = SoundEngine.PlaySound(SoundID.Item14, target.Center);
-                    for (int j = 0; j < 40; j++) {
-                        int contactDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
-                        Dust dust = Main.dust[contactDust2];
-                        dust.position = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.Pi).RotatedBy(target.velocity.ToRotation()) * target.width / 3f);
-                        dust.noGravity = true;
-                        dust.velocity.Y -= 6f;
-                        dust.velocity *= 0.5f;
-                        dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
-                    }
+        internal void SpecialAmmoStateOnHitEffect(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
+            if (Source?.Context != "CWRGunShoot" || cwrItem == null) {
+                return;
+            }
+
+            if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
+                target.AddBuff(BuffID.OnFire3, 60);
+                player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 5, 0f, 0, false, DamageClass.Default, true);
+                float thirdDustScale = Main.rand.NextFloat(2, 4);
+                Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
+                Vector2 dustVelocity = dustRotation * target.velocity.Length();
+                _ = SoundEngine.PlaySound(SoundID.Item14, target.Center);
+                for (int j = 0; j < 40; j++) {
+                    int contactDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
+                    Dust dust = Main.dust[contactDust2];
+                    dust.position = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.Pi).RotatedBy(target.velocity.ToRotation()) * target.width / 3f);
+                    dust.noGravity = true;
+                    dust.velocity.Y -= 6f;
+                    dust.velocity *= 0.5f;
+                    dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
                 }
-                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
-                    player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
-                    for (int i = 0; i < 6; i++) {
-                        BasePRT particle = new PRT_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
-                        PRTLoader.AddParticle(particle);
-                    }
+            }
+            else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
+                for (int i = 0; i < 6; i++) {
+                    BasePRT particle = new PRT_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
+                    PRTLoader.AddParticle(particle);
                 }
-                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
-                    if (projectile.numHits == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<BMGFIRE>()] < 33) {
-                        float newdamage = projectile.damage;
-                        int projCount = 1;
-                        if (projectile.type > 0 && projectile.type < player.ownedProjectileCounts.Length) {
-                            projCount = player.ownedProjectileCounts[projectile.type];
-                        }
-                        if (newdamage > 1000) {
-                            newdamage = 1000;
-                        }
-                        if (projCount > 5) {
-                            newdamage *= 0.95f;
-                        }
-                        if (projCount > 10) {
-                            newdamage *= 0.93f;
-                        }
-                        if (projCount > 15) {
-                            newdamage *= 0.91f;
-                        }
-                        if (projCount > 20) {
-                            newdamage *= 0.9f;
-                        }
-                        for (int i = 0; i < 4; i++) {
-                            Vector2 vr = projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
-                            int proj = Projectile.NewProjectile(projectile.FromObjectGetParent(), projectile.Center + (projectile.velocity * -3), vr
-                                , ModContent.ProjectileType<BMGFIRE>(), (int)(newdamage * (hit.Crit ? 0.35f : 0.2f)), 0, projectile.owner, Main.rand.Next(23));
-                            Main.projectile[proj].timeLeft /= 2;
-                        }
+            }
+            else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                if (projectile.numHits == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<BMGFIRE>()] < 33) {
+                    float newdamage = projectile.damage;
+                    int projCount = 1;
+                    if (projectile.type > 0 && projectile.type < player.ownedProjectileCounts.Length) {
+                        projCount = player.ownedProjectileCounts[projectile.type];
+                    }
+                    if (newdamage > 1000) {
+                        newdamage = 1000;
+                    }
+                    if (projCount > 5) {
+                        newdamage *= 0.95f;
+                    }
+                    if (projCount > 10) {
+                        newdamage *= 0.93f;
+                    }
+                    if (projCount > 15) {
+                        newdamage *= 0.91f;
+                    }
+                    if (projCount > 20) {
+                        newdamage *= 0.9f;
+                    }
+                    for (int i = 0; i < 4; i++) {
+                        Vector2 vr = projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
+                        int proj = Projectile.NewProjectile(projectile.FromObjectGetParent(), projectile.Center + (projectile.velocity * -3), vr
+                            , ModContent.ProjectileType<BMGFIRE>(), (int)(newdamage * (hit.Crit ? 0.35f : 0.2f)), 0, projectile.owner, Main.rand.Next(23));
+                        Main.projectile[proj].timeLeft /= 2;
                     }
                 }
             }
         }
 
         private void ViscositySD(Projectile projectile, NPC target) {
-            if (Viscosity && projectile.numHits == 0) {
-                hitNPC = target;
-                offsetHitPos = target.Center.To(projectile.Center);
-                offsetHitRot = projectile.rotation;
-                oldNPCRot = target.rotation;
-                //NetViscositySend(projectile);
+            if (!Viscosity || projectile.numHits != 0) {
+                return;
             }
+
+            hitNPC = target;
+            offsetHitPos = target.Center.To(projectile.Center);
+            offsetHitRot = projectile.rotation;
+            oldNPCRot = target.rotation;
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -741,18 +751,19 @@ namespace CalamityOverhaul.Content
             JusticeUnveiled.OnHitNPCSpwanProj(player, projectile, target, hit);
         }
 
-        public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            //drawProjName(projectile);
-            return base.PreDraw(projectile, ref lightColor);
-        }
+        //public override bool PreDraw(Projectile projectile, ref Color lightColor) {
+        //    //drawProjName(projectile);
+        //    return base.PreDraw(projectile, ref lightColor);
+        //}
 
-        public void drawProjName(Projectile projectile) {
-            Vector2 pos = projectile.Center - Main.screenPosition;
-            string name = projectile.ToString();
-            if (projectile.ModProjectile != null) {
-                name = projectile.ModProjectile.FullName;
-            }
-            Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-        }
+        //public void drawProjName(Projectile projectile) {
+        //    Vector2 pos = projectile.Center - Main.screenPosition;
+        //    string name = projectile.ToString();
+        //    if (projectile.ModProjectile != null) {
+        //        name = projectile.ModProjectile.FullName;
+        //    }
+        //    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value
+        //        , name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+        //}
     }
 }

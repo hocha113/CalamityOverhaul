@@ -19,6 +19,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         public override int TargetID => NPCID.TheDestroyer;
         private const int maxFindMode = 20000 * 20000;
+        private ref float ByDashX => ref ai[0];
+        private ref float ByDashY => ref ai[1];
+        private ref float Time => ref ai[2];
+        private ref float ByMasterStageIndex => ref ai[3];
         private int frame;
         private int glowFrame;
         private bool openMouth;
@@ -30,15 +34,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static int iconIndex;
         internal static int iconIndex_Void;
         internal const int StretchTime = 300;
-        private int time;
-        private Vector2 dashVer;
+        internal Vector2 DashVeloctiy {
+            get => new(ByDashX, ByDashY);
+            set {
+                ByDashX = value.X;
+                ByDashY = value.Y;
+            }
+        }
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
             iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
         }
-
         void ICWRLoader.LoadAsset() {
             Head = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head");
             Head_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head_Glow");
@@ -47,14 +55,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.UnLoadData() {
             Head = null;
             Head_Glow = null;
-        }
-
-        public override void OtherNetWorkSend(ModPacket netMessage) {
-            netMessage.WriteVector2(dashVer);
-        }
-
-        public override void OtherNetWorkReceive(BinaryReader reader) {
-            dashVer = reader.ReadVector2();
         }
 
         public override void SetProperty() {
@@ -90,64 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npcLoot.Add(rule);
         }
 
-        private static void SendBodyNetWork() {
-            int npcCount = 0;
-            foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type != NPCID.TheDestroyerBody && npc.type != NPCID.TheDestroyerTail) {
-                    continue;
-                }
-                npcCount++;
-            }
-
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-
-            modPacket.Write((byte)CWRMessageType.DestroyerData);
-
-            modPacket.Write(npcCount);
-
-            foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type != NPCID.TheDestroyerBody && npc.type != NPCID.TheDestroyerTail) {
-                    continue;
-                }
-                modPacket.Write(npc.whoAmI);
-                modPacket.WriteVector2(npc.position);
-                modPacket.Write(npc.rotation);
-            }
-
-            modPacket.Send();//发送给所有客户端
-        }
-
-        internal static void HandlerBodyNetWork(BinaryReader reader) {
-            int npcCount = reader.ReadInt32();
-            for (int i = 0; i < npcCount; i++) {
-                int whoAmI = reader.ReadInt32();
-                Vector2 npcPos = reader.ReadVector2();
-                float npcRot = reader.ReadSingle();
-                NPC body = CWRUtils.GetNPCInstance(whoAmI);
-                if (body != null && (body.type == NPCID.TheDestroyerBody || body.type == NPCID.TheDestroyerTail)) {
-                    body.position = npcPos;
-                    body.rotation = npcRot;
-                }
-            }
-        }
-
-        public override bool AI() {
-            time++;
-
-            if (VaultUtils.isServer && time % 300 == 0) {//在多人模式下，每间隔5秒发送一次体节的信息
-                SendBodyNetWork();
-            }
-
-            npc.timeLeft = 1800;//愚蠢的自然脱战
-
-            if (ai[0] == 0) {
-                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
-                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
-                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
-                }
-                ai[0] = 1;
-            }
-
+        internal void FindTarget() {
             if (npc.target < 0 || npc.target >= 255) {
                 npc.FindClosestPlayer();
                 player = Main.player[npc.target];
@@ -156,105 +99,160 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.FindClosestPlayer();
                 player = Main.player[npc.target];
                 if (!player.Alives() || player.DistanceSQ(npc.Center) > maxFindMode) {
-                    npc.ai[0] = 99;
+                    ByMasterStageIndex = 99;
                 }
             }
+        }
 
+        internal void NetWorkAI() {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            if (npc.netSpam > 8) {
+                npc.netSpam = 0;
+            }
+            npc.netUpdate = true;
+            NetAISend();
+        }
+
+        public override bool AI() {
+            Time++;
+            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+            if (CWRWorld.MachineRebellion && !MachineRebellionAI()) {
+                return false;
+            }
+            if (!OrigAI()) {
+                return false;
+            }
+            return true;
+        }
+
+        internal bool OrigAI() {
+            if (ByMasterStageIndex == 0) {
+                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
+                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
+                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
+                }
+                ByMasterStageIndex = 1;
+            }
+
+            FindTarget();
             HandleMouth();
 
             //这里判定一个时间进行冲刺，用于展开体节，实际冲刺的时间需要比预定的展开时间长一些
-            if (time < StretchTime + 60 && time > 10) {
-                if (dashVer == Vector2.Zero) {
-                    dashVer = npc.Center.To(player.Center).UnitVector();
-                    netOtherWorkSend = true;
+            if (Time < StretchTime + 60 && Time > 10) {
+                if (DashVeloctiy == Vector2.Zero) {
+                    DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                    NetWorkAI();
                 }
-                npc.velocity = dashVer * 32;
-                npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
-                return false;
-            }
-
-            if (CWRWorld.MachineRebellion) {
-                MachineRebellionAI();
+                npc.velocity = DashVeloctiy * 32;
                 return false;
             }
 
             return true;
         }
 
-        internal static void SpawnBody(NPC npc) {
-            // 生成毁灭者身体的多个部分
-            if (!VaultUtils.isClient) {
-                int index = npc.whoAmI;
-                for (int i = 0; i < 88; i++) {
-                    index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
-                        , i == 87 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody, 0, 0, index);
-                    Main.npc[index].realLife = npc.whoAmI;
-                    Main.npc[index].netUpdate = true;
-                }
-            }
-
-            foreach (var body in Main.ActiveNPCs) {
-                if (body.type == NPCID.TheDestroyerBody || body.type == NPCID.TheDestroyerTail) {
-                    SetDefaults(body, body.CWR(), body.Calamity());
-                }
-            }
-        }
-
-        private void MachineRebellionAI() {
-            if (npc.ai[0] == 99) {
+        private bool MachineRebellionAI() {
+            if (ByMasterStageIndex == 99) {
                 npc.velocity = new Vector2(0, 56);
-                if (++ai[0] > 280) {
+                if (++ai[6] > 280) {
                     npc.active = false;
                 }
-                return;
+                return false;
             }
-            // 初始化时进行冲刺操作
-            if (npc.ai[0] == 0) {
-                npc.ai[0] = 1;
-                SpawnBody(npc);
+
+            // 初始化
+            if (ByMasterStageIndex == 0) {
+                ByMasterStageIndex = 1;
+                npc.ai[0] = 1;//将这个设置为否则他妈的其他地方就会再生成一次身体
+                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
+                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
+                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
+                }
+                SpawnBody();
                 npc.netUpdate = true;
             }
 
-            if (--ai[4] > 0) {
+            FindTarget();
+            HandleMouth();
+
+            if (npc.position.X > Main.maxTilesX * 16 - 50 || npc.position.X < 50
+                || npc.position.Y > Main.maxTilesY * 16 - 50 || npc.position.Y < 50) {
+                DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                ai[7] = 0;
+                ai[5] = 2;
+                NetWorkAI();
+            }
+
+            //这里判定一个时间进行冲刺，用于展开体节，实际冲刺的时间需要比预定的展开时间长一些
+            if (Time < StretchTime + 60 && Time > 10) {
+                if (DashVeloctiy == Vector2.Zero) {
+                    DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                    NetWorkAI();
+                }
+                npc.velocity = DashVeloctiy * 32;
+                npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+                return false;
+            }
+
+            if (--ai[7] > 0) {
                 npc.VanillaAI();
-                if (npc.Distance(player.Center) > maxFindMode / 4) {//如果发现跑远了就里面切换阶段向玩家冲刺回来
-                    dashVer = npc.Center.To(player.Center).UnitVector();
-                    netOtherWorkSend = true;
-                    ai[4] = 0;
-                    ai[2] = 2;
-                    NetAISend();
+                if (npc.Distance(player.Center) > maxFindMode / 6) {//如果发现跑远了就里面切换阶段向玩家冲刺回来
+                    DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                    ai[7] = 0;
+                    ai[5] = 2;
+                    NetWorkAI();
                 }
             }
             else {
-                if (ai[2] == 0) {
-                    if (++ai[1] > 120) {
-                        ai[1] = 0;
-                        ai[2] = 1;
-                        NetAISend();
+                if (ai[5] == 0) {
+                    if (++ai[4] > 120) {
+                        ai[4] = 0;
+                        ai[5] = 1;
+                        NetWorkAI();
                     }
                 }
 
-                if (ai[2] == 1) {
-                    dashVer = npc.Center.To(player.Center).UnitVector();
-                    netOtherWorkSend = true;
-                    ai[2] = 2;
-                    NetAISend();
+                if (ai[5] == 1) {
+                    DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                    ai[5] = 2;
+                    NetWorkAI();
                 }
 
-                if (ai[2] == 2) {
-                    npc.velocity = dashVer * 44;
+                if (ai[5] == 2) {
+                    npc.velocity = DashVeloctiy * 44;
                     if (npc.Distance(player.Center) > maxFindMode / 4) {
-                        dashVer = npc.Center.To(player.Center).UnitVector();
-                        netOtherWorkSend = true;
+                        DashVeloctiy = npc.Center.To(player.Center).UnitVector();
+                        NetWorkAI();
                     }
-                    if (++ai[3] > 180) {
-                        ai[4] = 300;
-                        ai[3] = 0;
-                        ai[2] = 0;
-                        ai[1] = 0;
-                        NetAISend();
+                    if (++ai[6] > 180) {
+                        ai[7] = 300;
+                        ai[6] = 0;
+                        ai[5] = 0;
+                        ai[4] = 0;
+                        NetWorkAI();
                     }
                 }
+            }
+
+            return false;
+        }
+
+        private void SpawnBody() {
+            // 生成毁灭者身体的多个部分
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            int index = npc.whoAmI;
+            int oldIndex = npc.whoAmI;
+            for (int i = 0; i < 88; i++) {
+                oldIndex = index;
+                index = NPC.NewNPC(npc.FromObjectGetParent(), (int)npc.Center.X, (int)npc.Center.Y
+                    , i == 87 ? NPCID.TheDestroyerTail : NPCID.TheDestroyerBody
+                    , 0, ai0: oldIndex, ai1: index, ai2: 0, ai3: npc.whoAmI);
+                Main.npc[index].realLife = npc.whoAmI;
+                Main.npc[index].netUpdate = true;
             }
         }
 
@@ -301,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
 
-            if (time >= StretchTime) {
+            if (Time >= StretchTime) {
                 Texture2D value2 = Head_Glow.Value;
                 spriteBatch.Draw(value2, npc.Center - Main.screenPosition
                     , glowRectangle, Color.White, npc.rotation + MathHelper.Pi, glowRectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);

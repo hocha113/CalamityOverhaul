@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                         SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld);
                         //这里选择从某个玩家的端口上生成弹幕，因为未知原因从服务端上无法生成闪电，这是一个临时的解决方法
-                        Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
+                        Player player = CWRUtils.InPosFindPlayer(CenterInWorld);
                         if (player != null && player.whoAmI == Main.myPlayer) {
                             Vector2 dir = CenterInWorld.To(TargetByNPC.Center).UnitVector();
                             Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld

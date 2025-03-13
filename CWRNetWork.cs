@@ -17,7 +17,6 @@ namespace CalamityOverhaul
         ModifiIntercept_InGame,
         ModifiIntercept_EnterWorld_Request,
         ModifiIntercept_EnterWorld_ToClient,
-        DestroyerData,
     }
 
     public class CWRNetWork : ICWRLoader
@@ -45,9 +44,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ModifiIntercept_EnterWorld_ToClient) {
                 HandlerCanOverride.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.DestroyerData) {
-                DestroyerHeadAI.HandlerBodyNetWork(reader);
             }
         }
     }
