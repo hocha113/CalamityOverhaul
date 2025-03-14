@@ -227,8 +227,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
             => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback(item), GetStartKnockback, ref knockback);
 
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(InWorldBossPhase.Mura_Level());
-
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += GetOnCrit(item);
             return false;
@@ -260,6 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = heldProjType;
             Item.CWR().GetMeleePrefix = true;
+            Item.CWR().LegendData = new MuraData();
         }
 
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {

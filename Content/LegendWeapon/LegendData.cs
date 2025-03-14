@@ -20,18 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// 上一次提升等级的世界名字
         /// </summary>
         public string UpgradeWorldName = "";
-
-        public static void Create(Item item) {
-            if (item.type == ModContent.ItemType<Murasama>()) {
-                item.CWR().LegendData = new MuraData();
-            }
-            if (item.type == ModContent.ItemType<SHPC>()) {
-                item.CWR().LegendData = new LegendData();
-            }
-            else if (item.type == ModContent.ItemType<HalibutCannon>()) {
-                item.CWR().LegendData = new LegendData();
-            }
-        }
+        /// <summary>
+        /// 这个传奇应该升级到的等级
+        /// </summary>
+        public virtual int TargetLevle => 0;
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
@@ -79,10 +71,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 UpgradeWorldName = "";
             }
         }
-        public virtual void Update(int currentLevel) {
-            if (currentLevel > Level) {
+        public virtual void Update() {
+            if (TargetLevle > Level) {
                 UpgradeWorldName = Main.worldName;
-                Level = currentLevel;
+                Level = TargetLevle;
             }
         }
     }

@@ -4,6 +4,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
@@ -135,9 +136,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
             Item.SetHeldProj<HalibutCannonHeld>();
+            Item.CWR().LegendData = new HalibutData();
         }
-
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData?.Update(Halibut_Level());
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = item.CWR().LegendData.Level;

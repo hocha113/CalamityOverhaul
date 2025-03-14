@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             LoadWeaponData();
             Item.damage = GetStartDamage;
             Item.SetHeldProj<SHPCHeld>();
+            Item.CWR().LegendData = new SHPCData();
         }
 
         public static bool SHPCDamage(Player player, Item Item, ref StatModifier damage) {
@@ -91,8 +93,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage(Item), GetStartDamage, ref damage);
             return false;
         }
-
-        public override void UpdateInventory(Item item, Player player) => item.CWR().LegendData.Update(SHPC_Level());
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = item.CWR().LegendData.Level;
