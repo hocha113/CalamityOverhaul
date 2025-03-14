@@ -122,20 +122,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None && ThermalData.Temperature <= ThermalData.MaxTemperature - 250) {
+            if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None 
+                && FuelItems.FuelItemToCombustion.TryGetValue(ThermalData.FuelItem.type, out int value) 
+                && ThermalData.Temperature <= ThermalData.MaxTemperature - value) {
+
                 if (++ThermalData.ChargeCool > ThermalData.MaxChargeCool) {
                     ThermalData.FuelItem.stack--;
-
-                    if (FuelItems.FuelItemToCombustion.ContainsKey(ThermalData.FuelItem.type)) {
-                        ThermalData.Temperature += FuelItems.FuelItemToCombustion[ThermalData.FuelItem.type];
-                    }
-
+                    ThermalData.Temperature += value;
+                    FuelItems.OnAfterFlaming(ThermalData.FuelItem.type, this);
                     if (ThermalData.Temperature > ThermalData.MaxTemperature) {
                         ThermalData.Temperature = ThermalData.MaxTemperature;
                     }
                     if (ThermalData.FuelItem.stack <= 0) {
                         ThermalData.FuelItem.TurnToAir();
                     }
+
                     ThermalData.ChargeCool = 0;
                 }
             }

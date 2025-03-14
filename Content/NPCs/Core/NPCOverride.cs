@@ -246,6 +246,11 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// <returns></returns>
         public virtual bool? CheckDead() { return null; }
         /// <summary>
+        /// 允许编辑活跃检测逻辑
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool CheckActive() => true;
+        /// <summary>
         /// 编辑NPC在地图上的图标ID
         /// </summary>
         /// <param name="index"></param>

@@ -72,6 +72,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return base.CanOverride();
         }
 
+        public override bool CheckActive() => false;
+
         public override void BossHeadSlot(ref int index) {
             if (!HeadPrimeAI.DontReform()) {
                 index = iconIndex_Void;
@@ -117,6 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool AI() {
             Time++;
+            npc.timeLeft = 1800;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
             if (CWRWorld.MachineRebellion && !MachineRebellionAI()) {
                 return false;

@@ -23,6 +23,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             { ItemID.BorealWood, 50 },
             { ItemID.PalmWood, 50 },
             { ItemID.AshWood, 50 },
+            { ItemID.LavaBucket, 500 },
+            { ItemID.Gel, 80 },
+            { ItemID.BottomlessLavaBucket, 2000 },
+            { ItemID.Acorn, 20 },
         };
+        /// <summary>
+        /// 燃料被消耗时会运行
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <param name="generator"></param>
+        public static void OnAfterFlaming(int itemType, BaseGeneratorTP generator) {
+            if (itemType == ItemID.LavaBucket && !VaultUtils.isClient) {
+                generator.DropItem(ItemID.EmptyBucket);
+            }
+        }
     }
 }

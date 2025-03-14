@@ -4,6 +4,7 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -19,9 +20,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     {
         public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Item";
         public static LocalizedText UnderstandWindGrivenMK2 { get; private set; }
+        public static LocalizedText UnderstandWindGrivenMK2Remind { get; private set; }
         public override void SetStaticDefaults() {
             UnderstandWindGrivenMK2 = this.GetLocalization(nameof(UnderstandWindGrivenMK2),
                 () => "A deep understanding of wind power is required");
+            UnderstandWindGrivenMK2Remind = this.GetLocalization(nameof(UnderstandWindGrivenMK2Remind),
+                () => "Need to mine the giant wind turbines on asteroids to understand their crafting principles");
         }
         public override void SetDefaults() {
             Item.width = 32;
@@ -38,6 +42,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Item.createTile = ModContent.TileType<WindGrivenGeneratorMK2Tile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 2200;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            if (Main.LocalPlayer.CWR().UnderstandWindGriven) {
+                return;
+            }
+            TooltipLine line = new TooltipLine(CWRMod.Instance, "UnderstandWindGrivenMK2", UnderstandWindGrivenMK2Remind.Value);
+            line.OverrideColor = Color.Cyan;
+            tooltips.Add(line);
         }
 
         public static LocalizedText WindGrivenRecipeCondition(out Func<bool> condition) {

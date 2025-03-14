@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
@@ -229,7 +230,7 @@ namespace CalamityOverhaul.Content
             return cwr;
         }
 
-        private void SmiperItemSet(Item item) {
+        internal static void SmiperItemSet(Item item) {
             int type = item.type;
             if (type == ItemID.Zenith) {
                 item.damage = 105;
@@ -638,6 +639,12 @@ namespace CalamityOverhaul.Content
 
             if (inRItemIndsDict && ItemOverride.ByID[item.type].CanLoadLocalization) {
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, ItemOverride.ByID[item.type].Tooltip);
+            }
+
+            if (FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
+                var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{CWRLocText.Instance.TemperatureText}:{value * 4}°C");
+                line.OverrideColor = Color.Orange;
+                tooltips.Add(line);
             }
 
             if (item.CWR().StorageUE) {

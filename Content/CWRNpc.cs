@@ -231,6 +231,8 @@ namespace CalamityOverhaul.Content
             NPCOverride.ModifyHitByProjectile(projectile, ref modifiers);
         }
 
+        public override bool CheckActive(NPC npc) => NPCOverride.CheckActive();
+
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == CWRLoad.AstrumDeusHead) {
                 // 啊，经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年

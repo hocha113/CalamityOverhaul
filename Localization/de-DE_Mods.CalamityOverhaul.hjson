@@ -898,12 +898,14 @@ Items: {
 		// DisplayName: Wind Griven Generator
 		// Tooltip: "[UEValue]"
 		// UnderstandWindGriven: An initial understanding of how wind power works is required
+		// UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
 	}
 
 	WindGrivenGeneratorMK2: {
 		// DisplayName: Wind Griven Generator MK2
 		// Tooltip: "[UEValue]"
 		// UnderstandWindGrivenMK2: A deep understanding of wind power is required
+		// UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
 	}
 
 	ThermalGeneratorMK2: {
@@ -1533,6 +1535,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		// TemperatureText: Combustion Temperature
 		// EnergyShortage: Energy Shortage
 		// ChargingStation_Text1: Put in charge items
 		// ChargingStation_Text2: Put in battery

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -913,12 +913,14 @@ Items: {
 		DisplayName: 风力发电机
 		Tooltip: "[UEValue]"
 		UnderstandWindGriven: 需要对风力发电的工作原理有初步的了解
+		UnderstandWindGriven2: 需要在小行星上采掘破旧的风力机来了解它们的制作原理
 	}
 
 	WindGrivenGeneratorMK2: {
 		DisplayName: 风力发电机MK2
 		Tooltip: "[UEValue]"
 		UnderstandWindGrivenMK2: 需要对风力发电的工作原理有深入的了解
+		UnderstandWindGrivenMK2Remind: 需要挖掘小行星上的巨型风力涡轮机来了解它们的制作原理
 	}
 
 	ThermalGeneratorMK2: {
@@ -1553,7 +1555,8 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
-		EnergyShortage: 能量不足
+		TemperatureText: 燃烧温度
+		// EnergyShortage: Energy Shortage
 		ChargingStation_Text1: 放入充能物品
 		ChargingStation_Text2: 放入电池
 		ChargingStation_Text3: 需要放入能够接收能量的物品

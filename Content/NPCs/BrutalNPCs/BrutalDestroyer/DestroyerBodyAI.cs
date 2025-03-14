@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -102,6 +103,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
+
+        public override bool CheckActive() => false;
 
         private void SetMechQueenUp() {
             mechdusaCurvedSpineSegmentIndex = 0;
