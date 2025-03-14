@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class DestroyerHeadAI : NPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.TheDestroyer;
-        private const int maxFindMode = 20000 * 20000;
+        private const int maxFindMode = 60000;
         private ref float ByDashX => ref ai[0];
         private ref float ByDashY => ref ai[1];
         private ref float Time => ref ai[2];
@@ -97,11 +97,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.FindClosestPlayer();
                 player = Main.player[npc.target];
             }
-            if (!player.Alives() || player.DistanceSQ(npc.Center) > maxFindMode) {
+            if (!player.Alives() || player.Distance(npc.Center) > maxFindMode) {
                 npc.FindClosestPlayer();
                 player = Main.player[npc.target];
-                if (!player.Alives() || player.DistanceSQ(npc.Center) > maxFindMode) {
+                if (!player.Alives() || player.Distance(npc.Center) > maxFindMode) {
                     ByMasterStageIndex = 99;
+                    NetAISend();
                 }
             }
         }
@@ -117,14 +118,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             NetAISend();
         }
 
+        internal static void ForcedNetUpdating(NPC npc) {
+            if (!VaultUtils.isServer || !npc.active || Main.GameUpdateCount % 40 != 0) {
+                return;
+            }
+
+            foreach (var findPlayer in Main.ActivePlayers) {
+                if (findPlayer.Distance(npc.position) < 1440) {
+                    continue;
+                }
+
+                NPCSystem.SendNPCbasicData(npc, findPlayer.whoAmI);
+            }
+        }
+
         public override bool AI() {
             Time++;
             npc.timeLeft = 1800;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
             if (CWRWorld.MachineRebellion && !MachineRebellionAI()) {
+                ForcedNetUpdating(npc);
                 return false;
             }
             if (!OrigAI()) {
+                ForcedNetUpdating(npc);
                 return false;
             }
             return true;
@@ -157,9 +174,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         private bool MachineRebellionAI() {
             if (ByMasterStageIndex == 99) {
-                npc.velocity = new Vector2(0, 56);
+                npc.velocity = new Vector2(0, 86);
                 if (++ai[6] > 280) {
+                    npc.life = 0;
+                    npc.HitEffect();
+                    npc.checkDead();
                     npc.active = false;
+                    npc.netUpdate = true;
                 }
                 return false;
             }
@@ -200,7 +221,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (--ai[7] > 0) {
                 npc.VanillaAI();
-                if (npc.Distance(player.Center) > maxFindMode / 6) {//如果发现跑远了就里面切换阶段向玩家冲刺回来
+                if (npc.Distance(player.Center) > maxFindMode / 2) {//如果发现跑远了就里面切换阶段向玩家冲刺回来
                     DashVeloctiy = npc.Center.To(player.Center).UnitVector();
                     ai[7] = 0;
                     ai[5] = 2;
@@ -224,7 +245,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
                 if (ai[5] == 2) {
                     npc.velocity = DashVeloctiy * 44;
-                    if (npc.Distance(player.Center) > maxFindMode / 4) {
+                    if (npc.Distance(player.Center) > maxFindMode / 2) {
                         DashVeloctiy = npc.Center.To(player.Center).UnitVector();
                         NetWorkAI();
                     }

@@ -34,8 +34,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 NPC.rotation = head.rotation;
             }
             else {
+                NPC.life = 0;
+                NPC.HitEffect();
+                NPC.checkDead();
                 NPC.active = false;
+                NPC.netUpdate = true;
             }
+
+            DestroyerHeadAI.ForcedNetUpdating(NPC);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
@@ -33,6 +34,48 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static List<NPCOverride> NPCOverrides { get; private set; } = [];
         public static Dictionary<int, NPCOverride> IDToNPCSetDic { get; private set; } = [];
         #endregion
+
+        #region NetWork
+        /// <summary>
+        /// 在必要的时候使用这个发送NPC基本数据
+        /// </summary>
+        /// <param name="npc"></param>
+        public static void SendNPCbasicData(NPC npc, int player = -1) {
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.NPCbasicData);
+            modPacket.Write((byte)npc.whoAmI);
+            modPacket.WriteVector2(npc.position);
+            modPacket.Write(npc.rotation);
+            modPacket.Send(player);
+        }
+        /// <summary>
+        /// 接收NPC基本数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        public static void NPCbasicDataHandler(BinaryReader reader) {
+            int whoAmI = reader.ReadByte();
+            Vector2 pos = reader.ReadVector2();
+            float rot = reader.ReadSingle();
+
+            NPC npc = CWRUtils.GetNPCInstance(whoAmI);
+
+            if (npc != null) {
+                npc.position = pos;
+                npc.rotation = rot;
+
+                if (VaultUtils.isServer) {
+                    ModPacket modPacket = CWRMod.Instance.GetPacket();
+                    modPacket.Write((byte)CWRMessageType.NPCbasicData);
+                    modPacket.Write((byte)npc.whoAmI);
+                    modPacket.WriteVector2(npc.position);
+                    modPacket.Write(npc.rotation);
+                    modPacket.Send();
+                }
+            }
+        }
+        #endregion
+
         private static void LoadNPCSets() {
             NPCCustomizers = VaultUtils.GetSubclassInstances<NPCCustomizer>();
             NPCOverrides = VaultUtils.GetSubclassInstances<NPCOverride>();

@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance350Tiles;
         private bool FlyAtTarget => (calNPC.newAI[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private bool AbleToFireLaser => calNPC.destroyerLaserColor != -1;
+        private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
         private float enrageScale;
         private int noFlyZoneBoxHeight;
         private int totalSegments;
@@ -147,6 +148,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            if (!SegmentNPC.Alives()) {
+                npc.life = 0;
+                npc.HitEffect();
+                npc.checkDead();
+                npc.active = false;
+                npc.netUpdate = true;
+                return false;
+            }
+
             SetMechQueenUp();
             UpdateDRIncrease();
             UpdateFlightPhase();
@@ -191,8 +201,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 HandleDestroyerLaser();
             }
 
-            if (npc.life > Main.npc[(int)npc.ai[1]].life) {
-                npc.life = Main.npc[(int)npc.ai[1]].life;
+            if (npc.life > SegmentNPC.life) {
+                npc.life = SegmentNPC.life;
             }
 
             bool shouldFly = ShouldFly();
@@ -213,6 +223,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //冲刺！冲刺！冲刺！冲！冲！冲！
             Move(segmentVelocity);
 
+            DestroyerHeadAI.ForcedNetUpdating(npc);
             time++;
             return false;
         }
@@ -262,7 +273,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateAlpha() {
-            if (Main.npc[(int)npc.ai[1]].alpha < 128) {
+            if (SegmentNPC.alpha < 128) {
                 if (npc.alpha != 0) {
                     for (int i = 0; i < 2; i++) {
                         int spawnDust = Dust.NewDust(npc.position, npc.width, npc.height, DustID.TheDestroyer, 0f, 0f, 100, default, 2f);
@@ -663,7 +674,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             // 计算段比例缩放
             int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
 
-            Vector2 segmentTarget = Main.npc[(int)npc.ai[1]].Center - npc.Center;
+            Vector2 segmentTarget = SegmentNPC.Center - npc.Center;
 
             // 如果当前为曲线段，调整目标点的Y坐标
             if (mechdusaCurvedSpineSegmentIndex > 0) {
