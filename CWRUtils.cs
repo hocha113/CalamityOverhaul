@@ -465,22 +465,12 @@ namespace CalamityOverhaul
             return speed;
         }
 
-        public static void EntityToRot(this NPC entity, float ToRot, float rotSpeed) {
-            //entity.rotation = MathHelper.SmoothStep(entity.rotation, ToRot, rotSpeed);
+        public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = ToRot(entity.rotation, toRot, rotSpeed);
 
-            // 将角度限制在 -π 到 π 的范围内
-            entity.rotation = MathHelper.WrapAngle(entity.rotation);
-
-            // 计算差异角度
-            float diff = MathHelper.WrapAngle(ToRot - entity.rotation);
-
-            // 选择修改幅度小的方向进行旋转
-            if (Math.Abs(diff) < MathHelper.Pi) {
-                entity.rotation += diff * rotSpeed;
-            }
-            else {
-                entity.rotation -= MathHelper.WrapAngle(-diff) * rotSpeed;
-            }
+        public static float ToRot(float setRot, float toRot, float rotSpeed) {
+            setRot = MathHelper.WrapAngle(setRot);
+            float diff = MathHelper.WrapAngle(toRot - setRot);
+            return setRot + MathHelper.Clamp(diff, -rotSpeed, rotSpeed);
         }
 
         /// <summary>

@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Industrials
         /// </summary>
         public bool CanFire;
         /// <summary>
+        /// 是否电量不足
+        /// </summary>
+        public bool BatteryLow;
+        /// <summary>
         /// 没电提示
         /// </summary>
         public bool BatteryPrompt;
@@ -63,6 +67,14 @@ namespace CalamityOverhaul.Content.Industrials
         /// </summary>
         public int FireTime = 60;
         /// <summary>
+        /// 用于在闲置期间进行计算的值
+        /// </summary>
+        public int IdleWait = 0;
+        /// <summary>
+        /// 下一次闲置转动所需要的值
+        /// </summary>
+        public int NextTurnTirt = 0;
+        /// <summary>
         /// 伤害，默认为22
         /// </summary>
         public int Damage = 22;
@@ -78,10 +90,6 @@ namespace CalamityOverhaul.Content.Industrials
         /// 这个炮塔将要对准的点
         /// </summary>
         public Vector2 TargetCenter;
-        /// <summary>
-        /// 这个炮塔将要对准的点，在Ai中时机使用的值，会自动渐变靠拢<see cref="TargetCenter"/>
-        /// </summary>
-        public Vector2 NewTargetCenter;
         /// <summary>
         /// 朝向的单位向量
         /// </summary>
@@ -137,6 +145,7 @@ namespace CalamityOverhaul.Content.Industrials
             PreUpdate();
 
             CanFire = false;
+            BatteryLow = false;
             if (Friend) {
                 TargetByNPC = Center.FindClosestNPC(700, false, true);
                 if (TargetByNPC != null) {
@@ -154,6 +163,7 @@ namespace CalamityOverhaul.Content.Industrials
 
             if (MachineData.UEvalue <= SingleEnergyConsumption) {
                 CanFire = false;
+                BatteryLow = true;
                 if (!BatteryPrompt) {
                     CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
                     BatteryPrompt = true;
@@ -166,22 +176,39 @@ namespace CalamityOverhaul.Content.Industrials
             if (!CanFire) {
                 AttackPrompt = false;
                 FireStorage = FireTime;//避免零帧起手
-                TargetCenter = Center + new Vector2(Dir * 111, 80f);
+                //如果是因为没电了才导致不攻击的话
+                if (BatteryLow) {
+                    TargetCenter = Center + new Vector2(Dir * 111, 80f);
+                    Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.2f);
+                }
+                else {
+                    // 逐渐调整目标点，而不是瞬间跳变
+                    if (++IdleWait > NextTurnTirt) {
+                        IdleWait = 0;
+                        NextTurnTirt = Main.rand.Next(110, 180);
+                        float currentAngle = (TargetCenter - Center).ToRotation();
+                        float randomOffset = Main.rand.NextFloat(-1.8f, 1.8f); // 增加随机微调
+                        float newAngle = MathHelper.WrapAngle(currentAngle + randomOffset);
+                        TargetCenter = Center + newAngle.ToRotationVector2() * 122;
+                    }
+                    Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.02f);
+                }
+                
                 if (!Friend && TargetByPlayer == null) {//敌对炮塔在不攻击的情况下会自行充能
                     MachineData.UEvalue += 0.5f;
                 }
             }
-            else if (!AttackPrompt) {
-                if (!Friend) {
-                    CombatText.NewText(HitBox, Color.OrangeRed, CWRLocText.Instance.Turret_Text2.Value, false);
+            else {
+                Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.2f);
+                if (!AttackPrompt) {
+                    if (!Friend) {
+                        CombatText.NewText(HitBox, Color.OrangeRed, CWRLocText.Instance.Turret_Text2.Value, false);
+                    }
+                    AttackPrompt = true;
                 }
-                AttackPrompt = true;
             }
 
-            NewTargetCenter = Vector2.Lerp(NewTargetCenter, TargetCenter, 0.1f);
-
-            UnitToTarget = Center.To(NewTargetCenter).UnitVector();
-            Rotation = UnitToTarget.ToRotation();
+            UnitToTarget = Rotation.ToRotationVector2();
             Dir = Math.Sign(UnitToTarget.X);
 
             if (CanFire && FireStorage <= 0) {
@@ -256,7 +283,7 @@ namespace CalamityOverhaul.Content.Industrials
 
         public virtual void DrawTurret(Vector2 drawPos, Vector2 drawBarrelPos, Color drawColor) {
             Color glowColor = Color.White;
-            if (!CanFire) {//在待机时设置颜色偏暗，让玩家知道这个炮塔在待机
+            if (BatteryLow) {//在待机时设置颜色偏暗，让玩家知道这个炮塔在待机
                 glowColor = drawColor;
                 glowColor.R /= 3;
                 glowColor.G /= 3;

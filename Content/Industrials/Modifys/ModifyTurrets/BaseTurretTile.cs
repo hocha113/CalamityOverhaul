@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
                 Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
 
                 Color drawColor = Lighting.GetColor(i, j);
-                if (!turret.CanFire) {//在待机时设置颜色偏暗，让玩家知道这个炮塔在待机
+                if (turret.BatteryLow) {//在没电时设置颜色偏暗，让玩家知道这个炮塔没电了
                     drawColor.R /= 2;
                     drawColor.G /= 2;
                     drawColor.B /= 2;
