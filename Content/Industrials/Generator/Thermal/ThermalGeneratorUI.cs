@@ -22,6 +22,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             }
 
             player.mouseInterface = true;
+            if (!ThermalData.FuelItem.IsAir) {
+                Main.HoverItem = ThermalData.FuelItem.Clone();
+                Main.hoverItemName = ThermalData.FuelItem.Name;
+            }
 
             if (keyLeftPressState != KeyPressState.Pressed) {
                 return;
@@ -136,8 +140,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal ElectricPowerUI electricPower = new ElectricPowerUI();
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/GeneratorPanel");
         public override void UpdateElement() {
-            Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2;
-
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 110, Main.screenWidth - 110);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 110, Main.screenHeight - 110);
 

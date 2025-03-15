@@ -176,6 +176,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     SoundEngine.PlaySound(SoundID.MenuTick);
                 }
             }
+            else {
+                Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2;
+            }
 
             if (CanUseFuel(out int value)) {
                 ThermalData.FuelItem.stack--;
