@@ -66,7 +66,10 @@ namespace CalamityOverhaul.Content.Tiles
                 ModContent.TileType<VoidCondenser>(),
                 ModContent.TileType<WulfrumLabstation>(),
                 ModContent.TileType<StaticRefiner>(),
+                ModContent.TileType<ProfanedCrucible>(),
+                ModContent.TileType<PlagueInfuser>(),
                 ModContent.TileType<DraedonsForge>(),
+                ModContent.TileType<DarkMatterCompressor>(),
             ];
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);

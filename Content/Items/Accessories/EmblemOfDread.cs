@@ -285,15 +285,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
     public class EmblemOfDreadDashProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public int DashDir = -1;
         public SlotId SlotId { get; private set; }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 330;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.tileCollide = false;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
+            Projectile.tileCollide = true;
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -301,6 +300,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void Initialize() {
             SlotId = SoundEngine.PlaySound(DevourerofGodsHead.DeathAnimationSound with { Pitch = -0.2f }, Owner.Center);
             Owner.GetModPlayer<EmblemOfDreadPlayer>().SetDash((int)Projectile.ai[0]);
+            Projectile.localAI[0] = EmblemOfDreadPlayer.DashVelocity;
         }
 
         public override void AI() {
@@ -308,6 +308,18 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 || Owner.GetModPlayer<EmblemOfDreadPlayer>().DashTimer <= 0) {
                 Projectile.Kill();
                 return;
+            }
+
+            if (Projectile.ai[1] == 0 && Projectile.ai[0] == 0) {
+                Owner.velocity = new Vector2(Owner.velocity.X, 100);
+                Vector2 collVer = Collision.TileCollision(Projectile.position, Owner.velocity, Projectile.width, Projectile.height);
+                if (collVer == Owner.velocity) {
+                    Owner.position.Y += Projectile.localAI[0];
+                }
+                else {
+                    Projectile.ai[1]++;
+                }
+                Projectile.localAI[0] *= 0.996f;
             }
 
             Projectile.Center = Owner.Center;
@@ -331,19 +343,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 sound.Position = Owner.Center;
             }
 
-            if (!VaultUtils.isServer) {
+            if (Projectile.ai[1] == 0 && !VaultUtils.isServer) {
                 for (int j = 0; j < 53; j++) {
                     BasePRT spark = new PRT_HeavenfallStar(Owner.Center
                         , Owner.velocity.UnitVector() * (0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    spark.ShouldKillWhenOffScreen = false;
                     PRTLoader.AddParticle(spark);
                 }
                 for (int j = 0; j < 53; j++) {
                     BasePRT spark = new PRT_HeavenfallStar(Owner.Center
                         , Owner.velocity.UnitVector() * -(0.1f + j * 0.34f), false, 20, Main.rand.NextFloat(0.6f, 1.3f), Color.BlueViolet);
+                    spark.ShouldKillWhenOffScreen = false;
                     PRTLoader.AddParticle(spark);
                 }
             }
         }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<VoidErosion>(), 1300);

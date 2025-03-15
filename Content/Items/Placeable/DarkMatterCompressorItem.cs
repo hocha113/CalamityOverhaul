@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void SetDefaults() {
-
             Item.width = 26;
             Item.height = 26;
             Item.maxStack = 1;
@@ -28,14 +27,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<DarkMatterCompressor>();
-
             Item.rare = ModContent.RarityType<DarkOrange>();
-            Item.value = Terraria.Item.buyPrice(gold: 16);
+            Item.value = Item.buyPrice(gold: 16);
         }
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<DarkPlasma>(25)//暗物质
+                .AddIngredient<DarkPlasma>(5)//暗物质
                 .AddIngredient<StaticRefiner>()
                 .AddIngredient<ProfanedCrucible>()
                 .AddIngredient<PlagueInfuser>()

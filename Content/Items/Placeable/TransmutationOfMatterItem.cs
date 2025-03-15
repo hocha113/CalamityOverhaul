@@ -30,9 +30,9 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<ShadowspecBar>(25)
+                .AddIngredient<ShadowspecBar>(5)
                 .AddIngredient<DraedonsForge>()
-                .AddIngredient<AltarOfTheAccursedItem>()
+                .AddIngredient<DarkMatterCompressorItem>()
                 .AddTile(ModContent.TileType<DarkMatterCompressor>())
                 .Register();
         }

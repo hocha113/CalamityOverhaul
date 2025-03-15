@@ -14,19 +14,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             KreloadMaxTime = 90;
             FireTime = 20;
-            HandIdleDistanceX = 15;
-            HandIdleDistanceY = 5;
-            HandFireDistanceX = 15;
-            HandFireDistanceY = -5;
+            HandIdleDistanceX = 16;
+            HandIdleDistanceY = 2;
+            HandFireDistanceX = 16;
+            HandFireDistanceY = -2;
             ShootPosNorlLengValue = -7;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
-            Recoil = 2.2f;
+            Recoil = 1.2f;
             RangeOfStress = 25;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.gunBodyY = -12;
+            LoadingAA_Handgun.gunBodyY = -8;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_Magnum_ClipLocked;
             LoadingAA_Handgun.clipOut = CWRSound.Gun_Magnum_ClipOut;
         }
