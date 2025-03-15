@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.Generator
 {
     internal class FuelItems
     {
-        public static readonly Dictionary<int, int> FuelItemToCombustion = new Dictionary<int, int>() {
+        public readonly static Dictionary<int, int> FuelItemToCombustion = new Dictionary<int, int>() {
             { ItemID.Wood, 50 },
             { ItemID.Coal, 250 },
             { ItemID.Hay, 50 },
@@ -34,8 +35,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator
         /// <param name="itemType"></param>
         /// <param name="generator"></param>
         public static void OnAfterFlaming(int itemType, BaseGeneratorTP generator) {
-            if (itemType == ItemID.LavaBucket && !VaultUtils.isClient) {
-                generator.DropItem(ItemID.EmptyBucket);
+            if (itemType == ItemID.LavaBucket || itemType == ItemID.BottomlessLavaBucket) {
+                if (!VaultUtils.isClient) {
+                    generator.DropItem(ItemID.EmptyBucket);
+                }
             }
         }
     }

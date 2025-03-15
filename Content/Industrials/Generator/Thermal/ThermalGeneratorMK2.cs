@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.rare = ItemRarityID.Pink;
             Item.createTile = ModContent.TileType<ThermalGeneratorMK2Tile>();
             Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 10000;
         }
 
         public override void AddRecipes() {
@@ -100,109 +101,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
     }
 
-    internal class ThermalGeneratorMK2TP : BaseGeneratorTP
+    internal class ThermalGeneratorMK2TP : ThermalGeneratorTP
     {
         public override int TargetTileID => ModContent.TileType<ThermalGeneratorMK2Tile>();
-        internal ThermalData ThermalData => MachineData as ThermalData;
         public override int TargetItem => ModContent.ItemType<ThermalGeneratorMK2>();
         public override float MaxUEValue => 10000;
-        internal int frame;
+        public override void SetGenerator() {
+            GeneratingSpeed = 2;
+            MaxFrame = 5;
+        }
         public override MachineData GetGeneratorDataInds() {
             var inds = new ThermalData();
             inds.MaxChargeCool = 4;
             inds.MaxTemperature = 2000;
             inds.MaxUEValue = MaxUEValue;
             return inds;
-        }
-        public override void GeneratorUpdate() {
-            if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
-                if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
-                    && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
-                    UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                }
-            }
-
-            if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None
-                && FuelItems.FuelItemToCombustion.TryGetValue(ThermalData.FuelItem.type, out int value)
-                && ThermalData.Temperature <= ThermalData.MaxTemperature - value) {
-
-                if (++ThermalData.ChargeCool > ThermalData.MaxChargeCool) {
-                    ThermalData.FuelItem.stack--;
-                    ThermalData.Temperature += value;
-                    FuelItems.OnAfterFlaming(ThermalData.FuelItem.type, this);
-                    if (ThermalData.Temperature > ThermalData.MaxTemperature) {
-                        ThermalData.Temperature = ThermalData.MaxTemperature;
-                    }
-                    if (ThermalData.FuelItem.stack <= 0) {
-                        ThermalData.FuelItem.TurnToAir();
-                    }
-
-                    ThermalData.ChargeCool = 0;
-                }
-            }
-
-            if (ThermalData.Temperature > 0 && ThermalData.UEvalue <= ThermalData.MaxUEValue) {
-                ThermalData.Temperature--;
-                ThermalData.UEvalue += 2;
-            }
-
-            if (ThermalData.Temperature > 0) {
-                CWRUtils.ClockFrame(ref frame, 5, 5, 1);
-            }
-            else {
-                frame = 0;
-            }
-        }
-
-        public override void GeneratorKill() {
-            if (!VaultUtils.isClient) {
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, ThermalData.FuelItem.Clone());
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                }
-            }
-
-            ThermalData.FuelItem.TurnToAir();
-
-            if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
-                    && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
-                UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-            }
-        }
-
-        public override void RightClickByTile(bool newTP) {
-            Item item = Main.LocalPlayer.GetItem();
-
-            if (Main.keyState.PressingShift()) {
-                if (!ThermalData.FuelItem.IsAir && !VaultUtils.isClient) {
-                    int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, ThermalData.FuelItem.Clone());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
-                }
-                ThermalData.FuelItem.TurnToAir();
-                SoundEngine.PlaySound(SoundID.Grab);
-                return;
-            }
-
-            if (item.IsAir || !FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
-                return;
-            }
-
-            if (!ThermalData.FuelItem.IsAir && !VaultUtils.isClient) {
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, ThermalData.FuelItem.Clone());
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                }
-                ThermalData.FuelItem.TurnToAir();
-            }
-
-            if (FuelItems.FuelItemToCombustion.TryGetValue(item.type, out _)) {
-                ThermalData.FuelItem = item.Clone();
-                item.TurnToAir();
-                SoundEngine.PlaySound(SoundID.Grab);
-            }
         }
     }
 }

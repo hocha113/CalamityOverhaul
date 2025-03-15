@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal float MaxUEValue;
         internal int ChargeCool;
         internal float Temperature;
+        internal float TemperatureTransfer;
+        internal float MaxTemperatureTransfer;
         internal Item FuelItem = new Item();
         public override void SendData(ModPacket data) {
             base.SendData(data);

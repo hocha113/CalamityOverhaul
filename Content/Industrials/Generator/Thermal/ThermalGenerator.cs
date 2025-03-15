@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.rare = ItemRarityID.LightRed;
             Item.createTile = ModContent.TileType<ThermalGeneratorTile>();
             Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 1000;
         }
 
         public override void AddRecipes() {
@@ -105,6 +106,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal int frame;
         internal ThermalData ThermalData => MachineData as ThermalData;
         public override float MaxUEValue => 1000;
+        public int GeneratingSpeed = 1;
+        public int MaxFrame = 4;
         public override int TargetItem => ModContent.ItemType<ThermalGenerator>();
         public override MachineData GetGeneratorDataInds() {
             var inds = new ThermalData();
@@ -113,45 +116,74 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             inds.MaxUEValue = MaxUEValue;
             return inds;
         }
-        public override void GeneratorUpdate() {
+
+        public bool CanUseFuel(out int value) {
+            value = 0;
+            bool reset = false;
+            if (ThermalData.FuelItem == null || ThermalData.FuelItem.type == ItemID.None) {
+                return false;
+            }
+            if (FuelItems.FuelItemToCombustion.TryGetValue(ThermalData.FuelItem.type, out value)) {
+                reset = true;
+            }
+            if (ThermalData.Temperature > ThermalData.MaxTemperature - value) {
+                reset = false;
+            }
+            if (ThermalData.Temperature <= 0) {
+                reset = true;
+            }
+            if (++ThermalData.ChargeCool < ThermalData.MaxChargeCool) {
+                reset = false;
+            }
+            return reset;
+        }
+
+        public sealed override void GeneratorUpdate() {
             if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
                 if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
                     && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
                     UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                 }
             }
 
-            if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None 
-                && FuelItems.FuelItemToCombustion.TryGetValue(ThermalData.FuelItem.type, out int value) 
-                && ThermalData.Temperature <= ThermalData.MaxTemperature - value) {
+            if (CanUseFuel(out int value)) {
+                ThermalData.FuelItem.stack--;
+                ThermalData.TemperatureTransfer += value;
+                ThermalData.MaxTemperatureTransfer = ThermalData.TemperatureTransfer;
+                FuelItems.OnAfterFlaming(ThermalData.FuelItem.type, this);
+                if (ThermalData.Temperature > ThermalData.MaxTemperature) {
+                    ThermalData.Temperature = ThermalData.MaxTemperature;
+                }
+                if (ThermalData.FuelItem.stack <= 0) {
+                    ThermalData.FuelItem.TurnToAir();
+                }
 
-                if (++ThermalData.ChargeCool > ThermalData.MaxChargeCool) {
-                    ThermalData.FuelItem.stack--;
-                    ThermalData.Temperature += value;
-                    FuelItems.OnAfterFlaming(ThermalData.FuelItem.type, this);
-                    if (ThermalData.Temperature > ThermalData.MaxTemperature) {
-                        ThermalData.Temperature = ThermalData.MaxTemperature;
-                    }
-                    if (ThermalData.FuelItem.stack <= 0) {
-                        ThermalData.FuelItem.TurnToAir();
-                    }
+                ThermalData.ChargeCool = 0;
+            }
 
-                    ThermalData.ChargeCool = 0;
+            for (int i = 0; i < 6; i++) {
+                if (ThermalData.TemperatureTransfer > 0 && ThermalData.Temperature < ThermalData.MaxTemperature) {
+                    ThermalData.Temperature++;
+                    ThermalData.TemperatureTransfer--;
                 }
             }
 
-            if (ThermalData.Temperature > 0 && ThermalData.UEvalue <= ThermalData.MaxUEValue) {
-                ThermalData.Temperature--;
-                ThermalData.UEvalue++;
-            }
+            UpdateThermal();
+        }
 
+        public virtual void UpdateThermal() {
             if (ThermalData.Temperature > 0) {
-                CWRUtils.ClockFrame(ref frame, 5, 4, 1);
+                if (ThermalData.UEvalue < ThermalData.MaxUEValue - GeneratingSpeed) {
+                    ThermalData.Temperature--;
+                    ThermalData.UEvalue += GeneratingSpeed;
+                }
+                CWRUtils.ClockFrame(ref frame, 5, MaxFrame, 1);
             }
             else {
                 frame = 0;
             }
+            ThermalData.Temperature = MathHelper.Clamp(ThermalData.Temperature, 0, ThermalData.MaxTemperature);
         }
 
         public override void GeneratorKill() {

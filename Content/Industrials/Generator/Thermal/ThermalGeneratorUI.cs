@@ -52,10 +52,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void Draw(SpriteBatch spriteBatch) {
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
 
-            if (ThermalData.Temperature > 0) {
+            if (ThermalData.TemperatureTransfer > 0) {
                 Texture2D fire = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/FirePower");
-                Rectangle fireRect = (DrawPosition + new Vector2(16, 56)).GetRectangle(fire.Size());
-                Main.spriteBatch.Draw(fire, fireRect, Color.White * (ThermalData.Temperature / ThermalData.MaxTemperature));
+                Rectangle fireRect = (DrawPosition + new Vector2(16, 52)).GetRectangle(fire.Size());
+                Main.spriteBatch.Draw(fire, fireRect, Color.White * (ThermalData.TemperatureTransfer / ThermalData.MaxTemperatureTransfer));
             }
 
             if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None) {
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
-                string temperatureText = $"{ThermalData.Temperature}/{ThermalData.MaxTemperature}°C";
+                string temperatureText = $"{((int)ThermalData.Temperature)}/{((int)ThermalData.MaxTemperature)}°C";
                 Vector2 textPosition = new Vector2(MousePosition.X, MousePosition.Y + 40);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, temperatureText
                     , textPosition.X, textPosition.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
