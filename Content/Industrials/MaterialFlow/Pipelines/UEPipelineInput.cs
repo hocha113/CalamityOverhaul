@@ -310,21 +310,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             int linkCount = 0;
+            int linkCount2 = 0;
             foreach (var side in SideState) {
                 if (side.linkID != 0) {
                     linkCount++;
+                    if (side.linkID != 2) {
+                        linkCount2++;
+                    }
                 }
             }
 
-            if (linkCount != 2) {
+            if (linkCount != 2 || linkCount2 == 2) {
                 spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), Color.White * (MachineData.UEvalue / 10f));
                 spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
             }
-
-            //if (GeneratorData != null) {
-            //    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ((int)GeneratorData.UEvalue).ToString()
-            //        , drawPos.X + 6, drawPos.Y - 8, Color.White, Color.Black, new Vector2(0.1f), 0.5f);
-            //}
         }
     }
 }

@@ -188,6 +188,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 if (sengs < 1f) {
                     sengs += 0.1f;
                 }
+                else if (Main.LocalPlayer.Distance(CenterInWorld) > 400) {
+                    OpenUI = false;
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                }
             }
             else if (sengs > 0f) {
                 sengs -= 0.1f;

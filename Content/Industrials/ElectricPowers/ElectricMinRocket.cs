@@ -1,11 +1,12 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using Stubble.Core.Classes;
+using System.Diagnostics.Metrics;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -47,19 +48,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Owner.CWR().RideElectricMinRocket = true;
             Projectile.velocity = new Vector2(Owner.velocity.X / 6, -6);
             Projectile.rotation = Projectile.velocity.ToRotation();
+            Owner.fullRotation = Projectile.velocity.X / 2f;
+            Owner.fullRotationOrigin = Owner.Size / 2;
+            //卸载掉玩家的所有钩爪
+            Owner.RemoveAllGrapplingHooks();
+            //卸载掉玩家的所有坐骑
+            Owner.mount.Dismount(Owner);
 
-            if (Projectile.position.Y < 480) {
+            if (++Projectile.localAI[0] > 12) {
+                SoundEngine.PlaySound(SoundID.Item24 with { Pitch = -0.2f }, Projectile.Center);
+                Projectile.localAI[0] = 0;
+            }
+
+            if (Projectile.position.Y < 800) {
                 Projectile.Kill();
             }
 
             if (!VaultUtils.isServer) {
-                Vector2 spanPos = Projectile.Bottom - new Vector2(Owner.direction * 20, 60);
+                Vector2 spanPos = Owner.Center - new Vector2(Owner.direction * 20, 0).RotatedBy(Owner.fullRotation);
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = Projectile.velocity * -10,
+                    Velocity = Projectile.velocity * -6,
                     Position = spanPos,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    maxLifeTime = 24,
-                    minLifeTime = 18,
+                    maxLifeTime = 18,
+                    minLifeTime = 12,
                     Color = Color.Gold
                 };
                 PRTLoader.AddParticle(lavaFire);
@@ -67,7 +79,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void OnKill(int timeLeft) {
+            Owner.fullRotation = 0;
             Projectile.Explode();
+            SpawnDust();
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Item item = new Item(ModContent.ItemType<ElectricMinRocket>());
                 item.CWR().UEValue = Projectile.ai[0] - 200;
@@ -76,6 +90,45 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
                 Owner.QuickSpawnItem(Owner.FromObjectGetParent(), item);
             }
+        }
+
+        private void SpawnDust() {
+            if (VaultUtils.isServer) {
+                return;
+            }                
+            for (int i = 0; i < 20; i++) {
+                int idx = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.Smoke, 0f, 0f, 100, default, 2f);
+                Main.dust[idx].velocity *= 3f;
+                if (Main.rand.NextBool()) {
+                    Main.dust[idx].scale = 0.5f;
+                    Main.dust[idx].fadeIn = 1f + Main.rand.NextFloat(1f);
+                }
+            }
+            for (int i = 0; i < 40; i++) {
+                int idx = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 3f);
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].velocity *= 5f;
+
+                idx = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 2f);
+                Main.dust[idx].velocity *= 2f;
+            }
+            Vector2 source = Projectile.Center - new Vector2(24f, 24f);
+            int goreAmt = 3;
+            for (int goreIndex = 0; goreIndex < goreAmt; goreIndex++) {
+                float velocityMult = (goreIndex < goreAmt / 3) ? 0.66f : (goreIndex >= 2 * goreAmt / 3 ? 1f : 0.33f);
+                SpawnGore(source, velocityMult, new Vector2(1f, 1f));
+                SpawnGore(source, velocityMult, new Vector2(-1f, 1f));
+                SpawnGore(source, velocityMult, new Vector2(1f, -1f));
+                SpawnGore(source, velocityMult, new Vector2(-1f, -1f));
+            }
+        }
+
+        private void SpawnGore(Vector2 position, float velocityMultiplier, Vector2 velocityOffset) {
+            int type = Main.rand.Next(61, 64);
+            int goreIndex = Gore.NewGore(Projectile.GetSource_Death(), position, default, type, 1f);
+            Gore gore = Main.gore[goreIndex];
+            gore.velocity *= velocityMultiplier;
+            gore.velocity += velocityOffset;
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

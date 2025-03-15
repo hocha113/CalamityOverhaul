@@ -1556,7 +1556,7 @@ Keybinds: {
 TextContent: {
 	CWRLocText: {
 		TemperatureText: 燃烧温度
-		// EnergyShortage: Energy Shortage
+		EnergyShortage: 电力不足
 		ChargingStation_Text1: 放入充能物品
 		ChargingStation_Text2: 放入电池
 		ChargingStation_Text3: 需要放入能够接收能量的物品
