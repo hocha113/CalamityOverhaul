@@ -53,6 +53,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float ScreenShakeValue;
         /// <summary>
+        /// 火力发电活跃
+        /// </summary>
+        public int ThermalGenerationActiveTime;
+        /// <summary>
         /// 是否开启超级合成台
         /// </summary>
         public bool SupertableUIStartBool;
@@ -211,6 +215,7 @@ namespace CalamityOverhaul.Content
             TETramContrType = 0;
             ReceivingPlatformTime = 0;
             DontUseItemTime = 0;
+            ThermalGenerationActiveTime = 0;
             Reset();
         }
 
@@ -412,6 +417,9 @@ namespace CalamityOverhaul.Content
             }
             if (TimeFrozenTick > 0) {
                 TimeFrozenTick--;
+            }
+            if (ThermalGenerationActiveTime > 0) {
+                ThermalGenerationActiveTime--;
             }
 
             PlayerPositionChange = oldPlayerPositionChange.To(Player.position);

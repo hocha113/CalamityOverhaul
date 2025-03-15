@@ -64,13 +64,22 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 2;
             TileObjectData.newTile.Origin = new Point16(1, 1);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile 
+                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateHeights = [16, 16];
             TileObjectData.newTile.LavaDeath = false;
 
             TileObjectData.addTile(Type);
         }
         public override bool CanDrop(int i, int j) => false;
+        public override void MouseOver(int i, int j) {
+            Item item = Main.LocalPlayer.GetItem();
+            int type = TargetItem;
+            if (FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
+                type = item.type;
+            }
+            Main.LocalPlayer.SetMouseOverByTile(type);
+        }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
@@ -115,6 +124,27 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             inds.MaxTemperature = 600;
             inds.MaxUEValue = MaxUEValue;
             return inds;
+        }
+
+        internal void HandlerItem() {
+            SoundEngine.PlaySound(SoundID.Grab);
+            if (ThermalData.FuelItem.type == ItemID.None) {
+                ThermalData.FuelItem = Main.mouseItem.Clone();
+                Main.mouseItem.TurnToAir();
+            }
+            else if (Main.mouseItem.IsAir) {
+                Main.mouseItem = ThermalData.FuelItem.Clone();
+                ThermalData.FuelItem.TurnToAir();
+            }
+            else if (Main.mouseItem.type == ThermalData.FuelItem.type) {
+                ThermalData.FuelItem.stack += Main.mouseItem.stack;
+                Main.mouseItem.TurnToAir();
+            }
+            else if (Main.mouseItem.type != ItemID.None) {
+                ThermalData.FuelItem = Main.mouseItem.Clone();
+                Main.mouseItem = ThermalData.FuelItem.Clone();
+            }
+            SendData();
         }
 
         public bool CanUseFuel(out int value) {
@@ -206,13 +236,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item item = Main.LocalPlayer.GetItem();
 
             if (Main.keyState.PressingShift()) {
-                if (!ThermalData.FuelItem.IsAir && !VaultUtils.isClient) {
-                    int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, ThermalData.FuelItem.Clone());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
+                if (!ThermalData.FuelItem.IsAir) {//这里代码不会在服务端运行
+                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), ThermalData.FuelItem, ThermalData.FuelItem.stack);
+                    ThermalData.FuelItem.TurnToAir();
                 }
-                ThermalData.FuelItem.TurnToAir();
+                SendData();
                 SoundEngine.PlaySound(SoundID.Grab);
                 return;
             }
@@ -221,11 +249,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 return;
             }
 
-            if (!ThermalData.FuelItem.IsAir && !VaultUtils.isClient) {
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, ThermalData.FuelItem.Clone());
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                }
+            if (!ThermalData.FuelItem.IsAir) {
+                Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), ThermalData.FuelItem, ThermalData.FuelItem.stack);
                 ThermalData.FuelItem.TurnToAir();
             }
 
@@ -234,6 +259,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 item.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab);
             }
+
+            SendData();
         }
     }
 }

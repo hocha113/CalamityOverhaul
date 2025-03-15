@@ -48,6 +48,9 @@ namespace CalamityOverhaul.Content
     {
         #region Date
         public override bool InstancePerEntity => true;
+        /// <summary>
+        /// AI槽位数量
+        /// </summary>
         public const int MaxAISlot = 3;
         /// <summary>
         /// 用于存储物品的状态值，对这个数组的使用避免了额外类成员的创建
@@ -642,7 +645,7 @@ namespace CalamityOverhaul.Content
                 CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, ItemOverride.ByID[item.type].Tooltip);
             }
 
-            if (FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
+            if (Main.LocalPlayer.CWR().ThermalGenerationActiveTime > 0 && FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
                 var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{CWRLocText.Instance.TemperatureText}:{value * 4}°C");
                 line.OverrideColor = Color.Orange;
                 tooltips.Add(line);

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Temperature = reader.ReadSingle();
             int itemID = reader.ReadInt32();
             int stact = reader.ReadInt32();
-            if (itemID > 0 && itemID < ItemLoader.ItemCount) {
+            if (itemID >= 0 && itemID < ItemLoader.ItemCount) {
                 FuelItem = new Item(itemID);
                 FuelItem.stack = stact;
             }

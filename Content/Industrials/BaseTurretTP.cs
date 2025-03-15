@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Industrials
         /// <summary>
         /// 左右朝向
         /// </summary>
-        public int Dir;
+        public int TurnDirection;
         /// <summary>
         /// 开火蓄力
         /// </summary>
@@ -178,18 +178,23 @@ namespace CalamityOverhaul.Content.Industrials
                 FireStorage = FireTime;//避免零帧起手
                 //如果是因为没电了才导致不攻击的话
                 if (BatteryLow) {
-                    TargetCenter = Center + new Vector2(Dir * 111, 80f);
+                    TargetCenter = Center + new Vector2(TurnDirection * 111, 80f);
                     Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.2f);
                 }
                 else {
-                    // 逐渐调整目标点，而不是瞬间跳变
-                    if (++IdleWait > NextTurnTirt) {
+                    //在玩家画面里时才会运行巡逻逻辑，节省性能
+                    if (InScreen && ++IdleWait > NextTurnTirt) {
                         IdleWait = 0;
                         NextTurnTirt = Main.rand.Next(110, 180);
                         float currentAngle = (TargetCenter - Center).ToRotation();
                         float randomOffset = Main.rand.NextFloat(-1.8f, 1.8f); // 增加随机微调
                         float newAngle = MathHelper.WrapAngle(currentAngle + randomOffset);
-                        TargetCenter = Center + newAngle.ToRotationVector2() * 122;
+                        Vector2 offsetVer = newAngle.ToRotationVector2() * 122;
+                        TargetCenter = Center + offsetVer;
+                        if (Math.Abs(offsetVer.X) < 122) {
+                            offsetVer.X *= 3;
+                            TargetCenter = Center + offsetVer;
+                        }
                     }
                     Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.02f);
                 }
@@ -209,7 +214,7 @@ namespace CalamityOverhaul.Content.Industrials
             }
 
             UnitToTarget = Rotation.ToRotationVector2();
-            Dir = Math.Sign(UnitToTarget.X);
+            TurnDirection = Math.Sign(UnitToTarget.X);
 
             if (CanFire && FireStorage <= 0) {
                 RecoilValue -= Recoil;
@@ -272,7 +277,7 @@ namespace CalamityOverhaul.Content.Industrials
             Vector2 drawPos = Center + UnitToTarget * RecoilValue * 0.6f - Main.screenPosition;
             Color drawColor = Lighting.GetColor(Position.X, Position.Y);
             Vector2 drawBarrelPos = drawPos + UnitToTarget * (BarrelOffsetX + RecoilValue);
-            drawBarrelPos += UnitToTarget.GetNormalVector() * BarrelOffsetY * Dir;
+            drawBarrelPos += UnitToTarget.GetNormalVector() * BarrelOffsetY * TurnDirection;
 
             ModifyDrawData(ref drawPos, ref drawBarrelPos);
 
@@ -298,18 +303,18 @@ namespace CalamityOverhaul.Content.Industrials
 
             if (GetBarrelAsset != null) {
                 Main.EntitySpriteDraw(GetBarrelAsset.Value, drawBarrelPos, null, drawColor
-                , Rotation, GetBarrelAsset.Size() / 2, 1, Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , Rotation, GetBarrelAsset.Size() / 2, 1, TurnDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
                 if (GetBarrelGlowAsset != null) {
                     Main.EntitySpriteDraw(GetBarrelGlowAsset.Value, drawBarrelPos, null, glowColor
-                    , Rotation, GetBarrelGlowAsset.Size() / 2, 1, Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                    , Rotation, GetBarrelGlowAsset.Size() / 2, 1, TurnDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
                 }
             }
 
             Main.EntitySpriteDraw(GetBodyAsset.Value, drawPos, null, drawColor
-                , Rotation, GetBodyAsset.Size() / 2, 1, Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , Rotation, GetBodyAsset.Size() / 2, 1, TurnDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (GetBodyGlowAsset != null) {
                 Main.EntitySpriteDraw(GetBodyGlowAsset.Value, drawPos, null, glowColor
-                , Rotation, GetBodyGlowAsset.Size() / 2, 1, Dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , Rotation, GetBodyGlowAsset.Size() / 2, 1, TurnDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
         }
     }

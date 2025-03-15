@@ -17,35 +17,22 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
 
-            if (hoverInMainPage) {
-                player.mouseInterface = true;
+            if (!hoverInMainPage) {
+                return;
+            }
 
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    if (FuelItems.FuelItemToCombustion.ContainsKey(Main.mouseItem.type) || Main.mouseItem.type == ItemID.None) {
-                        SoundEngine.PlaySound(SoundID.Grab);
-                        if (ThermalData.FuelItem.type == ItemID.None) {
-                            ThermalData.FuelItem = Main.mouseItem.Clone();
-                            Main.mouseItem.TurnToAir();
-                        }
-                        else {
-                            if (Main.mouseItem.IsAir) {
-                                Main.mouseItem = ThermalData.FuelItem.Clone();
-                                ThermalData.FuelItem.TurnToAir();
-                            }
-                            else {
-                                if (Main.mouseItem.type == ThermalData.FuelItem.type) {
-                                    ThermalData.FuelItem.stack += Main.mouseItem.stack;
-                                    Main.mouseItem.TurnToAir();
-                                }
-                                else if (Main.mouseItem.type != ItemID.None) {
-                                    ThermalData.FuelItem = Main.mouseItem.Clone();
-                                    Main.mouseItem = ThermalData.FuelItem.Clone();
-                                }
-                            }
-                        }
-                        thermalGenerator.GeneratorTP.SendData();
-                    }
-                }
+            player.mouseInterface = true;
+
+            if (keyLeftPressState != KeyPressState.Pressed) {
+                return;
+            }
+
+            if (!FuelItems.FuelItemToCombustion.ContainsKey(Main.mouseItem.type) && Main.mouseItem.type != ItemID.None) {
+                return;
+            }
+
+            if (thermalGenerator.GeneratorTP is ThermalGeneratorTP thermal) {
+                thermal.HandlerItem();
             }
         }
 
@@ -117,13 +104,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
-
-            //if (hoverInMainPage) {
-            //    if (keyRightPressState == KeyPressState.Pressed) {
-            //        ThermalData.UEvalue = 0;
-            //        SoundEngine.PlaySound(SoundID.MenuClose);
-            //    }
-            //}
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -156,6 +136,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal ElectricPowerUI electricPower = new ElectricPowerUI();
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/GeneratorPanel");
         public override void UpdateElement() {
+            Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2;
+
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 110, Main.screenWidth - 110);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 110, Main.screenHeight - 110);
 

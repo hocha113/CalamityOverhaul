@@ -66,12 +66,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             TileObjectData.newTile.Origin = new Point16(2, 2);
             TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile 
+                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
         public override bool CanDrop(int i, int j) => false;
+        public override void MouseOver(int i, int j) {
+            Item item = Main.LocalPlayer.GetItem();
+            int type = TargetItem;
+            if (FuelItems.FuelItemToCombustion.ContainsKey(item.type)) {
+                type = item.type;
+            }
+            Main.LocalPlayer.SetMouseOverByTile(type);
+        }
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;

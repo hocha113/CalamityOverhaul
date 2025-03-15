@@ -884,18 +884,30 @@ Items: {
 	}
 
 	SoulofFrightEX: {
-		// DisplayName: Soulof Fright EX
-		// Tooltip: ""
+		// DisplayName: Soul of Fright EX
+		/* Tooltip:
+			'''
+			Concentrated fear energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			''' */
 	}
 
 	SoulofMightEX: {
-		// DisplayName: Soulof Might EX
-		// Tooltip: ""
+		// DisplayName: Soul of Might EX
+		/* Tooltip:
+			'''
+			Concentrated destructive energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			''' */
 	}
 
 	SoulofSightEX: {
-		// DisplayName: Soulof Sight EX
-		// Tooltip: ""
+		// DisplayName: Soul of Sight EX
+		/* Tooltip:
+			'''
+			Concentrated wisdom energy pulses within  
+			Obtain by defeating rebel machines during the Mechanical Uprising
+			''' */
 	}
 
 	DestroyersBladeEX: {

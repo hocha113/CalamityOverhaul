@@ -866,23 +866,35 @@ Items: {
 	}
 
 	ForgedLashEX: {
-		DisplayName: 钢铁之鞭EX
+		DisplayName: 锻钢之鞭EX
 		Tooltip: ""
 	}
 
 	SoulofFrightEX: {
 		DisplayName: 恐惧之魂EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			浓缩的恐惧之力在其中跃动  
+			在机械暴乱中击败叛乱机械以获取
+			'''
 	}
 
 	SoulofMightEX: {
 		DisplayName: 力量之魂EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			浓缩的毁灭之力在其中跃动  
+			在机械暴乱中击败叛乱机械以获取
+			'''
 	}
 
 	SoulofSightEX: {
 		DisplayName: 视域之魂EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			浓缩的智慧之力在其中跃动  
+			在机械暴乱中击败叛乱机械以获取
+			'''
 	}
 
 	DestroyersBladeEX: {
