@@ -199,17 +199,5 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                .AddIngredient<Drataliornus>()
-                .AddIngredient<HeavenlyGale>()
-                .AddIngredient<Eternity>()
-                .AddIngredient<DarkMatterBall>(7)
-                .AddIngredient<InfiniteIngot>(19)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

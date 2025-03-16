@@ -51,19 +51,5 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 , ModContent.ProjectileType<AnnihilatingUniverseHeldProj>(), damage, knockback, player.whoAmI, ai2: player.altFunctionUse == 0 ? 0 : 1);
             return false;
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                .AddIngredient<Deathwind>()
-                .AddIngredient<Alluvion>()
-                .AddIngredient<Apotheosis>()
-                .AddIngredient<Rock>()
-                .AddIngredient<CosmiliteBar>(11)//宇宙锭
-                .AddIngredient<ShadowspecBar>(16)
-                .AddIngredient<DarkMatterBall>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

@@ -14,6 +14,10 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -564,14 +568,79 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        private static void SetOmigaSnyRecipes() {
+            //key代表合成结果，value代表需要的材料列表
+            Dictionary<int, string[]> omigaSnyRecipeDic = [];
+            foreach (var pair in CWRLoad.ItemIDToOmigaSnyContent) {
+                if (pair.Value == null) {
+                    continue;
+                }
+                if (!CWRLoad.ItemAutoloadingOmigaSnyRecipe[pair.Key]) {
+                    continue;//如果该物品不需要自动装填终焉合成内容，就跳过它
+                }
+                omigaSnyRecipeDic.Add(pair.Key, pair.Value);
+            }
+
+            for (int i = 0; i < Recipe.numRecipes; i++) {
+                Recipe recipe = Main.recipe[i];
+                foreach (int key in omigaSnyRecipeDic.Keys) {
+                    if (recipe.HasResult(key)) {//先移除可能的已经添加了终焉配方的物品，保险起见防止冲突
+                        recipe.DisableRecipe();
+                    }
+                }
+            }
+
+            //key代表材料，value代表这个材料需要的数量
+            Dictionary<int, int> ingredientDic;
+
+            foreach (KeyValuePair<int, string[]> snyContent in omigaSnyRecipeDic) {
+                ingredientDic = [];
+                foreach (var fullName in snyContent.Value) {
+                    int itemID = VaultUtils.GetItemTypeFromFullName(fullName);
+                    //不要在材料里面添加空气物品或者添加自己
+                    if (itemID == snyContent.Key || itemID == ItemID.None) {
+                        continue;
+                    }
+                    if (!ingredientDic.TryAdd(itemID, 1)) {
+                        ingredientDic[itemID]++;
+                    }
+                }
+
+                if (ingredientDic.Count == 0) {
+                    continue;
+                }
+
+                Recipe recipe = Recipe.Create(snyContent.Key);
+                foreach (var ingredientPair in ingredientDic) {
+                    recipe.AddIngredient(ingredientPair.Key, ingredientPair.Value);
+                }
+                recipe.AddBlockingSynthesisEvent()
+                    .AddTile(TileType<TransmutationOfMatter>())
+                    .Register();
+            }
+        }
+
         public override void PostAddRecipes() {
+            //添加终焉合成内容
+            {
+                SetOmigaSnyRecipes();
+            }
             {//遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
                 for (int i = 0; i < Recipe.numRecipes; i++) {
-                    ModifyResultContent(Main.recipe[i]);
+                    Recipe recipe = Main.recipe[i];
+                    ModifyResultContent(recipe);
+                    if (ItemOverride.TryFetchByID(recipe.createItem.type, out var rItem)) {
+                        rItem.ModifyRecipe(recipe);
+                    }
                 }
             }
             {//添加配方的操作
                 AddResultContent();
+                for (int i = 0; i < ItemLoader.ItemCount; i++) {
+                    if (ItemOverride.TryFetchByID(i, out var rItem)) {
+                        rItem.AddRecipe();
+                    }
+                }
             }
         }
 

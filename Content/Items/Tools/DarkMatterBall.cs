@@ -266,17 +266,5 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             return true;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<ShadowspecBar>(24)
-                .AddIngredient<AuricBar>(20)
-                .AddIngredient<MiracleMatter>(16)
-                .AddIngredient<YharonSoulFragment>(8)
-                .AddIngredient<LoreCynosure>()
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

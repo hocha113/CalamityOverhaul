@@ -41,13 +41,5 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 22;
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 26;
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

@@ -127,15 +127,19 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 用于存储一个手持挥舞类的原生射弹ID
         /// </summary>
-        internal int SetHeldSwingOrigShootID;
+        public int SetHeldSwingOrigShootID;
         /// <summary>
         /// 表示这个物品是否经过了<see cref="CWRUtils.SetKnifeHeld{T}(Item, bool)"/>的设置
         /// </summary>
-        internal bool WeaponInSetKnifeHeld;
+        public bool WeaponInSetKnifeHeld;
         /// <summary>
         /// 这个物品所属的终焉合成内容，这决定了它的物品简介是否绘制终焉合成表格
         /// </summary>
-        internal string[] OmigaSnyContent;
+        public string[] OmigaSnyContent;
+        /// <summary>
+        /// 是否自动装填终焉合成配方？如果的话，默认为<see langword="true"/>，这个属性只有在设置了<see cref="OmigaSnyContent"/>时才有意义
+        /// </summary>
+        public bool AutoloadingOmigaSnyRecipe = true;
         /// <summary>
         /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
@@ -195,11 +199,11 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 弹匣内容，管理装填后的弹药部分
         /// </summary>
-        internal Item[] MagazineContents;
+        public Item[] MagazineContents;
         /// <summary>
         /// 需要锁定的弹药类型
         /// </summary>
-        internal Item TargetLockAmmo;
+        public Item TargetLockAmmo;
         #endregion
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {

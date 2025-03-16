@@ -58,15 +58,5 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<DragonsWordMouse>()] <= 0;
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<SubsumingVortex>()
-                .AddIngredient<YharonSoulFragment>(39)
-                .AddIngredient<Rock>()
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

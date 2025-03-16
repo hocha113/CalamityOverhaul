@@ -36,35 +36,5 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
             return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.MeteoriteBar)
-                .AddIngredient(ItemID.PlatinumBar)
-                .AddIngredient(ItemID.LunarBar)
-                .AddIngredient(ItemID.SpectreBar)
-                .AddIngredient(ItemID.ChlorophyteBar)
-                .AddIngredient(ItemID.HellstoneBar)
-                .AddIngredient(ItemID.ShroomiteBar)
-                .AddIngredient<ShadowspecBar>()
-                .AddIngredient<AuricBar>()
-                .AddIngredient<AerialiteBar>()
-                .AddIngredient<AstralBar>()
-                .AddIngredient<CosmiliteBar>()
-                .AddIngredient<CryonicBar>()
-                .AddIngredient<PerennialBar>()
-                .AddIngredient<UelibloomBar>()
-                .AddIngredient<ScoriaBar>()
-                .AddIngredient<PestilenceIngot>()
-                .AddIngredient<MiracleMatter>()
-                .AddIngredient<ExoPrism>()
-                .AddIngredient<AshesofAnnihilation>()
-                .AddIngredient<AscendantSpiritEssence>()
-                .AddIngredient<SpectralMatter>()
-                .AddIngredient<DarkMatterBall>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

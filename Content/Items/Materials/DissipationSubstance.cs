@@ -24,15 +24,5 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DissipationSubstance;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.ManaCrystal, 4)
-                .AddIngredient<DecayParticles>(8)
-                .AddIngredient<DecaySubstance>(16)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

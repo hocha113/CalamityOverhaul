@@ -39,13 +39,5 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetCartridgeGun<NeutronGunHeldProj>(120);
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronGun;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

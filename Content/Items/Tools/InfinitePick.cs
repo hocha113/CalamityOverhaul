@@ -129,15 +129,5 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             return true;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<CrystylCrusher>()
-                .AddIngredient<DarkMatterBall>(12)
-                .AddIngredient<InfiniteIngot>(18)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

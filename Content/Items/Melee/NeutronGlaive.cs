@@ -61,14 +61,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 
     internal class NeutronGlaiveHeld : BaseKnife, IWarpDrawable

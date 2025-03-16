@@ -33,13 +33,5 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.SetHeldProj<NeutronWandHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronWand;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

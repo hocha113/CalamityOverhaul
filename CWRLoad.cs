@@ -326,6 +326,10 @@ namespace CalamityOverhaul
         /// 从物品id映射到对应的终焉合成内容上，如果该物品没有终焉合成则返回<see langword="null"/>
         /// </summary>
         internal static Dictionary<int, string[]> ItemIDToOmigaSnyContent { get; private set; } = [];
+        /// <summary>
+        /// 该物品是否自动装填终焉合成内容
+        /// </summary>
+        internal static Dictionary<int, bool> ItemAutoloadingOmigaSnyRecipe { get; private set; } = [];
         #endregion
 
         public static class NPCValue
@@ -525,6 +529,7 @@ namespace CalamityOverhaul
                 ItemIsRanged[itemType] = false;
                 ItemIsRangedAndCanRightClickFire[itemType] = false;
                 ItemIDToOmigaSnyContent[itemType] = null;
+                ItemAutoloadingOmigaSnyRecipe[itemType] = true;
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
                     if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
                         TileToItem.Add(item.createTile, item.type);
@@ -538,6 +543,7 @@ namespace CalamityOverhaul
                     string[] snyOmig = cwrItem.OmigaSnyContent;
                     if (snyOmig != null) {
                         ItemIDToOmigaSnyContent[itemType] = snyOmig;
+                        ItemAutoloadingOmigaSnyRecipe[itemType] = cwrItem.AutoloadingOmigaSnyRecipe;
                     }
 
                     ItemIsHeldSwing[itemType] = cwrItem.IsHeldSwing;

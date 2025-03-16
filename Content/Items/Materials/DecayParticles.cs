@@ -24,19 +24,5 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DecayParticles;
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                .AddIngredient(ItemID.HallowedBar, 1)
-                .AddIngredient(ItemID.SoulofLight, 2)
-                .AddIngredient(ItemID.SoulofNight, 2)
-                .AddIngredient(ItemID.SoulofFright, 1)
-                .AddIngredient(ItemID.SoulofMight, 1)
-                .AddIngredient(ItemID.SoulofSight, 1)
-                .AddIngredient(ItemID.SoulofFlight, 1)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

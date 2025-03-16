@@ -83,27 +83,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
             return true;
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                .AddIngredient<ElementalGauntlet>()
-                .AddIngredient<Affliction>()
-                .AddIngredient<DarkSunRing>()
-                .AddIngredient<DraedonsHeart>()
-                .AddIngredient<AsgardianAegis>()
-                .AddIngredient<Radiance>()
-                .AddIngredient<YharimsGift>()
-                .AddIngredient<TheSponge>()
-                .AddIngredient<TheAmalgam>()
-                .AddIngredient<WarbanneroftheSun>()
-                .AddIngredient<ReaperToothNecklace>()
-                .AddIngredient<OccultSkullCrown>()
-                .AddIngredient<ChaliceOfTheBloodGod>()
-                .AddIngredient<NeutronStarIngot>(12)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 
     public class WarpingPoint : ModProjectile, IWarpDrawable

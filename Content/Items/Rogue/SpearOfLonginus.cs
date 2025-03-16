@@ -87,18 +87,5 @@ namespace CalamityOverhaul.Content.Items.Rogue
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<ShadowspecBar>(17)
-                .AddIngredient<Rock>(1)
-                .AddIngredient<ScarletDevil>(1)
-                .AddIngredient<CosmicCalamity>(1)
-                .AddIngredient(ItemID.Gungnir, 1)
-                .AddIngredient<NeutronStarIngot>(3)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

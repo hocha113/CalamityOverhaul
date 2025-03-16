@@ -62,17 +62,5 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<SimpleMuzzleBrake>();
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                .AddIngredient<ElementMuzzleBrake>()
-                .AddIngredient<ElementalQuiver>()
-                .AddIngredient<DaawnlightSpiritOrigin>()
-                .AddIngredient<QuiverofNihility>()
-                .AddIngredient<NeutronStarIngot>(12)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

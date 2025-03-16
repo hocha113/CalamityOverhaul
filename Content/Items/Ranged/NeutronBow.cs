@@ -42,13 +42,5 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetHeldProj<NeutronBowHeldProj>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronBow;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

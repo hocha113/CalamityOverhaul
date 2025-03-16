@@ -65,20 +65,5 @@ namespace CalamityOverhaul.Content.Items.Melee
                 && player.ownedProjectileCounts[ModContent.ProjectileType<DawnshatterOut>()] <= 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<DawnshatterSwing>()] <= 0;
         }
-
-        public override void AddRecipes() {
-            _ = CreateRecipe()
-                    .AddIngredient<Rock>(1)
-                    .AddIngredient(ItemID.FragmentSolar, 16)
-                    .AddIngredient(ItemID.DayBreak, 1)
-                    .AddIngredient<RedSun>(1)
-                    .AddIngredient<DraconicDestruction>(1)
-                    .AddIngredient<DragonPow>(1)
-                    .AddIngredient<DragonRage>(1)
-                    .AddIngredient<ShadowspecBar>(3)
-                    .AddBlockingSynthesisEvent()
-                    .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                    .Register();
-        }
     }
 }

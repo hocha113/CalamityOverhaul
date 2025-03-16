@@ -16,32 +16,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class InfiniteIngot : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/InfiniteIngot";
-        //public float QFH {
-        //    get {
-        //        const float baseBonus = 1.0f;
-        //        var modBonuses = new Dictionary<string, float>{
-        //            {"LightAndDarknessMod", 0.1f},
-        //            {"DDmod", 0.1f},
-        //            {"MaxStackExtra", 0.1f},
-        //            {"Wild", 0.1f},
-        //            {"Coralite", 0.1f},
-        //            {"AncientsAwakened", 0.1f},
-        //            {"NoxusBoss", 0.25f},
-        //            {"FargowiltasSouls", 0.25f},
-        //            {"MagicBuilder", 0.25f},
-        //            {"CalamityPostMLBoots", 0.25f},
-        //            {"仆从暴击", 0.25f}
-        //        };
-        //        float overMdgs = Instance.LoadMods.Count / 10f;
-        //        overMdgs = overMdgs < 0.5f ? 0 : overMdgs;
-        //        float totalBonus = modBonuses.Sum(pair => hasMod(pair.Key) ? pair.Value : 0);
-        //        return baseBonus + overMdgs + totalBonus;
-        //    }
-        //}
-        //private bool hasMod(string name) {
-        //    return Instance.LoadMods.Any(mod => mod.Name == name);
-        //}
-
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
             ItemID.Sets.SortingPriorityMaterials[Type] = 114;
@@ -102,21 +76,6 @@ namespace CalamityOverhaul.Content.Items.Materials
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-        }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<InfinityCatalyst>(1)
-                .AddIngredient<MiracleFruit>(1)
-                .AddIngredient<Elderberry>(1)
-                .AddIngredient<BloodOrange>(1)
-                .AddIngredient<Dragonfruit>(1)
-                .AddIngredient<MiracleMatter>(6)
-                .AddIngredient<ShadowspecBar>(9)
-                .AddIngredient<NeutronStarIngot>(11)
-                .AddBlockingSynthesisEvent()
-                .AddTile(TileType<TransmutationOfMatter>())
-                .Register();
         }
     }
 }

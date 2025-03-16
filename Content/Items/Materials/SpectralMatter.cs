@@ -25,15 +25,5 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_SpectralMatter;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient<DarkPlasma>(1)
-                .AddIngredient<DissipationSubstance>(8)
-                .AddIngredient<DecaySubstance>(16)
-                .AddBlockingSynthesisEvent()
-                .AddTile(ModContent.TileType<TransmutationOfMatter>())
-                .Register();
-        }
     }
 }

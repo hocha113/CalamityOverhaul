@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.createTile = ModContent.TileType<InfiniteToiletTile>();
             Item.CWR().OmigaSnyContent = FullItems;
+            Item.CWR().AutoloadingOmigaSnyRecipe = false;//这个物品的配方有些特殊，所以禁用掉自动装填转而使用更自由的手动装填
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
@@ -49,22 +50,24 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public static void DrawItemIcon(SpriteBatch spriteBatch, Vector2 position, int Type, float alp = 1) {
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, 0.8f, SpriteEffects.None, 0);
+            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, null, Color.White
+                , 0, TextureAssets.Item[Type].Value.Size() / 2, 0.8f, SpriteEffects.None, 0);
         }
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame
+            , Color drawColor, Color itemColor, Vector2 origin, float scale) {
             return true;
         }
 
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, Item.Center - Main.screenPosition, null, Main.DiscoColor, 0, TextureAssets.Item[Type].Value.Size() / 2, 1, SpriteEffects.None, 0);
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
+            spriteBatch.Draw(TextureAssets.Item[Type].Value, Item.Center - Main.screenPosition, null
+                , Main.DiscoColor, 0, TextureAssets.Item[Type].Value.Size() / 2, 1, SpriteEffects.None, 0);
             return false;
         }
 
         public override void AddRecipes() {
-            Func<bool> conditiontfunc = () => Main.zenithWorld;
-            Condition condition = new Condition(CWRLocText.GetTextKey("OnlyZenith"), conditiontfunc);
-
+            Condition condition = new Condition(CWRLocText.GetTextKey("OnlyZenith"), () => Main.zenithWorld);
             CreateRecipe()
                 .AddIngredient<InfiniteIngot>(29)
                 .AddIngredient<InfinityCatalyst>(9)

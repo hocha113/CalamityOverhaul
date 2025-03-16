@@ -925,5 +925,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public virtual bool? WingUpdate(int wings, Player player, bool inUse) {
             return null;
         }
+        /// <summary>
+        /// 修改这个物品的配方，注意，添加类操作不建议写在此处，因为这个函数在物品有多个同结果配方的情况下可能会被调用多次
+        /// </summary>
+        /// <param name="recipe"></param>
+        public virtual void ModifyRecipe(Recipe recipe) {
+
+        }
+        /// <summary>
+        /// 添加这个物品的配方，如果需要进行修改操作，建议使用<see cref="ModifyRecipe"/>
+        /// </summary>
+        public virtual void AddRecipe() {
+
+        }
     }
 }
