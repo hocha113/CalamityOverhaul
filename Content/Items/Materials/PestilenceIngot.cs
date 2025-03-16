@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.width = Item.height = 25;
             Item.maxStack = 9999;
             Item.rare = ItemRarityID.Lime;
-            Item.value = Terraria.Item.sellPrice(gold: 3);
+            Item.value = Item.sellPrice(gold: 3);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;

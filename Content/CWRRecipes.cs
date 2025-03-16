@@ -19,6 +19,7 @@ using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -611,7 +612,8 @@ namespace CalamityOverhaul.Content
                 }
 
                 Recipe recipe = Recipe.Create(snyContent.Key);
-                foreach (var ingredientPair in ingredientDic) {
+                foreach (var ingredientPair in ingredientDic.OrderByDescending
+                    (pair => CWRLoad.ItemIDToOmigaSnyContent[pair.Key] != null)) {//进行一下排序，让是终焉物品的材料排在前面
                     recipe.AddIngredient(ingredientPair.Key, ingredientPair.Value);
                 }
                 recipe.AddBlockingSynthesisEvent()
