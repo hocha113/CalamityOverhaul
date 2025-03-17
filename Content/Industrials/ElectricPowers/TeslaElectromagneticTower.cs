@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public float FadeValue = 0;
         public Vector2 TargetCenter;
         public ThunderTrail trail;
-        public LinkedList<Vector2> trailList = new LinkedList<Vector2>();
+        public LinkedList<Vector2> trailList = [];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;
             Projectile.friendly = true;
@@ -304,33 +304,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool? CanDamage() => State == 1 && Hited == 0;
 
         public float GetAlpha(float factor) {
-            if (factor < FadeValue)
+            if (factor < FadeValue) {
                 return 0;
-
-            return ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
-        }
-
-        public virtual Color ThunderColorFunc(float factor) => new Color(103, 255, 255);
-
-        public static bool TryFindClosestEnemy(Vector2 position, float maxDistance, Func<NPC, bool> predicate, out NPC target) {
-            float maxDis = maxDistance;
-            target = null;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC n = Main.npc[i];
-                if (n.active && !n.friendly && predicate(n)) {
-                    float dis = Vector2.Distance(position, n.Center);
-                    if (dis < maxDis) {
-                        maxDis = dis;
-                        target = n;
-                    }
-
-                }
             }
-
-            if (target == null)
-                return false;
-
-            return true;
+            return ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
         }
 
         public override void NetHeldSend(BinaryWriter writer) {
@@ -355,8 +332,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             switch (State) {
                 default:
                 case 0://刚生成，等待透明度变高后开始寻敌
-                    if (TryFindClosestEnemy(Projectile.Center, 800, n => n.CanBeChasedBy() && Collision.CanHit(Projectile, n), out NPC target)) {
-                        NPCIndex = target.whoAmI;
+                    NPC targetNPC = Projectile.Center.FindClosestNPC(800);
+                    if (targetNPC != null) {
+                        NPCIndex = targetNPC.whoAmI;
                         TargetCenter = Projectile.Center + Projectile.velocity.UnitVector() * 126;
                         StartAttack();
                         Projectile.netUpdate = true;
@@ -391,6 +369,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public virtual float ThunderWidthFunc_Sin(float factor) => MathF.Sin(factor * MathHelper.Pi) * ThunderWidth;
+        public virtual Color ThunderColorFunc(float factor) => new Color(103, 255, 255);
 
         public void StartAttack() {
             Projectile.tileCollide = true;
