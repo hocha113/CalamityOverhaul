@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.LoreItems;
-using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Tiles;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
+﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

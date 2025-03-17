@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Industrials
                     }
                     Rotation = CWRUtils.ToRot(Rotation, Center.To(TargetCenter).ToRotation(), 0.02f);
                 }
-                
+
                 if (!Friend && TargetByPlayer == null) {//敌对炮塔在不攻击的情况下会自行充能
                     MachineData.UEvalue += 0.5f;
                 }

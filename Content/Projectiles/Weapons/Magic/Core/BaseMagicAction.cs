@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
         }
 
         public override bool CanSpanProj() {
+            if (CanFire) {
+                Owner.manaRegenDelay = 4;
+            }
+
             if (--reuseDelay > 0) {
                 return false;
             }

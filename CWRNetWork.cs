@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System.IO;

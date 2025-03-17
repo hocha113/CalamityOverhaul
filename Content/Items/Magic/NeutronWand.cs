@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;

@@ -3,7 +3,6 @@ using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -66,7 +65,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             TileObjectData.newTile.Origin = new Point16(2, 2);
             TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile 
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;

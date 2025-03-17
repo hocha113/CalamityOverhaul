@@ -12,15 +12,11 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
 using System;
-using System.IO;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -122,7 +118,7 @@ namespace CalamityOverhaul.Content
 
             if (projectile.IsOwnedByLocalPlayer() && !projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
-                if (modPlayer.LoadMuzzleBrakeLevel == 4 
+                if (modPlayer.LoadMuzzleBrakeLevel == 4
                     && projectile.DamageType.CountsAsClass<RangedDamageClass>()) {
                     projectile.extraUpdates += 2;
                     if (Main.rand.NextBool(5)) {

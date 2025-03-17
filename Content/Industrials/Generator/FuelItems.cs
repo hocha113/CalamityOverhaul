@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Terraria.Audio;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.Generator

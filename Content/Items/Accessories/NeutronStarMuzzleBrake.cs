@@ -1,10 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
-using CalamityMod.Items.Accessories;
 using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;
@@ -43,6 +40,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             player.magicQuiver = true;
             player.GetDamage<RangedDamageClass>() += 1f;
             player.GetCritChance<RangedDamageClass>() += 100f;
+            player.GetAttackSpeed<RangedDamageClass>() += 1f;
             player.aggro -= 1200;
 
             calPlayer.voidField = true;

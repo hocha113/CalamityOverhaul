@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Structures
                     }
                     if (WorldGen.InWorld(pos3.X, pos3.Y - 1)) {
                         WorldGen.KillTile(pos3.X, pos3.Y - 1);
-                    } 
+                    }
                     Tile tileFind = Framing.GetTileSafely(pos);
                     tileFind.Slope = SlopeType.Solid;
                     WorldGen.PlaceTile(pos.X, pos.Y, tileFind.TileType);

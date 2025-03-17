@@ -1,12 +1,10 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics.Metrics;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -95,7 +93,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void SpawnDust() {
             if (VaultUtils.isServer) {
                 return;
-            }                
+            }
             for (int i = 0; i < 20; i++) {
                 int idx = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.Smoke, 0f, 0f, 100, default, 2f);
                 Main.dust[idx].velocity *= 3f;

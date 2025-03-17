@@ -1,13 +1,10 @@
 ﻿using CalamityMod;
-using CalamityMod.Balancing;
 using CalamityMod.CalPlayer;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.Players.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using CalamityOverhaul.Content.RangedModify;
-using CalamityOverhaul.Content.RangedModify.Core;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;

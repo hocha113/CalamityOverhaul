@@ -1,6 +1,4 @@
-﻿using Terraria;
-
-namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
+﻿namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 {
     internal class MuraData : LegendData
     {

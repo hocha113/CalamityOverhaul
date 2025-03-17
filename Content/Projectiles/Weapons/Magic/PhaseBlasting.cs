@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;

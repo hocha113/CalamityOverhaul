@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using Terraria.Audio;
 using Terraria;
+using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
 {

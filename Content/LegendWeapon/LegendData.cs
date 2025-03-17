@@ -1,11 +1,7 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using System.IO;
 using Terraria;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon

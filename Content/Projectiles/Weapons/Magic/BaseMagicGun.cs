@@ -23,11 +23,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void SpanProj() {
+            if (CanFire) {
+                Owner.manaRegenDelay = 4;
+            }
             if (onFire || onFireR) {
-                if (Owner.manaRegenDelay < 4) {
-                    Owner.manaRegenDelay = 4;
-                }
-
                 if (ShootCoolingValue <= 0) {
                     if (ForcedConversionTargetAmmoFunc.Invoke()) {
                         AmmoTypes = ToTargetAmmo;

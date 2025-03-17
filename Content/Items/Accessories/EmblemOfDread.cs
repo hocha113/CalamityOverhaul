@@ -1,14 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
-using CalamityMod.Items.Accessories;
 using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -458,14 +455,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             npc.AddBuff(ModContent.BuffType<VoidErosion>(), 1300);
 
-            if (npc == null 
-                || hurtInfo.DamageSource == null 
+            if (npc == null
+                || hurtInfo.DamageSource == null
                 || hurtInfo.DamageSource.SourceItem == null) {
                 return;
             }
 
             if (npc.life < KilllineByLife
-                && hurtInfo.DamageSource.SourceItem.DamageType 
+                && hurtInfo.DamageSource.SourceItem.DamageType
                 == ModContent.GetInstance<TrueMeleeDamageClass>()) {
                 npc.SimpleStrikeNPC(npc.lifeMax, hurtInfo.HitDirection);
             }
@@ -485,7 +482,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            if (proj.CWR().Source != null 
+            if (proj.CWR().Source != null
                 && proj.CWR().Source is EntitySource_Parent entitySource
                 && entitySource.Entity is NPC npc && npc.Alives()) {
                 npc.SimpleStrikeNPC(proj.damage * 100, Math.Sign(Player.Center.To(npc.Center).X), true, 8);
@@ -499,7 +496,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            if (!Player.mount.Active && !Player.setSolar && DashDir != -1 
+            if (!Player.mount.Active && !Player.setSolar && DashDir != -1
                 && DashDelay == 0 && Player.whoAmI == Main.myPlayer) {
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                     , ModContent.ProjectileType<EmblemOfDreadDashProj>(), 8000, 8, Player.whoAmI, DashDir);

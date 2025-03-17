@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content
             if (Main.gameMenu) {
                 return false;
             }
-            if (Main.LocalPlayer != null && Main.LocalPlayer.active 
+            if (Main.LocalPlayer != null && Main.LocalPlayer.active
                 && Main.LocalPlayer.CWR().TimeFrozenTick > 0) {
                 return true;
             }
