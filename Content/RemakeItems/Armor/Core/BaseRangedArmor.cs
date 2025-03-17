@@ -25,13 +25,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor.Core
             if (body.type != BodyID || legs.type != LegsID) {
                 return;
             }
-            player.setBonus += "\n" + CWRLocText.Instance.KreloadTimeLessenText + KreloadTimeIncreaseValue * 100 + "%";
+            player.setBonus += "\n" + CWRLocText.Instance.KreloadTimeLessenText + ((int)(KreloadTimeIncreaseValue * 100)) + "%";
             player.CWR().KreloadTimeIncrease -= KreloadTimeIncreaseValue;
             UpdateBonus();
         }
 
-        public virtual void UpdateBonus() {
-
-        }
+        public virtual void UpdateBonus() { }
     }
 }
