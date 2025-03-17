@@ -1524,12 +1524,12 @@ Buffs: {
 
 	DestroyerSummonBuff: {
 		// DisplayName: Destroyer Summon Buff
-		// Description: Mods.CalamityOverhaul.Buffs.DestroyerSummonBuff.Description
+		// Description: The Mini Destroyer will follow you into battle
 	}
 
 	FrenziedMachineSoul: {
 		// DisplayName: Frenzied Machine Soul
-		// Description: Mods.CalamityOverhaul.Buffs.FrenziedMachineSoul.Description
+		// Description: The Machine Spirit is overjoyed!
 	}
 }
 
@@ -5744,6 +5744,9 @@ RemakeItems: {
 			"Adults don’t make choices, so you tied your three favorite boomerangs together."
 			''' */
 	}
+
+	// ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
+	// ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

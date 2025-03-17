@@ -22,6 +22,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) {
+            return false;
+        }
+
+        public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) {
+            //设置为一个几乎不可能触碰到的碰撞，但不管如何不要设置出0，这可能会让一些其他模组的不规范代码崩溃
+            boundingBox.X = 1;
+            boundingBox.Y = (int)(Main.MouseWorld.Y + 100);
+            boundingBox.Width = 1;
+            boundingBox.Height = 1;
+        }
+
         public override void BossHeadRotation(ref float rotation) => rotation = NPC.rotation + MathHelper.Pi;
 
         public override bool CheckActive() => false;

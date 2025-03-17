@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
                 if (player.whoAmI == Main.myPlayer && player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                     for (int i = 0; i < 16; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                        , player.Center + CWRUtils.randVr(124), CWRUtils.randVr(24, 32), 221, 30, 2, player.whoAmI);
+                        , player.Center + CWRUtils.randVr(124), CWRUtils.randVr(24, 32), ProjectileID.FlowerPetal, 30, 2, player.whoAmI);
                         Main.projectile[proj].DamageType = DamageClass.Ranged;
                     }
                 }
@@ -189,6 +189,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
             else {
                 SpawnTime = 0;
             }
+        }
+    }
+    //星璇
+    internal class ModifyVortexHelmet : ItemOverride
+    {
+        public override int TargetID => ItemID.VortexHelmet;
+        public override bool CanLoadLocalization => false;
+        public override bool DrawingInfo => false;
+        public override void UpdateArmorByHead(Player player, Item body, Item legs) => UpdateArmor(player, body, legs);
+        public static void UpdateArmor(Player player, Item body, Item legs) {
+            if (body.type != ItemID.VortexBreastplate || legs.type != ItemID.VortexLeggings) {
+                return;
+            }
+            player.setBonus += "\n" + CWRLocText.Instance.KreloadTimeLessenText + "30%";
+            player.CWR().KreloadTimeIncrease -= 0.3f;
         }
     }
 }

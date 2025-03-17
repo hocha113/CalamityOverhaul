@@ -5814,6 +5814,9 @@ RemakeItems: {
 			"成年人是不会做选择的，于是你将三个喜欢的回旋镖绑在了一起"
 			'''
 	}
+
+	ModifyAncientNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
+	ModifyNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
 }
 
-// NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer
+NPCs.DestroyerDrawHeadIconNPC.DisplayName: 毁灭者

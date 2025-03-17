@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1539,12 +1539,12 @@ Buffs: {
 
 	DestroyerSummonBuff: {
 		DisplayName: Destroyer Summon Buff
-		Description: Mods.CalamityOverhaul.Buffs.DestroyerSummonBuff.Description
+		Description: The Mini Destroyer will follow you into battle
 	}
 
 	FrenziedMachineSoul: {
 		DisplayName: Frenzied Machine Soul
-		Description: Mods.CalamityOverhaul.Buffs.FrenziedMachineSoul.Description
+		Description: The Machine Spirit is overjoyed!
 	}
 }
 
@@ -5470,7 +5470,8 @@ RemakeItems: {
 			'''
 			Launch penetrating pickets
 			Pickets are considered bows, but that doesn't mean you can't fit a scope
-			"The only way to kill a vampire once and for all is to put a wooden picket through its heart, but you can't live if you are not a vampire."
+			"The only way to kill a vampire once and for all is to put a wooden picket through its heart, 
+			but you can't live if you are not a vampire."
 			'''
 	}
 
@@ -5828,6 +5829,9 @@ RemakeItems: {
 			"Adults don’t make choices, so you tied your three favorite boomerangs together."
 			'''
 	}
+
+	ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
+	ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
 }
 
 NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer
