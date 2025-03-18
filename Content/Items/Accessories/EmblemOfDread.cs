@@ -409,8 +409,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             Player.maxFallSpeed = DashVelocity;
-            Player.GetModPlayer<EmblemOfDreadPlayer>().DashDelay = DashCooldown;
-            Player.GetModPlayer<EmblemOfDreadPlayer>().DashTimer = DashDuration;
+            DashDelay = DashCooldown;
+            DashTimer = DashDuration;
             Player.velocity = newVelocity;
         }
 

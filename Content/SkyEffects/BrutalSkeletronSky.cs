@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.SkyEffects
 {
     internal class BrutalSkeletronSky : CustomSky, ICWRLoader
     {
-        internal static string name => "CWRMod:BrutalSkeletronSky";
+        internal static string Name => "CWRMod:BrutalSkeletronSky";
         private bool active;
         private float intensity;
         private PGBolt[] bolts;
@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.SkyEffects
             if (VaultUtils.isServer) {
                 return;
             }
-            SkyManager.Instance[name] = this;
-            Filters.Scene[name] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.15f, 0.1f, 0.1f).UseOpacity(0.3f), EffectPriority.High);
+            SkyManager.Instance[Name] = this;
+            Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.15f, 0.1f, 0.1f).UseOpacity(0.3f), EffectPriority.High);
         }
 
 
