@@ -15,8 +15,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
         public override int TargetID => ModContent.ItemType<TItem>();
-        public override bool CanLoad() => CWRServerConfig.Instance.WeaponHandheldDisplay || DrawingInfo;//对于不重要的修改，手持选项便可以将其覆盖
-        public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
+        public override void SetDefaults(Item item) {
+            if (RMagicStaff.CanLoadFunc(this)) {
+                item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
+            }
+        }
     }
 
     internal abstract class RMagicStaff : ItemOverride
@@ -25,8 +28,23 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool FormulaSubstitution => true;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
-        public override bool CanLoad() => (TargetID >= ItemID.Count || !ModLoader.HasMod("DDmod")) && (CWRServerConfig.Instance.WeaponHandheldDisplay || DrawingInfo);//这里勉强适配一下DDMod，防止修改互相干扰
-        public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
+        public static bool CanLoadFunc(ItemOverride itemOverride) {
+            if (itemOverride.DrawingInfo) {
+                return true;
+            }
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                return false;//对于不重要的修改，手持选项便可以将其覆盖
+            }
+            if (itemOverride.TargetID >= ItemID.Count) {
+                return true;//模组物品不受其他模组的影响
+            }
+            return !ModLoader.HasMod("DDmod");
+        }
+        public override void SetDefaults(Item item) {
+            if (CanLoadFunc(this)) {
+                item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
+            }
+        }
     }
 
     //internal class ArtAttackHeld : BaseMagicStaff<ArtAttack> { }

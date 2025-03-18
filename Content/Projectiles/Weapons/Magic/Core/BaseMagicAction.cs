@@ -70,7 +70,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
             if (Item.ModItem != null && !Item.ModItem.CanUseItem(Owner)) {
                 return;
             }
-            fireIndex++;
             OrigItemShoot();
         }
 
@@ -78,9 +77,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
             if (Item.ModItem != null && !Item.ModItem.CanUseItem(Owner)) {
                 return;
             }
-            fireIndex++;
             Owner.altFunctionUse = 2;
             OrigItemShoot();
+        }
+
+        public sealed override void PostShootEverthing() {
+            fireIndex++;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using System.ComponentModel;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -12,11 +12,9 @@ namespace CalamityOverhaul.Common
     public class CWRServerConfig : ModConfig
     {
         //提醒自己不要用懒加载
-        public static CWRServerConfig Instance => ModContent.GetInstance<CWRServerConfig>();
-
+        public static CWRServerConfig Instance { get; private set; }
         public override ConfigScope Mode => ConfigScope.ServerSide;
-
-        private static class Date
+        private static class Data
         {
             internal const float MScaleOffset_MinValue = 0.2f;
             internal const float MScaleOffset_MaxValue = 1f;
@@ -37,6 +35,14 @@ namespace CalamityOverhaul.Common
             internal const int MuraPosStyleMaxType = 3;
             internal const int MuraPosStyleMinType = 1;
             public static int MuraPosStyleValue;
+            /// <summary>
+            /// 旧的手持开关，用于对比检测手持是否改变设置
+            /// </summary>
+            internal static bool OldWeaponHandheldDisplay;
+            /// <summary>
+            /// 旧的弹匣开关，用于对比检测弹匣是否改变设置
+            /// </summary>
+            internal static bool OldMagazineSystem;
         }
 
         [Header("CWRSystem")]
@@ -58,7 +64,6 @@ namespace CalamityOverhaul.Common
         [Header("CWRWeapon")]
 
         [BackgroundColor(192, 54, 94, 255)]
-        [ReloadRequired]
         [DefaultValue(true)]
         public bool WeaponHandheldDisplay { get; set; }
 
@@ -96,19 +101,19 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 255)]
         [SliderColor(224, 165, 56, 255)]
-        [Range(Date.LoadingAA_Volume_MinValue, Date.LoadingAA_Volume_MaxValue)]
+        [Range(Data.LoadingAA_Volume_MinValue, Data.LoadingAA_Volume_MaxValue)]
         [DefaultValue(1)]
         public float LoadingAA_Volume {
             get {
-                if (Date.LoadingAA_VolumeValue < Date.LoadingAA_Volume_MinValue) {
-                    Date.LoadingAA_VolumeValue = Date.LoadingAA_Volume_MinValue;
+                if (Data.LoadingAA_VolumeValue < Data.LoadingAA_Volume_MinValue) {
+                    Data.LoadingAA_VolumeValue = Data.LoadingAA_Volume_MinValue;
                 }
-                if (Date.LoadingAA_VolumeValue > Date.LoadingAA_Volume_MaxValue) {
-                    Date.LoadingAA_VolumeValue = Date.LoadingAA_Volume_MaxValue;
+                if (Data.LoadingAA_VolumeValue > Data.LoadingAA_Volume_MaxValue) {
+                    Data.LoadingAA_VolumeValue = Data.LoadingAA_Volume_MaxValue;
                 }
-                return Date.LoadingAA_VolumeValue;
+                return Data.LoadingAA_VolumeValue;
             }
-            set => Date.LoadingAA_VolumeValue = value;
+            set => Data.LoadingAA_VolumeValue = value;
         }
 
         [BackgroundColor(192, 54, 94, 255)]
@@ -123,79 +128,120 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
-        [Range(Date.MuraUIStyleMinType, Date.MuraUIStyleMaxType)]
+        [Range(Data.MuraUIStyleMinType, Data.MuraUIStyleMaxType)]
         [DefaultValue(1)]
         public int MuraUIStyleType {
             get {
-                if (Date.MuraUIStyleValue < Date.MuraUIStyleMinType) {
-                    Date.MuraUIStyleValue = Date.MuraUIStyleMinType;
+                if (Data.MuraUIStyleValue < Data.MuraUIStyleMinType) {
+                    Data.MuraUIStyleValue = Data.MuraUIStyleMinType;
                 }
-                if (Date.MuraUIStyleValue > Date.MuraUIStyleMaxType) {
-                    Date.MuraUIStyleValue = Date.MuraUIStyleMaxType;
+                if (Data.MuraUIStyleValue > Data.MuraUIStyleMaxType) {
+                    Data.MuraUIStyleValue = Data.MuraUIStyleMaxType;
                 }
-                return Date.MuraUIStyleValue;
+                return Data.MuraUIStyleValue;
             }
-            set => Date.MuraUIStyleValue = value;
+            set => Data.MuraUIStyleValue = value;
         }
 
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
-        [Range(Date.MuraPosStyleMinType, Date.MuraPosStyleMaxType)]
+        [Range(Data.MuraPosStyleMinType, Data.MuraPosStyleMaxType)]
         [DefaultValue(1)]
         public int MuraPosStyleType {
             get {
-                if (Date.MuraPosStyleValue < Date.MuraPosStyleMinType) {
-                    Date.MuraPosStyleValue = Date.MuraPosStyleMinType;
+                if (Data.MuraPosStyleValue < Data.MuraPosStyleMinType) {
+                    Data.MuraPosStyleValue = Data.MuraPosStyleMinType;
                 }
-                if (Date.MuraPosStyleValue > Date.MuraPosStyleMaxType) {
-                    Date.MuraPosStyleValue = Date.MuraPosStyleMaxType;
+                if (Data.MuraPosStyleValue > Data.MuraPosStyleMaxType) {
+                    Data.MuraPosStyleValue = Data.MuraPosStyleMaxType;
                 }
-                return Date.MuraPosStyleValue;
+                return Data.MuraPosStyleValue;
             }
-            set => Date.MuraPosStyleValue = value;
+            set => Data.MuraPosStyleValue = value;
         }
 
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
-        [Range(Date.CartridgeUI_Offset_X_MinValue, Date.CartridgeUI_Offset_X_MaxValue)]
+        [Range(Data.CartridgeUI_Offset_X_MinValue, Data.CartridgeUI_Offset_X_MaxValue)]
         [DefaultValue(1)]
         public int CartridgeUI_Offset_X_Value {//弹夹UI位置调节_X
             get {
-                if (Date.CartridgeUI_Offset_X < Date.CartridgeUI_Offset_X_MinValue) {
-                    Date.CartridgeUI_Offset_X = Date.CartridgeUI_Offset_X_MinValue;
+                if (Data.CartridgeUI_Offset_X < Data.CartridgeUI_Offset_X_MinValue) {
+                    Data.CartridgeUI_Offset_X = Data.CartridgeUI_Offset_X_MinValue;
                 }
-                if (Date.CartridgeUI_Offset_X > Date.CartridgeUI_Offset_X_MaxValue) {
-                    Date.CartridgeUI_Offset_X = Date.CartridgeUI_Offset_X_MaxValue;
+                if (Data.CartridgeUI_Offset_X > Data.CartridgeUI_Offset_X_MaxValue) {
+                    Data.CartridgeUI_Offset_X = Data.CartridgeUI_Offset_X_MaxValue;
                 }
-                return Date.CartridgeUI_Offset_X;
+                return Data.CartridgeUI_Offset_X;
             }
-            set => Date.CartridgeUI_Offset_X = value;
+            set => Data.CartridgeUI_Offset_X = value;
         }
 
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
-        [Range(Date.CartridgeUI_Offset_Y_MinValue, Date.CartridgeUI_Offset_Y_MaxValue)]
+        [Range(Data.CartridgeUI_Offset_Y_MinValue, Data.CartridgeUI_Offset_Y_MaxValue)]
         [DefaultValue(1)]
         public int CartridgeUI_Offset_Y_Value {//弹夹UI位置调节_Y
             get {
-                if (Date.CartridgeUI_Offset_Y < Date.CartridgeUI_Offset_Y_MinValue) {
-                    Date.CartridgeUI_Offset_Y = Date.CartridgeUI_Offset_Y_MinValue;
+                if (Data.CartridgeUI_Offset_Y < Data.CartridgeUI_Offset_Y_MinValue) {
+                    Data.CartridgeUI_Offset_Y = Data.CartridgeUI_Offset_Y_MinValue;
                 }
-                if (Date.CartridgeUI_Offset_Y > Date.CartridgeUI_Offset_Y_MaxValue) {
-                    Date.CartridgeUI_Offset_Y = Date.CartridgeUI_Offset_Y_MaxValue;
+                if (Data.CartridgeUI_Offset_Y > Data.CartridgeUI_Offset_Y_MaxValue) {
+                    Data.CartridgeUI_Offset_Y = Data.CartridgeUI_Offset_Y_MaxValue;
                 }
-                return Date.CartridgeUI_Offset_Y;
+                return Data.CartridgeUI_Offset_Y;
             }
-            set => Date.CartridgeUI_Offset_Y = value;
+            set => Data.CartridgeUI_Offset_Y = value;
+        }
+
+        public override void OnLoaded() {
+            Instance = this;
+            Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
+            Data.OldMagazineSystem = MagazineSystem;
         }
 
         public override void OnChanged() {
             if (Main.gameMenu) {
                 return;
             }
+            //事实证明这个东西可能是不安全的，重新设置一个物品可能会导致它的一些属性变成null或者是其他错误的值，
+            //这个情况的来源是他人所编写的不安全代码，总之这是危险代码，只能注释并阉割功能
+            //ChangedPlayerItem();
+            ChangedRangedProperty();
+        }
+
+        //private void ChangedPlayerItem() {
+        //    if (Main.LocalPlayer == null || Main.LocalPlayer.inventory == null) {
+        //        return;
+        //    }
+
+        //    bool canSet = Data.OldWeaponHandheldDisplay != WeaponHandheldDisplay;
+        //    Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
+
+        //    if (!canSet) {
+        //        return;
+        //    }
+
+        //    foreach (var item in Main.LocalPlayer.inventory) {
+        //        if (item == null || item.IsAir || !ItemOverride.ByID.ContainsKey(item.type)) {
+        //            continue;
+        //        }
+        //        item.SetDefaults(item.type);
+        //    }
+        //}
+
+        private void ChangedRangedProperty() {
             if (Main.projectile == null) {
                 return;
             }
+
+            bool canSet = Data.OldMagazineSystem != MagazineSystem;
+            Data.OldMagazineSystem = MagazineSystem;
+
+            if (!canSet) {
+                return;
+            }
+
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.hostile || proj.ModProjectile == null) {
                     continue;
@@ -208,7 +254,6 @@ namespace CalamityOverhaul.Common
                     gun.SetRangedProperty();
                 }
             }
-
         }
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {

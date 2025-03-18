@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -344,9 +344,12 @@ Items: {
 		DisplayName: Neutron Star Stabilizer
 		Tooltip:
 			'''
-			Completely eliminates recoil and chamber pressure
 			Increases ranged damage by 100%
-			Increases ranged critical hit rate by 100%
+			Increases ranged critical strike chance by 100%
+			Increases ranged attack speed by 100%
+			Completely negates recoil and chamber pressure
+			Greatly enhances ranged projectiles
+			Grants all abilities of lower-tier accessories
 			'''
 	}
 
@@ -1423,6 +1426,7 @@ Configs: {
 				When turned on, most weapons have handheld animations and special use actions
 				This effect has a very high priority and will override most of the handheld animations from third-party mods
 				It is turned on by default, and for visual reasons, the authors do not recommend turning it off
+				If you change this configuration during the game, some effects will need to be reloaded the mod files before they can be changed
 				'''
 		}
 

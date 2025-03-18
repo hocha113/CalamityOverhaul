@@ -1,12 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -19,8 +17,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
         public override int TargetID => ModContent.ItemType<TItem>();
-        public override bool CanLoad() => CWRServerConfig.Instance.WeaponHandheldDisplay || DrawingInfo;//对于不重要的修改，手持选项便可以将其覆盖
-        public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
+        public override void SetDefaults(Item item) {
+            if (RMagicStaff.CanLoadFunc(this)) {
+                item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(typeof(TItem).Name + "Held").Type);
+            }
+        }
     }
 
     internal abstract class RMagicBook : ItemOverride
@@ -29,8 +30,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override bool FormulaSubstitution => true;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
-        public override bool CanLoad() => CWRServerConfig.Instance.WeaponHandheldDisplay || DrawingInfo;//对于不重要的修改，手持选项便可以将其覆盖
-        public override void SetDefaults(Item item) => item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
+        public override void SetDefaults(Item item) {
+            if (RMagicStaff.CanLoadFunc(this)) {
+                item.SetHeldProj(CWRMod.Instance.Find<ModProjectile>(HeldProjName + "Held").Type);
+            }
+        }
     }
 
     internal class BurningSeaHeld : BaseMagicBook<BurningSea> { }
@@ -51,7 +55,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class EternityHeld : BaseMagicBook<Eternity>
     {
         private NPC target;
-        private List<NPC> onNPCs = [];
         public override bool CanSpanProj() {
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<EternityHex>()] > 0) {
                 return false;
