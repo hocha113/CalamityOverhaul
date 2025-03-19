@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
 
             if (colors == null) {
                 colors = new Color[3];

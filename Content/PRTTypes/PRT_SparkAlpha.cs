@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Lifetime = lifetime;
             Color = InitialColor = color;
         }
-        public override void SetProperty() => SetLifetime = true;
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

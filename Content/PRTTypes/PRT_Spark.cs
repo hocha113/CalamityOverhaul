@@ -21,10 +21,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Color = InitialColor = color;
             this.entity = entity;
         }
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

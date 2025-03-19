@@ -29,10 +29,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             flowerProj = _flowerProj;
             followingRateRatio = _followingRateRatio;
         }
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
 

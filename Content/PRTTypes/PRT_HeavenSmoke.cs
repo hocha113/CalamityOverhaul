@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
             }
             ai[0] = Main.rand.Next(7);
-            SetLifetime = true;
         }
 
         public override void AI() {

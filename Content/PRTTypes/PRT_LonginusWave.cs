@@ -9,10 +9,6 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_LonginusWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         private float OriginalScale;
         private float FinalScale;
         private Vector2 Squish;
@@ -33,7 +29,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = rotation;
             Entity = entity;
         }
-
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);

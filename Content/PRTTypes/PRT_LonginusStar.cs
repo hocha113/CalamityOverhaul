@@ -9,10 +9,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     {
         public Color InitialColor;
         public bool AffectedByGravity;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override string Texture => "CalamityMod/Projectiles/StarProj";
         private Entity Entity;
         private Vector2 EntityPos;

@@ -9,12 +9,8 @@ namespace CalamityOverhaul.Content.PRTTypes
     {
         public Color InitialColor;
         public bool AffectedByGravity;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
-
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public PRT_HeavenfallStar(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;

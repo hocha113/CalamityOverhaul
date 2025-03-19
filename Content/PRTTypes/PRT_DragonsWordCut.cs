@@ -22,10 +22,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Color = InitialColor = color;
         }
 
-        public override void SetProperty() {
-            SetLifetime = true;
-            PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
-        }
+        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
 
         public override void AI() {
             Scale *= 0.9f;
@@ -33,7 +30,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity *= 0.95f;
             Ylength *= 1.25f;
             Xlength *= 0.7f;
-
             if (Velocity.Length() < 12f && AffectedByGravity) {
                 Velocity.X *= 0.94f;
                 Velocity.Y += 0.25f;
