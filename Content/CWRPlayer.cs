@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content
 {
     public class CWRPlayer : ModPlayer
     {
-        #region Date
+        #region Data
         /// <summary>
         /// 是否拥有大修宝典
         /// </summary>

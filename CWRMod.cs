@@ -1,4 +1,4 @@
-global using InnoVault;
+﻿global using InnoVault;
 global using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ namespace CalamityOverhaul
 {
     public class CWRMod : Mod
     {
-        #region Date
+        #region Data
         //-HoCha113 - 2024/9/19/ 3:45
         //不要使用惰性加载，这是愚蠢的，要知道有的Mod会在外部调用这个，
         //或者有的钩子是往InnoVault上挂载的，那个时候这个单例很可能还没来得及加载，然后把一切都毁掉

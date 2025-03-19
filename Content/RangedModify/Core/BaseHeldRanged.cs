@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 {
     public abstract class BaseHeldRanged : BaseHeldProj
     {
-        #region Date
+        #region Data
         /// <summary>
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>

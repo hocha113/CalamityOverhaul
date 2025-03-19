@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     //Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 就是这样，这样才是优雅的 -hocah113 2025/2/1
     internal class BulletinBoardUI : UIHandle, ICWRLoader
     {
-        #region Date
+        #region Data
         internal static Asset<Texture2D> icon;
         internal static Asset<Texture2D> small;
         public static int Time;

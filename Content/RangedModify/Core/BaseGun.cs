@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
     /// </summary>
     public abstract class BaseGun : BaseHeldRanged
     {
-        #region Date
+        #region Data
         protected float oldSetRoting;
         /// <summary>
         /// 一个专用与子类的属性，仅仅用于保证自动抛壳<see cref="AutomaticPolishing"/>会在正确的时机运行

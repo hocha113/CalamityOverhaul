@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content
 
     public class CWRItems : GlobalItem
     {
-        #region Date
+        #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
         /// AI槽位数量

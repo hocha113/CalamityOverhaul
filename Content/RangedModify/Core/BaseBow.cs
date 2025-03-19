@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 {
     public abstract class BaseBow : BaseHeldRanged
     {
-        #region Date
+        #region Data
         /// <summary>
         /// 右手基本角度值
         /// </summary>

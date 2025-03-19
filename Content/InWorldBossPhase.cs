@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
     public class InWorldBossPhase : ICWRLoader
     {
-        #region Date
+        #region Data
         public static InWorldBossPhase Instance { get; private set; }
 
         public static bool Level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
