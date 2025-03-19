@@ -1312,7 +1312,7 @@ namespace CalamityOverhaul
         /// <param name="name"></param>
         /// <returns></returns>
         public static Effect GetEffectValue(string name, bool immediateLoad = false) {
-            return CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + name
+            return CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffect + name
                 , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
         }
 

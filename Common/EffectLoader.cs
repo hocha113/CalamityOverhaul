@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Common
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
 
-        private static Asset<Effect> getEffect(string key) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.AsyncLoad);
+        private static Asset<Effect> getEffect(string key) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffect + key, AssetRequestMode.AsyncLoad);
         private static void loadFiltersEffect(string filtersKey, string filename, string passname) {
             Asset<Effect> asset = getEffect(filename);
             Filters.Scene[filtersKey] = new Filter(new ScreenShaderData(asset, passname), EffectPriority.VeryHigh);

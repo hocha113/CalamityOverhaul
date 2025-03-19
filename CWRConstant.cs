@@ -46,7 +46,7 @@
         public const string Cay_Proj_Rogue = Cay_Proj + "Rogue/";
         public const string Cay_Proj_Typeless = Cay_Proj + "Typeless/";
 
-        public const string noEffects = "Assets/Effects/";
+        public const string noEffect = "Assets/Effects/";
         public const string noItem = "Assets/Items/";
         public const string noProjectile = "Assets/Projectiles/";
 
