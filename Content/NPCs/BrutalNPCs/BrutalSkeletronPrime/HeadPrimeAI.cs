@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override void ModifyNPCLoot(NPCLoot npcLoot) {
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             LeadingConditionRule rule = new LeadingConditionRule(new DropInDeathMode());
             rule.Add(ModContent.ItemType<CommandersChainsaw>(), 4);
             rule.Add(ModContent.ItemType<HyperionBarrage>(), 4);

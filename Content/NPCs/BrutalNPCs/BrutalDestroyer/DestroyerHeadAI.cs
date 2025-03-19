@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
 
-        public override void ModifyNPCLoot(NPCLoot npcLoot) {
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             IItemDropRuleCondition condition = new DropInDeathMode();
             LeadingConditionRule rule = new LeadingConditionRule(condition);
             rule.Add(ModContent.ItemType<DestroyersBlade>(), 4);

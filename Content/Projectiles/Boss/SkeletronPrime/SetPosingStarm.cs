@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     NPCOverride pCOverride = boss.CWR().NPCOverride;
                     pCOverride.ai[4] = 0;
                     pCOverride.ai[10] = 180;
-                    pCOverride.netAIWorkSend = true;
+                    pCOverride.NetAIWorkSend = true;
                 }
             }
             FireDrawer = null;

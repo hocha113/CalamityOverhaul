@@ -368,9 +368,9 @@ namespace CalamityOverhaul.Content
                 dontExpertRule.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
             }
-
-            if (npc.type == NPCOverride.TargetID) {
-                NPCOverride.ModifyNPCLoot(npcLoot);
+            //不要用TryFetchByID或者直接访问NPCOverride
+            if (NPCSystem.IDToNPCSetDic.TryGetValue(npc.type, out var npcOverride)) {
+                npcOverride.ModifyNPCLoot(npc, npcLoot);
             }
         }
 

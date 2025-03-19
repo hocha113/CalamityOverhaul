@@ -107,8 +107,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             BigProgressBarHelper.DrawFancyBar(spriteBatch, _cache.LifeCurrent, _cache.LifeMax, value, barIconFrame);
         }
 
-        public override void ModifyNPCLoot(NPCLoot npcLoot) {
-            if (npc.type == NPCID.Spazmatism) {
+        public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
+            if (thisNPC.type == NPCID.Spazmatism) {
                 IItemDropRuleCondition condition = new DropInDeathMode();
                 LeadingConditionRule rule = new LeadingConditionRule(condition);
                 rule.Add(ModContent.ItemType<FocusingGrimoire>(), 4);
@@ -162,16 +162,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (eye.realLife > 0) {
                 return;
             }
-            if (eye.type == NPCID.Spazmatism) {
-                NPC retinazer = CWRUtils.FindNPCFromeType(NPCID.Retinazer);
+            //只寻找激光眼的生命匹配
+            if (eye.type == NPCID.Retinazer) {
+                NPC retinazer = CWRUtils.FindNPCFromeType(NPCID.Spazmatism);
                 if (retinazer.Alives()) {
                     eye.realLife = retinazer.whoAmI;
-                }
-            }
-            else {
-                NPC spazmatism = CWRUtils.FindNPCFromeType(NPCID.Spazmatism);
-                if (spazmatism.Alives()) {
-                    eye.realLife = spazmatism.whoAmI;
                 }
             }
         }

@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
     /// </summary>
     internal class NPCOverride
     {
+        #region Data
         /// <summary>
         /// 要修改的NPC的ID值，在目前为止，每一个类型的NPC只能有一个实例对应
         /// </summary>
@@ -54,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// 用于网络同步，只能在服务端进行设置，其他端口永远返回<see langword="false"/>，
         /// 当设置为<see langword="true"/>时，会自动调用<see cref="OtherNetWorkReceiveHander(BinaryReader)"/>进行网络数据同步
         /// </summary>
-        public bool netOtherWorkSend {
+        public bool NetOtherWorkSend {
             get {
                 if (!VaultUtils.isServer) {
                     return false;
@@ -67,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// 用于网络同步，只能在服务端进行设置，其他端口永远返回<see langword="false"/>，
         /// 当设置为<see langword="true"/>时，会自动调用<see cref="NetAISend()"/>进行网络数据同步
         /// </summary>
-        public bool netAIWorkSend {
+        public bool NetAIWorkSend {
             get {
                 if (!VaultUtils.isServer) {
                     return false;
@@ -76,6 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
             }
             set => _netAIWorkSend = value;
         }
+        #endregion
         /// <summary>
         /// 克隆这个实例，注意，克隆出的新对象与原实例将不再具有任何引用关系
         /// </summary>
@@ -93,7 +95,12 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public virtual bool? CanOverride() {
             return null;
         }
-
+        /// <summary>
+        /// 寻找对应NPC实例的重载实例
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="npcOverride"></param>
+        /// <returns></returns>
         public static bool TryFetchByID(int id, out NPCOverride npcOverride) {
             npcOverride = null;
 
@@ -130,13 +137,13 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 return;
             }
 
-            if (netAIWorkSend) {
+            if (NetAIWorkSend) {
                 NetAISend();
-                netAIWorkSend = false;
+                NetAIWorkSend = false;
             }
-            if (netOtherWorkSend) {
+            if (NetOtherWorkSend) {
                 OtherNetWorkSendHander();
-                netOtherWorkSend = false;
+                NetOtherWorkSend = false;
             }
         }
 
@@ -159,7 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         /// <summary>
         /// 发送网络数据，同步额外的网络数据，重载编写时需要注意与<see cref="OtherNetWorkReceive"/>对应
-        /// ，将<see cref="netOtherWorkSend"/>设置为<see langword="true"/>后自动进行一次发包
+        /// ，将<see cref="NetOtherWorkSend"/>设置为<see langword="true"/>后自动进行一次发包
         /// </summary>
         public virtual void OtherNetWorkSend(ModPacket netMessage) { }
 
@@ -261,10 +268,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// <param name="rotation"></param>
         public virtual void BossHeadRotation(ref float rotation) { }
         /// <summary>
-        /// 编辑NPC的掉落，注意这个不会被设置阻止
+        /// 编辑NPC的掉落，注意，这个方法不会被生物AI设置阻止，注意，如果需要使用NPC实例，必须使用给出的参数thisNPC，而不是尝试访问<see cref="npc"/>
         /// </summary>
         /// <param name="npcLoot"></param>
-        public virtual void ModifyNPCLoot(NPCLoot npcLoot) { }
+        public virtual void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) { }
         /// <summary>
         /// 修改被物品击中的伤害
         /// </summary>
