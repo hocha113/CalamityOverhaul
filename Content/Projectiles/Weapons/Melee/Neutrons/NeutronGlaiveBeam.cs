@@ -83,6 +83,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode(300, SoundID.Item14 with { Pitch = 0.45f });
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
             Vector2 randpos = CWRUtils.randVr(64);
             Projectile.Center += randpos;
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
