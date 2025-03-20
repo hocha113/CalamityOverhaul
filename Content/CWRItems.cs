@@ -645,8 +645,8 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (inRItemIndsDict && ItemOverride.ByID[item.type].CanLoadLocalization) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, ItemOverride.ByID[item.type].Tooltip);
+            if (ItemOverride.TryFetchByID(item.type, out var rItem) && rItem.CanLoadLocalization) {
+                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, rItem.Tooltip);
             }
 
             if (Main.LocalPlayer.CWR().ThermalGenerationActiveTime > 0 && FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
