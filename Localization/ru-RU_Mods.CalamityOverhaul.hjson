@@ -40,7 +40,7 @@ Items: {
 	}
 
 	BleedingScourge: {
-		DisplayName: Кровавый хрестатель
+		DisplayName: Кровавый хлыстатель
 		Tooltip:
 			'''
 			{$CommonItemTooltip.Whips}
@@ -125,8 +125,8 @@ Items: {
 	}
 
 	InfiniteIngot: {
-		DisplayName: Бесконечный слиток
-		Tooltip: Юниверсал форс, прямо у вас в руках
+		DisplayName: Сплав бесконечности
+		Tooltip: Мощь вселенной, прямо у вас в руках
 	}
 
 	TransmutationOfMatterItem: {
@@ -144,34 +144,34 @@ Items: {
 	}
 
 	InfinitePick: {
-		DisplayName: Юниверсал пикчерз
+		DisplayName: Кирка вселенской алочности
 		Tooltip:
 			'''
-			Правый ключ разрушает всё, что касается
-			Нажмите [KEY], чтобы сменить форму
-			"Ты чувствуешь, как земля таларии дрожит от страха каждый раз, когда ты ее держишь".
+			Нажмите ПКМ, чтобы уничтожить всё на своём пути
+			Нажмите [KEY] для смены режима
+			«И всякий раз, когда ваши руки косаются её рукояти, земли Терры содрагаются в ужасе»
 			'''
 	}
 
 	DarkMatterBall: {
-		DisplayName: Шар Тёмной Материи
+		DisplayName: Шар тёмной материи
 		Tooltip:
 			'''
-			Он был сжат до состояния чёрной дыры, но чудесным образом остаётся стабильным.
-			Щелкните правой кнопкой мыши, держа предмет, чтобы поместить в него вещи.
-			Щелкните правой кнопкой мыши с пустыми руками, чтобы достать хранимые предметы.
+			Будучи сжатым до состояния чёрной дыры, его повоедение достаточно стабильно
+			Нажмите ПКМ по предмету, держа предмет в руках, чтобы положить его внутрь
+			Нажатие ПКМ по предмету без предмета в руках извлечёт всё содержимое
 			'''
-		// Contents: Contents:
+		Contents: Содержит:
 	}
 
 	NeutronStarIngot: {
-		DisplayName: Слиток сверхплотной нейтронной звезды
-		Tooltip: Вес всего, соединяющего кончики пальцев
+		DisplayName: Сплав сверхплотной нейтронной звезды
+		Tooltip: Вес всего, до бесконечности находящегося под вами
 	}
 
 	InfinityCatalyst: {
-		DisplayName: Бесконечный катализатор
-		Tooltip: Твоя жадность вот-вот достигнет вершины
+		DisplayName: Катализатор бесконечности
+		Tooltip: Вашим амбициям тоже должен быть придел
 	}
 
 	DawnshatterAzure: {
@@ -206,8 +206,8 @@ Items: {
 	}
 
 	InfiniteToiletItem: {
-		DisplayName: Бесконечный туалет
-		Tooltip: "[c/fff08c:Юниверсал форс, прямо в бочке]"
+		DisplayName: Унитаз бесконечности
+		Tooltip: "[c/fff08c:Мощь вселенной, прямо в сливном бочке]"
 	}
 
 	StormGoddessSpear: {
@@ -884,30 +884,30 @@ Items: {
 	}
 
 	SoulofFrightEX: {
-		// DisplayName: Soul of Fright EX
-		/* Tooltip:
+		DisplayName: Квинтэссенция ужаса
+		Tooltip:
 			'''
-			Concentrated fear energy pulses within  
-			Obtain by defeating rebel machines during the Mechanical Uprising
-			''' */
+			«Пульсирующая эссенция истинного ужаса»
+			Победите бушующие машины во время Механического восстания для получения
+			'''
 	}
 
 	SoulofMightEX: {
-		// DisplayName: Soul of Might EX
-		/* Tooltip:
+		DisplayName: Квинтэссенция могущества
+		Tooltip:
 			'''
-			Concentrated destructive energy pulses within  
-			Obtain by defeating rebel machines during the Mechanical Uprising
-			''' */
+			«Пульсирующая эссенция разрушительной силы»
+			Победите бушующие машины во время Механического восстания для получения
+			'''
 	}
 
 	SoulofSightEX: {
-		// DisplayName: Soul of Sight EX
-		/* Tooltip:
+		DisplayName: Квинтэссенция прозрения
+		Tooltip:
 			'''
-			Concentrated wisdom energy pulses within  
-			Obtain by defeating rebel machines during the Mechanical Uprising
-			''' */
+			«Пульсирующая эссенция глубокой мудрости»
+			Победите бушующие машины во время Механического восстания для получения
+			'''
 	}
 
 	DestroyersBladeEX: {
@@ -930,17 +930,17 @@ Items: {
 	}
 
 	WindGrivenGenerator: {
-		// DisplayName: Wind Griven Generator
-		// Tooltip: "[UEValue]"
-		// UnderstandWindGriven: An initial understanding of how wind power works is required
-		// UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
+		DisplayName: Ветроэлектрическая установка
+		Tooltip: "[UEValue]"
+		UnderstandWindGriven: Поверхностно изучён принцип работы
+		UnderstandWindGriven2: Вам нужно разобрать старый ветрогенератор на планетоиде, чтобы понять принципы его работы
 	}
 
 	WindGrivenGeneratorMK2: {
-		// DisplayName: Wind Griven Generator MK2
-		// Tooltip: "[UEValue]"
-		// UnderstandWindGrivenMK2: A deep understanding of wind power is required
-		// UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
+		DisplayName: Ветроэлектрическая установка второго поколения
+		Tooltip: "[UEValue]"
+		UnderstandWindGrivenMK2: Глубоко изучён принцип работы
+		UnderstandWindGrivenMK2Remind: Вам нужно разобрать гигантский ветрогенератор на планетоиде, чтобы понять принципы его работы
 	}
 
 	ThermalGeneratorMK2: {
@@ -949,12 +949,12 @@ Items: {
 	}
 
 	WGGMK2Wilderness: {
-		// DisplayName: Giant Wind Turbines In The Wilderness
+		// DisplayName: Гигантский заросший ветрогенератор
 		// Tooltip: ""
 	}
 
 	WGGWilderness: {
-		// DisplayName: Wind Turbines In The Wilderness
+		// DisplayName: Заросший ветрогенератор
 		// Tooltip: ""
 	}
 
@@ -1591,16 +1591,16 @@ TextContent: {
 		// ChargingStation_Text2: Put in battery
 		// ChargingStation_Text3: Need to put in something that can receive energy
 		// ChargingStation_Text4: Need to put in batteries
-		// WindGriven_Text1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
-		// WindGriven_Text2: You're amazed by the sheer size of these machines and feel like you should try building one yourself...
+		WindGriven_Text1: Эти ветряки показались вам интересными, и вы захотели создать парочку таких же...
+		WindGriven_Text2: Вы были поражены размером этой машины, и вас наполнило желанием построить такую же....
 		// Turret_Text1: Battery Runs Out
-		// Turret_Text2: Intruder Detected!
+		Turret_Text2: Обнаружен нарушитель!
 		// IndustrializationGenMessage: Industrializing The World
-		// InternalStoredEnergy: Internal Stored Energy
+		InternalStoredEnergy: Накоплено энергии
 		// KreloadTimeAddText: "Ammunition reloading time increased "
 		// KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Предмет режима Смерть
-		DontUseMagicConch: You're being watched by a powerful creature...
+		// DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Только в мирах с сидом «Get fixed boi»
 		Event_TungstenRiot_Name: Вольфрамовое востание
 		Event_TungstenRiot_Text_1: Массовое вторжение вольфрамовых биомеханизмов!

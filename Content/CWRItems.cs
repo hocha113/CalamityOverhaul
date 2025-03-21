@@ -650,13 +650,13 @@ namespace CalamityOverhaul.Content
             }
 
             if (Main.LocalPlayer.CWR().ThermalGenerationActiveTime > 0 && FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
-                var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{CWRLocText.Instance.TemperatureText}:{value * 4}°C");
+                var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{CWRLocText.Instance.TemperatureText}: {value * 4}°C");
                 line.OverrideColor = Color.Orange;
                 tooltips.Add(line);
             }
 
             if (item.CWR().StorageUE) {
-                tooltips.ReplaceTooltip("[UEValue]", $"{CWRLocText.Instance.InternalStoredEnergy.Value}:{(int)item.CWR().UEValue}UE");
+                tooltips.ReplaceTooltip("[UEValue]", $"{CWRLocText.Instance.InternalStoredEnergy.Value}: {(int)item.CWR().UEValue}UE");
             }
 
             if (item.CWR().DeathModeItem) {
