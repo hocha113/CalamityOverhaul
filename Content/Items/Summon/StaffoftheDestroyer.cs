@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void Initialize() {
-            if (Type != ModContent.ProjectileType<DestroyerHead>()) {
+            if (Type != ModContent.ProjectileType<DestroyerHead>() || !Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
             int index = Projectile.whoAmI;
@@ -177,6 +177,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                     }
 
                     Projectile.ai[2]++;
+                    NetUpdate();
                 }
 
                 if (Projectile.ai[2] > 3) {
@@ -212,6 +213,8 @@ namespace CalamityOverhaul.Content.Items.Summon
                             Main.projectile[proj].netUpdate = true;
                         }
                     }
+
+                    NetUpdate();
                 }
             }
         }
@@ -244,6 +247,11 @@ namespace CalamityOverhaul.Content.Items.Summon
                 Projectile.Kill();
                 return;
             }
+
+            if (Owner.CWR().DestroyerOwner) {
+                Projectile.timeLeft = 2;
+            }
+
             Vector2 directionToNextSegment = aheadSegment.Center - Projectile.Center;
             directionToNextSegment = directionToNextSegment.RotatedBy(MathHelper.WrapAngle(aheadSegment.rotation - Projectile.rotation) * 0.08f);
             directionToNextSegment = directionToNextSegment.MoveTowards((aheadSegment.rotation - Projectile.rotation).ToRotationVector2(), 1f);

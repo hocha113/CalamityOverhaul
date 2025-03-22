@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateAlpha();
             CWRUtils.ClockFrame(ref frame, 5, 3);
 
-            if (npc.ai[3] > 0f) {
+            if (npc.ai[3] >= 0f && npc.ai[3] < Main.maxNPCs) {
                 npc.realLife = (int)npc.ai[3];
             }
 

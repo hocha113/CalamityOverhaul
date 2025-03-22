@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameContent.BaseEntity;
@@ -9,6 +10,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue
 {
@@ -18,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void SetDefaults() {
             Item.width = 52;
             Item.height = 52;
-            Item.damage = 82;
+            Item.damage = 40;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.useAnimation = Item.useTime = 20;
             Item.shootSpeed = 22f;
@@ -33,7 +35,9 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.CWR().DeathModeItem = true;
+            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
     }
 
     internal class GeminisTributeEX : ModItem
@@ -56,8 +60,9 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;
+            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
-
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<GeminisTribute>().
