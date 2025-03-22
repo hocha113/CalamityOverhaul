@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System.ComponentModel;
 using Terraria;
 using Terraria.ID;

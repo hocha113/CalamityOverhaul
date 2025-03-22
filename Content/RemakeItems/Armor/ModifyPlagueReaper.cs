@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Armor.Hydrothermic;
-using CalamityMod.Items.Armor.PlagueReaper;
+﻿using CalamityMod.Items.Armor.PlagueReaper;
 using CalamityOverhaul.Content.RemakeItems.Armor.Core;
 using Terraria.ModLoader;
 

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class DestroyerBossBar : GlobalBossBar
     {
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
-            if ((npc.type == NPCID.TheDestroyer || npc.type == NPCID.TheDestroyerBody 
+            if ((npc.type == NPCID.TheDestroyer || npc.type == NPCID.TheDestroyerBody
                 || npc.type == NPCID.TheDestroyerTail) && !HeadPrimeAI.DontReform()) {
                 drawParams.IconTexture = DestroyerHeadAI.HeadIcon.Value;
                 drawParams.IconFrame = CWRUtils.GetRec(DestroyerHeadAI.HeadIcon.Value);

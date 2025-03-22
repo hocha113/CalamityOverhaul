@@ -1,10 +1,10 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
