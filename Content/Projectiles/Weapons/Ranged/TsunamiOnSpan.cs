@@ -12,16 +12,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override float MaxCharge => 220;
 
         public override void SpanProjFunc() {
-            int arrowTypes;
-            int weaponDamage;
-            float weaponKnockback;
-            bool haveAmmo = Owner.PickAmmo(Owner.GetItem(), out arrowTypes, out _, out weaponDamage, out weaponKnockback, out _, false);
-            if (haveAmmo) {
+            ShootState shootState = Owner.GetShootState();
+            if (shootState.HasAmmo) {
                 for (int i = 0; i < 84; i++) {
                     float rot = MathHelper.TwoPi / 64 * i;
                     Vector2 velocity = rot.ToRotationVector2() * (2 + (-1f + rot % MathHelper.PiOver4) * 13);
                     int proj = Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, velocity
-                        , arrowTypes, weaponDamage, weaponKnockback, Owner.whoAmI);
+                        , shootState.AmmoTypes, shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     Main.projectile[proj].extraUpdates += 2;
                     Main.projectile[proj].timeLeft = 360;
                 }

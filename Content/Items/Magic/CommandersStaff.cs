@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
         }
     }
 
@@ -80,8 +81,9 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
         public override void FiringShoot() {
             for (int i = 0; i < 5; i++) {
-                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI, (-2 + i) * 0.01f, 1);
+                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0: Projectile.identity, ai1: (-2 + i) * 0.01f, ai2: 1);
+                Main.projectile[proj].netUpdate = true;
             }
         }
     }
@@ -119,42 +121,51 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Projectile.localNPCHitCooldown = 10;
                 Projectile.ai[1] *= 1.06f;
             }
+
             homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
-            if (homeProj.Alives()) {
+            if (homeProj.Alives() && homeProj.type > ProjectileID.None) {
                 Projectile.Center = homeProj.Center;
                 Projectile.rotation = homeProj.rotation + Projectile.ai[1];
             }
-
-            Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 60f, Color.IndianRed, Color.Red, Color.DarkRed, Color.Red, Color.IndianRed, Color.OrangeRed);
-
-            toTileLeng = 0;
-            Vector2 unitVer = Projectile.rotation.ToRotationVector2();
-            Tile tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center + unitVer * toTileLeng));
-            bool isSolid = tile.HasSolidTile();
-            while (!isSolid && toTileLeng < 2000) {
-                toTileLeng += 8;
-                Vector2 targetPos = Projectile.Center + unitVer * toTileLeng;
-                tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(targetPos));
-                isSolid = tile.HasSolidTile();
-
-                if (toTileLeng % 32 == 0) {
-                    Lighting.AddLight(targetPos, color.ToVector3() * (Projectile.timeLeft / 60f));
-                }
-
-                if (isSolid) {
-                    PRTLoader.AddParticle(new PRT_HeavenfallStar(targetPos, CWRUtils.randVr(6), false, 2, Main.rand.NextFloat(0.6f, 1.6f), color));
-                }
-                else if (toTileLeng > 90) {
-                    PRTLoader.AddParticle(new PRT_HeavenfallStarAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f, color));
-                }
+            else {
+                Projectile.Kill();
             }
 
-            newPoss = [];
-            for (int i = 0; i < MaxPosNum; i++) {
-                newPoss.Add(Projectile.Center + unitVer * (i / (float)MaxPosNum * toTileLeng));
+            if (!VaultUtils.isServer) {
+                Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 60f, Color.IndianRed, Color.Red, Color.DarkRed, Color.Red, Color.IndianRed, Color.OrangeRed);
+
+                toTileLeng = 0;
+                Vector2 unitVer = Projectile.rotation.ToRotationVector2();
+                Tile tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center + unitVer * toTileLeng));
+                bool isSolid = tile.HasSolidTile();
+                while (!isSolid && toTileLeng < 2000) {
+                    toTileLeng += 8;
+                    Vector2 targetPos = Projectile.Center + unitVer * toTileLeng;
+                    tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(targetPos));
+                    isSolid = tile.HasSolidTile();
+
+                    if (toTileLeng % 32 == 0) {
+                        Lighting.AddLight(targetPos, color.ToVector3() * (Projectile.timeLeft / 60f));
+                    }
+
+                    if (isSolid) {
+                        PRTLoader.AddParticle(new PRT_HeavenfallStar(targetPos, CWRUtils.randVr(6), false, 2, Main.rand.NextFloat(0.6f, 1.6f), color));
+                    }
+                    else if (toTileLeng > 90) {
+                        PRTLoader.AddParticle(new PRT_HeavenfallStarAlpha(targetPos, unitVer, false, 2, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f, color));
+                    }
+                }
+
+                newPoss = [];
+                for (int i = 0; i < MaxPosNum; i++) {
+                    newPoss.Add(Projectile.Center + unitVer * (i / (float)MaxPosNum * toTileLeng));
+                }
+
+                if (!Main.dedServ) {
+                    Trail ??= new Trail([.. newPoss], (float sengs) => scaleTimer, (Vector2 _) => Color.Red);
+                    Trail.TrailPositions = [.. newPoss];
+                }
             }
-            Trail ??= new Trail(newPoss.ToArray(), (float sengs) => scaleTimer, (Vector2 _) => Color.Red);
-            Trail.TrailPositions = newPoss.ToArray();
 
             if (Projectile.alpha < 255) {
                 Projectile.alpha += 15;

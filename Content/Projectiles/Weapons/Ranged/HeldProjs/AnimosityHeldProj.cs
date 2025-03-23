@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
             Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage
-                , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                , WeaponKnockback, Owner.whoAmI, 0, Projectile.identity);
         }
     }
 }

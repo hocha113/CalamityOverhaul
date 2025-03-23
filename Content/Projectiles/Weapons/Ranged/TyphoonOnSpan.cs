@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class TyphoonOnSpan : BaseOnSpanProj
     {
-        protected override Color[] colors => new Color[] { Color.LightSkyBlue, Color.Blue, Color.AliceBlue, Color.LightBlue };
+        protected override Color[] colors => [Color.LightSkyBlue, Color.Blue, Color.AliceBlue, Color.LightBlue];
         protected override float halfSpreadAngleRate => 1.15f;
         protected override float edgeBlendLength => 0.17f;
         protected override float edgeBlendStrength => 9;

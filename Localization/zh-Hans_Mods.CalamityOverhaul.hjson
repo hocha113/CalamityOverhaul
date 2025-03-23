@@ -1033,6 +1033,15 @@ Items: {
 			"利用率并不高"
 			'''
 	}
+
+	HyperionBarrageEX: {
+		DisplayName: 海伯利昂自动炮EX
+		Tooltip:
+			'''
+			发射热射巡航弹，击中目标后会分裂成六个子航弹造成二次伤害
+			"物超其用"
+			'''
+	}
 }
 
 Projectiles: {

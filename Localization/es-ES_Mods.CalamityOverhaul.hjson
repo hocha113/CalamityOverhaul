@@ -1043,6 +1043,15 @@ Items: {
 			"Utilization is not high."
 			''' */
 	}
+
+	HyperionBarrageEX: {
+		// DisplayName: Hyperion Barrage EX
+		/* Tooltip:
+			'''
+			After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
+			"Beyond its intended use"
+			''' */
+	}
 }
 
 Projectiles: {

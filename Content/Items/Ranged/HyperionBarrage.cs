@@ -1,9 +1,11 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
@@ -23,8 +25,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 94;
+            Item.height = 34;
             Item.damage = 452;
             Item.useTime = 80;
             Item.useAnimation = 80;
@@ -41,6 +43,43 @@ namespace CalamityOverhaul.Content.Items.Ranged
             , Color alphaColor, float rotation, float scale, int whoAmI) {
             spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
                 , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
+        }
+    }
+
+    internal class HyperionBarrageEX : ModItem, ICWRLoader
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrageEX";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
+        public override void SetDefaults() {
+            Item.DamageType = DamageClass.Ranged;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.width = 124;
+            Item.height = 46;
+            Item.damage = 1052;
+            Item.useTime = 60;
+            Item.useAnimation = 60;
+            Item.useAmmo = AmmoID.Bullet;
+            Item.shootSpeed = 15;
+            Item.UseSound = SoundID.Item15 with { Pitch = -0.2f };
+            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 8, 60, 10);
+            Item.SetHeldProj<HyperionBarrageEXHeld>();
+        }
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
+                , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<HyperionBarrage>().
+                AddIngredient<SoulofFrightEX>().
+                AddTile(TileID.LunarCraftingStation).
+                Register();
         }
     }
 
@@ -67,16 +106,43 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
                     , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
             if (++fireIndex > 3) {
                 Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
                     , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI, -0.1f);
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, -0.1f);
                 Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
                         , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI, 0.1f);
+                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0.1f);
                 fireIndex = 0;
             }
+        }
+    }
+
+    internal class HyperionBarrageEXHeld : BaseGun
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrageEX";
+        public override string GlowTexPath => CWRConstant.Item_Ranged + "HyperionBarrageEXGlow";
+        public override int TargetID => ModContent.ItemType<HyperionBarrageEX>();
+        public override void SetRangedProperty() {
+            Recoil = 0.2f;
+            GunPressure = 0;
+            ControlForce = 0;
+            HandIdleDistanceX = 26;
+            HandIdleDistanceY = 2;
+            HandFireDistanceX = 26;
+            HandFireDistanceY = -2;
+            ShootPosNorlLengValue = -4;
+            ShootPosToMouLengValue = 8;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
+        }
+
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                    , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0, 1);
         }
     }
 
@@ -133,6 +199,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Projectile.numHits <= 0) {
                 Projectile.LargeFieryExplosion();
             }
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[2] > 0) {
+                for (int i = 0; i < 6; i++) {
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 8
+                    , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>(), Projectile.damage, Projectile.knockBack, Projectile.owner, ai0: -1);
+                }
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -171,6 +243,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Projectile.Center = homeProj.Center;
                 Projectile.rotation = homeProj.rotation + Projectile.ai[1];
             }
+            else {
+                Projectile.rotation = Projectile.velocity.ToRotation();
+            }
 
             if (scaleTimer < 8 && scaleIndex == 0) {
                 scaleTimer++;
@@ -191,9 +266,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item62, Projectile.Center);
-            if (!VaultUtils.isClient) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
-                        , ModContent.ProjectileType<RocketSkeletonFriendly>(), Projectile.damage, 0f, Main.myPlayer, Projectile.ai[1], 2);
+                        , ModContent.ProjectileType<RocketSkeletonFriendly>(), Projectile.damage, 0f, Main.myPlayer, 0, 0, Projectile.ai[2]);
                 projectile.tileCollide = !CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center)).HasSolidTile();
                 projectile.netUpdate = true;
             }

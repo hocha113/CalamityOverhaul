@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 return;
             }
 
-            Trail ??= new Trail(PosLists.ToArray(), (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
+            Trail ??= new Trail([.. PosLists], (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
 
             Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());

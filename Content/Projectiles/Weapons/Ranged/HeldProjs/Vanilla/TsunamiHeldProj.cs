@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<TsunamiOnSpan>()] == 0) {
                 accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = -0.7f }, Projectile.Center);
                 Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<TsunamiOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                    , ModContent.ProjectileType<TsunamiOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.identity);
             }
         }
     }

@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
                 Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<MonsoonOnSpan>(), WeaponDamage
-                    , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                    , WeaponKnockback, Owner.whoAmI, 0, Projectile.identity);
             }
         }
     }

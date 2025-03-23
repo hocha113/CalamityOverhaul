@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -1049,6 +1049,15 @@ Items: {
 			'''
 			Expend energy to shoot lasers and penetrate multiple enemies
 			"Utilization is not high."
+			''' */
+	}
+
+	HyperionBarrageEX: {
+		// DisplayName: Hyperion Barrage EX
+		/* Tooltip:
+			'''
+			After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
+			"Beyond its intended use"
 			''' */
 	}
 }

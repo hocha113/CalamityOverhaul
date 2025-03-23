@@ -123,21 +123,23 @@ namespace CalamityOverhaul.Content.Items.Summon
                 return;
             }
             int index = Projectile.whoAmI;
-            for (int i = 0; i < Owner.maxMinions; i++) {
+            for (int i = 0; i <= Owner.maxMinions; i++) {
                 index = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity
-                    , ModContent.ProjectileType<DestroyerBody>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0, index, 0);
+                    , i == Owner.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>()
+                    , Projectile.damage, Projectile.knockBack, Projectile.owner, 0, Main.projectile[index].identity, 0);
+                Main.projectile[index].netUpdate = true;
             }
-            Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity
-                    , ModContent.ProjectileType<DestroyerTail>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0, index, 0);
         }
 
         public override void AI() {
-            Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
-            if (Owner.dead) {
-                Owner.CWR().DestroyerOwner = false;
-            }
-            if (Owner.CWR().DestroyerOwner) {
-                Projectile.timeLeft = 2;
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
+                if (Owner.dead) {
+                    Owner.CWR().DestroyerOwner = false;
+                }
+                if (Owner.CWR().DestroyerOwner) {
+                    Projectile.timeLeft = 2;
+                }
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
@@ -242,13 +244,13 @@ namespace CalamityOverhaul.Content.Items.Summon
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerBody";
         public override void AI() {
-            Projectile aheadSegment = Main.projectile[(int)Projectile.ai[1]];
-            if (!aheadSegment.Alives()) {
+            Projectile aheadSegment = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
+            if (!aheadSegment.Alives() || (aheadSegment.type != Type && aheadSegment.type != ModContent.ProjectileType<DestroyerHead>())) {
                 Projectile.Kill();
                 return;
             }
 
-            if (Owner.CWR().DestroyerOwner) {
+            if (Projectile.IsOwnedByLocalPlayer() && Owner.CWR().DestroyerOwner) {
                 Projectile.timeLeft = 2;
             }
 

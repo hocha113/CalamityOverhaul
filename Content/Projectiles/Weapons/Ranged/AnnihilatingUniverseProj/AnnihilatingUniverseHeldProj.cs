@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 int types = ModContent.ProjectileType<CosmicEddies>();
                 if (!Main.projectile.Any((Projectile n) => n.Alives() && n.ai[2] == 0 && n.type == types)) {
                     Projectile.NewProjectile(shootState.Source, Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
-                        , types, (int)(shootState.WeaponDamage * 1.25f), shootState.WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+                        , types, (int)(shootState.WeaponDamage * 1.25f), shootState.WeaponKnockback, Owner.whoAmI, Projectile.identity);
                 }
             }
         }

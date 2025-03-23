@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             if (fireIndex > 6) {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
             }
             else {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity / 2
@@ -189,8 +189,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             for (int i = 0; i < MaxPosNum; i++) {
                 newPoss.Add(Projectile.Center + unitVer * (i / (float)MaxPosNum * toTileLeng));
             }
-            Trail ??= new Trail(newPoss.ToArray(), (float sengs) => scaleTimer, (Vector2 _) => Color.Red);
-            Trail.TrailPositions = newPoss.ToArray();
+
+            if (!Main.dedServ) {
+                Trail ??= new Trail([.. newPoss], (float sengs) => scaleTimer, (Vector2 _) => Color.Red);
+                Trail.TrailPositions = [.. newPoss];
+            }
 
             if (Projectile.alpha < 255) {
                 Projectile.alpha += 15;
