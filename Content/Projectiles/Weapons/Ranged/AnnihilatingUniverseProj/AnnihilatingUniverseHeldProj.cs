@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AnnihilatingUniverse>();
         private float Time;
         private float Time2;
-        private float Time3;
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;

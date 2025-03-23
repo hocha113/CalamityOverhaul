@@ -37,16 +37,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void AI() {
-            Player player = CWRUtils.GetPlayerInstance(Projectile.owner);
-            Projectile ownerProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
-            if (!player.Alives()) {
+            Projectile homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            if (!Owner.Alives()) {
                 Projectile.Kill();
                 return;
             }
 
-            if (player.PressKey(false) && ownerProj.Alives() && Projectile.ai[2] == 0) {
+            if (DownRight && homeProj.Alives() && Projectile.ai[2] == 0) {
                 if (Projectile.ai[1] == 0) {
-                    Projectile.rotation = ownerProj.rotation;
+                    Projectile.rotation = homeProj.rotation;
                 }
 
                 Time++;
@@ -55,9 +54,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     Projectile.ai[1] = 600;
                 }
                 Projectile.timeLeft = (int)Projectile.ai[1] + 60;
-                Vector2 targetPos = player.Center + Projectile.rotation.ToRotationVector2() * 156;
+                Vector2 targetPos = Owner.Center + Projectile.rotation.ToRotationVector2() * 156;
                 Projectile.velocity = Projectile.Center.To(targetPos);
-                Projectile.EntityToRot(ownerProj.rotation, 0.1f);
+                Projectile.EntityToRot(homeProj.rotation, 0.1f);
 
                 if (Time % 100 == 0 && Time > 0) {
                     SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.4f });

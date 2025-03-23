@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowShootR() {
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.identity);
         }
     }
 }

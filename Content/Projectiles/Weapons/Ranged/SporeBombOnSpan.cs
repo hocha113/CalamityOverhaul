@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            float angle = (Owner.Calamity().mouseWorld - Owner.MountedCenter).ToRotation();
+            float angle = ToMouseA;
             float blinkage = 0;
             if (Projectile.timeLeft >= MaxCharge * 1.5f) {
                 blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1) * MathHelper.PiOver2 + MathHelper.PiOver2);
