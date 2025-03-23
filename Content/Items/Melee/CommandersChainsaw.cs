@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noUseGraphic = true;
             Item.channel = true;
             Item.tileBoost = 2;
-            Item.axe = 32;
+            Item.axe = 100;
         }
 
         public override void AddRecipes() {

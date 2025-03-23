@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -949,13 +949,13 @@ Items: {
 	}
 
 	WGGMK2Wilderness: {
-		// DisplayName: Гигантский заросший ветрогенератор
-		// Tooltip: ""
+		DisplayName: Гигантский заросший ветрогенератор
+		Tooltip: ""
 	}
 
 	WGGWilderness: {
-		// DisplayName: Заросший ветрогенератор
-		// Tooltip: ""
+		DisplayName: Заросший ветрогенератор
+		Tooltip: ""
 	}
 
 	MedicalBox: {
