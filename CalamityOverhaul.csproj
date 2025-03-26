@@ -1,0 +1,97 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\tModLoader.targets" />
+  <PropertyGroup>
+    <AssemblyName>CalamityOverhaul</AssemblyName>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="Assets\NPCs\Fatuous\**" />
+    <AdditionalFiles Remove="Content\Buffs\Summon\**" />
+    <AdditionalFiles Remove="Content\Items\Typeless\**" />
+    <AdditionalFiles Remove="Content\NPCs\HeavenEaters\**" />
+    <AdditionalFiles Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <Compile Remove="Assets\NPCs\Fatuous\**" />
+    <Compile Remove="Content\Buffs\Summon\**" />
+    <Compile Remove="Content\Items\Typeless\**" />
+    <Compile Remove="Content\NPCs\HeavenEaters\**" />
+    <Compile Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <EmbeddedResource Remove="Assets\NPCs\Fatuous\**" />
+    <EmbeddedResource Remove="Content\Buffs\Summon\**" />
+    <EmbeddedResource Remove="Content\Items\Typeless\**" />
+    <EmbeddedResource Remove="Content\NPCs\HeavenEaters\**" />
+    <EmbeddedResource Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <None Remove="Assets\NPCs\Fatuous\**" />
+    <None Remove="Content\Buffs\Summon\**" />
+    <None Remove="Content\Items\Typeless\**" />
+    <None Remove="Content\NPCs\HeavenEaters\**" />
+    <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="0.6.0.6.4.txt" />
+    <AdditionalFiles Remove="Assets\Projectiles\GostFire.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Effects\ColorGradient.fx" />
+    <None Remove="assets\effects\DeductDraw.fx" />
+    <None Remove="Assets\Effects\GradientTrail.fx" />
+    <None Remove="Assets\Effects\InShootGlow.fx" />
+    <None Remove="assets\effects\KnifeDistortion.fx" />
+    <None Remove="Assets\Effects\KnifeRendering.fx" />
+    <None Remove="Assets\Effects\NeutronRingShader.fx" />
+    <None Remove="Assets\Effects\PrimeHaloShader.fx" />
+    <None Remove="Assets\Effects\StreamerDust.fx" />
+    <None Remove="Assets\Effects\TrailWarp.fx" />
+    <None Remove="Assets\Effects\TwistColoring.fx" />
+    <None Remove="Assets\Effects\WarpShader.fx" />
+    <None Remove="Assets\Events\TungstenRiotIcon.png" />
+    <None Remove="Assets\Items\Replace\TODO.txt" />
+    <None Remove="Assets\Masking\DiffusionCircle2.png" />
+    <None Remove="Assets\Masking\DiffusionCircle3.png" />
+    <None Remove="Assets\Masking\DiffusionCircle4.png" />
+    <None Remove="Assets\Masking\DragonRage_Bar.png" />
+    <None Remove="Assets\Masking\e.png" />
+    <None Remove="Assets\Masking\Extra_193.png" />
+    <None Remove="Assets\Masking\Extra_193_White.png" />
+    <None Remove="Assets\Masking\MotionTrail2.png" />
+    <None Remove="Assets\Masking\MotionTrail3.png" />
+    <None Remove="Assets\Masking\MotionTrail4.png" />
+    <None Remove="Assets\Masking\SoftGlow.png" />
+    <None Remove="Assets\Masking\SplitTrail.png" />
+    <None Remove="Assets\Masking\StarTexture.png" />
+    <None Remove="Assets\Masking\StarTexture_White.png" />
+    <None Remove="Assets\Masking\Streak3.png" />
+    <None Remove="Assets\Masking\Wave.png" />
+    <None Remove="Assets\Masking\WavyNoise.png" />
+    <None Remove="Assets\Projectiles\AcidEtchedTearDrop.png" />
+    <None Remove="Assets\Projectiles\DeathLaser.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceArrowHighlight.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceFlow.png" />
+    <None Remove="Assets\Sky\PGBolt.png" />
+    <None Remove="Assets\Sky\PGFlash.png" />
+    <None Remove="Assets\UIs\ScrollbarInner.png" />
+    <None Remove="content\othermods\improvegame\Thank you Cyrilly.txt" />
+    <None Remove="Localization\es-ES_Mods.CalamityOverhaul.hjson" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Items\Bag\" />
+    <Folder Include="Assets\Players\" />
+    <Folder Include="Assets\TileModules\" />
+    <Folder Include="Assets\Painting\" />
+    <Folder Include="Assets\Turrets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CalamityMod">
+      <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
+    </Reference>
+    <Reference Include="InnoVault">
+      <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
