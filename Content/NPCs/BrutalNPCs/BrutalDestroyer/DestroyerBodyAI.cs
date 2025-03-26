@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
         private const float AerialWarningStartThreshold = AerialPhaseThreshold - PhaseShiftWarningDuration;
         private const float GroundWarningStartThreshold = AerialPhaseResetThreshold - PhaseShiftWarningDuration;
-        private bool BossRush => BossRushEvent.BossRushActive;
+        private bool BossRush => BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
         private bool MasterMode => Main.masterMode || BossRush;
         private bool Death => CalamityWorld.death || BossRush;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
