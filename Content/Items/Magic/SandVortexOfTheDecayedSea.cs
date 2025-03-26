@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -18,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 32;
             Item.height = 32;
-            Item.damage = 388;
+            Item.damage = 308;
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.mana = 6;
@@ -115,6 +116,15 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!onHitNPCs.Contains(target)) {
                 onHitNPCs.Add(target);
+            }
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.4f;
+            }
+            if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.6f;
             }
         }
 

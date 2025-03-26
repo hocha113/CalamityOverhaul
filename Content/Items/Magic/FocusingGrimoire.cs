@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 40;
+            Item.height = 44;
             Item.damage = 52;
             Item.useTime = 18;
             Item.useAnimation = 18;
@@ -55,8 +55,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             if (onFire) {
                 return;
             }
-            Item.useTime = 4;
-            Item.useAnimation = 4;
+            Item.useTime = 5;
+            Item.useAnimation = 5;
             Item.UseSound = SoundID.Item12;
             Item.mana = 2;
             AmmoTypes = ProjectileID.MiniRetinaLaser;
@@ -106,6 +106,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             if (target != null) {
                 Projectile.SmoothHomingBehavior(target.Center, 1, 0.1f);
             }
+            Projectile.scale = 1 + Math.Abs(MathF.Sin(Projectile.ai[0] * 0.04f)) * 0.2f;
+            Projectile.ai[0]++;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

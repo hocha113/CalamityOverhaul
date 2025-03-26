@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             }
         }
 
-        private float AdjustVelocity(float current, float target, float accel) {
+        private static float AdjustVelocity(float current, float target, float accel) {
             if (current < target) {
                 current += accel;
                 if (current < 0f && target > 0f) current += accel;

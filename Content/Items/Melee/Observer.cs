@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -9,9 +10,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    internal class Observer : ModItem
+    internal class Observer : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "Observer";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetStaticDefaults() {
             ItemID.Sets.Yoyo[Item.type] = true;
             ItemID.Sets.GamepadExtraRange[Item.type] = 16;
@@ -19,8 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void SetDefaults() {
-            Item.width = 28;
-            Item.height = 28;
+            Item.width = 32;
+            Item.height = 34;
             Item.DamageType = DamageClass.MeleeNoSpeed;
             Item.damage = 59;
             Item.knockBack = 4f;
@@ -37,6 +41,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 1, 60, 5);
             Item.CWR().DeathModeItem = true;
+        }
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
+                , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
         }
     }
 

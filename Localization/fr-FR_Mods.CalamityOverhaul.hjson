@@ -825,12 +825,16 @@ Items: {
 
 	ForgedLash: {
 		// DisplayName: Forged Lash
-		// Tooltip: ""
+		// Tooltip: '''"Not suitable for being bought as scrap iron."'''
 	}
 
 	CommandersClaw: {
 		// DisplayName: Commander's Claw
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Throw them at the enemies and restrain them.
+			The stealth attack will generate several Destroyer Grenades.
+			''' */
 	}
 
 	DraedonsRemote: {

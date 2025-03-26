@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -819,12 +819,16 @@ Items: {
 
 	ForgedLash: {
 		DisplayName: 锻钢之鞭
-		Tooltip: ""
+		Tooltip: '''"不适合当废铁买"'''
 	}
 
 	CommandersClaw: {
 		DisplayName: 统帅之钳
-		Tooltip: ""
+		Tooltip:
+			'''
+			投掷到敌人身上并钳制它们
+			潜伏攻击会生成数枚毁灭者榴弹
+			'''
 	}
 
 	DraedonsRemote: {
@@ -5689,7 +5693,7 @@ RemakeItems: {
 	ModifyMythrilHood.UpdateArmorText: 在换弹过程中如果受到伤害将生成大量秘银火花
 	ModifyCobaltMask.UpdateArmorText: 在换弹过程中提高15%移动速度
 	ModifyOrichalcumHelmet.UpdateArmorText: 在换弹过程中如果受到伤害会四散溅射出大量花瓣
-	ModifyPalladiumHelmet.UpdateArmorText: 在换弹过程中如果会更快的恢复生命
+	ModifyPalladiumHelmet.UpdateArmorText: 在换弹过程中会更快的恢复生命
 	ModifyChlorophyteHelmet.UpdateArmorText: 在换弹过程中将生成滞留的孢子云
 
 	ModifyChargingStationItem: {

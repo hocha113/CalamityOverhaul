@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -26,6 +28,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.value = Item.buyPrice(0, 1, 65, 0);
             Item.CWR().DeathModeItem = true;
         }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, player.Calamity().StealthStrikeAvailable() ? 1 : 0);
+            return false;
+        }
     }
 
     internal class CommandersClawThrow : ModProjectile
@@ -49,6 +57,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.spriteDirection = Projectile.velocity.X > 0 ? 1 : -1;
+            if (Projectile.ai[0] > 0) {
+                NPC target = Projectile.Center.FindClosestNPC(800, false, true);
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
+                }
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -59,11 +73,16 @@ namespace CalamityOverhaul.Content.Items.Rogue
             return false;
         }
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) { }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) { }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.ai[0] > 0 && Projectile.numHits == 0) {
+                for (int i = 0; i < 8; i++) {
+                    Vector2 ver = Projectile.velocity.RotatedBy(MathHelper.TwoPi / 8f * i);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center, ver, ModContent.ProjectileType<PunisherGrenadeRogue>()
+                    , Projectile.damage, Projectile.knockBack, Projectile.owner, Main.rand.NextBool() ? 0 : 1);
+                }
+                Projectile.numHits++;
+            }
+        }
 
         public override void OnKill(int timeLeft) {
             CWRDust.SplashDust(Projectile, 121, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.White);

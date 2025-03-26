@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/" + "DivineDevourerIllusionBody";
         public override void SetDefaults() {
-            Projectile.height = Projectile.width = 42;
+            Projectile.height = Projectile.width = 36;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
