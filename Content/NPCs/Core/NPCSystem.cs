@@ -180,6 +180,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
             //On_NPC.SetDefaults -= OnNPCSetDefaultsHook;
         }
 
+        //by HoCha113 - 2025-3-26 23:41
+        //事实证明这个办法是不稳定的，它会导致兼容性变得非常差，和其他一些模组加载时就会出现问题
+        //和物品的SD钩子一样，我仍旧没能找到稳定的解决方法，所以暂时注释掉这个
         ////这个钩子保证修改可以运行在最后，防止被其他的模组覆盖效果
         //public static void OnNPCSetDefaultsHook(On_NPC.orig_SetDefaults orig, NPC npc, int Type, NPCSpawnParams spawnparams) {
         //    orig.Invoke(npc, Type, spawnparams);
