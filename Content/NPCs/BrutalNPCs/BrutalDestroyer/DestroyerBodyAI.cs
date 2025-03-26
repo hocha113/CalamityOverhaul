@@ -164,8 +164,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateAlpha();
             CWRUtils.ClockFrame(ref frame, 5, 3);
 
-            if (npc.ai[3] >= 0f && npc.ai[3] < Main.maxNPCs) {
-                npc.realLife = (int)npc.ai[3];
+            int headIndex = -1;
+            if (npc.ai[3] >= 0f && npc.ai[3] < Main.maxNPCs ) {
+                headIndex = (int)npc.ai[3];
+                if (Main.npc[headIndex].type != NPCID.TheDestroyer) {
+                    foreach (var n in Main.ActiveNPCs) {
+                        if (n.type == NPCID.TheDestroyer) {
+                            npc.ai[3] = n.whoAmI;
+                            headIndex = n.whoAmI;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (headIndex >= 0) {
+                npc.realLife = headIndex;
             }
 
             skeletronAlive = CheckSkeletronAlive();
