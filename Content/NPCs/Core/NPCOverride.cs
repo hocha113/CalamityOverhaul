@@ -1,4 +1,5 @@
-﻿using CalamityMod.NPCs;
+﻿using CalamityMod;
+using CalamityMod.NPCs;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -40,13 +41,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         public NPC npc { get; private set; }
         /// <summary>
-        /// 这个实例对应的CWRNpc类型实例
-        /// </summary>
-        public CWRNpc cwrNPC { get; private set; }
-        /// <summary>
         /// 这个实例对应的CalamityGlobalNPC类型实例
         /// </summary>
-        public CalamityGlobalNPC calNPC { get; private set; }
+        public CalamityGlobalNPC calNPC {
+            get {
+                if (_calNPC_Instance == null) {
+                    _calNPC_Instance = npc.Calamity();
+                }
+                return _calNPC_Instance;
+            }
+        }
+        private CalamityGlobalNPC _calNPC_Instance = null;
         //不要直接设置这个
         private bool _netOtherWorkSend;
         //不要直接设置这个
@@ -117,15 +122,13 @@ namespace CalamityOverhaul.Content.NPCs.Core
             return false;
         }
 
-        public static void SetDefaults(NPC npc, CWRNpc cwr, CalamityGlobalNPC cal) {
+        public static void SetDefaults(NPC npc) {
             if (!TryFetchByID(npc.type, out NPCOverride inds) || inds == null) {
                 return;
             }
             inds.ai = new float[MaxAISlot];
             inds.localAI = new float[MaxAISlot];
             inds.npc = npc;
-            inds.cwrNPC = cwr;
-            inds.calNPC = cal;
             inds.SetProperty();
             npc.CWR().NPCOverride = inds;
         }

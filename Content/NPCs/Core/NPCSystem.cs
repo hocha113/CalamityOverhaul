@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         internal delegate void On_DrawDelegate2(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
         internal delegate void On_OnHitByProjectileDelegate(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone);
         internal delegate void On_ModifyIncomingHitDelegate(NPC npc, ref NPC.HitModifiers modifiers);
+        internal delegate void On_NPCSetDefaultDelegate();
         public static Type npcLoaderType;
         public static MethodInfo onHitByProjectile_Method;
         public static MethodInfo modifyIncomingHit_Method;
@@ -160,6 +162,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
             npcLoaderType = typeof(NPCLoader);
             LoadNPCSets();
             LoaderMethodAndHook();
+            On_NPC.SetDefaults += OnNPCSetDefaultsHook;
         }
 
         public override void Unload() {
@@ -174,6 +177,13 @@ namespace CalamityOverhaul.Content.NPCs.Core
             NPCCustomizers?.Clear();
             NPCOverrides?.Clear();
             IDToNPCSetDic?.Clear();
+            On_NPC.SetDefaults -= OnNPCSetDefaultsHook;
+        }
+
+        //这个钩子保证修改可以运行在最后，防止被其他的模组覆盖效果
+        public static void OnNPCSetDefaultsHook(On_NPC.orig_SetDefaults orig, NPC npc, int Type, NPCSpawnParams spawnparams) {
+            orig.Invoke(npc, Type, spawnparams);
+            NPCOverride.SetDefaults(npc);
         }
 
         //public static void OnDrawNPCHeadBossHook(On_DrawNPCHeadBossDelegate orig, Entity theNPC, byte alpha

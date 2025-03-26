@@ -106,39 +106,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool CheckActive() => false;
 
-        private void SetMechQueenUp() {
-            mechdusaCurvedSpineSegmentIndex = 0;
-            mechdusaCurvedSpineSegments = 10;
-            if (NPC.IsMechQueenUp) {
-                int mechdusaIndex = (int)npc.ai[1];
-                while (mechdusaIndex > 0 && mechdusaIndex < Main.maxNPCs) {
-                    if (Main.npc[mechdusaIndex].active && Main.npc[mechdusaIndex].type >= NPCID.TheDestroyer
-                        && Main.npc[mechdusaIndex].type <= NPCID.TheDestroyerTail) {
-                        mechdusaCurvedSpineSegmentIndex++;
-                        if (mechdusaCurvedSpineSegmentIndex >= mechdusaCurvedSpineSegments) {
-                            mechdusaCurvedSpineSegmentIndex = 0;
-                            break;
-                        }
-
-                        mechdusaIndex = (int)Main.npc[mechdusaIndex].ai[1];
-                        continue;
-                    }
-
-                    mechdusaCurvedSpineSegmentIndex = 0;
-                    break;
-                }
-                if (npc.width > 64) {
-                    npc.width = 64;
-                }
-                if (npc.height > 64) {
-                    npc.height = 64;
-                }
-                if (npc.scale > 2) {
-                    npc.scale = 2;
-                }
-            }
-        }
-
         public override bool? CanOverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
@@ -164,21 +131,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateAlpha();
             CWRUtils.ClockFrame(ref frame, 5, 3);
 
-            int headIndex = -1;
-            if (npc.ai[3] >= 0f && npc.ai[3] < Main.maxNPCs ) {
-                headIndex = (int)npc.ai[3];
-                if (Main.npc[headIndex].type != NPCID.TheDestroyer) {
-                    foreach (var n in Main.ActiveNPCs) {
-                        if (n.type == NPCID.TheDestroyer) {
-                            npc.ai[3] = n.whoAmI;
-                            headIndex = n.whoAmI;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (headIndex >= 0) {
+            int headIndex = FindHeadIndex((int)npc.ai[3]);
+            if (headIndex >= 0 && headIndex < Main.maxNPCs) {
                 npc.realLife = headIndex;
             }
 
@@ -239,6 +193,56 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             DestroyerHeadAI.ForcedNetUpdating(npc);
             time++;
             return false;
+        }
+
+        // 提取方法，避免重复遍历
+        public static int FindHeadIndex(int possibleIndex) {
+            if (possibleIndex >= 0f && possibleIndex < Main.maxNPCs) {
+                if (Main.npc[possibleIndex].active && Main.npc[possibleIndex].type == NPCID.TheDestroyer) {
+                    return possibleIndex;
+                }
+            }
+
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.type == NPCID.TheDestroyer) {
+                    return n.whoAmI;
+                }
+            }
+
+            return -1; // 找不到有效头部
+        }
+
+        private void SetMechQueenUp() {
+            mechdusaCurvedSpineSegmentIndex = 0;
+            mechdusaCurvedSpineSegments = 10;
+            if (NPC.IsMechQueenUp) {
+                int mechdusaIndex = (int)npc.ai[1];
+                while (mechdusaIndex > 0 && mechdusaIndex < Main.maxNPCs) {
+                    if (Main.npc[mechdusaIndex].active && Main.npc[mechdusaIndex].type >= NPCID.TheDestroyer
+                        && Main.npc[mechdusaIndex].type <= NPCID.TheDestroyerTail) {
+                        mechdusaCurvedSpineSegmentIndex++;
+                        if (mechdusaCurvedSpineSegmentIndex >= mechdusaCurvedSpineSegments) {
+                            mechdusaCurvedSpineSegmentIndex = 0;
+                            break;
+                        }
+
+                        mechdusaIndex = (int)Main.npc[mechdusaIndex].ai[1];
+                        continue;
+                    }
+
+                    mechdusaCurvedSpineSegmentIndex = 0;
+                    break;
+                }
+                if (npc.width > 64) {
+                    npc.width = 64;
+                }
+                if (npc.height > 64) {
+                    npc.height = 64;
+                }
+                if (npc.scale > 2) {
+                    npc.scale = 2;
+                }
+            }
         }
 
         private void UpdateDRIncrease() {
