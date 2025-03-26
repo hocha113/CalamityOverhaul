@@ -33,9 +33,7 @@ namespace CalamityOverhaul.Content.TileProcessors
         private int gloawTime;
         void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
         void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
-        public override void SetProperty() {
-            LoadenWorldSendData = false;
-        }
+        public override void SetProperty() => LoadenWorldSendData = false;
         public override void OnKill() {
             OnBoolMoon = false;
             Old_OnBoolMoon = false;
@@ -49,16 +47,18 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         private void SpanDustEfset() {
-            if (frameIndex == 3) {
-                for (int i = 0; i < 3; i++) {
-                    Vector2 vr = new Vector2(Main.rand.Next(-8, 8), Main.rand.Next(-5, -2));
-                    Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
-                        , Scale: Main.rand.NextFloat(0.7f, 1.3f));
-                }
-                PRT_Light particle = new PRT_Light(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
-                    , new Vector2(0, -1), 0.3f, Color.DarkGreen, 165);
-                PRTLoader.AddParticle(particle);
+            if (frameIndex != 3) {
+                return;
             }
+
+            for (int i = 0; i < 3; i++) {
+                Vector2 vr = new Vector2(Main.rand.Next(-8, 8), Main.rand.Next(-5, -2));
+                Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
+                    , Scale: Main.rand.NextFloat(0.7f, 1.3f));
+            }
+            PRT_Light particle = new PRT_Light(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
+                , new Vector2(0, -1), 0.3f, Color.DarkGreen, 165);
+            PRTLoader.AddParticle(particle);
         }
 
         private void SommonLose(Player player) {
@@ -71,42 +71,27 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         private void FindOrb() {
-            for (int i = 0; i < Main.item.Length; i++) {
-                Item orb = Main.item[i];
-                if (orb.type == ModContent.ItemType<BloodOrb>()) {
-                    Vector2 orbToPos = orb.position.To(Center);
-                    if (orbToPos.LengthSquared() > 62 * 62) {
-                        Vector2 orbToPosUnit = orbToPos.UnitVector();
-                        float leng = orbToPos.Length() / 62f;
-                        if (!VaultUtils.isServer) {
-                            for (int j = 0; j < 62; j++) {
-                                Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
-                                PRT_Light particle = new PRT_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
-                                PRTLoader.AddParticle(particle);
-                            }
-                        }
+            foreach (var orb in Main.ActiveItems) {
+                if (orb.type != ModContent.ItemType<BloodOrb>()) {
+                    continue;
+                }
 
-                        orb.position = Center;
-                    }
-                    else {
-                        orb.position = Center;
-                        Chest chest = CWRUtils.FindNearestChest(Position.X, Position.Y);
-                        if (chest != null) {
-                            Vector2 chestPos = new Vector2(chest.x, chest.y) * 16;
-                            Vector2 PosToChest = Center.To(chestPos);
-                            Vector2 PosToChestUnit = PosToChest.UnitVector();
-                            float leng = PosToChest.Length() / 32f;
-                            if (!VaultUtils.isServer) {
-                                for (int j = 0; j < 32; j++) {
-                                    Vector2 spanPos = Center + PosToChestUnit * leng * j;
-                                    PRT_Light particle = new PRT_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
-                                    PRTLoader.AddParticle(particle);
-                                }
-                            }
-
-                            chest.AddItem(orb);
-                            orb.TurnToAir();
+                Vector2 orbToPos = orb.position.To(Center);
+                if (orbToPos.LengthSquared() > 32 * 32) {
+                    Vector2 orbToPosUnit = orbToPos.UnitVector();
+                    orb.position += orbToPosUnit * 8;
+                    orb.velocity = Vector2.Zero;
+                }
+                else {
+                    Chest chest = CWRUtils.FindNearestChest(Position.X, Position.Y);
+                    if (chest != null) {
+                        Vector2 chestPos = new Vector2(chest.x, chest.y) * 16;
+                        Lighting.AddLight(chestPos, TorchID.Red);
+                        for (int z = 0; z < 32; z++) {
+                            Dust.NewDust(chestPos, 32, 32, DustID.Blood);
                         }
+                        chest.AddItem(orb);
+                        orb.TurnToAir();
                     }
                 }
             }
@@ -132,20 +117,22 @@ namespace CalamityOverhaul.Content.TileProcessors
             }
             else {
                 foreach (Item orb in player.inventory) {
-                    if (orb.type == ModContent.ItemType<BloodOrb>()) {
-                        if (orb.stack >= maxUseOrbNum) {
-                            orb.stack -= maxUseOrbNum;
-                            if (orb.stack == 0) {
-                                orb.TurnToAir();
-                            }
-                            return true;
-                        }
-                        else {
-                            maxUseOrbNum -= orb.stack;
+                    if (orb.type != ModContent.ItemType<BloodOrb>()) {
+                        continue;
+                    }
+
+                    if (orb.stack >= maxUseOrbNum) {
+                        orb.stack -= maxUseOrbNum;
+                        if (orb.stack == 0) {
                             orb.TurnToAir();
-                            if (maxUseOrbNum <= 0) {
-                                return true;
-                            }
+                        }
+                        return true;
+                    }
+                    else {
+                        maxUseOrbNum -= orb.stack;
+                        orb.TurnToAir();
+                        if (maxUseOrbNum <= 0) {
+                            return true;
                         }
                     }
                 }

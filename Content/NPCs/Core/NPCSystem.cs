@@ -183,7 +183,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
         //这个钩子保证修改可以运行在最后，防止被其他的模组覆盖效果
         public static void OnNPCSetDefaultsHook(On_NPC.orig_SetDefaults orig, NPC npc, int Type, NPCSpawnParams spawnparams) {
             orig.Invoke(npc, Type, spawnparams);
-            NPCOverride.SetDefaults(npc);
+            //只给有效的NPC进行设置，并且，不要在游戏主页进行操作
+            if (!Main.gameMenu && Type > NPCID.None) {
+                NPCOverride.SetDefaults(npc);
+            }
         }
 
         //public static void OnDrawNPCHeadBossHook(On_DrawNPCHeadBossDelegate orig, Entity theNPC, byte alpha
