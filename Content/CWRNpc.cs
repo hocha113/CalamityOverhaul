@@ -165,7 +165,10 @@ namespace CalamityOverhaul.Content
             FrozenActivity = false;
         }
 
-        public override void SetDefaults(NPC npc) => TungstenRiot.SetEventNPC(npc);
+        public override void SetDefaults(NPC npc) {
+            NPCOverride.SetDefaults(npc);
+            TungstenRiot.SetEventNPC(npc);
+        }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.targetNpcTypes15.Contains(target.type) || CWRLoad.targetNpcTypes10.Contains(target.type)
