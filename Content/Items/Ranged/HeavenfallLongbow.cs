@@ -139,23 +139,24 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
+        public static void KillAction(NPC npc) {
+            npc.dontTakeDamage = false;
+            _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
+            npc.life = 0;
+            npc.checkDead();
+            npc.HitEffect();
+            npc.NPCLoot();
+            if (npc.type == NPCID.TargetDummy) {
+                VaultUtils.KillPuppet(new Point16((int)(npc.Center.X / 16), (int)(npc.Center.Y / 16)));
+            }
+            npc.netUpdate = true;
+            npc.netUpdate2 = true;
+            npc.active = false;
+        }
+
         public static void Obliterate(Vector2 origPos) {
             const int maxLengthSquared = 90000;
 
-            static void killAction(NPC npc) {
-                npc.dontTakeDamage = false;
-                _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
-                npc.life = 0;
-                npc.checkDead();
-                npc.HitEffect();
-                npc.NPCLoot();
-                if (npc.type == NPCID.TargetDummy) {
-                    VaultUtils.KillPuppet(new Point16((int)(npc.Center.X / 16), (int)(npc.Center.Y / 16)));
-                }
-                npc.netUpdate = true;
-                npc.netUpdate2 = true;
-                npc.active = false;
-            }
             List<List<int>> allTargetNpcTypes = [
                  CWRLoad.targetNpcTypes,
                  CWRLoad.targetNpcTypes2,
@@ -186,12 +187,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     foreach (List<int> targetNpcTypes in allTargetNpcTypes) {
                         if (targetNpcTypes.Contains(npc.type)) {
                             foreach (NPC npcToKill in Main.npc.Where(n => targetNpcTypes.Contains(n.type))) {
-                                killAction(npcToKill);
+                                KillAction(npcToKill);
                             }
                             break;
                         }
                     }
-                    killAction(npc);
+                    KillAction(npc);
                 }
             }
         }

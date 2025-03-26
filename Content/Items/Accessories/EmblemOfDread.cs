@@ -4,6 +4,7 @@ using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -448,24 +449,27 @@ namespace CalamityOverhaul.Content.Items.Accessories
             return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (!Alive) {
+                return;
+            }
+
+            if (hit.DamageType.CountsAsClass<MeleeDamageClass>()) {
+                target.AddBuff(ModContent.BuffType<VoidErosion>(), 1300);
+            }
+
+            if (target.life < KilllineByLife && hit.DamageType
+                == ModContent.GetInstance<TrueMeleeDamageClass>() && Main.rand.NextBool(8)) {
+                HeavenfallLongbow.KillAction(target);
+            }
+        }
+
         public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo) {
             if (!Alive) {
                 return;
             }
 
             npc.AddBuff(ModContent.BuffType<VoidErosion>(), 1300);
-
-            if (npc == null
-                || hurtInfo.DamageSource == null
-                || hurtInfo.DamageSource.SourceItem == null) {
-                return;
-            }
-
-            if (npc.life < KilllineByLife
-                && hurtInfo.DamageSource.SourceItem.DamageType
-                == ModContent.GetInstance<TrueMeleeDamageClass>()) {
-                npc.SimpleStrikeNPC(npc.lifeMax, hurtInfo.HitDirection);
-            }
         }
 
         public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) {
@@ -473,7 +477,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            npc.SimpleStrikeNPC(npc.defDamage * 100, Math.Sign(Player.Center.To(npc.Center).X), true, 8);
+            int damage = npc.defDamage * 100;
+            damage = (int)MathHelper.Clamp(damage, 10000, int.MaxValue - 1);
+            npc.SimpleStrikeNPC(damage, Math.Sign(Player.Center.To(npc.Center).X), true, 8);
             modifiers.FinalDamage *= 0.25f;
         }
 
