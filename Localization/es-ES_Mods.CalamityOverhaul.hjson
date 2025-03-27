@@ -857,7 +857,9 @@ Items: {
 			'''
 			Summons the EX Mechanical Trio
 			Can only be used at night
+			[UEValue]
 			''' */
+		// DontUseByDeath: The current game difficulty does not allow sending signals!
 	}
 
 	CommandersStaffEX: {

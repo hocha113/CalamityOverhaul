@@ -1,8 +1,10 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityMod.Projectiles.Summon;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -61,6 +63,33 @@ namespace CalamityOverhaul.Content.Items.Summon
             }
             return base.UseItem(player);
         }
+
+        public static void SpawnBody(Projectile head, Player player) {
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.owner != player.whoAmI) {
+                    continue;
+                }
+                if (proj.type == ModContent.ProjectileType<DestroyerTail>() 
+                    || proj.type == ModContent.ProjectileType<DestroyerBody>()) {
+                    proj.active = false;
+                    proj.netUpdate = true;
+                }
+            }
+            int index = head.whoAmI;
+            for (int i = 0; i <= player.maxMinions; i++) {
+                int bodyID = i == player.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>();
+                index = Projectile.NewProjectile(head.FromObjectGetParent(), head.Center, head.velocity, bodyID, head.damage, head.knockBack
+                    , player.whoAmI, ai0:Main.projectile[index].identity);
+                Main.projectile[index].netUpdate = true;
+            }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile head = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+            SpawnBody(head, player);
+            return false;
+        }
     }
 
     internal class DestroyerSummonBuff : ModBuff
@@ -91,6 +120,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         private Vector2 offsetByIdlePos;
         private Vector2 offsetByAttackPos;
         private NPC target;
+        private int oldMinionSlots;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
@@ -119,27 +149,24 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.DamageType = DamageClass.Summon;
         }
 
-        public override void Initialize() {
-            if (Type != ModContent.ProjectileType<DestroyerHead>() || !Projectile.IsOwnedByLocalPlayer()) {
-                return;
-            }
-            int index = Projectile.whoAmI;
-            for (int i = 0; i <= Owner.maxMinions; i++) {
-                index = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity
-                    , i == Owner.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>()
-                    , Projectile.damage, Projectile.knockBack, Projectile.owner, 0, Main.projectile[index].identity, 0);
-                Main.projectile[index].netUpdate = true;
-            }
-        }
+        public override void Initialize() => oldMinionSlots = Owner.maxMinions;
 
         public override void AI() {
-            Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
-            if (Owner.dead) {
-                Owner.CWR().DestroyerOwner = false;
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
+                if (Owner.dead) {
+                    Owner.CWR().DestroyerOwner = false;
+                }
+                if (Owner.CWR().DestroyerOwner) {
+                    Projectile.timeLeft = 2;
+                }
             }
-            if (Owner.CWR().DestroyerOwner) {
-                Projectile.timeLeft = 2;
+            
+            //每次更改召唤上限时都重写生成一次体节
+            if (oldMinionSlots != Owner.maxMinions) {
+                StaffoftheDestroyer.SpawnBody(Projectile, Owner);
             }
+            oldMinionSlots = Owner.maxMinions;
 
             if (Projectile.Distance(Owner.Center) > 2800) {
                 if (!Main.dedServ) {
@@ -260,14 +287,10 @@ namespace CalamityOverhaul.Content.Items.Summon
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerBody";
         public override void AI() {
-            Projectile aheadSegment = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
-            if (!aheadSegment.Alives() || (aheadSegment.type != Type && aheadSegment.type != ModContent.ProjectileType<DestroyerHead>())) {
+            Projectile aheadSegment = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            if (aheadSegment.Alives() && (aheadSegment.type == Type || aheadSegment.type == ModContent.ProjectileType<DestroyerHead>())) {
                 Projectile.Kill();
                 return;
-            }
-
-            if (Owner.CWR().DestroyerOwner) {
-                Projectile.timeLeft = 2;
             }
 
             Vector2 directionToNextSegment = aheadSegment.Center - Projectile.Center;
@@ -278,6 +301,10 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.Center = aheadSegment.Center - directionToNextSegment.UnitVector() * Projectile.scale * Projectile.width;
             Projectile.spriteDirection = (directionToNextSegment.X > 0).ToDirectionInt();
         }
+
+        public override void NetHeldSend(BinaryWriter writer) { }
+
+        public override void NetHeldReceive(BinaryReader reader) { }
     }
 
     internal class DestroyerTail : DestroyerBody

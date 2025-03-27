@@ -837,7 +837,9 @@ Items: {
 			'''
 			召唤EX机械三王
 			只能在夜晚使用
+			[UEValue]
 			'''
+		// DontUseByDeath: The current game difficulty does not allow sending signals!
 	}
 
 	CommandersStaffEX: {

@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Players
         public static List<int> noRippersProj = [];
 
         public static RippersPlayer Instance;
-        public int time;
         void ICWRLoader.SetupData() {
             Instance = this;
             noRippersProj = [
