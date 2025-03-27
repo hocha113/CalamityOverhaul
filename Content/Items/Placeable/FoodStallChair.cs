@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Placeable
@@ -6,9 +7,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class FoodStallChair : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/" + "FoodStallChair";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Item.DefaultToPlaceableTile(ModContent.TileType<Tiles.FoodStallChair>());
             Item.width = 32;
@@ -16,9 +14,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.value = 1150;
         }
 
-        public override bool? UseItem(Player player) {
-            player.direction = -1;
-            return base.UseItem(player);
+        public override void AddRecipes() {
+            if (!CWRUtils.IsAprilFoolsDay) {
+                return;
+            }
+            CreateRecipe()//愚人节快乐
+                .AddIngredient(ItemID.Wood)
+                .Register();
         }
     }
 }

@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content
         public static int SHPC_Level() {
             int level = 0;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 14;
+                return 12;
             }
 
             if (DownedV0.Invoke()) {
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content
             int level = 0;
 
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 14;
+                return 12;
             }
 
             if (DownedV0.Invoke()) {

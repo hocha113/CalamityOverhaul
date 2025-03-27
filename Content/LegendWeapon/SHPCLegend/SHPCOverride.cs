@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (cwrItem.LegendData == null) {
                 return 0;
             }
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return 12;
+            }
             return cwrItem.LegendData.Level;
         }
         /// <summary>
@@ -85,9 +88,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
 
         public static bool SHPCDamage(Player player, Item Item, ref StatModifier damage) {
-            if (!IsLegend) {
-                return false;
-            }
             CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage(Item), GetStartDamage, ref damage);
             return false;
         }

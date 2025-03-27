@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Sounds;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Terraria;
@@ -26,6 +27,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Recoil = 0;
             CanRightClick = true;
             EnableRecoilRetroEffect = true;
+        }
+
+        public override bool CanSpanProj() {
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return InWorldBossPhase.Downed28.Invoke();
+            }
+            return base.CanSpanProj();
         }
 
         public override void HanderPlaySound() {

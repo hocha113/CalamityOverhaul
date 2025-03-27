@@ -505,6 +505,10 @@ namespace CalamityOverhaul
         public static bool Invasion => Main.invasionType > 0 || Main.pumpkinMoon
                 || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
                 || TungstenRiot.Instance.TungstenRiotIsOngoing;
+        /// <summary>
+        /// 是否处于愚人节
+        /// </summary>
+        public static bool IsAprilFoolsDay => DateTime.Now.Month == 4 && DateTime.Now.Day == 1;
 
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 

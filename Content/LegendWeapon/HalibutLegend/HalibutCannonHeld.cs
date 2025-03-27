@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
@@ -20,6 +21,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HandFireDistanceX = 40;
             HandFireDistanceY = -3;
             CanCreateSpawnGunDust = false;
+        }
+
+        public override bool CanSpanProj() {
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return InWorldBossPhase.Downed28.Invoke();
+            }
+            return base.CanSpanProj();
         }
 
         private void Shoot(int num) {

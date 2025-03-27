@@ -121,6 +121,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (cwrItem.LegendData == null) {
                 return 0;
             }
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return 12;
+            }
             return cwrItem.LegendData.Level;
         }
         public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);

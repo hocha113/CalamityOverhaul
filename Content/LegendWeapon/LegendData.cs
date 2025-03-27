@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using System.IO;
 using Terraria;
 using Terraria.Localization;
@@ -59,6 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 tag["LegendData:UpgradeWorldName"] = UpgradeWorldName;
             }
         }
+
         public virtual void LoadData(Item item, TagCompound tag) {
             if (!tag.TryGet("LegendData:Level", out Level)) {
                 Level = 0;
@@ -67,11 +69,19 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 UpgradeWorldName = "";
             }
         }
+
         public virtual void Update() {
             if (TargetLevle > Level) {
                 UpgradeWorldName = Main.worldName;
                 Level = TargetLevle;
             }
+        }
+
+        public void DoUpdate() {
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return;
+            }
+            Update();
         }
     }
 }

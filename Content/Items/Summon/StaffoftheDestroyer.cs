@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -132,13 +133,28 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AI() {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
-                if (Owner.dead) {
-                    Owner.CWR().DestroyerOwner = false;
+            Owner.AddBuff(ModContent.BuffType<DestroyerSummonBuff>(), 10086);
+            if (Owner.dead) {
+                Owner.CWR().DestroyerOwner = false;
+            }
+            if (Owner.CWR().DestroyerOwner) {
+                Projectile.timeLeft = 2;
+            }
+
+            if (Projectile.Distance(Owner.Center) > 2800) {
+                if (!Main.dedServ) {
+                    SoundEngine.PlaySound(SoundID.Item113, Owner.Center);
+                    Lighting.AddLight(Owner.Center, Color.DarkRed.ToVector3() * 1.45f);
                 }
-                if (Owner.CWR().DestroyerOwner) {
-                    Projectile.timeLeft = 2;
+                Projectile.Center = Owner.Center;
+                foreach (var proj in Main.ActiveProjectiles) {
+                    if (proj.owner != Owner.whoAmI) {
+                        continue;
+                    }
+                    if (proj.type == ModContent.ProjectileType<DestroyerBody>() 
+                        || proj.type == ModContent.ProjectileType<DestroyerTail>()) {
+                        proj.Center = Owner.Center;
+                    }
                 }
             }
 
@@ -250,7 +266,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                 return;
             }
 
-            if (Projectile.IsOwnedByLocalPlayer() && Owner.CWR().DestroyerOwner) {
+            if (Owner.CWR().DestroyerOwner) {
                 Projectile.timeLeft = 2;
             }
 
