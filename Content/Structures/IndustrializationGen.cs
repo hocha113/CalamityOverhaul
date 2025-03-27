@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Structures
         }
 
         internal static void SpawnWindGrivenGenerator() {
-            Point16 asteroidCoreTopPoint = default;
+            Point16 asteroidCoreTopPoint = new Point16(Main.maxTilesX / 2, 0);
             int labHologramProjector = ModContent.TileType<LabHologramProjector>();
             for (int x = 0; x < Main.maxTilesX; x++) {
                 for (int y = 0; y < 500; y++) {
@@ -35,10 +35,10 @@ namespace CalamityOverhaul.Content.Structures
             }
 
             int maxFindWidth = 600 + WorldGen.GetWorldSize() * 200;
-            int maxFindHeight = 500;
+            int maxFindHeight = 150 + WorldGen.GetWorldSize() * 100;
 
             Point16 asteroidCoreTopPoint2 = asteroidCoreTopPoint;
-            asteroidCoreTopPoint -= new Point16(maxFindWidth / 2, maxFindHeight / 2);
+            asteroidCoreTopPoint -= new Point16(maxFindWidth / 2, 0);
             int tileIsAirCount = 0;
             bool dontFindByY = false;
             Tile tile = default;
