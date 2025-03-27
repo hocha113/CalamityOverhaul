@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Summon;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using System.Linq;
@@ -69,6 +68,10 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public static void SpawnBody(Projectile head, Player player) {
+            if (Main.myPlayer != player.whoAmI) {
+                return;
+            }
+
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.owner != player.whoAmI) {
                     continue;
@@ -79,6 +82,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                     proj.netUpdate = true;
                 }
             }
+
             int index = head.whoAmI;
             for (int i = 0; i <= player.maxMinions; i++) {
                 int bodyID = i == player.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>();

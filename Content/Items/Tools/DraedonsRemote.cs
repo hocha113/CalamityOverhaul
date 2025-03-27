@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -90,20 +91,33 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void AI() {
             Projectile.velocity = new Vector2(0, -6);
-            Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Electric);
+            if (!Main.dedServ) {
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Electric);
+                Main.dust[dust].noGravity = true;
+            }
         }
 
         public override void OnKill(int timeLeft) {
             CWRWorld.MachineRebellion = true;
             //设置成1秒的锁定时间，因为服务器那边的生成是请求状态，大概会有一帧到两帧的广播延迟
             //这导致服务器生成的时候标签已经被关闭了，所以需要一个时间锁
-            CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇搞的鬼
+            CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇捣的鬼
             if (!VaultUtils.isClient) {
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.SkeletronPrime, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Retinazer, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Spazmatism, false);
                 VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.TheDestroyer, false);
             }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            value = DraedonsRemote.Glow.Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

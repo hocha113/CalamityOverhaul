@@ -49,6 +49,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             if (baseGeneratorTP != null) {
                 baseGeneratorTP.GeneratorUI = baseGeneratorUI;
                 baseGeneratorTP.RightClickByTile(newTP);
+                baseGeneratorTP.SendData();
             }
             return true;
         }

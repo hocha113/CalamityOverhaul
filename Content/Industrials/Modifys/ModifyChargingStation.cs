@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
             if (tp is ChargingStationTP chargingStation) {
                 chargingStation.RightEvent();
+                chargingStation.SendData();
             }
             return false;
         }
@@ -138,26 +139,19 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Item item = Main.LocalPlayer.GetItem();
 
             if (Main.keyState.PressingShift()) {
-                if (!Item.IsAir && !VaultUtils.isClient) {
-                    int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, Item.Clone());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
+                if (!Item.IsAir) {
+                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), Item, Item.stack);
+                    Item.TurnToAir();
                 }
-                Item.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab);
                 return;
             }
 
             if (ItemIsCharge(item, out _, out _)) {
-                if (!Item.IsAir && !VaultUtils.isClient) {
-                    int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, Item.Clone());
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
+                if (!Item.IsAir) {
+                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), Item, Item.stack);
                     Item.TurnToAir();
                 }
-
                 Item = item.Clone();
                 item.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab);
@@ -175,7 +169,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                             chargingStation.OpenUI = false;
                         }
                     }
-
                 }
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }
