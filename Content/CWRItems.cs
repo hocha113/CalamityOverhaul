@@ -656,7 +656,10 @@ namespace CalamityOverhaul.Content
             }
 
             if (item.CWR().StorageUE) {
-                tooltips.ReplaceTooltip("[UEValue]", $"{CWRLocText.Instance.InternalStoredEnergy.Value}: {(int)item.CWR().UEValue}UE");
+                var line = new TooltipLine(CWRMod.Instance, "UEValue", $"{CWRLocText.Instance.InternalStoredEnergy.Value}: {(int)item.CWR().UEValue}UE");
+                line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 300 / 300f
+                    , Color.Yellow, Color.White, Color.Yellow);
+                tooltips.Add(line);
             }
 
             if (item.CWR().DeathModeItem) {

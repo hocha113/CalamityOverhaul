@@ -843,7 +843,6 @@ Items: {
 			'''
 			Summons the EX Mechanical Trio
 			Can only be used at night
-			[UEValue]
 			''' */
 		// DontUseByDeath: The current game difficulty does not allow sending signals!
 	}
@@ -905,31 +904,39 @@ Items: {
 
 	ThermalGenerator: {
 		// DisplayName: Thermal Generator
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Put fuel in for power generation.
+			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			''' */
 	}
 
 	ThermalBattery: {
 		// DisplayName: Thermal Battery
-		// Tooltip: "[UEValue]"
+		// Tooltip: Store a certain amount of electrical energy
 	}
 
 	WindGrivenGenerator: {
 		// DisplayName: Wind Griven Generator
-		// Tooltip: "[UEValue]"
+		// Tooltip: Move with the wind and generate electricity
 		// UnderstandWindGriven: An initial understanding of how wind power works is required
 		// UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
 	}
 
 	WindGrivenGeneratorMK2: {
 		// DisplayName: Wind Griven Generator MK2
-		// Tooltip: "[UEValue]"
+		// Tooltip: Move with the wind and generate electricity
 		// UnderstandWindGrivenMK2: A deep understanding of wind power is required
 		// UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
 	}
 
 	ThermalGeneratorMK2: {
 		// DisplayName: Thermal Generator MK2
-		// Tooltip: "[UEValue]"
+		/* Tooltip:
+			'''
+			Put fuel in for power generation.
+			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			''' */
 	}
 
 	WGGMK2Wilderness: {
@@ -961,7 +968,6 @@ Items: {
 			In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
 			and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
 			"Engineers, stay away"
-			[UEValue]
 			''' */
 	}
 
@@ -992,7 +998,6 @@ Items: {
 			'''
 			Place on the ground and right-click to initiate flight
 			Hold left and right mouse buttons in the air to adjust flight direction
-			[UEValue]
 			''' */
 	}
 
@@ -1003,7 +1008,6 @@ Items: {
 			Used for transmitting electrical energy
 			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
 			Connects to generators and other power sources to transfer energy to batteries or electrical devices
-			[UEValue]
 			''' */
 	}
 
@@ -1014,7 +1018,6 @@ Items: {
 			Used for transmitting electrical energy
 			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
 			Extracts energy from batteries and other storage units to supply electrical devices
-			[UEValue]
 			''' */
 	}
 
@@ -5652,7 +5655,6 @@ RemakeItems: {
 			Can be connected to pipelines for power transmission  
 			Right-click the block while holding a rechargeable item to quickly insert it  
 			Shift + Right-click to retrieve items
-			[UEValue]
 			''' */
 	}
 
@@ -5662,7 +5664,6 @@ RemakeItems: {
 			'''
 			Fires lightning-fast lasers at nearby enemies
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5672,7 +5673,6 @@ RemakeItems: {
 			'''
 			Fires lasers at nearby enemies
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5682,7 +5682,6 @@ RemakeItems: {
 			'''
 			Throws fragile ice mist bombs at nearby enemies
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5692,7 +5691,6 @@ RemakeItems: {
 			'''
 			Fires bullets at nearby enemies in a shotgun spread
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5702,7 +5700,6 @@ RemakeItems: {
 			'''
 			Fires tracking plague missiles at nearby enemies
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5712,7 +5709,6 @@ RemakeItems: {
 			'''
 			Sprays high-speed water streams at nearby enemies
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
@@ -5722,7 +5718,6 @@ RemakeItems: {
 			'''
 			Incinerates nearby enemies with a high-powered flamethrower
 			Requires energy to operate
-			[UEValue]
 			''' */
 	}
 
