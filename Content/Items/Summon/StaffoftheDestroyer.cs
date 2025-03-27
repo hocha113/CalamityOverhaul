@@ -2,6 +2,7 @@
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -42,7 +43,10 @@ namespace CalamityOverhaul.Content.Items.Summon
             }
 
             foreach (Projectile p in Main.ActiveProjectiles) {
-                if (p.minion && p.owner == player.whoAmI) {
+                if (p.owner != player.whoAmI) {
+                    continue;
+                }
+                if (p.minion) {
                     foundSlotsCount += p.minionSlots;
                 }
                 if (p.type == ModContent.ProjectileType<DestroyerHead>()) {
@@ -80,7 +84,6 @@ namespace CalamityOverhaul.Content.Items.Summon
                 int bodyID = i == player.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>();
                 index = Projectile.NewProjectile(head.FromObjectGetParent(), head.Center, head.velocity, bodyID, head.damage, head.knockBack
                     , player.whoAmI, ai0:Main.projectile[index].identity);
-                Main.projectile[index].netUpdate = true;
             }
         }
 
@@ -127,15 +130,10 @@ namespace CalamityOverhaul.Content.Items.Summon
             ProjectileID.Sets.NeedsUUID[Projectile.type] = true;
         }
         public override void SetDefaults() {
+            Projectile.minion = true;
             Projectile.width = 40;
             Projectile.height = 40;
-            Projectile.minion = true;
             Projectile.minionSlots = 4;
-            if (Type != ModContent.ProjectileType<DestroyerHead>()) {
-                Projectile.width = 36;
-                Projectile.height = 36;
-                Projectile.minionSlots = 0;
-            }
             offsetByIdlePos = Vector2.Zero;
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
@@ -283,16 +281,44 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
     }
 
-    internal class DestroyerBody : DestroyerHead
+    internal class DestroyerBody : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerBody";
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
+            ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
+            ProjectileID.Sets.NeedsUUID[Projectile.type] = true;
+        }
+        public override void SetDefaults() {
+            Projectile.minion = true;
+            Projectile.width = 36;
+            Projectile.height = 36;
+            Projectile.minionSlots = 0;
+            Projectile.friendly = true;
+            Projectile.ignoreWater = true;
+            Projectile.netImportant = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 10086;
+            Projectile.alpha = 255;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 30;
+            Projectile.DamageType = DamageClass.Summon;
+        }
+        //我他妈也不知道为什么要这么写
+        private bool FindaheadSegmentByIdentity(Projectile proj) => proj.owner == Projectile.owner && (proj.projUUID == (int)Projectile.ai[0] || proj.identity == (int)Projectile.ai[0]);
         public override void AI() {
-            Projectile aheadSegment = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
-            if (aheadSegment.Alives() && (aheadSegment.type == Type || aheadSegment.type == ModContent.ProjectileType<DestroyerHead>())) {
+            Projectile aheadSegment = Main.projectile.Take(Main.maxProjectiles).FirstOrDefault(FindaheadSegmentByIdentity);
+            if (!aheadSegment.Alives() || (aheadSegment.type != Type && aheadSegment.type != ModContent.ProjectileType<DestroyerHead>())) {
                 Projectile.Kill();
                 return;
             }
-
+            if (Owner.dead) {
+                Owner.CWR().DestroyerOwner = false;
+            }
+            if (Owner.CWR().DestroyerOwner) {
+                Projectile.timeLeft = 2;
+            }
             Vector2 directionToNextSegment = aheadSegment.Center - Projectile.Center;
             directionToNextSegment = directionToNextSegment.RotatedBy(MathHelper.WrapAngle(aheadSegment.rotation - Projectile.rotation) * 0.08f);
             directionToNextSegment = directionToNextSegment.MoveTowards((aheadSegment.rotation - Projectile.rotation).ToRotationVector2(), 1f);
@@ -302,9 +328,15 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.spriteDirection = (directionToNextSegment.X > 0).ToDirectionInt();
         }
 
-        public override void NetHeldSend(BinaryWriter writer) { }
-
-        public override void NetHeldReceive(BinaryReader reader) { }
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            value = CWRUtils.GetT2DValue(Texture + "Glow");
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            return false;
+        }
     }
 
     internal class DestroyerTail : DestroyerBody
