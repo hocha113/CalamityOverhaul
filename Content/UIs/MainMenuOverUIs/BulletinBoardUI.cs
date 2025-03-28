@@ -44,10 +44,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         void ICWRLoader.SetupData() {
             bulletinBoardElements = [];
-            //wiki没做完，暂时不要给别人看
-            //BulletinBoardElement wikiBulletinBoard = new BulletinBoardElement()
-            //    .Setproperty(CWRLocText.Instance.IconUI_Text8, () => CWRConstant.modWikiUrl.WebRedirection());
-            //bulletinBoardElements.Add(wikiBulletinBoard);
+
+            BulletinBoardElement wikiBulletinBoard = new BulletinBoardElement()
+                .Setproperty(CWRLocText.Instance.IconUI_Text8, () => CWRConstant.modWikiUrl.WebRedirection());
+            bulletinBoardElements.Add(wikiBulletinBoard);
 
             BulletinBoardElement feedbackUIbulletinBoard = new BulletinBoardElement()
                 .Setproperty(CWRLocText.Instance.IconUI_Text1, () => FeedbackUI.Instance._active = true);
