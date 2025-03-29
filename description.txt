@@ -1,26 +1,33 @@
-﻿The Calamity Overhaul Mod aims to comprehensively optimize and expand the gameplay experience of the Calamity Mod.
+﻿-Calamity Overhaul Mod
+[strike] The intro music of the preview video might be loud. If you want to watch it, please be prepared or lower your computer volume. [/strike]  
+[b] [url=https://calamity-overhaul.cc]Mod Wiki[/url] [/b]  
 
--What Does This Mod Do?-
-Gun Overhaul: Nearly all guns have been reworked, featuring new magazine and recoil systems, making combat more realistic.
-Melee Weapon Enhancement: A large number of melee weapons have been thoroughly optimized, with more flashy and practical attack methods added.
-Boss Battle Rework (In Development): Ongoing rework of Boss battle mechanics to provide more challenging and strategic combat experiences.
-New Weapons and Equipment: Dozens of new weapons and equipment have been introduced, along with a new crafting system to enrich gameplay content.
-Terrain Generation Optimization: Adjustments have been made to terrain generation, enhancing the fun and challenge of exploration.
-Expanded Crafting Recipes: Numerous new crafting recipes have been added, offering more crafting options.
-Gameplay Smoothing: Numerical optimizations have been applied to smooth out the gameplay experience and provide better balance.
-Other Weapon Reworks: Hundreds of unmentioned weapons have been reworked, giving players more choices and gameplay variety.
+-What does this mod do?
+Gun overhaul: Almost all guns have been reworked, introducing a magazine and recoil system for a more realistic combat experience.  
+Melee weapon enhancement: Many melee weapons have been comprehensively optimized, adding cooler and more practical attack methods.  
+Boss fight overhaul (in development): The battle mechanics of bosses are being reworked to provide more challenging and strategic combat experiences.  
+New weapons and equipment: Dozens of new weapons and equipment have been introduced, along with a brand-new crafting system to enrich the game.  
+Terrain generation optimization: Adjustments have been made to terrain generation, enhancing exploration fun and challenges.  
+Expanded crafting recipes: Multiple new crafting recipes have been added, offering more crafting choices.  
+Other weapon overhauls: Hundreds of previously unmentioned weapons have been reworked, giving players more choices and playstyles.  
+Draedon's Technology: Similar to MC technology mods, Draedon's Tech content has been overhauled.  
 
--Upcoming & Planned Content-
-Major Class Overhauls: Comprehensive reworks of other classes are in progress, including weapon and mechanic optimizations.
-Death Mode AI Rework: All AI in Death Mode will be reworked to bring a fresh combat experience.
-Game Balance Optimization: Further adjustments and optimizations to game balance are planned to ensure every player can enjoy both challenge and fun.
-More Legendary Weapons: Additional legendary weapons with unique attributes and abilities will be added.
+-Upcoming & Improved Features
+Massive class rework: A complete overhaul of other classes is underway, including weapon and mechanic optimizations.  
+Death Mode AI overhaul: All AI will be reworked in Death Mode, bringing an entirely new combat experience.  
+More legendary weapons: More legendary weapons with unique attributes and abilities will be added.  
+Draedon's Technology improvements: We need more generators and power buildings! And more turrets!  
 
--Open Source & Community Participation-
-This mod is open-source on https://github.com/hocha113/CalamityOverhaul. Feel free to report any issues, provide suggestions, or contribute to the localization of the mod!
+-Open Source & Community Involvement
+This mod is open-source on [url=https://github.com/hocha113/CalamityOverhaul]Github[/url]. You are welcome to report issues, provide suggestions, or contribute to localization translations!  
 
--How to Contact the Author & Join the Community-
-QQ Group: 711243165 - Here you can contact me directly and participate in discussions.
-Video Homepage: https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0 - Get more real-time updates and video content!
-Independent Wiki: (Coming Soon) - Provides detailed information and guides about the mod.
+-How to Contact the Author & Join the Community?
+QQ Group: 711243165 - You can directly contact me and participate in discussions here.  
+Video Homepage: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]Red Tea Object's Personal Page[/url] - Get more real-time updates and video content!  
+
+-Gameplay Suggestions
+It is recommended to create a new map after enabling the mod to fully experience the content, as the mod adds new terrain structures that can only be encountered in new worlds!  
+It is recommended to install [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=] Recipe Browser Mod [/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2669644269&searchtext=] Boss Checklist Mod [/url] to assist your gameplay!  
+Try [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Calamity Entropy Mod [/url]! We will have lots of exciting crossover content!  
+Finally, check out the FTB team's [url=https://www.mcmod.cn/modpack/526.html] Stone Block modpack series! [/url] I love you all—if it weren't for you, I wouldn't have become interested in mod development!
 

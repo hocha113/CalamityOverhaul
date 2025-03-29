@@ -1,6 +1,6 @@
 ﻿[h1] Calamity Overhaul Mod [/h1]
 [strike] 预览视频的开头音乐可能比较大，如果您想观看，请做好准备或者调小电脑音量 [/strike]
-[b]Calamity Overhaul Mod 旨在全方位优化和扩展 Calamity Mod 的游戏体验。[/b]
+[b] [url=https://calamity-overhaul.cc]模组Wiki[/url] [/b]
 
 [h2] 这个模组做了什么？ [/h2]
 枪械重制：重做了几乎所有枪械，新增弹匣和后坐力系统，让战斗更具真实感。
@@ -9,14 +9,14 @@ Boss战斗重制（开发中）：正在对Boss的战斗机制进行重做，带
 新增武器装备：引入数十种全新武器和装备，并配备全新的合成系统，丰富游戏内容。
 地形生成优化：对地形生成进行了调整，提升探索的乐趣和挑战。
 合成配方扩展：新增多种合成配方，提供更多的制作选择。
-游戏流程平滑化：对游戏流程进行数值优化，提供更为平衡的游戏体验。
 其他武器重做：重做了数百件未提及的武器，为玩家提供更多选择和玩法。
+嘉登工艺: 引入类似MC科技模组的内容，重做了嘉登科技相关的内容。
 
 [h2] 即将推出&完善的内容 [/h2]
 职业大规模重制：正在进行其他职业的全面重制，包括武器与机制的优化。
 死亡模式 AI 重做：全体AI将在死亡模式中重制，带来全新的战斗体验。
-游戏平衡优化：进一步调整和优化游戏平衡性，确保每一位玩家都能享受挑战与乐趣。
 更多传奇武器：将添加更多具有独特属性和能力的传奇武器。
+嘉登科技的完善: 我们还需要更多发电机和电力建筑!以及更多的炮塔!
 
 [h2] 开源与社区参与 [/h2]
 该模组在 [url=https://github.com/hocha113/CalamityOverhaul]Github[/url] 上开源。欢迎您在此反馈问题、提出建议，或为模组的本地化翻译贡献力量！
@@ -24,5 +24,9 @@ Boss战斗重制（开发中）：正在对Boss的战斗机制进行重做，带
 [h2] 如何联系作者&加入社区？ [/h2]
 QQ群: 711243165 - 在这里您可以直接联系到我并参与讨论。
 视频主页: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]红茶object的个人主页[/url] - 获取更多实时更新与视频内容！
-独立Wiki: (即将到来) - 提供详细的模组信息与指南。
 
+[h2] 游玩建议 [/h2]
+-建议在启用模组后新创建一个地图来体验流程，因为模组添加了一些新的地形结构，使用新的地图才能体验到这些内容!
+-建议同时添加 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=] Recipe Browser Mod [/url] 与 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2669644269&searchtext=] Boss Checklist Mod [/url] 来辅助您的游戏!
+-试试[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3316697363&searchtext=Calamity] Calamity Entropy Mod [/url]! 我们会有许多有趣的联动内容!
+-最后，试试FTB团队的[url=https://www.mcmod.cn/modpack/526.html] Stone Block 整合包系列! [/url] 我爱你们，如果不是你们我就不会对模组制作感兴趣!
