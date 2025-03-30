@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Vector2 ownerPos = Main.player[Projectile.owner].Center;
                 Vector2 spanPos = ownerPos + ownerPos.To(target.Center).UnitVector().RotatedBy((120 + Main.rand.Next(120)) * CWRUtils.atoR) * Main.rand.Next(909, 1045);
                 Vector2 vr = (target.Center - spanPos + target.velocity * 7.5f).SafeNormalize(Vector2.UnitY) * 17f;
-                int lightning = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr, ModContent.ProjectileType<HeavenLightning>(), lightningDamage, 0f, Projectile.owner);
+                int lightning = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr, ModContent.ProjectileType<HeavenRainbowImpact>(), lightningDamage, 0f, Projectile.owner);
                 if (Main.projectile.IndexInRange(lightning)) {
                     Main.projectile[lightning].ai[0] = vr.ToRotation();
                     Main.projectile[lightning].ai[1] = Main.rand.Next(100);

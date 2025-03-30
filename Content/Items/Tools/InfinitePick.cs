@@ -2,7 +2,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -18,6 +20,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
+    internal class ModifyInfinitePick : ItemOverride
+    {
+        public override int TargetID => ModContent.ItemType<InfinitePick>();
+        public override bool CanLoadLocalization => false;
+        //在某些不应该的情况下，武器会被禁止使用，使用这个钩子来防止这种事情的发生
+        public override bool? On_CanUseItem(Item item, Player player) => true;
+    }
+
     internal class InfinitePick : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/Pickaxe";
