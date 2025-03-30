@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 onspan = true;
             }
             if (Slash2) {
-                _ = SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.1f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash3) {
-                _ = SoundEngine.PlaySound(MurasamaOverride.BigSwing with { Pitch = 0f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = 0f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash1) {
-                _ = SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.05f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.05f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -332,8 +332,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
             _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                ? SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)
-                : SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
+                ? SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)
+                : SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
 
             for (int i = 0; i < 3; i++) {
                 Color impactColor = Slash3 ? Main.rand.NextBool(3) ? Color.LightCoral : Color.White : Main.rand.NextBool(4) ? Color.LightCoral : Color.Crimson;

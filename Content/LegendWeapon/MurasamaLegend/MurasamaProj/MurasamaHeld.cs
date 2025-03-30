@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
                 Item.initialize();
                 if (Item.CWR().ai[0] >= 1) {
-                    SoundEngine.PlaySound(MurasamaOverride.BigSwing with { Pitch = -0.1f }, Projectile.Center);
+                    SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
                         , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + level * 1f)), 0, Owner.whoAmI);

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
@@ -27,7 +28,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraBreakerSlash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MuraBreakerSlash";
-        private List<NPC> onHitNpcs = [];
+        private List<NPC> OnHitNPCs { get; set; } = [];
+        private const int maxFrame = 7;
+        private const float baseSize = 1f;
+        private int Level => MurasamaOverride.GetLevel(Item);
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             Projectile.width = 432;
@@ -37,26 +41,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 20;
+            Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
-        private int Level => MurasamaOverride.GetLevel(Item);
+        public override void Initialize() => Projectile.scale = baseSize * MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner) + Level * 0.024f;
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
-            if (Projectile.ai[0] == 0) {
-                Projectile.scale = 0.5f + Level * 0.0f;
-                Projectile.scale *= MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner);
+            if (++Projectile.ai[1] >= 3) {
+                if (++Projectile.ai[2] >= maxFrame) {
+                    Projectile.Kill();
+                }
+                Projectile.ai[1] = 0;
             }
-            Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
-            Projectile.scale += 0.05f + Level * 0.005f;
-            Projectile.position += Owner.velocity;
+            
+            Projectile.scale += 0.01f;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity.UnitVector() * 80 * Projectile.scale;
             Projectile.rotation = Projectile.velocity.ToRotation();
             Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
             Projectile.ai[0]++;
+
+            if (!Main.dedServ) {
+                Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
+            }
         }
 
         internal static void StrikeToFly(Vector2 velocity, NPC npc, Player owner, int level) {
@@ -202,8 +211,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             if (Projectile.numHits == 0) {
                 _ = !CWRLoad.NPCValue.ISTheofSteel(target)
-                    ? SoundEngine.PlaySound(MurasamaOverride.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
-                    : SoundEngine.PlaySound(MurasamaOverride.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
+                    ? SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
+                    : SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧
                 Owner.GivePlayerImmuneState(30);
@@ -257,9 +266,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
 
-            if (!onHitNpcs.Contains(target)) {
+            if (!OnHitNPCs.Contains(target)) {
                 StrikeToFly(Projectile.velocity, target, Owner, Level);
-                onHitNpcs.Add(target);
+                OnHitNPCs.Add(target);
             }
         }
 
@@ -387,9 +396,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
+            SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            Rectangle rectangle = CWRUtils.GetRec(value, (int)Projectile.ai[2], maxFrame);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rectangle
             , MurasamaOverride.NameIsVergil(Owner) ? Color.BlueViolet : Color.White, Projectile.rotation
-            , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+            , rectangle.Size() / 2, Projectile.scale, spriteEffects, 0);
             return false;
         }
     }

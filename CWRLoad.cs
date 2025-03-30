@@ -464,8 +464,6 @@ namespace CalamityOverhaul
             PerforatorTailSmall = NPCType<PerforatorTailSmall>();
 
             Projectile_ArcZap = ProjectileType<ArcZap>();
-
-            MurasamaOverride.heldProjType = ProjectileType<MurasamaHeld>();
             #endregion
 
             #region List

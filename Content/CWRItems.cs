@@ -181,6 +181,11 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool AmmoProjectileReturn;
         /// <summary>
+        /// 退弹时，该物品是否准备返还，目前只运用在了Qot之上，默认为<see langword="null"/>，则不会影响任何计算
+        /// 设置这个属性，会在起到<see cref="AmmoProjectileReturn"/>作用的同时不影响弹药的消耗数量计算
+        /// </summary>
+        public bool? IntendAmmoProjectileReturn;
+        /// <summary>
         /// 是否已经装好了弹药，一般来讲，该字段用于存储可装弹式手持弹幕的装弹状态
         /// </summary>
         public bool IsKreload;
@@ -224,6 +229,7 @@ namespace CalamityOverhaul.Content
             cwr.NoKreLoadTime = NoKreLoadTime;
             cwr.Scope = Scope;
             cwr.AmmoProjectileReturn = AmmoProjectileReturn;
+            cwr.IntendAmmoProjectileReturn = IntendAmmoProjectileReturn;
             cwr.isInfiniteItem = isInfiniteItem;
             cwr.NoDestruct = NoDestruct;
             cwr.destructTime = destructTime;
@@ -323,10 +329,15 @@ namespace CalamityOverhaul.Content
 
             newAmmo.stack = addStack;
             if (newAmmo.type != ItemID.None) {
-                newAmmo.CWR().AmmoProjectileReturn = !isUnlimited;
+                CWRItems cwrAmmo = newAmmo.CWR();
+                cwrAmmo.AmmoProjectileReturn = !isUnlimited;
+                //额外添加的一段，如果准备不返还就在这里设置一次属性而不影响前面的数量计算
+                if (cwrAmmo.IntendAmmoProjectileReturn.HasValue && !cwrAmmo.IntendAmmoProjectileReturn.Value) {
+                    cwrAmmo.AmmoProjectileReturn = false;
+                }
             }
 
-            List<Item> newMagazine = MagazineContents.ToList();
+            List<Item> newMagazine = [.. MagazineContents];
             bool onAdds = false;
             foreach (var item in newMagazine) {
                 if (item.type == newAmmo.type && item.stack < item.maxStack

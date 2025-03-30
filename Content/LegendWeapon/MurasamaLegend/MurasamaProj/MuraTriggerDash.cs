@@ -170,11 +170,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     }
 
                     if (Projectile.ai[1] > 0) {
-                        SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.1f }, Projectile.Center);
+                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
                         Projectile.ai[0] = 3;
                     }
                     else {
-                        SoundEngine.PlaySound(MurasamaOverride.Swing with { Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.3f }, Projectile.Center);
                         Projectile.ai[0] = 2;
                     }
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();

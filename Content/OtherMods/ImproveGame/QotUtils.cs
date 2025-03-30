@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -40,155 +41,118 @@ public static class QotUtils
         return !QotLoaded ? null : (List<Item>)QotInstance.Call("GetBigBagItems", player);
     }
 
+    // HoCha113: 这个函数是新整的
     /// <summary>
-    /// 这个“Load”是“装载”哦 <br/>
-    /// 根据弹药链装载弹药，返回实际装载的弹药列表 <br/>
-    /// <b>注意：在该方法执行完成后，物品栏内的弹药即已被消耗！</b>
+    /// 返回应该装填的弹药物品集合
     /// </summary>
-    /// <returns>弹药列表</returns>
-    public static bool LoadFromAmmoChain(this Player player, Item weapon, List<Ammo> ammoChain
-        , int assignAmmoType, int capacity, out List<Item> pushedAmmo, out int ammoCount) {
-        int initialCapacity = capacity; // 记录一下一开始的，用于判断是否有弹药被取出
-        pushedAmmo = [];
+    /// <param name="player"></param>
+    /// <param name="ammoChain"></param>
+    /// <param name="assignAmmoType"></param>
+    /// <param name="loadenAmmoQuantity"></param>
+    /// <returns></returns>
+    public static Item[] GetQotAmmoItems(this Player player, List<Ammo> ammoChain, int assignAmmoType, int loadenAmmoQuantity) {
+        List<Item> extractedAmmo = new();
+        int totalExtracted = 0;
+        int safetyCheckIterations = 0;
+        const int maxExtracted = 1600;
 
         #region Step 1: 预处理
 
-        // 设立物品ID -> 其所有物品实例的映射
-        var idToInstances = new Dictionary<int, List<Item>>();
         var bigBagItems = GetBigBagItems(player);
-        // 补充：A..B 会获取 A到B-1 的元素. 这里这样写是为了保证取弹药顺序符合原版逻辑（先取弹药栏，再取背包，最后大背包）
-        var allItems = player.inventory[54..58].Concat(player.inventory[..54]).Concat(bigBagItems)
+        var allItems = player.inventory[54..58]
+            .Concat(player.inventory[..54])
+            .Concat(bigBagItems)
             .Where(i => i.ammo == assignAmmoType)
             .ToList();
-        foreach (var item in allItems) {
-            if (!idToInstances.TryGetValue(item.type, out var value))
-                idToInstances.Add(item.type, [item]);
-            else
-                value.Add(item);
-        }
-
-        // 根据原版取弹药逻辑，记录取弹药的先后次序，方便“任意弹药”相关处理
-        var ammoQueue = new Queue<Item>(); // 用队列存储，先进先出
-        foreach (var item in allItems) {
-            ammoQueue.Enqueue(item);
-        }
-        // 注意到 ammoQueue 推入的和存储在 idToInstances 中的是同一个实例，一方 TurnToAir 在另一方也会生效
 
         #endregion
 
-        #region Step 2: 创建弹药序列
+        #region Step 2: 逐步提取弹药
 
-        while (capacity > 0) {
-            // 记录一下当前的容量，用于判断是否有弹药被取出
-            int oldCapacity = capacity;
-
-            // 读弹药链，创建序列
-            foreach (var (itemData, desiredTimes) in ammoChain) {
-                if (capacity <= 0)
-                    break;
-
-                int itemType = itemData.Item.type;
-                int times = Math.Min(capacity, desiredTimes);
-
-                // “任意弹药”，即根据原版逻辑取弹药，取够为止
-                if (itemType == UniversalAmmoId) {
-                    while (times > 0 && ammoQueue.Count > 0) {
-                        var item = ammoQueue.Peek();
-                        int ammoType = item.type;
-                        if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
-                            ammoType = actualAmmo;
-                        }
-
-                        // 不消耗的独立处理
-                        // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
-                        // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                        if (RangedLoader.IsAmmunitionUnlimited(item)) {
-                            var clone = new Item(ammoType, times);
-                            clone.CWR().AmmoProjectileReturn = false;
-                            // 将其压入弹匣
-                            pushedAmmo.Add(clone);
-                            capacity -= times;
-                            break;
-                        }
-
-                        // 这里用 > 而不是 >=，因为如果堆叠量等于需求量，应该执行出队操作，也就是 if 外面的逻辑
-                        if (item.stack > times) {
-                            // 生成一个新的物品实例，堆叠量为需求量
-                            var clone = new Item(ammoType, times);
-                            // 原物品减少
-                            item.stack -= times;
-                            // 将其压入弹匣
-                            pushedAmmo.Add(clone);
-                            capacity -= times;
-                            break;
-                        }
-
-                        // 物品实例堆叠量不足，直接压入
-                        pushedAmmo.Add(new Item(ammoType, item.stack));
-                        // 原物品清空
-                        times -= item.stack;
-                        capacity -= item.stack;
-                        item.TurnToAir();
-                        // 该弹药已经取完，弹药实例出队
-                        ammoQueue.Dequeue();
-                    }
-
-                    continue;
-                }
-
-                if (!idToInstances.TryGetValue(itemType, out var instances)) {
-                    continue;
-                }
-
-                foreach (var item in instances) {
-                    int ammoType = item.type;
-                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
-                        ammoType = actualAmmo;
-                    }
-
-                    // 不消耗的独立处理
-                    // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
-                    // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                    if (RangedLoader.IsAmmunitionUnlimited(item)) {
-                        var clone = new Item(ammoType, times);
-                        clone.CWR().AmmoProjectileReturn = false;
-                        // 将其压入弹匣
-                        pushedAmmo.Add(clone);
-                        capacity -= times;
-                        break;
-                    }
-
-                    // 该物品堆叠量>=需求量，直接取出相应数量
-                    if (item.stack >= times) {
-                        // 生成一个新的物品实例，堆叠量为需求量
-                        var clone = new Item(ammoType, times);
-                        // 原物品减少
-                        item.stack -= times;
-                        // 将其压入弹匣
-                        pushedAmmo.Add(clone);
-                        capacity -= times;
-                        break;
-                    }
-
-                    // 物品实例堆叠量不足，直接压入
-                    pushedAmmo.Add(new Item(ammoType, item.stack));
-                    // 原物品清空
-                    times -= item.stack;
-                    capacity -= item.stack;
-                    item.TurnToAir();
-                }
+        while (totalExtracted < loadenAmmoQuantity) {
+            if (++safetyCheckIterations > maxExtracted) {
+                break; // 避免无限循环
             }
 
-            // 如果没有弹药被取出，说明背包里没有足够的弹药，直接退出
-            if (oldCapacity == capacity) {
-                break;
+            var ammoQueue = new Queue<Item>(allItems);
+            bool extractedThisRound = false;
+
+            foreach (var (ammoData, desiredAmount) in ammoChain) {
+                int ammoType = ammoData.Item.type;
+                int remainingAmount = Math.Min(desiredAmount, loadenAmmoQuantity - totalExtracted);
+
+                if (ammoType == UniversalAmmoId) {
+                    extractedThisRound |= ExtractUniversalAmmo(ammoQueue, extractedAmmo, ref totalExtracted, remainingAmount);
+                    continue;
+                }
+
+                extractedThisRound |= ExtractSpecificAmmo(allItems, extractedAmmo, ammoType, ref totalExtracted, remainingAmount);
+            }
+
+            if (!extractedThisRound) {
+                break; // 若本轮未提取任何弹药，说明没有足够弹药，终止
             }
         }
 
         #endregion
 
-        ammoCount = initialCapacity - capacity;
-        // 如果 initialCapacity == capacity，说明没有弹药被取出，那就返回 false，执行灾厄大修原本的操作
-        return initialCapacity != capacity;
+        return [.. extractedAmmo];
+    }
+
+    /// <summary>
+    /// 处理通用弹药类型（Universal Ammo），遍历玩家的弹药库存，并按需提取
+    /// </summary>
+    private static bool ExtractUniversalAmmo(Queue<Item> ammoQueue, List<Item> extractedAmmo, ref int totalExtracted, int remainingAmount) {
+        bool extracted = false;
+
+        while (remainingAmount > 0 && ammoQueue.Count > 0) {
+            var item = ammoQueue.Dequeue();
+            int ammoType = item.type;
+
+            if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
+                ammoType = actualAmmo;
+            }
+
+            var newAmmo = new Item(ammoType, Math.Min(item.stack, remainingAmount));
+            if (newAmmo.type != ItemID.None) {
+                newAmmo.CWR().IntendAmmoProjectileReturn = !RangedLoader.IsAmmunitionUnlimited(newAmmo);
+            }
+
+            extractedAmmo.Add(newAmmo);
+            totalExtracted += newAmmo.stack;
+            remainingAmount -= newAmmo.stack;
+            extracted = true;
+        }
+
+        return extracted;
+    }
+
+    /// <summary>
+    /// 处理特定类型的弹药，从所有物品列表中筛选匹配的物品并提取
+    /// </summary>
+    private static bool ExtractSpecificAmmo(List<Item> allItems, List<Item> extractedAmmo, int ammoType, ref int totalExtracted, int remainingAmount) {
+        bool extracted = false;
+
+        var matchingItems = allItems.Where(i => i.type == ammoType).ToList();
+        foreach (var item in matchingItems) {
+            if (remainingAmount <= 0) break;
+
+            int resolvedAmmoType = item.type;
+            if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
+                resolvedAmmoType = actualAmmo;
+            }
+
+            var newAmmo = new Item(resolvedAmmoType, Math.Min(item.stack, remainingAmount));
+            if (newAmmo.type != ItemID.None) {
+                newAmmo.CWR().IntendAmmoProjectileReturn = !RangedLoader.IsAmmunitionUnlimited(newAmmo);
+            }
+
+            extractedAmmo.Add(newAmmo);
+            totalExtracted += newAmmo.stack;
+            remainingAmount -= newAmmo.stack;
+            extracted = true;
+        }
+
+        return extracted;
     }
 }

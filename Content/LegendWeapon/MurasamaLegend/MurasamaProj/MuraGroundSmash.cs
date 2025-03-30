@@ -1,4 +1,5 @@
-﻿using CalamityMod.Particles;
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.Audio;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private void SpanDust() {
-            SoundEngine.PlaySound(MurasamaOverride.BigSwing with { Volume = 0.1f }, Projectile.Center);
+            SoundEngine.PlaySound(Murasama.BigSwing with { Volume = 0.1f }, Projectile.Center);
             for (int i = 0; i < 133; i++) {
                 AltSparkParticle spark = new AltSparkParticle(
                     Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
@@ -44,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private void OnHit() {
-            SoundEngine.PlaySound(MurasamaOverride.InorganicHit, Projectile.Center);
+            SoundEngine.PlaySound(Murasama.InorganicHit, Projectile.Center);
             SpanDust();
             Projectile.Explode();
 

@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
     /// <summary>
     /// 妖刀
     /// </summary>
-    internal class MurasamaOverride : ItemOverride
+    internal class MurasamaOverride : ItemOverride, ICWRLoader
     {
         #region Data
         /// <summary>
@@ -52,19 +53,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// 获取开局的击退力度
         /// </summary>
         public static float GetStartKnockback => KnockbackDictionary[0];
-        /// <summary>
-        /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRLoad.Setup"/>中被加载，不需要进行手动的赋值
-        /// </summary>
-        public static int heldProjType;
-
-        public static readonly SoundStyle OrganicHit = new("CalamityMod/Sounds/Item/MurasamaHitOrganic") { Volume = 0.45f };
-        public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
-        public static readonly SoundStyle Swing = new("CalamityMod/Sounds/Item/MurasamaSwing") { Volume = 0.2f };
-        public static readonly SoundStyle BigSwing = new("CalamityMod/Sounds/Item/MurasamaBigSwing") { Volume = 0.25f };
+        public static Asset<Texture2D> MuraItemAsset { get; private set; }
         private static readonly string[] SamNameList = ["激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam"];
         private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
         public override int TargetID => ModContent.ItemType<Murasama>();
         #endregion
+        void ICWRLoader.LoadAsset() => MuraItemAsset = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "MuraItem");
+        void ICWRLoader.UnLoadData() => MuraItemAsset = null;
         /// <summary>
         /// 获取时期对应的伤害
         /// </summary>
@@ -235,7 +230,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             return false;
         }
 
-        public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
+            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
             => PreDrawInInventoryFunc(item, spriteBatch, position, frame, origin, scale);
 
         public override bool? On_CanUseItem(Item item, Player player) => CanUseItemFunc(player, item);
@@ -259,31 +255,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.shootSpeed = 24f;
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
-            Item.CWR().heldProjType = heldProjType;
+            Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
             Item.CWR().GetMeleePrefix = true;
             Item.CWR().LegendData = new MuraData();
         }
 
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
-                item.initialize();
-                float charge = item.CWR().ai[0];
-                if (MuraChargeUI.MuraUIStyle == MuraChargeUI.MuraUIStyleEnum.conceal && charge > 0) {
-                    Texture2D barBG = CWRAsset.GenericBarBack.Value;
-                    Texture2D barFG = CWRAsset.GenericBarFront.Value;
-                    float barScale = 3f;
-                    Vector2 barOrigin = barBG.Size() * 0.5f;
-                    float yOffset = 50f;
-                    Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(charge / 10f * barFG.Width), barFG.Height);
-                    Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
-                    spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
-                    spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+                if (MuraChargeUI.MuraUIStyle == MuraChargeUI.MuraUIStyleEnum.conceal) {
+                    item.initialize();
+                    float charge = item.CWR().ai[0];
+                    if (charge > 0) {
+                        Texture2D barBG = CWRAsset.GenericBarBack.Value;
+                        Texture2D barFG = CWRAsset.GenericBarFront.Value;
+                        float barScale = 3f;
+                        Vector2 barOrigin = barBG.Size() * 0.5f;
+                        float yOffset = 50f;
+                        Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+                        Rectangle frameCrop = new Rectangle(0, 0, (int)(charge / 10f * barFG.Width), barFG.Height);
+                        Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
+                        spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
+                        spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+                    }
                 }
-                return true;
+                if (Main.LocalPlayer.PressKey()) {
+                    return true;
+                }
             }
-            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;
-            spriteBatch.Draw(texture, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(MuraItemAsset.Value, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
             return false;
         }
 
