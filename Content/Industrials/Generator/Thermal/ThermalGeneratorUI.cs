@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     internal class FuelElementUI : UIHandle
     {
-        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/PlaceItem");
+        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalSlot");
         internal ThermalGeneratorUI thermalGenerator;
         private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
         public override void Update() {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ThermalGeneratorUI thermalGenerator;
         private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
-        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValue");
+        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/Thermalheat");
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
 
             // 获取纹理和计算需要绘制的矩形区域
-            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueFull");
+            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalheatFull");
             float temperatureRatio = ThermalData.Temperature / ThermalData.MaxTemperature;  // 计算温度的比率
             float sengs = 1 - temperatureRatio;
 
@@ -84,10 +84,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * temperatureRatio));
 
             // 绘制温度相关的图像
-            Vector2 position = DrawPosition + new Vector2(8, 10 + full.Y);
+            Vector2 position = DrawPosition + new Vector2(8, 40 + full.Y);
             Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-            Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/CombustionValueGlow"), UIHitBox, Color.White);
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
@@ -104,7 +102,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal ThermalGeneratorUI thermalGenerator;
         private ThermalData ThermalData => thermalGenerator.GeneratorTP.MachineData as ThermalData;
-        public override Texture2D Texture => CWRAsset.ElectricPower.Value;
+        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalPower");
         public override void Update() {
             UIHitBox = DrawPosition.GetRectangle(Texture.Size());
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1));
@@ -112,7 +110,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         public override void Draw(SpriteBatch spriteBatch) {
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
-            Texture2D texture2 = CWRAsset.ElectricPowerFull.Value;
+            Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalPowerFull");
             float ueRatio = ThermalData.UEvalue / ThermalData.MaxUEValue;
             float sengs = 1 - ueRatio;
 
@@ -120,10 +118,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * ueRatio));
 
             // 绘制温度相关的图像
-            Vector2 position = DrawPosition + new Vector2(8, 36 + full.Y);
+            Vector2 position = DrawPosition + new Vector2(12, 12 + full.Y);
             Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-            Main.spriteBatch.Draw(CWRAsset.ElectricPowerGlow.Value, UIHitBox, Color.White);
 
             // 如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
@@ -138,21 +134,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         internal FuelElementUI fuelElement = new FuelElementUI();
         internal CombustionValueUI combustionValue = new CombustionValueUI();
         internal ElectricPowerUI electricPower = new ElectricPowerUI();
-        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/GeneratorPanel");
+        public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalPanel");
         public override void UpdateElement() {
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 110, Main.screenWidth - 110);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 110, Main.screenHeight - 110);
 
             fuelElement.thermalGenerator = this;
-            fuelElement.DrawPosition = DrawPosition + new Vector2(100, 50);
+            fuelElement.DrawPosition = DrawPosition + new Vector2(64, 56);
             fuelElement.Update();
 
             combustionValue.thermalGenerator = this;
-            combustionValue.DrawPosition = DrawPosition + new Vector2(20, 20);
+            combustionValue.DrawPosition = DrawPosition + new Vector2(172, 28);
             combustionValue.Update();
 
             electricPower.thermalGenerator = this;
-            electricPower.DrawPosition = DrawPosition + new Vector2(200, 20);
+            electricPower.DrawPosition = DrawPosition + new Vector2(0, 28);
             electricPower.Update();
         }
 

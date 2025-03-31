@@ -5802,16 +5802,6 @@ RemakeItems: {
 
 	ModifyAncientNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
 	ModifyNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
-
-	ModifyDecryptionComputer: {
-		// DisplayName: 解密计算机
-		/* Tooltip:
-			'''
-			能放置在密码破译器基站上
-			允许你解密小行星原型图
-			解密后，你能够合成新的物品
-			''' */
-	}
 }
 
 NPCs.DestroyerDrawHeadIconNPC.DisplayName: 毁灭者

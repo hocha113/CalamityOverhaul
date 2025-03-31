@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             UpdateElement();
 
             if (hoverInMainPage) {
-                if (keyRightPressState == KeyPressState.Held) {
+                if (keyRightPressState == KeyPressState.Pressed) {
                     if (!onDrag) {
                         dragOffset = MousePosition.To(DrawPosition);
                     }
