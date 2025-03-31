@@ -1,13 +1,16 @@
 ﻿using CalamityMod.TileEntities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
+using CalamityOverhaul.Content.TileModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
+namespace CalamityOverhaul.Content.Industrials.Modifys
 {
     internal class ModifyTurretLoader : ICWRLoader
     {
@@ -77,9 +80,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
             BarrelGlowAssetDic?.Clear();
         }
 
-        private static void OnUpdateHook(UpdateDelegate orig, TEBaseTurret turret) {
+        internal static void OnUpdateHook(UpdateDelegate orig, ModTileEntity te) {
             //在更新时杀死所有炮塔而不运行任何逻辑，这样才能让自定义的TP实体发挥正常作用，否者这些炮塔会重叠
-            turret.Kill(turret.Position.X, turret.Position.Y);
+            TileModifyLoader.KillTE(te);
+            TileModifyLoader.SendKillTE(te);
         }
     }
 }

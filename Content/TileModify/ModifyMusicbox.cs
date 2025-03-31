@@ -1,18 +1,14 @@
-﻿using CalamityMod.Events;
-using CalamityMod.Items.Materials;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.Items.Potions.Alcohol;
-using CalamityMod.Items.SummonItems;
 using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.NPCs.TownNPCs;
 using CalamityMod.Projectiles.Boss;
-using CalamityMod;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Tiles.Core;
+using CalamityOverhaul.Content.TileModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.TileModify
 {

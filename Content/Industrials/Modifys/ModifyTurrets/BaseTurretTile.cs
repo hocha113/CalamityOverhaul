@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Tiles.Core;
+﻿using CalamityOverhaul.Content.TileModify.Core;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

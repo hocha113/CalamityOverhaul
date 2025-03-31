@@ -366,6 +366,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return null;
         }
         /// <summary>
+        /// 这个物品在使用时是否会被消耗
+        /// </summary>
+        /// <returns>返回默认值<see langword="null"/>会继续执行该物品的原默认方法</returns>
+        public virtual bool? On_ConsumeItem(Item item, Player player) {
+            return null;
+        }
+        /// <summary>
         /// 手持这个物品时会执行的行为
         /// </summary>
         /// <param name="item"></param>

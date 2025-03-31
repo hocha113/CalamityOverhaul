@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Common
         public delegate bool On_BOOL_Dalegate();
         public delegate void On_PostAI_Dalegate(object obj, Projectile projectile);
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
-        public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_Tooltips_Dalegate(Item item, List<TooltipLine> tooltips);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
         public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);

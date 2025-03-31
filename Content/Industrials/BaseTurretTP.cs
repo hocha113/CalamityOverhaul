@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
-using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
+using CalamityOverhaul.Content.Industrials.Modifys;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.TileModify.Core;
 using System.IO;
 using Terraria.ModLoader;
 
@@ -17,6 +18,7 @@ namespace CalamityOverhaul
         ModifiIntercept_EnterWorld_Request,
         ModifiIntercept_EnterWorld_ToClient,
         NPCbasicData,
+        KillTE,
     }
 
     public class CWRNetWork : ICWRLoader
@@ -47,6 +49,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.NPCbasicData) {
                 NPCSystem.NPCbasicDataHandler(reader);
+            }
+            else if (type == CWRMessageType.KillTE) {
+                TileModifyLoader.HandlerNetKillTE(reader, whoAmI);
             }
         }
     }

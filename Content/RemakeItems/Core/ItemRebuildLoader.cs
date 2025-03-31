@@ -52,6 +52,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onHitPvpMethod;
         public static MethodBase onModifyHitNPCMethod;
         public static MethodBase onCanUseItemMethod;
+        public static MethodBase onConsumeItemMethod;
         public static MethodBase onPreDrawInInventoryMethod;
         public static MethodBase onUseItemMethod;
         public static MethodBase onUseAnimationMethod;
@@ -85,6 +86,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onHitPvpMethod = itemLoaderType.GetMethod("OnHitPvp", BindingFlags.Public | BindingFlags.Static);
             onModifyHitNPCMethod = itemLoaderType.GetMethod("ModifyHitNPC", BindingFlags.Public | BindingFlags.Static);
             onCanUseItemMethod = itemLoaderType.GetMethod("CanUseItem", BindingFlags.Public | BindingFlags.Static);
+            onConsumeItemMethod = itemLoaderType.GetMethod("ConsumeItem", BindingFlags.Public | BindingFlags.Static);
             onPreDrawInInventoryMethod = itemLoaderType.GetMethod("PreDrawInInventory", BindingFlags.Public | BindingFlags.Static);
             onUseItemMethod = itemLoaderType.GetMethod("UseItem", BindingFlags.Public | BindingFlags.Static);
             onUseAnimationMethod = itemLoaderType.GetMethod("UseAnimation", BindingFlags.Public | BindingFlags.Static);
@@ -121,6 +123,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
             if (onCanUseItemMethod != null) {
                 CWRHook.Add(onCanUseItemMethod, OnCanUseItemHook);
+            }
+            if (onConsumeItemMethod != null) {
+                CWRHook.Add(onConsumeItemMethod, OnConsumeItemHook);
             }
             if (onPreDrawInInventoryMethod != null) {
                 CWRHook.Add(onPreDrawInInventoryMethod, OnPreDrawInInventoryHook);
@@ -182,6 +187,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onHitPvpMethod = null;
             onModifyHitNPCMethod = null;
             onCanUseItemMethod = null;
+            onConsumeItemMethod = null;
             onPreDrawInInventoryMethod = null;
             onUseItemMethod = null;
             onUseAnimationMethod = null;
@@ -498,6 +504,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
                 bool? rasg = ritem.On_CanUseItem(item, player);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
+                if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
+                    return rasg.Value;//如果rasg不包含实际值，那么在这次枚举中就什么都不做
+                }
+            }
+
+            return orig.Invoke(item, player);
+        }
+        /// <summary>
+        /// 提前于TML的方法执行，这个钩子可以用来做到<see cref="GlobalItem.ConsumeItem"/>无法做到的修改效果，比如让一些原本不可使用的物品可以使用，
+        /// <br/>继承重写<see cref="ItemOverride.On_ConsumeItem(Item, Player)"/>来达到这些目的，用于进行一些高级修改
+        /// </summary>
+        public bool OnConsumeItemHook(On_CanUseItem_Delegate orig, Item item, Player player) {
+            if (TryFetchByID(item.type, out ItemOverride ritem)) {
+                //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
+                bool? rasg = ritem.On_ConsumeItem(item, player);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
                 if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
                     return rasg.Value;//如果rasg不包含实际值，那么在这次枚举中就什么都不做
                 }

@@ -5757,6 +5757,16 @@ RemakeItems: {
 
 	// ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
 	// ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
+
+	ModifyDecryptionComputer: {
+		// DisplayName: 解密计算机
+		/* Tooltip:
+			'''
+			能放置在密码破译器基站上
+			允许你解密小行星原型图
+			解密后，你能够合成新的物品
+			''' */
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

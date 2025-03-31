@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Tiles.Core
+namespace CalamityOverhaul.Content.TileModify.Core
 {
     internal class TileOverride
     {

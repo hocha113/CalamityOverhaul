@@ -1,10 +1,12 @@
 ﻿using CalamityOverhaul.Common;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Tiles.Core
+namespace CalamityOverhaul.Content.TileModify.Core
 {
     internal class TileModifyLoader : ICWRLoader
     {
@@ -43,6 +45,33 @@ namespace CalamityOverhaul.Content.Tiles.Core
             }
 
             return orig.Invoke(i, j);
+        }
+
+        public static void KillTE(ModTileEntity te) => te.Kill(te.Position.X, te.Position.Y);
+
+        public static void SendKillTE(ModTileEntity te) {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.KillTE);
+            modPacket.WritePoint16(te.Position);
+            modPacket.Send();
+        }
+
+        public static void HandlerNetKillTE(BinaryReader reader, int whoAmI) {
+            Point16 point = reader.ReadPoint16();
+            if (!TileEntity.ByPosition.TryGetValue(point, out TileEntity te)) {
+                return;
+            }
+            KillTE((ModTileEntity)te);
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.KillTE);
+                modPacket.WritePoint16(te.Position);
+                modPacket.Send(-1, whoAmI);
+            }
         }
     }
 }
