@@ -99,9 +99,7 @@ namespace CalamityOverhaul.Common
         /// </summary>
         internal static bool InfernumModeOpenState => CWRMod.Instance.infernum != null && (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
         #endregion
-        public static Type[] GetModType(Mod mod) {
-            return AssemblyManager.GetLoadableTypes(mod.Code);
-        }
+        public static Type[] GetModType(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
 
         public static Type GetTargetTypeInStringKey(Type[] types, string key) {
             Type reset = null;

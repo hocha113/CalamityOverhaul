@@ -580,14 +580,14 @@ namespace CalamityOverhaul.Content
                 omigaSnyRecipeDic.Add(pair.Key, pair.Value);
             }
 
-            for (int i = 0; i < Recipe.numRecipes; i++) {
-                Recipe recipe = Main.recipe[i];
-                foreach (int key in omigaSnyRecipeDic.Keys) {
-                    if (recipe.HasResult(key)) {//先移除可能的已经添加了终焉配方的物品，保险起见防止冲突
-                        recipe.DisableRecipe();
-                    }
-                }
-            }
+            //for (int i = 0; i < Recipe.numRecipes; i++) {
+            //    Recipe recipe = Main.recipe[i];
+            //    foreach (int key in omigaSnyRecipeDic.Keys) {
+            //        if (recipe.HasResult(key)) {//先移除可能的已经添加了终焉配方的物品，保险起见防止冲突
+            //            recipe.DisableRecipe();
+            //        }
+            //    }
+            //}
 
             //key代表材料，value代表这个材料需要的数量
             Dictionary<int, int> ingredientDic;
@@ -610,8 +610,11 @@ namespace CalamityOverhaul.Content
                 }
 
                 Recipe recipe = Recipe.Create(snyContent.Key);
-                foreach (var ingredientPair in ingredientDic.OrderByDescending
-                    (pair => CWRLoad.ItemIDToOmigaSnyContent[pair.Key] != null)) {//进行一下排序，让是终焉物品的材料排在前面
+                //进行一下排序，让是终焉物品的材料排在前面
+                foreach (var ingredientPair in ingredientDic.OrderByDescending(pair => CWRLoad.ItemIDToOmigaSnyContent[pair.Key] != null)) {
+                    if (ingredientPair.Key == ItemID.None || ingredientPair.Value <= 0) {
+                        continue;
+                    }
                     recipe.AddIngredient(ingredientPair.Key, ingredientPair.Value);
                 }
                 recipe.AddBlockingSynthesisEvent()
@@ -620,19 +623,9 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void PostAddRecipes() {
-            //添加终焉合成内容
-            {
+        public override void AddRecipes() {
+            {//添加终焉合成内容
                 SetOmigaSnyRecipes();
-            }
-            {//遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    ModifyResultContent(recipe);
-                    if (ItemOverride.TryFetchByID(recipe.createItem.type, out var rItem)) {
-                        rItem.ModifyRecipe(recipe);
-                    }
-                }
             }
             {//添加配方的操作
                 AddResultContent();
@@ -640,6 +633,17 @@ namespace CalamityOverhaul.Content
                     if (ItemOverride.TryFetchByID(i, out var rItem)) {
                         rItem.AddRecipe();
                     }
+                }
+            }
+        }
+
+        public override void PostAddRecipes() {
+            //遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
+            for (int i = 0; i < Recipe.numRecipes; i++) {
+                Recipe recipe = Main.recipe[i];
+                ModifyResultContent(recipe);
+                if (ItemOverride.TryFetchByID(recipe.createItem.type, out var rItem)) {
+                    rItem.ModifyRecipe(recipe);
                 }
             }
         }
