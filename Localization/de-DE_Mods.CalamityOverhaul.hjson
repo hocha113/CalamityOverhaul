@@ -1887,7 +1887,7 @@ TextContent: {
 		AmmoBox_Text2: Bereitstellung läuft
 		AmmoBox_Text3: Bereitgestellt
 		HellfireExplosion_DeadLang_Text: Verbrenne in der Hölle zu Asche
-		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
+		// SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
 		SupMUI_OneClick_Text1: Materialien schnell platzieren
 		SupMUI_OneClick_Text2: Materialien schnell nehmen
 		TemporaryVersion_Text:

@@ -60,7 +60,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            Main.tileSolidTop[Type] = true;
 
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<MiningMachine>());
 

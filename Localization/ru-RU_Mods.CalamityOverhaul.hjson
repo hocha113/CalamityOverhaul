@@ -1951,7 +1951,7 @@ TextContent: {
 		AmmoBox_Text2: Размещение
 		AmmoBox_Text3: Размещено
 		HellfireExplosion_DeadLang_Text: Изгореть в адском огне
-		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
+		// SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
 		SupMUI_OneClick_Text1: Быстрая установка материалов
 		SupMUI_OneClick_Text2: Быстрое извлечение материалов
 		TemporaryVersion_Text:
