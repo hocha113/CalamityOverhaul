@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using System;
 using System.Reflection;
 using Terraria;
@@ -37,8 +38,11 @@ namespace CalamityOverhaul.Content.Structures
         private static void OnPlanetoidChest(SetChest_Delegate orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
-                AddChestContent(chest, ModContent.ItemType<SHPC>(), 1
-                    , VaultUtils.Translation("正在将 SHPC 塞入箱子", "Shoving SHPC into the chest."));
+                AddChestContent(chest, ModContent.ItemType<SHPC>(), 1, "Shoving SHPC into the chest.");
+                AddChestContent(chest, ModContent.ItemType<UEPipeline>(), WorldGen.genRand.Next(288, 326), "Shoving Energy Input Pipeline into the chest.");
+            }
+            else {
+                AddChestContent(chest, ModContent.ItemType<UEPipelineInput>(), WorldGen.genRand.Next(288, 326), "Shoving Energy Extraction Pipeline into the chest.");
             }
         }
 

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
             Item.useTime = 2;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 0, 0, 75);
+            Item.value = Item.buyPrice(0, 0, 0, 10);
             Item.rare = ItemRarityID.Quest;
             Item.createTile = CreateTileID;
             Item.tileBoost = 12;

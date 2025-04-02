@@ -134,7 +134,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
     {
         public override int TargetTileID => ModContent.TileType<ThermalBatteryTile>();
         public override int TargetItem => ModContent.ItemType<ThermalBattery>();
-        private bool hoverInTP;
         internal int frame;
         internal Color drawColor;
         internal float oldUEValue;
@@ -144,7 +143,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal bool fullLoad;
         public override void Update() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
-            hoverInTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (--activeTime > 0 || fullLoad) {
                 CWRUtils.ClockFrame(ref frame, 5, 5);
             }

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.Generator;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -15,7 +16,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     internal class UEPipeline : BasePipelineItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineItem";
         public override int CreateTileID => ModContent.TileType<UEPipelineTile>();
         public override void AddRecipes() {
             CreateRecipe(333).
@@ -58,6 +59,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
+        internal const int efficiency = 2;
         /// <summary>
         /// 对于外部的物块数据
         /// </summary>
@@ -84,48 +86,54 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             externalTP = null;
             linkID = 0;
             canDraw = true;
+
             // 获取当前 Tile 和相邻的 TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
 
             if (externalTile.HasTile
                 && VaultUtils.SafeGetTopLeft(Position + Offset, out var point)
                 && TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
+
                 // 如果相邻的 TileProcessor 是发电机
                 if (externalTP is BaseGeneratorTP baseGeneratorTP) {
-                    // 如果发电机的 UEvalue 大于 0，从发电机到管道传递值
-                    if (baseGeneratorTP.MachineData.UEvalue > 0 && coreTP.MachineData.UEvalue < 20) {
-                        baseGeneratorTP.MachineData.UEvalue--;  // 从发电机减去能量
-                        coreTP.MachineData.UEvalue++;      // 给管道增加能量
+                    float transferAmount = Math.Min(efficiency, baseGeneratorTP.MachineData.UEvalue);
+                    if (transferAmount > 0 && coreTP.MachineData.UEvalue < 20) {
+                        baseGeneratorTP.MachineData.UEvalue -= transferAmount;
+                        coreTP.MachineData.UEvalue += transferAmount;
                     }
                     linkID = 1;
                 }
 
                 // 如果有能量传递的需求，且相邻的是管道
-                if (externalTP is UEPipelineTP battery) {
-                    // 计算总能量
+                else if (externalTP is UEPipelineTP battery) {
                     float totalUE = coreTP.MachineData.UEvalue + battery.MachineData.UEvalue;
-
-                    // 计算均衡后应该有多少能量
                     float averageUE = totalUE / 2;
 
-                    // 直接平衡
-                    coreTP.MachineData.UEvalue = averageUE;
-                    battery.MachineData.UEvalue = averageUE;
+                    // 考虑 efficiency 限制传输速率
+                    float transferUE = Math.Min(efficiency, Math.Abs(coreTP.MachineData.UEvalue - averageUE));
+
+                    if (coreTP.MachineData.UEvalue > averageUE) {
+                        coreTP.MachineData.UEvalue -= transferUE;
+                        battery.MachineData.UEvalue += transferUE;
+                    }
+                    else {
+                        coreTP.MachineData.UEvalue += transferUE;
+                        battery.MachineData.UEvalue -= transferUE;
+                    }
 
                     if (battery.Decussation || battery.Turning) {
                         canDraw = false;
                     }
-
                     linkID = 2;
                 }
 
-                //如果挨着的是电池
+                // 如果挨着的是电池
                 else if (externalTP is BaseBattery baseBattery) {
-                    if (coreTP.MachineData.UEvalue > 0 && baseBattery.MachineData.UEvalue < baseBattery.MaxUEValue) {
-                        baseBattery.MachineData.UEvalue++;
-                        coreTP.MachineData.UEvalue--;
+                    float transferAmount = Math.Min(efficiency, Math.Min(coreTP.MachineData.UEvalue, baseBattery.MaxUEValue - baseBattery.MachineData.UEvalue));
+                    if (transferAmount > 0) {
+                        baseBattery.MachineData.UEvalue += transferAmount;
+                        coreTP.MachineData.UEvalue -= transferAmount;
                     }
-
                     linkID = 3;
                 }
             }

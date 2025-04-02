@@ -773,11 +773,12 @@ Items: {
 	}
 
 	GeminisTribute: {
-		// DisplayName: Geminis' Tribute
+		// DisplayName: Twins' Tribute
 		/* Tooltip:
 			'''
-			Throws a fast-moving scythe that slices back and forth
-			Stealth attacks will generate a large number of Destroyer Cruise Missiles
+			Throws a fast-revolving scythe that slashes back and forth
+			Stealth attacks unleash a swarm of Destroyer cruise missiles
+			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
 			''' */
 	}
 
@@ -785,17 +786,19 @@ Items: {
 		// DisplayName: Dicoria
 		/* Tooltip:
 			'''
-			Fires double bullets and can be charged
-			When fully charged, fires a thermal beam
+			Fires dual bullets, can be charged
+			Fully charged shots release a thermal beam
+			"By the way, won't this make us cross-eyed?"
 			''' */
 	}
 
 	GeminisTributeEX: {
-		// DisplayName: Geminis' Tribute EX
+		// DisplayName: Twins' Tribute EX
 		/* Tooltip:
 			'''
-			Throws a fast-moving scythe that slices back and forth
-			After hitting an enemy, generates two additional companion scythes
+			Throws a fast-revolving scythe that slashes back and forth
+			Hitting an enemy spawns two additional companion scythes
+			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
 			''' */
 	}
 
@@ -804,7 +807,7 @@ Items: {
 		/* Tooltip:
 			'''
 			Fires thermal barrages
-			"Endless!"
+			"Contains the immense energy core of the Destroyer."
 			''' */
 	}
 

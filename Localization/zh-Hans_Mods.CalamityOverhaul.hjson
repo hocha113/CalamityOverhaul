@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -773,6 +773,7 @@ Items: {
 			'''
 			投掷出一把快速来回切割的镰刀
 			潜伏攻击会生成大量毁灭者巡航弹
+			"只能存在一个主人格，很明显是魔焰眼胜利了"
 			'''
 	}
 
@@ -782,6 +783,7 @@ Items: {
 			'''
 			发射双发子弹，射击可以蓄力
 			蓄力满后会发射一道热能射线
+			"话说我们这样会不会斗鸡眼"
 			'''
 	}
 
@@ -791,6 +793,7 @@ Items: {
 			'''
 			投掷出一把快速来回切割的镰刀
 			击中敌人后会生成两把额外的伴生之镰
+			"只能存在一个主人格，很明显是魔焰眼胜利了"
 			'''
 	}
 
@@ -799,7 +802,7 @@ Items: {
 		Tooltip:
 			'''
 			发射热能弹幕
-			"永无止境!"
+			"蕴含着毁灭者强大的能量核心"
 			'''
 	}
 
