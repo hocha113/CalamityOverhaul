@@ -36,10 +36,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient(ItemID.Furnace).
-                AddIngredient<DubiousPlating>(10).
-                AddIngredient<MysteriousCircuitry>(10).
                 AddIngredient(ItemID.CopperBar, 5).
                 AddIngredient(ItemID.IronBar, 5).
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
                 AddTile(TileID.Anvils).
                 Register();
         }

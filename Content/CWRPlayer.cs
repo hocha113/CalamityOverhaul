@@ -16,6 +16,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -538,10 +539,12 @@ namespace CalamityOverhaul.Content
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
             if (HellfireExplosion) {
-                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
+                NetworkText networkText = CWRLocText.Instance.HellfireExplosion_DeadLang_Text.ToNetworkText(Player.name);
+                damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (SoulfireExplosion) {
-                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("SoulfireExplosion_DeadLang_Text"));
+                NetworkText networkText = CWRLocText.Instance.SoulfireExplosion_DeadLang_Text.ToNetworkText(Player.name);
+                damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             return true;
         }

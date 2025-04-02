@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal const float _maxUEValue = 6000;
         public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
-        public override void Update() {
+        public override void UpdateMachine() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
             if (--activeTime > 0 || fullLoad) {
                 CWRUtils.ClockFrame(ref frame, 5, 5);

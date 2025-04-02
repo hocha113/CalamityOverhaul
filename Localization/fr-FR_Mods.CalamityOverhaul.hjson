@@ -1050,6 +1050,16 @@ Items: {
 			"Beyond its intended use"
 			''' */
 	}
+
+	MiningMachine: {
+		// DisplayName: Mining Machine
+		/* Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			''' */
+		// DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+	}
 }
 
 Projectiles: {

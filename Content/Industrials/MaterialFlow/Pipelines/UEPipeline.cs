@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             };
         }
 
-        public override void Update() {
+        public override void UpdateMachine() {
             foreach (var side in SideState) {
                 side.coreTP = this;
                 side.Position = Position;

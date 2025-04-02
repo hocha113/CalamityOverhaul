@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        public override void Update() {
+        public override void UpdateMachine() {
             if (AttackPattern) {
                 GuardValue = 0;
                 if (MachineData.UEvalue >= 60 && ++FireCoolden > 60) {

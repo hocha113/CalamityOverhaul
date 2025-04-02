@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void Update() {
+        public override void UpdateMachine() {
             MousePos = Main.MouseWorld;
             DrawPos = CenterInWorld + new Vector2(0, -120) * sengs;
             if (OpenUI) {
@@ -484,6 +484,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void FrontDraw(SpriteBatch spriteBatch) => DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos - Main.screenPosition);
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos - Main.screenPosition);
+            DrawChargeBar();
+        }
     }
 }

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -1064,6 +1064,16 @@ Items: {
 			"Beyond its intended use"
 			''' */
 	}
+
+	MiningMachine: {
+		// DisplayName: Mining Machine
+		/* Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			''' */
+		// DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+	}
 }
 
 Projectiles: {
@@ -1912,8 +1922,8 @@ TextContent: {
 		AmmoBox_Text: Se ha alcanzado el límite de despliegue
 		AmmoBox_Text2: Desplegando
 		AmmoBox_Text3: Desplegado
-		HellfireExplosion_DeadLang_Text: Se convierte en cenizas en el fuego del infierno
-		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
+		HellfireExplosion_DeadLang_Text: "{0} Se convierte en cenizas en el fuego del infierno"
+		SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
 		SupMUI_OneClick_Text1: Colocar materiales rápidamente
 		SupMUI_OneClick_Text2: Recoger materiales rápidamente
 		TemporaryVersion_Text:

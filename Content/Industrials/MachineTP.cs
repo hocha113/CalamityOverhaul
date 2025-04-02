@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual float MaxUEValue => 1000;
         public virtual int TargetItem => ItemID.None;
         public virtual bool CanDrop => true;
+        public bool Spawn;
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
@@ -30,6 +31,18 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public virtual void SetMachine() {
+            
+        }
+
+        public sealed override void Update() {
+            if (!Spawn && TrackItem != null && TrackItem.type == TargetItem) {
+                SendData();//发送一次数据，因为放置时设置的UEValue不会自动同步
+                Spawn = true;
+            }
+            UpdateMachine();
+        }
+
+        public virtual void UpdateMachine() {
 
         }
 

@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileProcessors
@@ -61,10 +62,10 @@ namespace CalamityOverhaul.Content.TileProcessors
             PRTLoader.AddParticle(particle);
         }
 
-        private void SommonLose(Player player) {
+        private static void SommonLose(Player player) {
             VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
             if (player != null) {
-                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
+                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
                 player.Hurt(pd, 50, 0);
             }
             Old_OnBoolMoon = OnBoolMoon = false;

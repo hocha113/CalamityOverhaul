@@ -1044,6 +1044,16 @@ Items: {
 			"物超其用"
 			'''
 	}
+
+	MiningMachine: {
+		DisplayName: 采矿机
+		Tooltip:
+			'''
+			消耗电能钻探矿物
+			需要放置在合适的地方才能正常工作
+			'''
+		DontWork: 需要放置在坚硬的地面上才能进行采矿作业
+	}
 }
 
 Projectiles: {
@@ -1587,7 +1597,7 @@ TextContent: {
 		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
 		BloodAltar_Text1: 深红的注视正在降临...
 		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
-		BloodAltar_Text3: 陷入了无尽的血与肉的狂想
+		BloodAltar_Text3: "{0}陷入了无尽的血与肉的狂想"
 		VoidDamageNameText: 虚无伤害
 		Drop_Hell_RuleText: 在地狱击败后掉落
 		Drop_GlodDragonDrop_RuleText: 当丛林巨龙被二次击败后掉落
@@ -1871,8 +1881,8 @@ TextContent: {
 		AmmoBox_Text: 已到达部署上限
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
-		HellfireExplosion_DeadLang_Text: 在地狱的烈火中化为灰烬
-		SoulfireExplosion_DeadLang_Text: 的灵魂在火焰中升华
+		HellfireExplosion_DeadLang_Text: "{0}在地狱的烈火中化为灰烬"
+		SoulfireExplosion_DeadLang_Text: "{0}的灵魂在火焰中升华"
 		SupMUI_OneClick_Text1: 快捷放置材料
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:

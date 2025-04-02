@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SDFMG";
         public override int TargetID => ModContent.ItemType<SDFMG>();
         private bool onIdle;
-        private int fireIndex2;
         public override void SetRangedProperty() {
             ControlForce = GunPressure = 0;
             Recoil = 0.2f;

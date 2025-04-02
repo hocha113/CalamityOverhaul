@@ -1062,6 +1062,16 @@ Items: {
 			"Beyond its intended use"
 			'''
 	}
+
+	MiningMachine: {
+		DisplayName: Mining Machine
+		Tooltip:
+			'''
+			Drilling minerals by consuming electrical energy
+			It needs to be placed in an appropriate location to work properly
+			'''
+		DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+	}
 }
 
 Projectiles: {
@@ -1606,7 +1616,7 @@ TextContent: {
 		Item_LegendOnMouseLang: Press [Shift] to listen to the story...
 		BloodAltar_Text1: The crimson gaze is coming...
 		BloodAltar_Text2: You don't have enough blood orb to pay tribute to the Crimson King...
-		BloodAltar_Text3: Trapped in an endless frenzy of blood and flesh
+		BloodAltar_Text3: "{0} Trapped in an endless frenzy of blood and flesh"
 		VoidDamageNameText: Void Damage
 		Drop_Hell_RuleText: Fall after being defeated in Hell
 		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
@@ -1900,8 +1910,8 @@ TextContent: {
 		AmmoBox_Text: The deployment upper limit has been reached
 		AmmoBox_Text2: Being deployed
 		AmmoBox_Text3: " Deployed"
-		HellfireExplosion_DeadLang_Text: To Burn In The Flames Of Hell
-		SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
+		HellfireExplosion_DeadLang_Text: "{0} To Burn In The Flames Of Hell"
+		SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
 		SupMUI_OneClick_Text1: Quick placement material
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:

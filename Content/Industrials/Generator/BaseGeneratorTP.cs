@@ -19,7 +19,7 @@
 
         }
 
-        public sealed override void Update() {
+        public sealed override void UpdateMachine() {
             if (PreGeneratorUpdate()) {
                 MachineData?.Update();
                 GeneratorUpdate();
