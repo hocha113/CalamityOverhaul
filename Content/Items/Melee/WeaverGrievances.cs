@@ -282,8 +282,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             CWRPlayer modPlayer = Owner.CWR();
             modPlayer.IsRotatingDuringDash = false;
             modPlayer.RotationResetCounter = 15;
-            modPlayer.DashCooldownCounter = 35;
-            modPlayer.CustomCooldownCounter = 30;
+            modPlayer.DashCooldownCounter = 65;
+            modPlayer.CustomCooldownCounter = 60;
             if (Main.zenithWorld) {
                 modPlayer.CustomCooldownCounter = 2;
             }

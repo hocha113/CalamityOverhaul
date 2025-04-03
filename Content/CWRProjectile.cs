@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content
                         , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
                     break;
                 case SpanTypesEnum.HalibutCannon:
-                    if (++halibutAmmoTime > 80) {
+                    if (++halibutAmmoTime >= 100) {
                         projectile.Kill();
                     }
                     break;

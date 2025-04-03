@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void SetShootAttribute() {
             if (onFire) {
-                Item.useTime = 45;
+                Item.useTime = 40;
                 Item.mana = 20;
                 GunPressure = 0.3f;
                 RecoilRetroForceMagnitude = 0;
@@ -56,21 +56,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         Item.useTime = 60;
                         break;
                     case 1:
+                        Item.useTime = 58;
+                        break;
                     case 2:
+                        Item.useTime = 56;
+                        break;
                     case 3:
-                        Item.useTime = 55;
+                        Item.useTime = 54;
                         break;
                     case 4:
+                        Item.useTime = 52;
+                        break;
                     case 5:
                         Item.useTime = 50;
                         break;
+                    case 6:
+                        Item.useTime = 48;
+                        break;
+                    case 7:
+                        Item.useTime = 46;
+                        break;
                     default:
-                        Item.useTime = 45;
+                        Item.useTime = 40;
                         break;
                 }
             }
             else if (onFireR) {
-                Item.useTime = 7;
+                Item.useTime = 6;
                 Item.mana = 6;
                 GunPressure = 0f;
                 RecoilRetroForceMagnitude = 6;
@@ -92,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         break;
                     default:
                         Item.mana = 6;
-                        Item.useTime = 7;
+                        Item.useTime = 6;
                         break;
                 }
             }

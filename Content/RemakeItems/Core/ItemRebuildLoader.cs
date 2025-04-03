@@ -600,7 +600,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void SetDefaults(Item item) {
+            if (item.type > ItemID.None) {
+                item.CWR().PreSetDefaults(item);
+            }
             ProcessRemakeAction(item, (inds) => inds.SetDefaults(item));
+            if (item.type > ItemID.None) {
+                item.CWR().PostSetDefaults(item);
+            }
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

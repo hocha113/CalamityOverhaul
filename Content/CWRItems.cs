@@ -254,8 +254,18 @@ namespace CalamityOverhaul.Content
                 item.useStyle = ItemUseStyleID.Swing;
             }
         }
-
-        public override void SetDefaults(Item item) {
+        //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
+        public override void SetDefaults(Item item) { }
+        //调用在 ItemRebuildLoader.SetDefaults 之前
+        public void PreSetDefaults(Item item) {
+            ai = new float[MaxAISlot];
+            TargetLockAmmo = new Item();
+            InitializeMagazine();
+            SmiperItemSet(item);
+            CWRLoad.SetAmmoItem(item);
+        }
+        //调用在 ItemRebuildLoader.SetDefaults 之后
+        public void PostSetDefaults(Item item) {
             if (isInfiniteItem) {
                 destructTime = 5;
             }
@@ -269,13 +279,6 @@ namespace CalamityOverhaul.Content
             if (MaxUEValue <= 0) {
                 MaxUEValue = 20;
             }
-
-            ai = new float[MaxAISlot];
-
-            TargetLockAmmo = new Item();
-            InitializeMagazine();
-            SmiperItemSet(item);
-            CWRLoad.SetAmmoItem(item);
 
             if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
                 item.maxStack = 64;

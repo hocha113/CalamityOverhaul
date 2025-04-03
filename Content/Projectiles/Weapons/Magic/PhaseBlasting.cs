@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.localNPCHitCooldown = 15;
         }
 
-        internal float GetExpodMode() => 1f + (int)Projectile.ai[2] * 0.08f;
+        internal float GetExpodMode() => 1f + (int)Projectile.ai[2] * 0.1f;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float size = 62f + (160f * (GetExpodMode() - 1f));
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void AI() {
-            float mode = GetExpodMode();
+            float mode = GetExpodMode() * 0.8f;
             float lights = Main.rand.Next(30, 62) * 0.01f;
             lights *= Main.essScale;
             lights *= mode;
