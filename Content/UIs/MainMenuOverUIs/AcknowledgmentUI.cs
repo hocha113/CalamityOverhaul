@@ -408,7 +408,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (!OnActive()) {
                 return;
             }
-            spriteBatch.Draw(CWRUtils.GetT2DAsset(CWRConstant.Placeholder2).Value, Vector2.Zero
+            //运行环境比较敏感，为了防止玩家在卸载模组时还要和UI进行交互，这里判断一下资源是否已经被释放
+            if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
+                _active = false;
+                return;
+            }
+
+            spriteBatch.Draw(CWRAsset.Placeholder_White.Value, Vector2.Zero
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
                 , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             foreach (EffectEntity effect in effectEntities) {

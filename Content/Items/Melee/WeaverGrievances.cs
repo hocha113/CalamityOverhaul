@@ -76,18 +76,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                 dust.scale += Main.rand.NextFloat();
             }
         }
-        public override bool AltFunctionUse(Player player) => true;
+        public override bool AltFunctionUse(Player player) => player.CWR().CustomCooldownCounter <= 0;
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 6;
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                if (player.CWR().CustomCooldownCounter <= 0) {
-                    float _swingDir = position.X + velocity.X > player.position.X ? 1 : -1;
-                    Projectile.NewProjectile(source, position, velocity
-                        , ModContent.ProjectileType<WeaverGrievancesDash>(), damage, knockback, player.whoAmI, ai1: _swingDir);
-                }
-
+                float _swingDir = velocity.X > 0 ? 2.2f : -2.2f;
+                Projectile.NewProjectile(source, position, velocity
+                    , ModContent.ProjectileType<WeaverGrievancesDash>(), damage, knockback, player.whoAmI, ai1: _swingDir);
                 return false;
             }
             if (Main.zenithWorld) {
@@ -282,8 +279,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             CWRPlayer modPlayer = Owner.CWR();
             modPlayer.IsRotatingDuringDash = false;
             modPlayer.RotationResetCounter = 15;
-            modPlayer.DashCooldownCounter = 65;
-            modPlayer.CustomCooldownCounter = 60;
+            modPlayer.DashCooldownCounter = 95;
+            modPlayer.CustomCooldownCounter = 90;
             if (Main.zenithWorld) {
                 modPlayer.CustomCooldownCounter = 2;
             }

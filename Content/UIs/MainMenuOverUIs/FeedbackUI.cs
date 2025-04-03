@@ -6,50 +6,34 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     internal class FeedbackUI : UIHandle, ICWRLoader
     {
-        private float _sengs;
-        internal bool _active;
         internal static FeedbackUI Instance { get; private set; }
-
         private static Asset<Texture2D> githubOAC;
         private static Asset<Texture2D> steamOAC;
-
-        private Vector2 githubPos1 => new Vector2(Main.screenWidth - 60, 60);
-
-        private Vector2 githubPos2 => new Vector2(Main.screenWidth - 140, 60);
-
-        private Vector2 githubPos => Vector2.Lerp(githubPos1, githubPos2, _sengs);
-
-        private Vector2 githubCenter => githubPos + new Vector2(githubOAC.Width(), githubOAC.Height()) / 2 * githubSiz;
-
-        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-
+        private const float githubSiz1 = 0.001f;
+        private const float githubSiz2 = 0.05f;
         private int Time;
-
-        private float githubSiz1 => 0.001f;
-
-        private float githubSiz2 => 0.05f;
-
         private bool old_onGithub;
         private bool old_onSteam;
-
-        private bool onGithub => MousePosition.Distance(githubCenter) < githubOAC.Width() * githubSiz2 / 2f;
-
-        private bool onSteam => MousePosition.Distance(steamCenter) < steamOAC.Width() * githubSiz2 / 2f;
-
-        private float githubSiz => float.Lerp(githubSiz1, githubSiz2, _sengs);
-
-        private Vector2 steamPos1 => new Vector2(Main.screenWidth - 80, 60);
-
-        private Vector2 steamPos2 => new Vector2(Main.screenWidth - 200, 60);
-
-        private Vector2 steamPos => Vector2.Lerp(steamPos1, steamPos2, _sengs);
-
-        private Vector2 steamCenter => steamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * githubSiz;
+        internal float _sengs;
+        internal bool _active;
+        private bool OnGithub => MousePosition.Distance(GithubCenter) < githubOAC.Width() * githubSiz2 / 2f;
+        private bool OnSteam => MousePosition.Distance(SteamCenter) < steamOAC.Width() * githubSiz2 / 2f;
+        private float GithubSiz => float.Lerp(githubSiz1, githubSiz2, _sengs);
+        private static Vector2 GithubPos1 => new Vector2(Main.screenWidth - 60, 60);
+        private static Vector2 GithubPos2 => new Vector2(Main.screenWidth - 140, 60);
+        private Vector2 GithubPos => Vector2.Lerp(GithubPos1, GithubPos2, _sengs);
+        private Vector2 GithubCenter => GithubPos + new Vector2(githubOAC.Width(), githubOAC.Height()) / 2 * GithubSiz;
+        private static Vector2 SteamPos1 => new Vector2(Main.screenWidth - 80, 60);
+        private static Vector2 SteamPos2 => new Vector2(Main.screenWidth - 200, 60);
+        private Vector2 SteamPos => Vector2.Lerp(SteamPos1, SteamPos2, _sengs);
+        private Vector2 SteamCenter => SteamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * GithubSiz;
+        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
         public bool OnActive() => _active || _sengs > 0;
         void ICWRLoader.LoadAsset() {
@@ -84,19 +68,19 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Initialize();
 
             if (_sengs >= 1 && githubOAC != null && steamOAC != null) {
-                if (!old_onSteam && onSteam || !old_onGithub && onGithub) {
+                if (!old_onSteam && OnSteam || !old_onGithub && OnGithub) {
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.6f, Volume = 0.6f });
                 }
 
-                old_onSteam = onSteam;
-                old_onGithub = onGithub;
+                old_onSteam = OnSteam;
+                old_onGithub = OnGithub;
 
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    if (onGithub) {
+                    if (OnGithub) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         (CWRConstant.githubUrl + "/issues/new").WebRedirection(true);
                     }
-                    else if (onSteam) {
+                    else if (OnSteam) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         CWRConstant.steamFeedback.WebRedirection(true);
                     }
@@ -124,16 +108,26 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
+            if (githubOAC == null || steamOAC == null) {
+                _active = false;
+                return;
+            }
+            //运行环境比较敏感，为了防止玩家在卸载模组时还要和UI进行交互，这里判断一下资源是否已经被释放
+            if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
+                _active = false;
+                return;
+            }
+
             Color color = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
 
-            spriteBatch.Draw(CWRUtils.GetT2DAsset(CWRConstant.Placeholder2).Value, Vector2.Zero
+            spriteBatch.Draw(CWRAsset.Placeholder_White.Value, Vector2.Zero
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
                 , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-            spriteBatch.Draw(githubOAC.Value, githubPos, null
-                , (onGithub ? color : Color.White) * _sengs, 0f, Vector2.Zero, githubSiz, SpriteEffects.None, 0);
-            spriteBatch.Draw(steamOAC.Value, steamPos, null
-                , (onSteam ? color : Color.White) * _sengs, 0f, Vector2.Zero, githubSiz, SpriteEffects.None, 0);
+            spriteBatch.Draw(githubOAC.Value, GithubPos, null
+                , (OnGithub ? color : Color.White) * _sengs, 0f, Vector2.Zero, GithubSiz, SpriteEffects.None, 0);
+            spriteBatch.Draw(steamOAC.Value, SteamPos, null
+                , (OnSteam ? color : Color.White) * _sengs, 0f, Vector2.Zero, GithubSiz, SpriteEffects.None, 0);
         }
     }
 }
