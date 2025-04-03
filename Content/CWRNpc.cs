@@ -8,7 +8,6 @@ using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -167,7 +166,6 @@ namespace CalamityOverhaul.Content
 
         public override void SetDefaults(NPC npc) {
             NPCOverride.SetDefaults(npc);
-            TungstenRiot.SetEventNPC(npc);
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
@@ -211,8 +209,7 @@ namespace CalamityOverhaul.Content
 
         public override bool PreAI(NPC npc) {
             UpdateOverBeatBack(npc);
-            bool? tungstenset = TungstenRiot.Instance.UpdateNPCPreAISet(npc);
-            return tungstenset ?? base.PreAI(npc);
+            return base.PreAI(npc);
         }
 
         public override void PostAI(NPC npc) {
@@ -296,9 +293,6 @@ namespace CalamityOverhaul.Content
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                TungstenRiot.Instance.TungstenKillNPC(npc);
-            }
         }
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit) {
@@ -342,7 +336,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
-            TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
             IItemDropRuleCondition dontExpertCondition = new Conditions.NotExpert();
             LeadingConditionRule dontExpertRule = new LeadingConditionRule(dontExpertCondition);
 
@@ -392,27 +385,6 @@ namespace CalamityOverhaul.Content
                 CWRItems cwrItem = newItem.CWR();
                 if (cwrItem.HasCartridgeHolder || cwrItem.heldProjType > 0 || cwrItem.isHeldItem) {
                     item.SetDefaults(item.type);
-                }
-            }
-        }
-
-        public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns) {
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                maxSpawns = (int)(maxSpawns * 1.15f);
-                spawnRate = 2;
-            }
-        }
-
-        public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                pool.Clear();
-                foreach (int type in TungstenRiot.TungstenEventNPCDic.Keys) {
-                    if (!pool.ContainsKey(type)) {
-                        pool.Add(type, TungstenRiot.TungstenEventNPCDic[type].SpawnRate);
-                    }
-                }
-                if (TungstenRiot.Instance.EventKillRatio < 0.5f) {
-                    pool.Add(ModContent.NPCType<WulfrumAmplifier>(), 0.25f);
                 }
             }
         }
