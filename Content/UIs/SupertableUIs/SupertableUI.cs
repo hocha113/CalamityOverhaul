@@ -740,7 +740,7 @@ End:;
                     offset = new Vector2(cellWid, cellHig) / 2;
                 }
                 float slp = item.GetDrawItemSize(36) * overSlp;
-                if (item.type == CWRLoad.DarkMatterBall) {
+                if (item.type == DarkMatterBall.ID) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
                 else {

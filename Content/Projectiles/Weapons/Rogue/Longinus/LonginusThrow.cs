@@ -147,8 +147,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Item[CWRLoad.Longinus].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale * 0.9f, SpriteEffects.None, 0);
+            Texture2D value = TextureAssets.Item[SpearOfLonginus.ID].Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
+                , Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale * 0.9f, SpriteEffects.None, 0);
             return false;
         }
     }

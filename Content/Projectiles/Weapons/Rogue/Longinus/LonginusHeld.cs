@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                 && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0);
 
         public override void AI() {
-            if (Owner.HeldItem.type != CWRLoad.Longinus || !isProj()) {
+            if (Item.type != SpearOfLonginus.ID || !isProj()) {
                 Projectile.Kill();
                 return;
             }
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Item[CWRLoad.Longinus].Value;
+            Texture2D value = TextureAssets.Item[SpearOfLonginus.ID].Value;
             int dir = Owner.direction * (int)Owner.gravDir;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset, null, lightColor
                 , Projectile.rotation + MathHelper.PiOver4 + (dir > 0 ? MathHelper.PiOver2 : 0)

@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.DesertScourge;
@@ -259,7 +260,7 @@ namespace CalamityOverhaul.Content
                 if (npc.boss) {
                     if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                         for (int i = 0; i < Main.rand.Next(3, 6); i++) {
-                            int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
+                            int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<DubiousPlating>(), Main.rand.Next(7, 13));
                             if (!VaultUtils.isSinglePlayer) {
                                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                             }

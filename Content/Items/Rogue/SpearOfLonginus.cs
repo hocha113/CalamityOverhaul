@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
         public static Asset<Texture2D> LonginusAsset;
         public static Asset<Texture2D> EvaAsset;
+        public static int ID;
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Longinus";
         void ICWRLoader.LoadAsset() {
@@ -36,8 +37,9 @@ namespace CalamityOverhaul.Content.Items.Rogue
             if (Main.dedServ) {
                 return;
             }
-            TextureAssets.Item[CWRLoad.Longinus] = Main.zenithWorld ? EvaAsset : LonginusAsset;
+            TextureAssets.Item[ID] = Main.zenithWorld ? EvaAsset : LonginusAsset;
         }
+        public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() {
             Item.width = 44;
             Item.damage = 2480;

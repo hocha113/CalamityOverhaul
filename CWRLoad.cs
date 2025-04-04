@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.LoreItems;
-using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;
 using CalamityMod.NPCs.AquaticScourge;
@@ -28,19 +27,14 @@ using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Magic;
-using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -57,13 +51,6 @@ namespace CalamityOverhaul
         #region Data
         public static bool OnLoadContentBool;
 
-        public static int DarkMatterBall;
-        public static int NeutronStarIngot;
-        public static int DubiousPlating;
-        public static int FoodStallChair;
-        public static int FoodStallChairTile;
-        public static int Longinus;
-
         #region OtherMods
         public static int EternitySoul;
         public static int DevisCurse;
@@ -74,11 +61,6 @@ namespace CalamityOverhaul
         #endregion
 
         public static RogueDamageClass RogueDamageClass => GetInstance<RogueDamageClass>();
-
-        public static int InfiniteArrow;
-        public static int InfiniteRune;
-        public static int ParadiseArrow;
-        public static int HeavenLightning;
 
         public static int Projectile_ArcZap;
         /// <summary>
@@ -361,18 +343,6 @@ namespace CalamityOverhaul
 
         public static void Setup() {
             #region ID
-            InfiniteArrow = ProjectileType<InfiniteArrow>();
-            InfiniteRune = ProjectileType<InfiniteArrow>();
-            ParadiseArrow = ProjectileType<InfiniteArrow>();
-            HeavenLightning = ProjectileType<InfiniteArrow>();
-
-            DubiousPlating = ItemType<DubiousPlating>();
-            DarkMatterBall = ItemType<DarkMatterBall>();
-            NeutronStarIngot = ItemType<NeutronStarIngot>();
-            FoodStallChair = ItemType<FoodStallChair>();
-            FoodStallChairTile = TileType<Content.Tiles.FoodStallChair>();
-            Longinus = ItemType<SpearOfLonginus>();
-
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();
             Providence = NPCType<Providence>();
