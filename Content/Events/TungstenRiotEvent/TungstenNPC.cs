@@ -5,7 +5,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
 {
-    [JITWhenModsEnabled(CalContent.Name)]
     internal class TungstenNPC : GlobalNPC
     {
         public override void SetDefaults(NPC npc) {
