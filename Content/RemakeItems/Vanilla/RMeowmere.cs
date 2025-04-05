@@ -71,4 +71,33 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             return base.PreInOwner();
         }
     }
+
+    internal class MeowmereGlobalShoot : GlobalProjectile
+    {
+        public override void SetDefaults(Projectile projectile) {
+            if (projectile.type == ProjectileID.Meowmere) {
+                projectile.timeLeft = 160;
+                projectile.penetrate = 2;
+            }
+        }
+
+        public override void PostAI(Projectile projectile) {
+            if (projectile.type == ProjectileID.Meowmere) {
+                projectile.velocity.X *= 0.98f;
+                projectile.velocity.Y += 0.01f;
+            }
+        }
+
+        public override void OnKill(Projectile projectile, int timeLeft) {
+            RMeowmere.SpanDust(projectile, 0.2f);
+        }
+
+        public override void OnHitPlayer(Projectile projectile, Player target, Player.HurtInfo info) {
+            RMeowmere.SpanDust(projectile);
+        }
+
+        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
+            RMeowmere.SpanDust(projectile);
+        }
+    }
 }

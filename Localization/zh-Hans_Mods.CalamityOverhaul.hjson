@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -817,6 +817,7 @@ Items: {
 			'''
 			召唤一条微型毁灭者为你而战
 			召唤栏上限越高毁灭者越强
+			至少需要4格召唤栏位
 			'''
 	}
 
@@ -860,7 +861,10 @@ Items: {
 
 	ForgedLashEX: {
 		DisplayName: 锻钢之鞭EX
-		Tooltip: ""
+		Tooltip:
+			'''
+			在鞭打过程中释放追踪的热力球
+			'''
 	}
 
 	SoulofFrightEX: {

@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 AddIngredient<DubiousPlating>(15).
                 AddIngredient<MysteriousCircuitry>(15).
                 AddIngredient(ItemID.Glass, 50).
-                AddIngredient(ItemID.CopperBar, 5).
-                AddIngredient(ItemID.GoldBar, 5).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
         }
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal Color drawColor;
         internal float oldUEValue;
         internal int activeTime;
-        internal const float _maxUEValue = 6000;
+        internal const float _maxUEValue = 8000;
         public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
         public override void UpdateMachine() {

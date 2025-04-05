@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.DamageType = DamageClass.MeleeNoSpeed;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 4;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.extraUpdates = 1;
         }
     }
@@ -135,14 +135,14 @@ namespace CalamityOverhaul.Content.Items.Summon
             Projectile.DamageType = DamageClass.MeleeNoSpeed;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 4;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.extraUpdates = 1;
         }
 
         public override void ExtraBehavior() {
-            if (++Time > 4) {
+            if (++Time > 6) {
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + Projectile.velocity * 2, Vector2.Zero
-                    , ModContent.ProjectileType<ForgedLasOrb>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<ForgedLasOrb>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
                 Time = 0;
             }
         }
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Summon
 
     internal class ForgedLasOrb : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile + "TheRelicLuxorMeleeProj";
+        public override string Texture => CWRConstant.NPC + "BTD/Probe";
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.DamageType = DamageClass.Melee;

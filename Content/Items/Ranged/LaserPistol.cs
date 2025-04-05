@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             CreateRecipe().
                 AddIngredient<DubiousPlating>(5).
                 AddIngredient<MysteriousCircuitry>(4).
-                AddIngredient(ItemID.IronBar, 2).
-                AddIngredient(ItemID.SilverBar, 2).
+                AddRecipeGroup(RecipeGroupID.IronBar, 2).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
         }
