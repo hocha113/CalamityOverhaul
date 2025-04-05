@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -469,7 +469,7 @@ Items: {
 		DisplayName: Нейтронный глэйв
 		Tooltip:
 			'''
-			Махает мечом, который испускает мощные гравитационные волны и 
+			Машет мечом, который испускает мощные гравитационные волны и 
 			создает взрыв нейтронной звезды при попадании в цель
 			Правый клик для зарядки меча: 
 			после зарядки можно создать большой взрыв нейтронной звезды в точке клика
@@ -482,7 +482,7 @@ Items: {
 		Tooltip:
 			'''
 			Выпускает стрелы с гравитационным эффектом, создающие гамма-лучи при попадании в цель
-			Правый клик для трехступенчатой зарядки: 
+			ПКМ для трехступенчатой зарядки: 
 			после полной зарядки стреляет тремя мощными стрелами с гравитационным эффектом
 			'''
 		// Lang1: Trapping gravity
@@ -495,7 +495,7 @@ Items: {
 		Tooltip:
 			'''
 			Выпускает гравитационные пули, создающие искривление при попадании в цель
-			Правый клик для переключения в снайперский 
+			ПКМ для переключения в снайперский 
 			режим: стреляет более мощными гравитационными пулями, которые вызывают гамма-лучи по пути
 			Каждый выстрел заряжает оружие: когда оружие заряжено полностью, 
 			следующий выстрел вызовет взрыв нейтронной звезды в точке клика
@@ -508,7 +508,7 @@ Items: {
 		Tooltip:
 			'''
 			Выпускает четыре мощные звездные гравитационные заряды
-			Правый клик для произведения гравитационной магии в точке клика
+			ПКМ для произведения гравитационной магии в точке клика
 			"По легенде, в древние времена могущественный эзотерик сжал звезду в чёрную дыру с помощью этого посоха,
 			но никто не может подтвердить эту версию, она стала частью поэзии странствующих по звёздам"
 			'''
@@ -557,7 +557,7 @@ Items: {
 		Tooltip:
 			'''
 			Выпускает слезы дракона, которые вращаются некоторое время, а затем наводятся на врагов.
-			Щелчок правой кнопкой мыши позволяет применить магию приказа дракона в указанной точке, 
+			ПКМ позволяет применить магию приказа дракона в указанной точке, 
 			отдавая приказ на смерть врагам в радиусе действия.
 			"Дракон может пролить слезы только один раз в жизни."
 			'''
@@ -588,9 +588,9 @@ Items: {
 		// DisplayName: Justice Unveiled
 		/* Tooltip:
 			'''
-			Ranged attacks have a chance to summon a strike of justice
-			The great divine impact will crush the enemy
-			"If justice is needed, I will go wherever it is."
+			Стрелковые атаки имеют шанс вызвать удар правосудия.
+			Великий божественный удар сокрушит врага
+			"Если нужна справедливость, я пойду туда, где она нужна.."
 			''' */
 	}
 
@@ -598,30 +598,30 @@ Items: {
 		// DisplayName: Weaver Grievances
 		/* Tooltip:
 			'''
-			Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
-			Right-click and roll in the direction of the cursor. Hitting an enemy during the roll will give the player an invincible frame
-			A close roll would be considered a perfect dodge
+			Выпустите на волю большое количество когтей злых духов и получите особые эффекты в аду и подземельях
+			ПКМ чтобы совершить перекат в направлении курсора. Удар по врагу во время перекат даст игроку кадр иммунитета
+			Близкий перекат можно считать идеальным уклонением.
 			[legend]
 			''' */
 		/* Legend:
 			'''
-			The eternal dungeon stretches across the land, its walls etched with the inscriptions and screams of ancient warriors. 
-			Each stone is saturated with lingering malice, like chains of the damned, binding it to the endless darkness at time’s end.  
-			These warriors were once the blades of their king, waging war across the realms. 
-			Their swords had illuminated countless battlefields, their blood forged the towering empire. 
-			Their loyalty was as enduring as the stars, their conviction as unyielding as iron.  
-			Yet, when the wars ceased, and the Demonlord’s banners were torn asunder at the king’s feet, 
-			the moment peace descended, the king decreed their consignment to the abyss.  
-			“We betrayed not, yet the king has betrayed us!” The anguished wails of the damned tore through the void, piercing the silence of eternity. 
-			Their noble spirits did not return to the dust but were imprisoned in the void’s chasm, condemned as witnesses to eternal night.  
-			The ceaseless lamentations transformed into a silent accusation, one that reached the furthest ends of the stars.  
-			It is said the king, in fear of their unyielding loyalty and the inferno of their wrath, 
-			heeded the whispers of the Demonlord’s sorcerers, choosing to consign these warriors to the shadows of history.  
-			But malice, like a tide, has twisted the dungeon’s reality. Their suffering has shaken the barriers of time and space, weaving a prophecy of vengeance:  
-			“The Demonlord shall return; the void shall be torn asunder, and our wrath shall consume all!”  
-			When Terra once more faces the brink of annihilation, these restless dead will rise from the darkness. 
-			Their blades will no longer fight for the glory of an empire but for the judgment of the betrayer.  
-			Glory and loyalty are long since obliterated—only the flames of vengeance remain, destined to engulf all.
+			Вечное подземелье простирается по всей земле, его стены испещрены надписями и криками древних воинов. 
+			Каждый камень пропитан неугасаемой злобой, словно цепи проклятых, приковывающие его к бесконечной тьме конца времен.  
+			Эти воины когда-то были клинками своего короля, ведя войну по всему миру. 
+			Их мечи освещали бесчисленные поля сражений, их кровь выковала возвышающуюся империю. 
+			Их преданность была такой же прочной, как звезды, их убеждения были такими же непоколебимыми, как железо.  
+			Но когда войны прекратились, и знамена Повелителя Демонов были разорваны на части у ног короля, 
+			в тот момент, когда наступил мир, король постановил отправить их в бездну.  
+			“Мы не предавали, но король предал нас!” Мучительные вопли проклятых разорвали пустоту, пронзив тишину вечности. 
+			Их благородные души не вернулись в прах, но были заключены в темницу бездны, обреченные на вечную ночь.  
+			Непрекращающиеся причитания превратились в молчаливое обвинение, достигшее самых дальних уголков звезд..  
+			Говорят, что король, опасаясь их непоколебимой преданности и адского гнева, 
+			прислушался к шепоту колдунов Повелителя демонов, решив предать этих воинов теням истории.  
+			Но злоба, подобно приливу, исказила реальность подземелья. Их страдания потрясли барьеры времени и пространства, сплетая пророчество о мести:  
+			“Повелитель демонов вернется; пустота будет разорвана на части, и наш гнев поглотит все!”  
+			Когда Терра снова окажется на грани уничтожения, эти неупокоенные мертвецы восстанут из тьмы. 
+			Их клинки больше не будут сражаться во славу империи, а будут сражаться за суд над предателем.  
+			Слава и верность давно забыты — осталось только пламя мести, которому суждено поглотить всех.
 			''' */
 	}
 
@@ -631,7 +631,7 @@ Items: {
 	}
 
 	SandDagger: {
-		// DisplayName: Sand Dagger
+		// DisplayName: Песчаный кинжал
 		/* Tooltip:
 			'''
 			Throws onto sand, then jumps into the air and explodes after a while
@@ -645,64 +645,64 @@ Items: {
 	}
 
 	WastelandFang: {
-		// DisplayName: Wasteland Fang
+		// DisplayName: Клык пустоши
 		/* Tooltip:
 			'''
-			Bounces off blocks and accelerates when retracting
-			Opens its mouth and spits out several sand orbs
+			Отскакивает от блоков и ускоряется при втягивании
+			Открывает пасть и выплевывает несколько шариков песка
 			''' */
 	}
 
 	Flawless: {
-		// DisplayName: Flawless
+		// DisplayName: Безупречный
 		// Tooltip: ""
 	}
 
 	MelodyTheSand: {
-		// DisplayName: Song of the Sand
-		// Tooltip: Throws a spread of sand spikes that are affected by gravity and pierce enemies
+		// DisplayName: Песнь песка
+		// Tooltip: Бросает ряд песчаных шипов, которые подвержены гравитации и пронзают врагов.
 	}
 
 	SandVortexOfTheDecayedSea: {
-		// DisplayName: Decayed Sea Sand Vortex
+		// DisplayName: Разложившийся морской песчаный вихрь
 		/* Tooltip:
 			'''
-			Vomits several sulfuric steam orbs
-			"Master of Vomiting"
+			Извергает несколько сернистых шаров пара
+			"Мастер рвоты"
 			''' */
 	}
 
 	SeasonalKunai: {
-		// DisplayName: Seasonal Kunai
+		// DisplayName: Сезонный кунай
 		/* Tooltip:
 			'''
-			Throws three homing kunai at enemies
-			Stealth attacks throw a large kunai that splits at the end of its trajectory
-			"Reflecting the Four Seasons"
+			Бросает три самонаводящихся куная во врагов
+			Скрытые атаки бросают большой кунай, который раскалывается в конце своей траектории
+			"Отражение четырех времен года"
 			''' */
 	}
 
 	WraithKunai: {
-		// DisplayName: Wraith Kunai
+		// DisplayName: Призрачный кунай
 		/* Tooltip:
 			'''
-			Throws three homing kunai at enemies
-			Stealth attacks summon a group of ghostly daggers hovering around the player
+			Бросает три самонаводящихся куная во врагов
+			Скрытые атаки вызывают группу призрачных кинжалов, парящих вокруг игрока.
 			''' */
 	}
 
 	CalSelfPortrait: {
-		// DisplayName: Forgotten Photograph
+		// DisplayName: Забытый фотограф
 		/* Tooltip:
 			'''
-			A forgotten photograph
+			Забытый фотограф
 			[legend]
 			''' */
-		// Legend: What else do you want to see? :)
+		// Legend: Что еще вы хотите увидеть?? :)
 	}
 
 	WUTIVSelfPortrait: {
-		// DisplayName: Thank You, Wuti
+		// DisplayName: Спасибо тебе, Wuti
 		// Tooltip: ""
 	}
 
@@ -710,9 +710,9 @@ Items: {
 		// DisplayName: Handmade Sewn Doll
 		/* Tooltip:
 			'''
-			Used in the Underworld to summon the Wall of Flesh
-			If the Guide is alive, he will be sacrificed upon use
-			"Handmade, and the Guide doesn't know"
+			Используеться в аду, чтобы призват Стену Плоти
+			Если Гид жив, он будет принесен в жертву при использовании.
+			"Ручная работа, и гид не знает!"
 			''' */
 	}
 
@@ -738,21 +738,21 @@ Items: {
 	}
 
 	FocusingGrimoire: {
-		// DisplayName: Focusing Grimoire
+		// DisplayName: Сфокусированный гримуар
 		/* Tooltip:
 			'''
-			Left click to fire homing thermal rings
-			Right click to rapidly fire death rays
-			"Better than six books combined"
+			ЛКМ, чтобы запустить самонаводящиеся тепловые кольца
+			ПКМ, чтобы быстро выстрелить лучами смерти.
+			"Лучше, чем шесть книг, вместе взятых"
 			''' */
 	}
 
 	CommandersStaff: {
-		// DisplayName: Commander's Staff
+		// DisplayName: Посох Коммандира
 		/* Tooltip:
 			'''
-			Fires a thermal disintegration beam that pierces enemies
-			"Taken from that machine’s arm, how about using psionic energy instead of diesel?"
+			Выпускает термический дезинтегрирующий луч, который пронзает врагов.
+			"Взяв руку этой машины, как насчет использования псионической энергии вместо дизельного топлива??"
 			''' */
 	}
 
@@ -760,19 +760,19 @@ Items: {
 		// DisplayName: Raider
 		/* Tooltip:
 			'''
-			Converts musket balls into high-speed bullets
-			Right click to roll dash and reload the magazine
-			The first bullet fired after rolling is converted into a Destroyer Grenade
-			"Perfect for indoor hostage rescues"
+			Превращает мушкетные пули в высокоскоростные пули
+			ЛКМ, чтобы совершить рывок и перезарядить магазин
+			Первая пуля, выпущенная после переката, превращается в гранату Уничтожителя.
+			"Идеально подходит для спасения заложников в помещении."
 			''' */
 	}
 
 	HyperionBarrage: {
-		// DisplayName: Hyperion Auto-Turret
+		// DisplayName: Автоматическая турель Гиперион
 		/* Tooltip:
 			'''
-			Fires thermal cruise missiles
-			"Make full use of everything"
+			Запускает тепловые крылатые ракеты
+			"Используйте все в полной мере"
 			''' */
 	}
 
@@ -780,18 +780,18 @@ Items: {
 		// DisplayName: Raider EX
 		/* Tooltip:
 			'''
-			Converts musket balls into high-speed bullets
-			Additionally fires a barrage of Destroyer Homing Missiles
-			"Carpet bombing"
+			Превращает мушкетные пули в высокоскоростные пули
+			Дополнительно запускает залп самонаводящихся ракет Уничтожителя.
+			"Ковровая бомбардировка"
 			''' */
 	}
 
 	CommandersChainsaw: {
-		// DisplayName: Commander's Chainsaw
+		// DisplayName: Бензопила Командира
 		/* Tooltip:
 			'''
-			Generates sparks upon hitting a target
-			"Add more diesel"
+			При попадании в цель высекает искры
+			"Добавьте больше дизельного топлива!"
 			''' */
 	}
 
@@ -799,19 +799,19 @@ Items: {
 		// DisplayName: Twins' Tribute
 		/* Tooltip:
 			'''
-			Throws a fast-revolving scythe that slashes back and forth
-			Stealth attacks unleash a swarm of Destroyer cruise missiles
+			Бросает быстро вращающуюся косу, которая режет вперед и назад
+			Скрытые атаки запускают рой крылатых ракет Уничтожителя
 			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
 			''' */
 	}
 
 	Dicoria: {
-		// DisplayName: Dicoria
+		// DisplayName: Дикория
 		/* Tooltip:
 			'''
-			Fires dual bullets, can be charged
-			Fully charged shots release a thermal beam
-			"By the way, won't this make us cross-eyed?"
+			Стреляет двумя пулями, может быть заряжен
+			Полностью заряженные выстрелы испускают тепловой луч
+			"Кстати, не вызовет ли это у нас косоглазие?"
 			''' */
 	}
 
@@ -826,49 +826,48 @@ Items: {
 	}
 
 	DestroyersBlade: {
-		// DisplayName: Destroyer's Blade
+		// DisplayName: Клинок Уничтожителя
 		/* Tooltip:
 			'''
 			Fires thermal barrages
-			"Contains the immense energy core of the Destroyer."
+			"Содержит огромное энергетическое ядро ​​Разрушителя.."
 			''' */
 	}
 
 	Observer: {
-		// DisplayName: Observer
-		// Tooltip: '''"It's still watching you"'''
+		// DisplayName: Смотритель
+		// Tooltip: '''"Он все еще наблюдает за тобой"'''
 	}
 
 	StaffoftheDestroyer: {
-		// DisplayName: Staff of the Destroyer
+		// DisplayName: Посох Уничтожителя
 		/* Tooltip:
 			'''
-			Summons a miniature Destroyer to fight for you
-			The higher the summon limit, the stronger the Destroyer
-			At least four summoning slots are required
+			Призывает миниатюрного Уничтожителя, который будет сражаться за вас.
+			Чем больше количество слотов призыва, тем сильнее Уничтожителя.
 			''' */
 	}
 
 	ForgedLash: {
-		// DisplayName: Forged Lash
-		// Tooltip: '''"Not suitable for being bought as scrap iron."'''
+		// DisplayName: Кованая плеть
+		// Tooltip: '''"Не подходит для сдачи в качестве металлолома."'''
 	}
 
 	CommandersClaw: {
-		// DisplayName: Commander's Claw
+		// DisplayName: Коготь Командира
 		/* Tooltip:
 			'''
-			Throw them at the enemies and restrain them.
-			The stealth attack will generate several Destroyer Grenades.
+			Бросайте их во врагов и сдерживайте их
+			Скрытая атака создаст несколько гранат Уничтожителя.
 			''' */
 	}
 
 	DraedonsRemote: {
-		// DisplayName: Draedon's Remote
+		// DisplayName: Пульт Дрэйдона
 		/* Tooltip:
 			'''
-			Summons the EX Mechanical Trio
-			Can only be used at night
+			Вызывает EX Механическое Трио
+			Можно использовать только ночью.
 			''' */
 		// DontUseByDeath: The current game difficulty does not allow sending signals!
 		// Text1: …Let me see… that crude communicator… it is calling out to me.
@@ -947,7 +946,7 @@ Items: {
 	}
 
 	ThermalBattery: {
-		// DisplayName: Thermal Battery
+		// DisplayName: Тепловая батарея
 		// Tooltip: Store a certain amount of electrical energy
 	}
 
@@ -985,45 +984,45 @@ Items: {
 	}
 
 	MedicalBox: {
-		// DisplayName: Medical Box
+		// DisplayName: Ящик с медикаментами
 		/* Tooltip:
 			'''
-			Press and hold to deploy to the ground
-			Right-click on the medical box after deployment to heal yourself
+			Нажмите и удерживайте, чтобы поставить на землю.
+			ПКМ по ящику после установки, чтобы вылечить себя
 			''' */
 	}
 
 	TeslaElectromagneticTower: {
-		// DisplayName: Tesla Electromagnetic Tower
+		// DisplayName: Электромагнитная башня Теслы
 		/* Tooltip:
 			'''
-			Requires electrical energy to operate
-			Right-click after placing on the ground to switch between attack mode and guard mode
-			In attack mode, it emits electric arcs to nearby enemies
-			In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
-			and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
-			"Engineers, stay away"
+			Для работы требуется электроэнергия
+			ПКМ после размещения на земле, чтобы переключиться между режимом атаки и режимом защиты.
+			В режиме атаки он испускает электрические дуги в ближайших врагов
+			В режиме охраны он накладывает электрифицированный дебафф на всех врагов в пределах досягаемости; если игрок находится в пределах досягаемости
+			и держит заряжаемый предмет, электромагнитная башня будет излучать электрические дуги, чтобы дистанционно заряжать игрока.
+			"Инженеры курят в сторонке..."
 			''' */
 	}
 
 	EmblemOfDread: {
-		// DisplayName: Emblem of Dread
+		// DisplayName: Эмблема Ужаса
 		/* Tooltip:
 			'''
-			Increases melee damage by 100%
-			Increases melee critical strike chance by 100%
-			Increases melee attack speed by 100%
-			Grants 100 defense, ignoring all defense reduction
-			Reduces damage taken by 75%, and inflicts 100x reflected damage to attackers
-			All melee attacks inflict the Void Corrosion debuff on enemies
-			If an enemy's health is below 250,000, true melee attacks may directly erase them
-			While moving at high speeds, leaves behind multiple warp points that deal immense damage to enemies on contact
-			Grants the ability of Gravity Thrust—double-tap a direction key to perform an extreme-distance dash, releasing numerous gravity rays
-			Upon taking lethal damage, instantly restores full health and grants a Gravity Shield; this effect has a 60-second cooldown
-			Enemies are more likely to target you
-			[c/d94fff:"A radiant angel veils your sight, whispering sweet lies of eternal salvation."]
-			[c/ff4d4d:"A bloodied butcher lifts your blades, proclaiming slaughter as the path to glory."]
-			[c/4da6ff:"A sapphire dove pecks your brow, mocking your feeble struggle against fate."]
+			Увеличивает урон ближнего боя на 100.%
+			Увеличивает шанс критического удара в ближнем бою на 100%
+			Увеличивает скорость атаки в ближнем бою на 100%
+			Дает 100 защиты, игнорируя все снижения защиты
+			Уменьшает получаемый урон на 75% и наносит атакующим 100-кратный отраженный урон
+			Все атаки ближнего боя накладывают на врагов эффект «Коррозия пустоты».
+			Если уровень здоровья противника ниже 250 000, атаки истинного ближнего боя могут полностью уничтожить его
+			Двигаясь на высокой скорости, оставляет за собой множество точек деформации, которые наносят огромный урон врагам при контакте
+			Даёт способность «Гравитационный толчок» — дважды нажмите клавишу направления, чтобы выполнить рывок на огромное расстояние, высвобождая многочисленные гравитационные лучи.
+			При получении смертельного урона мгновенно восстанавливает полное здоровье и дает Гравитационный щит; этот эффект имеет время восстановления 60 секунд.
+			Враги с большей вероятностью выбирают вас в качестве цели.
+			[c/d94fff:"Сияющий ангел застилает твой взор, шепча сладкую ложь о вечном спасении."]
+			[c/ff4d4d:"Окровавленный мясник поднимает ваши клинки, провозглашая резню как путь к славе."]
+			[c/4da6ff:"Сапфировый голубь клюет тебя в лоб, насмехаясь над твоей слабой борьбой с судьбой."]
 			''' */
 	}
 
@@ -1066,11 +1065,11 @@ Items: {
 	}
 
 	LaserPistol: {
-		// DisplayName: Laser Pistol
+		// DisplayName: Лазерный пистолет
 		/* Tooltip:
 			'''
-			Expend energy to shoot lasers and penetrate multiple enemies
-			"Utilization is not high."
+			Расходуйте энергию, чтобы стрелять лазерами и пробивать нескольких врагов.
+			"Коэффициент использования невелик."
 			''' */
 	}
 
@@ -1107,26 +1106,26 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: Дьявольский световой шар
 	RebelBladeBack.DisplayName: Меч сопротивления
 	RebelBladeSlash.DisplayName: Меч сопротивления
-	// DevilsDevastationHeld.DisplayName: Devil's Devastation
-	// EXDemonBlast.DisplayName: EX Demon Blast
-	// EXOathblade.DisplayName: EX Oathblade
-	// EXDemonBlastAlt.DisplayName: EX Demon Blast
-	// DivineJustice.DisplayName: Divine Justice
+	// DevilsDevastationHeld.DisplayName: Опустошение Дьявола
+	// EXDemonBlast.DisplayName: EX Демонический взрыв
+	// EXOathblade.DisplayName: EX Клятвенный клинок
+	// EXDemonBlastAlt.DisplayName: EX Демонический взрыв
+	// DivineJustice.DisplayName: Божественное правосудие
 	// JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
 	// JUZenithWorldTime.DisplayName: J U Zenith World Time
-	// DecayedSeaOrb.DisplayName: Decayed Sea Orb
+	// DecayedSeaOrb.DisplayName: Разложившийся морской шар
 	// SaltationSend.DisplayName: Saltation Send
-	// SandThorn.DisplayName: Sand Thorn
+	// SandThorn.DisplayName: Песчаный шип
 	// BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
 	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
 	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
 	// EXOathblade2.DisplayName: EX Oathblade2
 	// FlawlessHeld.DisplayName: Flawless Held
 	// WastelandFangProj.DisplayName: Wasteland Fang Proj
-	// WeaverBeam.DisplayName: Weaver Beam
-	// WeaverExplode.DisplayName: Weaver Explode
+	// WeaverBeam.DisplayName: Луч Ткача
+	// WeaverExplode.DisplayName: ВзрывТкача
 	// WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
-	// GuardOfLife.DisplayName: Guard Of Life
+	// GuardOfLife.DisplayName: Защитник жизни
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
 	// RageKillerImpact.DisplayName: Rage Killer Impact
 	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
@@ -2043,30 +2042,30 @@ Biomes: {
 
 Legend: {
 	HalibutText: {
-		// Greeting0: I enjoy the atmosphere in the Abyss. Those giant creatures are actually very friendly, they’re just really shy, easily startled, and... a bit evil...
-		// Greeting1: Ah, welcome! Don't be surprised by my monocle and top hat. I’m Dr. Bigflatfish, a professor at Sulfur Sea University! Knowledge and elegance, both are essential.
-		// Greeting2: You may not have heard of Sulfur Sea University, but there, I’ve studied marine biology and abyssal botany. Oh, and I also showed off a bit in fishing competitions, winning two championships.
-		// Greeting3: Can a flounder attend university? Of course! The underwater world hides many corners of wisdom. Don’t let my leisurely swimming fool you, I always have a book in hand.
-		// Greeting4: Do you like my top hat? It’s quite stylish, isn’t it? Actually, it’s my lucky charm from the fishing competitions. It witnessed my glorious moments of winning twice!
-		// Greeting5: Abyssal botany is no small matter. Don’t underestimate those floating algae. Their stories are as profound as the starry sky. If you’re interested, I’d be happy to share some with you.
-		// Greeting6: Oh, as a fish, I’m no simple creature! Academic research, fishing contests, deep-sea adventures... I’m passionate about everything. Right now, I’m happy to chat with you.
-		// Greeting7: The title of professor is not just for show. Even sharks praise my knowledge! And, of course, my top hat is quite popular as well.
-		// Greeting8: ‘Knowledge is power,’ I firmly believe in that. Whether it’s earning my doctorate or dominating fishing competitions, it all relies on my rich brain and flexible fins!
-		// Greeting9: The underwater world is vast and unimaginably exciting. If you have time, come with me and explore the mysterious deep-sea plants. I can be your guide!
-		// Greeting10: Hey, sometimes even I can’t help but think: a flounder wearing a monocle, discussing underwater knowledge, it’s truly a wonder. But knowledge, anyone can have it, right?
-		// Greeting11: Every time I see the surprised expressions of land creatures, it’s quite amusing. There are many wise marine creatures, and I’m just one of the fish who’s ‘dressed up’ a bit.
-		// Greeting12: In addition to academic research, I enjoy observing the daily life underwater. The corals, schools of fish, and occasionally passing sea turtles, every scene is as beautiful as a natural painting.
-		// Greeting13: Winning two championships is nice, but what truly makes me proud is my love for knowledge. It’s because of this passion that I’m able to leave my small legend in the underwater world!
+		// Greeting0: Мне нравится атмосфера в Бездне. Эти гигантские существа на самом деле очень дружелюбны, просто они очень застенчивы, легко пугаются и... немного злы...
+		// Greeting1: Ах, добро пожаловать! Не удивляйтесь моему моноклю и цилиндру. Я доктор Бигфлэтфиш, профессор Университета Серного моря! Знания и элегантность — и то, и другое необходимо.
+		// Greeting2: Вы, возможно, не слышали об Университете Серного моря, но там я изучал морскую биологию и глубинную ботанику. О, и я также немного похвастался на соревнованиях по рыбной ловле, выиграв два чемпионата.
+		// Greeting3: Может ли камбала учиться в университете? Конечно! Подводный мир таит в себе множество уголков мудрости. Не позволяйте моему неторопливому плаванию обмануть вас, у меня всегда есть книга в руке.
+		// Greeting4: Вам нравится мой цилиндр? Он довольно стильный, не правда ли? На самом деле, это мой талисман с соревнований по рыбной ловле. Он был свидетелем моих славных моментов победы дважды!
+		// Greeting5: Глубинная ботаника — дело не из легких. Не стоит недооценивать эти плавающие водоросли. Их истории столь же глубоки, как и звездное небо. Если вам интересно, я с удовольствием поделюсь с вами некоторыми из них..
+		// Greeting6: О, как рыба, я не простое существо! Академические исследования, рыболовные соревнования, глубоководные приключения... Я увлечен всем. Прямо сейчас я рад пообщаться с вами.
+		// Greeting7: Звание профессора не просто для галочки. Даже акулы хвалят мои знания! И, конечно, мой цилиндр тоже весьма популярен!.
+		// Greeting8: ‘Знание - Сила,’ Я твердо верю в это. Будь то получение докторской степени или победа в соревнованиях по рыбной ловле, все зависит от моего богатого мозга и гибких плавников.!
+		// Greeting9: Подводный мир огромен и невообразимо увлекателен. Если у вас есть время, пойдемте со мной и исследуйте таинственные глубоководные растения. Я могу быть вашим гидом!
+		// Greeting10: Эй, иногда даже я не могу не думать: камбала в монокле, обсуждающая подводные знания, это действительно чудо. Но знания, они могут быть у каждого, верно??
+		// Greeting11: Каждый раз, когда я вижу удивленные выражения наземных существ, это довольно забавно. Существует множество мудрых морских существ, и я просто одна из рыб, которая немного «принарядилась».
+		// Greeting12: Помимо научных исследований, мне нравится наблюдать за повседневной жизнью под водой. Кораллы, стаи рыб и иногда проплывающие мимо морские черепахи - каждая сцена прекрасна, как картина природы.
+		// Greeting13: Победа в двух чемпионатах — это здорово, но то, чем я действительно горжусь, — это моя любовь к знаниям. Именно благодаря этой страсти я смог оставить свою маленькую легенду в подводном мире!
 
 		FishSkill: {
 			Bass: {
-				// Explain: A fish that lives in clear lake water, which has some research value. Thank you, Sir
-				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
+				// Explain: Рыба, обитающая в чистой озерной воде и представляющая определенную исследовательскую ценность. Спасибо, сэр
+				// Introduce: Это коллекция окуней доктора Флаундерса, и если ее взять с собой, доктор Флаундерс сможет запутать своих врагов в водорослях
 			}
 
 			Goldfish: {
-				// Explain: A fish that lives in clear lake water, which has some research value. Thank you, Sir
-				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
+				// Explain: Рыба, обитающая в чистой озерной воде и представляющая определенную исследовательскую ценность. Спасибо, сэр
+				// Introduce: Это коллекция окуней доктора Флаундерса, и если ее взять с собой, доктор Флаундерс сможет запутать своих врагов в водорослях
 			}
 		}
 	}
@@ -2228,21 +2227,21 @@ RemakeItems: {
 	}
 
 	BrimroseStaffRItem: {
-		DisplayName: Brimrose Staff
-		Tooltip: Fires a spread of brimstone beams
+		DisplayName: Посох Серорозы
+		Tooltip: Выпускает множество серных лучей
 	}
 
 	BurningSeaRItem: {
-		DisplayName: Burning Sea
-		Tooltip: Fires a bouncing brimstone fireball that splits into homing fireballs upon collision with water
+		DisplayName: Пылающее море
+		Tooltip: Выпускает подпрыгивающий серный огненный шар, который при столкновении с водой распадается на самонаводящиеся огненные шары
 	}
 
 	ClamorNoctusRItem: {
-		DisplayName: Clamor Noctus
+		DisplayName: Шум Ноктуса
 		Tooltip:
 			'''
-			Fires night wyverns and stars from the sky that stick to enemies and tiles and explode
-			'Let the sky fall'
+			Стреляет ночными вивернами и звездами с неба, которые прилипают и взрываются
+			'Пусть небо обрушится...'
 			'''
 	}
 
@@ -2315,13 +2314,13 @@ RemakeItems: {
 	}
 
 	EidolonStaffRItem: {
-		DisplayName: Eidolon Staff
-		Tooltip: Fires a spread of ancient light and a spinning ice cluster
+		DisplayName: Эйдолонский посох
+		Tooltip: Испускает поток древнего света и вращающийся ледяной сгусток
 	}
 
 	EldritchTomeRItem: {
-		DisplayName: Eldritch Tome
-		Tooltip: Casts eldritch tentacles to spear your enemies
+		DisplayName: Таинственный том
+		Tooltip: Выпускает жуткие щупальца, пронзающие врагов
 	}
 
 	EmeraldStaffRItem: {
@@ -2330,16 +2329,16 @@ RemakeItems: {
 	}
 
 	EternityRItem: {
-		DisplayName: Eternity
+		DisplayName: Вечность
 		Tooltip:
 			'''
-			Hexes a possible nearby enemy, trapping them in a brilliant display of destruction
-			'There's pictures of ponies in the book'
+			Проклинает возможного ближайшего врага, заманивая его в ловушку, демонстрируя блестящее разрушение.
+			'В книге есть картинки с пони!'
 			'''
 	}
 
 	EventHorizonRItem: {
-		DisplayName: Event Horizon
+		DisplayName: Горизонт событий
 		Tooltip:
 			'''
 			Fires a ring of stars to home in on nearby enemies
@@ -2442,8 +2441,8 @@ RemakeItems: {
 	}
 
 	LashesofChaosRItem: {
-		DisplayName: Lashes of Chaos
-		Tooltip: "'Watch the world burn...'"
+		DisplayName: Плети хаоса
+		Tooltip: "'Смотри, как горит мир...'"
 	}
 
 	LightGodsBrillianceRItem: {
@@ -2462,8 +2461,8 @@ RemakeItems: {
 	}
 
 	ManaRoseRItem: {
-		DisplayName: Mana Rose
-		Tooltip: Casts a mana flower that explodes into petals
+		DisplayName: Роза маны
+		Tooltip: Создает цветок маны, который разлетается на лепестки
 	}
 
 	MeteorStaffRItem: {
@@ -2511,7 +2510,7 @@ RemakeItems: {
 	}
 
 	PhotosynthesisRItem: {
-		DisplayName: Photosynthesis
+		DisplayName: Фотосинтез
 		Tooltip:
 			'''
 			Casts a brilliant ray that dissolves into energy on enemy hits
@@ -2540,7 +2539,7 @@ RemakeItems: {
 	}
 
 	PoseidonRItem: {
-		DisplayName: Poseidon
+		DisplayName: Посейдон
 		Tooltip: Casts a poseidon typhoon
 	}
 
@@ -2569,7 +2568,7 @@ RemakeItems: {
 	}
 
 	RApoctosisArray: {
-		DisplayName: Район апоптоза
+		DisplayName: Район Апоптоза
 		Tooltip:
 			'''
 			Выпускает ускоряющиеся и взрывные ионные ударные волны
@@ -2703,11 +2702,11 @@ RemakeItems: {
 	}
 
 	SerpentineRItem: {
-		DisplayName: Serpentine
+		DisplayName: Змеевик
 		Tooltip:
 			'''
-			Casts a serpent that follows the mouse cursor
-			Ignores 15 points of enemy Defense
+			Создает змею, которая следует за курсором
+			Игнорирует 15 ед. защиты противника
 			'''
 	}
 
@@ -2732,8 +2731,8 @@ RemakeItems: {
 	}
 
 	SkyGlazeRItem: {
-		DisplayName: Sky Glaze
-		Tooltip: Fires feathers from the sky that stick to enemies and tiles and explode
+		DisplayName: Небесная глазурь
+		Tooltip: Стреляет перьями с неба, которые прилипают и взрываются
 	}
 
 	SlitheringEelsRItem: {
@@ -2762,8 +2761,8 @@ RemakeItems: {
 	}
 
 	StarShowerRItem: {
-		DisplayName: Star Shower
-		Tooltip: Casts a spread of astral stars from the sky that converge at the cursor
+		DisplayName: Звездный дождь
+		Tooltip: Создает с неба ряд астральных звезд, которые сходятся в точке курсора
 	}
 
 	SubsumingVortexRItem: {
@@ -2873,8 +2872,8 @@ RemakeItems: {
 	}
 
 	ValkyrieRayRItem: {
-		DisplayName: Valkyrie Ray
-		Tooltip: Casts a devastating ray of holy power
+		DisplayName: Луч Валькирии
+		Tooltip: Выпускает разрушительный луч святой силы
 	}
 
 	VeeringWindRItem: {
@@ -2941,11 +2940,11 @@ RemakeItems: {
 	}
 
 	WyvernsCallRItem: {
-		DisplayName: Wyvern's Call
+		DisplayName: Зов Виверны
 		Tooltip:
 			'''
-			Fires wyverns and colored feathers from the sky that stick to enemies and tiles and explode
-			'I call upon the mythical Wyvern to shower the lands with its grace'
+			Выпускает с неба виверн и цветные перья, которые прилипают и взрываются.
+			'Я призываю мифическую Виверну осыпать эти земли своей милостью'
 			'''
 	}
 
