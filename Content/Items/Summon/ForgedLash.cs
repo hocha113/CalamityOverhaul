@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         public override void SetDefaults() {
             Item.width = 16;
             Item.height = 16;
-            Item.damage = 182;
+            Item.damage = 122;
             Item.useTime = Item.useAnimation = 10;
             Item.noMelee = true;
             Item.noUseGraphic = true;

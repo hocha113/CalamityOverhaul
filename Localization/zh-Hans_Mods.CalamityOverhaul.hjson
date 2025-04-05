@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -861,10 +861,7 @@ Items: {
 
 	ForgedLashEX: {
 		DisplayName: 锻钢之鞭EX
-		Tooltip:
-			'''
-			在鞭打过程中释放追踪的热力球
-			'''
+		Tooltip: 在鞭打过程中释放追踪的热力球
 	}
 
 	SoulofFrightEX: {

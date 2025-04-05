@@ -823,6 +823,7 @@ Items: {
 			'''
 			Summons a miniature Destroyer to fight for you
 			The higher the summon limit, the stronger the Destroyer
+			At least four summoning slots are required
 			''' */
 	}
 
