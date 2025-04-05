@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.TileModify.Core;
@@ -26,10 +25,7 @@ namespace CalamityOverhaul
         public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
 
-            if (type == CWRMessageType.TungstenRiot) {
-                TungstenRiot.EventNetWorkReceive(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.OverBeatBack) {
+            if (type == CWRMessageType.OverBeatBack) {
                 CWRNpc.OtherBeatBackReceive(reader, whoAmI);
             }
             else if (type == CWRMessageType.NPCOverrideAI) {

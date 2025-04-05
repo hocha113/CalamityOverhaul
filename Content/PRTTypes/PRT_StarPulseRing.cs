@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
-using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
@@ -36,7 +35,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {
-            float pulseProgress = PiecewiseAnimation(LifetimeCompletion, [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]);
+            float pulseProgress = LifetimeCompletion;
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
             Opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);

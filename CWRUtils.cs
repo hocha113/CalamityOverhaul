@@ -3,7 +3,6 @@ using CalamityMod.Events;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -17,18 +16,17 @@ using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul
 {
     public static class CWRUtils
     {
         #region System
-        public static LocalizedText SafeGetItemName<T>() where T : ModItem => GetItemName<T>();
+        public static LocalizedText SafeGetItemName<T>() where T : ModItem => SafeGetItemName(ModContent.ItemType<T>());
 
         public static LocalizedText SafeGetItemName(int id) {
             ModItem item = ItemLoader.GetItem(id);
-            if (item == null) {
+            if (item == null || item.Type == ItemID.None) {
                 return CWRLocText.GetText("None");
             }
             return item.GetLocalization("DisplayName");
@@ -503,8 +501,7 @@ namespace CalamityOverhaul
         /// 是否处于入侵期间
         /// </summary>
         public static bool Invasion => Main.invasionType > 0 || Main.pumpkinMoon
-                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
-                || TungstenRiot.Instance.TungstenRiotIsOngoing;
+                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing;
         /// <summary>
         /// 是否处于愚人节
         /// </summary>
