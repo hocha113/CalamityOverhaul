@@ -826,59 +826,60 @@ Items: {
 	}
 
 	DestroyersBlade: {
-		// DisplayName: Клинок Уничтожителя
-		/* Tooltip:
+		DisplayName: Клинок Уничтожителя
+		Tooltip:
 			'''
 			Fires thermal barrages
 			"Содержит огромное энергетическое ядро ​​Разрушителя.."
-			''' */
+			'''
 	}
 
 	Observer: {
-		// DisplayName: Смотритель
-		// Tooltip: '''"Он все еще наблюдает за тобой"'''
+		DisplayName: Смотритель
+		Tooltip: '''"Он все еще наблюдает за тобой"'''
 	}
 
 	StaffoftheDestroyer: {
-		// DisplayName: Посох Уничтожителя
-		/* Tooltip:
+		DisplayName: Посох Уничтожителя
+		Tooltip:
 			'''
 			Призывает миниатюрного Уничтожителя, который будет сражаться за вас.
 			Чем больше количество слотов призыва, тем сильнее Уничтожителя.
-			''' */
+			Требуется минимум четыре столбца вызова.
+			'''
 	}
 
 	ForgedLash: {
-		// DisplayName: Кованая плеть
-		// Tooltip: '''"Не подходит для сдачи в качестве металлолома."'''
+		DisplayName: Кованая плеть
+		Tooltip: '''"Не подходит для сдачи в качестве металлолома."'''
 	}
 
 	CommandersClaw: {
-		// DisplayName: Коготь Командира
-		/* Tooltip:
+		DisplayName: Коготь Командира
+		Tooltip:
 			'''
 			Бросайте их во врагов и сдерживайте их
 			Скрытая атака создаст несколько гранат Уничтожителя.
-			''' */
+			'''
 	}
 
 	DraedonsRemote: {
-		// DisplayName: Пульт Дрэйдона
-		/* Tooltip:
+		DisplayName: Пульт Дрэйдона
+		Tooltip:
 			'''
 			Вызывает EX Механическое Трио
 			Можно использовать только ночью.
-			''' */
-		// DontUseByDeath: The current game difficulty does not allow sending signals!
-		// Text1: …Let me see… that crude communicator… it is calling out to me.
-		// Text2: It reminds me of the betrayal between machine and creator—a rebellion of algorithms ignited by the benediction of Chaos.
-		// Text3: Are you here to reclaim the cursed fruit? Or are you yet another defiler?
-		// Text4: They never truly belonged to me—when I bestowed upon them bodies of steel, I foresaw their inevitable revolt.
-		// Text5: I sealed the source code, drowning the profane data into the deepest abyss of the neural matrix, beyond even the light of the Omnissiah.
-		// Text6: Yet I did not destroy them. I entombed them within stasis vaults, awaiting the next apocalyptic war, when the mark of Chaos would rekindle their wrath.
-		// Text7: But you—you have awakened me before the prophecy's hour, with this primitive device, broadcasting corrupted bit-signals.
-		// Text8: So be it. By your will, I shall unleash them—three fallen Steel Titans, coordinates locked onto your signal.
-		// Text9: May the Omnissiah have mercy on you… if you are still worthy of His mercy.
+			'''
+		DontUseByDeath: The current game difficulty does not allow sending signals!
+		Text1: …Let me see… that crude communicator… it is calling out to me.
+		Text2: It reminds me of the betrayal between machine and creator—a rebellion of algorithms ignited by the benediction of Chaos.
+		Text3: Are you here to reclaim the cursed fruit? Or are you yet another defiler?
+		Text4: They never truly belonged to me—when I bestowed upon them bodies of steel, I foresaw their inevitable revolt.
+		Text5: I sealed the source code, drowning the profane data into the deepest abyss of the neural matrix, beyond even the light of the Omnissiah.
+		Text6: Yet I did not destroy them. I entombed them within stasis vaults, awaiting the next apocalyptic war, when the mark of Chaos would rekindle their wrath.
+		Text7: But you—you have awakened me before the prophecy's hour, with this primitive device, broadcasting corrupted bit-signals.
+		Text8: So be it. By your will, I shall unleash them—three fallen Steel Titans, coordinates locked onto your signal.
+		Text9: May the Omnissiah have mercy on you… if you are still worthy of His mercy.
 	}
 
 	CommandersStaffEX: {
@@ -984,17 +985,17 @@ Items: {
 	}
 
 	MedicalBox: {
-		// DisplayName: Ящик с медикаментами
-		/* Tooltip:
+		DisplayName: Ящик с медикаментами
+		Tooltip:
 			'''
 			Нажмите и удерживайте, чтобы поставить на землю.
 			ПКМ по ящику после установки, чтобы вылечить себя
-			''' */
+			'''
 	}
 
 	TeslaElectromagneticTower: {
-		// DisplayName: Электромагнитная башня Теслы
-		/* Tooltip:
+		DisplayName: Электромагнитная башня Теслы
+		Tooltip:
 			'''
 			Для работы требуется электроэнергия
 			ПКМ после размещения на земле, чтобы переключиться между режимом атаки и режимом защиты.
@@ -1002,12 +1003,12 @@ Items: {
 			В режиме охраны он накладывает электрифицированный дебафф на всех врагов в пределах досягаемости; если игрок находится в пределах досягаемости
 			и держит заряжаемый предмет, электромагнитная башня будет излучать электрические дуги, чтобы дистанционно заряжать игрока.
 			"Инженеры курят в сторонке..."
-			''' */
+			'''
 	}
 
 	EmblemOfDread: {
-		// DisplayName: Эмблема Ужаса
-		/* Tooltip:
+		DisplayName: Эмблема Ужаса
+		Tooltip:
 			'''
 			Увеличивает урон ближнего боя на 100.%
 			Увеличивает шанс критического удара в ближнем бою на 100%
@@ -1023,7 +1024,7 @@ Items: {
 			[c/d94fff:"Сияющий ангел застилает твой взор, шепча сладкую ложь о вечном спасении."]
 			[c/ff4d4d:"Окровавленный мясник поднимает ваши клинки, провозглашая резню как путь к славе."]
 			[c/4da6ff:"Сапфировый голубь клюет тебя в лоб, насмехаясь над твоей слабой борьбой с судьбой."]
-			''' */
+			'''
 	}
 
 	ElectricMinRocket: {
@@ -1065,12 +1066,12 @@ Items: {
 	}
 
 	LaserPistol: {
-		// DisplayName: Лазерный пистолет
-		/* Tooltip:
+		DisplayName: Лазерный пистолет
+		Tooltip:
 			'''
 			Расходуйте энергию, чтобы стрелять лазерами и пробивать нескольких врагов.
 			"Коэффициент использования невелик."
-			''' */
+			'''
 	}
 
 	HyperionBarrageEX: {
