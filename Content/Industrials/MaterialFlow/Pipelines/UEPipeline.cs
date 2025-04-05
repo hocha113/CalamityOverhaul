@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             CreateRecipe(333).
                 AddIngredient<DubiousPlating>(5).
                 AddIngredient<MysteriousCircuitry>(5).
-                AddIngredient(ItemID.CopperBar, 5).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
         }

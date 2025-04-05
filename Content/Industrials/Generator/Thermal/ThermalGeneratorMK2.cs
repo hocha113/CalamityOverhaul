@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             CreateRecipe().
                 AddIngredient<ThermalGenerator>().
                 AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddIngredient(ItemID.GoldBar, 10).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
                 AddIngredient<DubiousPlating>(20).
                 AddIngredient<MysteriousCircuitry>(20).
                 AddTile(TileID.MythrilAnvil).

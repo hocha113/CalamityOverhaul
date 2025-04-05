@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.TileModify.Core
             }
 
             ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.KillTE);
+            modPacket.Write((byte)CWRMessageType.KillTileEntity);
             modPacket.WritePoint16(te.Position);
             modPacket.Send();
         }
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.TileModify.Core
             KillTE((ModTileEntity)te);
             if (VaultUtils.isServer) {
                 ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.KillTE);
+                modPacket.Write((byte)CWRMessageType.KillTileEntity);
                 modPacket.WritePoint16(te.Position);
                 modPacket.Send(-1, whoAmI);
             }

@@ -60,8 +60,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             CreateRecipe().
                 AddIngredient<DubiousPlating>(8).
                 AddIngredient<MysteriousCircuitry>(8).
-                AddIngredient(ItemID.CopperBar, 15).
-                AddIngredient(ItemID.IronBar, 5).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
+                AddRecipeGroup(RecipeGroupID.IronBar, 5).
                 AddCondition(WindGrivenRecipeCondition(out var condition), condition).
                 AddTile(TileID.Anvils).
                 Register();

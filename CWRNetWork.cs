@@ -17,7 +17,7 @@ namespace CalamityOverhaul
         ModifiIntercept_EnterWorld_Request,
         ModifiIntercept_EnterWorld_ToClient,
         NPCbasicData,
-        KillTE,
+        KillTileEntity,
     }
 
     public class CWRNetWork : ICWRLoader
@@ -46,7 +46,7 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.NPCbasicData) {
                 NPCSystem.NPCbasicDataHandler(reader);
             }
-            else if (type == CWRMessageType.KillTE) {
+            else if (type == CWRMessageType.KillTileEntity) {
                 TileModifyLoader.HandlerNetKillTE(reader, whoAmI);
             }
         }

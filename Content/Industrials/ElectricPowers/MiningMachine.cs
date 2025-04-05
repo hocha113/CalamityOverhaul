@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient(ItemID.IronBar, 15).
-                AddIngredient(ItemID.IronPickaxe, 1).
+                AddRecipeGroup(RecipeGroupID.IronBar, 15).
+                AddRecipeGroup(CWRRecipes.IronPickaxeGroup).
                 AddIngredient<DubiousPlating>(5).
                 AddIngredient<MysteriousCircuitry>(5).
                 AddTile(TileID.Anvils).

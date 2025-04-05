@@ -9,14 +9,15 @@ using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -99,12 +100,6 @@ namespace CalamityOverhaul.Content
         private float oldNPCRot;
         private float npcRotUpdateSengs;
         private int halibutAmmoTime;
-        public override void SetDefaults(Projectile projectile) {
-            if (projectile.type == ProjectileID.Meowmere) {
-                projectile.timeLeft = 160;
-                projectile.penetrate = 2;
-            }
-        }
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
@@ -193,11 +188,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAI(Projectile projectile) {
-            if (projectile.type == ProjectileID.Meowmere) {
-                projectile.velocity.X *= 0.98f;
-                projectile.velocity.Y += 0.01f;
-            }
-
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
@@ -217,7 +207,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {
-            RMeowmere.SpanDust(projectile, 0.2f);
             if (projectile.IsOwnedByLocalPlayer()) {
                 if (!projectile.friendly) {
                     return;
@@ -247,7 +236,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnHitPlayer(Projectile projectile, Player target, Player.HurtInfo info) {
-            RMeowmere.SpanDust(projectile);
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 target.AddBuff(70, 60);
             }
@@ -723,23 +711,6 @@ namespace CalamityOverhaul.Content
             WhipHit(projectile, target);
             SpanTypesOnHitNPC(player, projectile, target, hit);
             SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
-            RMeowmere.SpanDust(projectile);
-            JusticeUnveiled.OnHitNPCSpwanProj(player, projectile, target, hit);
         }
-
-        //public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-        //    //drawProjName(projectile);
-        //    return base.PreDraw(projectile, ref lightColor);
-        //}
-
-        //public void drawProjName(Projectile projectile) {
-        //    Vector2 pos = projectile.Center - Main.screenPosition;
-        //    string name = projectile.ToString();
-        //    if (projectile.ModProjectile != null) {
-        //        name = projectile.ModProjectile.FullName;
-        //    }
-        //    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value
-        //        , name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-        //}
     }
 }

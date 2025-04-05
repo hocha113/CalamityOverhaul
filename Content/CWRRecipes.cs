@@ -33,6 +33,10 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup ARGroup;
         public static RecipeGroup GodDWGroup;
         public static RecipeGroup FishGroup;
+        public static RecipeGroup IronPickaxeGroup;
+        public static RecipeGroup TinBarGroup;
+        public static RecipeGroup TungstenBarGroup;
+        public static RecipeGroup GoldBarGroup;
         public static RecipeGroup AdamantiteBarGroup;
         public static RecipeGroup MythrilBarGroup;
         public static int[] Gemstones;
@@ -649,6 +653,34 @@ namespace CalamityOverhaul.Content
         }
 
         public override void AddRecipeGroups() {
+            IronPickaxeGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.IronPickaxe)}",
+            [
+                ItemID.IronPickaxe,
+                ItemID.LeadPickaxe,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:IronPickaxeGroup", IronPickaxeGroup);
+
+            TinBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.TinBar)}",
+            [
+                ItemID.TinBar,
+                ItemID.CopperBar,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:TinBarGroup", TinBarGroup);
+
+            TungstenBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.TungstenBar)}",
+            [
+                ItemID.TungstenBar,
+                ItemID.SilverBar,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:TungstenBarGroup", TungstenBarGroup);
+
+            GoldBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.GoldBar)}",
+            [
+                ItemID.GoldBar,
+                ItemID.PlatinumBar,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:GoldBarGroup", GoldBarGroup);
+
             AdamantiteBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.AdamantiteBar)}",
             [
                 ItemID.AdamantiteBar,

@@ -107,24 +107,33 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public static void OnHitNPCSpwanProj(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
-            if (SpwanBool(player, projectile, target, hit)) {
-                if (Main.zenithWorld && projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
-                    foreach (var npc in Main.ActiveNPCs) {
-                        if (npc.friendly) {
-                            continue;
-                        }
-                        Projectile.NewProjectile(player.FromObjectGetParent()
-                        , npc.Center + new Vector2(0, -1120), new Vector2(0, 6)
-                        , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, npc.whoAmI);
-                    }
-                    return;
-                }
-                else {
-                    Projectile.NewProjectile(player.FromObjectGetParent()
-                    , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
-                    , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, target.whoAmI);
-                }
+            if (!SpwanBool(player, projectile, target, hit)) {
+                return;
             }
+
+            if (Main.zenithWorld && projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
+                foreach (var npc in Main.ActiveNPCs) {
+                    if (npc.friendly) {
+                        continue;
+                    }
+                    Projectile.NewProjectile(player.FromObjectGetParent()
+                    , npc.Center + new Vector2(0, -1120), new Vector2(0, 6)
+                    , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, npc.whoAmI);
+                }
+                return;
+            }
+            else {
+                Projectile.NewProjectile(player.FromObjectGetParent()
+                , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
+                , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, target.whoAmI);
+            }
+        }
+    }
+
+    internal class JusticeUnveiledGlobalHit : GlobalProjectile
+    {
+        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
+            JusticeUnveiled.OnHitNPCSpwanProj(Main.player[projectile.owner], projectile, target, hit);
         }
     }
 

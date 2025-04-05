@@ -44,8 +44,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             CreateRecipe().
                 AddIngredient<DubiousPlating>(5).
                 AddIngredient<MysteriousCircuitry>(4).
-                AddIngredient(ItemID.CopperBar, 2).
-                AddIngredient(ItemID.GoldBar, 2).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 2).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
         }
