@@ -4728,15 +4728,6 @@ RemakeItems: {
 		Tooltip: Linksklick feuert Sandspringer ab, Rechtklick feuert springende Sandspringer ab, Schleichangriffe lassen schnelle Sandspringer vom Himmel fallen
 	}
 
-	RRustyMedallion: {
-		DisplayName: Rusty Medallion
-		Tooltip:
-			'''
-			Causes most ranged weapons to release acid droplets from the sky
-			Grants immunity to Irradiated
-			'''
-	}
-
 	RWarbanneroftheSun: {
 		DisplayName: Warbanner of the Sun
 		Tooltip:

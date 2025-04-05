@@ -62,7 +62,6 @@
     <None Remove="Assets\Masking\Streak3.png" />
     <None Remove="Assets\Masking\Wave.png" />
     <None Remove="Assets\Masking\WavyNoise.png" />
-    <None Remove="Assets\Projectiles\AcidEtchedTearDrop.png" />
     <None Remove="Assets\Projectiles\DeathLaser.png" />
     <None Remove="Assets\Projectiles\Ranged\TurbulenceArrowHighlight.png" />
     <None Remove="Assets\Projectiles\Ranged\TurbulenceFlow.png" />

@@ -253,6 +253,10 @@ namespace CalamityOverhaul.Content
                 item.knockBack = 2;
                 item.useStyle = ItemUseStyleID.Swing;
             }
+            else if (type == ItemID.Coal) {
+                item.maxStack = 9999;
+                item.value = Item.buyPrice(0, 0, 0, 15);
+            }
         }
         //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
         public override void SetDefaults(Item item) { }

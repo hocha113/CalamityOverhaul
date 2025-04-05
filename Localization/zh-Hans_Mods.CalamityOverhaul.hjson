@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -4723,15 +4723,6 @@ RemakeItems: {
 			'''
 			左键发射在沙地中潜跃的沙牙，潜行攻击发射三发巨大的沙牙
 			右键发射弹跳沙牙，潜行攻击令数个疾速的沙牙从天而降
-			'''
-	}
-
-	RRustyMedallion: {
-		DisplayName: 锈蚀勋章
-		Tooltip:
-			'''
-			让大多数远程武器攻击时在空中释放酸性液滴
-			使你免疫辐射减益
 			'''
 	}
 

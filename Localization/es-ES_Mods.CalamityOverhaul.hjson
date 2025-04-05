@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -4713,15 +4713,6 @@ RemakeItems: {
 			'''
 			Clic izquierdo lanza dientes de arena que saltan en la arena, un ataque furtivo lanza tres grandes dientes de arena.
 			Clic derecho lanza dientes de arena rebotantes, un ataque furtivo hace caer varios dientes de arena rápidos del cielo.
-			'''
-	}
-
-	RRustyMedallion: {
-		DisplayName: Rusty Medallion
-		Tooltip:
-			'''
-			Causes most ranged weapons to release acid droplets from the sky
-			Grants immunity to Irradiated
 			'''
 	}
 

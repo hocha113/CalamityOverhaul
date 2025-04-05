@@ -445,6 +445,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         internal void ItemLoaderInFireSetBaver() {
+            if (!PlayerLoader.Shoot(Owner, Item, Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
+                return;
+            }
+
             foreach (var g in RangedLoader.ItemLoader_CanUse_Hook.Enumerate(Item)) {
                 g.CanUseItem(Item, Owner);
             }

@@ -346,25 +346,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        internal void RustyMedallionEffect(Player player, Projectile projectile) {
-            if (player.CWR().RustyMedallion_Value && Source != null) {
-                if (player.ownedProjectileCounts[ModContent.ProjectileType<AcidEtchedTearDrop>()] < 8) {
-                    if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
-                        Vector2 startingPosition = Main.MouseWorld - Vector2.UnitY.RotatedByRandom(0.4f) * 1250f;
-                        Vector2 directionToMouse = (Main.MouseWorld - startingPosition).SafeNormalize(Vector2.UnitY).RotatedByRandom(0.1f);
-                        int newdamage = projectile.damage;
-                        newdamage /= 6;
-                        int drop = Projectile.NewProjectile(projectile.GetSource_FromAI(), startingPosition, directionToMouse * 15f
-                            , ModContent.ProjectileType<AcidEtchedTearDrop>(), newdamage, 0f, player.whoAmI);
-                        if (drop.WithinBounds(Main.maxProjectiles)) {
-                            Main.projectile[drop].penetrate = 2;
-                            Main.projectile[drop].DamageType = DamageClass.Generic;
-                        }
-                    }
-                }
-            }
-        }
-
         internal void SpanTypesOnHitNPC(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             switch ((SpanTypesEnum)SpanTypes) {
                 case SpanTypesEnum.DeadWing: {
@@ -740,7 +721,6 @@ namespace CalamityOverhaul.Content
             ViscositySD(projectile, target);
             SuperAttackOnHitNPC(projectile, target);
             WhipHit(projectile, target);
-            RustyMedallionEffect(player, projectile);
             SpanTypesOnHitNPC(player, projectile, target, hit);
             SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
             RMeowmere.SpanDust(projectile);
