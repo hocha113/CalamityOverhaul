@@ -113,6 +113,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (Projectile.localAI[0] == 0) {
                 Projectile.velocity = new Vector2(0, -6);
             }
+
+            if (!Main.player[Projectile.owner].Alives()) {
+                Projectile.active = false;
+                return;
+            }
             
             if (!Main.dedServ) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
@@ -130,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 //这导致服务器生成的时候标签已经被关闭了，所以需要一个时间锁
                 CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇捣的鬼
 
-                if (CWRWorld.MachineRebellionDowned) {//如果已经打败了机械暴乱就不要再过剧情了
+                if (CWRWorld.MachineRebellionDowned && Main.player[Projectile.owner].CWR().DefeatByDraedonsRemote) {//如果已经打败了机械暴乱就不要再过剧情了
                     Projectile.Kill();
                     Projectile.netUpdate = true;
                 }
@@ -144,35 +149,37 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Projectile.ChasingBehavior(Main.player[Projectile.owner].Center + new Vector2(0, -300), 23, 32);
             }
 
-            Color textColor = Color.Gray;
-            switch (Projectile.localAI[0]) {
-                case 1:
-                    VaultUtils.Text(DraedonsRemote.Text1.Value, textColor);
-                    break;
-                case 200:
-                    VaultUtils.Text(DraedonsRemote.Text2.Value, textColor);
-                    break;
-                case 400:
-                    VaultUtils.Text(DraedonsRemote.Text3.Value, textColor);
-                    break;
-                case 600:
-                    VaultUtils.Text(DraedonsRemote.Text4.Value, textColor);
-                    break;
-                case 800:
-                    VaultUtils.Text(DraedonsRemote.Text5.Value, textColor);
-                    break;
-                case 1000:
-                    VaultUtils.Text(DraedonsRemote.Text6.Value, textColor);
-                    break;
-                case 1200:
-                    VaultUtils.Text(DraedonsRemote.Text7.Value, textColor);
-                    break;
-                case 1400:
-                    VaultUtils.Text(DraedonsRemote.Text8.Value, textColor);
-                    break;
-                case 1600:
-                    VaultUtils.Text(DraedonsRemote.Text9.Value, textColor);
-                    break;
+            if (!VaultUtils.isClient) {
+                Color textColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Gray, Color.AliceBlue);
+                switch (Projectile.localAI[0]) {
+                    case 1:
+                        VaultUtils.Text(DraedonsRemote.Text1.Value, textColor);
+                        break;
+                    case 200:
+                        VaultUtils.Text(DraedonsRemote.Text2.Value, textColor);
+                        break;
+                    case 400:
+                        VaultUtils.Text(DraedonsRemote.Text3.Value, textColor);
+                        break;
+                    case 600:
+                        VaultUtils.Text(DraedonsRemote.Text4.Value, textColor);
+                        break;
+                    case 800:
+                        VaultUtils.Text(DraedonsRemote.Text5.Value, textColor);
+                        break;
+                    case 1000:
+                        VaultUtils.Text(DraedonsRemote.Text6.Value, textColor);
+                        break;
+                    case 1200:
+                        VaultUtils.Text(DraedonsRemote.Text7.Value, textColor);
+                        break;
+                    case 1400:
+                        VaultUtils.Text(DraedonsRemote.Text8.Value, textColor);
+                        break;
+                    case 1600:
+                        VaultUtils.Text(DraedonsRemote.Text9.Value, textColor);
+                        break;
+                }
             }
 
             Projectile.localAI[1]++;
