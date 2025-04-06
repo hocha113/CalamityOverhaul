@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override void SetTurret() {
             FireTime = 10;
             Damage = 24;
+            MaxFindMode = 320;
             SingleEnergyConsumption = 4;
             ShootID = ModContent.ProjectileType<FireShotBuffer>();
         }

@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content.Industrials
         /// </summary>
         public float SingleEnergyConsumption = 20;
         /// <summary>
+        /// 寻敌范围，默认为700
+        /// </summary>
+        public int MaxFindMode = 700;
+        /// <summary>
         /// 要发射的射弹
         /// </summary>
         public int ShootID;
@@ -147,14 +151,14 @@ namespace CalamityOverhaul.Content.Industrials
             CanFire = false;
             BatteryLow = false;
             if (Friend) {
-                TargetByNPC = Center.FindClosestNPC(700, false, true);
+                TargetByNPC = Center.FindClosestNPC(MaxFindMode, false, true);
                 if (TargetByNPC != null) {
                     TargetCenter = TargetByNPC.Center;
                     CanFire = true;
                 }
             }
             else {
-                TargetByPlayer = CWRUtils.InPosFindPlayer(Center, 700);
+                TargetByPlayer = CWRUtils.InPosFindPlayer(Center, MaxFindMode);
                 if (TargetByPlayer != null) {
                     TargetCenter = TargetByPlayer.Center;
                     CanFire = true;

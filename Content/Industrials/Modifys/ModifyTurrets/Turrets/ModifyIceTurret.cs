@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override int TargetItem => ModContent.ItemType<HostileIceTurret>();
         public override void SetTurret() {
             Damage = 24;
+            MaxFindMode = 200;
             ShootID = ModContent.ProjectileType<IceShotBuffer>();
             BarrelOffsetY = -4;
             BarrelOffsetX = 22;

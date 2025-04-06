@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets.Turrets
         public override int TargetItem => ModContent.ItemType<HostileOnyxTurret>();
         public override void SetTurret() {
             Damage = 24;
+            MaxFindMode = 500;
             ShootID = ModContent.ProjectileType<OnyxShotBuffer>();
             BarrelOffsetY = 2;
             BarrelOffsetX = 22;
