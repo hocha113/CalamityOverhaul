@@ -1359,7 +1359,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 foreach (var player in Main.ActivePlayers) {
-                    player.CWR().DefeatByDraedonsRemote = true;
+                    //player.CWR().DefeatByDraedonsRemote = true;
                 }
             }
             return base.On_PreKill();
