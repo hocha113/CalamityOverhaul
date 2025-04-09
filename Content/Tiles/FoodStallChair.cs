@@ -39,8 +39,23 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
+            Tile tile = Framing.GetTileSafely(i, j);
+            info.ExtraInfo.IsAToilet = true;
+            info.TargetDirection = Main.LocalPlayer.direction;
+            int xPos = tile.TileFrameX / 18;
+            if (xPos == 1) {
+                i--;
+            }
+            if (xPos == 2) {
+                i++;
+            }
+
             info.AnchorTilePosition.X = i;
             info.AnchorTilePosition.Y = j;
+
+            if (tile.TileFrameY % 40 == 0) {
+                info.AnchorTilePosition.Y++;
+            }
         }
 
         public override bool RightClick(int i, int j) {

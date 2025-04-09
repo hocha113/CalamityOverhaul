@@ -28,7 +28,7 @@
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Remove="0.6.0.6.9.txt" />
+    <AdditionalFiles Remove="0.6.0.7.4.txt" />
     <AdditionalFiles Remove="Assets\Projectiles\GostFire.png" />
   </ItemGroup>
   <ItemGroup>

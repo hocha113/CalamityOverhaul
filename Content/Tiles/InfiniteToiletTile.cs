@@ -1,6 +1,5 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Magic;
+﻿using CalamityMod.NPCs.TownNPCs;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Items.Placeable;
 using Terraria;
 using Terraria.DataStructures;
@@ -54,11 +53,49 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
-        public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) => CalamityUtils.ChairSitInfo(i, j, ref info, 40, true, shitter: true);
+        public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
+            Tile tile = Framing.GetTileSafely(i, j);
+            bool frameCheck = tile.TileFrameX >= 35;
+            info.ExtraInfo.IsAToilet = true;
+            info.TargetDirection = -1;
+            if (frameCheck) {
+                info.TargetDirection = 1;
+            }
 
-        public override bool RightClick(int i, int j) => CalamityUtils.ChairRightClick(i, j);
+            int xPos = tile.TileFrameX / 18;
+            if (xPos == 1) {
+                i--;
+            }
+            if (xPos == 2) {
+                i++;
+            }
 
-        public override void MouseOver(int i, int j) => CalamityUtils.ChairMouseOver(i, j, ModContent.ItemType<InfiniteToiletItem>(), true);
+            info.AnchorTilePosition.X = i + (frameCheck ? -1 : 1);
+            info.AnchorTilePosition.Y = j;
+
+            if (tile.TileFrameY % 40 == 0) {
+                info.AnchorTilePosition.Y++;
+            }
+        }
+
+        public override bool RightClick(int i, int j) {
+            Player player = Main.LocalPlayer;
+
+            if (player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance)) {
+                player.GamepadEnableGrappleCooldown();
+                player.sitting.SitDown(player, i, j);
+            }
+
+            return base.RightClick(i, j);
+        }
+
+        public override void MouseOver(int i, int j) {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.mouseInterface = true;
+            player.cursorItemIconEnabled = true;
+            player.cursorItemIconID = ModContent.ItemType<InfiniteToiletItem>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+        }
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);
 
@@ -71,19 +108,7 @@ namespace CalamityOverhaul.Content.Tiles
             Wiring.SkipWire(spawnX, spawnY);
             Wiring.SkipWire(spawnX, spawnY + 1);
 
-            if (Wiring.CheckMech(spawnX, spawnY, 60)) {
-                for (int n = 0; n < Main.rand.Next(3, 6); n++) {
-                    Vector2 pos = new Vector2(spawnX, spawnY) * 16;
-                    Vector2 vr = Main.rand.NextVector2Unit() * Main.rand.Next(13, 17);
-                    Projectile.NewProjectile(Wiring.GetProjectileSource(spawnX, spawnY), spawnX * 16 + 8, spawnY * 16 + 12, vr.X, vr.Y, ModContent.ProjectileType<RainbowComet>(), 9999, 9, Main.LocalPlayer.whoAmI);
-                    for (int z = 0; z < 333; z++) {
-                        Vector2 vector = vr * Main.rand.Next(1, 17);
-                        float slp = Main.rand.NextFloat(0.5f, 0.9f);
-                        GeneralParticleHandler.SpawnParticle(new FlareShine(pos + Main.rand.NextVector2Unit() * 13, vector, Color.White, Main.DiscoColor
-                            , 0f, new Vector2(0.6f, 1f) * slp, new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2));
-                    }
-                }
-            }
+            if (Wiring.CheckMech(spawnX, spawnY, 60)) { }
         }
     }
 }
