@@ -566,8 +566,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (!VaultUtils.isClient) {
-                VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Retinazer, false);
-                VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Spazmatism, false);
+                VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Retinazer, false);
+                VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Spazmatism, false);
             }
         }
 

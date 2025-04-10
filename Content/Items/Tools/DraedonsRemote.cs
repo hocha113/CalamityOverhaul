@@ -201,10 +201,10 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.SkeletronPrime, false);
-            VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Retinazer, false);
-            VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.Spazmatism, false);
-            VaultUtils.SpawnBossNetcoded(Main.LocalPlayer, NPCID.TheDestroyer, false);
+            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.SkeletronPrime, false);
+            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Retinazer, false);
+            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Spazmatism, false);
+            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.TheDestroyer, false);
         }
 
         public override bool PreDraw(ref Color lightColor) {
