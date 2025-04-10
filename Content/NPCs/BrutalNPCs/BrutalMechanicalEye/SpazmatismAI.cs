@@ -704,6 +704,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return true;
         }
 
+        private void FindPlayer() {
+            if (player.Alives()) {
+                return;
+            }
+            npc.TargetClosest();
+            player = Main.player[npc.target];
+        }
+
         public override bool AI() {
             if (++frameCount > 5) {
                 if (++frameIndex > 3) {
@@ -713,6 +721,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
             npc.dontTakeDamage = false;
             npc.spriteDirection = Math.Sign((npc.rotation + MathHelper.PiOver2).ToRotationVector2().X);
+
+            FindPlayer();
 
             if (AccompanyAI()) {
                 return false;

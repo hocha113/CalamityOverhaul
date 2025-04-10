@@ -113,13 +113,18 @@ namespace CalamityOverhaul.Content.Items.Tools
             Projectile.height = 46;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 1680;
+            Projectile.timeLeft = CWRWorld.MachineRebellionDowned ? 180 : 1680;//如果已经打败了机械暴乱就不要再过剧情了
         }
 
         public override void AI() {
-            if (Projectile.localAI[0] == 0) {
+            if (Projectile.ai[0] == 0) {
                 Projectile.velocity = new Vector2(0, -6);
             }
+
+            CWRWorld.MachineRebellion = true;
+            //设置成1秒的锁定时间，因为服务器那边的生成是请求状态，大概会有一帧到两帧的广播延迟
+            //这导致服务器生成的时候标签已经被关闭了，所以需要一个时间锁
+            CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇捣的鬼
 
             if (!Main.player[Projectile.owner].Alives()) {
                 Projectile.active = false;
@@ -128,69 +133,49 @@ namespace CalamityOverhaul.Content.Items.Tools
             
             if (!Main.dedServ) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
-                    , Projectile.localAI[0] < 180 ? DustID.Electric : DustID.RedTorch);
-                Main.dust[dust].noGravity = Projectile.localAI[0] < 180;
+                    , Projectile.ai[0] < 180 ? DustID.Electric : DustID.RedTorch);
+                Main.dust[dust].noGravity = Projectile.ai[0] < 180;
             }
 
-            if (Projectile.localAI[0] > 30 && Projectile.localAI[0] <= 180) {
+            if (Projectile.ai[0] > 30 && Projectile.ai[0] <= 180) {
                 Projectile.velocity *= 0.99f;
             }
 
-            if (Projectile.localAI[0] > 180) {
-                CWRWorld.MachineRebellion = true;
-                //设置成1秒的锁定时间，因为服务器那边的生成是请求状态，大概会有一帧到两帧的广播延迟
-                //这导致服务器生成的时候标签已经被关闭了，所以需要一个时间锁
-                CWRWorld.DontCloseMachineRebellion = 60;//如果60tick还不够，那一定奸奇捣的鬼
-
-                if (CWRWorld.MachineRebellionDowned && Main.player[Projectile.owner].CWR().DefeatByDraedonsRemote) {//如果已经打败了机械暴乱就不要再过剧情了
-                    Projectile.Kill();
-                    Projectile.netUpdate = true;
-                }
-
-                if (Projectile.localAI[1] > 40) {
+            if (Projectile.ai[0] > 180) {
+                if (Projectile.ai[1] > 40) {
                     BasePRT pulse = new PRT_LonginusWave(Projectile.Center, Vector2.Zero, Color.Red, new Vector2(2f, 2f), 0, 0.82f, 3.32f, 80, Projectile);
                     PRTLoader.AddParticle(pulse);
-                    Projectile.localAI[1] = 0;
+                    Projectile.ai[1] = 0;
                 }
 
                 Projectile.ChasingBehavior(Main.player[Projectile.owner].Center + new Vector2(0, -300), 23, 32);
             }
 
             if (!VaultUtils.isClient) {
-                Color textColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Gray, Color.AliceBlue);
-                switch (Projectile.localAI[0]) {
-                    case 1:
-                        VaultUtils.Text(DraedonsRemote.Text1.Value, textColor);
-                        break;
-                    case 200:
-                        VaultUtils.Text(DraedonsRemote.Text2.Value, textColor);
-                        break;
-                    case 400:
-                        VaultUtils.Text(DraedonsRemote.Text3.Value, textColor);
-                        break;
-                    case 600:
-                        VaultUtils.Text(DraedonsRemote.Text4.Value, textColor);
-                        break;
-                    case 800:
-                        VaultUtils.Text(DraedonsRemote.Text5.Value, textColor);
-                        break;
-                    case 1000:
-                        VaultUtils.Text(DraedonsRemote.Text6.Value, textColor);
-                        break;
-                    case 1200:
-                        VaultUtils.Text(DraedonsRemote.Text7.Value, textColor);
-                        break;
-                    case 1400:
-                        VaultUtils.Text(DraedonsRemote.Text8.Value, textColor);
-                        break;
-                    case 1600:
-                        VaultUtils.Text(DraedonsRemote.Text9.Value, textColor);
-                        break;
+                string[] dialogueTexts = [
+                    DraedonsRemote.Text1.Value,
+                    DraedonsRemote.Text2.Value,
+                    DraedonsRemote.Text3.Value,
+                    DraedonsRemote.Text4.Value,
+                    DraedonsRemote.Text5.Value,
+                    DraedonsRemote.Text6.Value,
+                    DraedonsRemote.Text7.Value,
+                    DraedonsRemote.Text8.Value,
+                    DraedonsRemote.Text9.Value,
+                ];
+
+                float ai = Projectile.ai[0];
+                int index = (int)(ai / 200f);
+
+                if (index >= 0 && index < dialogueTexts.Length && ai % 200 == 0) {
+                    Color textColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Gray, Color.AliceBlue);
+                    VaultUtils.Text(dialogueTexts[index], textColor);
                 }
             }
 
-            Projectile.localAI[1]++;
-            Projectile.localAI[0]++;
+
+            Projectile.ai[1]++;
+            Projectile.ai[0]++;
         }
 
         public override void OnKill(int timeLeft) {
@@ -201,10 +186,14 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.SkeletronPrime, false);
-            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Retinazer, false);
-            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Spazmatism, false);
-            VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.TheDestroyer, false);
+            if (!Projectile.Center.TryFindClosestPlayer(out var player)) {
+                return;
+            }
+
+            VaultUtils.TrySpawnBossWithNet(player, NPCID.SkeletronPrime, false);
+            VaultUtils.TrySpawnBossWithNet(player, NPCID.Retinazer, false);
+            VaultUtils.TrySpawnBossWithNet(player, NPCID.Spazmatism, false);
+            VaultUtils.TrySpawnBossWithNet(player, NPCID.TheDestroyer, false);
         }
 
         public override bool PreDraw(ref Color lightColor) {

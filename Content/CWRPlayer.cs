@@ -98,10 +98,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool RideElectricMinRocket;
         /// <summary>
-        /// 是否使用过了嘉登遥控器并且击败了机械暴乱
-        /// </summary>
-        public bool DefeatByDraedonsRemote;
-        /// <summary>
         /// 手持状态
         /// </summary>
         public int HeldStyle;
@@ -249,7 +245,6 @@ namespace CalamityOverhaul.Content
         public override void SaveData(TagCompound tag) {
             tag["UnderstandWindGriven"] = UnderstandWindGriven;
             tag["UnderstandWindGrivenMK2"] = UnderstandWindGrivenMK2;
-            tag["DefeatByDraedonsRemote"] = DefeatByDraedonsRemote;
         }
 
         public override void LoadData(TagCompound tag) {
@@ -258,9 +253,6 @@ namespace CalamityOverhaul.Content
             }
             if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
                 UnderstandWindGrivenMK2 = false;
-            }
-            if (!tag.TryGet("DefeatByDraedonsRemote", out DefeatByDraedonsRemote)) {
-                DefeatByDraedonsRemote = false;
             }
         }
 

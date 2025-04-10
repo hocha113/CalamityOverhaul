@@ -565,9 +565,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (!VaultUtils.isClient) {
-                VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Retinazer, false);
-                VaultUtils.TrySpawnBossWithNet(Main.LocalPlayer, NPCID.Spazmatism, false);
+            if (!VaultUtils.isClient && npc.Center.TryFindClosestPlayer(out var findPlayer)) {
+                VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Retinazer, false);
+                VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Spazmatism, false);
             }
         }
 
@@ -1356,10 +1356,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
-                }
-
-                foreach (var player in Main.ActivePlayers) {
-                    player.CWR().DefeatByDraedonsRemote = true;
                 }
             }
             return base.On_PreKill();
