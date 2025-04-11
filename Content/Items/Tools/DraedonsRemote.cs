@@ -190,6 +190,16 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type == NPCID.SkeletronPrime || npc.type == NPCID.Retinazer 
+                    || npc.type == NPCID.Spazmatism || npc.type == NPCID.TheDestroyer) {
+                    npc.life = 0;
+                    npc.HitEffect();
+                    npc.active = false;
+                    npc.netUpdate = true;
+                }
+            }
+
             VaultUtils.TrySpawnBossWithNet(player, NPCID.SkeletronPrime, false);
             VaultUtils.TrySpawnBossWithNet(player, NPCID.Retinazer, false);
             VaultUtils.TrySpawnBossWithNet(player, NPCID.Spazmatism, false);
