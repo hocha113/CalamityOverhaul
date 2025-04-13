@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<FlakToxicannon>();
         public override void SetRangedProperty() {
             Recoil = 1.2f;
-            FireTime = 20;
+            FireTime = 16;
             GunPressure = 0;
             ControlForce = 0;
             HandIdleDistanceX = 25;
@@ -33,13 +33,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LazyRotationUpdate = true;
         }
 
-        public override void HanderCaseEjection() {
-            CaseEjection(1.3f);
-        }
+        public override void HanderCaseEjection() => CaseEjection(1.3f);
 
-        public override void SetShootAttribute() {
-            AmmoTypes = ModContent.ProjectileType<FlakToxicannonProjectile>();
-        }
+        public override void SetShootAttribute() => AmmoTypes = ModContent.ProjectileType<FlakToxicannonProjectile>();
+
+        public override bool CanSpanProj() => oldSetRoting.ToRotationVector2().Y <= 0;
 
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocityInProjRot
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            FireTime = 20;
+            FireTime = 16;
             if (++fireIndex >= 5) {
                 FireTime = 40;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire")
@@ -57,6 +55,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             OffsetPos -= ShootVelocityInProjRot.UnitVector() * RecoilRetroForceMagnitude;
             SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") { Pitch = 0.65f, Volume = 0.3f }, Projectile.Center);
+        }
+
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            if (oldSetRoting.ToRotationVector2().Y > 0) {
+                lightColor.R /= 2;
+                lightColor.G /= 2;
+                lightColor.B /= 2;
+            }
+            base.GunDraw(drawPos, ref lightColor);
         }
     }
 }
