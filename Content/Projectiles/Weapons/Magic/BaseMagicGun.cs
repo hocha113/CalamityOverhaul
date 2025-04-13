@@ -23,17 +23,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void SpanProj() {
-            if (CanFire) {
-                Owner.manaRegenDelay = 4;
+            if (SetRegenDelayValue == 0) {
+                SetRegenDelayValue = Owner.maxRegenDelay;
             }
+
+            if (CanFire) {
+                Owner.manaRegenDelay = SetRegenDelayValue;
+            }
+
             if (onFire || onFireR) {
                 if (ShootCoolingValue <= 0) {
                     if (ForcedConversionTargetAmmoFunc.Invoke()) {
                         AmmoTypes = ToTargetAmmo;
-                    }
-
-                    if (SetRegenDelayValue == 0) {
-                        SetRegenDelayValue = Owner.maxRegenDelay;
                     }
 
                     if (Owner.CheckMana(Item)) {

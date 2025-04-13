@@ -19,6 +19,7 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
@@ -53,6 +54,48 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 AddIngredient<StormlionMandible>(4).
                 AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
                 AddTile(TileID.Anvils).
+                Register();
+
+            CreateRecipe().
+                AddIngredient<TeslaElectromagneticTowerAttackMode>().
+                Register();
+        }
+    }
+
+    internal class TeslaElectromagneticTowerAttackMode : ModItem
+    {
+        public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTowerAttackMode";
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<TeslaElectromagneticTower>();
+        public override LocalizedText Tooltip => ItemLoader.GetItem(ModContent.ItemType<TeslaElectromagneticTower>()).GetLocalization("Tooltip");
+        public override void SetDefaults() {
+            Item.width = 32;
+            Item.height = 32;
+            Item.maxStack = 9999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.value = Item.buyPrice(0, 2, 40, 0);
+            Item.rare = ItemRarityID.LightRed;
+            Item.createTile = ModContent.TileType<TeslaElectromagneticTowerTile>();
+            Item.CWR().StorageUE = true;
+            Item.CWR().ConsumeUseUE = 1200;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(15).
+                AddIngredient<MysteriousCircuitry>(15).
+                AddIngredient<AerialiteBar>(10).
+                AddIngredient<StormlionMandible>(4).
+                AddCondition(ArsenalTierGatedRecipe.ConstructRecipeCondition(1, out Func<bool> condition), condition).
+                AddTile(TileID.Anvils).
+                Register();
+
+            CreateRecipe().
+                AddIngredient<TeslaElectromagneticTower>().
                 Register();
         }
     }
@@ -96,6 +139,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             tp.RightEvent();
             return base.RightClick(i, j);
+        }
+
+        public override void HitWire(int i, int j) {
+            if (!TileProcessorLoader.AutoPositionGetTP<TeslaElectromagneticTowerTP>(i, j, out var tp)) {
+                return;
+            }
+            tp.RightEvent();
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
@@ -146,7 +196,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             base.ReceiveData(reader, whoAmI);
             bool oldAttackPattern = AttackPattern;
             AttackPattern = reader.ReadBoolean();
-            if (oldAttackPattern != AttackPattern) {
+            if (!TileProcessorNetWork.InitializeWorld && oldAttackPattern != AttackPattern) {
                 TeslaOpenEffect();//如果判断出切换了形态就调用这个方法生成粒子效果和音效
             }
         }
@@ -163,6 +213,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             else {
                 AttackPattern = false;
+            }
+        }
+
+        public override void SetBattery() {
+            AttackPattern = TrackItem != null && TrackItem.type == ModContent.ItemType<TeslaElectromagneticTowerAttackMode>();
+        }
+
+        private void SpawnGuardEffect() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            for (int i = 0; i < 33; i++) {
+                Vector2 pos = CenterInWorld + CWRUtils.randVr(GuardValue, GuardValue + 2);
+                int dust = Dust.NewDust(pos, 1, 1, DustID.Electric);
+                Main.dust[dust].noGravity = true;
             }
         }
 
@@ -195,12 +261,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     GuardValue += 10;
                 }
 
-                if (!VaultUtils.isServer) {
-                    for (int i = 0; i < 33; i++) {
-                        int dust = Dust.NewDust(CenterInWorld + CWRUtils.randVr(GuardValue, GuardValue + 2), 1, 1, DustID.Electric);
-                        Main.dust[dust].noGravity = true;
-                    }
-                }
+                SpawnGuardEffect();
 
                 foreach (var npc in Main.ActiveNPCs) {
                     if (npc.friendly) {

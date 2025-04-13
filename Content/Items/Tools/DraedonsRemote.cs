@@ -81,6 +81,11 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return false;
             }
 
+            if (Main.dayTime) {
+                SoundEngine.PlaySound(SoundID.MenuClose);
+                return false;
+            }
+
             if (Item.CWR().UEValue < Item.CWR().ConsumeUseUE) {
                 CombatText.NewText(player.Hitbox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
                 SoundEngine.PlaySound(SoundID.MenuClose);
@@ -88,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !NPC.AnyNPCs(NPCID.Retinazer)
-            && !NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.TheDestroyer) && !Main.dayTime) {
+            && !NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.TheDestroyer)) {
                 Item.CWR().UEValue -= Item.CWR().ConsumeUseUE;
                 return true;
             }
@@ -115,7 +120,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = CWRWorld.MachineRebellionDowned ? 180 : 1680;//如果已经打败了机械暴乱就不要再过剧情了
-            if (DraedonsRemote.LoadenMusic) {
+            if (!DraedonsRemote.LoadenMusic) {
                 Projectile.timeLeft = 180;
             }
         }

@@ -1346,14 +1346,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? On_PreKill() {
-            if (Main.zenithWorld && Main.dedServ) {
+            if (Main.zenithWorld) {
                 NPC.downedMechBoss1 = NPC.downedMechBoss2 = NPC.downedMechBoss3 = true;
-                NetMessage.SendData(MessageID.WorldData);
+                if (Main.dedServ) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
             }
 
             if (CWRWorld.MachineRebellion) {
                 CWRWorld.MachineRebellionDowned = true;
-                
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
                 }
