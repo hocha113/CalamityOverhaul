@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<FlakToxicannon>();
         public override void SetRangedProperty() {
             Recoil = 1.2f;
-            FireTime = 10;
+            FireTime = 20;
             GunPressure = 0;
             ControlForce = 0;
             HandIdleDistanceX = 25;
@@ -29,20 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateSpawnGunDust = false;
             RepeatedCartridgeChange = true;
             AmmoTypeAffectedByMagazine = false;
-        }
-
-        public override void PostInOwner() {
-            if (onFire && kreloadTimeValue <= 0) {
-                float minRot = MathHelper.ToRadians(50);
-                float maxRot = MathHelper.ToRadians(130);
-                Projectile.rotation = MathHelper.Clamp(ToMouseA + MathHelper.Pi, minRot, maxRot) - MathHelper.Pi;
-                if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
-                    Projectile.rotation = minRot - MathHelper.Pi;
-                }
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX + OffsetPos;
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
-                SetCompositeArm();
-            }
+            HandheldDisplay = false;
+            LazyRotationUpdate = true;
         }
 
         public override void HanderCaseEjection() {
@@ -50,7 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SetShootAttribute() {
-            FireTime = 5;
             AmmoTypes = ModContent.ProjectileType<FlakToxicannonProjectile>();
         }
 
@@ -60,8 +47,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
+            FireTime = 20;
             if (++fireIndex >= 5) {
-                FireTime = 60;
+                FireTime = 40;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire")
                     with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
                 fireIndex = 0;

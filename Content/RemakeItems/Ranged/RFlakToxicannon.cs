@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<FlakToxicannon>();
         public override void SetDefaults(Item item) {
             item.damage = 62;
-            item.SetCartridgeGun<FlakToxicannonHeldProj>(160);
+            item.SetCartridgeGun<FlakToxicannonHeldProj>(80);
             item.CWR().Scope = true;
         }
     }

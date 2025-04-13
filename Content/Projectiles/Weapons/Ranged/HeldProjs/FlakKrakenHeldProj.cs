@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             FiringDefaultSound = false;
+            LazyRotationUpdate = true;
+            HandheldDisplay = false;
             RecoilRetroForceMagnitude = 17;
             RecoilOffsetRecoverValue = 0.8f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;

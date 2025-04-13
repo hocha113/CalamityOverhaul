@@ -487,8 +487,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateLaserTimingAndTarget(totalSegments, shootProjectileTime, bodySegmentTime, BeamWarningDuration, MasterMode);
 
             // 检查是否可以命中目标
-            if (!Collision.CanHit(npc.position, npc.width, npc.height, Target.position, Target.width, Target.height))
+            if (!Collision.CanHit(npc.position, npc.width, npc.height, Target.position, Target.width, Target.height)) {
                 return;
+            }
 
             // 激光射击逻辑
             float projectileSpeed = (MasterMode ? 4.5f : 3.5f) + Main.rand.NextFloat() * 1.5f + enrageScale;
