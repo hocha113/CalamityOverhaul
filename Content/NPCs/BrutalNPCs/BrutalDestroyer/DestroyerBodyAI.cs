@@ -6,6 +6,7 @@ using CalamityMod.Projectiles.Boss;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -26,8 +27,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static Asset<Texture2D> BodyAlt_Glow;
         internal static Asset<Texture2D> Tail;
         internal static Asset<Texture2D> Tail_Glow;
-        internal static Asset<Texture2D> Head;
-        internal static Asset<Texture2D> Head_Glow;
         private static int iconIndex;
         private const float BeamWarningDuration = 120f;
         private const float SparkWarningDuration = 30f;
@@ -435,8 +434,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float bodySegmentTime = npc.ai[0] * (MasterMode ? 20f : 30f);
             float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
 
-            if (AbleToFireLaser)
+            if (AbleToFireLaser) {
                 calNPC.newAI[0] += (calNPC.newAI[0] > shootProjectileGateValue - BeamWarningDuration) ? 1f : 2f;
+            }
 
             if (Main.netMode != NetmodeID.MultiplayerClient && calNPC.newAI[0] % 20f == 10f && AbleToFireLaser) {
                 npc.SyncExtraAI();
@@ -499,7 +499,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             int damage = npc.GetProjectileDamage(projectileType);
             damage = AdjustDamageForEarlyHardmode(damage);
 
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
+            if (!VaultUtils.isClient) {
                 int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), projectileSpawn, projectileVelocity, projectileType, damage, 0f, Main.myPlayer, 1f, 0f);
                 Main.projectile[proj].timeLeft = 1200;
             }

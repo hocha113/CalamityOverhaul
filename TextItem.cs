@@ -32,7 +32,7 @@ namespace CalamityOverhaul
     {
         public override string Texture => "CalamityOverhaul/icon";
 
-        private bool old;
+        //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
             return false;
         }

@@ -15,6 +15,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
             return base.CanOverride();
         }
+        public override void SetProperty() {
+            if (CWRWorld.MachineRebellion) {
+                npc.life = npc.lifeMax *= 32;
+                npc.defDefense = npc.defense = 20;
+                npc.defDamage = npc.damage *= 3;
+                npc.knockBackResist = 0.1f;//在机械暴乱中拥有很强的抗击退能力
+                npc.scale += 0.3f;
+            }
+        }
         public override bool AI() => true;
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {

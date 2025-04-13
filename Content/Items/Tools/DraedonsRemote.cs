@@ -17,12 +17,13 @@ namespace CalamityOverhaul.Content.Items.Tools
     {
         public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/DEMSoulforge");
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => CWRWorld.MachineRebellion;
+        public override bool IsSceneEffectActive(Player player) => DraedonsRemote.LoadenMusic && CWRWorld.MachineRebellion;
     }
 
     internal class DraedonsRemote : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/DraedonsRemote";
+        public static bool LoadenMusic => false;//他妈的在出现曲师写出新音乐之前这个都不能删
         public static Asset<Texture2D> Glow;
         public static LocalizedText DontUseByDeath { get; set; }
         internal static LocalizedText Text1;
@@ -114,6 +115,9 @@ namespace CalamityOverhaul.Content.Items.Tools
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = CWRWorld.MachineRebellionDowned ? 180 : 1680;//如果已经打败了机械暴乱就不要再过剧情了
+            if (DraedonsRemote.LoadenMusic) {
+                Projectile.timeLeft = 180;
+            }
         }
 
         public override void AI() {
@@ -151,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Projectile.ChasingBehavior(Main.player[Projectile.owner].Center + new Vector2(0, -300), 23, 32);
             }
 
-            if (!VaultUtils.isClient) {
+            if (DraedonsRemote.LoadenMusic && !VaultUtils.isClient) {
                 string[] dialogueTexts = [
                     DraedonsRemote.Text1.Value,
                     DraedonsRemote.Text2.Value,

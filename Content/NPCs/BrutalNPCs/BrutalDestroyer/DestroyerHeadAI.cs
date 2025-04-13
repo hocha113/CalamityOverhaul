@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
@@ -177,11 +178,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 if (++ai[6] > 280) {
                     npc.life = 0;
                     npc.HitEffect();
-                    npc.checkDead();
                     npc.active = false;
                     npc.netUpdate = true;
                 }
                 return false;
+            }
+
+            if (Time > StretchTime && ByMasterStageIndex > 0 && ByMasterStageIndex != 99) {
+                NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
+                if (skeletronPrime != null && (skeletronPrime.life / (float)skeletronPrime.lifeMax < 0.4f)) {
+                    ByMasterStageIndex = 99;//骷髅王低于这个血量时脱战
+                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), new(155, 215, 115));
+                    return false;
+                }
             }
 
             // 初始化
@@ -213,7 +222,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     DashVeloctiy = npc.Center.To(player.Center).UnitVector();
                     NetWorkAI();
                 }
-                npc.velocity = DashVeloctiy * 32;
+                npc.velocity = DashVeloctiy * (32 + npc.Distance(player.Center) / 1000);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 return false;
             }

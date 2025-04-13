@@ -1,8 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
@@ -12,14 +10,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static bool HeldHalibut {
             get {
                 return false;//TODO:暂时未制作完成，所以不要启动它
-                if (Main.gameMenu || !Main.LocalPlayer.active) {
-                    return false;
-                }
-                int type = Main.LocalPlayer.GetItem().type;
-                if (type <= 0) {
-                    return false;
-                }
-                return type == ModContent.ItemType<HalibutCannon>();
+                //if (Main.gameMenu || !Main.LocalPlayer.active) {
+                //    return false;
+                //}
+                //int type = Main.LocalPlayer.GetItem().type;
+                //if (type <= 0) {
+                //    return false;
+                //}
+                //return type == ModContent.ItemType<HalibutCannon>();
             }
         }
         public override Texture2D Texture => CWRUtils.GetT2DValue(CWRConstant.UI + "HalibutStyleButton");
