@@ -3,7 +3,7 @@ Tools.RecipesLoseText: Вы не можете создать этот предм
 
 Items: {
 	ElementWhip: {
-		DisplayName: Элементальных хлыст
+		DisplayName: Элементальный хлыст
 		Tooltip:
 			'''
 			{$CommonItemTooltip.Whips}
@@ -44,7 +44,7 @@ Items: {
 		Tooltip:
 			'''
 			{$CommonItemTooltip.Whips}
-			Атаки по врагам вызывают на них кровавый дождь
+			Атаки по врагам обрушивают на них кровавый дождь
 			'''
 	}
 
@@ -692,17 +692,17 @@ Items: {
 	}
 
 	CalSelfPortrait: {
-		DisplayName: Забытый фотограф
+		DisplayName: Картина «Забытая фотография»
 		Tooltip:
 			'''
 			Забытый фотограф
 			[legend]
 			'''
-		Legend: Что еще вы хотите увидеть?? :)
+		Legend: А что ещё вы хотите увидеть?? :)
 	}
 
 	WUTIVSelfPortrait: {
-		DisplayName: Спасибо тебе, Wuti
+		DisplayName: Картина «Спасибо тебе, Wuti»
 		Tooltip: ""
 	}
 
@@ -3002,8 +3002,8 @@ RemakeItems: {
 		DisplayName: Астральная пика
 		Tooltip:
 			'''
-			Запустить три звезды
-			После того, как настоящий ближний бой ударил врага, звезды спустились
+			Раскручивается и запускает три звезды
+			Удары в ближнем бою обрушивают звёзды со всех сторон
 			'''
 	}
 
@@ -3021,9 +3021,10 @@ RemakeItems: {
 		DisplayName: Зловещий жнец
 		Tooltip:
 			'''
-			Сбросить серп
-			Правый ключ может быть выброшен и вызвать небольшое энергетическое землетрясение
-			"Эй! Ты должен его вернуть!"
+			Выпускает раскручивающиеся косы, самонаводящиеся на врагов
+			Удары в ближнем бою вызывают пылающие самонаводящиеся косы
+			Зажмите ПКМ, чтобы раскрутить косу и запустить её; Коса вызывает сильное землятресение в месте падения
+			После броска коса не вернётся, и её нужно будет забрать самостоятельно
 			'''
 	}
 
@@ -3039,7 +3040,7 @@ RemakeItems: {
 
 	RBasher: {
 		DisplayName: Колотилка
-		Tooltip: Inflicts a radiation debuff upon hitting enemies.
+		Tooltip: Накладывает дебафф «Радиация» на поражённых врагов
 	}
 
 	RBlightedCleaver: {
@@ -3065,11 +3066,7 @@ RemakeItems: {
 
 	RBrimstoneSword: {
 		DisplayName: Серный меч
-		Tooltip:
-			'''
-			Маленький пылающий меч
-			Гейзер серного огня после удара по врагу
-			'''
+		Tooltip: При нанесении удара призывает серные гейзеры
 	}
 
 	RBrinyBaron: {
@@ -3079,7 +3076,7 @@ RemakeItems: {
 			Первые шесть ударов комбо выпускают самонаводящиеся вихри океана
 			Седьмой удар комбо порождает уйму взрывающихся пузырей
 			Восьмой удар комбо выстреливает тремя вихревыми бомбами, которые создают тайфуны при столкновении с блоками или врагами
-			«Выкован из плавника той странной акулы. Размахивать его пузырящейся головой на цепи нам, видимо, было мало.»
+			«Выкован из плавника той странной акулы. Размахивать его пузырящейся головой на цепи нам, видимо, было мало»
 			'''
 	}
 
@@ -3108,7 +3105,7 @@ RemakeItems: {
 			'''
 			Взмахи мечом выстреливают метеоритами
 			Удары в ближнем бою вызывают дополнительные метеориты с неба
-			«Была такая древняя легенда... про охотника, который мог заставить птицу упасть с ветки, не выстрелив ни одной стрелой 
+			«Была такая древняя легенда... про охотника, который мог заставить птицу упасть с ветки, не выстрелив ни единой стрелы. 
 			Теперь, с нашим новым оружием, мы можем точно так же...»
 			'''
 	}
@@ -3169,8 +3166,8 @@ RemakeItems: {
 		DisplayName: Заражённая пика
 		Tooltip:
 			'''
-			Запустить чумный Рой
-			Правый ключ генерирует энергию чумы
+			Выпускает чумной рой
+			Зажмите ПКМ, чтобы раскрутить пику и випустить энергетический луч, сопровождающихся чумным дождёи 
 			'''
 	}
 
@@ -3213,7 +3210,7 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Взмахи мечом выпускают несколько плазменных лучей
-			«Если присмотреться, можно заметить, как на лезвии меча сияют звёзды. Напоминает ночное небо над головой.»
+			«Если присмотреться, можно заметить, как на лезвии меча сияют звёзды. Напоминает ночное небо над головой»
 			'''
 	}
 
@@ -3247,9 +3244,9 @@ RemakeItems: {
 		DisplayName: Эксельсус
 		Tooltip:
 			'''
-			Махни и выпусти несколько космических клинков.
-			ПКМ - выпусти сферические светло-тёмные стрелы.
-			"С этим космическим мечом можно оттолкнуть все остальные вселенные."
+			При взмахе выпускает фантомные космические клинки, проходящие через стены и накладывающие дебафф «Инферно богоубийцы»
+			Атаки в ближнем бою также обрушивают лазерные лучи
+			Нажмите ПКМ, чтобы выпустить высокоскоростной залп богоубийцы, взрывающийся при контакте с поверхностью
 			'''
 	}
 
@@ -3340,18 +3337,22 @@ RemakeItems: {
 	}
 
 	RLifehuntScythe: {
-		DisplayName: Серп жизни
+		DisplayName: Коса охоты на жизнь
 		Tooltip:
 			'''
-			Каждый взмах выбрасывает серп жизни
-			Каждые три маха выбрасывают огромные серпы
+			При взмахе разбрасывает серпы жизни во все стороны
+			Каждые третий взмах выпускает выпкскает огромный серп, следующий за курсором
 			'''
 	}
 
 	RLucrecia: {
-		DisplayName: Лукреция
-		Tooltip: Выпускает кристаллические стрелы магии
-	}
+                DisplayName: Лукреция
+                Tooltip:
+                    '''
+                    Выпускает цепь ДНК
+                    Изящество
+                    '''
+            }
 
 	RMajesticGuard: {
 		DisplayName: Величественная охрана
@@ -3378,11 +3379,11 @@ RemakeItems: {
 	}
 
 	RPerfectDark: {
-		DisplayName: Совершенная Тьма
+		DisplayName: Совершенная темнота
 		Tooltip:
 			'''
-			Выбрасывает взрывные бомбы с токсичным болотом.
-			"Этот нож, наверное, не очень гигиеничен."
+			Выпускает мерзкий шар, который прилипает к блокам и взрывается
+			«Возможно немного антисанитарен»
 			'''
 	}
 
@@ -3396,18 +3397,19 @@ RemakeItems: {
 	}
 
 	RPlagueKeeper: {
-		DisplayName: Меч Чумы
-		Tooltip: Выпускает рой пчел чумы.
+		DisplayName: Хранитель чумы
+                Tooltip: Выпускает чумное и пчелиное облака
 	}
 
 	RPrismaticBreaker: {
-		DisplayName: Призма Разрушитель
+		DisplayName: Призматический крушитель
 		Tooltip:
 			'''
-			Заряжается и выпускает луч радуги.
-			Правая кнопка мыши для замаха и выпуска радуги меча.
-			Этот меч получает бонусы как для ближнего, так и для дальнего боя.
-			"Сила радуги со мной!"
+			Удерживайте ЛКМ, выпустить мощный радужный лазер
+			Нажмите ПКМ, чтобы взмахнуть мечом и выпустить волну радужного света
+			Меч усиливается как от урона ближнего боя, так и от стрелкового урона
+			Кажется, принадлежит некой магической девочке
+			Излучает интенсивную космическую энергию
 			'''
 	}
 
@@ -3430,16 +3432,16 @@ RemakeItems: {
 	}
 
 	RSeashineSword: {
-		DisplayName: Меч Морской Сияния
-		Tooltip: Выпускает водяные клинки.
+		DisplayName: Меч морского блеска
+                Tooltip: Стреляет водным мечевидным лучом
 	}
 
 	RSeedler: {
-		DisplayName: Серп Семени
+		DisplayName: "{$ItemName.Seedler}"
 		Tooltip:
 			'''
-			Выпускает взрывные семена.
-			"Хотя у нас нет горохового стрелка, но зато есть это!"
+			Стреляет взрывающимися семенами
+			«Семенострел — стреляет семенами вместо гороха, но тоже не плохо!»
 			'''
 	}
 
@@ -3484,18 +3486,18 @@ RemakeItems: {
 	}
 
 	RStormSaber: {
-		DisplayName: Сабля Бурь
+		DisplayName: Штормовая сабля
 		Tooltip:
 			'''
-			Выпускает два потока воздуха.
-			Один идет от лезвия меча, другой — с небес.
-			"Не пытайся предсказать погоду!"
+			Выпускает два самонаводящихся штормовых луча
+			Один луч вылетат с клинка, второй — с неба
+			«Дождь совершенно естественно будет или совершенно естественно не будет!»
 			'''
 	}
 
 	RSubmarineShocker: {
-		DisplayName: Короткий Меч Морских Глубин
-		Tooltip: Выпускает ионизированные искры.
+		DisplayName: Подводный шокер
+		Tooltip: Выпускает электрические искры, разлетаюшщиеся во все сторону
 	}
 
 	RSwordsplosion: {
@@ -3508,12 +3510,8 @@ RemakeItems: {
 	}
 
 	RTaintedBlade: {
-		DisplayName: Оскверненное Лезвие
-		Tooltip:
-			'''
-			Наносит ядовитый дебафф при попадании в врага.
-			"Этот нож действительно ядовит."
-			'''
+		DisplayName: Порочный клинок
+		Tooltip: При нанесении удара по врагу накладывает дебафф «{$BuffName.Poisoned}»
 	}
 
 	RTeardropCleaver: {
@@ -3522,7 +3520,7 @@ RemakeItems: {
 	}
 
 	RTerratomere: {
-		DisplayName: Великий терра-клинок
+		DisplayName: Терратомир
 		Tooltip:
 			'''
 			Взмахи мечом выпускают несколько самонаводящихся энергетических зарядов, взрывающихся при столкновении с блоками или врагами
@@ -3563,8 +3561,8 @@ RemakeItems: {
 	}
 
 	RTheEnforcer: {
-		DisplayName: Тирания
-		Tooltip: При замахе вокруг появляется огонь Вселенной.
+		DisplayName: Головорез
+		Tooltip: Взмахи притягивают к вам вселенские огни
 	}
 
 	RTheLastMourning: {
@@ -3657,42 +3655,42 @@ RemakeItems: {
 
 	ModifyAquaticScourgeBag: {
 		DisplayName: Мешок с сокровищами (Акватический бич)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyDesertScourgeBag: {
 		DisplayName: Мешок с сокровищами (Пустынный бич)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyDevourerofGodBag: {
 		DisplayName: Мешок с сокровищами (Пожиратель богов)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyExoBag: {
 		DisplayName: Ящик с сокровищами (Экзо-механизмы)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyOldDukeBag: {
 		DisplayName: Мешок с сокровищами (Старый герцог)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyPolterghastBag: {
 		DisplayName: Мешок с сокровищами (Полтергаст)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyStarterBag: {
 		DisplayName: Стартовый мешок
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	ModifyYharonBag: {
 		DisplayName: Мешок с сокровищами (Ярон)
-		Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+		Tooltip: Нажмите ПКМ, чтобы открыть
 	}
 
 	RAcesHigh: {
@@ -4833,8 +4831,8 @@ RemakeItems: {
 	}
 
 	RFrostcrushValari: {
-		DisplayName: Морозный бумеранг
-		Tooltip: Скрытая атака забросит огромный бумеранг и два бумеранга, которые сопровождают цель
+		DisplayName: Морозная валари
+		Tooltip: При скрытом ударе бросает один большой бумеранг а также 2 маленьких, самонаводящихся на врагов
 	}
 
 	RWaveSkipper: {
@@ -4843,7 +4841,7 @@ RemakeItems: {
 			'''
 			Бросает копьё, которое закапывается под землю и самонаводится на врагов
 			При скрытном ударе бросает два метательных копья
-			Нажмите ПКМ, чтобы бросить копьё, рикошетящее от блоков
+			Нажмите ПКМ, чтобы бросить копьё, отскакивающее от блоков
 			'''
 	}
 
@@ -4994,7 +4992,7 @@ RemakeItems: {
 	}
 
 	RCutlass: {
-		DisplayName: Абордажная сабля
+		DisplayName: "{$ItemName.Cutlass}"
 		Tooltip: ""
 	}
 
@@ -5043,8 +5041,8 @@ RemakeItems: {
 	}
 
 	RDeathSickle: {
-		DisplayName: Коса смерти
-		Tooltip: Бросает косу смерти
+		DisplayName: "{$ItemName.DeathSickle}"
+		Tooltip: Выпускает косу смерти
 	}
 
 	RDemonBow: {
@@ -5074,18 +5072,18 @@ RemakeItems: {
 	}
 
 	REnchantedBoomerang: {
-		DisplayName: Зачарованный бумеранг
-		Tooltip: Скрытная атака, быстро метает три бумеранга, при попадании вызывает падающие звезды
+		DisplayName: "{$ItemName.EnchantedBoomerang}"
+		Tooltip: При скрытом ударе бросает три больших бумеранга, обрушивающих звездопад при попадании по врагу
 	}
 
 	RFlamarang: {
-		DisplayName: Огнеранг
-		Tooltip: Скрытная атака, быстро метает три бумеранга
+		DisplayName: "{$ItemName.Flamarang}"
+		Tooltip: При скрытом ударе бросает три больших бумеранга, вызывающих взрывы при попадании по врагу
 	}
 
 	RFlareGun: {
 		DisplayName: Сигнальная ракетница
-		Tooltip: '''"Не путайте его с стартовым пистолетом"'''
+		Tooltip: Не следует путать с начальным пистолетом!
 	}
 
 	RFlintlockpistol: {
@@ -5103,7 +5101,7 @@ RemakeItems: {
 	}
 
 	RGladius: {
-		DisplayName: Гладиус
+		DisplayName: "{$ItemName.Gladius}"
 		Tooltip: Быстро и остро
 	}
 
@@ -5169,8 +5167,8 @@ RemakeItems: {
 	}
 
 	RIceSickle: {
-		DisplayName: Ледяная коса
-		Tooltip: Бросает ледяную косу
+		DisplayName: "{$ItemName.IceSickle}"
+		Tooltip: Выпускает ледяную косу
 	}
 
 	RIronBow: {
@@ -5201,72 +5199,72 @@ RemakeItems: {
 	}
 
 	RMarrow: {
-		DisplayName: Сущность
+		DisplayName: "{$ItemName.Marrow}"
 		Tooltip:
 			'''
 			Костя!
-			Превращает деревянные стрелы в костяные стрелы
+			Превращает деревянные стрелы в костяные
 			Стрела, попавшая в цель, выбрасывает несколько костей
 			'''
 	}
 
 	RMegashark: {
-		DisplayName: Мега-акула
+		DisplayName: "{$ItemName.Megashark}"
 		Tooltip: '''"Нам нужен больший калибр, не так ли?"'''
 	}
 
 	RMeowmere: {
-		DisplayName: Мяумур
+		DisplayName: "{$ItemName.Meowmere}"
 		Tooltip: ""
 	}
 
 	RMineralSword: {
-		DisplayName: Свинцовый меч
+		DisplayName: "{$ItemName.LeadBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword2: {
-		DisplayName: Оловянный меч
+		DisplayName: "{$ItemName.TinBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword3: {
-		DisplayName: Вольфрамовый меч
+		DisplayName: "{$ItemName.TungstenBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword4: {
-		DisplayName: Платиновый меч
+		DisplayName: "{$ItemName.PlatinumBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword5: {
-		DisplayName: Золотой меч
+		DisplayName: "{$ItemName.GoldBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword6: {
-		DisplayName: Железный меч
+		DisplayName: "{$ItemName.IronBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword7: {
-		DisplayName: Медный меч
+		DisplayName: "{$ItemName.CopperBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword8: {
-		DisplayName: Серебряный меч
+		DisplayName: "{$ItemName.SilverBroadsword}"
 		Tooltip: ""
 	}
 
 	RMineralSword9: {
-		DisplayName: Кактусовый меч
+		DisplayName: "{$ItemName.CactusSword}"
 		Tooltip: ""
 	}
 
 	RMinishark: {
-		DisplayName: Мини-акула
+		DisplayName: "{$ItemName.Minishark}"
 		Tooltip: '''"У маленькой акулы есть работа на стрельбище, и ее обязанность-быть консультантом по "стрельбе""'''
 	}
 
@@ -5523,8 +5521,8 @@ RemakeItems: {
 	}
 
 	RShroomerang: {
-		DisplayName: Сумеранг
-		Tooltip: Скрытная атака, выпускает бомбу с грибными спорами
+		DisplayName: "{$ItemName.Shroomerang}"
+		Tooltip: При скрытом ударе оставляет за собой след из грибов
 	}
 
 	RSilverBow: {
@@ -5576,8 +5574,8 @@ RemakeItems: {
 	}
 
 	RSpear: {
-		DisplayName: Копье
-		Tooltip: Скрытная атака, бросает мощное копье
+		DisplayName: "{$ItemName.Spear}"
+		Tooltip: При скрытом ударе совершает сверхбыстрый и мощный бросок
 	}
 
 	RStakeLauncher: {
@@ -5592,7 +5590,7 @@ RemakeItems: {
 	}
 
 	RStarCannon: {
-		DisplayName: Звездная пушка
+		DisplayName: "{$ItemName.StarCannon}"
 		Tooltip:
 			'''
 			Выстрелите звездой
@@ -5601,8 +5599,8 @@ RemakeItems: {
 	}
 
 	RStarWrath: {
-		DisplayName: Звездная ярость
-		Tooltip: Вызывает падение звезд с неба
+		DisplayName: "{$ItemName.StarWrath}"
+		Tooltip: Обрушивает звездопад с неба
 	}
 
 	RSuperStarCannon: {
@@ -5708,8 +5706,8 @@ RemakeItems: {
 	}
 
 	RWoodenBoomerang: {
-		DisplayName: Деревянный бумеранг
-		Tooltip: Скрытная атака, быстро метает три бумеранга
+		DisplayName: "{$ItemName.WoodenBoomerang}"
+		Tooltip: При скрытой атаке, бросает три больших бумеранга
 	}
 
 	RWoodenBow: {
@@ -5722,47 +5720,47 @@ RemakeItems: {
 	}
 
 	RWoodenSword: {
-		DisplayName: Деревянный меч
+		DisplayName: "{$ItemName.WoodenSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword2: {
-		DisplayName: Меч из черной древесины
+		DisplayName: "{$ItemName.EbonwoodSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword3: {
-		DisplayName: Меч из красной древесины
+		DisplayName: "{$ItemName.RichMahoganySword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword4: {
-		DisplayName: Меч из жемчужной древесины
+		DisplayName: "{$ItemName.PearlwoodSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword5: {
-		DisplayName: Меч из мрачного дерева
+		DisplayName: "{$ItemName.ShadewoodSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword6: {
-		DisplayName: Меч из пальмовой древесины
+		DisplayName: "{$ItemName.PalmWoodSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword7: {
-		DisplayName: Меч из заснеженной древесины
+		DisplayName: "{$ItemName.BorealWoodSword}"
 		Tooltip: ""
 	}
 
 	RWoodenSword8: {
-		DisplayName: Ясеневый меч
+		DisplayName: "{$ItemName.AshWoodSword}"
 		Tooltip: ""
 	}
 
 	RXenopopper: {
-		DisplayName: Ксенопушка
+		DisplayName: "{$ItemName.Xenopopper}"
 		Tooltip:
 			'''
 			Левая кнопка стреляет пузырьковыми пулями
@@ -5772,12 +5770,12 @@ RemakeItems: {
 	}
 
 	RZapinatorGray: {
-		DisplayName: Серый запинатор
+		DisplayName: "{$ItemName.ZapinatorGray}"
 		Tooltip: Это ваш свет удачи
 	}
 
 	RZapinatorOrange: {
-		DisplayName: Оранжевый запинатор
+		DisplayName: "{$ItemName.ZapinatorOrange}"
 		Tooltip: Это ваш свет удачи
 	}
 
@@ -5791,12 +5789,12 @@ RemakeItems: {
 	}
 
 	RStarfury: {
-		// DisplayName: Star fury
-		/* Tooltip:
+		DisplayName: "{$ItemName.Starfury}"
+		Tooltip:
 			'''
-			Make the stars fall from the sky
-			"Forged with the wrath of heaven."
-			''' */
+			Вызывает звездопад с неба
+			«Выкован с яростью небес»
+			'''
 	}
 
 	RDemonConch: {
@@ -5917,32 +5915,32 @@ RemakeItems: {
 	}
 
 	ModifyBananarang: {
-		// DisplayName: Bananarang
-		/* Tooltip:
+		DisplayName: "{$ItemName.Bananarang}"
+		Tooltip:
 			'''
-			Stealth attacks throw three massive boomerangs that launch a large number of Happy Bombs into the air upon hitting enemies.
-			Happy Bombs deal significant damage to enemies but can also harm players and friendly creatures.
-			"Happiness and danger always coexist, don't they?"
-			''' */
+			При скрытом ударе бросает три больших бумеранга, которые разбрасывают больше количество весёлых бомб при поподании по врагу
+			Весёлые бомбы наносят большой урон врагам, но и также игрокам и жителям
+			«Счастье и опасность всегда идут рядом, не так ли?»
+			'''
 	}
 
 	ModifyIceBoomerang: {
-		// DisplayName: Ice Boomerang
-		/* Tooltip:
+		DisplayName: "{$ItemName.IceBoomerang}"
+		Tooltip:
 			'''
-			Stealth attacks throw three massive boomerangs that create a freezing mist upon hitting enemies.
-			"Quite chilly to hold."
-			''' */
+			При скрытом ударе бросает три больших бумеранга, которое создают облако мороза при поподании по врагу
+			«Холодный на ощуп»
+			'''
 	}
 
 	ModifyTrimarang: {
-		// DisplayName: Trimarang
-		/* Tooltip:
+		DisplayName: "{$ItemName.Trimarang}"
+		Tooltip:
 			'''
-			Throws boomerangs in three different directions.
-			Stealth attacks enlarge the boomerangs and cause them to generate three random effects upon hitting enemies.
-			"Adults don’t make choices, so you tied your three favorite boomerangs together."
-			''' */
+			Бросает бумеранги сразу в три разные стороны
+			При скрытом ударе бросает усиленные бумеранги, вызывавющие один из трёх эффектов своих ингридиентов при поподании по врагу
+			«Вхрослые не встают перед выбором, ибо объединяют сразу три своих любимых бумеранга»
+			'''
 	}
 
 	// ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
