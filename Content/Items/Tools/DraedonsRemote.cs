@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Text7 = this.GetLocalization(nameof(Text7), () => "");
             Text8 = this.GetLocalization(nameof(Text8), () => "");
             Text9 = this.GetLocalization(nameof(Text9), () => "");
-            Item.ResearchUnlockCount = 64;
+            Item.ResearchUnlockCount = 1;
             DontUseByDeath = this.GetLocalization(nameof(DontUseByDeath), () => "The current game difficulty does not allow sending signals!");
         }
         public override void SetDefaults() {
