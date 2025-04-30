@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override string Texture => CWRConstant.Item_Rogue + "CommandersClaw";
         public override void SetDefaults() {
             Item.width = Item.height = 52;
-            Item.damage = 132;
+            Item.damage = 82;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.useAnimation = Item.useTime = 39;
@@ -39,6 +39,10 @@ namespace CalamityOverhaul.Content.Items.Rogue
     internal class CommandersClawThrow : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Rogue + "CommandersClawThrow";
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+        }
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
@@ -46,7 +50,6 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Projectile.ignoreWater = true;
             Projectile.penetrate = 6;
             Projectile.timeLeft = 900;
-            Projectile.aiStyle = 0;
             Projectile.DamageType = CWRLoad.RogueDamageClass;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 50;
@@ -57,19 +60,33 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Projectile.spriteDirection = Projectile.velocity.X > 0 ? 1 : -1;
-            if (Projectile.ai[0] > 0) {
+            if (Projectile.ai[0] > 0 && Projectile.ai[1] > 30) {
                 NPC target = Projectile.Center.FindClosestNPC(800, false, true);
                 if (target != null) {
                     Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
                 }
             }
+            
+            if (Projectile.ai[0] == 0 && ++Projectile.ai[1] > 60 && Projectile.velocity.Y < 60) {
+                Projectile.velocity.Y += 1f;
+            }
+
+            Projectile.ai[1]++;
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;
+                Color color = Color.White * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length / 2);
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation + (Projectile.spriteDirection > 0 ? 0 : -MathHelper.PiOver2)
+                , texture.Size() / 2, Projectile.scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            }
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (Projectile.spriteDirection > 0 ? 0 : -MathHelper.PiOver2)
-                , tex.Size() / 2, Projectile.scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , texture.Size() / 2, Projectile.scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;
         }
 
@@ -78,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 for (int i = 0; i < 8; i++) {
                     Vector2 ver = Projectile.velocity.RotatedBy(MathHelper.TwoPi / 8f * i);
                     Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center, ver, ModContent.ProjectileType<PunisherGrenadeRogue>()
-                    , Projectile.damage, Projectile.knockBack, Projectile.owner, Main.rand.NextBool() ? 0 : 1);
+                    , (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner, Main.rand.NextBool() ? 0 : 1);
                 }
                 Projectile.numHits++;
             }
