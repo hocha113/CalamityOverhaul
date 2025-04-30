@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
                 Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
                 Main.EntitySpriteDraw(color: Color.BlueViolet * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition
-                    , sourceRectangle: null, rotation: Projectile.rotation - CWRUtils.PiOver5 + MathHelper.Pi
+                    , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5 + MathHelper.Pi
                     , scale: Projectile.scale * 0.6f, effects: SpriteEffects.None);
                 Main.spriteBatch.ExitShaderRegion();
             }

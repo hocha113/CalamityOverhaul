@@ -379,90 +379,6 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 让弹幕进行爆炸效果的操作
-        /// </summary>
-        /// <param name="projectile">要爆炸的投射物</param>
-        /// <param name="blastRadius">爆炸效果的半径（默认为 120 单位）</param>
-        /// <param name="explosionSound">爆炸声音的样式（默认为默认的爆炸声音）</param>
-        public static void Explode(this Projectile projectile, int blastRadius = 120, SoundStyle explosionSound = default, bool spanSound = true) {
-            Vector2 originalPosition = projectile.position;
-            int originalWidth = projectile.width;
-            int originalHeight = projectile.height;
-
-            if (spanSound) {
-                _ = SoundEngine.PlaySound(explosionSound == default ? SoundID.Item14 : explosionSound, projectile.Center);
-            }
-
-            projectile.position = projectile.Center;
-            projectile.width = projectile.height = blastRadius * 2;
-            projectile.position.X -= projectile.width / 2;
-            projectile.position.Y -= projectile.height / 2;
-
-            projectile.maxPenetrate = -1;
-            projectile.penetrate = -1;
-            projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = -1;
-
-            projectile.Damage();
-
-            projectile.position = originalPosition;
-            projectile.width = originalWidth;
-            projectile.height = originalHeight;
-        }
-
-        /// <summary>
-        /// 普通的追逐行为
-        /// </summary>
-        /// <param name="entity">需要操纵的实体</param>
-        /// <param name="TargetCenter">目标地点</param>
-        /// <param name="Speed">速度</param>
-        /// <param name="ShutdownDistance">停摆距离</param>
-        /// <returns></returns>
-        public static Vector2 ChasingBehavior(this Entity entity, Vector2 TargetCenter, float Speed, float ShutdownDistance = 16) {
-            if (entity == null) {
-                return Vector2.Zero;
-            }
-
-            Vector2 ToTarget = TargetCenter - entity.Center;
-            Vector2 ToTargetNormalize = ToTarget.SafeNormalize(Vector2.Zero);
-            Vector2 speed = ToTargetNormalize * AsymptoticVelocity(entity.Center, TargetCenter, Speed, ShutdownDistance);
-            entity.velocity = speed;
-            return speed;
-        }
-
-        /// <summary>
-        /// 更加缓和的追逐行为
-        /// </summary>
-        /// <param name="entity">需要操纵的实体</param>
-        /// <param name="TargetCenter">目标地点</param>
-        /// <param name="SpeedUpdates">速度的更新系数</param>
-        /// <param name="HomingStrenght">追击力度</param>
-        /// <returns></returns>
-        public static Vector2 SmoothHomingBehavior(this Entity entity, Vector2 TargetCenter, float SpeedUpdates = 1, float HomingStrenght = 0.1f) {
-            float targetAngle = entity.AngleTo(TargetCenter);
-            float f = entity.velocity.ToRotation().RotTowards(targetAngle, HomingStrenght);
-            Vector2 speed = f.ToRotationVector2() * entity.velocity.Length() * SpeedUpdates;
-            entity.velocity = speed;
-            return speed;
-        }
-
-        /// <summary>
-        /// 更加缓和的追逐行为
-        /// </summary>
-        /// <param name="entity">需要操纵的实体</param>
-        /// <param name="TargetCenter">目标地点</param>
-        /// <param name="SpeedUpdates">速度的更新系数</param>
-        /// <param name="HomingStrenght">追击力度</param>
-        /// <returns></returns>
-        public static Vector2 SmoothHomingBehavior(this Entity entity, float speedMode, float HomingStrenght = 0.1f) {
-            float targetAngle = entity.AngleTo(entity.Center);
-            float f = entity.velocity.ToRotation().RotTowards(targetAngle, HomingStrenght);
-            Vector2 speed = f.ToRotationVector2() * speedMode;
-            entity.velocity = speed;
-            return speed;
-        }
-
         public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = ToRot(entity.rotation, toRot, rotSpeed);
 
         public static float ToRot(float setRot, float toRot, float rotSpeed) {
@@ -1109,15 +1025,6 @@ namespace CalamityOverhaul
             }
             return height;
         }
-
-
-        public const float TwoPi = MathF.PI * 2;
-        public const float FourPi = MathF.PI * 4;
-        public const float ThreePi = MathF.PI * 3;
-        public const float PiOver3 = MathF.PI / 3f;
-        public const float PiOver5 = MathF.PI / 5f;
-        public const float PiOver6 = MathF.PI / 6f;
-
         #endregion
 
         #region DrawUtils

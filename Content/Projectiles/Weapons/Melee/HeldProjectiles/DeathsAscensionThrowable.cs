@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
                 Main.EntitySpriteDraw(color: Color.Fuchsia * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition
-                    , sourceRectangle: null, rotation: Projectile.rotation - CWRUtils.PiOver5 + MathHelper.Pi
+                    , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5 + MathHelper.Pi
                     , scale: Projectile.scale * 1.15f, effects: SpriteEffects.None);
                 Main.spriteBatch.ExitShaderRegion();
             }

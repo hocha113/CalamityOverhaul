@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -80,7 +81,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             NPC target = Projectile.Center.FindClosestNPC(100);
             if (target != null) {
-                Projectile.SmoothHomingBehavior(9, 0.3f);
+                Projectile.SmoothHomingBehavior(target.Center, 1);
             }
             Time++;
         }

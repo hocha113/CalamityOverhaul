@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
             Main.EntitySpriteDraw(color: Color.IndianRed
                 , origin: value2.Size() * 0.5f, texture: value2, position: Projectile.Center - Main.screenPosition
-                , sourceRectangle: null, rotation: Projectile.rotation - CWRUtils.PiOver5
+                , sourceRectangle: null, rotation: Projectile.rotation - VaultUtils.PiOver5
                 , scale: Projectile.scale * 0.5f, effects: SpriteEffects.None);
             Main.spriteBatch.ExitShaderRegion();
 
