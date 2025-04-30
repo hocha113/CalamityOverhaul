@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Item.CWR().UEValue -= Item.CWR().ConsumeUseUE;
                 return true;
             }
-            
+
             return false;
         }
-           
+
 
         public override void AddRecipes() {
             _ = CreateRecipe()
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Projectile.active = false;
                 return;
             }
-            
+
             if (!Main.dedServ) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , Projectile.ai[0] < 180 ? DustID.Electric : DustID.RedTorch);
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             foreach (var npc in Main.ActiveNPCs) {
-                if (npc.type == NPCID.SkeletronPrime || npc.type == NPCID.Retinazer 
+                if (npc.type == NPCID.SkeletronPrime || npc.type == NPCID.Retinazer
                     || npc.type == NPCID.Spazmatism || npc.type == NPCID.TheDestroyer) {
                     npc.life = 0;
                     npc.HitEffect();

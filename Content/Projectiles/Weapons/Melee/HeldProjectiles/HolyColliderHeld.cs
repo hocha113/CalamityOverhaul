@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;

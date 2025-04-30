@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             //这里判定一个时间进行冲刺，用于展开体节，实际冲刺的时间需要比预定的展开时间长一些
             if (Time < StretchTime + 60 && Time > 10) {
-                if (DashVeloctiy == Vector2.Zero || npc.position.X > Main.maxTilesX * 16 - 50 
+                if (DashVeloctiy == Vector2.Zero || npc.position.X > Main.maxTilesX * 16 - 50
                     || npc.position.X < 50 || npc.position.Y > Main.maxTilesY * 16 - 50 || npc.position.Y < 50) {
                     DashVeloctiy = npc.Center.To(player.Center).UnitVector();
                     NetWorkAI();

@@ -1,6 +1,4 @@
-﻿using CalamityMod.NPCs.TownNPCs;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Content.Items.Placeable;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;

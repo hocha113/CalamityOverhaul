@@ -6,7 +6,6 @@ using CalamityMod.Projectiles.Boss;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override string Texture => CWRConstant.Asset + "ElectricPowers/MiningMachine";
         public static LocalizedText DontWork { get; set; }
         public override void SetStaticDefaults() {
-            DontWork = this.GetLocalization(nameof(DontWork), 
+            DontWork = this.GetLocalization(nameof(DontWork),
                 () => "It needs to be placed on a hard surface in order to carry out mining operations.");
         }
         public override void SetDefaults() {

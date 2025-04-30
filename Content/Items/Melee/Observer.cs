@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;

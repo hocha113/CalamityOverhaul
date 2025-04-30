@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public virtual void SetMachine() {
-            
+
         }
 
         public sealed override void Update() {

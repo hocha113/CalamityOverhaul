@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             int types = ModContent.ProjectileType<VientianePunishment>();
-            
+
             if (player.ownedProjectileCounts[types] >= MaxVientNum) {
                 return;
             }

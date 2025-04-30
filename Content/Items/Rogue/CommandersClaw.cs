@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                     Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
                 }
             }
-            
+
             if (Projectile.ai[0] == 0 && ++Projectile.ai[1] > 60 && Projectile.velocity.Y < 60) {
                 Projectile.velocity.Y += 1f;
             }

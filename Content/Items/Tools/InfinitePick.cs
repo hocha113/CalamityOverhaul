@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;

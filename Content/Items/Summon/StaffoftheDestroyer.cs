@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                 if (proj.owner != player.whoAmI) {
                     continue;
                 }
-                if (proj.type == ModContent.ProjectileType<DestroyerTail>() 
+                if (proj.type == ModContent.ProjectileType<DestroyerTail>()
                     || proj.type == ModContent.ProjectileType<DestroyerBody>()) {
                     proj.active = false;
                     proj.netUpdate = true;
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             for (int i = 0; i <= player.maxMinions; i++) {
                 int bodyID = i == player.maxMinions ? ModContent.ProjectileType<DestroyerTail>() : ModContent.ProjectileType<DestroyerBody>();
                 index = Projectile.NewProjectile(head.FromObjectGetParent(), head.Center, head.velocity, bodyID, head.damage, head.knockBack
-                    , player.whoAmI, ai0:Main.projectile[index].identity);
+                    , player.whoAmI, ai0: Main.projectile[index].identity);
             }
         }
 
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                     Projectile.timeLeft = 2;
                 }
             }
-            
+
             //每次更改召唤上限时都重写生成一次体节
             if (oldMinionSlots != Owner.maxMinions) {
                 StaffoftheDestroyer.SpawnBody(Projectile, Owner);
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                     if (proj.owner != Owner.whoAmI) {
                         continue;
                     }
-                    if (proj.type == ModContent.ProjectileType<DestroyerBody>() 
+                    if (proj.type == ModContent.ProjectileType<DestroyerBody>()
                         || proj.type == ModContent.ProjectileType<DestroyerTail>()) {
                         proj.Center = Owner.Center;
                     }

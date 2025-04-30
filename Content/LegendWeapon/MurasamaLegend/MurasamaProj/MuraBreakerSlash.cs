@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
                 Projectile.ai[1] = 0;
             }
-            
+
             Projectile.scale += 0.01f;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity.UnitVector() * 80 * Projectile.scale;
             Projectile.rotation = Projectile.velocity.ToRotation();

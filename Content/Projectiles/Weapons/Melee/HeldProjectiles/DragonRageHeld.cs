@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.Melee;

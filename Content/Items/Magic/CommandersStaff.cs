@@ -9,7 +9,6 @@ using Terraria;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
