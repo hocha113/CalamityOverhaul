@@ -3,5 +3,5 @@ modReferences = CalamityMod@2.0.4.3, InnoVault
 sortAfter = CalamityMod, InnoVault
 homepage = https://github.com/hocha113/CalamityOverhaul
 author = HoCha113
-version = 0.6076
+version = 0.6077
 includeSource = true

@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.Industrials
     {
         #region Data
         /// <summary>
+        /// 如果远离4000像素以上就进入待机状态以节省性能
+        /// </summary>
+        public const int TurretIdleDistance = 4000;
+        /// <summary>
         /// 目标玩家实例
         /// </summary>
         public Player TargetByPlayer;
@@ -126,6 +130,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic[ID];
         #endregion
         public override void SetBattery() {
+            IdleDistance = TurretIdleDistance;
             Offset = new Vector2(0, -24);
             if (TargetCenter == default) {
                 TargetCenter = Center + new Vector2(111, 80f);

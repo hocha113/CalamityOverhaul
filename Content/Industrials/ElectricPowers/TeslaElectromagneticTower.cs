@@ -182,6 +182,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override int TargetTileID => ModContent.TileType<TeslaElectromagneticTowerTile>();
         public override int TargetItem => ModContent.ItemType<TeslaElectromagneticTower>();
         public override bool ReceivedEnergy => true;
+        public override bool CanDrop => false;
         public override float MaxUEValue => 1200;
         public bool AttackPattern { get; set; }
         public NPC TargetByNPC { get; set; }
@@ -217,6 +218,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void SetBattery() {
+            IdleDistance = 4000;//玩家远离后停止运行
             AttackPattern = TrackItem != null && TrackItem.type == ModContent.ItemType<TeslaElectromagneticTowerAttackMode>();
         }
 
@@ -280,6 +282,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                 MachineData.UEvalue -= 0.5f;
             }
+        }
+
+        public override void MachineKill() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            int itemID = AttackPattern ? ModContent.ItemType<TeslaElectromagneticTowerAttackMode>()
+                    : ModContent.ItemType<TeslaElectromagneticTower>();
+            Item item = new Item(itemID);
+            item.CWR().UEValue = MachineData.UEvalue;
+            DropItem(item);
         }
 
         public void ArcCharging() {

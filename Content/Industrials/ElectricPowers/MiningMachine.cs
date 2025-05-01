@@ -146,12 +146,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 { ItemID.TungstenOre, 0.1f },
                 { ItemID.PlatinumOre, 0.1f },
                 { ItemID.DemoniteOre, 0.1f },
+                { ItemID.Coal, 0.1f },
                 { ModContent.ItemType<DubiousPlating>(), 0.04f },
                 { ModContent.ItemType<MysteriousCircuitry>(), 0.012f },
             };
         }
 
         void ICWRLoader.UnLoadData() => Ores?.Clear();
+
+        public override void SetBattery() {
+            IdleDistance = 4000;//玩家远离后停止作业
+        }
 
         public override void UpdateMachine() {
             if (MachineData.UEvalue <= consumeUE) {

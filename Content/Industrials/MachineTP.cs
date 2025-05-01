@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
-            if (TrackItem != null && TrackItem.type == TargetItem) {
+            if (TrackItem != null) {
                 MachineData.UEvalue = TrackItem.CWR().UEValue;
                 if (MachineData.UEvalue > MaxUEValue) {
                     MachineData.UEvalue = MaxUEValue;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public sealed override void Update() {
-            if (!Spawn && TrackItem != null && TrackItem.type == TargetItem) {
+            if (!Spawn && TrackItem != null) {
                 SendData();//发送一次数据，因为放置时设置的UEValue不会自动同步
                 Spawn = true;
             }
