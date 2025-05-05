@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         internal static void ForcedNetUpdating(NPC npc) {
-            if (!VaultUtils.isServer || !npc.active || Main.GameUpdateCount % 40 != 0) {
+            if (!VaultUtils.isServer || !npc.active || Main.GameUpdateCount % 80 != 0) {
                 return;
             }
 
@@ -135,6 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Time++;
             npc.timeLeft = 1800;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+            Attack();
             if (CWRWorld.MachineRebellion && !MachineRebellionAI()) {
                 ForcedNetUpdating(npc);
                 return false;
@@ -144,6 +145,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return false;
             }
             return true;
+        }
+
+        internal void Attack() {
+            if (++ai[8] > 120) {
+                ai[8] = 0;
+                NetAISend();
+            }
         }
 
         internal bool OrigAI() {

@@ -1,8 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.NPCs;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Boss;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -28,7 +26,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static Asset<Texture2D> Tail_Glow;
         private static int iconIndex;
         private const float BeamWarningDuration = 120f;
-        private const float SparkWarningDuration = 30f;
         private const float AerialPhaseThreshold = 900f;
         private const float ExtremeModeBeamThreshold = 600f;
         private const float PhaseShiftWarningDuration = 180f;
@@ -43,15 +40,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool Death => CalamityWorld.death || BossRush;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
-        private bool Phase2 => LifeRatio < 0.85f || MasterMode;
-        private bool Phase3 => LifeRatio < 0.7f || MasterMode;
-        private bool Phase4 => LifeRatio < (Death ? 0.4f : 0.25f);
-        private bool Phase5 => LifeRatio < (Death ? 0.2f : 0.1f);
-        private bool HasSpawnDR => calNPC.newAI[1] < DamageReductionIncreaseDuration && calNPC.newAI[1] > 60f;
+        private bool Phase2 => LifeRatio < (Death ? 0.4f : 0.25f);
+        private bool Phase3 => LifeRatio < (Death ? 0.2f : 0.1f);
+        private bool HasSpawnDR => ai[1] < DamageReductionIncreaseDuration && ai[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance350Tiles;
-        private bool FlyAtTarget => (calNPC.newAI[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
-        private bool AbleToFireLaser => calNPC.destroyerLaserColor != -1;
+        private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
         private float enrageScale;
         private int noFlyZoneBoxHeight;
@@ -62,14 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private float phaseTransitionColorAmount;
         private int time;
         protected int frame;
-        internal Player Target {
-            get {
-                if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {
-                    npc.TargetClosest();
-                }
-                return Main.player[npc.target];
-            }
-        }
+        internal Player Target => npc.FindPlayer();
         #endregion
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Body", -1);
@@ -111,6 +98,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return base.CanOverride();
         }
 
+        public override void SetProperty() {
+            npc.aiStyle = -1;
+        }
+
         public override bool AI() {
             if (!SegmentNPC.Alives()) {
                 npc.life = 0;
@@ -120,6 +111,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.netUpdate = true;
                 return false;
             }
+
+            npc.aiStyle = -1;
 
             SetMechQueenUp();
             UpdateDRIncrease();
@@ -140,7 +133,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (npc.localAI[3] == 0f) {
                 npc.localAI[3] = skeletronAlive ? 1f : -1f;
-                npc.SyncExtraAI();
+                npc.netUpdate = true;
             }
 
             totalSegments = Main.getGoodWorld ? 100 : 80;
@@ -149,11 +142,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             noFlyZoneBoxHeight = 0;
 
             if (skeletronAlive) {
-                calNPC.newAI[3] = 0f;
+                ai[3] = 0f;
                 totalSegments = Main.getGoodWorld ? 75 : 60;
                 spitLaserSpreads = false;
                 noFlyZoneBoxHeight = 2000;
-                speed = turnSpeed = segmentVelocity = 0;
+                segmentVelocity = 0;
             }
             else {
                 noFlyZoneBoxHeight = CalculateNoFlyZoneHeight();
@@ -163,7 +156,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (npc.type == NPCID.TheDestroyerBody) {
                 HandleProbeRegeneration();
-                HandleDestroyerLaser();
             }
 
             if (npc.life > SegmentNPC.life) {
@@ -244,37 +236,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateDRIncrease() {
-            if (calNPC.newAI[1] < DamageReductionIncreaseDuration) {
-                calNPC.newAI[1] += 1f;
+            if (ai[1] < DamageReductionIncreaseDuration) {
+                ai[1] += 1f;
             }
 
-            calNPC.CurrentlyIncreasingDefenseOrDR = calNPC.newAI[1] < DamageReductionIncreaseDuration;
+            calNPC.CurrentlyIncreasingDefenseOrDR = ai[1] < DamageReductionIncreaseDuration;
         }
 
         private void UpdateFlightPhase() {
             if (StartFlightPhase) {
-                calNPC.newAI[3] += 1f;
+                ai[3] += 1f;
             }
 
-            float flightPhaseTimerSetValue = Phase5 ? Phase5AerialTimerValue : Phase4 ? Phase4AerialTimerValue : 0f;
-            if (calNPC.newAI[3] < flightPhaseTimerSetValue) {
-                calNPC.newAI[3] = flightPhaseTimerSetValue;
+            float flightPhaseTimerSetValue = Phase3 ? Phase5AerialTimerValue : Phase2 ? Phase4AerialTimerValue : 0f;
+            if (ai[3] < flightPhaseTimerSetValue) {
+                ai[3] = flightPhaseTimerSetValue;
             }
 
-            if (calNPC.newAI[3] >= AerialPhaseResetThreshold) {
-                calNPC.newAI[3] = flightPhaseTimerSetValue;
+            if (ai[3] >= AerialPhaseResetThreshold) {
+                ai[3] = flightPhaseTimerSetValue;
             }
         }
 
         private float CalculatePhaseTransitionColorAmount() {
-            if (HasSpawnDR || Phase5)
+            if (HasSpawnDR || Phase3) {
                 return 1f;
+            }
 
-            if (calNPC.newAI[3] >= GroundWarningStartThreshold)
-                return MathHelper.Clamp(1f - (calNPC.newAI[3] - GroundWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
+            if (ai[3] >= GroundWarningStartThreshold) {
+                return MathHelper.Clamp(1f - (ai[3] - GroundWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
+            }
 
-            if (calNPC.newAI[3] >= AerialWarningStartThreshold)
-                return MathHelper.Clamp((calNPC.newAI[3] - AerialWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
+            if (ai[3] >= AerialWarningStartThreshold) {
+                return MathHelper.Clamp((ai[3] - AerialWarningStartThreshold) / PhaseShiftWarningDuration, 0f, 1f);
+            }
 
             return 0f;
         }
@@ -353,7 +348,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             turnSpeed += 0.075f * enrageScale;
 
             if (FlyAtTarget) {
-                float speedMultiplier = Phase5 ? 1.8f : Phase4 ? 1.65f : 1.5f;
+                float speedMultiplier = Phase3 ? 1.8f : Phase2 ? 1.65f : 1.5f;
                 speed *= speedMultiplier;
             }
 
@@ -374,10 +369,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void HandleProbeRegeneration() {
             bool probeLaunched = npc.ai[2] == 1f;
 
-            if (enrageScale > 0f && !BossRush)
-                calNPC.newAI[2] = Math.Min(calNPC.newAI[2] + 1f, 480f);
-            else
-                calNPC.newAI[2] = Math.Max(calNPC.newAI[2] - 1f, 0f);
+            if (enrageScale > 0f && !BossRush) {
+                ai[2] = Math.Min(ai[2] + 1f, 480f);
+            }
+            else {
+                ai[2] = Math.Max(ai[2] - 1f, 0f);
+            }
 
             if (MasterMode && probeLaunched) {
                 npc.localAI[2] += 1f;
@@ -406,147 +403,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
                     npc.localAI[2] = 0f;
                     npc.SyncVanillaLocalAI();
+                    NetAISend();
                 }
             }
-        }
-
-        /// <summary>
-        /// 处理摧毁者的激光发射逻辑
-        /// </summary>
-        private void HandleDestroyerLaser() {
-            if (calNPC.destroyerLaserColor == -1 && npc.ai[2] != 1f) {
-                if (Main.rand.NextBool(MasterMode ? 200 / (Phase5 ? 4 : Phase4 ? 3 : 2) : 200)) {
-                    calNPC.destroyerLaserColor = Main.rand.Next(Phase3 ? 4 : Phase2 ? 3 : 2);
-                    if (calNPC.newAI[2] > 0f || BossRush)
-                        calNPC.destroyerLaserColor = 2;
-
-                    npc.SyncDestroyerLaserColor();
-                }
-            }
-
-            if (npc.ai[2] == 1f && AbleToFireLaser) {
-                calNPC.destroyerLaserColor = -1;
-                npc.SyncDestroyerLaserColor();
-            }
-
-            float shootProjectileTime = Death ? (MasterMode ? (Phase5 ? 120f : Phase4 ? 150f : 180f) : 270f) : (MasterMode ? (Phase5 ? 150f : Phase4 ? 210f : 270f) : 450f);
-            float bodySegmentTime = npc.ai[0] * (MasterMode ? 20f : 30f);
-            float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
-
-            if (AbleToFireLaser) {
-                calNPC.newAI[0] += (calNPC.newAI[0] > shootProjectileGateValue - BeamWarningDuration) ? 1f : 2f;
-            }
-
-            if (Main.netMode != NetmodeID.MultiplayerClient && calNPC.newAI[0] % 20f == 10f && AbleToFireLaser) {
-                npc.SyncExtraAI();
-            }
-
-            HandleLaserShooting(shootProjectileGateValue, shootProjectileTime, bodySegmentTime);
-        }
-
-        private void HandleLaserShooting(float shootProjectileGateValue, float shootProjectileTime, float bodySegmentTime) {
-            Color telegraphColor = Color.Transparent;
-            switch (calNPC.destroyerLaserColor) {
-                case 0:
-                    telegraphColor = Color.Red;
-                    break;
-                case 1:
-                    telegraphColor = Color.Green;
-                    break;
-                case 2:
-                    telegraphColor = Color.Cyan;
-                    break;
-            }
-
-            if (calNPC.newAI[0] == shootProjectileGateValue - BeamWarningDuration) {
-                Particle telegraph = new DestroyerReticleTelegraph(
-                    npc,
-                    telegraphColor,
-                    1.5f,
-                    0.15f,
-                    (int)BeamWarningDuration);
-                GeneralParticleHandler.SpawnParticle(telegraph);
-            }
-
-            if (calNPC.newAI[0] == shootProjectileGateValue - SparkWarningDuration) {
-                Particle spark = new DestroyerSparkTelegraph(
-                    npc,
-                    telegraphColor * 2f,
-                    Color.White,
-                    3f,
-                    30,
-                    Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-            // 判断是否可以射击
-            if (calNPC.newAI[0] < shootProjectileGateValue || !AbleToFireLaser)
-                return;
-
-            // 更新激光发射时间和目标
-            UpdateLaserTimingAndTarget(totalSegments, shootProjectileTime, bodySegmentTime, BeamWarningDuration, MasterMode);
-
-            // 检查是否可以命中目标
-            if (!Collision.CanHit(npc.position, npc.width, npc.height, Target.position, Target.width, Target.height)) {
-                return;
-            }
-
-            // 激光射击逻辑
-            float projectileSpeed = (MasterMode ? 4.5f : 3.5f) + Main.rand.NextFloat() * 1.5f + enrageScale;
-            int projectileType = GetProjectileType(calNPC.destroyerLaserColor);
-            Vector2 projectileVelocity = (Target.Center - npc.Center).SafeNormalize(Vector2.UnitY) * projectileSpeed;
-            Vector2 projectileSpawn = npc.Center + projectileVelocity.SafeNormalize(Vector2.UnitY) * 100f;
-
-            int damage = npc.GetProjectileDamage(projectileType);
-            damage = AdjustDamageForEarlyHardmode(damage);
-
-            if (!VaultUtils.isClient) {
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), projectileSpawn, projectileVelocity, projectileType, damage, 0f, Main.myPlayer, 1f, 0f);
-                Main.projectile[proj].timeLeft = 1200;
-            }
-
-            npc.netUpdate = true;
-
-            // 重置激光颜色
-            calNPC.destroyerLaserColor = -1;
-            npc.SyncDestroyerLaserColor();
-        }
-
-        private void UpdateLaserTimingAndTarget(int totalSegments, float shootProjectileTime, float bodySegmentTime, float LaserTelegraphTime, bool masterMode) {
-            int numProbeSegments = CountActiveSegments(npc.type);
-            float lerpAmount = MathHelper.Clamp(numProbeSegments / (float)totalSegments, 0f, 1f);
-            float laserShootTimeBonus = (int)MathHelper.Lerp(0f, (shootProjectileTime + bodySegmentTime * lerpAmount) - LaserTelegraphTime, 1f - lerpAmount);
-            calNPC.newAI[0] = laserShootTimeBonus;
-            npc.SyncExtraAI();
-            npc.TargetClosest();
-        }
-
-        private int CountActiveSegments(int npcType) {
-            int count = 0;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                if (Main.npc[i].active && Main.npc[i].type == npcType && Main.npc[i].ai[2] == 0f)
-                    count++;
-            }
-            return count;
-        }
-
-        private int GetProjectileType(int destroyerLaserColor) {
-            return destroyerLaserColor switch {
-                1 => ModContent.ProjectileType<DestroyerCursedLaser>(),
-                2 => ModContent.ProjectileType<DestroyerElectricLaser>(),
-                _ => ProjectileID.DeathLaser
-            };
-        }
-
-        private int AdjustDamageForEarlyHardmode(int damage) {
-            if (CalamityConfig.Instance.EarlyHardmodeProgressionRework && !BossRushEvent.BossRushActive) {
-                double firstMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert;
-                double secondMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert;
-                if (!NPC.downedMechBossAny)
-                    damage = (int)(damage * firstMechMultiplier);
-                else if ((!NPC.downedMechBoss1 && !NPC.downedMechBoss2) || (!NPC.downedMechBoss2 && !NPC.downedMechBoss3) || (!NPC.downedMechBoss3 && !NPC.downedMechBoss1))
-                    damage = (int)(damage * secondMechMultiplier);
-            }
-            return damage;
         }
 
         private bool ShouldFly() {
@@ -607,33 +466,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void HandleLighting(bool spitLaserSpreads) {
-            if (npc.type == NPCID.TheDestroyerBody && calNPC.destroyerLaserColor == -1)
+            if (npc.type == NPCID.TheDestroyerBody) {
                 return;
+            }
 
-            Vector3 lightColor = Color.Red.ToVector3();
             Vector3 groundColor = new Vector3(0.3f, 0.1f, 0.05f);
             Vector3 flightColor = new Vector3(0.05f, 0.1f, 0.3f);
             Vector3 segmentColor = Vector3.Lerp(groundColor, flightColor, phaseTransitionColorAmount);
             Vector3 telegraphColor = groundColor;
             float telegraphProgress = 0f;
 
-            if (calNPC.destroyerLaserColor != -1) {
-                float telegraphGateValue = ExtremeModeBeamThreshold - BeamWarningDuration;
+            float telegraphGateValue = ExtremeModeBeamThreshold - BeamWarningDuration;
 
-                if (npc.type == NPCID.TheDestroyer && spitLaserSpreads && calNPC.newAI[0] > telegraphGateValue) {
+            if (npc.type == NPCID.TheDestroyer && spitLaserSpreads && ai[0] > telegraphGateValue) {
+                telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
+                telegraphProgress = MathHelper.Clamp((ai[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
+            }
+            else if (npc.type == NPCID.TheDestroyerBody) {
+                float shootProjectileTime = (CalamityWorld.death || BossRushEvent.BossRushActive) ? 270f : 450f;
+                float bodySegmentTime = npc.ai[0] * 30f;
+                float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
+                float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
+
+                if (ai[0] > bodyTelegraphGateValue) {
                     telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                    telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
-                }
-                else if (npc.type == NPCID.TheDestroyerBody) {
-                    float shootProjectileTime = (CalamityWorld.death || BossRushEvent.BossRushActive) ? 270f : 450f;
-                    float bodySegmentTime = npc.ai[0] * 30f;
-                    float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
-                    float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
-
-                    if (calNPC.newAI[0] > bodyTelegraphGateValue) {
-                        telegraphColor = GetTelegraphColor(calNPC.destroyerLaserColor);
-                        telegraphProgress = MathHelper.Clamp((calNPC.newAI[0] - bodyTelegraphGateValue) / BeamWarningDuration, 0f, 1f);
-                    }
+                    telegraphProgress = MathHelper.Clamp((ai[0] - bodyTelegraphGateValue) / BeamWarningDuration, 0f, 1f);
                 }
             }
 
@@ -662,11 +519,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        private Vector3 GetTelegraphColor(int destroyerLaserColor) {
+        private static Vector3 GetTelegraphColor(int destroyerLaserColor) {
             return destroyerLaserColor switch {
                 1 => new Vector3(0.1f, 0.3f, 0.05f),
                 2 => new Vector3(0.05f, 0.2f, 0.2f),
-                _ => new Vector3(0.3f, 0.1f, 0.05f) // Default ground color
+                _ => new Vector3(0.3f, 0.1f, 0.05f)
             };
         }
 

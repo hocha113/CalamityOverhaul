@@ -60,13 +60,5 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             return true;
         }
-
-        public override void AddRecipes() {
-            CreateRecipe()
-                .AddIngredient(ItemID.Wood, 5)
-                .AddIngredient(ItemID.CopperCoin, 5)
-                .AddTile(TileID.WorkBenches)
-                .Register();
-        }
     }
 }

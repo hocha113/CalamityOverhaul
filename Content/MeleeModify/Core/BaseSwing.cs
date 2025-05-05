@@ -26,7 +26,11 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         protected Vector2 startVector;
         protected float inWormBodysDamageFaul = 0.85f;
         /// <summary>
-        /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
+        /// 刀刃攻击是否忽略物块阻挡，默认为<see langword="false"/>
+        /// </summary>
+        public bool HitIgnoreTile = false;
+        /// <summary>
+        /// 每次发射事件是否运行全局物品行为，默认为<see langword="true"/>
         /// </summary>
         public bool GlobalItemBehavior = true;
         /// <summary>
@@ -355,7 +359,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             InitializeCaches();
         }
 
-        public Vector2 RodingToVer(float radius, float theta) => theta.ToRotationVector2() * radius;
+        public static Vector2 RodingToVer(float radius, float theta) => theta.ToRotationVector2() * radius;
 
         public float SetSwingSpeed(float speed) => speed / Owner.GetWeaponAttackSpeed(Item);
         /// <summary>
@@ -659,6 +663,13 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 modifiers.FinalDamage *= inWormBodysDamageFaul;
             }
             SwingModifyHitNPC(target, ref modifiers);
+        }
+
+        public sealed override bool? CanHitNPC(NPC target) {
+            if (!HitIgnoreTile && !Collision.CanHit(GetOwnerCenter(), 1, 1, target.Center, 1, 1)) {
+                return false;
+            }
+            return null;
         }
 
         public virtual void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

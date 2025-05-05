@@ -45,9 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         public CalamityGlobalNPC calNPC {
             get {
-                if (_calNPC_Instance == null) {
-                    _calNPC_Instance = npc.Calamity();
-                }
+                _calNPC_Instance ??= npc.Calamity();
                 return _calNPC_Instance;
             }
         }

@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -76,40 +74,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             SwingBehavior(33, 3, 0.1f, 0.1f, 0.012f, 0.01f, 0.08f, 0, 0, 0, 12, 36);
-        }
-
-        private void HitEffect(Entity target, bool theofSteel) {
-            if (theofSteel) {
-                SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = 0.25f }, target.Center);
-            }
-            else {
-                SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 1.15f }, target.Center);
-            }
-
-            HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
-
-            for (int i = 0; i < sparkCount; i++) {
-                Vector2 sparkVelocity2 = rotToTargetSpeedTrengsVumVer.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.3f, 1.6f);
-                int sparkLifetime2 = Main.rand.Next(18, 30);
-                float sparkScale2 = Main.rand.NextFloat(0.65f, 1.2f);
-                Color sparkColor2 = Main.rand.NextBool(3) ? Color.OrangeRed : Color.DarkRed;
-                if (theofSteel) {
-                    sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
-                }
-
-                PRT_Spark spark = new PRT_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
-                        , target.height * 0.5f) + (Projectile.velocity * 1.2f), sparkVelocity2 * 1f
-                        , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
-                PRTLoader.AddParticle(spark);
-            }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target));
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            HitEffect(target, false);
         }
 
         bool IWarpDrawable.CanDrawCustom() => true;
