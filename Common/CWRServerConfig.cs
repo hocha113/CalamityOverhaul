@@ -91,6 +91,10 @@ namespace CalamityOverhaul.Common
         public bool ShotgunFireForcedReloadInterruption { get; set; }
 
         [BackgroundColor(192, 54, 94, 255)]
+        [DefaultValue(false)]
+        public bool WeaponLazyRotationAngle { get; set; }
+
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool ScreenVibration { get; set; }//武器屏幕振动
 

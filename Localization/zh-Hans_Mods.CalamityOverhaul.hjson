@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1496,6 +1496,15 @@ Configs: {
 				'''
 				小部分的霰弹枪类拥有这个特性，在装填子弹时，如果玩家试图开火将打断装填动作
 				这个选项如果开启，将令所有霰弹枪武器具备该特性
+				'''
+		}
+
+		WeaponLazyRotationAngle: {
+			Label: 武器惰性旋转角更新
+			Tooltip:
+				'''
+				如果启用，会让手持类武器的使用动画更加接近原版，
+				使用的朝向将只在开火时改变一次
 				'''
 		}
 

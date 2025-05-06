@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
     public abstract class BaseHeldRanged : BaseHeldProj
     {
         #region Data
+        protected float oldSetRoting;
         /// <summary>
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -51,6 +52,15 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 左手角度值
         /// </summary>
         public float ArmRotSengsBack;
+        //存储LazyRotationUpdate的值
+        private bool _lazyRotationUpdate;
+        /// <summary>
+        /// 是否启用惰性旋转角更新，如果为<see langword="true"/>，武器的旋转角度只会在开火前更新一次
+        /// </summary>
+        public bool LazyRotationUpdate {
+            get => _lazyRotationUpdate || CWRServerConfig.Instance.WeaponLazyRotationAngle;
+            set => _lazyRotationUpdate = value;
+        }
         /// <summary>
         /// 远程武器本身是否具有碰撞伤害
         /// </summary>

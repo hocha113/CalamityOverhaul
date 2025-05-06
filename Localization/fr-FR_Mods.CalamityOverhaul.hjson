@@ -1504,6 +1504,15 @@ Configs: {
 				'''
 		}
 
+		WeaponLazyRotationAngle: {
+			// Label: Weapon Inertia Rotation Angle Update
+			/* Tooltip:
+				'''
+				If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
+				where the facing direction changes only once when firing.
+				''' */
+		}
+
 		BiologyOverhaul: {
 			Label: Modification du comportement biologique [c/06e33f:(expérimental)]
 			Tooltip:

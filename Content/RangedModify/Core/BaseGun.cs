@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
     public abstract class BaseGun : BaseHeldRanged
     {
         #region Data
-        protected float oldSetRoting;
         /// <summary>
         /// 一个专用与子类的属性，仅仅用于保证自动抛壳<see cref="AutomaticPolishing"/>会在正确的时机运行
         /// ，一般来讲不要设置它，它会在一次射击中自动恢复为<see langword="true"/>
@@ -63,10 +62,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 枪械是否受到应力缩放，默认为<see langword="true"/>
         /// </summary>
         public bool PressureWhetherIncrease = true;
-        /// <summary>
-        /// 是否启用惰性旋转角更新，如果为<see langword="true"/>，枪械在开火周期中的旋转角度只会在开火前更新一次
-        /// </summary>
-        public bool LazyRotationUpdate = false;
         /// <summary>
         /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
         /// </summary>

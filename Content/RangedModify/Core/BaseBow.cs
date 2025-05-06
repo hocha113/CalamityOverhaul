@@ -177,16 +177,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        private void setInFireFromeAI() {
-            Owner.direction = ToMouse.X > 0 ? 1 : -1;
-            Projectile.rotation = ToMouseA;
+        private void SetInFireFromeAI() {
+            Projectile.rotation = LazyRotationUpdate ? oldSetRoting : ToMouseA;
+            Owner.direction = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
                 * HandFireDistanceX + new Vector2(0, HandFireDistanceY * SafeGravDir);
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             SetCompositeArm();
         }
 
-        private void setIdleFromeAI() {
+        private void SetIdleFromeAI() {
             ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY).RotatedBy(Owner.fullRotation);
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         public override void FiringIncident() {
             if (DownLeft) {
-                setInFireFromeAI();
+                SetInFireFromeAI();
                 if (HaveAmmo) {
                     onFire = true;
                     SetArmInFire();
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
 
             if (DownRight && CanRightClick && !onFire && SafeMousetStart) {
-                setInFireFromeAI();
+                SetInFireFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;
                     onFireR = true;
@@ -271,13 +271,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 if (ShootCoolingValue > 0) {
                     ShootCoolingValue = 0;
                 }
+                if (LazyRotationUpdate) {//在闲置期间要时刻更新待定的旋转角
+                    oldSetRoting = ToMouseA;
+                }
             }
 
             if (InOwner_HandState_AlwaysSetInFireRoding) {
-                setInFireFromeAI();
+                SetInFireFromeAI();
             }
             else {
-                setIdleFromeAI();
+                SetIdleFromeAI();
             }
 
             SetCompositeArm();
@@ -333,10 +336,19 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public override void SpanProj() {
             //ShootCoolingValue >= Item.useTime而不是ShootCoolingValue > Item.useTime，后者会让所有弓的攻击看起来都慢一帧
             if (ShootCoolingValue >= Item.useTime && (onFire || onFireR)) {
+                if (LazyRotationUpdate) {
+                    Projectile.rotation = oldSetRoting = ToMouseA;
+                }
+
+                //在生成射弹前再执行一次 SetInFireFromeAI，以防止因为更新顺序所导致的延迟帧情况
+                SetInFireFromeAI();
+
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
+
                 SetShootAttribute();
+
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     if (onFire) {
                         BowShoot();
