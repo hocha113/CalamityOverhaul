@@ -48,10 +48,10 @@ namespace CalamityOverhaul
         public override void PostSetupContent() {
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Setup();
-            foreach (var i in ILoaders) {
-                i.SetupData();
+            foreach (var load in ILoaders) {
+                load.SetupData();
                 if (!Main.dedServ) {
-                    i.LoadAsset();
+                    load.LoadAsset();
                 }
             }
         }
@@ -61,14 +61,14 @@ namespace CalamityOverhaul
             FindMod();
 
             ILoaders = VaultUtils.GetSubInterface<ICWRLoader>();
-            foreach (var setup in ILoaders) {
-                setup.LoadData();
+            foreach (var load in ILoaders) {
+                load.LoadData();
             }
         }
 
         public override void Unload() {
-            foreach (var setup in ILoaders) {
-                setup.UnLoadData();
+            foreach (var load in ILoaders) {
+                load.UnLoadData();
             }
 
             EmptyMod();

@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Common
         }
 
         // 确保旧的RenderTarget2D对象被正确释放
-        private void DisposeScreen() {
+        private static void DisposeScreen() {
             screen?.Dispose();
             screen = null;
         }
@@ -79,9 +79,7 @@ namespace CalamityOverhaul.Common
 
             GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
 
-            if (screen == null) {
-                screen = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
-            }
+            screen ??= new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
 
             if (!Main.gameMenu) {
                 DrawPrimitiveProjectile();
