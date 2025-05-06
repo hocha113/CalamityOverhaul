@@ -9,6 +9,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
     {
         public override string Texture => "CalamityMod/Projectiles/LaserProj";
         public ref float BeamLength => ref Projectile.localAI[0];
+        public override void Load() {
+            base.Load();
+        }
         public override void SetDefaults() {
             Projectile.width = 5;
             Projectile.height = 5;

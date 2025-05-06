@@ -27,8 +27,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool openMouth;
         private int dontOpenMouthTime;
         private Player player;
+        [VaultLoaden(CWRConstant.NPC + "BTD/BTD_Head")]
         internal static Asset<Texture2D> HeadIcon;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Head")]
         internal static Asset<Texture2D> Head;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Head_Glow")]
         internal static Asset<Texture2D> Head_Glow;
         internal static int iconIndex;
         internal static int iconIndex_Void;
@@ -45,15 +48,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
             iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
-        }
-        void ICWRLoader.LoadAsset() {
-            Head = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head");
-            Head_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Head_Glow");
-            HeadIcon = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BTD_Head");
-        }
-        void ICWRLoader.UnLoadData() {
-            Head = null;
-            Head_Glow = null;
         }
 
         public override void SetProperty() {

@@ -276,9 +276,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (!HeadPrimeAI.canLoaderAssetZunkenUp) {
-                return false;
-            }
             if (HeadPrimeAI.DontReform()) {
                 return true;
             }

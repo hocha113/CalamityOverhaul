@@ -61,22 +61,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal ref float ai9 => ref ai[9];
         internal ref float ai10 => ref ai[10];
         internal ref float ai11 => ref ai[11];
-        internal static bool canLoaderAssetZunkenUp;
+        [VaultLoaden(CWRConstant.NPC + "BSP/MachineRebellion")]
         internal static Asset<Texture2D> MachineRebellionAsset;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BrutalSkeletron")]
         internal static Asset<Texture2D> HandAsset;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPCannon")]
         internal static Asset<Texture2D> BSPCannon;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPlaser")]
         internal static Asset<Texture2D> BSPlaser;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPPliers")]
         internal static Asset<Texture2D> BSPPliers;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPSAW")]
         internal static Asset<Texture2D> BSPSAW;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM")]
         internal static Asset<Texture2D> BSPRAM;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_Forearm")]
         internal static Asset<Texture2D> BSPRAM_Forearm;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BrutalSkeletronGlow")]
         internal static Asset<Texture2D> HandAssetGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPCannonGlow")]
         internal static Asset<Texture2D> BSPCannonGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPlaserGlow")]
         internal static Asset<Texture2D> BSPlaserGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPPliersGlow")]
         internal static Asset<Texture2D> BSPPliersGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPSAWGlow")]
         internal static Asset<Texture2D> BSPSAWGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAMGlow")]
         internal static Asset<Texture2D> BSPRAMGlow;
+        [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_ForearmGlow")]
         internal static Asset<Texture2D> BSPRAM_ForearmGlow;
+        //下面是用于缓存原版纹理的字段
         internal static Asset<Texture2D> Vanilla_TwinsBossBag;
         internal static Asset<Texture2D> Vanilla_DestroyerBossBag;
         internal static Asset<Texture2D> Vanilla_SkeletronPrimeBossBag;
@@ -90,24 +105,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         void ICWRLoader.LoadAsset() {
-            string path = CWRConstant.NPC + "BSP/";
-            MachineRebellionAsset = CWRUtils.GetT2DAsset(path + "MachineRebellion");
-            HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
-            BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
-            BSPlaser = CWRUtils.GetT2DAsset(path + "BSPlaser");
-            BSPPliers = CWRUtils.GetT2DAsset(path + "BSPPliers");
-            BSPSAW = CWRUtils.GetT2DAsset(path + "BSPSAW");
-            BSPRAM = CWRUtils.GetT2DAsset(path + "BSPRAM");
-            BSPRAM_Forearm = CWRUtils.GetT2DAsset(path + "BSPRAM_Forearm");
-            HandAssetGlow = CWRUtils.GetT2DAsset(path + "BrutalSkeletronGlow");
-            BSPCannonGlow = CWRUtils.GetT2DAsset(path + "BSPCannonGlow");
-            BSPlaserGlow = CWRUtils.GetT2DAsset(path + "BSPlaserGlow");
-            BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
-            BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
-            BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
-            BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
-            canLoaderAssetZunkenUp = true;
-
             //先缓存原版的纹理
             Vanilla_TwinsBossBag = TextureAssets.Item[ItemID.TwinsBossBag];
             Vanilla_DestroyerBossBag = TextureAssets.Item[ItemID.DestroyerBossBag];
@@ -125,34 +122,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         void ICWRLoader.UnLoadData() {
-            MachineRebellionAsset = null;
-            HandAsset = null;
-            BSPCannon = null;
-            BSPlaser = null;
-            BSPPliers = null;
-            BSPSAW = null;
-            BSPRAM = null;
-            BSPRAM_Forearm = null;
-            HandAssetGlow = null;
-            BSPCannonGlow = null;
-            BSPlaserGlow = null;
-            BSPPliersGlow = null;
-            BSPSAWGlow = null;
-            BSPRAMGlow = null;
-            BSPRAM_ForearmGlow = null;
-            canLoaderAssetZunkenUp = false;
+            if (VaultUtils.isServer) {//下面的操作不能在服务器上运行
+                return;
+            }
 
-            if (!VaultUtils.isServer) {//下面的操作不能在服务器上运行
-                //无论在什么情况下，修改了原版纹理都需要恢复它
-                if (Vanilla_TwinsBossBag != null) {
-                    TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
-                }
-                if (Vanilla_TwinsBossBag != null) {
-                    TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
-                }
-                if (Vanilla_TwinsBossBag != null) {
-                    TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
-                }
+            //无论在什么情况下，修改了原版纹理都需要恢复它
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;
+            }
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.DestroyerBossBag] = Vanilla_TwinsBossBag;
+            }
+            if (Vanilla_TwinsBossBag != null) {
+                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = Vanilla_SkeletronPrimeBossBag;
             }
         }
 
@@ -197,10 +179,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
-            if (!canLoaderAssetZunkenUp) {
-                return;
-            }
-
             NPC head = Main.npc[(int)rCurrentNPC.ai[1]];
 
             if (setPosingStarmCount > 0) {
@@ -1365,9 +1343,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => DontReform();
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (!canLoaderAssetZunkenUp) {
-                return false;
-            }
             if (npc.ai[1] == 4) {
                 drawColor = Color.Red;
             }

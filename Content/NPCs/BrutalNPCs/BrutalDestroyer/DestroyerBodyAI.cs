@@ -17,12 +17,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Body_Stingless")]
         internal static Asset<Texture2D> Body_Stingless;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Body")]
         internal static Asset<Texture2D> Body;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Body_Glow")]
         internal static Asset<Texture2D> Body_Glow;
+        [VaultLoaden(CWRConstant.NPC + "BTD/BodyAlt")]
         internal static Asset<Texture2D> BodyAlt;
+        [VaultLoaden(CWRConstant.NPC + "BTD/BodyAlt_Glow")]
         internal static Asset<Texture2D> BodyAlt_Glow;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Tail")]
         internal static Asset<Texture2D> Tail;
+        [VaultLoaden(CWRConstant.NPC + "BTD/Tail_Glow")]
         internal static Asset<Texture2D> Tail_Glow;
         private static int iconIndex;
         private const float BeamWarningDuration = 120f;
@@ -61,24 +68,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Body", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Body");
-        }
-        void ICWRLoader.LoadAsset() {
-            Body_Stingless = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body_Stingless");
-            Body = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body");
-            Body_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Body_Glow");
-            BodyAlt = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BodyAlt");
-            BodyAlt_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/BodyAlt_Glow");
-            Tail = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Tail");
-            Tail_Glow = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BTD/Tail_Glow");
-        }
-        void ICWRLoader.UnLoadData() {
-            Body_Stingless = null;
-            Body = null;
-            Body_Glow = null;
-            BodyAlt = null;
-            BodyAlt_Glow = null;
-            Tail = null;
-            Tail_Glow = null;
         }
 
         public override void BossHeadSlot(ref int index) {
