@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 if (initialLength != float.MaxValue) {
                     Length = initialLength;
                 }
-                startVector = RodingToVer(1, Projectile.velocity.ToRotation()); // 初始化方向向量
+                startVector = Projectile.velocity.UnitVector(); // 初始化方向向量
                 speed = 1 + initialSpeedFactor / UpdateRate / SwingMultiplication; // 初始化速度因子
             }
 
