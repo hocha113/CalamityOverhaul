@@ -241,9 +241,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
-            if (item.type == ItemID.None) {
-                return false;
+            if (item.type == ItemID.None || Main.gameMenu) {
+                return orig.Invoke(item, pre);
             }
+
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_AllowPreFix(item, pre);
                 if (rasg.HasValue) {
@@ -253,13 +254,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.CWR().GetAllowPrefix) {
                 return true;
             }
+
             return orig.Invoke(item, pre);
         }
 
         public bool OnMeleePrefixHook(On_Item_Dalegate orig, Item item) {
-            if (item.type == ItemID.None) {
-                return false;
+            if (item.type == ItemID.None || Main.gameMenu) {
+                return orig.Invoke(item);
             }
+
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_MeleePreFix(item);
                 if (rasg.HasValue) {
@@ -269,13 +272,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.CWR().GetMeleePrefix) {
                 return true;
             }
+
             return orig.Invoke(item);
         }
 
         public bool OnRangedPrefixHook(On_Item_Dalegate orig, Item item) {
-            if (item.type == ItemID.None) {
-                return false;
+            if (item.type == ItemID.None || Main.gameMenu) {
+                return orig.Invoke(item);
             }
+
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
                 bool? rasg = ritem.On_RangedPreFix(item);
                 if (rasg.HasValue) {
@@ -285,6 +290,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (item.CWR().GetRangedPrefix) {
                 return true;
             }
+
             return orig.Invoke(item);
         }
 
