@@ -17,18 +17,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         #region Data
         protected float oldSetRoting;
         /// <summary>
-        /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
-        /// </summary>
-        public CWRPlayer ModOwner = null;
-        /// <summary>
-        /// 获取对应的<see cref="CalamityPlayer"/>实例，在弹幕初始化时更新这个值
-        /// </summary>
-        public CalamityPlayer CalOwner;
-        /// <summary>
-        /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
-        /// </summary>
-        public CWRItems ModItem = null;
-        /// <summary>
         /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
         /// </summary>
         public bool GlobalItemBehavior = true;
@@ -247,7 +235,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             onFireR = flags[4];
         }
 
-        public virtual bool CanSpanProj() => !CalOwner.profanedCrystalBuffs;
+        public virtual bool CanSpanProj() => !Owner.Calamity().profanedCrystalBuffs;
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -337,7 +325,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     ScopeLeng = 40f;
                 }
                 Main.SetCameraLerp(0.15f, 60);
-                ModOwner.OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
+                Owner.CWR().OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
             }
             else {
                 ScopeLeng = 0;
@@ -362,16 +350,17 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         private void UpdateRogueStealth() {
             bool noAvailable = false;
+            CalamityPlayer calPlayer = Owner.Calamity();
             if (CWRMod.Instance.narakuEye != null) {
                 noAvailable = (bool)CWRMod.Instance.narakuEye.Call(Owner);
-                if (CalOwner.StealthStrikeAvailable()) {
+                if (calPlayer.StealthStrikeAvailable()) {
                     noAvailable = false;
                 }
             }
             if (!noAvailable) {
-                CalOwner.rogueStealth = 0;
-                if (CalOwner.stealthUIAlpha > 0.02f) {
-                    CalOwner.stealthUIAlpha -= 0.02f;
+                calPlayer.rogueStealth = 0;
+                if (calPlayer.stealthUIAlpha > 0.02f) {
+                    calPlayer.stealthUIAlpha -= 0.02f;
                 }
             }
         }
@@ -388,7 +377,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 SetWeaponOccupancyStatus();
                 UpdateRogueStealth();
             }
-            if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.IsOwnedByLocalPlayer() && Item.CWR().Scope) {
                 ScopeSrecen();
             }
             else {
@@ -417,9 +406,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 return false;
             }
 
-            ModItem = Item.CWR();
-            ModOwner = Owner.CWR();
-            CalOwner = Owner.Calamity();
             return true;
         }
         public virtual void InOwner() {

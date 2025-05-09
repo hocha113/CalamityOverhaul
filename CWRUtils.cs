@@ -460,6 +460,8 @@ namespace CalamityOverhaul
             return false;
         }
 
+        public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
+
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
             if (legendtops != null) {

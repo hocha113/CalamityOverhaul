@@ -265,7 +265,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             SetHeld();
 
             Projectile.timeLeft = 2;
-            ModItem.IsBow = IsBow;
 
             if (!onFire && !onFireR) {
                 if (ShootCoolingValue > 0) {
@@ -308,23 +307,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        /// <summary>
-        /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
-        /// 或者<see cref="CWRPlayer.TheRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
-        /// </summary>
-        public virtual void LuxirEvent() {
-            float damageMult = 1f;
-            if (Item.useTime < 10) {
-                damageMult -= (10 - Item.useTime) / 10f;
-            }
-            int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
-            if (luxirDamage > 1) {
-                SpanLuxirProj(luxirDamage);
-            }
-        }
-
-        public virtual int SpanLuxirProj(int luxirDamage) => 0;
-
         public virtual void SetShootAttribute() {
 
         }
@@ -355,9 +337,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                     if (onFireR) {
                         BowShootR();
-                    }
-                    if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                        LuxirEvent();
                     }
                     if (GlobalItemBehavior) {
                         ItemLoaderInFireSetBaver();

@@ -42,17 +42,20 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         internal bool IsKreload {
             get {
+                if (Main.gameMenu) {
+                    return false;
+                }
                 if (!MagazineSystem) {//如果关闭了弹匣系统就无脑返回true
                     return true;
                 }
-                if (ModItem == null) {
+                if (Item.CWR() == null) {
                     return false;
                 }
-                return ModItem.IsKreload;
+                return Item.CWR().IsKreload;
             }
             set {
-                if (ModItem != null) {
-                    ModItem.IsKreload = value;
+                if (!Main.gameMenu && Item.CWR() != null) {
+                    Item.CWR().IsKreload = value;
                 }
             }
         }
@@ -82,8 +85,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         internal int KreloadMaxTime {
             get {
                 float newTime = _kreloadMaxTime + extraKreloadMaxTime;
-                if (ModOwner != null) {
-                    newTime *= ModOwner.KreloadTimeIncrease;
+                if (!Main.gameMenu && Owner.TryGetModPlayer(out CWRPlayer cwrPlayer)) {
+                    newTime *= cwrPlayer.KreloadTimeIncrease;
                 }
                 return (int)MathHelper.Max(newTime, 4);
             }
@@ -153,14 +156,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         protected int BulletNum {
             get {
-                if (ModItem == null) {
+                if (Item.CWR() == null) {
                     return 0;
                 }
-                return ModItem.NumberBullets;
+                return Item.CWR().NumberBullets;
             }
             set {
-                if (ModItem != null) {
-                    ModItem.NumberBullets = value;
+                if (Item.CWR() != null) {
+                    Item.CWR().NumberBullets = value;
                 }
             }
         }
@@ -233,14 +236,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
 
             if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed
-                && CurrentAmountIsZero() && !ModOwner.UIMouseInterface && kreloadTimeValue <= 0) {
+                && CurrentAmountIsZero() && !Owner.CWR().UIMouseInterface && kreloadTimeValue <= 0) {
                 HandleEmptyAmmoEjection();
             }
 
             bool canReload = kreloadTimeValue == 0
                 && (!IsKreload || RepeatedCartridgeChange)
-                && BulletNum < ModItem.AmmoCapacity
-                && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
+                && BulletNum < Item.CWR().AmmoCapacity
+                && !onFire && HaveAmmo && Item.CWR().NoKreLoadTime == 0;
 
             if (Projectile.IsOwnedByLocalPlayer() && canReload) {
                 ManualReloadStart = CWRKeySystem.KreLoad_Key.JustPressed;
@@ -304,7 +307,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public sealed override void Initialize() {
-            ModItem.SetMagazine(ModItem.MagazineContents);
+            Item.CWR().SetMagazine(Item.CWR().MagazineContents);
             AmmoState = Owner.GetAmmoState(Item.useAmmo);
             if (FireTime <= 0) {
                 FireTime = Item.useTime;
@@ -320,10 +323,11 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 初始化弹匣状态
         /// </summary>
         protected void InitializeMagazine() {
-            if (ModItem.MagazineContents == null) {
-                ModItem.MagazineContents = new Item[ModItem.AmmoCapacity];
-                for (int i = 0; i < ModItem.MagazineContents.Length; i++) {
-                    ModItem.MagazineContents[i] = new Item();
+            CWRItems cwrItems = Item.CWR();
+            if (cwrItems.MagazineContents == null) {
+                cwrItems.MagazineContents = new Item[cwrItems.AmmoCapacity];
+                for (int i = 0; i < cwrItems.MagazineContents.Length; i++) {
+                    cwrItems.MagazineContents[i] = new Item();
                 }
             }
         }
@@ -332,7 +336,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         protected void SetAutomaticCartridgeChange(bool ignoreKreLoad = false) {
             if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && !CurrentAmountIsZero()
-                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.hoverInMainPage
+                && Item.CWR().NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.hoverInMainPage
                 && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
                 kreloadTimeValue = KreloadMaxTime;
@@ -428,7 +432,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
-                if (BulletNum < ModItem.AmmoCapacity) {
+                if (BulletNum < Item.CWR().AmmoCapacity) {
                     LoadingQuantity = 1;
                     LoadBulletsIntoMagazine();
                     if (CanFire && InShotgun_FireForcedReloadInterruption) {
@@ -454,7 +458,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
                 if (time == 1) {
                     SoundEngine.PlaySound(LoadingAA_Shotgun.loadShellSound with { Volume = loadingAA_VolumeValue }, Projectile.Center);
-                    if (BulletNum == ModItem.AmmoCapacity) {
+                    if (BulletNum == Item.CWR().AmmoCapacity) {
                         SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = loadingAA_VolumeValue }, Projectile.Center);
                         ShootCoolingValue += LoadingAA_Shotgun.pumpCoolingValue;
                     }
@@ -528,8 +532,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 ShootCoolingValue--;
             }
 
-            if (ModItem.NoKreLoadTime > 0) {
-                ModItem.NoKreLoadTime--;
+            if (Item.CWR().NoKreLoadTime > 0) {
+                Item.CWR().NoKreLoadTime--;
             }
 
             if (SafeMouseInterfaceValue) {
@@ -614,8 +618,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                 }
 
-                ModOwner.PlayerIsKreLoadTime = 2;
-                ModOwner.ReloadingRatio = kreloadTimeValue / (float)KreloadMaxTime;
+                Owner.CWR().PlayerIsKreLoadTime = 2;
+                Owner.CWR().ReloadingRatio = kreloadTimeValue / (float)KreloadMaxTime;
 
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
@@ -625,14 +629,14 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
                     OnKreload = false;
                     IsKreload = true;
-                    ModItem.IsKreload = true;
+                    Item.CWR().IsKreload = true;
                     kreloadTimeValue = 0;
                     //通常不希望在装完弹后就立马开火，这会导致一个因为更新顺序所产生的动画位置和射弹位置的错位，即使只有一帧但也会影响玩家的视觉体验和流畅感。
                     //所以这里在完成换弹后给开火冷却设置为1，充当一个延迟帧的效果，让枪体来得及从换弹动画中切换过来
                     ShootCoolingValue = 1;
 
                     if (KreLoadFulfill() && Get_LoadingAmmoAnimation_KreLoadFulfill()) {
-                        ModItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
+                        Item.CWR().SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                     }
                 }
                 SetWeaponOccupancyStatus();
@@ -640,7 +644,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
             if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
-                    if (!ModOwner.UIMouseInterface && kreloadTimeValue <= 0 && CurrentAmountIsZero()) {
+                    if (!Owner.CWR().UIMouseInterface && kreloadTimeValue <= 0 && CurrentAmountIsZero()) {
                         HandleEmptyAmmoEjection();
                     }
                     LoadingReminder = false;
@@ -665,8 +669,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            int quantity = LoadingQuantity > 0 ? LoadingQuantity : ModItem.AmmoCapacity;
-            if (BulletNum < ModItem.AmmoCapacity) {
+            CWRItems cwrItems = Item.CWR();
+            int quantity = LoadingQuantity > 0 ? LoadingQuantity : cwrItems.AmmoCapacity;
+            if (BulletNum < cwrItems.AmmoCapacity) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
                 if (ModGanged.Suitableversion_improveGame) {// 更好的体验适配
                     var ammoChain = Item.GetQotAmmoChain();
@@ -675,7 +680,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                 }
                 foreach (var ammo in AmmoState.CurrentItems) {
-                    ModItem.LoadenMagazine(ammo, LoadingQuantity);
+                    cwrItems.LoadenMagazine(ammo, LoadingQuantity);
                     if (BulletNum >= quantity) {
                         break;
                     }
@@ -704,27 +709,29 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 return;
             }
 
-            if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
-                ModItem.InitializeMagazine();
+            CWRItems cwrItems = Item.CWR();
+
+            if (cwrItems.MagazineContents.Length <= 0) {//弹匣已经空了
+                cwrItems.InitializeMagazine();
                 AmmoState = Owner.GetAmmoState();
                 IsKreload = false;
                 return;
             }
 
             if (IsKreload) {//已经打空弹匣了就不要干多余的事情了
-                Item targetAmmo = ModItem.GetSelectedBullets();
+                Item targetAmmo = cwrItems.GetSelectedBullets();
                 targetAmmo.stack--;
 
                 if (targetAmmo.stack <= 0) {//自己设置一下，这样可以利用SetMagazine函数的清理机制自动排除空位
-                    ModItem.SetMagazine(ModItem.MagazineContents);
+                    cwrItems.SetMagazine(cwrItems.MagazineContents);
                 }
                 else {
-                    ModItem.CalculateNumberBullet();
+                    cwrItems.CalculateNumberBullet();
                 }
             }
 
-            if (ModItem.MagazineContents.Length <= 0) {//弹匣已经空了
-                ModItem.InitializeMagazine();
+            if (cwrItems.MagazineContents.Length <= 0) {//弹匣已经空了
+                cwrItems.InitializeMagazine();
                 AmmoState = Owner.GetAmmoState();
                 IsKreload = false;
                 return;
@@ -794,9 +801,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                         SetShootAttribute();
 
                         if (Projectile.IsOwnedByLocalPlayer()) {
-                            if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                                LuxirEvent();
-                            }
                             if (onFire) {
                                 FiringShoot();
                             }

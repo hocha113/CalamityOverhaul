@@ -47,9 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                             if (onFireR) {
                                 FiringShootR();
                             }
-                            if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                                LuxirEvent();
-                            }
                             if (GlobalItemBehavior) {
                                 ItemLoaderInFireSetBaver();
                             }

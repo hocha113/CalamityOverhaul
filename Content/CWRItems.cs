@@ -145,10 +145,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public LegendData LegendData;
         /// <summary>
-        /// 是一把弓
-        /// </summary>
-        public bool IsBow;
-        /// <summary>
         /// 是否被抛射物控制使用，优先级高于<see cref="hasHeldNoCanUseBool"/>，且不受<see cref="heldProjType"/>影响
         /// </summary>
         public bool IsShootCountCorlUse;
@@ -236,7 +232,6 @@ namespace CalamityOverhaul.Content
             cwr.UEValue = UEValue;
             cwr.ConsumeUseUE = ConsumeUseUE;
             cwr.OmigaSnyContent = OmigaSnyContent;
-            cwr.IsBow = IsBow;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             cwr.LegendData = LegendData;
             return cwr;

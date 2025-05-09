@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 应力缩放系数
         /// </summary>
-        public float OwnerPressureIncrease => PressureWhetherIncrease ? ModOwner.PressureIncrease : 1;
+        public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
         /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             PostInOwner();
         }
         /// <summary>
-        /// 一个自动抛科的行为的二次封装
+        /// 一个自动抛壳的行为的二次封装
         /// </summary>
         protected void AutomaticPolishing(int maxTime) {
             if (ShootCoolingValue == maxTime / 2 && maxTime > 0) {
@@ -414,28 +414,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public virtual void FiringShootR() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
-        }
-        /// <summary>
-        /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
-        /// 或者<see cref="CWRPlayer.TheRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
-        /// </summary>
-        public virtual void LuxirEvent() {
-            float damageMult = 1f;
-            if (Item.useTime < 10) {
-                damageMult -= (10 - Item.useTime) / 10f;
-            }
-            int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
-            if (luxirDamage > 1) {
-                SpanLuxirProj(luxirDamage);
-            }
-        }
-        /// <summary>
-        /// 快速创建一个卢克索发射事件的方法，默认在<see cref="LuxirEvent"/>中调用
-        /// </summary>
-        /// <param name="luxirDamage"></param>
-        /// <returns></returns>
-        public virtual int SpanLuxirProj(int luxirDamage) {
-            return 0;
         }
         /// <summary>
         /// 获取枪口位置，一般用于发射口的矫正
@@ -558,9 +536,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                         if (onFireR) {
                             FiringShootR();
                         }
-                        if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                            LuxirEvent();
-                        }
                         if (GlobalItemBehavior) {
                             ItemLoaderInFireSetBaver();
                         }
@@ -591,14 +566,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 onFireR = onFire = false;
                 PostShootEverthing();
             }
-        }
-
-        public override bool PreUpdate() {
-            bool reset = base.PreUpdate();
-            if (ModOwner == null) {
-                ModOwner = Owner.CWR();
-            }
-            return reset;
         }
 
         public override void AI() {

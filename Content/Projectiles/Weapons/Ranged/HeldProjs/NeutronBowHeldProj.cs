@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            ModOwner.SetScreenShake(6.2f);
+            Owner.CWR().SetScreenShake(6.2f);
             AmmoTypes = ModContent.ProjectileType<EXNeutronArrow>();
             for (int i = 0; i < 3; i++) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy((-1 + i) * 0.25f)

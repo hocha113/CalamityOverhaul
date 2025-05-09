@@ -46,10 +46,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            ModOwner.SetScreenShake(3);
+            Owner.CWR().SetScreenShake(3);
             //火箭弹药特判
             float newDamg = WeaponDamage;
-            Item ammoItem = ModItem.GetSelectedBullets();
+            Item ammoItem = Item.CWR().GetSelectedBullets();
             AmmoTypes = ProjectileID.RocketI;
             if (ammoItem.type == ItemID.RocketII) {
                 AmmoTypes = ProjectileID.RocketII;

@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     proj.light = 0.75f;
                 }
 
-                ModOwner.SetScreenShake(5.3f);
+                Owner.CWR().SetScreenShake(5.3f);
                 PunchCameraModifier modifier = new PunchCameraModifier(targetPos, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
 

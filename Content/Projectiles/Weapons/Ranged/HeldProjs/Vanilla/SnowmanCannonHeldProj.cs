@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void SetShootAttribute() {
             AmmoTypes = ProjectileID.RocketSnowmanI;
-            int ammoItemType = ModItem.GetSelectedBullets().type;
+            int ammoItemType = Item.CWR().GetSelectedBullets().type;
             if (VaultUtils.SnowmanCannonAmmoMap.ContainsKey(ammoItemType)) {
                 AmmoTypes = VaultUtils.SnowmanCannonAmmoMap[ammoItemType];
             }
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     Main.projectile[proj4].usesLocalNPCImmunity = true;
                     Main.projectile[proj4].localNPCHitCooldown = 5;
                 }
-                ModOwner.SetScreenShake(3);
+                Owner.CWR().SetScreenShake(3);
             }
             if (ammonum == 0) {
                 int proj5 = Projectile.NewProjectile(Source, ShootPos, ShootVelocity * 0.00001f, AmmoTypes, WeaponDamage * 10, WeaponKnockback, Owner.whoAmI, 0);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 Main.projectile[proj5].usesLocalNPCImmunity = true;
                 Main.projectile[proj5].localNPCHitCooldown = 5;
                 Main.projectile[proj5].CWR().HitAttribute.NeverCrit = true;
-                ModOwner.SetScreenShake(3.5f);
+                Owner.CWR().SetScreenShake(3.5f);
             }
         }
     }
