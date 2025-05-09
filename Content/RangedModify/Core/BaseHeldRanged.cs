@@ -299,8 +299,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             Projectile.penetrate = -1;
             Projectile.hide = true;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
-            CWRUtils.SafeLoadItem(TargetID);
-            CWRUtils.SafeLoadProj(ToTargetAmmo);
+            VaultUtils.SafeLoadItem(TargetID);
+            VaultUtils.SafeLoadProj(ToTargetAmmo);
             PreSetRangedProperty();
             SetRangedProperty();
             PostSetRangedProperty();

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             StabAmplitudeMin = 60;
             StabAmplitudeMax = 100;
             ShurikenOut = CWRSound.ShurikenOut with { Pitch = -0.32f };
-            CWRUtils.SafeLoadItem(ItemID.Gladius);
+            VaultUtils.SafeLoadItem(ItemID.Gladius);
         }
 
         public override void ExtraShoot() {

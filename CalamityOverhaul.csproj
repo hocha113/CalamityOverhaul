@@ -35,13 +35,9 @@
     <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="assets\effects\DeductDraw.fx" />
     <None Remove="Assets\Effects\GradientTrail.fx" />
-    <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />
     <None Remove="Assets\Effects\KnifeRendering.fx" />
-    <None Remove="Assets\Effects\NeutronRingShader.fx" />
-    <None Remove="Assets\Effects\PrimeHaloShader.fx" />
     <None Remove="Assets\Effects\StreamerDust.fx" />
-    <None Remove="Assets\Effects\TrailWarp.fx" />
     <None Remove="Assets\Effects\TwistColoring.fx" />
     <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Items\Replace\TODO.txt" />

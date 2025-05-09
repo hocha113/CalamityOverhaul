@@ -28,11 +28,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private int dontOpenMouthTime;
         private Player player;
         [VaultLoaden(CWRConstant.NPC + "BTD/BTD_Head")]
-        internal static Asset<Texture2D> HeadIcon;
+        internal static Asset<Texture2D> HeadIcon = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Head")]
-        internal static Asset<Texture2D> Head;
+        internal static Asset<Texture2D> Head = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Head_Glow")]
-        internal static Asset<Texture2D> Head_Glow;
+        internal static Asset<Texture2D> Head_Glow = null;
         internal static int iconIndex;
         internal static int iconIndex_Void;
         internal const int StretchTime = 300;

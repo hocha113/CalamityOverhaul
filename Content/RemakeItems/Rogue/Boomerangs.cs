@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.Bananarang);
+            VaultUtils.SafeLoadItem(ItemID.Bananarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.Trimarang);
+            VaultUtils.SafeLoadItem(ItemID.Trimarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.IceBoomerang);
+            VaultUtils.SafeLoadItem(ItemID.IceBoomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
                 }
             }
         }
-        public CompressorTP compressorEntity;
+        public CompressorTP compressorEntity = null;
         public List<ItemConversion> conversionList = [];
         public bool onDrag;
         public Vector2 dragOffsetPos;

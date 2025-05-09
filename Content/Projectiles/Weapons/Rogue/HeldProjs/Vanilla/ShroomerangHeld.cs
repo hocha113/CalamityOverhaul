@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.Shroomerang);
+            VaultUtils.SafeLoadItem(ItemID.Shroomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             UseDrawTrail = true;

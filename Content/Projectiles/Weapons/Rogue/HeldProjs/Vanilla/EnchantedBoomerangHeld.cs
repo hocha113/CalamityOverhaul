@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.EnchantedBoomerang);
+            VaultUtils.SafeLoadItem(ItemID.EnchantedBoomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;

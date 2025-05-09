@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public virtual void DeductBowDraw(Vector2 drawPos, ref Color lightColor) {
-            Effect effect = CWRUtils.GetEffectValue("DeductDraw");
+            Effect effect = EffectLoader.DeductDraw.Value;
             effect.CurrentTechnique.Passes[0].Apply();
             effect.Parameters["topLeft"].SetValue(BowstringData.DeductRectangle.TopLeft());
             effect.Parameters["width"].SetValue(BowstringData.DeductRectangle.Width);

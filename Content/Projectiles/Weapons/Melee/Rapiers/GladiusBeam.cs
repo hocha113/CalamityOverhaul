@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Projectile.localNPCHitCooldown = -1;
             Projectile.timeLeft = 330;
             Projectile.extraUpdates = 3;
-            CWRUtils.SafeLoadItem(ItemID.Gladius);
+            VaultUtils.SafeLoadItem(ItemID.Gladius);
         }
 
         public override void AI() {

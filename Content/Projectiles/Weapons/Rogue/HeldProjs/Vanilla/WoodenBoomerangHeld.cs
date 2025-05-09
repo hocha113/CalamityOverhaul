@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.WoodenBoomerang].Value;
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.WoodenBoomerang);
+            VaultUtils.SafeLoadItem(ItemID.WoodenBoomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
         }

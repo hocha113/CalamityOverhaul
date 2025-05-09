@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
@@ -445,7 +446,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
+            Effect effect = EffectLoader.KnifeRendering.Value;
 
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);

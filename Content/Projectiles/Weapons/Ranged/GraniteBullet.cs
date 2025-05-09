@@ -20,13 +20,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             CWRDust.SplashDust(Projectile, 6, DustID.BlueTorch, DustID.BlueTorch
-                , 0, Color.DarkBlue, EffectLoader.StreamerDustShader);
+                , 0, Color.DarkBlue, EffectLoader.StreamerDust);
         }
 
         public override void OnKill(int timeLeft) {
             Projectile.rotation = Projectile.velocity.ToRotation();
             CWRDust.SplashDust(Projectile, 36, DustID.BlueTorch, DustID.BlueTorch
-                , 16, Color.DarkBlue, EffectLoader.StreamerDustShader);
+                , 16, Color.DarkBlue, EffectLoader.StreamerDust);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

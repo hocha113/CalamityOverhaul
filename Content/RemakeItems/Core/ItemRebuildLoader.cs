@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
-            if (item.type == ItemID.None || Main.gameMenu) {
+            if (item.type == ItemID.None || Main.gameMenu) {//是的，在某些情况下，是有可能在菜单页面被调用到的
                 return orig.Invoke(item, pre);
             }
 

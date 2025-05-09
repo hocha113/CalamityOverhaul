@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (Trail == null) {
                 return;
             }
-            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Effect effect = EffectLoader.GradientTrail.Value;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);

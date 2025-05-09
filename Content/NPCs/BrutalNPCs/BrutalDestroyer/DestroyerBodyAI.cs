@@ -18,19 +18,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
         [VaultLoaden(CWRConstant.NPC + "BTD/Body_Stingless")]
-        internal static Asset<Texture2D> Body_Stingless;
+        internal static Asset<Texture2D> Body_Stingless = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Body")]
-        internal static Asset<Texture2D> Body;
+        internal static Asset<Texture2D> Body = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Body_Glow")]
-        internal static Asset<Texture2D> Body_Glow;
+        internal static Asset<Texture2D> Body_Glow = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/BodyAlt")]
-        internal static Asset<Texture2D> BodyAlt;
+        internal static Asset<Texture2D> BodyAlt = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/BodyAlt_Glow")]
-        internal static Asset<Texture2D> BodyAlt_Glow;
+        internal static Asset<Texture2D> BodyAlt_Glow = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Tail")]
-        internal static Asset<Texture2D> Tail;
+        internal static Asset<Texture2D> Tail = null;
         [VaultLoaden(CWRConstant.NPC + "BTD/Tail_Glow")]
-        internal static Asset<Texture2D> Tail_Glow;
+        internal static Asset<Texture2D> Tail_Glow = null;
         private static int iconIndex;
         private const float BeamWarningDuration = 120f;
         private const float AerialPhaseThreshold = 900f;

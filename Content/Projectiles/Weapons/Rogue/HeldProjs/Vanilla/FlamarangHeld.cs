@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.Flamarang);
+            VaultUtils.SafeLoadItem(ItemID.Flamarang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;

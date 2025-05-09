@@ -12,37 +12,29 @@ namespace CalamityOverhaul.Common
 {
     public class EffectLoader : ICWRLoader
     {
-        internal static EffectLoader Instance;
-
-        public static ArmorShaderData StreamerDustShader;
-        public static ArmorShaderData InShootGlowShader;
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
-
-        private static Asset<Effect> getEffect(string key) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffect + key, AssetRequestMode.AsyncLoad);
-        private static void loadFiltersEffect(string filtersKey, string filename, string passname) {
-            Asset<Effect> asset = getEffect(filename);
-            Filters.Scene[filtersKey] = new Filter(new ScreenShaderData(asset, passname), EffectPriority.VeryHigh);
-        }
-
-        public static void LoadRegularShaders() {
-            //Effect实例的获取被修改，它不再需要存储一个外置的字段值，因为这实际上毫无作用，使用CWRUTils.GetEffectValue()来获取这些实例
-            loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "PowerSFShaderPass");
-            loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass");
-            loadFiltersEffect("CWRMod:neutronRingShader", "NeutronRingShader", "NeutronRingPass");
-            loadFiltersEffect("CWRMod:primeHaloShader", "PrimeHaloShader", "PrimeHaloPass");
-            loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass");
-            loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass");
-            loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass");
-            loadFiltersEffect("CWRMod:gradientTrail", "GradientTrail", "GradientTrailPass");
-            loadFiltersEffect("CWRMod:trailWarp", "TrailWarp", "TrailWarpPass");
-            loadFiltersEffect("CWRMod:deductDraw", "DeductDraw", "DeductDrawPass");
-            StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
-            InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
-        }
-
-        void ICWRLoader.LoadAsset() => LoadRegularShaders();
-
+        internal static EffectLoader Instance;
+        [VaultLoaden(CWRConstant.Effects)]
+        public static ArmorShaderData StreamerDust { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> PowerSFShader { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> WarpShader { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> NeutronRing { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> PrimeHalo { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> TwistColoring { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> KnifeRendering { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> KnifeDistortion { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> GradientTrail { get; set; }
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> DeductDraw { get; set; }
         void ICWRLoader.LoadData() {
             Instance = this;
             On_FilterManager.EndCapture += FilterManager_EndCapture;
@@ -51,9 +43,6 @@ namespace CalamityOverhaul.Common
         }
 
         void ICWRLoader.UnLoadData() {
-            StreamerDustShader = null;
-            InShootGlowShader = null;
-
             screen = null;
 
             On_FilterManager.EndCapture -= FilterManager_EndCapture;
@@ -162,7 +151,7 @@ namespace CalamityOverhaul.Common
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
-            Effect effect = CWRUtils.GetEffectValue("WarpShader");
+            Effect effect = WarpShader.Value;
             effect.Parameters["tex0"].SetValue(Main.screenTargetSwap);
             effect.Parameters["noBlueshift"].SetValue(noBlueshift);
             effect.Parameters["i"].SetValue(0.02f);
@@ -228,7 +217,7 @@ namespace CalamityOverhaul.Common
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
-            Effect powerSFShader = CWRUtils.GetEffectValue("PowerSFShader");
+            Effect powerSFShader = PowerSFShader.Value;
             powerSFShader.Parameters["tex0"].SetValue(screen);
             powerSFShader.Parameters["i"].SetValue(twistStrength);
             powerSFShader.CurrentTechnique.Passes[0].Apply();

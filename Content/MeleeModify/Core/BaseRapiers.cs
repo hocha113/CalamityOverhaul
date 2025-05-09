@@ -295,7 +295,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 transparency = Projectile.timeLeft / 5f;
             }
 
-            Effect effect = Terraria.Graphics.Effects.Filters.Scene["CWRMod:twistColoringShader"].GetShader().Shader;
+            Effect effect = EffectLoader.TwistColoring.Value;
             SetEffect1(effect);
             for (int i = 0; i < SkialithEntitys.Count; i++) {
                 SkialithStruct skialith = SkialithEntitys[i];

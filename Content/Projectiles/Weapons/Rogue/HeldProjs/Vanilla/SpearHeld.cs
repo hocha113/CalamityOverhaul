@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         private bool onTIle;
         private float tileRot;
         public override void SetThrowable() {
-            CWRUtils.SafeLoadItem(ItemID.Spear);
+            VaultUtils.SafeLoadItem(ItemID.Spear);
             Projectile.width = Projectile.height = 11;
             Projectile.alpha = 255;
             HandOnTwringMode = -15;

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -106,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 
         private void drawMatric(string texkey, Vector2 drawpos, Vector2 size, float rotation, float uOpacity, bool set) {
             Texture2D texRing = CWRUtils.GetT2DValue(CWRConstant.Masking + texkey);
-            Effect effect = Filters.Scene["CWRMod:neutronRingShader"].GetShader().Shader;
+            Effect effect = EffectLoader.NeutronRing.Value;
             effect.Parameters["uTime"].SetValue(rotation);
             effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
             effect.Parameters["uColor"].SetValue(Color.White.ToVector3());

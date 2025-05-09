@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -221,7 +222,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 return false;
             }
 
-            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Effect effect = EffectLoader.GradientTrail.Value;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);

@@ -714,7 +714,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
             Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f))
                 * Main.GameViewMatrix.TransformationMatrix;
-            Effect effect = CWRUtils.GetEffectValue("KnifeDistortion");
+            Effect effect = EffectLoader.KnifeDistortion.Value;
             effect.Parameters["uTransform"].SetValue(model * projection);
             Main.graphics.GraphicsDevice.Textures[0] = TrailTexture;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;

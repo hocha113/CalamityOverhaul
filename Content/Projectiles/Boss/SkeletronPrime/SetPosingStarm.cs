@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
 
             drawTime++;
-            var shader = CWRUtils.GetEffectValue("PrimeHaloShader");
+            var shader = EffectLoader.PrimeHalo.Value;
             shader.Parameters["colorMult"].SetValue(11);
             shader.Parameters["time"].SetValue(drawTime * 0.1f);
             shader.Parameters["radius"].SetValue(modeings - 50);

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             Projectile.localNPCHitCooldown = 14 * UpdateRate;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             SetKnifeProperty();
-            CWRUtils.SafeLoadItem(TargetID);
+            VaultUtils.SafeLoadItem(TargetID);
         }
 
         protected void updaTrailTexture() => SwingSystem.trailTextures[Type] = CWRUtils.GetT2DAsset(trailTexturePath);

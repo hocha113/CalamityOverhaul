@@ -62,35 +62,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal ref float ai10 => ref ai[10];
         internal ref float ai11 => ref ai[11];
         [VaultLoaden(CWRConstant.NPC + "BSP/MachineRebellion")]
-        internal static Asset<Texture2D> MachineRebellionAsset;
+        internal static Asset<Texture2D> MachineRebellionAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BrutalSkeletron")]
-        internal static Asset<Texture2D> HandAsset;
+        internal static Asset<Texture2D> HandAsset = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPCannon")]
-        internal static Asset<Texture2D> BSPCannon;
+        internal static Asset<Texture2D> BSPCannon = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPlaser")]
-        internal static Asset<Texture2D> BSPlaser;
+        internal static Asset<Texture2D> BSPlaser = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPPliers")]
-        internal static Asset<Texture2D> BSPPliers;
+        internal static Asset<Texture2D> BSPPliers = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPSAW")]
-        internal static Asset<Texture2D> BSPSAW;
+        internal static Asset<Texture2D> BSPSAW = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM")]
-        internal static Asset<Texture2D> BSPRAM;
+        internal static Asset<Texture2D> BSPRAM = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_Forearm")]
-        internal static Asset<Texture2D> BSPRAM_Forearm;
+        internal static Asset<Texture2D> BSPRAM_Forearm = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BrutalSkeletronGlow")]
-        internal static Asset<Texture2D> HandAssetGlow;
+        internal static Asset<Texture2D> HandAssetGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPCannonGlow")]
-        internal static Asset<Texture2D> BSPCannonGlow;
+        internal static Asset<Texture2D> BSPCannonGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPlaserGlow")]
-        internal static Asset<Texture2D> BSPlaserGlow;
+        internal static Asset<Texture2D> BSPlaserGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPPliersGlow")]
-        internal static Asset<Texture2D> BSPPliersGlow;
+        internal static Asset<Texture2D> BSPPliersGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPSAWGlow")]
-        internal static Asset<Texture2D> BSPSAWGlow;
+        internal static Asset<Texture2D> BSPSAWGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAMGlow")]
-        internal static Asset<Texture2D> BSPRAMGlow;
+        internal static Asset<Texture2D> BSPRAMGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_ForearmGlow")]
-        internal static Asset<Texture2D> BSPRAM_ForearmGlow;
+        internal static Asset<Texture2D> BSPRAM_ForearmGlow = null;
         //下面是用于缓存原版纹理的字段
         internal static Asset<Texture2D> Vanilla_TwinsBossBag;
         internal static Asset<Texture2D> Vanilla_DestroyerBossBag;

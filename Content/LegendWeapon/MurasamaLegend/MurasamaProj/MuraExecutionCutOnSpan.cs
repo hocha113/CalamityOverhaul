@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             Trail ??= new Trail([.. PosLists], (float _) => orbNinmsWeith, (Vector2 _) => Color.White * orbNinmsWeith);
 
-            Effect effect = Filters.Scene["CWRMod:gradientTrail"].GetShader().Shader;
+            Effect effect = EffectLoader.GradientTrail.Value;
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
