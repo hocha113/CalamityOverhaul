@@ -15,12 +15,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class HyperionBarrage : ModItem, ICWRLoader
+    internal class HyperionBarrage : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrage";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Ranged + "HyperionBarrageGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -48,9 +47,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class HyperionBarrageEX : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrageEX";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Ranged + "HyperionBarrageEXGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;

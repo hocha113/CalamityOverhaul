@@ -199,15 +199,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    internal class JusticeUnveiledExplode : ModProjectile, ICWRLoader
+    internal class JusticeUnveiledExplode : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "JusticeUnveiledExplode";
         public const int maxFrame = 14;
         private int frameIndex = 0;
         private int time;
-        public static Asset<Texture2D> MaskLaserLine;
-        void ICWRLoader.LoadAsset() => MaskLaserLine = CWRUtils.GetT2DAsset(CWRConstant.Masking + "MaskLaserLine");
-        void ICWRLoader.UnLoadData() => MaskLaserLine = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> MaskLaserLine = null;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 332;
             Projectile.friendly = true;

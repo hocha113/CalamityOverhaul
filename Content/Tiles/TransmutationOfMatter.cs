@@ -16,7 +16,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class TransmutationOfMatter : ModTile, ICWRLoader
+    internal class TransmutationOfMatter : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "TransmutationOfMatter";
         public const int Width = 5;
@@ -24,16 +24,10 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
-        private static Asset<Texture2D> tileAsset;
-        private static Asset<Texture2D> tileGlowAsset;
-        void ICWRLoader.LoadAsset() {
-            tileAsset = ModContent.Request<Texture2D>(Texture);
-            tileGlowAsset = ModContent.Request<Texture2D>(Texture + "Glow");
-        }
-        void ICWRLoader.UnLoadData() {
-            tileAsset = null;
-            tileGlowAsset = null;
-        }
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "TransmutationOfMatter")]
+        private static Asset<Texture2D> tileAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "TransmutationOfMatterGlow")]
+        private static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;

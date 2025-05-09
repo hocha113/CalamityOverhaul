@@ -20,6 +20,7 @@ namespace CalamityOverhaul
         //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
         internal static CWRMod Instance { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; } = [];
+        internal Mod calamity = null;
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -80,6 +81,7 @@ namespace CalamityOverhaul
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
 
         private void EmptyMod() {
+            calamity = null;
             musicMod = null;
             betterWaveSkipper = null;
             fargowiltasSouls = null;
@@ -102,6 +104,7 @@ namespace CalamityOverhaul
 
         public void FindMod() {
             EmptyMod();
+            ModLoader.TryGetMod("CalamityMod", out calamity);
             ModLoader.TryGetMod("CalamityModMusic", out musicMod);
             ModLoader.TryGetMod("BetterWaveSkipper", out betterWaveSkipper);
             ModLoader.TryGetMod("FargowiltasSouls", out fargowiltasSouls);

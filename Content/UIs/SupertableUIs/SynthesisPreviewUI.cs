@@ -15,17 +15,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static SynthesisPreviewUI Instance => UIHandleLoader.GetUIHandleOfType<SynthesisPreviewUI>();
         internal static int Width => 564;
         internal static int Height => 564;
-        internal static Asset<Texture2D> MainValueInCell;
+        [VaultLoaden(CWRConstant.UI + "SupertableUIs/MainValueInCell")]
+        internal static Asset<Texture2D> MainValueInCell = null;
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
         internal bool DrawBool;
         internal bool uiIsActive => DrawBool && !SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
-        void ICWRLoader.LoadAsset() => MainValueInCell = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValueInCell");
-        void ICWRLoader.UnLoadData() {
-            MainValueInCell = null;
-            OmigaSnyContent = [];
-        }
+        void ICWRLoader.UnLoadData() => OmigaSnyContent = [];
         // 在只利用一个数字索引的情况下反向计算出对应的格坐标
         public Vector2 ArcCellPos(int index, Vector2 pos) {
             int y = index / 9;

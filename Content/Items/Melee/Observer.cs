@@ -10,12 +10,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    internal class Observer : ModItem, ICWRLoader
+    internal class Observer : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Observer";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "ObserverGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetStaticDefaults() {
             ItemID.Sets.Yoyo[Item.type] = true;
             ItemID.Sets.GamepadExtraRange[Item.type] = 16;

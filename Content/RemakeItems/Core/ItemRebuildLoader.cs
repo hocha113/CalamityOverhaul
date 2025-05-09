@@ -66,10 +66,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onItemNamePropertyGetMethod;
         public static MethodBase onAffixNameMethod;
 
-        void ICWRLoader.LoadAsset() {
-            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
-        }
-
         void ICWRLoader.SetupData() {
             CWRMod.Instance.Logger.Info($"{ByID.Count} key pair is loaded into the RItemIndsDict");
         }

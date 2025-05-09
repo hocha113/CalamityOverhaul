@@ -13,13 +13,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
-    internal class SemberDarkMasterClone : BaseHeldProj, ICWRLoader
+    internal class SemberDarkMasterClone : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
         private Player playerClone;
-        private static Asset<Texture2D> swordAsset;
-        void ICWRLoader.LoadAsset() => swordAsset = CWRUtils.GetT2DAsset("CalamityMod/Items/Weapons/Melee/TheDarkMaster");
-        void ICWRLoader.UnLoadData() => swordAsset = null;
+        [VaultLoaden("@CalamityMod/Items/Weapons/Melee/TheDarkMaster")]
+        private static Asset<Texture2D> swordAsset = null;
         public override void SetDefaults() {
             Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
             if (playerClone == null) {

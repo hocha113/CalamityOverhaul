@@ -10,12 +10,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    internal class DragonsWord : ModItem, ICWRLoader
+    internal class DragonsWord : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "DragonsWord";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Magic + "DragonsWordGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.damage = 682;

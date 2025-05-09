@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    internal class PRT_LavaFire : BasePRT, ICWRLoader
+    internal class PRT_LavaFire : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public Color[] colors;
@@ -18,16 +18,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         public int minLifeTime;
         public int maxLifeTime;
         private float timeLife;
-        private static Asset<Texture2D> StarTexture;
-        private static Asset<Texture2D> SoftGlow;
-        void ICWRLoader.LoadAsset() {
-            StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
-            SoftGlow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "SoftGlow");
-        }
-        void ICWRLoader.UnLoadData() {
-            StarTexture = null;
-            SoftGlow = null;
-        }
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> StarTexture = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> SoftGlow = null;
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
 

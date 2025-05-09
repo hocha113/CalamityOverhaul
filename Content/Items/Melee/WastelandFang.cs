@@ -37,28 +37,20 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class WastelandFangProj : BaseHeldProj, ICWRLoader
+    internal class WastelandFangProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "WastelandFang";
         private bool isShoot;
-        private static Asset<Texture2D> chain;
-        private static Asset<Texture2D> chainAlt;
-        private static Asset<Texture2D> head;
-        private static Asset<Texture2D> tooth;
-        private static Asset<Texture2D> toothAlt;
-        void ICWRLoader.LoadAsset() {
-            chain = CWRUtils.GetT2DAsset(Texture + "Chain");
-            chainAlt = CWRUtils.GetT2DAsset(Texture + "ChainAlt");
-            head = CWRUtils.GetT2DAsset(Texture + "Head");
-            tooth = CWRUtils.GetT2DAsset(Texture + "Tooth");
-            toothAlt = CWRUtils.GetT2DAsset(Texture + "ToothAlt");
-        }
-        void ICWRLoader.UnLoadData() {
-            chain = null;
-            chainAlt = null;
-            head = null;
-            tooth = null;
-        }
+        [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangChain")]
+        private static Asset<Texture2D> chain = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangChainAlt")]
+        private static Asset<Texture2D> chainAlt = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangHead")]
+        private static Asset<Texture2D> head = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangTooth")]
+        private static Asset<Texture2D> tooth = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "WastelandFangToothAlt")]
+        private static Asset<Texture2D> toothAlt = null;
         public override void SetDefaults() {
             Projectile.width = 52;
             Projectile.height = 52;

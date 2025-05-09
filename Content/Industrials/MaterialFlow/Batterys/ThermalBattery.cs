@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
     }
 
-    internal class ThermalBatteryTile : ModTile, ICWRLoader
+    internal class ThermalBatteryTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile";
         public const int Width = 3;
@@ -51,16 +51,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
-        private static Asset<Texture2D> tileAsset;
-        private static Asset<Texture2D> tileFullAsset;
-        void ICWRLoader.LoadAsset() {
-            tileAsset = CWRUtils.GetT2DAsset(Texture);
-            tileFullAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull");
-        }
-        void ICWRLoader.UnLoadData() {
-            tileAsset = null;
-            tileFullAsset = null;
-        }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile")]
+        private static Asset<Texture2D> tileAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull")]
+        private static Asset<Texture2D> tileFullAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;

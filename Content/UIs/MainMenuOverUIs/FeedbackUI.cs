@@ -9,10 +9,12 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class FeedbackUI : UIHandle, ICWRLoader
+    internal class FeedbackUI : UIHandle
     {
         internal static FeedbackUI Instance { get; private set; }
+        [VaultLoaden(CWRConstant.UI + "GithubOAC")]
         private static Asset<Texture2D> githubOAC;
+        [VaultLoaden(CWRConstant.UI + "SteamOAC")]
         private static Asset<Texture2D> steamOAC;
         private const float githubSiz1 = 0.001f;
         private const float githubSiz2 = 0.05f;
@@ -35,10 +37,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
         public bool OnActive() => _active || _sengs > 0;
-        void ICWRLoader.LoadAsset() {
-            githubOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "GithubOAC");
-            steamOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "SteamOAC");
-        }
         public override void Load() {
             Instance = this;
             _sengs = 0;
@@ -46,8 +44,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void UnLoad() {
             Instance = null;
             _sengs = 0;
-            steamOAC = null;
-            githubOAC = null;
         }
 
         public void Initialize() {

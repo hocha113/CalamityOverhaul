@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 if (!HandheldDisplay) {
                     reset = false;
                 }
-                return reset ? true : CanFire || kreloadTimeValue > 0;
+                return reset || CanFire || kreloadTimeValue > 0;
             }
         }
 
