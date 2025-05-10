@@ -66,14 +66,19 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
     }
 
-    internal class ChargingStationTP : BaseBattery, ICWRLoader//是的，把这个东西当成是一个电池会更好写
+    internal class ChargingStationTP : BaseBattery//是的，把这个东西当成是一个电池会更好写
     {
         public override int TargetTileID => ModContent.TileType<ChargingStation>();
         public static int StaticID { get; private set; }
+        [VaultLoaden(CWRConstant.UI + "Generator/GeneratorPanel")]
         internal static Asset<Texture2D> Panel { get; private set; }
+        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargerWeaponSlot")]
         internal static Asset<Texture2D> SlotTex { get; private set; }
+        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder")]
         internal static Asset<Texture2D> BarTop { get; private set; }
+        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeter")]
         internal static Asset<Texture2D> BarFull { get; private set; }
+        [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/PowerCellSlot_Empty")]
         internal static Asset<Texture2D> EmptySlot { get; private set; }
         internal bool OpenUI;
         internal float sengs;
@@ -90,21 +95,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1000;
         public override int TargetItem => ModContent.ItemType<ChargingStationItem>();
-        void ICWRLoader.LoadAsset() {
-            Panel = CWRUtils.GetT2DAsset(CWRConstant.UI + "Generator/GeneratorPanel");
-            SlotTex = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonsArsenal/ChargerWeaponSlot");
-            BarTop = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder");
-            BarFull = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonsArsenal/ChargeMeter");
-            EmptySlot = CWRUtils.GetT2DAsset("CalamityMod/UI/DraedonsArsenal/PowerCellSlot_Empty");
-        }
-        void ICWRLoader.UnLoadData() {
-            Panel = null;
-            SlotTex = null;
-            BarTop = null;
-            BarFull = null;
-            EmptySlot = null;
-        }
-
         public override void SendData(ModPacket data) {
             base.SendData(data);
             ItemIO.Send(Item, data, true);

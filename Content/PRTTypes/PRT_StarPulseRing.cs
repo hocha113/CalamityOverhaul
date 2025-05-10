@@ -6,14 +6,16 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    internal class PRT_StarPulseRing : BasePRT, ICWRLoader
+    internal class PRT_StarPulseRing : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         private float OriginalScale;
         private float FinalScale;
         private Color BaseColor;
-        internal static Asset<Texture2D> ThinSparkle;
-        internal static Asset<Texture2D> BloomCircle;
+        [VaultLoaden("@CalamityMod/Particles/ThinSparkle")]
+        internal static Asset<Texture2D> ThinSparkle = null;
+        [VaultLoaden("@CalamityMod/Particles/BloomCircle")]
+        internal static Asset<Texture2D> BloomCircle = null;
         public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color
             , float originalScale, float finalScale, int lifeTime) {
             Position = position;
@@ -24,14 +26,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Scale = originalScale;
             Lifetime = lifeTime;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-        void ICWRLoader.LoadAsset() {
-            ThinSparkle = CWRUtils.GetT2DAsset("CalamityMod/Particles/ThinSparkle");
-            BloomCircle = CWRUtils.GetT2DAsset("CalamityMod/Particles/BloomCircle");
-        }
-        void ICWRLoader.UnLoadData() {
-            ThinSparkle = null;
-            BloomCircle = null;
         }
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
         public override void AI() {

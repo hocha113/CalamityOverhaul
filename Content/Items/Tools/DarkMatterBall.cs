@@ -152,11 +152,13 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    internal class DarkMatterBall : ModItem, ICWRLoader
+    internal class DarkMatterBall : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
         internal static int ID { get; private set; }
+        [VaultLoaden(CWRConstant.Item + "Tools/DarkMatter")]
         internal static Asset<Texture2D> DarkMatter { get; private set; }
+        [VaultLoaden(CWRConstant.Item + "Tools/Full")]
         internal static Asset<Texture2D> Full { get; private set; }
         internal static LocalizedText Contents { get; private set; }
         public List<Item> DorpItems {
@@ -178,17 +180,9 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
         private bool deposit;
-        void ICWRLoader.LoadAsset() {
-            DarkMatter = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/DarkMatter");
-            Full = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Full");
-        }
-        void ICWRLoader.UnLoadData() {
-            DarkMatter = null;
-            Full = null;
-        }
         public override ModItem Clone(Item newEntity) {
             DarkMatterBall ball = (DarkMatterBall)base.Clone(newEntity);
-            ball.DorpItems = new List<Item>(DorpItems);
+            ball.DorpItems = [.. DorpItems];
             return ball;
         }
         public override void SetStaticDefaults() {
@@ -228,11 +222,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             return DorpItems.Count > 0;
         }
 
-        public void LoadDorp() {
-            if (DorpItems == null) {
-                DorpItems = [];
-            }
-        }
+        public void LoadDorp() => DorpItems ??= [];
 
         public override bool ConsumeItem(Player player) => false;
 

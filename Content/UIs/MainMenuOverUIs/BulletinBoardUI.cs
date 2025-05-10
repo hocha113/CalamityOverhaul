@@ -17,8 +17,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     internal class BulletinBoardUI : UIHandle, ICWRLoader
     {
         #region Data
-        internal static Asset<Texture2D> icon;
-        internal static Asset<Texture2D> small;
+        [VaultLoaden("CalamityOverhaul/")]
+        internal static Asset<Texture2D> icon = null;
+        [VaultLoaden("CalamityOverhaul/")]
+        internal static Asset<Texture2D> icon_small = null;
         public static int Time;
         public static float sengs;
         public static BulletinBoardUI Instance => UIHandleLoader.GetUIHandleOfType<BulletinBoardUI>();
@@ -33,10 +35,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         #endregion
-        void ICWRLoader.LoadAsset() {
-            icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
-            small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
-        }
         public override void Load() {
             Font = FontAssets.MouseText;
             sengs = 0;
@@ -62,8 +60,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
         }
         public override void UnLoad() {
-            icon = null;
-            small = null;
             Font = null;
             sengs = 0;
             Time = 0;

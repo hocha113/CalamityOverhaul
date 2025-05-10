@@ -20,11 +20,12 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override bool IsSceneEffectActive(Player player) => DraedonsRemote.LoadenMusic && CWRWorld.MachineRebellion;
     }
 
-    internal class DraedonsRemote : ModItem, ICWRLoader
+    internal class DraedonsRemote : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/DraedonsRemote";
         public static bool LoadenMusic => false;//他妈的在出现曲师写出新音乐之前这个都不能删
-        public static Asset<Texture2D> Glow;
+        [VaultLoaden(CWRConstant.Item + "Tools/DraedonsRemoteGlow")]
+        public static Asset<Texture2D> Glow = null;
         public static LocalizedText DontUseByDeath { get; set; }
         internal static LocalizedText Text1;
         internal static LocalizedText Text2;
@@ -35,8 +36,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         internal static LocalizedText Text7;
         internal static LocalizedText Text8;
         internal static LocalizedText Text9;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetStaticDefaults() {
             Text1 = this.GetLocalization(nameof(Text1), () => "");
             Text2 = this.GetLocalization(nameof(Text2), () => "");

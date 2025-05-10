@@ -13,19 +13,12 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class OverhaulTheBibleBook : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/OverhaulTheBibleBook_Close";
-        private static Asset<Texture2D> OverhaulTheBibleBook_Close;
-        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Dark;
-        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Light;
-        void ICWRLoader.LoadAsset() {
-            OverhaulTheBibleBook_Close = CWRUtils.GetT2DAsset(Texture);
-            OverhaulTheBibleBook_Open_Dark = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open1");
-            OverhaulTheBibleBook_Open_Light = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open2");
-        }
-        void ICWRLoader.UnLoadData() {
-            OverhaulTheBibleBook_Close = null;
-            OverhaulTheBibleBook_Open_Dark = null;
-            OverhaulTheBibleBook_Open_Light = null;
-        }
+        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Close")]
+        private static Asset<Texture2D> OverhaulTheBibleBook_Close = null;
+        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open1")]
+        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Dark = null;
+        [VaultLoaden(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open2")]
+        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Light = null;
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;

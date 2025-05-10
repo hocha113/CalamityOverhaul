@@ -34,10 +34,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         protected int frameCount;
         public static Color TextColor1 => new(155, 215, 215);
         public static Color TextColor2 => new(200, 54, 91);
-        internal static Asset<Texture2D> SpazmatismAsset;
-        internal static Asset<Texture2D> SpazmatismAltAsset;
-        internal static Asset<Texture2D> RetinazerAsset;
-        internal static Asset<Texture2D> RetinazerAltAsset;
+        [VaultLoaden(CWRConstant.NPC + "BEYE/Spazmatism")]
+        internal static Asset<Texture2D> SpazmatismAsset = null;
+        [VaultLoaden(CWRConstant.NPC + "BEYE/SpazmatismAlt")]
+        internal static Asset<Texture2D> SpazmatismAltAsset = null;
+        [VaultLoaden(CWRConstant.NPC + "BEYE/Retinazer")]
+        internal static Asset<Texture2D> RetinazerAsset = null;
+        [VaultLoaden(CWRConstant.NPC + "BEYE/RetinazerAlt")]
+        internal static Asset<Texture2D> RetinazerAltAsset = null;
         private static int spazmatismIconIndex;
         private static int retinazerIconIndex;
         private static int spazmatismAltIconIndex;
@@ -60,17 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             _cacheField = typeof(TwinsBigProgressBar).GetField("_cache", BindingFlags.NonPublic | BindingFlags.Instance);
             _headIndexField = typeof(TwinsBigProgressBar).GetField("_headIndex", BindingFlags.NonPublic | BindingFlags.Instance);
         }
-        void ICWRLoader.LoadAsset() {
-            SpazmatismAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Spazmatism");
-            SpazmatismAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/SpazmatismAlt");
-            RetinazerAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/Retinazer");
-            RetinazerAltAsset = CWRUtils.GetT2DAsset(CWRConstant.NPC + "BEYE/RetinazerAlt");
-        }
         void ICWRLoader.UnLoadData() {
-            SpazmatismAsset = null;
-            SpazmatismAltAsset = null;
-            RetinazerAsset = null;
-            RetinazerAltAsset = null;
             _cacheField = null;
             _headIndexField = null;
         }

@@ -31,18 +31,12 @@ namespace CalamityOverhaul.Content.Items.Tools
     {
         public override string Texture => CWRConstant.Item + "Tools/Pickaxe";
         private static bool IsPick = true;
-        private static Asset<Texture2D> Pickaxe;
-        private static Asset<Texture2D> Hammer;
+        [VaultLoaden(CWRConstant.Item + "Tools/Pickaxe")]
+        private static Asset<Texture2D> Pickaxe = null;
+        [VaultLoaden(CWRConstant.Item + "Tools/Hammer")]
+        private static Asset<Texture2D> Hammer = null;
         private bool rDown;
         private bool oldRDown;
-        void ICWRLoader.LoadAsset() {
-            Pickaxe = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Pickaxe");
-            Hammer = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Hammer");
-        }
-        void ICWRLoader.UnLoadData() {
-            Pickaxe = null;
-            Hammer = null;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));

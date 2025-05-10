@@ -64,15 +64,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WGGMK2WildernessTP : BaseWindGrivenTP, ICWRLoader
+    internal class WGGMK2WildernessTP : BaseWindGrivenTP
     {
         public override int TargetTileID => ModContent.TileType<WGGMK2WildernessTile>();
         public override float MaxUEValue => 800f;
         public override bool CanDrop => false;
         public override int TargetItem => ModContent.ItemType<WGGMK2Wilderness>();
+        [VaultLoaden(CWRConstant.Asset + "Generator/MK2BladeWilderness")]
         internal static Asset<Texture2D> MK2BladeWilderness { get; private set; }
-        void ICWRLoader.LoadAsset() => MK2BladeWilderness = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/MK2BladeWilderness");
-        void ICWRLoader.UnLoadData() => MK2BladeWilderness = null;
         public override void SetWindGriven() {
             baseRotSpeed = 0.012f;
             energyConversion = 0.12f;

@@ -11,16 +11,10 @@ namespace CalamityOverhaul.Content.Tiles
     internal class NeutronStarIngotTile : ModTile, ICWRLoader
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "NeutronStarIngotTile";
-        private static Asset<Texture2D> tileAsset;
-        private static Asset<Texture2D> tileGlowAsset;
-        void ICWRLoader.LoadAsset() {
-            tileAsset = ModContent.Request<Texture2D>(Texture);
-            tileGlowAsset = ModContent.Request<Texture2D>(Texture + "Glow");
-        }
-        void ICWRLoader.UnLoadData() {
-            tileAsset = null;
-            tileGlowAsset = null;
-        }
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "NeutronStarIngotTile")]
+        private static Asset<Texture2D> tileAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "NeutronStarIngotTileGlow")]
+        private static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
             AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<NeutronStarIngot>());
             Main.tileShine[Type] = 1100;

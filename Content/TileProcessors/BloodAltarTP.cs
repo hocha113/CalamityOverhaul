@@ -20,7 +20,8 @@ namespace CalamityOverhaul.Content.TileProcessors
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
-        public static Asset<Texture2D> BloodAltarEffect;
+        [VaultLoaden(CWRConstant.Asset + "TileModules/BloodAltarEffect")]
+        public static Asset<Texture2D> BloodAltarEffect = null;
         public static int targetFuncsWhoAmi;
         public static int startPlayerWhoAmI;
         public static bool OnBoolMoon;
@@ -31,8 +32,6 @@ namespace CalamityOverhaul.Content.TileProcessors
         internal bool drawGlow;
         internal Color gloaColor;
         private int gloawTime;
-        void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
-        void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
         public override void SetProperty() => LoadenWorldSendData = false;
         public override void OnKill() {
             OnBoolMoon = false;

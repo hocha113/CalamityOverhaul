@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
     /// <summary>
     /// 妖刀
     /// </summary>
-    internal class MurasamaOverride : ItemOverride, ICWRLoader
+    internal class MurasamaOverride : ItemOverride
     {
         #region Data
         /// <summary>
@@ -52,13 +52,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// 获取开局的击退力度
         /// </summary>
         public static float GetStartKnockback => KnockbackDictionary[0];
+        [VaultLoaden(CWRConstant.Item_Melee + "MuraItem")]
         public static Asset<Texture2D> MuraItemAsset { get; private set; }
         private static readonly string[] SamNameList = ["激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam"];
         private static readonly string[] VergilNameList = ["维吉尔", "Vergil"];
         public override int TargetID => ModContent.ItemType<Murasama>();
         #endregion
-        void ICWRLoader.LoadAsset() => MuraItemAsset = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "MuraItem");
-        void ICWRLoader.UnLoadData() => MuraItemAsset = null;
         /// <summary>
         /// 获取时期对应的伤害
         /// </summary>

@@ -13,7 +13,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class BloodAltar : ModTile, ICWRLoader
+    internal class BloodAltar : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "BloodAltar";
         public const int Width = 4;
@@ -21,16 +21,10 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
-        private static Asset<Texture2D> tileAsset;
-        private static Asset<Texture2D> tileGlowAsset;
-        void ICWRLoader.LoadAsset() {
-            tileAsset = ModContent.Request<Texture2D>(Texture);
-            tileGlowAsset = ModContent.Request<Texture2D>(Texture + "Glow");
-        }
-        void ICWRLoader.UnLoadData() {
-            tileAsset = null;
-            tileGlowAsset = null;
-        }
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "BloodAltar")]
+        private static Asset<Texture2D> tileAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "BloodAltarGlow")]
+        private static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileNoAttach[Type] = true;

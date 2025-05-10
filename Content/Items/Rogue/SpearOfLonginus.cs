@@ -20,19 +20,13 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
-        public static Asset<Texture2D> LonginusAsset;
-        public static Asset<Texture2D> EvaAsset;
+        [VaultLoaden(CWRConstant.Item + "Rogue/Longinus")]
+        public static Asset<Texture2D> LonginusAsset = null;
+        [VaultLoaden(CWRConstant.Item + "Rogue/Longinus_Eva")]
+        public static Asset<Texture2D> EvaAsset = null;
         public static int ID;
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Longinus";
-        void ICWRLoader.LoadAsset() {
-            LonginusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Longinus");
-            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Longinus_Eva");
-        }
-        void ICWRLoader.UnLoadData() {
-            LonginusAsset = null;
-            EvaAsset = null;
-        }
         public static void ZenithWorldAsset() {
             if (Main.dedServ) {
                 return;

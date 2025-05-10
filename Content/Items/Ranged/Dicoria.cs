@@ -8,7 +8,6 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Enums;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -17,9 +16,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class Dicoria : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "Dicoria";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Ranged + "DicoriaGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;

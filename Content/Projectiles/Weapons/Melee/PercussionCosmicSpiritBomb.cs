@@ -13,15 +13,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class PercussionCosmicSpiritBomb : ModProjectile, ICWRLoader
+    internal class PercussionCosmicSpiritBomb : ModProjectile
     {
         public static Color[] colorDates;
         public int overTextIndex = 1;
         public Player Owner => Main.player[Projectile.owner];
-        public static Asset<Texture2D> scarletDevilStreakAsset;
+        [VaultLoaden("@CalamityMod/ExtraTextures/Trails/ScarletDevilStreak")]
+        public static Asset<Texture2D> scarletDevilStreakAsset = null;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "CosmicSpiritBomb" + overTextIndex;
-        void ICWRLoader.LoadAsset() => scarletDevilStreakAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak");
-        void ICWRLoader.UnLoadData() => scarletDevilStreakAsset = null;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

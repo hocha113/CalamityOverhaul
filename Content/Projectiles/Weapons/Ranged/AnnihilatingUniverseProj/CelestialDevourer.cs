@@ -9,12 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {
-    internal class CelestialDevourer : ModProjectile, ICWRLoader
+    internal class CelestialDevourer : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        private static Asset<Texture2D> starAsset;
-        void ICWRLoader.LoadAsset() => starAsset = CWRUtils.GetT2DAsset("CalamityMod/Projectiles/StarProj");
-        void ICWRLoader.UnLoadData() => starAsset = null;
+        [VaultLoaden("@CalamityMod/Projectiles/StarProj")]
+        private static Asset<Texture2D> starAsset = null;
         public override void SetDefaults() {
             Projectile.height = 24;
             Projectile.width = 24;

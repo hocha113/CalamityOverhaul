@@ -16,10 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class BlazingFireball : ModProjectile, ICWRLoader, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
-        public static Asset<Texture2D> effectAsset;
+        [VaultLoaden("@CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak")]
+        public static Asset<Texture2D> effectAsset = null;
         private Trail Trail;
-        void ICWRLoader.LoadAsset() => effectAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak");
-        void ICWRLoader.UnLoadData() => effectAsset = null;
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;

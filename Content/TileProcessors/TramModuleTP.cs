@@ -14,7 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.TileProcessors
 {
-    public class TramModuleTP : TileProcessor, ICWRLoader
+    public class TramModuleTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<TransmutationOfMatter>();
         private const int maxleng = 120;
@@ -25,16 +25,13 @@ namespace CalamityOverhaul.Content.TileProcessors
         internal Color gloaColor;
         private int gloawTime;
         internal int frame;
-        internal static Asset<Texture2D> modeuleBodyAsset;
-        internal static Asset<Texture2D> truesFromeAsset;
+        [VaultLoaden(CWRConstant.Asset + "Tiles/TransmutationOfMatter")]
+        internal static Asset<Texture2D> modeuleBodyAsset = null;
+        [VaultLoaden(CWRConstant.UI + "SupertableUIs/TexturePackButtons")]
+        internal static Asset<Texture2D> truesFromeAsset = null;
         public Item[] items;
         public const int itemCount_W_X_H = 81;
         internal Vector2 Center => PosInWorld + new Vector2(TransmutationOfMatter.Width, TransmutationOfMatter.Height) * 8;
-        void ICWRLoader.LoadAsset() {
-            modeuleBodyAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Tiles/TransmutationOfMatter");
-            truesFromeAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "SupertableUIs/TexturePackButtons");
-        }
-        void ICWRLoader.UnLoadData() => modeuleBodyAsset = truesFromeAsset = null;
         private void initializeItems() {
             items = new Item[itemCount_W_X_H];
             for (int i = 0; i < items.Length; i++) {
@@ -42,7 +39,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             }
         }
         public override void SetProperty() => initializeItems();
-        internal void tpEntityLoadenItems() {
+        internal void TPEntityLoadenItems() {
             foreach (var item in items) {//这里给原版物品预加载一下纹理，如果有的话
                 if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
                     continue;
@@ -149,7 +146,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
                 modPlayer.TETramContrType = -1;
-                tpEntityLoadenItems();
+                TPEntityLoadenItems();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
         }

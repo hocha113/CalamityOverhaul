@@ -17,13 +17,14 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     //变化就是好事，不是吗？
-    internal class VortexAlt : BaseHeldProj, ICWRLoader
+    internal class VortexAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder2;
         public const int ExplosionDelay = 45;
         public const float InitialScale = 0.0004f;
         public const float MaxScale = 2.7f;
         public static int ID { get; private set; }
+        [VaultLoaden("@CalamityMod/ExtraTextures/GreyscaleGradients/BlobbyNoise")]
         internal static Asset<Texture2D> WorleyNoise { get; private set; }
         public float Time {
             get => Projectile.ai[0];
@@ -33,12 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             get => Projectile.ai[1] == 1f;
             set => Projectile.ai[1] = value.ToInt();
         }
-        /// <summary>
-        /// 自定义本地化键
-        /// </summary>
+        //自定义本地化键
         public override LocalizedText DisplayName => ProjectileLoader.GetProjectile(ModContent.ProjectileType<EnormousConsumingVortex>()).DisplayName;
-        void ICWRLoader.LoadAsset() => WorleyNoise = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/BlobbyNoise");
-        void ICWRLoader.UnLoadData() => WorleyNoise = null;
         public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<EnormousConsumingVortex>());
         public override void NetHeldSend(BinaryWriter writer) => writer.Write(Projectile.scale);

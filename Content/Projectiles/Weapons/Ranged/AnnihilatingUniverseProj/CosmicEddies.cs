@@ -21,9 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         private float Rots => Projectile.width * Projectile.ai[1] / 40;
         private int Time { get; set; }
         private SlotId SoundSlot { get; set; }
+        [VaultLoaden("@CalamityMod/ExtraTextures/GreyscaleGradients/VoronoiShapes")]
         private static Asset<Texture2D> VoronoiShapes { get; set; }
-        void ICWRLoader.LoadAsset() => VoronoiShapes = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/VoronoiShapes");
-        void ICWRLoader.UnLoadData() => VoronoiShapes = null;
         public override void SetDefaults() {
             Projectile.height = 24;
             Projectile.width = 24;

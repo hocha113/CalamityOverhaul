@@ -13,12 +13,11 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class InfiniteIngotTile : ModTile, ICWRLoader
+    internal class InfiniteIngotTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteIngotTile";
-        private static Asset<Texture2D> tileAsset;
-        void ICWRLoader.LoadAsset() => tileAsset = ModContent.Request<Texture2D>(Texture);
-        void ICWRLoader.UnLoadData() => tileAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "Tiles/" + "InfiniteIngotTile")]
+        private static Asset<Texture2D> tileAsset = null;
         public override void SetStaticDefaults() {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;

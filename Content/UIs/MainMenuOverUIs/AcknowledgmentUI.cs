@@ -24,7 +24,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private float _sengs;
         internal bool _active;
         internal static AcknowledgmentUI Instance { get; private set; }
-        private static Asset<Texture2D> Logo;
+        [VaultLoaden("CalamityOverhaul/IntactLogo")]
+        private static Asset<Texture2D> Logo = null;
         internal List<ProjItem> projectiles = [];
         internal List<EffectEntity> effectEntities = [];
         private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
@@ -94,7 +95,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             private float rotation;
             public float rotSpeed;
             public int itemID;
-
             private Item item {
                 get {
                     Item inds = new Item();
@@ -162,15 +162,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         public bool OnActive() => _active || _sengs > 0;
         public override bool CanLoad() => true;
+        void ICWRLoader.SetupData() => LoadName();
         public override void Load() {
             Instance = this;
             _sengs = 0;
             On_Main.UpdateAudio_DecideOnTOWMusic += DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic += DecideOnNewMusicEvent;
         }
-        void ICWRLoader.LoadAsset() => Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
-        void ICWRLoader.SetupData() => LoadName();
-        private void LoadName() {
+        private static void LoadName() {
             names = [
             "[icon]",
             "雾梯" + ArtistText,
@@ -290,7 +289,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public override void UnLoad() {
             Instance = null;
-            Logo = null;
             _sengs = 0;
             On_Main.UpdateAudio_DecideOnTOWMusic -= DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic -= DecideOnNewMusicEvent;

@@ -101,14 +101,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         public override bool CanDrop(int i, int j) => false;
     }
 
-    internal class WindGrivenGeneratorMK2TP : BaseWindGrivenTP, ICWRLoader
+    internal class WindGrivenGeneratorMK2TP : BaseWindGrivenTP
     {
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorMK2Tile>();
         public override float MaxUEValue => 2200;
         public override int TargetItem => ModContent.ItemType<WindGrivenGeneratorMK2>();
+        [VaultLoaden(CWRConstant.Asset + "Generator/MK2Blade")]
         internal static Asset<Texture2D> MK2Blade { get; private set; }
-        void ICWRLoader.LoadAsset() => MK2Blade = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Generator/MK2Blade");
-        void ICWRLoader.UnLoadData() => MK2Blade = null;
         public override void SetWindGriven() {
             baseRotSpeed = 0.012f;
             energyConversion = 6f;

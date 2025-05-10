@@ -27,20 +27,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
             left,
             high,
         }
-        internal static MuraChargeUI Instance;
+        internal static MuraChargeUI Instance => UIHandleLoader.GetUIHandleOfType<MuraChargeUI>();
         internal MurasamaHeld murasamaHeld;
         internal static Item MurasamaItem => Main.LocalPlayer.GetItem();
-        private static Asset<Texture2D> classical_SwordStanceTop;
-        private static Asset<Texture2D> classical_SwordStanceFull;
-        private static Asset<Texture2D> classical_SwordStanceBottom;
-        private static Asset<Texture2D> SwordStanceTop;
-        private static Asset<Texture2D> SwordStanceFull;
-        private static Asset<Texture2D> SwordStanceBottom;
-        private static Asset<Texture2D> MuraBarBottom;
-        private static Asset<Texture2D> MuraBarTop;
-        private static Asset<Texture2D> MuraBarFull;
-        private static Asset<Texture2D> Mura;
-        private static Asset<Texture2D> Num;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> classical_SwordStanceTop = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> classical_SwordStanceFull = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> classical_SwordStanceBottom = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> SwordStanceTop = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> SwordStanceFull = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> SwordStanceBottom = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> MuraBarBottom = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> MuraBarTop = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> MuraBarFull = null;
+        [VaultLoaden(CWRConstant.UI)]
+        private static Asset<Texture2D> Mura = null;
         private static int uiFrame;
         private static int uiFrame2;
         private static float uiAlape;
@@ -67,36 +76,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
             }
         }
         #endregion
-        void ICWRLoader.LoadAsset() {
-            classical_SwordStanceBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceBottom");
-            classical_SwordStanceTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceTop");
-            classical_SwordStanceFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceFull");
-            SwordStanceBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceBottom");
-            SwordStanceTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceTop");
-            SwordStanceFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceFull");
-            MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
-            MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
-            MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
-            Mura = CWRUtils.GetT2DAsset(CWRConstant.UI + "Mura");
-            Num = CWRUtils.GetT2DAsset(CWRConstant.UI + "NumList");
-        }
-        void ICWRLoader.UnLoadData() {
-            classical_SwordStanceBottom = null;
-            classical_SwordStanceTop = null;
-            classical_SwordStanceFull = null;
-            SwordStanceBottom = null;
-            SwordStanceTop = null;
-            SwordStanceFull = null;
-            MuraBarBottom = null;
-            MuraBarTop = null;
-            MuraBarFull = null;
-            Mura = null;
-            Num = null;
-            Instance = null;
-        }
-
-        public override void Load() => Instance = this;
-
         public override void Update() {
             if (MurasamaItem == null || MurasamaItem.type != ModContent.ItemType<Murasama>()) {
                 murasamaHeld = null;

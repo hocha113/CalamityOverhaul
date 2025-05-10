@@ -6,21 +6,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.RangedModify.UI
 {
-    internal class ReloadingProgressUI : UIHandle, ICWRLoader
+    internal class ReloadingProgressUI : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.Vanilla_Interface_Logic_1;
         public override bool Active => CWRServerConfig.Instance.ShowReloadingProgressUI && player.CWR().PlayerIsKreLoadTime > 0;
+        [VaultLoaden(CWRConstant.UI + "ReloadingProgress")]
         internal static Asset<Texture2D> Glow { get; private set; }
+        [VaultLoaden(CWRConstant.UI + "ReloadingProgressFull")]
         internal static Asset<Texture2D> Full { get; private set; }
-        void ICWRLoader.LoadAsset() {
-            Glow = CWRUtils.GetT2DAsset(CWRConstant.UI + "ReloadingProgress");
-            Full = CWRUtils.GetT2DAsset(CWRConstant.UI + "ReloadingProgressFull");
-        }
-        void ICWRLoader.UnLoadData() {
-            Glow = null;
-            Full = null;
-        }
-
         public override void Update() {
             DrawPosition = Main.ScreenSize.ToVector2() / 2 - Glow.Size() / 2 + new Vector2(0, 66);
             UIHitBox = DrawPosition.GetRectangle(Glow.Size());

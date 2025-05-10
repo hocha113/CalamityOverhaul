@@ -12,9 +12,8 @@ namespace CalamityOverhaul.Content.Items.Magic
     internal class FocusingGrimoire : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Magic + "FocusingGrimoire";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Magic + "FocusingGrimoireGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Magic;
             Item.useStyle = ItemUseStyleID.Shoot;

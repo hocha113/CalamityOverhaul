@@ -167,15 +167,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     internal class UEPipelineTP : MachineTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel")]
         public static Asset<Texture2D> Pipeline { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide")]
         public static Asset<Texture2D> PipelineSide { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipeline")]
         public static Asset<Texture2D> PipelineCorner { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineSide")]
         public static Asset<Texture2D> PipelineCornerSide { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCorner")]
         public static Asset<Texture2D> PipelineCross { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCornerSide")]
         public static Asset<Texture2D> PipelineCrossSide { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCross")]
         public static Asset<Texture2D> PipelineChannel { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide")]
         public static Asset<Texture2D> PipelineChannelSide { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutches")]
         public static Asset<Texture2D> PipelineThreeCrutches { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutchesSide")]
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         internal List<SideState> SideState { get; private set; }
         internal int TurningID { get; private set; }
@@ -184,38 +194,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         internal int ThreeCrutchesID { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
         public override float MaxUEValue => 20;
-        void ICWRLoader.LoadAsset() {
-            PipelineChannel = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel");
-            PipelineChannelSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide");
-            Pipeline = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipeline");
-            PipelineSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineSide");
-            PipelineCorner = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCorner");
-            PipelineCornerSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCornerSide");
-            PipelineCross = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCross");
-            PipelineCrossSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide");
-            PipelineThreeCrutches = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutches");
-            PipelineThreeCrutchesSide = CWRUtils.GetT2DAsset(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutchesSide");
-        }
-        void ICWRLoader.UnLoadData() {
-            PipelineChannel = null;
-            PipelineChannelSide = null;
-            Pipeline = null;
-            PipelineSide = null;
-            PipelineCorner = null;
-            PipelineCornerSide = null;
-            PipelineCross = null;
-            PipelineCrossSide = null;
-            PipelineThreeCrutches = null;
-            PipelineThreeCrutchesSide = null;
-        }
-
         public override void SetMachine() {
-            SideState = new List<SideState>() {
+            SideState = [
             new (new Point16(0, -1)),//上0
             new (new Point16(0, 1)),//下1
             new (new Point16(-1, 0)),//左2
             new (new Point16(1, 0))//右3
-            };
+            ];
         }
 
         public override void UpdateMachine() {

@@ -12,9 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DestroyersBlade : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.width = Item.height = 120;
             Item.damage = 90;
@@ -39,12 +38,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class DestroyersBladeEX : ModItem, ICWRLoader
+    internal class DestroyersBladeEX : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
-        public static Asset<Texture2D> Glow;
-        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
-        void ICWRLoader.UnLoadData() => Glow = null;
+        [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeEXGlow")]
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.height = 132;
             Item.width = 134;

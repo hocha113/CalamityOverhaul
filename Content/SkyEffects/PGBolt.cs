@@ -4,23 +4,16 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.SkyEffects
 {
-    internal class PGBolt : ICWRLoader
+    internal class PGBolt
     {
         public Vector2 Position;
         public float Depth;
         public int Life;
         public bool IsAlive;
-        private static Asset<Texture2D> boltAsset;
-        private static Asset<Texture2D> flashAsset;
-        void ICWRLoader.LoadAsset() {
-            boltAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGBolt");
-            flashAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGFlash");
-        }
-        void ICWRLoader.UnLoadData() {
-            boltAsset = null;
-            flashAsset = null;
-        }
-
+        [VaultLoaden("CalamityOverhaul/Assets/Sky/PGBolt")]
+        private static Asset<Texture2D> boltAsset = null;
+        [VaultLoaden("CalamityOverhaul/Assets/Sky/PGFlash")]
+        private static Asset<Texture2D> flashAsset = null;
         public void Draw(SpriteBatch spriteBatch, Rectangle rectangle, Vector2 value3, float intensity, float scale, float minDepth, float maxDepth) {
             if (IsAlive && Depth > minDepth && Depth < maxDepth) {
                 Vector2 value4 = new Vector2(1f / Depth, 0.9f / Depth);

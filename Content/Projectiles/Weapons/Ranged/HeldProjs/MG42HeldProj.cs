@@ -10,15 +10,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class MG42HeldProj : BaseFeederGun, ICWRLoader
+    internal class MG42HeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "MG42";
         public override int TargetID => ModContent.ItemType<MG42>();
-        private static Asset<Texture2D> masking;
+        [VaultLoaden(CWRConstant.Item_Ranged + "MG42_Masking")]
+        private static Asset<Texture2D> masking = null;
         private float randomShootRotset;
         private float shootValue;
-        void ICWRLoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
-        void ICWRLoader.UnLoadData() => masking = null;
         public override void SetRangedProperty() {
             FireTime = 4;
             HandIdleDistanceX = 36;
