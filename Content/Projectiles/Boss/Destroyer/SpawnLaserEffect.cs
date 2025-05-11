@@ -10,10 +10,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
     internal class SpawnLaserEffect : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+        internal const int IdleTime = 90;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 30;
+            Projectile.timeLeft = IdleTime;
         }
 
         public override void AI() {
@@ -25,33 +26,18 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 switch (Projectile.ai[0] % 3) {
                     case 0:
                         telegraphColor = Color.Red;
-                        spark = new DestroyerReticleTelegraph(
-                                thisBody,
-                                telegraphColor,
-                                1.5f,
-                                0.15f,
-                                30);
+                        spark = new DestroyerReticleTelegraph(thisBody, telegraphColor, 1.5f, 0.15f, IdleTime + 20);
                         GeneralParticleHandler.SpawnParticle(spark);
                         break;
                     case 1:
                         telegraphColor = Color.Green;
-                        spark = new DestroyerSparkTelegraph(
-                                thisBody,
-                                telegraphColor * 2f,
-                                Color.White,
-                                3f,
-                                30,
+                        spark = new DestroyerSparkTelegraph(thisBody, telegraphColor * 2f, Color.White, 3f, IdleTime + 20,
                                 Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
                         GeneralParticleHandler.SpawnParticle(spark);
                         break;
                     case 2:
                         telegraphColor = Color.Cyan;
-                        spark = new DestroyerSparkTelegraph(
-                                thisBody,
-                                telegraphColor * 2f,
-                                Color.White,
-                                3f,
-                                30,
+                        spark = new DestroyerSparkTelegraph(thisBody, telegraphColor * 2f, Color.White, 3f, IdleTime + 20,
                                 Main.rand.NextFloat(MathHelper.ToRadians(3f)) * Main.rand.NextBool().ToDirectionInt());
                         GeneralParticleHandler.SpawnParticle(spark);
                         break;
