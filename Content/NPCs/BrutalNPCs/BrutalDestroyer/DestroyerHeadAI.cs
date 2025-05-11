@@ -1,15 +1,17 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
+using CalamityMod.Projectiles.Boss;
+using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -28,6 +30,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const int AttackAIsMaxSlot = 12;
         private float[] AttackAIs = new float[AttackAIsMaxSlot];
         private List<NPC> Bodys = new List<NPC>();
+        internal static bool BossRush => BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
+        internal static bool MasterMode => Main.masterMode || BossRush;
+        internal static bool Death => CalamityWorld.death || BossRush;
         private int frame;
         private int glowFrame;
         private bool openMouth;
@@ -147,11 +152,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return true;
         }
 
+        //攻击函数直接不在客户端上运行，节省了同步数据的开销
         internal void Attack() {
-            if (VaultUtils.isClient) {
+            if (VaultUtils.isClient || Time < StretchTime) {
                 return;
             }
-            if (++AttackAIs[0] > 120) {
+
+            int idleTime = BossRush ? 160 : 220;
+            if (++AttackAIs[0] > idleTime) {
                 Bodys.Clear();
                 foreach (var body in Main.ActiveNPCs) {
                     if (body.type != NPCID.TheDestroyerBody) {
@@ -165,11 +173,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 AttackAIs[1] = Bodys.Count -1;
                 AttackAIs[0] = 0;
             }
-            if (AttackAIs[1] > 0 && ++AttackAIs[2] > 10) {
-                int type = ModContent.ProjectileType<Probe>();
-                NPC thisBody = Bodys[(int)AttackAIs[1]];
-                Projectile.NewProjectile(thisBody.GetSource_FromAI(), thisBody.Center, thisBody.velocity / 3
-                            , type, thisBody.damage, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
+
+            if (AttackAIs[1] > 0 && ++AttackAIs[2] > 4) {
+                NPC thisBody = npc;
+                int index = (int)AttackAIs[1];
+                if (index >= 0 && index < Bodys.Count) {
+                    thisBody = Bodys[(int)AttackAIs[1]];
+                }
+
+                Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center
+                , Vector2.Zero, ModContent.ProjectileType<SpawnLaserEffect>()
+                , 0, 0f, Main.myPlayer, AttackAIs[1] % 3, thisBody.whoAmI, player.whoAmI);
+
                 AttackAIs[2] = 0;
                 AttackAIs[1]--;
             }

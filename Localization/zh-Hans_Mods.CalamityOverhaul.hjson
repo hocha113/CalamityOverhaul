@@ -1382,6 +1382,7 @@ Projectiles: {
 	// TheGravityShield.DisplayName: The Gravity Shield
 	// WarpingPoint.DisplayName: Warping Point
 	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
+	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
 }
 
 Configs: {
