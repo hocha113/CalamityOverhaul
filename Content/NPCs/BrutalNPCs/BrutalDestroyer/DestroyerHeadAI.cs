@@ -4,9 +4,12 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -22,6 +25,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private ref float ByDashY => ref ai[1];
         private ref float Time => ref ai[2];
         private ref float ByMasterStageIndex => ref ai[3];
+        private const int AttackAIsMaxSlot = 12;
+        private float[] AttackAIs = new float[AttackAIsMaxSlot];
+        private List<NPC> Bodys = new List<NPC>();
         private int frame;
         private int glowFrame;
         private bool openMouth;
@@ -142,9 +148,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         internal void Attack() {
-            if (++ai[8] > 120) {
-                ai[8] = 0;
-                NetAISend();
+            if (VaultUtils.isClient) {
+                return;
+            }
+            if (++AttackAIs[0] > 120) {
+                Bodys.Clear();
+                foreach (var body in Main.ActiveNPCs) {
+                    if (body.type != NPCID.TheDestroyerBody) {
+                        continue;
+                    }
+                    if (body.realLife != npc.whoAmI) {
+                        continue;
+                    }
+                    Bodys.Add(body);
+                }
+                AttackAIs[1] = Bodys.Count -1;
+                AttackAIs[0] = 0;
+            }
+            if (AttackAIs[1] > 0 && ++AttackAIs[2] > 10) {
+                int type = ModContent.ProjectileType<Probe>();
+                NPC thisBody = Bodys[(int)AttackAIs[1]];
+                Projectile.NewProjectile(thisBody.GetSource_FromAI(), thisBody.Center, thisBody.velocity / 3
+                            , type, thisBody.damage, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
+                AttackAIs[2] = 0;
+                AttackAIs[1]--;
             }
         }
 

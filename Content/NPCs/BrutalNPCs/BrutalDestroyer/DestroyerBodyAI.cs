@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
-using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -50,8 +49,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool Phase2 => LifeRatio < (Death ? 0.4f : 0.25f);
         private bool Phase3 => LifeRatio < (Death ? 0.2f : 0.1f);
         private bool HasSpawnDR => ai[1] < DamageReductionIncreaseDuration && ai[1] > 60f;
-        private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles;
-        private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance350Tiles;
+        private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
+        private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
         private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
         private float enrageScale;
@@ -472,7 +471,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 telegraphProgress = MathHelper.Clamp((ai[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
             }
             else if (npc.type == NPCID.TheDestroyerBody) {
-                float shootProjectileTime = (CalamityWorld.death || BossRushEvent.BossRushActive) ? 270f : 450f;
+                float shootProjectileTime = BossRush ? 270f : 450f;
                 float bodySegmentTime = npc.ai[0] * 30f;
                 float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
                 float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
