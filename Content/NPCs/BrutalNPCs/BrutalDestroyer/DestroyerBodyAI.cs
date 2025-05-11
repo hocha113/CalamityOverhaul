@@ -35,7 +35,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float AerialPhaseThreshold = 900f;
         private const float ExtremeModeBeamThreshold = 600f;
         private const float PhaseShiftWarningDuration = 180f;
-        private const float DamageReductionIncreaseDuration = 600f;
         private const float Phase5AerialTimerValue = AerialPhaseThreshold;
         private const float Phase4AerialTimerValue = AerialPhaseThreshold * 0.5f;
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool StartFlightPhase => LifeRatio < 0.5f;
         private bool Phase2 => LifeRatio < (Death ? 0.4f : 0.25f);
         private bool Phase3 => LifeRatio < (Death ? 0.2f : 0.1f);
-        private bool HasSpawnDR => ai[1] < DamageReductionIncreaseDuration && ai[1] > 60f;
+        private bool HasSpawnDR => ai[1] < DestroyerHeadAI.StretchTime && ai[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
         private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
@@ -224,11 +223,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateDRIncrease() {
-            if (ai[1] < DamageReductionIncreaseDuration) {
-                ai[1] += 1f;
+            if (ai[1] < DestroyerHeadAI.StretchTime) {
+                ai[1]++;
             }
-
-            calNPC.CurrentlyIncreasingDefenseOrDR = ai[1] < DamageReductionIncreaseDuration;
+            npc.Calamity().newAI[1] = 1200;
+            npc.Calamity().CurrentlyIncreasingDefenseOrDR = false;
         }
 
         private void UpdateFlightPhase() {
