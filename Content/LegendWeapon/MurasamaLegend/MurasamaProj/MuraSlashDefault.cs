@@ -64,14 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public static float GetMuraSizeInMeleeSengs(Player player) {
             Item mura = player.GetItem();
             if (mura.type == ModContent.ItemType<Murasama>()) {
-                float meleeSizeSengs = player.GetAdjustedItemScale(mura);
-                if (meleeSizeSengs > 1.5f) {
-                    meleeSizeSengs = 1.5f;
-                }
-                if (meleeSizeSengs < 0.5f) {
-                    meleeSizeSengs = 0.5f;
-                }
-                return meleeSizeSengs;
+                return MathHelper.Clamp(player.GetAdjustedItemScale(mura), 0.5f, 1.5f);
             }
             return 1f;
         }

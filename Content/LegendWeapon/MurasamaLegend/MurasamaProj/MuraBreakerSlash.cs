@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override string Texture => CWRConstant.Projectile_Melee + "MuraBreakerSlash";
         private List<NPC> OnHitNPCs { get; set; } = [];
         private const int maxFrame = 7;
-        private const float baseSize = 1f;
+        private const float baseSize = 0.8f;
         private int Level => MurasamaOverride.GetLevel(Item);
         public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.scale += 0.01f;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity.UnitVector() * 80 * Projectile.scale;
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
+            Owner.direction = Math.Sign(Projectile.velocity.X);
             Projectile.ai[0]++;
 
             if (!Main.dedServ) {
