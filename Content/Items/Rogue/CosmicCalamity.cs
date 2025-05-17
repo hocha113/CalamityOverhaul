@@ -31,7 +31,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.shoot = ModContent.ProjectileType<CosmicCalamityProjectile>();
             Item.shootSpeed = 12f;
             Item.DamageType = CWRLoad.RogueDamageClass;
-            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
+            CWRItems.ItemMeleePrefixDic[Type] = true;
+            CWRItems.ItemRangedPrefixDic[Type] = false;
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;

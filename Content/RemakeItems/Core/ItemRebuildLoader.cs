@@ -73,6 +73,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         void ICWRLoader.LoadData() {
             Instances ??= [];
             ByID ??= [];
+            CWRItems.ItemAllowPrefixDic ??= [];
+            CWRItems.ItemMeleePrefixDic ??= [];
+            CWRItems.ItemRangedPrefixDic ??= [];
 
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
@@ -175,6 +178,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         void ICWRLoader.UnLoadData() {
             Instances?.Clear();
             ByID?.Clear();
+            CWRItems.ItemAllowPrefixDic?.Clear();
+            CWRItems.ItemMeleePrefixDic?.Clear();
+            CWRItems.ItemRangedPrefixDic?.Clear();
 
             itemLoaderType = null;
             onSetDefaultsMethod = null;
@@ -237,54 +243,39 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
-            if (item.type == ItemID.None || Main.gameMenu) {//是的，在某些情况下，是有可能在菜单页面被调用到的
-                return orig.Invoke(item, pre);
-            }
-
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
-                bool? rasg = ritem.On_AllowPreFix(item, pre);
-                if (rasg.HasValue) {
-                    return rasg.Value;
+            if (CWRItems.ItemAllowPrefixDic.TryGetValue(item.type, out bool? value)) {
+                if (value.HasValue) {
+                    return value.Value;
                 }
             }
-            if (item.CWR().GetAllowPrefix) {
-                return true;
+            else {
+                CWRItems.ItemAllowPrefixDic[item.type] = null;
             }
 
             return orig.Invoke(item, pre);
         }
 
         public bool OnMeleePrefixHook(On_Item_Dalegate orig, Item item) {
-            if (item.type == ItemID.None || Main.gameMenu) {
-                return orig.Invoke(item);
-            }
-
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
-                bool? rasg = ritem.On_MeleePreFix(item);
-                if (rasg.HasValue) {
-                    return rasg.Value;
+            if (CWRItems.ItemMeleePrefixDic.TryGetValue(item.type, out bool? value)) {
+                if (value.HasValue) {
+                    return value.Value;
                 }
             }
-            if (item.CWR().GetMeleePrefix) {
-                return true;
+            else {
+                CWRItems.ItemMeleePrefixDic[item.type] = null;
             }
 
             return orig.Invoke(item);
         }
 
         public bool OnRangedPrefixHook(On_Item_Dalegate orig, Item item) {
-            if (item.type == ItemID.None || Main.gameMenu) {
-                return orig.Invoke(item);
-            }
-
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
-                bool? rasg = ritem.On_RangedPreFix(item);
-                if (rasg.HasValue) {
-                    return rasg.Value;
+            if (CWRItems.ItemRangedPrefixDic.TryGetValue(item.type, out bool? value)) {
+                if (value.HasValue) {
+                    return value.Value;
                 }
             }
-            if (item.CWR().GetRangedPrefix) {
-                return true;
+            else {
+                CWRItems.ItemRangedPrefixDic[item.type] = null;
             }
 
             return orig.Invoke(item);

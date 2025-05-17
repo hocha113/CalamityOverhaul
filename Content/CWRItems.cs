@@ -49,6 +49,18 @@ namespace CalamityOverhaul.Content
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
+        /// 如果不为<see langword="null"/>，则强行接收所有前缀
+        /// </summary>
+        public static Dictionary<int, bool?> ItemAllowPrefixDic { get; set; } = [];
+        /// <summary>
+        /// 如果不为<see langword="null"/>，则强行接收所有近战前缀
+        /// </summary>
+        public static Dictionary<int, bool?> ItemMeleePrefixDic { get; set; } = [];
+        /// <summary>
+        /// 如果不为<see langword="null"/>，则强行接收所有远程前缀
+        /// </summary>
+        public static Dictionary<int, bool?> ItemRangedPrefixDic { get; set; } = [];
+        /// <summary>
         /// AI槽位数量
         /// </summary>
         public const int MaxAISlot = 3;
@@ -57,19 +69,7 @@ namespace CalamityOverhaul.Content
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
-        public float[] ai = new float[MaxAISlot];
-        /// <summary>
-        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_AllowPreFix(Item, int)"/>
-        /// </summary>
-        public bool GetAllowPrefix;
-        /// <summary>
-        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_MeleePreFix(Item)"/>
-        /// </summary>
-        public bool GetMeleePrefix;
-        /// <summary>
-        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="ItemOverride.On_RangedPreFix(Item)"/>
-        /// </summary>
-        public bool GetRangedPrefix;
+        public float[] ai = new float[MaxAISlot];       
         /// <summary>
         /// 是否正在真近战
         /// </summary>

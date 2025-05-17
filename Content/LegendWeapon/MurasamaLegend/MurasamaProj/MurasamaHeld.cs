@@ -13,13 +13,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    internal class MurasamaHeld : BaseHeldProj, ICWRLoader
+    internal class MurasamaHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeld";
         private ref float Time => ref Projectile.ai[0];
-        private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
-        private bool onFireR => DownRight && !DownLeft;
-        private int level => MurasamaOverride.GetLevel(Item);
+        private ref int RisingDragon => ref Owner.CWR().RisingDragonCharged;
+        private bool OnFireR => DownRight && !DownLeft;
+        private int Level => MurasamaOverride.GetLevel(Item);
         private bool initialize;
         private bool oldRisingDragonFullSet;
         private bool risingDragonFullSet;
@@ -34,12 +34,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         internal int uiFrame;
         internal int uiFrame2;
         private float uiAlape;
-        private int maxFrame = 6;
         internal int noAttenuationTime;
+        private const int maxFrame = 6;
         private static int breakOutType;
-        void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MuraTriggerDash>();
-        void ICWRLoader.UnLoadData() => breakOutType = 0;
-        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
+        public override void SetStaticDefaults() {
+            CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
+            breakOutType = ModContent.ProjectileType<MuraTriggerDash>();
+        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
@@ -101,16 +102,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
 
-            if (risingDragon > 0) {
+            if (RisingDragon > 0) {
                 if (uiAlape < 1) {
                     uiAlape += 0.1f;
                 }
                 if (noAttenuationTime <= 0) {
-                    if (!onFireR && risingDragon == 1 && noHasEndSkillEffectStart && noHasBreakOutProj && noHasDownSkillProj) {
+                    if (!OnFireR && RisingDragon == 1 && noHasEndSkillEffectStart && noHasBreakOutProj && noHasDownSkillProj) {
                         SoundEngine.PlaySound(CWRSound.Retracting with { Volume = 0.35f }, Projectile.Center);
                     }
                     if (!hasBoss) {
-                        risingDragon--;
+                        RisingDragon--;
                     }
                 }
             }
@@ -120,23 +121,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
             }
 
-            if (hasBoss && !DownRight && risingDragon < MurasamaOverride.GetOnRDCD(Item)) {
+            if (hasBoss && !DownRight && RisingDragon < MurasamaOverride.GetOnRDCD(Item)) {
                 noAttenuationTime = 4;
-                risingDragon++;
+                RisingDragon++;
             }
 
             if (noAttenuationTime > 0) {
                 noAttenuationTime--;
             }
 
-            if (risingDragon > MurasamaOverride.GetOnRDCD(Item)) {
-                risingDragon = MurasamaOverride.GetOnRDCD(Item);
+            if (RisingDragon > MurasamaOverride.GetOnRDCD(Item)) {
+                RisingDragon = MurasamaOverride.GetOnRDCD(Item);
             }
-            else if (risingDragon < 0) {
-                risingDragon = 0;
+            else if (RisingDragon < 0) {
+                RisingDragon = 0;
             }
 
-            risingDragonFullSet = risingDragon >= MurasamaOverride.GetOnRDCD(Item);
+            risingDragonFullSet = RisingDragon >= MurasamaOverride.GetOnRDCD(Item);
 
             if (risingDragonFullSet && !oldRisingDragonFullSet) {
                 SoundEngine.PlaySound(CWRSound.Retracting with { Volume = 0.35f, Pitch = 0.3f }, Projectile.Center);
@@ -178,12 +179,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             return bytes;
         }
 
+        private void SetDirByBreakerSlash() {
+            int id = ModContent.ProjectileType<MuraBreakerSlash>();
+            if (Owner.ownedProjectileCounts[id] == 0) {
+                return;
+            }
+
+            Projectile targetMBSProj = null;
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type != id || proj.owner != Owner.whoAmI) {
+                    continue;
+                }
+                targetMBSProj = proj;
+            }
+            if (targetMBSProj != null) {
+                Owner.direction = Math.Sign(targetMBSProj.velocity.X);
+            }
+        }
+
         public void InOwner() {
             int safeGravDir = Math.Sign(Owner.gravDir);
             nolegendStart = true;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 nolegendStart = InWorldBossPhase.Level11;
             }
+            //设置有升龙斩的特殊情况，这种情况可能出现朝向设置的延后冲突，所以这里实时更新一次
+            SetDirByBreakerSlash();
 
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(0, 5) * safeGravDir;
             Projectile.timeLeft = 2;
@@ -204,17 +225,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign * safeGravDir) + Owner.fullRotation;
 
-            if (onFireR) {//玩家按下右键触发这些技能，同时需要避免在左键按下的时候触发
+            if (OnFireR) {//玩家按下右键触发这些技能，同时需要避免在左键按下的时候触发
                 Owner.direction = Math.Sign(ToMouse.X);
                 Projectile.Center += new Vector2(0, -5) * safeGravDir;
                 armRotSengsFront = (ToMouseA - MathHelper.PiOver2 * safeGravDir) / CWRUtils.atoR * -DirSign;
                 armRotSengsBack = 30;
                 Projectile.rotation = ToMouseA + MathHelper.ToRadians(75 + (DirSign > 0 ? 20 : 0));
-                if (risingDragon < MurasamaOverride.GetOnRDCD(Item)) {
-                    if (risingDragon == MurasamaOverride.GetOnRDCD(Item) - 1) {
+                if (RisingDragon < MurasamaOverride.GetOnRDCD(Item)) {
+                    if (RisingDragon == MurasamaOverride.GetOnRDCD(Item) - 1) {
                         SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                     }
-                    risingDragon += 3;
+                    RisingDragon += 3;
                     noAttenuationTime = 10;
                 }
                 else {
@@ -223,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             if (triggerKeyDown && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
-                if (nolegendStart && risingDragon >= MurasamaOverride.GetOnRDCD(Item)) {
+                if (nolegendStart && RisingDragon >= MurasamaOverride.GetOnRDCD(Item)) {
                     SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
                     if (MurasamaOverride.NameIsVergil(Owner) && Main.rand.NextBool()) {
@@ -233,11 +254,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
                     Owner.velocity += UnitToMouseV * -3;
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                    , breakOutType, (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center, UnitToMouseV * (7 + Level * 0.2f)
+                    , breakOutType, (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (0.35f + Level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
                     }
 
-                    risingDragon = 0;
+                    RisingDragon = 0;
 
                     SpanTriggerEffDust();
                 }
@@ -252,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
-                        , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + level * 1f)), 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + Level * 1f)), 0, Owner.whoAmI);
                     }
 
                     Item.CWR().ai[0] -= 1;//消耗一点能量
@@ -281,19 +302,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             dustSpanPos += UnitToMouseV * Projectile.width * Projectile.scale * 0.71f;
             for (int i = 0; i < 30; i++) {
-                int dustID;
-                switch (Main.rand.Next(6)) {
-                    case 0:
-                        dustID = 262;
-                        break;
-                    case 1:
-                    case 2:
-                        dustID = 54;
-                        break;
-                    default:
-                        dustID = 53;
-                        break;
-                }
+                var dustID = Main.rand.Next(6) switch {
+                    0 => 262,
+                    1 or 2 => 54,
+                    _ => 53,
+                };
                 float num = Main.rand.NextFloat(3f, 13f);
                 float angleRandom = 0.06f;
                 Vector2 dustVel = new Vector2(num, 0f).RotatedBy((double)UnitToMouseV.ToRotation(), default);
@@ -309,7 +322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
         }
 
-        public override void PostDraw(Color lightColor) => MuraChargeUI.Instance.DrawOverheadSorwdBar(Owner, risingDragon, uiFrame, maxFrame);
+        public override void PostDraw(Color lightColor) => MuraChargeUI.Instance.DrawOverheadSorwdBar(Owner, RisingDragon, uiFrame, maxFrame);
 
         public override bool PreDraw(ref Color lightColor) {
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(DownLeft || DownRight)) {
@@ -318,6 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (!noHasDownSkillProj) {
                 return false;
             }
+
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
             Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
             Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation

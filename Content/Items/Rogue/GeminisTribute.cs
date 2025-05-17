@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.CWR().DeathModeItem = true;
-            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
+            CWRItems.ItemMeleePrefixDic[Type] = true;
+            CWRItems.ItemRangedPrefixDic[Type] = false;
         }
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
     }
@@ -60,7 +61,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
+            CWRItems.ItemMeleePrefixDic[Type] = true;
+            CWRItems.ItemRangedPrefixDic[Type] = false;
         }
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
         public override void AddRecipes() {

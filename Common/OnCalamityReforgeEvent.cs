@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Content;
 using System;
 using Terraria;
 using Terraria.GameContent.Prefixes;
@@ -38,7 +39,13 @@ namespace CalamityOverhaul.Common
             if (item.ModItem == null) {
                 return false;
             }
-            return item.ModItem.MeleePrefix() || item.CWR().GetMeleePrefix;
+            if (item.ModItem.MeleePrefix()) {
+                return true;
+            }
+            if (CWRItems.ItemMeleePrefixDic[item.type].HasValue) {
+                return CWRItems.ItemMeleePrefixDic[item.type].Value;
+            }
+            return false;
         }
 
         // 根据物品类型和当前前缀获取重铸后的前缀

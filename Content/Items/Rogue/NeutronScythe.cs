@@ -32,7 +32,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronScythe;
-            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
+            CWRItems.ItemMeleePrefixDic[Type] = true;
+            CWRItems.ItemRangedPrefixDic[Type] = false;
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;

@@ -254,8 +254,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
-            Item.CWR().GetMeleePrefix = true;
             Item.CWR().LegendData = new MuraData();
+            CWRItems.ItemMeleePrefixDic[Item.type] = true;
+            CWRItems.ItemRangedPrefixDic[Item.type] = false;
         }
 
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {

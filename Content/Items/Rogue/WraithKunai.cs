@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.UseSound = null;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<WraithKunaiThrowable>();
-            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
+            CWRItems.ItemMeleePrefixDic[Type] = true;
+            CWRItems.ItemRangedPrefixDic[Type] = false;
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

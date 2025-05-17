@@ -535,7 +535,7 @@ namespace CalamityOverhaul
             if (item.shoot == ProjectileID.None || !item.noUseGraphic
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
                 || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                item.CWR().GetMeleePrefix = true;
+                CWRItems.ItemMeleePrefixDic[item.type] = true;
             }
             item.noMelee = true;
             item.noUseGraphic = true;
