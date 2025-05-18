@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
+        public override bool CanLoadLocalization => false;
         public override int TargetID => ModContent.ItemType<TItem>();
         public override void SetDefaults(Item item) {
             if (RMagicStaff.CanLoadFunc(this)) {
@@ -26,6 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
+        public override bool CanLoadLocalization => false;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
         public static bool CanLoadFunc(ItemOverride itemOverride) {
