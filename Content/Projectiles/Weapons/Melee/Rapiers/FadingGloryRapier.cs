@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public static void HitDustEffect(Projectile Projectile, NPC npc) {
-            Vector2 impactPoint = Vector2.Lerp(Projectile.Center, npc.Center, 0.65f);
             Vector2 bloodSpawnPosition = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 0.04f;
             Vector2 splatterDirection = (Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
             if (CWRLoad.NPCValue.ISTheofSteel(npc)) {

@@ -112,48 +112,51 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         /// </summary>
         /// <param name="stabTimer"></param>
         private void UpdateFading(int stabTimer) {
-            if (!Fading) {
-                float totalTime = maxTimeLeft * 0.2f;
-                float totalTimeOver2 = totalTime * 0.5f;
-                if (stabTimer < totalTime) {
-                    if (stabTimer == 1) {
-                        Projectile.velocity = UnitToMouseV.RotatedByRandom(StabbingSpread);
-                        StabVec = new Vector2(Main.rand.NextFloat(StabAmplitudeMin, StabAmplitudeMax), 0);
-                        HitNPCs.Clear();
-                    }
+            if (Fading) {
+                return;
+            }
 
-                    if (stabTimer < totalTimeOver2) {
-                        float lerper = stabTimer / totalTimeOver2;
-                        //刺入的矫正值
-                        OffsetPos = Vector2.Lerp(IntermediateTransPos, StabVec, Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
-                    }
-                    else {
-                        if (!CanUse) {
-                            AddSkialithEntity();
-                            if (Projectile.IsOwnedByLocalPlayer()) {
-                                ExtraShoot();
-                            }
-                            SoundEngine.PlaySound(ShurikenOut.Value with { MaxInstances = 6 }, Projectile.Center);
-                            CanUse = true;
-                        }
+            float totalTime = maxTimeLeft * 0.2f;
+            float totalTimeOver2 = totalTime * 0.5f;
 
-                        float lerper = (stabTimer - totalTimeOver2) / totalTimeOver2;
-                        //刺出的矫正值
-                        OffsetPos = Vector2.Lerp(StabVec, IntermediateTransPos, Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
-                    }
+            if (stabTimer < totalTime) {
+                if (stabTimer == 1) {
+                    Projectile.velocity = UnitToMouseV.RotatedByRandom(StabbingSpread);
+                    StabVec = new Vector2(Main.rand.NextFloat(StabAmplitudeMin, StabAmplitudeMax), 0);
+                    HitNPCs.Clear();
+                }
+
+                if (stabTimer < totalTimeOver2) {
+                    float lerper = stabTimer / totalTimeOver2;
+                    //刺入的矫正值
+                    OffsetPos = Vector2.Lerp(IntermediateTransPos, StabVec, Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
                 }
                 else {
-                    CanUse = false;
-                    stabIndex++;
-                    Projectile.timeLeft = maxTimeLeft;
+                    if (!CanUse) {
+                        AddSkialithEntity();
+                        if (Projectile.IsOwnedByLocalPlayer()) {
+                            ExtraShoot();
+                        }
+                        SoundEngine.PlaySound(ShurikenOut.Value with { MaxInstances = 6 }, Projectile.Center);
+                        CanUse = true;
+                    }
 
-                    stretch = (Player.CompositeArmStretchAmount)Main.rand.Next(4);
+                    float lerper = (stabTimer - totalTimeOver2) / totalTimeOver2;
+                    //刺出的矫正值
+                    OffsetPos = Vector2.Lerp(StabVec, IntermediateTransPos, Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
                 }
+            }
+            else {
+                CanUse = false;
+                stabIndex++;
+                Projectile.timeLeft = maxTimeLeft;
 
-                if (!Owner.channel && stabIndex > maxStabNum && Projectile.timeLeft == maxTimeLeft) {
-                    Projectile.timeLeft = 5;
-                    Fading = true;
-                }
+                stretch = (Player.CompositeArmStretchAmount)Main.rand.Next(4);
+            }
+
+            if (!Owner.channel && stabIndex > maxStabNum && Projectile.timeLeft == maxTimeLeft) {
+                Projectile.timeLeft = 5;
+                Fading = true;
             }
         }
 

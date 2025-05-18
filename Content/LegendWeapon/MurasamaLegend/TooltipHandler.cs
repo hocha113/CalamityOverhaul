@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]");
             tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]");
 
-            int index = item.CWR().LegendData.Level;
+            int index = Mura_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
             string text2 = CWRLocText.GetTextValue("Murasama_Text0");
             string text3;
@@ -73,9 +73,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 }
                 ModifyWallSelect(index, ref newContent, ref num);
                 ModifyMechBossSelect(index, ref newContent, ref num);
-                text3 = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
+                text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
-                text3 += LegendData.GetWorldUpLines(item.CWR());
             }
             else {
                 text3 = "";

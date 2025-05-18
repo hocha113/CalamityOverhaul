@@ -47,9 +47,18 @@ namespace CalamityOverhaul.Content.LegendWeapon
             string text = "";
             if (worldName != null && Main.worldName != worldName && worldName != "") {
                 string key = MuraText.GetTextKey("World_Text0");
-                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName)}", Color.Gold);
+                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName, cwrItem.LegendData.Level)}", Color.Gold);
             }
             return text;
+        }
+
+        public static string GetLevelTrialPreText(CWRItems cwrItem, string key, string level) {
+            string worldLine = GetWorldUpLines(cwrItem);
+            string trialPreText = $"[c/00736d:{CWRLocText.GetTextValue(key) + " "}{level}]";
+            if (worldLine == "") {
+                return trialPreText;
+            }
+            return worldLine + "\n" + trialPreText;
         }
 
         public virtual void SaveData(Item item, TagCompound tag) {

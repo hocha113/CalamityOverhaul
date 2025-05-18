@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            int index = item.CWR().LegendData.Level;
+            int index = SHPC_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 string num = (index + 1).ToString();
@@ -101,11 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
 
-                string text = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
-                string worldLine = LegendData.GetWorldUpLines(item.CWR());
-                if (worldLine != "") {
-                    text += worldLine;
-                }
+                string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
 
                 tooltips.ReplaceTooltip("[Lang4]", text, "");
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), "");

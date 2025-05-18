@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2019,7 +2019,7 @@ Legend: {
 			一次决战要到来了，那些破铜烂铁计划联合在一起，妄图阻挡我们
 			以刀与血来告诉它们，我们远征的步伐将碾碎一切异形邪祟和憎恶智能
 			'''
-		World_Text0: --上次升级的世界:<{0}>
+		World_Text0: --上次升级的世界:<{0}>|记录等级:<{1}>
 	}
 }
 

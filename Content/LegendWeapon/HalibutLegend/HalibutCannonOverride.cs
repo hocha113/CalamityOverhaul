@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            int index = item.CWR().LegendData.Level;
+            int index = Halibut_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 string num = (index + 1).ToString();
@@ -149,11 +149,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
                 }
 
-                string text = $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]";
-                string worldLine = LegendData.GetWorldUpLines(item.CWR());
-                if (worldLine != "") {
-                    text += worldLine;
-                }
+                string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
 
                 tooltips.ReplaceTooltip("[Lang4]", text, "");
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), "");
