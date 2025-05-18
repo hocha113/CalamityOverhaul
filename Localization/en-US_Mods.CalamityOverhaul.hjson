@@ -1150,14 +1150,9 @@ Projectiles: {
 	Hit.DisplayName: Hit
 	SpwanTextProj.DisplayName: Spwan Text Proj
 	AetherOrb.DisplayName: Aether Orb
-	AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	DragonsWordCut.DisplayName: Dragons Word Cut
 	DragonsWordMouse.DisplayName: Dragons Word Mouse
 	DragonsWordProj.DisplayName: Dragons Word Proj
-	EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	EtherRoarOrb.DisplayName: Ether Roar Orb
-	EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	FateCluster.DisplayName: Fate Cluster
 	HatredFire.DisplayName: Hatred Fire
 	MagicStar.DisplayName: Magic Star
@@ -2119,21 +2114,6 @@ RemakeItems: {
 		Tooltip: Spewed forth a cascade of acidic flow.
 	}
 
-	RAethersWhisper: {
-		DisplayName: Aethers Whisper
-		Tooltip: Fire multiple splintered Radelenergy shocks, the greater the distance the damage
-	}
-
-	RApoctosisArray: {
-		DisplayName: Apoctosis Array
-		Tooltip:
-			'''
-			Fires an ion shockwave that accelerates and explodes upon impact. 
-			Its power increases with your mana level. 
-			Using Stardust Infusion reduces the magnitude of this boost.
-			'''
-	}
-
 	RCryophobia: {
 		DisplayName: Cryophobia
 		Tooltip:
@@ -2166,16 +2146,6 @@ RemakeItems: {
 	RFatesReveal: {
 		DisplayName: Fates Reveal
 		Tooltip: Summons Ghastly Fireballs that after a short time seeks out enemies
-	}
-
-	RIonBlaster: {
-		DisplayName: Ion Blaster
-		Tooltip:
-			'''
-			Fires an ion shockwave that accelerates and explodes upon impact. 
-			Its power increases with your magic level. 
-			Using Stardust Infusion weakens this enhancement effect.
-			'''
 	}
 
 	RLazhar: {
