@@ -1132,14 +1132,9 @@ Projectiles: {
 	// Hit.DisplayName: Hit
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// AetherOrb.DisplayName: Aether Orb
-	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 	// DragonsWordProj.DisplayName: Dragons Word Proj
-	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	// EtherRoarOrb.DisplayName: Ether Roar Orb
-	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
 	// HatredFire.DisplayName: Hatred Fire
 	// MagicStar.DisplayName: Magic Star
@@ -2077,21 +2072,6 @@ RemakeItems: {
 		Tooltip: 喷出酸液流
 	}
 
-	RAethersWhisper: {
-		DisplayName: 以太之低语
-		Tooltip: 发射会多次分裂的拉德尔灵能冲击，距离越远伤害越高
-	}
-
-	RApoctosisArray: {
-		DisplayName: 凋亡射线
-		Tooltip:
-			'''
-			发射会加速并爆炸的离子冲击波
-			你的魔力值越高，它的威力越大
-			使用星幻注射剂会削减加成幅度
-			'''
-	}
-
 	RCryophobia: {
 		DisplayName: 恐寒症
 		Tooltip:
@@ -2124,16 +2104,6 @@ RemakeItems: {
 	RFatesReveal: {
 		DisplayName: 命运神启
 		Tooltip: 生成数个哀怨灵火攻击敌人
-	}
-
-	RIonBlaster: {
-		DisplayName: 离子冲击波
-		Tooltip:
-			'''
-			发射会加速并爆炸的离子冲击波
-			你的魔力值越高，它的威力越大
-			使用星幻注射剂会减弱加成幅度
-			'''
 	}
 
 	RLazhar: {

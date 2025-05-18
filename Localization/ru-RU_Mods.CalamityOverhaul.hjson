@@ -1160,14 +1160,9 @@ Projectiles: {
 	// Hit.DisplayName: Hit
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// AetherOrb.DisplayName: Aether Orb
-	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 	// DragonsWordProj.DisplayName: Dragons Word Proj
-	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	// EtherRoarOrb.DisplayName: Ether Roar Orb
-	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
 	// HatredFire.DisplayName: Hatred Fire
 	// MagicStar.DisplayName: Magic Star
@@ -2158,25 +2153,6 @@ RemakeItems: {
 		Tooltip: Выпускает залп кислотных струй
 	}
 
-	RAethersWhisper: {
-		DisplayName: Шёпот эфира
-		Tooltip:
-			'''
-			Накладывает на врагов дебафф «{$BuffName.ShadowFlame}» на длительное время и разделяется при столкновении с блоком
-			Снаряды увеличивают свой урон во время полёта
-			'''
-	}
-
-	RApoctosisArray: {
-		DisplayName: Район Апоптоза
-		Tooltip:
-			'''
-			Выпускает ускоряющиеся и взрывные ионные ударные волны
-			Чем выше ваш запас магии, тем сильнее его влияние
-			Использование звездного инъекционного раствора уменьшит уровень бонуса
-			'''
-	}
-
 	RCryophobia: {
 		DisplayName: Криофобия
 		Tooltip:
@@ -2203,16 +2179,6 @@ RemakeItems: {
 	RFatesReveal: {
 		DisplayName: Судьба
 		Tooltip: Создать несколько плачущих духов огня, чтобы атаковать врага
-	}
-
-	RIonBlaster: {
-		DisplayName: Ионный бластер
-		Tooltip:
-			'''
-			Выпускает ускоряющиеся и взрывные ионные ударные волны
-			Чем выше ваш запас магии, тем сильнее его влияние
-			Использование звездного инъекционного раствора уменьшит уровень бонуса
-			'''
 	}
 
 	RLazhar: {

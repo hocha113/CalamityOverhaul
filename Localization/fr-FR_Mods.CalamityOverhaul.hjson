@@ -1138,14 +1138,9 @@ Projectiles: {
 	// Hit.DisplayName: Hit
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// AetherOrb.DisplayName: Aether Orb
-	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 	// DragonsWordProj.DisplayName: Dragons Word Proj
-	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	// EtherRoarOrb.DisplayName: Ether Roar Orb
-	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
 	// HatredFire.DisplayName: Hatred Fire
 	// MagicStar.DisplayName: Magic Star
@@ -2102,21 +2097,6 @@ RemakeItems: {
 		Tooltip: Projette un jet d'acide
 	}
 
-	RAethersWhisper: {
-		DisplayName: Chuchotement d'Éther
-		Tooltip: Tire des impacts d'énergie radiale qui se divisent plusieurs fois, infligeant plus de dégâts à distance
-	}
-
-	RApoctosisArray: {
-		DisplayName: Rayon d'Apoptose
-		Tooltip:
-			'''
-			Tire une onde de choc ionique qui s'accélère et explose
-			Plus votre magie est élevée, plus sa puissance est grande
-			L'utilisation d'une injection d'astrogène réduira l'effet amplificateur
-			'''
-	}
-
 	RCryophobia: {
 		DisplayName: Cryophobie
 		Tooltip:
@@ -2148,16 +2128,6 @@ RemakeItems: {
 	RFatesReveal: {
 		DisplayName: Révélation des Destins
 		Tooltip: Génère plusieurs feux follets de lamentation pour attaquer les ennemis
-	}
-
-	RIonBlaster: {
-		DisplayName: Blasteur Ionique
-		Tooltip:
-			'''
-			Tire un rayon ionique qui s'accélère et explose
-			Plus votre magie est élevée, plus sa puissance est grande
-			L'utilisation d'une injection d'astrogène réduira l'effet amplificateur
-			'''
 	}
 
 	RLazhar: {

@@ -1152,14 +1152,9 @@ Projectiles: {
 	// Hit.DisplayName: Hit
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// AetherOrb.DisplayName: Aether Orb
-	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 	// DragonsWordProj.DisplayName: Dragons Word Proj
-	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
-	// EtherRoarOrb.DisplayName: Ether Roar Orb
-	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
 	// HatredFire.DisplayName: Hatred Fire
 	// MagicStar.DisplayName: Magic Star
@@ -2130,21 +2125,6 @@ RemakeItems: {
 		Tooltip: Lanza un chorro de ácido.
 	}
 
-	RAethersWhisper: {
-		DisplayName: Susurro Etéreo
-		Tooltip: Lanza un impacto psíquico de Radell que se divide múltiples veces; cuanto más lejos, más daño.
-	}
-
-	RApoctosisArray: {
-		DisplayName: Rayo de Apoptosis
-		Tooltip:
-			'''
-			Lanza ondas de choque iónicas que se aceleran y explotan.
-			Cuanto más alto sea tu nivel de magia, mayor será el poder.
-			Usar inyección de estrellita reducirá el aumento de poder.
-			'''
-	}
-
 	RCryophobia: {
 		DisplayName: Criofobia
 		Tooltip:
@@ -2177,16 +2157,6 @@ RemakeItems: {
 	RFatesReveal: {
 		DisplayName: Revelación del Destino
 		Tooltip: Genera múltiples llamas espirituales que atacan a los enemigos.
-	}
-
-	RIonBlaster: {
-		DisplayName: Blaster de ion
-		Tooltip:
-			'''
-			Lanza una onda de choque iónica que acelera y explota
-			Cuanto mayor sea tu mana, mayor será su poder
-			Usar un inyectable de estrellas disminuirá la magnitud del bonus
-			'''
 	}
 
 	RLazhar: {
