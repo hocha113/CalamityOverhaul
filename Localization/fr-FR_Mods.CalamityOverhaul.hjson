@@ -2042,7 +2042,7 @@ Legend: {
 			Une bataille décisive approche. Ces tas de ferraille prévoient de s'unir pour tenter de nous arrêter.
 			Avec des lames et du sang, faites-leur savoir que notre expédition écrasera toutes les abominations extraterrestres et les intelligences haineuses.
 			'''
-		// World_Text0: " Last Upgraded World: {0} | Record: <{1}>"
+		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
 	}
 }
 

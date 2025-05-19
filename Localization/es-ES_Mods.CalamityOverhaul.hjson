@@ -2064,7 +2064,7 @@ Legend: {
 			Se avecina una batalla decisiva. Esas pilas de chatarra planean unirse para intentar detenernos.
 			Con espadas y sangre, hágales saber que nuestra expedición aplastará a todas las abominaciones alienígenas e inteligencias odiosas.
 			'''
-		// World_Text0: " Last Upgraded World: {0} | Record: <{1}>"
+		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
 	}
 }
 
