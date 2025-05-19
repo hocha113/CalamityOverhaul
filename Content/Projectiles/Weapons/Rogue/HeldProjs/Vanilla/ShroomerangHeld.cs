@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             UseDrawTrail = true;
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;
+            FlightSpeedTime = 22;
         }
 
         public override void PostSetThrowable() {

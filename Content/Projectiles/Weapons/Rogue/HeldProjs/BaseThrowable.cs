@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         /// </summary>
         public float TrailColorAttenuation = 0.8f;
         /// <summary>
+        /// 飞出时间，默认为35
+        /// </summary>
+        public int FlightSpeedTime = 35;
+        /// <summary>
         /// 关于收手的曲线动画拟合数据体
         /// </summary>
         protected static StartData startDataPullback = new StartData() {
@@ -208,7 +212,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 }
 
                 if (ReturnProgress == 0f && Projectile.velocity.Length() > 2f
-                    && Projectile.timeLeft < (205 + ChargeUpTime)) {
+                    && Projectile.timeLeft < (TotalLifetime - FlightSpeedTime + ChargeUpTime)) {
                     Projectile.velocity *= 0.88f;
                 }
             }

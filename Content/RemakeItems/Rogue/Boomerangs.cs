@@ -109,6 +109,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
+            FlightSpeedTime = 16;
         }
 
         public override void PostSetThrowable() {
@@ -203,6 +204,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             OffsetRoting = MathHelper.ToRadians(30 + 180);
             Projectile.CWR().HitAttribute.WormResistance = 0.6f;
             UseDrawTrail = true;
+            FlightSpeedTime = 20;
         }
 
         public override void PostSetThrowable() {
