@@ -773,8 +773,11 @@ namespace CalamityOverhaul
 
         public static CWRItems CWR(this Item item) {
             if (item.type == ItemID.None) {
-                VaultUtils.Text("ERROR!发生了一次空传递，该物品为None!", Color.Red);
-                CWRMod.Instance.Logger.Info("ERROR!发生了一次空传递，该物品为None!");
+                string message = "错误：传入了一个非法的 Item（item.type == ItemID.None）。请检查调用逻辑！";
+                VaultUtils.Text(message, Color.Red); // 可选的屏幕提示
+                CWRMod.Instance.Logger.Error(message); // 更改为 Error 等级
+
+                throw new InvalidOperationException(message); // 明确终止执行，抛出异常              
                 return null;
             }
             return item.GetGlobalItem<CWRItems>();

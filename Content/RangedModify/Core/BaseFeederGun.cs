@@ -48,13 +48,13 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 if (!MagazineSystem) {//如果关闭了弹匣系统就无脑返回true
                     return true;
                 }
-                if (Item.CWR() == null) {
+                if (Item.type == ItemID.None || Item.CWR() == null) {
                     return false;
                 }
                 return Item.CWR().IsKreload;
             }
             set {
-                if (!Main.gameMenu && Item.CWR() != null) {
+                if (!Main.gameMenu && Item.type > ItemID.None && Item.CWR() != null) {
                     Item.CWR().IsKreload = value;
                 }
             }
@@ -156,15 +156,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         protected int BulletNum {
             get {
-                if (Item.CWR() == null) {
+                if (Item.type == ItemID.None || Item.CWR() == null) {
                     return 0;
                 }
                 return Item.CWR().NumberBullets;
             }
             set {
-                if (Item.CWR() != null) {
-                    Item.CWR().NumberBullets = value;
+                if (Item.type == ItemID.None || Item.CWR() == null) {
+                    return;
                 }
+                Item.CWR().NumberBullets = value;
             }
         }
 

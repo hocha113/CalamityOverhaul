@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.GoreEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
