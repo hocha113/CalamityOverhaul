@@ -340,7 +340,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         public override string Texture => ProjectileLoader.GetProjectile(ProjectileType<ArkoftheElementsSwungBlade>()).Texture;
         public virtual int TargetItem => ItemType<ArkoftheElements>();
         public Vector2 OwnerConter => Owner.GetPlayerStabilityCenter();
-        public virtual float SwingMultiplication => 1 / Owner.GetWeaponAttackSpeed(Item);
+        //神皇在上，为什么总有模组试图在游戏界面或者加载函数里面调用SD？
+        public virtual float SwingMultiplication => Main.gameMenu ? 1f : 1f / Owner.GetWeaponAttackSpeed(Item);
         public Vector2 direction = Vector2.Zero;
         public ref float Combo => ref Projectile.ai[0];
         public ref float Charge => ref Projectile.ai[1];
