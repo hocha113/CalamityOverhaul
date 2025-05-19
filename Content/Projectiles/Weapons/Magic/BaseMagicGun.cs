@@ -27,59 +27,63 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 SetRegenDelayValue = Owner.maxRegenDelay;
             }
 
-            if (CanFire) {
+            if (CanFire || ShootCoolingValue > 0) {
                 Owner.manaRegenDelay = SetRegenDelayValue;
             }
+            
+            if (!onFire && !onFireR) {
+                return;
+            }
 
-            if (onFire || onFireR) {
-                if (ShootCoolingValue <= 0) {
-                    if (ForcedConversionTargetAmmoFunc.Invoke()) {
-                        AmmoTypes = ToTargetAmmo;
+            if (ShootCoolingValue > 0) {
+                return;
+            }
+
+            if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                AmmoTypes = ToTargetAmmo;
+            }
+
+            if (Owner.CheckMana(Item)) {
+                SetShootAttribute();
+
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    if (onFire) {
+                        FiringShoot();
                     }
-
-                    if (Owner.CheckMana(Item)) {
-                        SetShootAttribute();
-
-                        if (Projectile.IsOwnedByLocalPlayer()) {
-                            if (onFire) {
-                                FiringShoot();
-                            }
-                            if (onFireR) {
-                                FiringShootR();
-                            }
-                            if (GlobalItemBehavior) {
-                                ItemLoaderInFireSetBaver();
-                            }
-                        }
-
-                        PostFiringShoot();
-
-                        if (EnableRecoilRetroEffect) {
-                            OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
-                        }
-                        if (FiringDefaultSound) {
-                            HanderPlaySound();
-                        }
-                        if (CanCreateRecoilBool) {
-                            CreateRecoil();
-                        }
-                        if (FireLight > 0) {
-                            Lighting.AddLight(ShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
-                        }
-
-                        int mana = (int)(Item.mana * Owner.manaCost);
-                        Owner.statMana -= mana;
-                        Owner.manaRegenDelay = SetRegenDelayValue;
-                        if (Owner.statMana < 0) {
-                            Owner.statMana = 0;
-                        }
+                    if (onFireR) {
+                        FiringShootR();
                     }
+                    if (GlobalItemBehavior) {
+                        ItemLoaderInFireSetBaver();
+                    }
+                }
 
-                    ShootCoolingValue += Item.useTime;
-                    onFireR = onFire = false;
-                    PostShootEverthing();
+                PostFiringShoot();
+
+                if (EnableRecoilRetroEffect) {
+                    OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                }
+                if (FiringDefaultSound) {
+                    HanderPlaySound();
+                }
+                if (CanCreateRecoilBool) {
+                    CreateRecoil();
+                }
+                if (FireLight > 0) {
+                    Lighting.AddLight(ShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
+                }
+
+                int mana = (int)(Item.mana * Owner.manaCost);
+                Owner.statMana -= mana;
+                Owner.manaRegenDelay = SetRegenDelayValue;
+                if (Owner.statMana < 0) {
+                    Owner.statMana = 0;
                 }
             }
+
+            ShootCoolingValue += Item.useTime;
+            onFireR = onFire = false;
+            PostShootEverthing();
         }
     }
 }

@@ -25,26 +25,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
         }
 
         public override bool CanSpanProj() {
-            if (CanFire) {
-                Owner.manaRegenDelay = 4;
-            }
-
             if (--reuseDelay > 0) {
                 return false;
             }
 
+            if (CanFire || ShootCoolingValue > 0) {
+                Owner.manaRegenDelay = SetRegenDelayValue;
+            }
+
             bool reset = base.CanSpanProj();
-            if (Item.useLimitPerAnimation.HasValue) {
-                if (fireIndex > Item.useLimitPerAnimation) {
-                    if (--useAnimation <= 0) {
-                        fireIndex = 0;
-                        reuseDelay = Item.reuseDelay;
-                        return reset;
-                    }
-                    return false;
-                }
+
+            int shootCount;
+            if (useAnimation != 0 && Item.useTime != 0) {
+                shootCount = useAnimation / Item.useTime + 1;
             }
             else {
+                shootCount = 1;
+            }
+
+            if (Item.useLimitPerAnimation.HasValue) {
+                shootCount = Item.useLimitPerAnimation.Value;
+            }
+
+            if (fireIndex > shootCount) {
                 if (--useAnimation <= 0) {
                     fireIndex = 0;
                     reuseDelay = Item.reuseDelay;
@@ -52,6 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
                 }
                 return false;
             }
+
             return reset;
         }
 
@@ -60,10 +64,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
                 return;
             }
             useAnimation -= Item.useTime;
-            if (useAnimation <= 0) {
-                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                useAnimation = Item.useAnimation;
+            if (useAnimation > 0) {
+                return;
             }
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            useAnimation = Item.useAnimation;
         }
 
         public override void FiringShoot() {

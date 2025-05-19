@@ -388,6 +388,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 AutomaticPolishing(Item.useTime);
             }
             PostInOwner();
+
+            if (!onFire && !onFireR && LazyRotationUpdate) {//在闲置期间要时刻更新待定的旋转角
+                oldSetRoting = ToMouseA;
+            }
         }
         /// <summary>
         /// 一个自动抛壳的行为的二次封装

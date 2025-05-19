@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public int SetReadonlyTargetID;
         /// <summary>
-        /// 重置对象的目标ID
+        /// 重置对象的目标ID，默认为<see cref="ItemID.None"/>，即什么都不做
         /// </summary>
-        public virtual int TargetID => SetReadonlyTargetID;
+        public virtual int TargetID => ItemID.None;
         /// <summary>
         /// 是否是一个关于原版物品的重制节点
         /// </summary>
@@ -94,50 +94,59 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
+        /// <summary>
+        /// 是否要将这个实例加载进列表，默认为<see langword="true"/>
+        /// </summary>
+        /// <returns></returns>
         public virtual bool CanLoad() => true;
 
-        public override void SetupContent() {
-            SetReadonlyTargetID = TargetID;
+        public sealed override void SetupContent() {
             SetStaticDefaults();
             if (CanLoadLocalization) {
                 _ = DisplayName;
                 _ = Tooltip;
             }
 
-            ByID.Add(SetReadonlyTargetID, this);
-            HandlerCanOverride.CanOverrideByID.Add(SetReadonlyTargetID, true);
+            ByID.Add(TargetID, this);
+            HandlerCanOverride.CanOverrideByID.Add(TargetID, true);
         }
 
         /// <summary>
-        /// 尝试通过ID获取对应的<see cref="ItemOverride"/>对象该方法首先检查服务器配置是否启用了武器大修，如果启用，则从ByID字典中查找对应ID的ItemOverride 
-        /// 如果找到，并且<see cref="ItemOverride"/>的<see cref="CanOverride"/>方法返回值为非空，则决定是否返回找到的ItemOverride
+        /// 尝试通过ID获取对应的<see cref="ItemOverride"/>对象
+        /// 如果找到，并且<see cref="CanOverride"/>方法返回值为非空，则决定是否返回找到的实例
+        /// 该方法会检查服务器配置是否启用了武器大修，但优先级低于<see cref="CanOverride"/>
         /// </summary>
         /// <param name="id">需要查找的<see cref="ItemOverride"/>的<see cref="TargetID"/></param>
         /// <param name="itemOverride">查找到的<see cref="ItemOverride"/>对象，如果没有找到则为null</param>
-        /// <returns>如果找到了<see cref="ItemOverride"/>且满足覆盖条件，则返回true，否则返回false</returns>
+        /// <returns>如果找到了<see cref="ItemOverride"/>且满足覆盖条件，则返回<see langword="true"/>，否则返回<see langword="false"/></returns>
         public static bool TryFetchByID(int id, out ItemOverride itemOverride) {
-            itemOverride = null;
+            if (!ByID.TryGetValue(id, out itemOverride)) {
+                return false;//通过ID查找ItemOverride，如果未找到，直接返回
+            }
+
+            //调用该ItemOverride的CanOverride方法，判断是否允许覆盖
+            bool? canOverride = itemOverride.CanOverride(id);
+
+            if (canOverride.HasValue) {//如果有值，直接返回判断，这样CanOverride的优先级就是最高的
+                return canOverride.Value;
+            }
 
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
-                return false;
+                return false;// 若全局配置未启用，则直接返回false
             }
 
-            if (!ByID.TryGetValue(id, out itemOverride)) {
-                return false;  // 如果未找到，直接返回false
+            if (HandlerCanOverride.CanLoad) {//若启用了兜底加载器，则尝试获取兜底判断
+                return HandlerCanOverride.CanOverrideByID[id];
             }
 
-            bool? canOverride = itemOverride.CanOverride(id);
-            if (HandlerCanOverride.CanLoad && !canOverride.HasValue) {
-                canOverride = HandlerCanOverride.CanOverrideByID[id];
-            }
-
-            return canOverride ?? true;  // 如果CanOverride返回null，默认返回true
+            return true;
         }
 
         /// <summary>
         /// 判断当前<see cref="ItemOverride"/>是否能够进行覆盖默认实现返回null，子类可以重写此方法以实现具体的覆盖逻辑
+        /// 该方法优先级高于全局配置，如果返回非null值，将覆盖<see cref="CWRServerConfig.WeaponOverhaul"/>的设定
         /// </summary>
-        /// <returns>如果可以覆盖，返回true；如果不可以覆盖，返回false；默认返回null</returns>
+        /// <returns>如果可以覆盖，返回<see langword="true"/>；如果不可以覆盖，返回<see langword="false"/>；默认返回<see langword="null"/></returns>
         public virtual bool? CanOverride(int id) {
             return null;
         }
