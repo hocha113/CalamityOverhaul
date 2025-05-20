@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (fodingDownKey && MurasamaOverride.UnlockSkill2(Item) && noHasDownSkillProj
                 && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
-                Item.initialize();
+                Item.Initialize();
                 if (Item.CWR().ai[0] >= 1) {
                     SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {

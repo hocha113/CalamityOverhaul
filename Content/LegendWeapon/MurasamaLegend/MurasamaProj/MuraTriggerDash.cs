@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (level >= 5) {
                 overValue = level * 0.2f;
             }
-            Item.initialize();
+            Item.Initialize();
             return 2.2f + Item.CWR().ai[0] * 0.2f + level * 0.15f + overValue;
         }
 
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                         if (MurasamaOverride.NameIsVergil(Owner)) {
                             SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.3f }, Projectile.Center);
                         }
-                        Item.initialize();
+                        Item.Initialize();
 
                         int sengsDmg = (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * sengs);
                         Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Item, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3

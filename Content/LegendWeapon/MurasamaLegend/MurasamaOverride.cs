@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
                 if (MuraChargeUI.MuraUIStyle == MuraChargeUI.MuraUIStyleEnum.conceal) {
-                    item.initialize();
+                    item.Initialize();
                     float charge = item.CWR().ai[0];
                     if (charge > 0) {
                         Texture2D barBG = CWRAsset.GenericBarBack.Value;

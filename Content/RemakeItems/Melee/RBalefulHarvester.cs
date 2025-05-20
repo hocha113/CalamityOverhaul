@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public static bool AltFunctionUseFunc(Item Item) {
-            Item.initialize();
+            Item.Initialize();
             return Item.CWR().ai[0] <= 0;
         }
 
@@ -70,14 +70,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public static void HoldItemFunc(Item Item) {
-            Item.initialize();
+            Item.Initialize();
             if (Item.CWR().ai[0] > 0) {
                 Item.CWR().ai[0]--;
             }
         }
 
         public static void PostDrawInInventoryFunc(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, float scale) {
-            Item.initialize();
+            Item.Initialize();
             if (!(Item.CWR().ai[0] <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
                 Texture2D barBG = CWRAsset.GenericBarBack.Value;
                 Texture2D barFG = CWRAsset.GenericBarFront.Value;

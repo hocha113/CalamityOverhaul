@@ -124,8 +124,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.ai[1] = 0;
                 Dir = Math.Sign(Projectile.velocity.X);
                 IndsItem = balefulHarvester.Clone();
-                IndsItem.initialize();
-                balefulHarvester.initialize();
+                IndsItem.Initialize();
+                balefulHarvester.Initialize();
                 IndsItem.CWR().ai[0] = balefulHarvester.CWR().ai[0];
                 balefulHarvester.TurnToAir(true);
             }

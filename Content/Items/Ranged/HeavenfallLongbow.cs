@@ -36,21 +36,21 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Item_Ranged + "HeavenfallLongbow";
         public int ChargeValue {
             get {
-                Item.initialize();
+                Item.Initialize();
                 return (int)Item.CWR().ai[1];
             }
             set {
-                Item.initialize();
+                Item.Initialize();
                 Item.CWR().ai[1] = value;
             }
         }
         public bool SpanInfiniteRuneBool {
             get {
-                Item.initialize();
+                Item.Initialize();
                 return Item.CWR().ai[0] == 0;
             }
             set {
-                Item.initialize();
+                Item.Initialize();
                 Item.CWR().ai[0] = value ? 0 : 1;
             }
         }

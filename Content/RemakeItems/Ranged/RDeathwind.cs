@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            item.initialize();
+            item.Initialize();
             item.CWR().ai[1] = type;
             if (player.ownedProjectileCounts[ModContent.ProjectileType<DeathwindHeldProj>()] <= 0) {
                 item.CWR().ai[0] = Projectile.NewProjectile(source, position, Vector2.Zero

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 }
                 return;
             }
-            Item.initialize();
+            Item.Initialize();
             if (++Item.CWR().ai[0] > 1) {
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity * Main.rand.NextFloat(10, 16)
                 , ModContent.ProjectileType<DarkMasterBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner);

@@ -786,7 +786,7 @@ namespace CalamityOverhaul
             return projectile.GetGlobalProjectile<CWRProjectile>();
         }
 
-        public static void initialize(this Item item) {
+        public static void Initialize(this Item item) {
             if (item.CWR().ai == null) {
                 item.CWR().ai = [0, 0, 0];
             }

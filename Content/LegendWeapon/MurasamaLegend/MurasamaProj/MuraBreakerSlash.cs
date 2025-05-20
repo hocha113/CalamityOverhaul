@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     Owner.velocity += ver * 10;
 
                     //进行武器充能的操作
-                    Item.initialize();
+                    Item.Initialize();
                     Item.CWR().ai[0]++;
                     if (Item.CWR().ai[0] > 10) {
                         Item.CWR().ai[0] = 10;

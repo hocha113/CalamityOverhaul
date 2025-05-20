@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void Shoot() {
-            Item.initialize();
+            Item.Initialize();
             if (++Item.CWR().ai[0] > 3) {
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
                 , ModContent.ProjectileType<AnarchyBeam>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);

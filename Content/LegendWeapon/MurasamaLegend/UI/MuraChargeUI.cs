@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
                 uiAlape += 0.05f;
             }
 
-            MurasamaItem.initialize();
+            MurasamaItem.Initialize();
             charge = MurasamaItem.CWR().ai[0];
             newForCharge = MathHelper.Lerp(newForCharge, charge, 0.2f);
 
