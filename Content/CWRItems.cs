@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
-        public float[] ai = new float[MaxAISlot];       
+        public float[] ai = new float[MaxAISlot];
         /// <summary>
         /// 是否正在真近战
         /// </summary>

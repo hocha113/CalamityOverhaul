@@ -7,7 +7,6 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -65,14 +64,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        private void CreateDust(Vector2 position, int width, int height, Vector2 velocity) {
+        private static void CreateDust(Vector2 position, int width, int height, Vector2 velocity) {
             int dustIndex = Dust.NewDust(position, width, height, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 0.8f);
             Dust dust = Main.dust[dustIndex];
             dust.noGravity = true;
             dust.velocity = velocity.RotatedByRandom(0.4f) * -0.5f;
         }
 
-        private void CreateScatterDust(Vector2 center, int amount) {
+        private static void CreateScatterDust(Vector2 center, int amount) {
             for (int i = 0; i <= amount; i++) {
                 float randX = Main.rand.Next(-10, 11);
                 float randY = Main.rand.Next(-10, 11);

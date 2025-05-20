@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (!Main.dedServ) {
                 Projectile.scale = npc.scale * (npc.height / (float)TextureAssets.Projectile[Type].Value.Height) * 2;
             }
-            
+
             npc.Center = Projectile.Center;
             npc.rotation = Projectile.ai[2];
             npc.CWR().IceParclose = true;

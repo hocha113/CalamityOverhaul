@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
-using CalamityMod.Projectiles.Boss;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -170,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     Bodys.Add(body);
                 }
-                AttackAIs[1] = Bodys.Count -1;
+                AttackAIs[1] = Bodys.Count - 1;
                 AttackAIs[0] = 0;
             }
 

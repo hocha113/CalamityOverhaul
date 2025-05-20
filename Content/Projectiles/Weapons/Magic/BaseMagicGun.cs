@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             if (CanFire || ShootCoolingValue > 0) {
                 Owner.manaRegenDelay = SetRegenDelayValue;
             }
-            
+
             if (!onFire && !onFireR) {
                 return;
             }
