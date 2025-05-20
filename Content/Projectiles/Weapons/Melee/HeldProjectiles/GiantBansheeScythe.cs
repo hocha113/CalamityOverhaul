@@ -61,33 +61,15 @@ public class GiantBansheeScythe : ModProjectile
         Texture2D mainValue = TextureAssets.Projectile[Type].Value;
         float alp = Projectile.timeLeft / 30f;
         if (alp > 1) alp = 1;
-        Color color = CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f));
-        Main.EntitySpriteDraw(
-            mainValue,
-            Projectile.Center - Main.screenPosition,
-            null,
-            color * alp,
-            Projectile.ai[0],
-            CWRUtils.GetOrig(mainValue),
-            Projectile.scale,
-            SpriteEffects.None,
-            0
-            );
+        Color color = VaultUtils.MultiStepColorLerp(0.7f, Color.Red, Projectile.GetAlpha(Color.Gold));
+        Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition,
+            null, color * alp, Projectile.ai[0], CWRUtils.GetOrig(mainValue), Projectile.scale, SpriteEffects.None, 0);
 
         for (int i = 0; i < Projectile.oldPos.Length; i++) {
             float alp2 = 1 - i / (float)Projectile.oldPos.Length;
             float slp = 1 - i / (float)Projectile.oldPos.Length * 0.5f;
-            Main.EntitySpriteDraw(
-                mainValue,
-                Projectile.oldPos[i] + Projectile.Center - Projectile.position - Main.screenPosition,
-                null,
-                color * alp * alp2 * 0.5f,
-                Projectile.ai[0],
-                CWRUtils.GetOrig(mainValue),
-                Projectile.scale * slp,
-                SpriteEffects.None,
-                0
-            );
+            Main.EntitySpriteDraw(mainValue, Projectile.oldPos[i] + Projectile.Center - Projectile.position - Main.screenPosition,
+                null, color * alp * alp2 * 0.5f, Projectile.ai[0], CWRUtils.GetOrig(mainValue), Projectile.scale * slp, SpriteEffects.None, 0);
         }
 
         return false;

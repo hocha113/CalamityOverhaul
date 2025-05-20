@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null,
-                CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f)),
+                VaultUtils.MultiStepColorLerp(0.7f, Color.Red, Projectile.GetAlpha(Color.Gold)),
                 Projectile.localAI[0], CWRUtils.GetOrig(mainValue), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

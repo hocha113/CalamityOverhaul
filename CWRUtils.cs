@@ -247,20 +247,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 计算一个渐进速度值
-        /// </summary>
-        /// <param name="thisCenter">本体位置</param>
-        /// <param name="targetCenter">目标位置</param>
-        /// <param name="speed">速度</param>
-        /// <param name="shutdownDistance">停摆范围</param>
-        /// <returns></returns>
-        public static float AsymptoticVelocity(Vector2 thisCenter, Vector2 targetCenter, float speed, float shutdownDistance) {
-            Vector2 toMou = targetCenter - thisCenter;
-            float thisSpeed = toMou.LengthSquared() > shutdownDistance * shutdownDistance ? speed : MathHelper.Min(speed, toMou.Length());
-            return thisSpeed;
-        }
-
-        /// <summary>
         /// 根据索引返回在player域中的player实例，同时考虑合法性校验
         /// </summary>
         /// <returns>当获取值非法时将返回 <see cref="null"/> </returns>
@@ -332,51 +318,6 @@ namespace CalamityOverhaul
                 , Projectile.height, type, Alpha: Alpha, newColor: newColor, Scale: Scale);
             dust.noGravity = noGravity;
             dust.velocity = -Projectile.velocity * velocityMult;
-        }
-
-        public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
-            List<int> SuperchargableEnemies = [
-                ModContent.NPCType<WulfrumDrone>(),
-                ModContent.NPCType<WulfrumGyrator>(),
-                ModContent.NPCType<WulfrumHovercraft>(),
-                ModContent.NPCType<WulfrumRover>()
-            ];
-
-            npc.ai[1] = (int)MathHelper.Lerp(npc.ai[1], maxrg, 0.1f);
-
-            if (Main.rand.NextBool(4)) {
-                float dustCount = MathHelper.TwoPi * npc.ai[1] / 8f;
-                for (int i = 0; i < dustCount; i++) {
-                    float angle = MathHelper.TwoPi * i / dustCount;
-                    Dust dust = Dust.NewDustPerfect(npc.Center, 229);
-                    dust.position = npc.Center + angle.ToRotationVector2() * npc.ai[1];
-                    dust.scale = 0.7f;
-                    dust.noGravity = true;
-                    dust.velocity = npc.velocity;
-                }
-            }
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npcAtIndex = Main.npc[i];
-                if (!npcAtIndex.active)
-                    continue;
-                if (!SuperchargableEnemies.Contains(npcAtIndex.type) && npcAtIndex.type != ModContent.NPCType<WulfrumRover>())
-                    continue;
-                if (npcAtIndex.ai[3] > 0f)
-                    continue;
-                if (npc.Distance(npcAtIndex.Center) > npc.ai[1])
-                    continue;
-
-                npcAtIndex.ai[3] = maxchargeTime;
-                npcAtIndex.netUpdate = true;
-
-                if (Main.dedServ)
-                    continue;
-
-                for (int j = 0; j < 10; j++) {
-                    Dust.NewDust(npcAtIndex.position, npcAtIndex.width, npcAtIndex.height, DustID.Electric);
-                }
-            }
         }
 
         public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = ToRot(entity.rotation, toRot, rotSpeed);
@@ -546,7 +487,7 @@ namespace CalamityOverhaul
             item.CWR().WeaponInSetKnifeHeld = true;
             item.shoot = ModContent.ProjectileType<T>();
             if (item.shootSpeed <= 0) {
-                //不能让速度模场为0，这会让向量失去方向的性质，从而影响一些刀剑的方向判定
+                //不能让速度模长为0，这会让向量失去方向的性质，从而影响一些刀剑的方向判定
                 item.shootSpeed = 0.0001f;
             }
         }
@@ -814,74 +755,6 @@ namespace CalamityOverhaul
 
         public static float GetCorrectRadian(float minusRadian) {
             return minusRadian < 0 ? (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi : minusRadian / MathHelper.TwoPi;
-        }
-
-        public static T[] FastUnion<T>(this T[] front, T[] back) {
-            T[] combined = new T[front.Length + back.Length];
-
-            Array.Copy(front, combined, front.Length);
-            Array.Copy(back, 0, combined, front.Length, back.Length);
-
-            return combined;
-        }
-
-        /// <summary>
-        /// 生成一组不重复的随机数集合，数字的数量不能大于取值范围
-        /// </summary>
-        /// <param name="count">集合元素数量</param>
-        /// <param name="minValue">元素最小值</param>
-        /// <param name="maxValue">元素最大值</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        public static List<int> GenerateUniqueNumbers(int count, int minValue, int maxValue) {
-            if (count > maxValue - minValue + 1) {
-                throw new ArgumentException("Count of unique numbers cannot be greater than the range of values.");
-            }
-
-            List<int> uniqueNumbers = [];
-            HashSet<int> usedNumbers = [];
-
-            for (int i = minValue; i <= maxValue; i++) {
-                _ = usedNumbers.Add(i);
-            }
-
-            for (int i = 0; i < count; i++) {
-                int randomIndex = Main.rand.Next(usedNumbers.Count);
-                int randomNumber = usedNumbers.ElementAt(randomIndex);
-                _ = usedNumbers.Remove(randomNumber);
-                uniqueNumbers.Add(randomNumber);
-            }
-
-            return uniqueNumbers;
-        }
-
-        public static float RotTowards(this float curAngle, float targetAngle, float maxChange) {
-            curAngle = MathHelper.WrapAngle(curAngle);
-            targetAngle = MathHelper.WrapAngle(targetAngle);
-            if (curAngle < targetAngle) {
-                if (targetAngle - curAngle > (float)Math.PI) {
-                    curAngle += (float)Math.PI * 2f;
-                }
-            }
-            else if (curAngle - targetAngle > (float)Math.PI) {
-                curAngle -= (float)Math.PI * 2f;
-            }
-
-            curAngle += MathHelper.Clamp(targetAngle - curAngle, 0f - maxChange, maxChange);
-            return MathHelper.WrapAngle(curAngle);
-        }
-
-        /// <summary>
-        /// 色彩混合
-        /// </summary>
-        public static Color RecombinationColor(params (Color color, float weight)[] colorWeightPairs) {
-            Vector4 result = Vector4.Zero;
-
-            for (int i = 0; i < colorWeightPairs.Length; i++) {
-                result += colorWeightPairs[i].color.ToVector4() * colorWeightPairs[i].weight;
-            }
-
-            return new Color(result);
         }
 
         /// <summary>

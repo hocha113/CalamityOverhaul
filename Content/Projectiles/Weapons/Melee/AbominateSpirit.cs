@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Color color = Status == 0 ? Color.DarkRed : Status == 1 ? Color.DarkGreen : Status == 2 ? Color.Blue : Color.Gold;
 
             float alp = Projectile.alpha / 255f;
-            color = CWRUtils.RecombinationColor((color, 0.5f), (new Color(255, 255, 255), 0.5f));
+            color = VaultUtils.MultiStepColorLerp(0.5f, color, new Color(255, 255, 255));
             Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frameCounter, 3);
 
             Main.EntitySpriteDraw(
