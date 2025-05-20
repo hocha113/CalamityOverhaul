@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     internal class UEPipeline : BasePipelineItem
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipelineItem";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
         public override int CreateTileID => ModContent.TileType<UEPipelineTile>();
         public override void AddRecipes() {
             CreateRecipe(333).
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
     internal class UEPipelineTile : ModTile
     {
-        public override string Texture => CWRConstant.Asset + "MaterialFlow/UEPipeline";
+        public override string Texture => CWRConstant.Asset + "MaterialFlow/Pipeline";
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -167,25 +167,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     internal class UEPipelineTP : MachineTP, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<UEPipelineTile>();
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineChannel")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> Pipeline { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineChannelSide")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineSide { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipeline")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCorner { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineSide")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCornerSide { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCorner")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCross { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCornerSide")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCrossSide { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCross")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineChannel { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineCrossSide")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineChannelSide { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutches")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineThreeCrutches { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/UEPipelineThreeCrutchesSide")]
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         internal List<SideState> SideState { get; private set; }
         internal int TurningID { get; private set; }
