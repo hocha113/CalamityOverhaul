@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
 
             AnimationFrameHeight = 72;
 
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<ThermalBattery>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<ThermalBattery>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
             TileObjectData.newTile.Width = 3;

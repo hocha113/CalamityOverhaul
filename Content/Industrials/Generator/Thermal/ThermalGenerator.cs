@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<ThermalGenerator>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<ThermalGenerator>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 2;

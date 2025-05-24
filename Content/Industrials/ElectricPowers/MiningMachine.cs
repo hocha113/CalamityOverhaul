@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
 
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<MiningMachine>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<MiningMachine>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
             TileObjectData.newTile.Width = 3;

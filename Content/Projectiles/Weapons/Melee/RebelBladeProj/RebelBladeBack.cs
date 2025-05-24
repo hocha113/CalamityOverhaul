@@ -3,6 +3,7 @@ using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = Projectile.T2DValue();
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
             Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;

@@ -116,12 +116,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             Vector2 drawText1 = new Vector2(DrawPosition.X - 20 * _sengs, DrawPosition.Y - 60 * _sengs) + offset;
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                $"{CWRLocText.GetTextValue("SPU_Text0") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRLocText.GetTextValue("SPU_Text1")}："
+                $"{CWRLocText.GetTextValue("SPU_Text0") + VaultUtils.GetLocalizedItemName<TransmutationOfMatterItem>() + CWRLocText.GetTextValue("SPU_Text1")}："
                 , drawText1.X, drawText1.Y, Color.White * _sengs, Color.Black * _sengs, new Vector2(0.3f), 1f * _sengs);
 
             if (targetItem != null && targetItem.type > ItemID.None && targetItem.CWR().OmigaSnyContent != null && _sengs >= 1) {
                 Vector2 drawText2 = new Vector2(DrawPosition.X + 16 * _sengs, DrawPosition.Y + 420 * _sengs) + offset;
-                string text = $"{CWRLocText.GetTextValue("SPU_Text2") + CWRUtils.SafeGetItemName(targetItem.type)}";
+                string text = $"{CWRLocText.GetTextValue("SPU_Text2") + VaultUtils.GetLocalizedItemName(targetItem.type)}";
                 Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y
                     , Color.White * _sengs, Color.Black * _sengs, new Vector2(0.3f), 1f * _sengs);

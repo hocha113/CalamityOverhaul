@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     internal class HeavenfallLongbowHeldProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "HeavenfallLongbowProj";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<HeavenfallLongbow>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<HeavenfallLongbow>();
         public override bool CanFire => (Projectile.ai[2] == 0 && DownLeft) || (Projectile.ai[2] == 1 && DownRight);
         private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.GetItem().ModItem;
         private int Time = 30;

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Tiles
         [VaultLoaden(CWRConstant.Asset + "Tiles/" + "NeutronStarIngotTileGlow")]
         private static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
-            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<NeutronStarIngot>());
+            AddMapEntry(new Color(121, 89, 9), VaultUtils.GetLocalizedItemName<NeutronStarIngot>());
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
             Main.tileSolidTop[Type] = true;

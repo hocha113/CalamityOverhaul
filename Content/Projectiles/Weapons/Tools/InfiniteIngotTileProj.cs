@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 for (int y = 0; y < maxNum; y++) {
                     Vector2 pos2 = new Vector2(offset + x, offset + y) + pos;
                     if (pos2.To(pos).LengthSquared() < rSquared) {
-                        Tile tile = CWRUtils.GetTile(pos2);
+                        Tile tile = Framing.GetTileSafely(pos2);
                         if (tile.HasTile) {
                             if (Main.rand.NextBool(6)) {
                                 int dorptype = tile.GetTileDorp();

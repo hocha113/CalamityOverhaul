@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
                 Projectile.position.Y += -480;
                 for (int i = 0; i < 60; i++) {
                     Vector2 pos = new Vector2(0, i * 16) + Projectile.position;
-                    if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(pos)).HasSolidTile()) {
+                    if (Framing.GetTileSafely(pos).HasSolidTile()) {
                         Projectile.position = pos;
                         break;
                     }

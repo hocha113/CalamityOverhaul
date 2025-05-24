@@ -3,6 +3,7 @@ using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -67,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
         public override bool PreDraw(ref Color lightColor) {
             DrawTrild();
 
-            Texture2D value = Projectile.T2DValue();
+            Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 7), Color.White
                 , Projectile.rotation, CWRUtils.GetOrig(value, 7), Projectile.scale, SpriteEffects.None, 0);
             return false;

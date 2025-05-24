@@ -3,6 +3,7 @@ using CalamityMod.Projectiles.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -119,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public override bool PreDraw(ref Color color) {
             SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Texture2D mainValue = Projectile.T2DValue();
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawOrigin = mainValue.Size() / 2;
             float rotation = Projectile.rotation + (Projectile.velocity.X > 0 ? MathHelper.ToRadians(60) : MathHelper.ToRadians(-240));
             for (int k = 0; k < 6; k++) {

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 {
     internal class StormGoddessSpearProj : ModProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<StormGoddessSpear>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<StormGoddessSpear>();
 
         public Color Light => Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
 

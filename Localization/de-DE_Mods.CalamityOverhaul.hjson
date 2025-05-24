@@ -1069,6 +1069,11 @@ Items: {
 			''' */
 		// DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
 	}
+
+	HoChaMeditatorItem: {
+		// DisplayName: HoCha Meditator
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

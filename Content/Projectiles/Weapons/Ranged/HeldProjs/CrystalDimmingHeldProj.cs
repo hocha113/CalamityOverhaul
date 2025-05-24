@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 for (int i = 0; i < 128; i++) {
                     Vector2 offset = new Vector2(0, i * 16);
-                    if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(targetPos + offset)).HasSolidTile()) {
+                    if (Framing.GetTileSafely(targetPos + offset).HasSolidTile()) {
                         targetPos += offset;
                         break;
                     }

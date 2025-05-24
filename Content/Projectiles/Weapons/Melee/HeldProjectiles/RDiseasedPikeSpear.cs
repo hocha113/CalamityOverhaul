@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RDiseasedPikeSpear : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/DiseasedPikeSpear";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPike>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DiseasedPike>();
 
         private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 

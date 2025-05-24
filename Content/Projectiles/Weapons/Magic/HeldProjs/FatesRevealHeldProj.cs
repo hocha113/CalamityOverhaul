@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.SmoothHomingBehavior(target.Center, homingSpeed, homingFactor);
             }
 
-            if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.position)).HasSolidTile()) {
+            if (Framing.GetTileSafely(Projectile.position).HasSolidTile()) {
                 Projectile.velocity *= deceleration;
                 if (Projectile.velocity.LengthSquared() < minVelocity * minVelocity) {
                     Projectile.Kill();

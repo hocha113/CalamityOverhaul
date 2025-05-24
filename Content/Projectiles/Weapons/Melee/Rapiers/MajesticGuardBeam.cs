@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -68,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override bool PreDraw(ref Color color) {
-            Texture2D mainValue = Projectile.T2DValue();
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Main.spriteBatch.Draw(mainValue, Projectile.Center - Main.screenPosition, null
                 , Color.White with { G = (byte)(Projectile.ai[1] * 255) } * (Projectile.alpha / 255f)
                 , Projectile.rotation + MathHelper.PiOver4, mainValue.Size() / 2, Projectile.scale, SpriteEffects.None, 0);

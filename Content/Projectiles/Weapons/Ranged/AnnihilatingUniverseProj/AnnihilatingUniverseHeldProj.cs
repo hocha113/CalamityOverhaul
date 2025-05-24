@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class AnnihilatingUniverseHeldProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBow";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AnnihilatingUniverse>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<AnnihilatingUniverse>();
         private float Time;
         private float Time2;
         public override void SetDefaults() {

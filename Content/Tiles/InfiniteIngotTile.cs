@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
 
-            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<InfiniteIngot>());
+            AddMapEntry(new Color(121, 89, 9), VaultUtils.GetLocalizedItemName<InfiniteIngot>());
         }
 
         public override bool CreateDust(int i, int j, ref int type) {

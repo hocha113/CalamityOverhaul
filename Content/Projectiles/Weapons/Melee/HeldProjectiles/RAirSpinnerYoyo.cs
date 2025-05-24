@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public const int MaxUpdates = 2;
 
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AirSpinner>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<AirSpinner>();
 
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Yoyos/" + "AirSpinnerYoyo";
 

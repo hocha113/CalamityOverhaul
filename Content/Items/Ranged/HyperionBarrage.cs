@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
                         , ModContent.ProjectileType<RocketSkeletonFriendly>(), Projectile.damage, 0f, Main.myPlayer, 0, 0, Projectile.ai[2]);
-                projectile.tileCollide = !CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center)).HasSolidTile();
+                projectile.tileCollide = !Framing.GetTileSafely(Projectile.Center).HasSolidTile();
                 projectile.netUpdate = true;
             }
         }

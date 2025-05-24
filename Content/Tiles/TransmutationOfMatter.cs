@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
 
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;
 
             AdjTiles = [

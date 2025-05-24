@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Dusts;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;

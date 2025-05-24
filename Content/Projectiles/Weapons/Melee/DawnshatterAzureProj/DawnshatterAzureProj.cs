@@ -12,10 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 {
     internal class DawnshatterAzureProj : ModProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
         public Player Owner => Main.player[Projectile.owner];
-        public Item elementalLance => Owner.HeldItem;
         protected float HoldoutRangeMin => -24f;
         protected float HoldoutRangeMax => 96f;
         public override void SetDefaults() {

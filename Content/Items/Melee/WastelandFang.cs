@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     newOrig = drawChainAltOrig;
                 }
                 Vector2 drawChainPos = origPos + toPos.UnitVector() * i * chainBodyTrs - Main.screenPosition;
-                Color chainLightColor = Lighting.GetColor(CWRUtils.WEPosToTilePos(drawChainPos + Main.screenPosition).ToPoint());
+                Color chainLightColor = Lighting.GetColor(((drawChainPos + Main.screenPosition) / 16).ToPoint());
                 Main.EntitySpriteDraw(chainValue, drawChainPos, null, chainLightColor
                 , drawChainRot, newOrig, Projectile.scale, SpriteEffects.None, 0);
             }

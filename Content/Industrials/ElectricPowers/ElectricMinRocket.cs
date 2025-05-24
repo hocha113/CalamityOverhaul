@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
 
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<ElectricMinRocket>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<ElectricMinRocket>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Width = 2;

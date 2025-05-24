@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.ai[2] == 1) {
                 Projectile.ai[2] = 2;
                 Projectile.rotation = Dir * MathHelper.PiOver2;
-                if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center)).HasTile) {
+                if (Framing.GetTileSafely(Projectile.Center).HasTile) {
                     Projectile.position.Y += 16f;
                 }
                 if (Math.Abs(Projectile.Center.X - Owner.Center.X) < 680 && Math.Abs(Projectile.Center.Y - Owner.Center.Y) < 110) {

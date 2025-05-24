@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<WindGrivenGenerator>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<WindGrivenGenerator>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;

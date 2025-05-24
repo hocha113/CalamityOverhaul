@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<UEPipelineInput>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<UEPipelineInput>());
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.None, 0, 0);

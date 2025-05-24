@@ -115,12 +115,12 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Projectile.Center += Projectile.velocity;
                 Projectile.velocity = Vector2.Zero;
                 tileRot = Projectile.rotation;
-                Vector2 tilePos = CWRUtils.WEPosToTilePos(Projectile.Bottom);
-                if (SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, 0)).TileType)
-                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(1, 0)).TileType)
-                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(-1, 0)).TileType)
-                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, 1)).TileType)
-                || SandTileIDs.Contains(CWRUtils.GetTile(tilePos + new Vector2(0, -1)).TileType)) {
+                Vector2 tilePos = Projectile.Bottom;
+                if (SandTileIDs.Contains(Framing.GetTileSafely(tilePos + new Vector2(0, 0)).TileType)
+                || SandTileIDs.Contains(Framing.GetTileSafely(tilePos + new Vector2(1, 0)).TileType)
+                || SandTileIDs.Contains(Framing.GetTileSafely(tilePos + new Vector2(-1, 0)).TileType)
+                || SandTileIDs.Contains(Framing.GetTileSafely(tilePos + new Vector2(0, 1)).TileType)
+                || SandTileIDs.Contains(Framing.GetTileSafely(tilePos + new Vector2(0, -1)).TileType)) {
                     onSend = true;
                 }
                 Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);

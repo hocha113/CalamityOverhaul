@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<DarkMatterCompressorItem>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<DarkMatterCompressorItem>());
             AnimationFrameHeight = 52;
             AdjTiles = [
                 ModContent.TileType<StaticRefiner>(),

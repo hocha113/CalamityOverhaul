@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileWaterDeath[Type] = false;
             Main.tileSolidTop[Type] = true;
 
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TeslaElectromagneticTower>());
+            AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<TeslaElectromagneticTower>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = 3;

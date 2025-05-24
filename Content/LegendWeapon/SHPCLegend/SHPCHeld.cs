@@ -2,7 +2,7 @@
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

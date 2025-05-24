@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraSlashDefault : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Murasama>();
-        public ref int hitCooldown => ref Owner.Calamity().murasamaHitCooldown;
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Murasama>();
+        public ref int HitCooldown => ref Owner.Calamity().murasamaHitCooldown;
         public bool onspan;
         public bool CanAttemptDead;
         public bool Slashing = false;
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (Slash2) {
                 _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
-                if (hitCooldown == 0) {
+                if (HitCooldown == 0) {
                     Slashing = true;
                 }
                 CanAttemptDead = true;
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             else if (Slash3) {
                 _ = SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = 0f }, Projectile.Center);
-                if (hitCooldown == 0) {
+                if (HitCooldown == 0) {
                     Slashing = true;
                 }
                 CanAttemptDead = true;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             else if (Slash1) {
                 _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.05f }, Projectile.Center);
-                if (hitCooldown == 0) {
+                if (HitCooldown == 0) {
                     Slashing = true;
                 }
                 CanAttemptDead = true;
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 }
                 else {
                     if (CanAttemptDead || Main.zenithWorld) {
-                        hitCooldown = Main.zenithWorld ? 0 : 8;
+                        HitCooldown = Main.zenithWorld ? 0 : 8;
                         Projectile.Kill();
                     }
                 }

@@ -136,9 +136,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
 
                 bool indsdm = false;
-                if (TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16))
-                    || TileIndsdm(CWRUtils.GetTile(Projectile.Bottom / 16))
-                    || TileIndsdm(CWRUtils.GetTile(Projectile.BottomRight / 16))) {
+                if (TileIndsdm(Framing.GetTileSafely(Projectile.Bottom / 16))
+                    || TileIndsdm(Framing.GetTileSafely(Projectile.Bottom / 16))
+                    || TileIndsdm(Framing.GetTileSafely(Projectile.BottomRight / 16))) {
                     indsdm = true;
                 }
 

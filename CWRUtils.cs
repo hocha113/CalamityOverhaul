@@ -21,16 +21,6 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static LocalizedText SafeGetItemName<T>() where T : ModItem => SafeGetItemName(ModContent.ItemType<T>());
-
-        public static LocalizedText SafeGetItemName(int id) {
-            ModItem item = ItemLoader.GetItem(id);
-            if (item == null || item.Type == ItemID.None) {
-                return CWRLocText.GetText("None");
-            }
-            return item.GetLocalization("DisplayName");
-        }
-
         /// <summary>
         /// 一个额外的跳字方法，向游戏内打印对象的ToString内容
         /// </summary>
@@ -97,73 +87,6 @@ namespace CalamityOverhaul
         //        CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
         //    }
         //}
-
-        public static Player InPosFindPlayer(Vector2 position, int maxRange = 3000) {
-            foreach (Player player in Main.player) {
-                if (!player.Alives()) {
-                    continue;
-                }
-                if (maxRange == -1) {
-                    return player;
-                }
-                int distance = (int)player.position.To(position).Length();
-                if (distance < maxRange) {
-                    return player;
-                }
-            }
-            return null;
-        }
-
-        public static Player TileFindPlayer(int i, int j) {
-            return InPosFindPlayer(new Vector2(i, j) * 16, 9999);
-        }
-
-        public static Chest FindNearestChest(int x, int y) {
-            int distance = 99999;
-            Chest nearestChest = null;
-
-            for (int c = 0; c < Main.chest.Length; c++) {
-                Chest currentChest = Main.chest[c];
-                if (currentChest != null) {
-                    int length = (int)Math.Sqrt(Math.Pow(x - currentChest.x, 2) + Math.Pow(y - currentChest.y, 2));
-                    if (length < distance) {
-                        nearestChest = currentChest;
-                        distance = length;
-                    }
-                }
-            }
-            return nearestChest;
-        }
-
-        public static void AddItem(this Chest chest, Item item) {
-            Item infoItem = item.Clone();
-            for (int i = 0; i < chest.item.Length; i++) {
-                if (chest.item[i] == null) {
-                    chest.item[i] = new Item();
-                }
-                if (chest.item[i].type == ItemID.None) {
-                    chest.item[i] = infoItem;
-                    return;
-                }
-                if (chest.item[i].type == item.type) {
-                    chest.item[i].stack += infoItem.stack;
-                    return;
-                }
-            }
-        }
-
-        public static Color[] GetColorDate(Texture2D tex) {
-            Color[] colors = new Color[tex.Width * tex.Height];
-            tex.GetData(colors);
-            List<Color> nonTransparentColors = [];
-            foreach (Color color in colors) {
-                if ((color.A > 0 || color.R > 0 || color.G > 0 || color.B > 0) && color != Color.White && color != Color.Black) {
-                    nonTransparentColors.Add(color);
-                }
-            }
-            return nonTransparentColors.ToArray();
-        }
-
         #endregion
 
         #region AIUtils
@@ -219,19 +142,6 @@ namespace CalamityOverhaul
         /// <param name="npc"></param>
         /// <returns></returns>
         public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
-
-        /// <summary>
-        /// 世界实体坐标转物块坐标
-        /// </summary>
-        /// <param name="wePos"></param>
-        /// <returns></returns>
-        public static Vector2 WEPosToTilePos(Vector2 wePos) {
-            int tilePosX = (int)(wePos.X / 16f);
-            int tilePosY = (int)(wePos.Y / 16f);
-            Vector2 tilePos = new(tilePosX, tilePosY);
-            tilePos = PTransgressionTile(tilePos);
-            return tilePos;
-        }
 
         /// <summary>
         /// 物块坐标转世界实体坐标
@@ -632,15 +542,79 @@ namespace CalamityOverhaul
             }
         }
 
+        public static Player InPosFindPlayer(Vector2 position, int maxRange = 3000) {
+            foreach (Player player in Main.ActivePlayers) {
+                if (maxRange == -1) {
+                    return player;
+                }
+                int distance = (int)player.position.To(position).Length();
+                if (distance < maxRange) {
+                    return player;
+                }
+            }
+            return null;
+        }
+
+        public static Player TileFindPlayer(int i, int j) {
+            return InPosFindPlayer(new Vector2(i, j) * 16, 9999);
+        }
+
+        public static Chest FindNearestChest(int x, int y) {
+            int distance = 99999;
+            Chest nearestChest = null;
+
+            for (int c = 0; c < Main.chest.Length; c++) {
+                Chest currentChest = Main.chest[c];
+                if (currentChest != null) {
+                    int length = (int)Math.Sqrt(Math.Pow(x - currentChest.x, 2) + Math.Pow(y - currentChest.y, 2));
+                    if (length < distance) {
+                        nearestChest = currentChest;
+                        distance = length;
+                    }
+                }
+            }
+            return nearestChest;
+        }
+
+        public static void AddItem(this Chest chest, Item item) {
+            Item infoItem = item.Clone();
+            for (int i = 0; i < chest.item.Length; i++) {
+                if (chest.item[i] == null) {
+                    chest.item[i] = new Item();
+                }
+                if (chest.item[i].type == ItemID.None) {
+                    chest.item[i] = infoItem;
+                    return;
+                }
+                if (chest.item[i].type == item.type) {
+                    chest.item[i].stack += infoItem.stack;
+                    return;
+                }
+            }
+        }
+
+        public static Color[] GetColorDate(Texture2D tex) {
+            Color[] colors = new Color[tex.Width * tex.Height];
+            tex.GetData(colors);
+            List<Color> nonTransparentColors = [];
+            foreach (Color color in colors) {
+                if ((color.A > 0 || color.R > 0 || color.G > 0 || color.B > 0) && color != Color.White && color != Color.Black) {
+                    nonTransparentColors.Add(color);
+                }
+            }
+            return nonTransparentColors.ToArray();
+        }
+
         /// <summary>
-        /// 将文本拆分为多行，并为每行分别添加颜色代码。
+        /// 将文本拆分为多行，并为每行分别添加颜色代码
         /// </summary>
         /// <param name="textContent">输入的文本内容，支持换行符</param>
         /// <param name="color">颜色对象</param>
         /// <returns>格式化后的多行带颜色文本</returns>
         public static string FormatColorTextMultiLine(string textContent, Color color) {
-            if (string.IsNullOrEmpty(textContent))
+            if (string.IsNullOrEmpty(textContent)) {
                 return string.Empty;
+            }
 
             // 将颜色转换为 16 进制字符串
             string hexColor = $"{color.R:X2}{color.G:X2}{color.B:X2}";
@@ -913,44 +887,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 安全的获取对应实例的图像资源
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static Texture2D T2DValue(this Item i, bool loadCeahk = true) {
-            if (Main.dedServ) {
-                return null;
-            }
-            if (i.type < ItemID.None || i.type >= TextureAssets.Item.Length) {
-                return null;
-            }
-            if (loadCeahk && i.ModItem == null) {
-                Main.instance.LoadItem(i.type);
-            }
-
-            return TextureAssets.Item[i.type].Value;
-        }
-
-        /// <summary>
-        /// 安全的获取对应实例的图像资源
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static Texture2D T2DValue(this NPC n, bool loadCeahk = true) {
-            if (Main.dedServ) {
-                return null;
-            }
-            if (n.type < NPCID.None || n.type >= TextureAssets.Npc.Length) {
-                return null;
-            }
-            if (loadCeahk && n.ModNPC == null) {
-                Main.instance.LoadNPC(n.type);
-            }
-
-            return TextureAssets.Npc[n.type].Value;
-        }
-
-        /// <summary>
         /// 获取指定路径的纹理实例 <see cref="Texture2D"/>
         /// </summary>
         /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
@@ -1092,46 +1028,9 @@ namespace CalamityOverhaul
 
         #region TileUtils
         /// <summary>
-        /// 将可能越界的方块坐标收值为非越界坐标
-        /// </summary>
-        public static Vector2 PTransgressionTile(Vector2 TileVr, int L = 0, int R = 0, int D = 0, int S = 0) {
-            if (TileVr.X > Main.maxTilesX - R) {
-                TileVr.X = Main.maxTilesX - R;
-            }
-            if (TileVr.X < 0 + L) {
-                TileVr.X = 0 + L;
-            }
-            if (TileVr.Y > Main.maxTilesY - S) {
-                TileVr.Y = Main.maxTilesY - S;
-            }
-            if (TileVr.Y < 0 + D) {
-                TileVr.Y = 0 + D;
-            }
-            return new Vector2(TileVr.X, TileVr.Y);
-        }
-
-        /// <summary>
         /// 检测该位置是否存在一个实心的固体方块
         /// </summary>
-        public static bool HasSolidTile(this Tile tile) {
-            return tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
-        }
-
-        /// <summary>
-        /// 获取一个物块目标，输入世界物块坐标，自动考虑收界情况
-        /// </summary>
-        public static Tile GetTile(int i, int j) {
-            return GetTile(new Vector2(i, j));
-        }
-
-        /// <summary>
-        /// 获取一个物块目标，输入世界物块坐标，自动考虑收界情况
-        /// </summary>
-        public static Tile GetTile(Vector2 pos) {
-            pos = PTransgressionTile(pos);
-            return Main.tile[(int)pos.X, (int)pos.Y];
-        }
-
+        public static bool HasSolidTile(this Tile tile) => tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
         #endregion
     }
 }

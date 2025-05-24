@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
 {
 
     internal abstract class BaseMagicGun : BaseGun

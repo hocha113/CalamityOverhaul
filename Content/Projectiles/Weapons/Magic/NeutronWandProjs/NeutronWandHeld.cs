@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

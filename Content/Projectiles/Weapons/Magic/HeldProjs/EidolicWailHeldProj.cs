@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Vector2 rand = CWRUtils.randVr(480, 800);
                 Vector2 pos = Main.MouseWorld + rand;
                 Vector2 vr = rand.UnitVector() * -ShootSpeedModeFactor;
-                if (CWRUtils.GetTile(pos / 16).HasSolidTile()) {
+                if (Framing.GetTileSafely(pos / 16).HasSolidTile()) {
                     pos = Projectile.Center;
                     vr = ShootVelocity * Main.rand.NextFloat(0.3f, 1.13f);
                 }

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
-            AddMapEntry(Color.Red, CWRUtils.SafeGetItemName<Items.Placeable.BloodAltar>());
+            AddMapEntry(Color.Red, VaultUtils.GetLocalizedItemName<Items.Placeable.BloodAltar>());
             AnimationFrameHeight = 54;
             AdjTiles = [TileID.DemonAltar];
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
@@ -44,13 +44,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addTile(Type);
         }
 
-        public override void MouseOver(int i, int j) {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.mouseInterface = true;
-            player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<BloodOrb>();
-        }
+        public override void MouseOver(int i, int j) => CWRUtils.SetMouseOverByTile(Main.LocalPlayer, ModContent.ItemType<BloodOrb>());
 
         public override bool CanExplode(int i, int j) => false;
 

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 {
     internal class DawnshatterSwing : ModProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;

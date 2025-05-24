@@ -135,12 +135,12 @@ namespace CalamityOverhaul.Content.Items.Magic
 
                 toTileLeng = 0;
                 Vector2 unitVer = Projectile.rotation.ToRotationVector2();
-                Tile tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center + unitVer * toTileLeng));
+                Tile tile = Framing.GetTileSafely(Projectile.Center + unitVer * toTileLeng);
                 bool isSolid = tile.HasSolidTile();
                 while (!isSolid && toTileLeng < 2000) {
                     toTileLeng += 8;
                     Vector2 targetPos = Projectile.Center + unitVer * toTileLeng;
-                    tile = CWRUtils.GetTile(CWRUtils.WEPosToTilePos(targetPos));
+                    tile = Framing.GetTileSafely(targetPos);
                     isSolid = tile.HasSolidTile();
 
                     if (toTileLeng % 32 == 0) {

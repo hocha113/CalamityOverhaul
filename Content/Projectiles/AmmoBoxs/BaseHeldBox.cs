@@ -130,13 +130,13 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             int x = (int)(setAmmoBoxPos.X / 16);
             int y = (int)(setAmmoBoxPos.Y / 16);
 
-            if (CWRUtils.GetTile(x, y).HasSolidTile()) {
+            if (Framing.GetTileSafely(x, y).HasSolidTile()) {
                 return false;
             }
-            if (CWRUtils.GetTile(x + 1, y).HasSolidTile()) {
+            if (Framing.GetTileSafely(x + 1, y).HasSolidTile()) {
                 return false;
             }
-            if (CWRUtils.GetTile(x - 1, y).HasSolidTile()) {
+            if (Framing.GetTileSafely(x - 1, y).HasSolidTile()) {
                 return false;
             }
 
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     Projectile proj2 = Projectile.NewProjectileDirect(Item.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<SuccessfullyDeployedEffct>(), 0, 0, Owner.whoAmI);
                     SuccessfullyDeployedEffct successfullyDeployedEffct = proj2.ModProjectile as SuccessfullyDeployedEffct;
                     if (successfullyDeployedEffct != null) {
-                        successfullyDeployedEffct.text = CWRUtils.SafeGetItemName(TargetItemID) + CWRLocText.GetTextValue("AmmoBox_Text3");
+                        successfullyDeployedEffct.text = VaultUtils.GetLocalizedItemName(TargetItemID) + CWRLocText.GetTextValue("AmmoBox_Text3");
                         successfullyDeployedEffct.textColor = Color.OrangeRed;
                     }
                 }

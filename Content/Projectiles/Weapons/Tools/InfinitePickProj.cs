@@ -82,10 +82,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         private void ProcessTilesInArea(Vector2 startPos, int width, int height) {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    Vector2 tilePos = CWRUtils.WEPosToTilePos(startPos + new Vector2(x, y));
-                    Tile tile = CWRUtils.GetTile(tilePos);
-                    if (!tile.HasTile || tile.TileType == TileID.Cactus) continue;
-
+                    Vector2 tilePos = startPos + new Vector2(x, y);
+                    Tile tile = Framing.GetTileSafely(tilePos);
+                    if (!tile.HasTile || tile.TileType == TileID.Cactus) {
+                        continue;
+                    }
                     ProcessTile(tile, tilePos);
                 }
             }

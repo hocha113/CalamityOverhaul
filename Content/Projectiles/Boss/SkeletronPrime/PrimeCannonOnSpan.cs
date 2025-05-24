@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (!VaultUtils.isClient) {
                 Projectile projectile = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
                         , ModContent.ProjectileType<RocketSkeleton>(), Projectile.damage, 0f, Main.myPlayer, Projectile.ai[1], 2);
-                projectile.tileCollide = !CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.Center)).HasSolidTile();
+                projectile.tileCollide = !Framing.GetTileSafely(Projectile.Center).HasSolidTile();
                 projectile.netUpdate = true;
             }
         }

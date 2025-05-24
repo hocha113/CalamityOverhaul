@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 {
     internal class DawnshatterOut : BaseHeldProj
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
         private SlotId roar;
         private bool spanSwing = true;

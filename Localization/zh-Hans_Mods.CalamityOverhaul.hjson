@@ -1064,6 +1064,11 @@ Items: {
 			'''
 		DontWork: 需要放置在坚硬的地面上才能进行采矿作业
 	}
+
+	HoChaMeditatorItem: {
+		DisplayName: 沉思者HoCha
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
