@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
     internal class SpawnLaserEffect : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        internal const int IdleTime = 90;
+        internal const int IdleTime = 100;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.tileCollide = false;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             NPC thisBody = Main.npc[(int)Projectile.ai[1]];
             Player player = Main.player[(int)Projectile.ai[2]];
             Vector2 shootVelocity = thisBody.Center.To(player.Center).UnitVector();
-            shootVelocity *= (DestroyerHeadAI.Death || DestroyerHeadAI.MasterMode) ? 16 : 12;
+            shootVelocity *= (DestroyerHeadAI.Death || DestroyerHeadAI.MasterMode) ? 12 : 9;
             if (DestroyerHeadAI.BossRush) {
                 shootVelocity *= 1.6f;
             }

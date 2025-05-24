@@ -1,6 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,6 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         [VaultLoaden(CWRConstant.NPC + "BTD/Tail_Glow")]
         internal static Asset<Texture2D> Tail_Glow = null;
         private static int iconIndex;
+        private static int iconIndex2;
         private const float BeamWarningDuration = 120f;
         private const float AerialPhaseThreshold = 900f;
         private const float ExtremeModeBeamThreshold = 600f;
@@ -40,13 +39,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
         private const float AerialWarningStartThreshold = AerialPhaseThreshold - PhaseShiftWarningDuration;
         private const float GroundWarningStartThreshold = AerialPhaseResetThreshold - PhaseShiftWarningDuration;
-        private bool BossRush => BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
-        private bool MasterMode => Main.masterMode || BossRush;
-        private bool Death => CalamityWorld.death || BossRush;
+        private float bodyCount;
+        private bool IsBodyAlt => bodyCount % 2 == 0;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
-        private bool Phase2 => LifeRatio < (Death ? 0.4f : 0.25f);
-        private bool Phase3 => LifeRatio < (Death ? 0.2f : 0.1f);
+        private bool Phase2 => LifeRatio < (DestroyerHeadAI.Death ? 0.4f : 0.25f);
+        private bool Phase3 => LifeRatio < (DestroyerHeadAI.Death ? 0.2f : 0.1f);
         private bool HasSpawnDR => ai[1] < DestroyerHeadAI.StretchTime && ai[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
@@ -66,11 +64,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Body", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Body");
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Body2", -1);
+            iconIndex2 = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Body2");
         }
 
         public override void BossHeadSlot(ref int index) {
             if (!HeadPrimeAI.DontReform()) {
-                index = iconIndex;
+                index = IsBodyAlt ? iconIndex2 : iconIndex;
             }
         }
 
@@ -87,6 +87,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override void SetProperty() {
             npc.aiStyle = -1;
+        }
+
+        private void AddBodyCount() {
+            bodyCount = 0;
+            int saveRealLifeIndex = -1;
+            foreach (var body in Main.ActiveNPCs) {
+                if (body.type != NPCID.TheDestroyerBody) {
+                    continue;//只寻找身体
+                }
+                if (saveRealLifeIndex >= 0 && saveRealLifeIndex != body.realLife) {
+                    continue;//根据缓存的头部索引对比判断这些身体是否来自同一个头部，否则跳过
+                }
+                saveRealLifeIndex = body.realLife;
+                bodyCount++;
+                if (body == npc) {
+                    break;//指针跳到自己这里后结束搜索
+                }
+            }
         }
 
         public override bool AI() {
@@ -119,12 +137,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.timeLeft = 1800;//愚蠢的自然脱战
 
             if (npc.localAI[3] == 0f) {
+                AddBodyCount();
                 npc.localAI[3] = skeletronAlive ? 1f : -1f;
                 npc.netUpdate = true;
             }
 
             totalSegments = Main.getGoodWorld ? 100 : 80;
-            bool spitLaserSpreads = Death;
+            bool spitLaserSpreads = DestroyerHeadAI.Death;
             float speed, turnSpeed, segmentVelocity, velocityMultiplier;
             noFlyZoneBoxHeight = 0;
 
@@ -262,9 +281,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateEnrageScale() {
-            enrageScale = BossRush ? 1f : 0f;
-            if (Main.IsItDay() || BossRush) {
-                calNPC.CurrentlyEnraged = !BossRush;
+            enrageScale = DestroyerHeadAI.BossRush ? 1f : 0f;
+            if (Main.IsItDay() || DestroyerHeadAI.BossRush) {
+                calNPC.CurrentlyEnraged = !DestroyerHeadAI.BossRush;
                 enrageScale += 2f;
             }
         }
@@ -289,7 +308,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 检查吴克是否存活
         /// </summary>
         private bool CheckSkeletronAlive() {
-            if (!(MasterMode && !BossRush && npc.localAI[3] != -1f))
+            if (!(DestroyerHeadAI.MasterMode && !DestroyerHeadAI.BossRush && npc.localAI[3] != -1f))
                 return false;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -303,21 +322,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 计算无飞行区域的高度
         /// </summary>
         private int CalculateNoFlyZoneHeight() {
-            int baseHeight = MasterMode ? 1500 : 1800;
-            return baseHeight - (Death ? 400 : (int)(400f * (1f - LifeRatio)));
+            int baseHeight = DestroyerHeadAI.MasterMode ? 1500 : 1800;
+            return baseHeight - (DestroyerHeadAI.Death ? 400 : (int)(400f * (1f - LifeRatio)));
         }
 
         /// <summary>
         /// 计算速度、加速度和转向速度
         /// </summary>
         private float CalculateSpeedModifiers(out float speed, out float turnSpeed, out float segmentVelocity) {
-            speed = MasterMode ? 0.2f : 0.1f;
-            turnSpeed = MasterMode ? 0.3f : 0.15f;
-            segmentVelocity = FlyAtTarget ? (MasterMode ? 22.5f : 15f) : (MasterMode ? 30f : 20f);
+            speed = DestroyerHeadAI.MasterMode ? 0.2f : 0.1f;
+            turnSpeed = DestroyerHeadAI.MasterMode ? 0.3f : 0.15f;
+            segmentVelocity = FlyAtTarget ? (DestroyerHeadAI.MasterMode ? 22.5f : 15f) : (DestroyerHeadAI.MasterMode ? 30f : 20f);
 
-            float segmentVelocityBoost = Death ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
-            float speedBoost = Death ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
-            float turnSpeedBoost = Death ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
+            float segmentVelocityBoost = DestroyerHeadAI.Death ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
+            float speedBoost = DestroyerHeadAI.Death ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
+            float turnSpeedBoost = DestroyerHeadAI.Death ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
 
             segmentVelocity += segmentVelocityBoost;
             speed += speedBoost;
@@ -356,43 +375,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void HandleProbeRegeneration() {
             bool probeLaunched = npc.ai[2] == 1f;
 
-            if (enrageScale > 0f && !BossRush) {
+            if (enrageScale > 0f && !DestroyerHeadAI.BossRush) {
                 ai[2] = Math.Min(ai[2] + 1f, 480f);
             }
             else {
                 ai[2] = Math.Max(ai[2] - 1f, 0f);
             }
 
-            if (MasterMode && probeLaunched) {
-                npc.localAI[2] += 1f;
-                if (npc.localAI[2] >= 600f) {
-                    int maxProbes = 40;
-                    bool regenerateProbeSegment = NPC.CountNPCS(NPCID.Probe) < maxProbes;
+            if (!DestroyerHeadAI.MasterMode || !probeLaunched) {
+                return;
+            }
 
-                    if (regenerateProbeSegment) {
-                        int maxNPCs = totalSegments + maxProbes;
-                        int numNPCs = 0;
-                        for (int i = 0; i < Main.maxNPCs; i++) {
-                            if (Main.npc[i].active) {
-                                numNPCs++;
-                                if (numNPCs >= maxNPCs) {
-                                    regenerateProbeSegment = false;
-                                    break;
-                                }
-                            }
+            npc.localAI[2] += 1f;
+            if (npc.localAI[2] < 600f) {
+                return;
+            }
+
+            int maxProbes = 40;
+            bool regenerateProbeSegment = NPC.CountNPCS(NPCID.Probe) < maxProbes;
+
+            if (regenerateProbeSegment) {
+                int maxNPCs = totalSegments + maxProbes;
+                int numNPCs = 0;
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    if (Main.npc[i].active) {
+                        numNPCs++;
+                        if (numNPCs >= maxNPCs) {
+                            regenerateProbeSegment = false;
+                            break;
                         }
                     }
-
-                    if (regenerateProbeSegment) {
-                        npc.ai[2] = 0f;
-                        npc.netUpdate = true;
-                    }
-
-                    npc.localAI[2] = 0f;
-                    npc.SyncVanillaLocalAI();
-                    NetAISend();
                 }
             }
+
+            if (regenerateProbeSegment) {
+                npc.ai[2] = 0f;
+                npc.netUpdate = true;
+            }
+
+            npc.localAI[2] = 0f;
+            npc.SyncVanillaLocalAI();
+            NetAISend();
         }
 
         private bool ShouldFly() {
@@ -430,7 +453,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private bool CheckNoFlyZones(int noFlyZoneBoxHeight) {
-            if (npc.position.Y <= Target.position.Y) return false;
+            if (npc.position.Y <= Target.position.Y) {
+                return false;
+            }
 
             Rectangle npcRectangle = npc.Hitbox;
             int noFlyZoneRadius = 1000;
@@ -470,7 +495,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 telegraphProgress = MathHelper.Clamp((ai[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
             }
             else if (npc.type == NPCID.TheDestroyerBody) {
-                float shootProjectileTime = BossRush ? 270f : 450f;
+                float shootProjectileTime = DestroyerHeadAI.BossRush ? 270f : 450f;
                 float bodySegmentTime = npc.ai[0] * 30f;
                 float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
                 float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;
@@ -594,7 +619,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Texture2D value2 = Body_Glow.Value;
             Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
 
-            if (npc.whoAmI % 2 == 0) {
+            if (IsBodyAlt) {
                 value = BodyAlt.Value;
                 value2 = BodyAlt_Glow.Value;
                 rectangle = CWRUtils.GetRec(value);

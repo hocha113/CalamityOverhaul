@@ -10,30 +10,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
+    [VaultLoaden(CWRConstant.Effects)]
     public class EffectLoader : ICWRLoader
     {
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
         internal static EffectLoader Instance;
-        [VaultLoaden(CWRConstant.Effects)]
         public static ArmorShaderData StreamerDust { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> PowerSFShader { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> WarpShader { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> NeutronRing { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> PrimeHalo { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> TwistColoring { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> KnifeRendering { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> KnifeDistortion { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> GradientTrail { get; set; }
-        [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> DeductDraw { get; set; }
         void ICWRLoader.LoadData() {
             Instance = this;

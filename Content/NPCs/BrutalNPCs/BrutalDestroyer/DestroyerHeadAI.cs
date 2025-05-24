@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return;
             }
 
-            int idleTime = BossRush ? 160 : 220;
+            int idleTime = BossRush ? 240 : 360;
             if (++AttackAIs[0] > idleTime) {
                 Bodys.Clear();
                 foreach (var body in Main.ActiveNPCs) {
