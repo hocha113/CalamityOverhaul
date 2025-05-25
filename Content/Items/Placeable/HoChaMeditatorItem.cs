@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
-using CalamityOverhaul.Content.Tiles;
-using InnoVault.TileProcessors;
+﻿using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.IO;
@@ -113,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 return;
             }
 
-            Player player = CWRUtils.InPosFindPlayer(CenterInWorld, int.MaxValue);
+            Player player = VaultUtils.FindClosestPlayer(CenterInWorld, int.MaxValue);
             if (player == null) {
                 return;
             }

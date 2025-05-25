@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.Localization;
@@ -342,7 +341,7 @@ namespace CalamityOverhaul
 
         public static int GetProjectileHasNum(this Player player, int targetProjType) => GetProjectileHasNum(targetProjType, player.whoAmI);
 
-        public static void ModifyLegendWeaponDamageFunc(Player player, Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
+        public static void ModifyLegendWeaponDamageFunc(Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;
             damage *= GetOnDamage / (float)GetStartDamage;
             damage /= oldMultiplicative;
@@ -351,7 +350,7 @@ namespace CalamityOverhaul
             damage *= item.GetPrefixState().damageMult;
         }
 
-        public static void ModifyLegendWeaponKnockbackFunc(Player player, Item item, float GetOnKnockback, float GetStartKnockback, ref StatModifier Knockback) {
+        public static void ModifyLegendWeaponKnockbackFunc(Item item, float GetOnKnockback, float GetStartKnockback, ref StatModifier Knockback) {
             Knockback *= GetOnKnockback / (float)GetStartKnockback;
             //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础击退缩放保证一些情况不会发生
             Knockback *= GetStartKnockback / item.knockBack;
@@ -460,39 +459,6 @@ namespace CalamityOverhaul
             return result;
         }
 
-        public static bool IsRangedAmmoFreeThisShot(this Player player, Item ammo) {
-            bool flag2 = false;
-            if (player.magicQuiver && ammo.ammo == AmmoID.Arrow && Main.rand.NextBool(5)) {
-                flag2 = true;
-            }
-
-            if (player.ammoBox && Main.rand.NextBool(5)) {
-                flag2 = true;
-            }
-
-            if (player.ammoPotion && Main.rand.NextBool(5)) {
-                flag2 = true;
-            }
-
-            if (player.huntressAmmoCost90 && Main.rand.NextBool(10)) {
-                flag2 = true;
-            }
-
-            if (player.chloroAmmoCost80 && Main.rand.NextBool(5)) {
-                flag2 = true;
-            }
-
-            if (player.ammoCost80 && Main.rand.NextBool(5)) {
-                flag2 = true;
-            }
-
-            if (player.ammoCost75 && Main.rand.NextBool(4)) {
-                flag2 = true;
-            }
-
-            return flag2;
-        }
-
         /// <summary>
         /// 赋予玩家无敌状态，这个函数与<see cref="Player.SetImmuneTimeForAllTypes(int)"/>类似
         /// </summary>
@@ -542,23 +508,6 @@ namespace CalamityOverhaul
             }
         }
 
-        public static Player InPosFindPlayer(Vector2 position, int maxRange = 3000) {
-            foreach (Player player in Main.ActivePlayers) {
-                if (maxRange == -1) {
-                    return player;
-                }
-                int distance = (int)player.position.To(position).Length();
-                if (distance < maxRange) {
-                    return player;
-                }
-            }
-            return null;
-        }
-
-        public static Player TileFindPlayer(int i, int j) {
-            return InPosFindPlayer(new Vector2(i, j) * 16, 9999);
-        }
-
         public static Chest FindNearestChest(int x, int y) {
             int distance = 99999;
             Chest nearestChest = null;
@@ -603,32 +552,6 @@ namespace CalamityOverhaul
                 }
             }
             return nonTransparentColors.ToArray();
-        }
-
-        /// <summary>
-        /// 将文本拆分为多行，并为每行分别添加颜色代码
-        /// </summary>
-        /// <param name="textContent">输入的文本内容，支持换行符</param>
-        /// <param name="color">颜色对象</param>
-        /// <returns>格式化后的多行带颜色文本</returns>
-        public static string FormatColorTextMultiLine(string textContent, Color color) {
-            if (string.IsNullOrEmpty(textContent)) {
-                return string.Empty;
-            }
-
-            // 将颜色转换为 16 进制字符串
-            string hexColor = $"{color.R:X2}{color.G:X2}{color.B:X2}";
-
-            // 按换行符分割文本
-            string[] lines = textContent.Split('\n');
-
-            // 对每一行添加颜色代码
-            for (int i = 0; i < lines.Length; i++) {
-                lines[i] = $"[c/{hexColor}:{lines[i]}]";
-            }
-
-            // 使用换行符重新组合
-            return string.Join("\n", lines);
         }
 
         /// <summary>
@@ -758,7 +681,7 @@ namespace CalamityOverhaul
         /// 委托，用于定义曲线的缓动函数
         /// </summary>
         /// <param name="progress">进度，范围在0到1之间。</param>
-        /// <param name="polynomialDegree">如果缓动模式是多项式，则此为多项式的阶数。</param>
+        /// <param name="polynomialDegree">如果缓动模式是多项式，则此为多项式的阶数</param>
         /// <returns>给定进度下的曲线值。</returns>
         public delegate float CurveEasingFunction(float progress, int polynomialDegree);
 
@@ -826,11 +749,11 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 获取自定义分段函数在任意给定X值的高度，使您可以轻松创建复杂的动画曲线。X值自动限定在0到1之间，但函数高度可以超出0到1的范围。
+        /// 获取自定义分段函数在任意给定X值的高度，使您可以轻松创建复杂的动画曲线。X值自动限定在0到1之间，但函数高度可以超出0到1的范围
         /// </summary>
-        /// <param name="progress">曲线进度。自动限定在0到1之间。</param>
-        /// <param name="segments">构成完整动画曲线的曲线段数组。</param>
-        /// <returns>给定X值的函数高度。</returns>
+        /// <param name="progress">曲线进度。自动限定在0到1之间</param>
+        /// <param name="segments">构成完整动画曲线的曲线段数组</param>
+        /// <returns>给定X值的函数高度</returns>
         public static float EvaluateCurve(float progress, params AnimationCurvePart[] segments) {
             if (segments.Length == 0) {
                 return 0f;
@@ -868,25 +791,6 @@ namespace CalamityOverhaul
         #region DrawUtils
 
         /// <summary>
-        /// 安全的获取对应实例的图像资源
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public static Texture2D T2DValue(this Projectile p, bool loadCeahk = true) {
-            if (Main.dedServ) {
-                return null;
-            }
-            if (p.type < 0 || p.type >= TextureAssets.Projectile.Length) {
-                return null;
-            }
-            if (loadCeahk && p.ModProjectile == null) {
-                Main.instance.LoadProjectile(p.type);
-            }
-
-            return TextureAssets.Projectile[p.type].Value;
-        }
-
-        /// <summary>
         /// 获取指定路径的纹理实例 <see cref="Texture2D"/>
         /// </summary>
         /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
@@ -922,18 +826,6 @@ namespace CalamityOverhaul
         /// <param name="value">纹理对象</param>
         public static Rectangle GetRec(Texture2D value) {
             return new Rectangle(0, 0, value.Width, value.Height);
-        }
-        /// <summary>
-        /// 获取与纹理大小对应的矩形框
-        /// </summary>
-        /// <param name="value">纹理对象</param>
-        /// <param name="Dx">X起点</param>
-        /// <param name="Dy">Y起点</param>
-        /// <param name="Sx">宽度</param>
-        /// <param name="Sy">高度</param>
-        /// <returns></returns>
-        public static Rectangle GetRec(Texture2D value, int Dx, int Dy, int Sx, int Sy) {
-            return new Rectangle(Dx, Dy, Sx, Sy);
         }
         /// <summary>
         /// 获取与纹理大小对应的矩形框
@@ -1013,17 +905,6 @@ namespace CalamityOverhaul
                 frameCounter = startCounter;
             }
         }
-
-        /// <summary>
-        /// 便捷的获取模组内的Effect实例
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static Effect GetEffectValue(string name, bool immediateLoad = false) {
-            return CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffect + name
-                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
-        }
-
         #endregion
 
         #region TileUtils

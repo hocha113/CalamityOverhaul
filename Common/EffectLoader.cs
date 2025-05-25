@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KnifeDistortion { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
+        public static Asset<Effect> Crystal { get; set; }
         void ICWRLoader.LoadData() {
             Instance = this;
             On_FilterManager.EndCapture += FilterManager_EndCapture;

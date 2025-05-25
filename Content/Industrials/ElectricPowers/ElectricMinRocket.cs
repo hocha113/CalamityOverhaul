@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<ElectricMinRocket>());
 
         public override bool RightClick(int i, int j) {
-            Player player = CWRUtils.TileFindPlayer(i, j);
+            Player player = VaultUtils.FindClosestPlayer(new Vector2(i, j) * 16);
             if (player == null) {
                 return false;
             }

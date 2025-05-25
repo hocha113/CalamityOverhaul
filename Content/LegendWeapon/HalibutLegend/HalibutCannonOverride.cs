@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return false;
         }
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, GetOnDamage(item), GetStartDamage, ref damage);
+            CWRUtils.ModifyLegendWeaponDamageFunc(item, GetOnDamage(item), GetStartDamage, ref damage);
             return false;
         }
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 newContent = Level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
             }
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-            tooltips.ReplaceTooltip("[Text]", CWRUtils.FormatColorTextMultiLine(newContent, newColor), "");
+            tooltips.ReplaceTooltip("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }
     }
 }

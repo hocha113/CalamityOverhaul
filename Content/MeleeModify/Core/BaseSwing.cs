@@ -778,7 +778,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         }
 
         public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
+            Effect effect = EffectLoader.KnifeRendering.Value;
 
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["drawTrailHighlight"].SetValue(drawTrailHighlight);

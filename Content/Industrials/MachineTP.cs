@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
+            PlaceNet = true;//因为下面会进行一些初始化的数值加载，所以开启放置时的网络协调
             if (TrackItem != null) {
                 MachineData.UEvalue = TrackItem.CWR().UEValue;
                 if (MachineData.UEvalue > MaxUEValue) {
@@ -31,13 +32,6 @@ namespace CalamityOverhaul.Content.Industrials
 
         public virtual void SetMachine() {
 
-        }
-
-        public sealed override void Initialize() {
-            if (TrackItem == null) {
-                return;
-            }
-            SendData();//发送一次数据，因为放置时设置的UEValue不会自动同步
         }
 
         public sealed override void Update() {

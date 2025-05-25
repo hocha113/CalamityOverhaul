@@ -247,7 +247,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                         SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld);
                         //这里选择从某个玩家的端口上生成弹幕，因为未知原因从服务端上无法生成闪电，这是一个临时的解决方法
-                        Player player = CWRUtils.InPosFindPlayer(CenterInWorld);
+                        Player player = VaultUtils.FindClosestPlayer(CenterInWorld);
                         if (player != null && player.whoAmI == Main.myPlayer) {
                             Vector2 dir = CenterInWorld.To(TargetByNPC.Center).UnitVector();
                             Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public void ArcCharging() {
-            Player player = CWRUtils.InPosFindPlayer(CenterInWorld, 800);
+            Player player = VaultUtils.FindClosestPlayer(CenterInWorld, 800);
             if (player == null || player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -702,7 +702,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             switch (State) {
                 default:
                 case 0://刚生成，等待透明度变高后开始寻敌
-                    Player player = CWRUtils.InPosFindPlayer(Projectile.Center, 800);
+                    Player player = VaultUtils.FindClosestPlayer(Projectile.Center, 800);
                     if (player != null) {
                         TargetPlayer = player;
                         TargetCenter = Projectile.Center + Projectile.velocity.UnitVector() * 126;

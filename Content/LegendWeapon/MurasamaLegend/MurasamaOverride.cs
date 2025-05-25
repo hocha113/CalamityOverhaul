@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             => DataHandler.DamageModify(item, player, ref damage);
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
-            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, GetOnKnockback(item), GetStartKnockback, ref knockback);
+            => CWRUtils.ModifyLegendWeaponKnockbackFunc(item, GetOnKnockback(item), GetStartKnockback, ref knockback);
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += GetOnCrit(item);

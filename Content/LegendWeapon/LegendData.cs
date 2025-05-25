@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             string text = "";
             if (worldName != null && Main.worldName != worldName && worldName != "") {
                 string key = MuraText.GetTextKey("World_Text0");
-                text = CWRUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName, cwrItem.LegendData.Level)}", Color.Gold);
+                text = VaultUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName, cwrItem.LegendData.Level)}", Color.Gold);
             }
             return text;
         }

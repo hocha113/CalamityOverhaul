@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
             Vector2 tilePosition = new Vector2(i, j) * 16;
-            Player closestPlayer = CWRUtils.TileFindPlayer(i, j);
+            Player closestPlayer = VaultUtils.FindClosestPlayer(new Vector2(i, j) * 16);
             if (closestPlayer == null || closestPlayer?.HeldItem.type != ModContent.ItemType<InfinitePick>()) {
                 Projectile.NewProjectile(new EntitySource_WorldEvent(), tilePosition, Vector2.Zero, ModContent.ProjectileType<InfiniteIngotTileProj>(), 9999, 0);
             }

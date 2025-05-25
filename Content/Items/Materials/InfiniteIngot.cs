@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Rarities;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         }
 
         public static void DrawColorText(SpriteBatch sb, DrawableTooltipLine line) {
-            Effect effect = CWRUtils.GetEffectValue("Crystal");
+            Effect effect = EffectLoader.Crystal.Value;
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

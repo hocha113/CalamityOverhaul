@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Industrials
                 }
             }
             else {
-                TargetByPlayer = CWRUtils.InPosFindPlayer(Center, MaxFindMode);
+                TargetByPlayer = VaultUtils.FindClosestPlayer(Center, MaxFindMode);
                 if (TargetByPlayer != null) {
                     TargetCenter = TargetByPlayer.Center;
                     CanFire = true;

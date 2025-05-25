@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[TargetID] = ModContent.ItemType<PlasmaDriveCore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
-        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => SHPCDamage(player, item, ref damage);
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => SHPCDamage(item, ref damage);
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
         public static void SetDefaultsFunc(Item Item) {
@@ -87,8 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item.CWR().LegendData = new SHPCData();
         }
 
-        public static bool SHPCDamage(Player player, Item Item, ref StatModifier damage) {
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage(Item), GetStartDamage, ref damage);
+        public static bool SHPCDamage(Item Item, ref StatModifier damage) {
+            CWRUtils.ModifyLegendWeaponDamageFunc(Item, GetOnDamage(Item), GetStartDamage, ref damage);
             return false;
         }
 
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 newContent = Level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");
             }
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-            tooltips.ReplaceTooltip("[Text]", CWRUtils.FormatColorTextMultiLine(newContent, newColor), "");
+            tooltips.ReplaceTooltip("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }
     }
 }

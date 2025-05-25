@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     : Projectile.SmoothHomingBehavior(npc.Center, 1.001f, 0.15f);
             }
             else {
-                Player player = CWRUtils.InPosFindPlayer(Projectile.Center);
+                Player player = VaultUtils.FindClosestPlayer(Projectile.Center);
                 if (player != null) {
                     Vector2 toPlayer = player.Center - Projectile.Center;
                     float distanceToPlayer = toPlayer.Length();

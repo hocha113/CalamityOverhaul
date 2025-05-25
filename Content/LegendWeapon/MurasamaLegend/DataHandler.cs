@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             int onDamage = GetOnDamage(item);
             ModifyWallSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
-            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, onDamage, GetStartDamage, ref damage);
+            CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
         }
     }
 }
