@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.Items.Magic
         [VaultLoaden(CWRConstant.Item_Magic + "DragonsWordGlow")]
         public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
-            Item.width = Item.height = 32;
+            Item.width = 70;
+            Item.height = 84;
             Item.damage = 682;
             Item.mana = 80;
             Item.shootSpeed = 6;
@@ -35,8 +36,9 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override bool AltFunctionUse(Player player) => true;
 
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
-            spriteBatch.Draw(Glow.Value, Item.position - Main.screenPosition + new Vector2(Item.width / 2, -Item.height / 2)
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
                 , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
         }
 

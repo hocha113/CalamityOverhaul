@@ -5,6 +5,7 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -19,9 +20,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class ElectricMinRocket : ModItem
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/ElectricMinRocketGlow")]
+        public static Asset<Texture2D> Glow;
         public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 28;
+            Item.height = 40;
             Item.maxStack = 1;
             Item.useTurn = true;
             Item.autoReuse = true;
@@ -34,6 +37,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.createTile = ModContent.TileType<ElectricMinRocketTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 600;
+        }
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
+                , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
         }
     }
 

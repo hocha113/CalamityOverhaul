@@ -10,6 +10,7 @@ using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,8 +31,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTower";
         public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 38;
+            Item.height = 78;
             Item.maxStack = 9999;
             Item.useTurn = true;
             Item.autoReuse = true;
@@ -68,8 +69,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<TeslaElectromagneticTower>();
         public override LocalizedText Tooltip => ItemLoader.GetItem(ModContent.ItemType<TeslaElectromagneticTower>()).GetLocalization("Tooltip");
         public override void SetDefaults() {
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 38;
+            Item.height = 78;
             Item.maxStack = 9999;
             Item.useTurn = true;
             Item.autoReuse = true;
@@ -103,6 +104,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class TeslaElectromagneticTowerTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTowerTile";
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTowerTileGlow")]
+        public static Asset<Texture2D> tileGlowAsset;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -161,6 +164,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             int frameYPos = t.TileFrameY;
             frameYPos += (tesla.AttackPattern ? 1 : 0) * 5 * 18;
             Texture2D tex = TextureAssets.Tile[Type].Value;
+            Texture2D glow = tileGlowAsset.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
@@ -168,10 +172,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
             }
             else if (t.IsHalfBlock) {
                 spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(glow, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
             }
             return false;
         }

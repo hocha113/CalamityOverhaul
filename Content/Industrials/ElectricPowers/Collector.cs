@@ -1,11 +1,15 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -29,13 +33,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.rare = ItemRarityID.LightRed;
             Item.createTile = ModContent.TileType<CollectorTile>();
             Item.CWR().StorageUE = true;
-            Item.CWR().ConsumeUseUE = 1200;
+            Item.CWR().ConsumeUseUE = 800;
         }
     }
 
     internal class CollectorTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/CollectorTile";
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorStartTile")]
+        public static Asset<Texture2D> startAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorStartTileGlow")]
+        public static Asset<Texture2D> startGlowAsset = null;
+        [VaultLoaden(CWRConstant.Asset + "ElectricPowers/CollectorTileGlow")]
+        public static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -45,11 +55,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileSolidTop[Type] = true;
             AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<Collector>());
 
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-            TileObjectData.newTile.Width = 4;
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Origin = new Point16(2, 2);
-            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Height = 5;
+            TileObjectData.newTile.Origin = new Point16(1, 3);
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
             TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
@@ -57,32 +67,102 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
+
+        public override bool CreateDust(int i, int j, ref int type) {
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
+            return false;
+        }
+
+        public override bool CanDrop(int i, int j) => false;
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return false;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out CollectorTP collector)) {
+                return false;
+            }
+
+            Tile t = Main.tile[i, j];
+            int frameXPos = t.TileFrameX;
+            int frameYPos = t.TileFrameY;
+            frameYPos += collector.frame * 18 * 5;
+            Texture2D tex = collector.workState ? TextureAssets.Tile[Type].Value : startAsset.Value;
+            Texture2D glow = collector.workState ? tileGlowAsset.Value : startGlowAsset.Value;
+            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
+            Color drawColor = Lighting.GetColor(i, j);
+            if (!t.IsHalfBlock && t.Slope == 0) {
+                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            else if (t.IsHalfBlock) {
+                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(glow, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
+                    , Color.White, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            }
+            return false;
+        }
     }
 
-    internal class CollectorTP : TileProcessor
+    internal class CollectorTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<CollectorTile>();
-        private List<CollectorArm> collectorArms = [];
-        public override void Update() {
-            if (VaultUtils.isClient) {
+        public override int TargetItem => ModContent.ItemType<Collector>();
+        public override bool ReceivedEnergy => true;
+        public override float MaxUEValue => 800;
+        private readonly List<CollectorArm> CollectorArms = [];
+        internal int frame;
+        internal bool workState;
+        private void FindFrame() {
+            int maxFrame = workState ? 7 : 24;
+            if (!workState && frame == 23) {
+                frame = 0;//立刻让帧归零防止越界
+                workState = true;
+                SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
+            }
+            VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
+        }
+
+        public override void UpdateMachine() {
+            FindFrame();
+            UpdateArm();
+        }
+
+        internal void UpdateArm() {
+            if (VaultUtils.isClient || !workState) {
                 return;
             }
-            collectorArms.RemoveAll(p => p == null || !p.Projectile.Alives());
-            if (collectorArms.Count < 3) {
-                CollectorArm collectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent(), CenterInWorld, Vector2.Zero
+
+            CollectorArms.RemoveAll(p => !p.Projectile.Alives());
+
+            if (CollectorArms.Count < 3) {
+                CollectorArm collectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
+                    , CenterInWorld + new Vector2(0, 14), Vector2.Zero
                     , ModContent.ProjectileType<CollectorArm>(), 0, 0, -1).ModProjectile as CollectorArm;
-                collectorArm.offsetIndex = collectorArms.Count;
-                collectorArms.Add(collectorArm);
+                CollectorArms.Add(collectorArm);
             }
-            foreach (CollectorArm arm in collectorArms) {
-                arm.Projectile.timeLeft = 10086;
+
+            int index = 0;
+            foreach (CollectorArm arm in CollectorArms) {
+                arm.offsetIndex = index;
+                arm.Projectile.timeLeft = 2;
+                index++;
             }
         }
-        public override void OnKill() {
-            foreach (CollectorArm collectorArm in collectorArms) {
+
+        internal void KillArm() {
+            foreach (CollectorArm collectorArm in CollectorArms) {
                 collectorArm.Projectile.Kill();
             }
-            collectorArms.Clear();
+            CollectorArms.Clear();
+        }
+
+        public override void MachineKill() {
+            KillArm();
         }
     }
 
@@ -93,6 +173,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private static Asset<Texture2D> arm;//手臂的体节纹理
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClamp")]
         private static Asset<Texture2D> clamp;//手臂的夹子纹理
+        [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
+        private static Asset<Texture2D> clampGlow;//手臂的夹子的光效纹理
         internal Vector2 startPos;//记录这个弹幕的起点位置
         internal int offsetIndex;
         private Item graspItem;
@@ -103,13 +185,29 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.timeLeft = 10086;
         }
 
+        internal Item FindItem() {
+            Item item = null;
+            float maxFindSQ = 4000000;
+            foreach (var i in Main.ActiveItems) {
+                if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
+                    continue;
+                }
+                float newFindSQ = i.Center.DistanceSQ(Projectile.Center);
+                if (newFindSQ < maxFindSQ) {
+                    item = i;
+                    maxFindSQ = newFindSQ;
+                }
+            }
+            return item;
+        }
+
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 startPos = Projectile.Center;
                 Projectile.localAI[0] = 1f;
             }
 
-            if (Projectile.ai[0] == 1) {
+            if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
                 graspItem.CWR().TargetByCollector = Projectile.identity;
                 Projectile.ChasingBehavior(startPos, 8);
                 graspItem.Center = Projectile.Center;
@@ -121,37 +219,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            Item item = null;
-            float maxFind = 2000;
-            foreach (var i in Main.ActiveItems) {
-                if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
-                    continue;
-                }
-                float newFind = i.Center.Distance(Projectile.Center);
-                if (newFind < maxFind) {
-                    item = i;
-                    maxFind = newFind;
-                }
-            }
+            Item item = FindItem();
 
             if (item != null) {
                 item.CWR().TargetByCollector = Projectile.identity;
                 Projectile.ChasingBehavior(item.Center, 8);
                 Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
                 if (item.Center.Distance(Projectile.Center) < 32) {
-                    graspItem = item;
+                    graspItem = item.Clone();
+                    item.TurnToAir();
                     graspItem.CWR().TargetByCollector = Projectile.identity;
                     Projectile.ai[0] = 1;
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
                 }
                 return;
             }
             else {
-                Vector2 offset = new Vector2(0, -40);
+                Vector2 offset = new Vector2(0, -120);
                 if (offsetIndex == 1) {
-                    offset = new Vector2(20, -20);
+                    offset = new Vector2(120, -20);
                 }
                 if (offsetIndex == 2) {
-                    offset = new Vector2(-20, -20);
+                    offset = new Vector2(-120, -20);
                 }
                 Projectile.ChasingBehavior(startPos + offset, 8);
             }
@@ -185,7 +274,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 prev = point;
             }
 
-            float segmentLength = tex.Height;
+            float segmentLength = tex.Height / 2;
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             Vector2[] points = new Vector2[segmentCount + 1];
 
@@ -200,20 +289,35 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 points[i] = pos;
             }
 
+            float clampRot = Projectile.rotation;
+
             for (int i = 0; i < segmentCount; i++) {
                 Vector2 pos = points[i];
                 Vector2 next = points[i + 1];
                 Vector2 direction = next - pos;
-                float rotation = direction.ToRotation() + MathHelper.PiOver2;
                 Color color = Lighting.GetColor((pos / 16).ToPoint());
+                float rotation = direction.ToRotation() + MathHelper.PiOver2;
+                if (i == segmentCount - 1) {
+                    clampRot = direction.ToRotation();
+                }
                 Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
-                    , new Vector2(tex.Width / 2f, tex.Height / 2f), 1f, SpriteEffects.None, 0f);
+                    , new Vector2(tex.Width / 2f, tex.Height), 1f, SpriteEffects.None, 0f);
             }
 
             Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
                 , clamp.Value.GetRectangle((graspItem == null || graspItem.IsAir) ? 0 : 1, 2)
-                , lightColor, Projectile.rotation + MathHelper.PiOver4
+                , lightColor, clampRot + MathHelper.PiOver2
                 , clamp.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(clampGlow.Value, Projectile.Center - Main.screenPosition
+                , clampGlow.Value.GetRectangle((graspItem == null || graspItem.IsAir) ? 0 : 1, 2)
+                , Color.White, clampRot + MathHelper.PiOver2
+                , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
+
+            if (graspItem != null && !graspItem.IsAir) {
+                VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
+                    , Projectile.Center - Main.screenPosition, 1f
+                    , clampRot + MathHelper.PiOver2, lightColor);
+            }
 
             return false;
         }
