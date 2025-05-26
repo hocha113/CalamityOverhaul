@@ -83,10 +83,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override bool CanDrop(int i, int j) => false;
 
-        public override bool RightClick(int i, int j) {
-            return base.RightClick(i, j);
-        }
-
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;

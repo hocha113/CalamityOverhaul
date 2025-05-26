@@ -74,6 +74,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 collectorArm.offsetIndex = collectorArms.Count;
                 collectorArms.Add(collectorArm);
             }
+            foreach (CollectorArm arm in collectorArms) {
+                arm.Projectile.timeLeft = 10086;
+            }
         }
         public override void OnKill() {
             foreach (CollectorArm collectorArm in collectorArms) {
@@ -93,6 +96,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Vector2 startPos;//记录这个弹幕的起点位置
         internal int offsetIndex;
         private Item graspItem;
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;

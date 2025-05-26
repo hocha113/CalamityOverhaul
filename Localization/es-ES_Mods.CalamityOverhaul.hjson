@@ -1091,7 +1091,7 @@ Items: {
 	}
 
 	Collector: {
-		// DisplayName: Mods.CalamityOverhaul.Items.Collector.DisplayName
+		// DisplayName: Collector
 		// Tooltip: ""
 	}
 }
