@@ -1078,6 +1078,17 @@ Items: {
 
 	Collector: {
 		// DisplayName: Collector
+		/* Tooltip:
+			'''
+			Automatically pick up the fallen objects around and place them in the nearest box
+			It won't work if there are no boxes around
+			''' */
+		// Text1: Excessive Quantity!
+		// Text2: There are no boxes around!
+	}
+
+	WGGCollector: {
+		// DisplayName: Junkman
 		// Tooltip: ""
 	}
 }
@@ -1396,6 +1407,7 @@ Projectiles: {
 	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
 	// MechanicalArm.DisplayName: Mechanical Arm
 	// CollectorArm.DisplayName: Collector Arm
+	// WGGCollectorArm.DisplayName: W G G Collector Arm
 }
 
 Configs: {

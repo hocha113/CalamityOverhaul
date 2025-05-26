@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -11,14 +12,22 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
     internal class Collector : ModItem
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Collector";
+        internal static LocalizedText Text1;
+        internal static LocalizedText Text2;
+        public override void SetStaticDefaults() {
+            Text1 = this.GetLocalization(nameof(Text1), () => "Excessive Quantity!");
+            Text2 = this.GetLocalization(nameof(Text2), () => "There are no boxes around!");
+        }
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -115,8 +124,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 800;
         private readonly List<CollectorArm> CollectorArms = [];
+        private int textIdleTime;
         internal int frame;
         internal bool workState;
+        internal Chest Chest;
         private void FindFrame() {
             int maxFrame = workState ? 7 : 24;
             if (!workState && frame == 23) {
@@ -129,28 +140,50 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void UpdateMachine() {
             FindFrame();
-            UpdateArm();
-        }
 
-        internal void UpdateArm() {
-            if (VaultUtils.isClient || !workState) {
+            if (!workState) {
                 return;
             }
 
-            CollectorArms.RemoveAll(p => !p.Projectile.Alives());
-
-            if (CollectorArms.Count < 3) {
-                CollectorArm collectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , CenterInWorld + new Vector2(0, 14), Vector2.Zero
-                    , ModContent.ProjectileType<CollectorArm>(), 0, 0, -1).ModProjectile as CollectorArm;
-                CollectorArms.Add(collectorArm);
+            Chest = CWRUtils.FindNearestChest(Position.X, Position.Y, 100);
+            if (Chest == null && textIdleTime <= 0) {
+                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
+                textIdleTime = 300;
             }
 
-            int index = 0;
-            foreach (CollectorArm arm in CollectorArms) {
-                arm.offsetIndex = index;
-                arm.Projectile.timeLeft = 2;
-                index++;
+            if (!VaultUtils.isClient) {
+                CollectorArms.RemoveAll(p => !p.Projectile.Alives());
+            }
+            
+            if (textIdleTime > 0) {
+                textIdleTime--;
+            }
+
+            if (CollectorArms.Count < 3) {
+                if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
+                    if (textIdleTime <= 0) {
+                        CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
+                        textIdleTime = 300;
+                    }
+                    return;
+                }
+
+                if (!VaultUtils.isClient) {
+                    CollectorArm collectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
+                    , CenterInWorld + new Vector2(0, 14), Vector2.Zero
+                    , ModContent.ProjectileType<CollectorArm>(), 0, 0, -1).ModProjectile as CollectorArm;
+                    CollectorArms.Add(collectorArm);
+                }
+            }
+
+            if (!VaultUtils.isClient) {
+                int index = 0;
+                foreach (CollectorArm arm in CollectorArms) {
+                    arm.offsetIndex = index;
+                    arm.Projectile.timeLeft = 2;
+                    arm.collectorTP = this;
+                    index++;
+                }
             }
         }
 
@@ -175,6 +208,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private static Asset<Texture2D> clamp;//手臂的夹子纹理
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
         private static Asset<Texture2D> clampGlow;//手臂的夹子的光效纹理
+        internal CollectorTP collectorTP;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         internal int offsetIndex;
         private Item graspItem;
@@ -190,8 +224,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float maxFindSQ = 4000000;
             foreach (var i in Main.ActiveItems) {
                 if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
+                    //如果发现目标物品已经物有所主，就判断是否自己比那个主人更加的近，近的话就换自己上去拿
+                    //当然，如果别的手因为某种原因已经不活跃了，就直接换自己上
+                    //Projectile otherArm = Main.projectile[i.CWR().TargetByCollector];
+                    //if (!otherArm.Alives() || otherArm.DistanceSQ(i.Center) < Projectile.DistanceSQ(i.Center)) {
+                    //    i.CWR().TargetByCollector = Projectile.identity;
+                    //}
+                    //else {
+                    //    continue;
+                    //}
                     continue;
                 }
+
                 float newFindSQ = i.Center.DistanceSQ(Projectile.Center);
                 if (newFindSQ < maxFindSQ) {
                     item = i;
@@ -208,18 +252,38 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
-                graspItem.CWR().TargetByCollector = Projectile.identity;
-                Projectile.ChasingBehavior(startPos, 8);
-                graspItem.Center = Projectile.Center;
-                if (startPos.Distance(Projectile.Center) < 32) {
+                if (collectorTP.Chest == null) {
                     Projectile.velocity = Vector2.Zero;
+                    if (!VaultUtils.isClient) {
+                        int type = Item.NewItem(Projectile.FromObjectGetParent(), Projectile.Hitbox, graspItem.Clone());
+                        if (VaultUtils.isServer) {
+                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                        }
+                        SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
+                    }
+                    Projectile.ai[0] = 0;
+                    return;
+                }
+
+                graspItem.CWR().TargetByCollector = Projectile.identity;
+                Vector2 chestPos = new Vector2(collectorTP.Chest.x, collectorTP.Chest.y) * 16 + new Vector2(8, 8);
+                Projectile.ChasingBehavior(chestPos, 8);
+                graspItem.Center = Projectile.Center;
+
+                float toChest = chestPos.Distance(Projectile.Center);
+                if (toChest < 60) {//设置一下打开动画
+                    collectorTP.Chest.eatingAnimationTime = 20;
+                }
+                if (toChest < 32) {//将物品放进箱子
+                    Projectile.velocity = Vector2.Zero;
+                    collectorTP.Chest.AddItem(graspItem);
                     graspItem.TurnToAir();
                     Projectile.ai[0] = 0;
                 }
                 return;
             }
 
-            Item item = FindItem();
+            Item item = collectorTP.Chest == null ? null : FindItem();
 
             if (item != null) {
                 item.CWR().TargetByCollector = Projectile.identity;

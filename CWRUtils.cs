@@ -475,17 +475,17 @@ namespace CalamityOverhaul
             }
         }
 
-        public static Chest FindNearestChest(int x, int y) {
-            int distance = 99999;
+        public static Chest FindNearestChest(int x, int y, int distance = 99999) {
+            int newDistance = distance;
             Chest nearestChest = null;
 
             for (int c = 0; c < Main.chest.Length; c++) {
                 Chest currentChest = Main.chest[c];
                 if (currentChest != null) {
                     int length = (int)Math.Sqrt(Math.Pow(x - currentChest.x, 2) + Math.Pow(y - currentChest.y, 2));
-                    if (length < distance) {
+                    if (length < newDistance) {
                         nearestChest = currentChest;
-                        distance = length;
+                        newDistance = length;
                     }
                 }
             }

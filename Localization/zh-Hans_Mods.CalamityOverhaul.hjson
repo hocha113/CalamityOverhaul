@@ -1072,6 +1072,17 @@ Items: {
 
 	Collector: {
 		DisplayName: 收集者
+		Tooltip:
+			'''
+			自动拾取周围的掉落物放到在最近的箱子中
+			如果周围没有箱子就不会工作
+			'''
+		Text1: 数量过多!
+		Text2: 周围缺少箱子!
+	}
+
+	WGGCollector: {
+		DisplayName: 拾荒者
 		Tooltip: ""
 	}
 }
@@ -1390,6 +1401,7 @@ Projectiles: {
 	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
 	// MechanicalArm.DisplayName: Mechanical Arm
 	// CollectorArm.DisplayName: Collector Arm
+	// WGGCollectorArm.DisplayName: W G G Collector Arm
 }
 
 Configs: {
