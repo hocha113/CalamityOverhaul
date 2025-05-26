@@ -1075,6 +1075,11 @@ Items: {
 		// DisplayName: HoCha Meditator
 		// Tooltip: ""
 	}
+
+	Collector: {
+		// DisplayName: Mods.CalamityOverhaul.Items.Collector.DisplayName
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1389,6 +1394,8 @@ Projectiles: {
 	// WarpingPoint.DisplayName: Warping Point
 	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
 	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
+	// MechanicalArm.DisplayName: Mechanical Arm
+	// CollectorArm.DisplayName: Collector Arm
 }
 
 Configs: {

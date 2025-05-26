@@ -109,6 +109,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal int destructTime;
         /// <summary>
+        /// 如果该物品被一个收集者视作为目标，那么该值会被设置为对应手臂的的弹幕索引
+        /// </summary>
+        internal int TargetByCollector = -1;
+        /// <summary>
         /// 是否存储UE
         /// </summary>
         public bool StorageUE;

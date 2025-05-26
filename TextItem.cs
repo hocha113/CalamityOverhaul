@@ -1,5 +1,8 @@
 ﻿using CalamityMod.Items;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -34,7 +37,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -76,7 +79,7 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<SetPosingStarm>(), 100, 0);
+            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<MechanicalArm>(), 100, 0);
             //Framing.GetTileSafely((Main.MouseWorld / 16).ToPoint()).Domp();
             //bool copy = false;
             //if (copy) {

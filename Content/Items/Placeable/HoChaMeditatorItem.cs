@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useAnimation = 15;
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
+            Item.value = Item.buyPrice(0, 0, 20, 0);
+            Item.rare = ItemRarityID.Green;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<HoChaMeditator>();
         }

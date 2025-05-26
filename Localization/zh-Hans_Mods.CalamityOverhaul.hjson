@@ -1069,6 +1069,11 @@ Items: {
 		DisplayName: 沉思者HoCha
 		Tooltip: ""
 	}
+
+	Collector: {
+		DisplayName: 收集者
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1383,6 +1388,8 @@ Projectiles: {
 	// WarpingPoint.DisplayName: Warping Point
 	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
 	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
+	// MechanicalArm.DisplayName: Mechanical Arm
+	// CollectorArm.DisplayName: Collector Arm
 }
 
 Configs: {
