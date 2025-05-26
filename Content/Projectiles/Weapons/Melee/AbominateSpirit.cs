@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 2);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, 2);
 
             if (Status == 3) {
                 Projectile.timeLeft = 2;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             float alp = Projectile.alpha / 255f;
             color = VaultUtils.MultiStepColorLerp(0.5f, color, new Color(255, 255, 255));
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frameCounter, 3);
+            Rectangle rectangle = mainValue.GetRectangle(Projectile.frameCounter, 3);
 
             Main.EntitySpriteDraw(
                 mainValue,

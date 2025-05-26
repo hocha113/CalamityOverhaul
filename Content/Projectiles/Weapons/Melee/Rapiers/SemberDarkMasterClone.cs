@@ -113,12 +113,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             playerClone.bodyFrame = Owner.bodyFrame;
             playerClone.legFrame = Owner.legFrame;
 
-            playerClone.direction = Math.Sign(Projectile.DirectionTo(Main.MouseWorld).X);
+            playerClone.direction = Math.Sign(Projectile.DirectionTo(InMousePos).X);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, playerClone, Projectile.position, 0f, playerClone.fullRotationOrigin, 0f, 1f);
 
-            if (CWRUtils.GetProjectileHasNum(ModContent.ProjectileType<TheDarkMasterRapier>(), Owner.whoAmI) > 0) {
+            if (Owner.CountProjectilesOfID<TheDarkMasterRapier>() > 0) {
                 Texture2D Sword = swordAsset.Value;
-                float rots = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation() + MathHelper.PiOver4;
+                float rots = Projectile.Center.DirectionTo(InMousePos).ToRotation() + MathHelper.PiOver4;
                 Vector2 distToPlayer = Projectile.position - Owner.position;
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition
                     + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);

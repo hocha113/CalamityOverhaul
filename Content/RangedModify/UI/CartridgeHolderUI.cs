@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             }
 
             if (cwrWeapon.CartridgeType == CartridgeUIEnum.Magazines) {
-                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - cwrWeapon.NumberBullets, frameMax);
+                Rectangle rectangle = TextureValue.GetRectangle(6 - cwrWeapon.NumberBullets, frameMax);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
                 DrawToolp(spriteBatch, cwrWeapon);

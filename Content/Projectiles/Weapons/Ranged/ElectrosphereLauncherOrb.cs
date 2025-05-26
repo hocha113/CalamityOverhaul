@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override string Texture => CWRConstant.Placeholder;
         public List<Projectile> Orbs = [];
-        public ElectrosphereLauncherOrb[] orbList = new ElectrosphereLauncherOrb[] { };
+        public ElectrosphereLauncherOrb[] orbList = [];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 42;
             Projectile.friendly = true;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreAI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
             return true;
         }
 
@@ -122,23 +122,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     int num = (int)(leng / wid) + 1;
                     for (int i = 0; i < num; i++) {
                         Vector2 drawPos = toPosNor * (i * wid) + Projectile.Center - Main.screenPosition;
-                        Main.EntitySpriteDraw(value2, drawPos, CWRUtils.GetRec(value2, Projectile.frame, 4)
-                        , Color.White, rot, CWRUtils.GetOrig(value2, 4), Projectile.scale, SpriteEffects.None, 0);
+                        Main.EntitySpriteDraw(value2, drawPos, value2.GetRectangle(Projectile.frame, 4)
+                        , Color.White, rot, VaultUtils.GetOrig(value2, 4), Projectile.scale, SpriteEffects.None, 0);
                     }
                 }
             }
-            Vector2 org = CWRUtils.GetOrig(value, 4);
-            Rectangle rec = CWRUtils.GetRec(value, Projectile.frame, 4);
+            Vector2 org = VaultUtils.GetOrig(value, 4);
+            Rectangle rec = value.GetRectangle(Projectile.frame, 4);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rec
-                , Color.White, 0, CWRUtils.GetOrig(value, 4), 1, SpriteEffects.None, 0);
+                , Color.White, 0, VaultUtils.GetOrig(value, 4), 1, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rec
-                , Color.White, 0, CWRUtils.GetOrig(value, 4), 1.01f, SpriteEffects.None, 0);
+                , Color.White, 0, VaultUtils.GetOrig(value, 4), 1.01f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rec
-                , Color.White, 0, CWRUtils.GetOrig(value, 4), 1.02f, SpriteEffects.None, 0);
+                , Color.White, 0, VaultUtils.GetOrig(value, 4), 1.02f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rec
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, SpriteEffects.None, 0);
+                , Color.White, Projectile.rotation, VaultUtils.GetOrig(value, 4), Projectile.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rec
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), 1.2f - Projectile.scale, SpriteEffects.None, 0);
+                , Color.White, Projectile.rotation, VaultUtils.GetOrig(value, 4), 1.2f - Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

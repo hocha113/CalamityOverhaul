@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFire) {
                 LimitingAngle(20, 160);
             }
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 8);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 8);
         }
 
         public override void BowShoot() {
@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 9), onFire ? Color.White : lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 9), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 9), onFire ? Color.White : lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 9), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

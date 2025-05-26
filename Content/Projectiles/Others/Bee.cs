@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
 
         public void Draw(SpriteBatch spriteBatch, Texture2D value) {
             if (Active) {
-                Main.EntitySpriteDraw(value, Center - Main.screenPosition, CWRUtils.GetRec(value, FrameIndex, 4), Color * Alpha, Rotiton, CWRUtils.GetOrig(value, 4), Scale, SpriteEffects.None);
+                Main.EntitySpriteDraw(value, Center - Main.screenPosition, value.GetRectangle(FrameIndex, 4), Color * Alpha, Rotiton, VaultUtils.GetOrig(value, 4), Scale, SpriteEffects.None);
             }
         }
     }

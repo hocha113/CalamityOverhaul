@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
             Projectile.spriteDirection = Projectile.direction = (Projectile.velocity.X > 0).ToDirectionInt();
             Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
 
-            CWRUtils.ClockFrame(ref Projectile.frame, 8, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 8, 3);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

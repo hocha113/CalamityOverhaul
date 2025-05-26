@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
             if (Owner == null || Owner.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()
                 || (Projectile.ai[2] == 0 && !DownLeft) || (Projectile.ai[2] == 1 && !DownRight)) {
                 Projectile.Kill();
@@ -94,10 +94,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
+                mainValue.GetRectangle(Projectile.frameCounter, 4),
                 Color.White,
                 Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 4),
+                VaultUtils.GetOrig(mainValue, 4),
                 Projectile.scale,
                 Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );
@@ -108,10 +108,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
+                mainValue.GetRectangle(Projectile.frameCounter, 4),
                 lightColor,
                 Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 4),
+                VaultUtils.GetOrig(mainValue, 4),
                 Projectile.scale,
                 Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );

@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public void DrawCustom(SpriteBatch spriteBatch) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue);
+            Rectangle rectangle = mainValue.GetRectangle();
             Vector2 orig = rectangle.Size() / 2;
             float rot = Projectile.rotation;
 

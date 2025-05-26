@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 if (i == 1) {
                     color = Color.Blue;
                 }
-                shieldData.Add((drawPos, scale, CWRUtils.GetRec(texture, i, 3), color));
+                shieldData.Add((drawPos, scale, texture.GetRectangle(i, 3), color));
             }
 
             // 根据Y值（纵深）进行排序，确保远处的先绘制

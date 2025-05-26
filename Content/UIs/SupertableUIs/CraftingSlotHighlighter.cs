@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(eyeAsset.Value, DrawPosition, CWRUtils.GetRec(eyeAsset.Value, eyEBool ? 1 : 0, 2)
+            spriteBatch.Draw(eyeAsset.Value, DrawPosition, eyeAsset.Value.GetRectangle(eyEBool ? 1 : 0, 2)
                 , Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (MainUI.items != null) {
                 for (int i = 0; i < MainUI.items.Length; i++) {

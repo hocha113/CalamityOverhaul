@@ -69,12 +69,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 if (proj.type == tail || proj.type == body) {
                     Texture2D value = TextureAssets.Projectile[proj.type].Value;
                     Main.EntitySpriteDraw(value, proj.Center - Main.screenPosition, null, Color.White * (proj.timeLeft / 60f), proj.rotation
-                        , CWRUtils.GetOrig(value), proj.scale, SpriteEffects.None);
+                        , value.GetOrig(), proj.scale, SpriteEffects.None);
                 }
             }
             Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null
                 , Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
-                , CWRUtils.GetOrig(head) - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);
+                , head.GetOrig() - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);
             return false;
         }
     }

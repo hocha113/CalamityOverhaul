@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 4);
             if (Owner == null || Owner.HeldItem?.type != ItemType<HeavenfallLongbow>()) {
                 Projectile.Kill();
                 return;
@@ -101,10 +101,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frame, 5),
+                mainValue.GetRectangle(Projectile.frame, 5),
                 Color.White,
                 Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 5),
+                VaultUtils.GetOrig(mainValue, 5),
                 Projectile.scale,
                 Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );
@@ -128,10 +128,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Main.EntitySpriteDraw(
                     mainValue,
                     Projectile.Center - Main.screenPosition,
-                    CWRUtils.GetRec(mainValue, Projectile.frame, 5),
+                    mainValue.GetRectangle(Projectile.frame, 5),
                     drawColor2,
                     Projectile.rotation,
-                    CWRUtils.GetOrig(mainValue, 5),
+                    VaultUtils.GetOrig(mainValue, 5),
                     Projectile.scale * (1 + slp2 * 0.08f),
                     Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                     );
@@ -142,10 +142,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frame, 5),
+                mainValue.GetRectangle(Projectile.frame, 5),
                 lightColor,
                 Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 5),
+                VaultUtils.GetOrig(mainValue, 5),
                 Projectile.scale,
                 Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );

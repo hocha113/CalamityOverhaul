@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.TileModify
         }
         public override bool CanLoad() => ModLoader.HasMod("CalamityModMusic");
         public override bool? RightClick(int i, int j, Tile tile) {
-            if (!CWRUtils.IsAprilFoolsDay) {
+            if (!VaultUtils.IsAprilFoolsDay) {
                 return null;
             }
             //愚人节快乐

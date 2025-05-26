@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            if (!CWRUtils.IsAprilFoolsDay) {
+            if (!VaultUtils.IsAprilFoolsDay) {
                 return;
             }
             CreateRecipe()//愚人节快乐

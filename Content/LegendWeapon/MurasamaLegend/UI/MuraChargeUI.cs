@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
                 }
                 else {
                     barBG = MuraBarFull.Value;
-                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
+                    Rectangle rectangle = barBG.GetRectangle(uiFrame, maxFrame);
                     Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, -3)
                         , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                 }
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
                 Main.spriteBatch.Draw(barFG, DrawPosition + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
             }
             else {
-                Rectangle rectangle = CWRUtils.GetRec(fullFG, uiFrame2, 9);
+                Rectangle rectangle = fullFG.GetRectangle(uiFrame2, 9);
                 Main.spriteBatch.Draw(fullFG, DrawPosition, rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
             }
 
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
                     }
                     else {
                         muraBarBottom = MuraBarFull.Value;
-                        Rectangle rectangle = CWRUtils.GetRec(muraBarBottom, uiFrame, 6);
+                        Rectangle rectangle = muraBarBottom.GetRectangle(uiFrame, 6);
                         Main.spriteBatch.Draw(muraBarBottom, drawPos + new Vector2(0, -3)
                             , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                     }

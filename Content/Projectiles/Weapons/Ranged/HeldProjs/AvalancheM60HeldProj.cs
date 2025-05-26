@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostInOwner() {
             if (onFire) {
-                CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
+                VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
             }
             else {
                 Projectile.frame = 4;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     onFireTime2 = 8;
                 }
                 if (onFireTime2 > 0) {
-                    CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
+                    VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
                 }
                 else {
                     Projectile.frame = 4;
@@ -148,8 +148,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, drawPos
-                , CWRUtils.GetRec(TextureValue, Projectile.frame, 5), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 5), Projectile.scale
+                , TextureValue.GetRectangle(Projectile.frame, 5), lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 5), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

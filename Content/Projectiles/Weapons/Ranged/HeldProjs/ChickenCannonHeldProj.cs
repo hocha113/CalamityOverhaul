@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwner() {
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
             if (onFire) {
-                CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+                VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
             }
         }
 
@@ -84,8 +84,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, drawPos
-                , CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 4), Projectile.scale
+                , TextureValue.GetRectangle(Projectile.frame, 4), lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 4), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

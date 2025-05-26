@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
 
             if (!Main.dedServ) {
-                CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+                VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
                 if (Main.rand.NextBool(5)) {
                     int dustnumber = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Gold, 0f, 0f, 150, Color.Gold, 1f);
                     Main.dust[dustnumber].velocity *= 0.3f;
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(texture, Projectile.frame, 4);
+            Rectangle rectangle = texture.GetRectangle(Projectile.frame, 4);
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {

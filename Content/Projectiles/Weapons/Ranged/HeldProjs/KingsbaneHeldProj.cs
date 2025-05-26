@@ -129,15 +129,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             Color drawColor = lightColor;
             Main.EntitySpriteDraw(TextureValue, drawPos
-                , CWRUtils.GetRec(TextureValue, Projectile.frame, 10), drawColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 10)
+                , TextureValue.GetRectangle(Projectile.frame, 10), drawColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 10)
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "Kingsbane_barrel");
             Color drawColor2 = VaultUtils.MultiStepColorLerp(chargeValue / (float)maxChargeValue, drawColor, Color.Red);
             Main.EntitySpriteDraw(value, drawPos
-                , CWRUtils.GetRec(value, Projectile.frame, 10), drawColor2
-                , Projectile.rotation, CWRUtils.GetOrig(value, 10)
+                , value.GetRectangle(Projectile.frame, 10), drawColor2
+                , Projectile.rotation, VaultUtils.GetOrig(value, 10)
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

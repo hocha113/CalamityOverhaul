@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             else {
                 Projectile.extraUpdates = 1;
             }
-            orig = CWRUtils.GetOrig(TextureValue, 13);
+            orig = VaultUtils.GetOrig(TextureValue, 13);
             return base.PreThrowOut();
         }
 
@@ -87,11 +87,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             }
         }
 
-        public override void PostUpdate() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
+        public override void PostUpdate() => VaultUtils.ClockFrame(ref Projectile.frame, 5, 12);
 
         public override void DrawThrowable(Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
-                , CWRUtils.GetRec(TextureValue, Projectile.frame, 13), lightColor
+                , TextureValue.GetRectangle(Projectile.frame, 13), lightColor
                 , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
                 , orig, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
         }

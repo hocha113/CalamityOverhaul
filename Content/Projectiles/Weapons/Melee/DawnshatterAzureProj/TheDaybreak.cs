@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         public override bool? CanDamage() => false;
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 6, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 6, 3);
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 1.7f);
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
             Projectile.velocity *= 0.95f;
@@ -83,8 +83,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             float rot = Projectile.rotation;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Vector2 origin = CWRUtils.GetOrig(texture, 4);
-            Main.EntitySpriteDraw(texture, drawPosition, CWRUtils.GetRec(texture, Projectile.frame, 4), Projectile.GetAlpha(lightColor)
+            Vector2 origin = VaultUtils.GetOrig(texture, 4);
+            Main.EntitySpriteDraw(texture, drawPosition, texture.GetRectangle(Projectile.frame, 4), Projectile.GetAlpha(lightColor)
                 , rot, origin, Projectile.scale * 0.7f, 0, 0);
             return false;
         }

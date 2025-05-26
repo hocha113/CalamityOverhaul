@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             if (Main.zenithWorld) {
-                if (player.GetProjectileHasNum(type3) == 0) {
+                if (player.CountProjectilesOfID(type3) == 0) {
                     Projectile.NewProjectile(player.FromObjectGetParent(), target.Center, Vector2.Zero, type3, 0, 0, player.whoAmI);
                     return true;
                 }
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 , new Vector2(4000, Projectile.ai[1] * 0.04f), SpriteEffects.None, 0);
 
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(value, frameIndex, maxFrame);
+            Rectangle rectangle = value.GetRectangle(frameIndex, maxFrame);
             Main.spriteBatch.Draw(value, Projectile.Bottom - Main.screenPosition + new Vector2(0, 22 * Projectile.scale)
                 , rectangle, Color.White, Projectile.rotation, new Vector2(rectangle.Width / 2, rectangle.Height)
                 , Projectile.scale, SpriteEffects.None, 0);

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
         public override void PostInOwner() {
             if (onFire || onFireR) {
-                CWRUtils.ClockFrame(ref Projectile.frame, intframe, 3);
+                VaultUtils.ClockFrame(ref Projectile.frame, intframe, 3);
             }
             else {
                 fireIndex = 30;
@@ -74,8 +74,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
-                , Projectile.rotation + MathHelper.PiOver2, CWRUtils.GetOrig(TextureValue, 4), Projectile.scale, SpriteEffects.None);
+            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 4), lightColor
+                , Projectile.rotation + MathHelper.PiOver2, VaultUtils.GetOrig(TextureValue, 4), Projectile.scale, SpriteEffects.None);
         }
     }
 }

@@ -267,30 +267,12 @@ namespace CalamityOverhaul
         /// </summary>
         public static bool Invasion => Main.invasionType > 0 || Main.pumpkinMoon
                 || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing;
-        /// <summary>
-        /// 是否处于愚人节
-        /// </summary>
-        public static bool IsAprilFoolsDay => DateTime.Now.Month == 4 && DateTime.Now.Day == 1;
 
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
 
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
-
-        /// <summary>
-        /// 设置玩家鼠标指向物块的信息状态
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="itemID"></param>
-        public static void SetMouseOverByTile(this Player player, int itemID = ItemID.None) {
-            player.noThrow = 2;
-            player.mouseInterface = true;
-            player.cursorItemIconEnabled = true;
-            if (itemID > 0) {
-                player.cursorItemIconID = itemID;//当玩家鼠标悬停在物块之上时，显示该物品的材质
-            }
-        }
 
         /// <summary>
         /// 目标弹药是否应该判定为一个木箭
@@ -325,21 +307,6 @@ namespace CalamityOverhaul
                 }
             }
         }
-
-        public static int GetProjectileHasNum(int targetProjType, int ownerIndex = -1) {
-            int num = 0;
-            foreach (var proj in Main.ActiveProjectiles) {
-                if (ownerIndex >= 0 && ownerIndex != proj.owner) {
-                    continue;
-                }
-                if (proj.type == targetProjType) {
-                    num++;
-                }
-            }
-            return num;
-        }
-
-        public static int GetProjectileHasNum(this Player player, int targetProjType) => GetProjectileHasNum(targetProjType, player.whoAmI);
 
         public static void ModifyLegendWeaponDamageFunc(Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;
@@ -820,91 +787,6 @@ namespace CalamityOverhaul
                 , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
 
-        /// <summary>
-        /// 获取与纹理大小对应的矩形框
-        /// </summary>
-        /// <param name="value">纹理对象</param>
-        public static Rectangle GetRec(Texture2D value) {
-            return new Rectangle(0, 0, value.Width, value.Height);
-        }
-        /// <summary>
-        /// 获取与纹理大小对应的矩形框
-        /// </summary>
-        /// <param name="value">纹理对象</param>
-        /// <param name="frame">帧索引</param>
-        /// <param name="frameCounterMax">总帧数，该值默认为1</param>
-        /// <returns></returns>
-        public static Rectangle GetRec(Texture2D value, int frame, int frameCounterMax = 1) {
-            int singleFrameY = value.Height / frameCounterMax;
-            return new Rectangle(0, singleFrameY * frame, value.Width, singleFrameY);
-        }
-        /// <summary>
-        /// 获取与纹理大小对应的缩放中心
-        /// </summary>
-        /// <param name="value">纹理对象</param>
-        /// <returns></returns>
-        public static Vector2 GetOrig(Texture2D value) {
-            return new Vector2(value.Width, value.Height) * 0.5f;
-        }
-        /// <summary>
-        /// 获取与纹理大小对应的缩放中心
-        /// </summary>
-        /// <param name="value">纹理对象</param>
-        /// <param name="frameCounter">帧索引</param>
-        /// <param name="frameCounterMax">总帧数，该值默认为1</param>
-        /// <returns></returns>
-        public static Vector2 GetOrig(Texture2D value, int frameCounterMax = 1) {
-            float singleFrameY = value.Height / frameCounterMax;
-            return new Vector2(value.Width * 0.5f, singleFrameY / 2);
-        }
-        /// <summary>
-        /// 对帧数索引进行走表
-        /// </summary>
-        /// <param name="frameCounter"></param>
-        /// <param name="intervalFrame"></param>
-        /// <param name="Maxframe"></param>
-        public static void ClockFrame(ref int frameCounter, int intervalFrame, int maxFrame) {
-            if (Main.GameUpdateCount % intervalFrame == 0) {
-                frameCounter++;
-            }
-
-            if (frameCounter > maxFrame) {
-                frameCounter = 0;
-            }
-        }
-        /// <summary>
-        /// 对帧数索引进行走表
-        /// </summary>
-        /// <param name="frameCounter"></param>
-        /// <param name="intervalFrame"></param>
-        /// <param name="Maxframe"></param>
-        /// <param name="startCounter"></param>
-        public static void ClockFrame(ref double frameCounter, int intervalFrame, int maxFrame, int startCounter = 0) {
-            if (Main.GameUpdateCount % intervalFrame == 0) {
-                frameCounter++;
-            }
-
-            if (frameCounter > maxFrame) {
-                frameCounter = startCounter;
-            }
-        }
-
-        /// <summary>
-        /// 对帧数索引进行走表
-        /// </summary>
-        /// <param name="frameCounter"></param>
-        /// <param name="intervalFrame"></param>
-        /// <param name="Maxframe"></param>
-        /// <param name="startCounter"></param>
-        public static void ClockFrame(ref int frameCounter, int intervalFrame, int maxFrame, int startCounter = 0) {
-            if (Main.GameUpdateCount % intervalFrame == 0) {
-                frameCounter++;
-            }
-
-            if (frameCounter > maxFrame) {
-                frameCounter = startCounter;
-            }
-        }
         #endregion
 
         #region TileUtils

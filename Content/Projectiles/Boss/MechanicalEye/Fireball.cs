@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
                 Projectile.velocity *= 1.025f;
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
             if (Math.Abs(Projectile.position.X - Main.LocalPlayer.position.X) <= Main.screenWidth / 2
                 || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frame, 4);
+            Rectangle rectangle = mainValue.GetRectangle(Projectile.frame, 4);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle, Color.White
                 , Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;

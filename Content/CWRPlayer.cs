@@ -451,8 +451,8 @@ namespace CalamityOverhaul.Content
                 drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y * player.gravDir;
                 drawPos.Y += SpecialDrawPositionOffset.Y;
                 value = TextureAssets.Projectile[ModContent.ProjectileType<ElectricMinRocketHeld>()].Value;
-                frame = CWRUtils.GetRec(value);
-                orig = CWRUtils.GetOrig(value);
+                frame = value.GetRectangle();
+                orig = value.GetOrig();
                 DrawData electricMinRocketDraw = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation + offsetRot, orig, size, spriteEffects, 0) {
                     shader = 0,
                 };
@@ -474,17 +474,17 @@ namespace CalamityOverhaul.Content
                         frameindex = (int)(Main.GameUpdateCount / 4 % maxframe);
                     }
                     value = CWRAsset.Quiver_back_Asset.Value;
-                    frame = CWRUtils.GetRec(value, frameindex, maxframe);
+                    frame = value.GetRectangle(frameindex, maxframe);
                     if (HeldStyle >= 0) {
-                        frame = CWRUtils.GetRec(value, 0, maxframe);
+                        frame = value.GetRectangle(0, maxframe);
                     }
                     orig = frame.Size() / 2;
                 }
 
                 if (item.type == DarkFrostSolstice.ID) {
                     value = CWRAsset.IceGod_back_Asset.Value;
-                    frame = CWRUtils.GetRec(value);
-                    orig = CWRUtils.GetOrig(value);
+                    frame = value.GetRectangle();
+                    orig = value.GetOrig();
                     float sengs = Main.GameUpdateCount * 0.05f;
                     offsetPos = new Vector2(player.direction * 8, MathF.Sin(sengs) * 5 - 16);
                 }

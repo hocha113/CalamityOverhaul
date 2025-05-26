@@ -308,10 +308,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = HeadPrimeAI.BSPPliers.Value;
             Texture2D mainValue2 = HeadPrimeAI.BSPPliersGlow.Value;
-            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
-                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
-                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, mainValue.GetRectangle(frame, 2)
+                , drawColor, npc.rotation, VaultUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, mainValue.GetRectangle(frame, 2)
+                , Color.White, npc.rotation, VaultUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
             return false;
         }
 

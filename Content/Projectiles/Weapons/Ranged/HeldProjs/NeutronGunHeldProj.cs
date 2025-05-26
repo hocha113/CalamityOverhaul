@@ -40,8 +40,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwner() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
-            CWRUtils.ClockFrame(ref uiframe, 5, 6);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 6);
+            VaultUtils.ClockFrame(ref uiframe, 5, 6);
             HandIdleDistanceX = onFireR ? (HandFireDistanceX = 65) : (HandFireDistanceX = 35);
 
             if (canattce && Charge > 0) {
@@ -112,8 +112,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 setValue = NeutronGun.ShootGun.Value;
             }
             Main.EntitySpriteDraw(setValue, drawPos
-                , CWRUtils.GetRec(setValue, Projectile.frame, 7), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(setValue, 7), Projectile.scale
+                , setValue.GetRectangle(Projectile.frame, 7), lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(setValue, 7), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

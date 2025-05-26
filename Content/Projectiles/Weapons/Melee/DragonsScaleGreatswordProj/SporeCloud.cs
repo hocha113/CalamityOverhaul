@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
                 Projectile.rotation = MathHelper.ToRadians(maxShaking);
             if (Projectile.rotation < MathHelper.ToRadians(-maxShaking))
                 Projectile.rotation = MathHelper.ToRadians(-maxShaking);
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 
         public override bool? CanHitNPC(NPC target) => Projectile.timeLeft >= 90 - startCanHitCooldown ? false : base.CanHitNPC(target);
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(value, Projectile.frame, 4);
+            Rectangle rectangle = value.GetRectangle(Projectile.frame, 4);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rectangle, lightColor * (Projectile.timeLeft / 30f)
                 , Projectile.rotation, rectangle.Size() / 2, Projectile.scale * 0.8f, 0, 0);
             return false;

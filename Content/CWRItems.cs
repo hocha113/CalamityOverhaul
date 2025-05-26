@@ -594,7 +594,7 @@ namespace CalamityOverhaul.Content
             LegendData?.DoUpdate();
             if (heldProjType > 0) {
                 //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
-                if (player.GetProjectileHasNum(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
+                if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
                     Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero
                         , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }

@@ -62,8 +62,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= ChargeGrade + 1;
 
         public override void HoldItem(Player player) {
-            if (player.GetProjectileHasNum(ModContent.ProjectileType<LonginusHeld>()) == 0
-                && player.GetProjectileHasNum(ModContent.ProjectileType<LonginusThrow>()) == 0
+            if (player.CountProjectilesOfID<LonginusHeld>() == 0 && player.CountProjectilesOfID<LonginusThrow>() == 0
                 && Main.myPlayer == player.whoAmI && CWRServerConfig.Instance.WeaponHandheldDisplay) {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero
                     , ModContent.ProjectileType<LonginusHeld>(), 0, 0, player.whoAmI);

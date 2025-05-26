@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             phaseTransitionColorAmount = CalculatePhaseTransitionColorAmount();
             UpdateEnrageScale();
             UpdateAlpha();
-            CWRUtils.ClockFrame(ref frame, 5, 3);
+            VaultUtils.ClockFrame(ref frame, 5, 3);
 
             int headIndex = FindHeadIndex((int)npc.ai[3]);
             if (headIndex >= 0 && headIndex < Main.maxNPCs) {
@@ -617,12 +617,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             Texture2D value = Body.Value;
             Texture2D value2 = Body_Glow.Value;
-            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
+            Rectangle rectangle = value.GetRectangle(frame, 4);
 
             if (IsBodyAlt) {
                 value = BodyAlt.Value;
                 value2 = BodyAlt_Glow.Value;
-                rectangle = CWRUtils.GetRec(value);
+                rectangle = value.GetRectangle();
             }
 
             if (time < DestroyerHeadAI.StretchTime) {

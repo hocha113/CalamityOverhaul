@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(texture);
+            Rectangle rectangle = texture.GetRectangle();
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             if (Projectile.ai[2] > 0 && !(Projectile.ai[2] == 1 && Projectile.ai[0] <= 30)) {
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(texture);
+            Rectangle rectangle = texture.GetRectangle();
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {

@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             SpriteEffects spriteEffects = SpriteEffects.None;
             float drawRot = Projectile.rotation;
-            Rectangle rectangle = CWRUtils.GetRec(texture);
+            Rectangle rectangle = texture.GetRectangle();
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {

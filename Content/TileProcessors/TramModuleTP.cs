@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         public override void Update() {
-            CWRUtils.ClockFrame(ref frame, 6, 10);
+            VaultUtils.ClockFrame(ref frame, 6, 10);
             Time++;
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {

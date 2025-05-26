@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[0] == 0) {
                 NPC target = Projectile.Center.FindClosestNPC(300);
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frameCounter, maxFrame);
+            Rectangle rectangle = mainValue.GetRectangle(Projectile.frameCounter, maxFrame);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle, Color.White * (Projectile.alpha / 255f)
                 , Projectile.rotation - MathHelper.PiOver2, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None);
             return false;

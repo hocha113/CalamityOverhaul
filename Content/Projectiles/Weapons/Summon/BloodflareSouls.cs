@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
             Projectile.alpha += 15;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 60) {
@@ -48,17 +48,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(
-                mainValue,
-                Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
-                Color.White * (Projectile.alpha / 255f),
-                Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 4),
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-                );
+            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition
+                , mainValue.GetRectangle(Projectile.frameCounter, 4), Color.White * (Projectile.alpha / 255f)
+                , Projectile.rotation, VaultUtils.GetOrig(mainValue, 4), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 2);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, 2);
             Projectile.alpha += 3;
             if (Projectile.alpha > 255)
                 Projectile.alpha = 255;
@@ -161,10 +161,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 3),
+                mainValue.GetRectangle(Projectile.frameCounter, 3),
                 Color.White * (Projectile.alpha / 255f),
                 Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 3),
+                VaultUtils.GetOrig(mainValue, 3),
                 new Vector2(1, Projectile.scale),
                 SpriteEffects.None
                 );

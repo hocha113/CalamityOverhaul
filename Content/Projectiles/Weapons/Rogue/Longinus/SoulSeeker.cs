@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 5);
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.timeLeft > 250) {
                 Projectile.velocity *= 0.98f;
@@ -71,11 +71,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 6)
+                , Color.White, Projectile.rotation, VaultUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                Main.EntitySpriteDraw(value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, CWRUtils.GetRec(value, Projectile.frame, 6)
-                , Color.White * ((6 - i) / 16f), Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+                Main.EntitySpriteDraw(value, Projectile.oldPos[i] - Main.screenPosition + Projectile.Size / 2, value.GetRectangle(Projectile.frame, 6)
+                , Color.White * ((6 - i) / 16f), Projectile.rotation, VaultUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
             }
             return false;
         }

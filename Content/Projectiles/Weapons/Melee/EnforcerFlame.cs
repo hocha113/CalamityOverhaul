@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 return;
             }
 
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
             float scaleModd = Main.mouseTextColor / 200f - 0.35f;
             scaleModd *= 0.2f;
             Projectile.scale = scaleModd + 0.95f;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(texture, Projectile.frame, 4);
+            Rectangle rectangle = texture.GetRectangle(Projectile.frame, 4);
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             float bmtSize = 1f;

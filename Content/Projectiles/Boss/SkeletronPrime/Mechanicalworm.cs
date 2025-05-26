@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.velocity *= 0.99f;
             }
             Projectile.ai[0]++;
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -82,26 +82,26 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 DestroyerHeadAI.Head.Value
                 , DestroyerBodyAI.Body.Value
                 , DestroyerBodyAI.Tail.Value];
-                rectangle = CWRUtils.GetRec(worm[1], Projectile.frame, 4);
+                rectangle = worm[1].GetRectangle(Projectile.frame, 4);
                 for (int i = 0; i < 122; i++) {
                     Texture2D body = worm[1];
                     if (Projectile.ai[0] >= DontAttackTime) {
                         body = DestroyerBodyAI.Body_Stingless.Value;
-                        rectangle = CWRUtils.GetRec(body);
+                        rectangle = body.GetRectangle();
                     }
                     if (i == 121) {
                         body = worm[2];
-                        rectangle = CWRUtils.GetRec(worm[2], Projectile.frame, 4);
+                        rectangle = worm[2].GetRectangle(Projectile.frame, 4);
                     }
                     Vector2 drawPos = Projectile.Center - Main.screenPosition + toD * -(30 + i * 60) * Projectile.scale;
                     Main.EntitySpriteDraw(body, drawPos, rectangle, drawColor
                     , drawRot, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
                 }
 
-                rectangle = CWRUtils.GetRec(worm[0], 0, 4);
+                rectangle = worm[0].GetRectangle(0, 4);
                 Main.EntitySpriteDraw(worm[0], Projectile.Center - Main.screenPosition, rectangle, drawColor
                 , drawRot, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-                rectangle = CWRUtils.GetRec(DestroyerHeadAI.Head_Glow.Value, Projectile.frame, 4);
+                rectangle = DestroyerHeadAI.Head_Glow.Value.GetRectangle(Projectile.frame, 4);
                 Main.EntitySpriteDraw(DestroyerHeadAI.Head_Glow.Value, Projectile.Center - Main.screenPosition, rectangle, drawColor
                 , drawRot, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }

@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D boss = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(boss, 0, 12);
+            Rectangle rectangle = boss.GetRectangle(0, 12);
             float drawBossRot = Owner.velocity.ToRotation() + MathHelper.PiOver2;
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 dreaBossPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2;

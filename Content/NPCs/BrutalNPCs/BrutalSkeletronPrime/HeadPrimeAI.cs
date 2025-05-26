@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0) && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
-                Rectangle drawRec = CWRUtils.GetRec(BSPRAM.Value);
+                Rectangle drawRec = BSPRAM.Value.GetRectangle();
                 Vector2 drawOrig = drawRec.Size() / 2;
                 SpriteEffects spriteEffects = SpriteEffects.None;
                 float rotation7 = rCurrentNPCRotation;
@@ -1351,7 +1351,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             Texture2D mainValue = HandAsset.Value;
             Texture2D glowValue = HandAssetGlow.Value;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, frame, 12);
+            Rectangle rectangle = mainValue.GetRectangle(frame, 12);
             Vector2 orig = rectangle.Size() / 2;
 
             SmokeDrawer?.DrawSet(npc.Center);

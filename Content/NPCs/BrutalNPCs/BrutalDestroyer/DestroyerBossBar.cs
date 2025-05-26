@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if ((npc.type == NPCID.TheDestroyer || npc.type == NPCID.TheDestroyerBody
                 || npc.type == NPCID.TheDestroyerTail) && !HeadPrimeAI.DontReform()) {
                 drawParams.IconTexture = DestroyerHeadAI.HeadIcon.Value;
-                drawParams.IconFrame = CWRUtils.GetRec(DestroyerHeadAI.HeadIcon.Value);
+                drawParams.IconFrame = DestroyerHeadAI.HeadIcon.Value.GetRectangle();
                 drawParams.LifeMax = npc.lifeMax;
                 if (npc.type != NPCID.TheDestroyer) {
                     int headIndex = -1;//为了让这里的代码看起来是给人看的，我选择将条件判断分开写

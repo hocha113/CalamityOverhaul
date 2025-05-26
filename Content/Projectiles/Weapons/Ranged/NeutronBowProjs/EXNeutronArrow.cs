@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             DrawTrild();
 
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 7), Color.White
-                , Projectile.rotation, CWRUtils.GetOrig(value, 7), Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 7), Color.White
+                , Projectile.rotation, VaultUtils.GetOrig(value, 7), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

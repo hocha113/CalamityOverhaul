@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float sengs = Math.Abs(MathF.Sin(Time * 0.04f));
             float slp = sengs * 0.6f + 1.6f;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.Red * (0.2f + sengs * 0.5f)
-            , Projectile.rotation, CWRUtils.GetOrig(value), slp, SpriteEffects.FlipHorizontally, 0);
+            , Projectile.rotation, value.GetOrig(), slp, SpriteEffects.FlipHorizontally, 0);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

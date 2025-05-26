@@ -89,8 +89,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private void UpdateRisingDragon() {
-            CWRUtils.ClockFrame(ref uiFrame, 5, maxFrame - 1);
-            CWRUtils.ClockFrame(ref uiFrame2, 5, 8);
+            VaultUtils.ClockFrame(ref uiFrame, 5, maxFrame - 1);
+            VaultUtils.ClockFrame(ref uiFrame2, 5, 8);
 
             bool hasBoss = false;
             foreach (var npc in Main.npc) {
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
             Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
             Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation
-                , CWRUtils.GetOrig(value), Projectile.scale
+                , value.GetOrig(), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }

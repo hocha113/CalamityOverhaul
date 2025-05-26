@@ -586,7 +586,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         public virtual void PostInOwner() { }
         public virtual void UpdateFrame() {
             if (AnimationMaxFrme > 1) {
-                CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
+                VaultUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
             }
         }
         public virtual void NoServUpdate() {
@@ -827,7 +827,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
         public virtual void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
             Texture2D texture = TextureValue;
-            Rectangle rect = CWRUtils.GetRec(texture, Projectile.frame, AnimationMaxFrme);
+            Rectangle rect = texture.GetRectangle(Projectile.frame, AnimationMaxFrme);
             Vector2 drawOrigin = rect.Size() / 2;
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 

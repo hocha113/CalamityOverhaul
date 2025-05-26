@@ -742,12 +742,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             Texture2D mainValue = npc.type == NPCID.Spazmatism ? SpazmatismAsset.Value : RetinazerAsset.Value;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
+            Rectangle rectangle = mainValue.GetRectangle(frameIndex, 4);
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = npc.rotation + MathHelper.PiOver2;
             if (IsSecondPhase()) {
                 mainValue = npc.type == NPCID.Spazmatism ? SpazmatismAltAsset.Value : RetinazerAltAsset.Value;
-                rectangle = CWRUtils.GetRec(mainValue, frameIndex, 4);
+                rectangle = mainValue.GetRectangle(frameIndex, 4);
             }
             float sengs = 0.2f;
             for (int i = 0; i < npc.oldPos.Length; i++) {

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 6, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 6, 3);
             Projectile.rotation = Projectile.velocity.ToRotation();
             NPC target = Projectile.Center.FindClosestNPC(300);
             bool mousL = Main.player[Projectile.owner].PressKey();
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(texture, Projectile.frame, 4)
-                , lightColor, Projectile.rotation, CWRUtils.GetOrig(texture, 4), Projectile.scale, Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
+            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, texture.GetRectangle(Projectile.frame, 4)
+                , lightColor, Projectile.rotation, VaultUtils.GetOrig(texture, 4), Projectile.scale, Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
             return false;
         }
     }

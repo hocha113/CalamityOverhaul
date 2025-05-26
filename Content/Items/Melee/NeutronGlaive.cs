@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
             Texture2D texture = TextureValue;
-            Rectangle rect = CWRUtils.GetRec(texture, Projectile.frame, AnimationMaxFrme);
+            Rectangle rect = texture.GetRectangle(Projectile.frame, AnimationMaxFrme);
             Vector2 drawOrigin = rect.Size() / 2;
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 10, 4);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 10, 4);
             Projectile.rotation = Projectile.velocity.ToRotation();
             SpanDust();
 
@@ -76,10 +76,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             //Main.EntitySpriteDraw(
             //    mainValue,
             //    Projectile.Center - Main.screenPosition,
-            //    CWRUtils.GetRec(mainValue, Projectile.frameCounter, 5),
+            //    mainValue.GetRectangle(Projectile.frameCounter, 5),
             //    lightColor * (Projectile.alpha / 255f),
             //    Projectile.rotation,
-            //    CWRUtils.GetOrig(mainValue, 4),
+            //    VaultUtils.GetOrig(mainValue, 4),
             //    Projectile.scale,
             //    Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
             //    );

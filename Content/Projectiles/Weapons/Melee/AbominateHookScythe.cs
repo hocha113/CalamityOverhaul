@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null,
                 VaultUtils.MultiStepColorLerp(0.7f, Color.Red, Projectile.GetAlpha(Color.Gold)),
-                Projectile.localAI[0], CWRUtils.GetOrig(mainValue), Projectile.scale, SpriteEffects.None, 0);
+                Projectile.localAI[0], mainValue.GetOrig(), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

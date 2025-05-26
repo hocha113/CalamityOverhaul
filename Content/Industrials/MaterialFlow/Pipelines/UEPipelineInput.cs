@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Vector2 drawPos = PosInWorld - Main.screenPosition;
 
             if (ThreeCrutchesID >= 0) {
-                Rectangle rectangle = CWRUtils.GetRec(PipelineInputThreeCrutches.Value, ThreeCrutchesID, 4);
+                Rectangle rectangle = PipelineInputThreeCrutches.Value.GetRectangle(ThreeCrutchesID, 4);
                 spriteBatch.Draw(PipelineInputThreeCrutches.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineThreeCrutchesSide.Value, drawPos, rectangle, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 return;
@@ -320,7 +320,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             if (Turning) {
-                Rectangle rectangle = CWRUtils.GetRec(PipelineInputCorner.Value, TurningID, 4);
+                Rectangle rectangle = PipelineInputCorner.Value.GetRectangle(TurningID, 4);
                 spriteBatch.Draw(PipelineInputCorner.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineCornerSide.Value, drawPos, rectangle, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 return;

@@ -359,11 +359,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             Main.EntitySpriteDraw(texture2D, drawPos, null, lightColor,
-                    drawRot, CWRUtils.GetOrig(texture2D), Projectile.scale, spriteEffects);
+                    drawRot, texture2D.GetOrig(), Projectile.scale, spriteEffects);
 
             Main.EntitySpriteDraw(glow, drawPos, null, lightColor,
                     drawRot + (Projectile.spriteDirection > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)
-                    , CWRUtils.GetOrig(glow), Projectile.scale, spriteEffects);
+                    , glow.GetOrig(), Projectile.scale, spriteEffects);
 
             if (Projectile.ai[2] == 0) {
                 Texture2D value = CWRAsset.SemiCircularSmear.Value;
@@ -390,13 +390,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp
                     , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
                 for (int i = 0; i < 5; i++) {
-                    Main.spriteBatch.Draw(mainValue, pos, null, Color.Red, MathHelper.ToRadians(Time * 5 + i * 17), CWRUtils.GetOrig(mainValue), slp / 1755f, SpriteEffects.None, 0);
+                    Main.spriteBatch.Draw(mainValue, pos, null, Color.Red, MathHelper.ToRadians(Time * 5 + i * 17), mainValue.GetOrig(), slp / 1755f, SpriteEffects.None, 0);
                 }
                 for (int i = 0; i < 5; i++) {
-                    Main.spriteBatch.Draw(mainValue, pos, null, Color.White, MathHelper.ToRadians(Time * 6 + i * 17), CWRUtils.GetOrig(mainValue), slp / 2055f, SpriteEffects.None, 0);
+                    Main.spriteBatch.Draw(mainValue, pos, null, Color.White, MathHelper.ToRadians(Time * 6 + i * 17), mainValue.GetOrig(), slp / 2055f, SpriteEffects.None, 0);
                 }
                 for (int i = 0; i < 5; i++) {
-                    Main.spriteBatch.Draw(mainValue, pos, null, Color.Gold, MathHelper.ToRadians(Time * 9 + i * 17), CWRUtils.GetOrig(mainValue), slp / 2355f, SpriteEffects.None, 0);
+                    Main.spriteBatch.Draw(mainValue, pos, null, Color.Gold, MathHelper.ToRadians(Time * 9 + i * 17), mainValue.GetOrig(), slp / 2355f, SpriteEffects.None, 0);
                 }
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState

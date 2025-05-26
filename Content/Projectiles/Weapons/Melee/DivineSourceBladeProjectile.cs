@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 null,
                 Color.White,
                 Projectile.rotation + MathHelper.PiOver2,
-                CWRUtils.GetOrig(mainValue),
+                mainValue.GetOrig(),
                 Projectile.scale,
                 Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                 0

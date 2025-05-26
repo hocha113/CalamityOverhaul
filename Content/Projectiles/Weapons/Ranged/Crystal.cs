@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
-            CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
             if (Projectile.ai[0] > 30) {
                 NPC target = Projectile.Center.FindClosestNPC(600, false, true);
                 if (target != null) {
@@ -80,8 +80,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Main.EntitySpriteDraw(value, drawPosition, CWRUtils.GetRec(value, Projectile.frame, 4)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(value, drawPosition, value.GetRectangle(Projectile.frame, 4)
+                , Color.White, Projectile.rotation, VaultUtils.GetOrig(value, 4), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

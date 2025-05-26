@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (DownLeft && !Owner.mouseInterface && IsKreload) {
                 fireIndex++;
                 if (fireIndex < 90) {
-                    CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
+                    VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
                     SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (90 - fireIndex) * 0.15f, MaxInstances = 13, Volume = 0.2f + fireIndex * 0.006f }, Projectile.Center);
                     FiringDefaultSound = EnableRecoilRetroEffect = false;
                     ShootCoolingValue = 2;
@@ -60,8 +60,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 6), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 6), Projectile.scale
+            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 6), lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 6), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

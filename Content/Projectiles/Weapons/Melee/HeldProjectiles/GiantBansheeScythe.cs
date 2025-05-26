@@ -63,13 +63,13 @@ public class GiantBansheeScythe : ModProjectile
         if (alp > 1) alp = 1;
         Color color = VaultUtils.MultiStepColorLerp(0.7f, Color.Red, Projectile.GetAlpha(Color.Gold));
         Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition,
-            null, color * alp, Projectile.ai[0], CWRUtils.GetOrig(mainValue), Projectile.scale, SpriteEffects.None, 0);
+            null, color * alp, Projectile.ai[0], mainValue.GetOrig(), Projectile.scale, SpriteEffects.None, 0);
 
         for (int i = 0; i < Projectile.oldPos.Length; i++) {
             float alp2 = 1 - i / (float)Projectile.oldPos.Length;
             float slp = 1 - i / (float)Projectile.oldPos.Length * 0.5f;
             Main.EntitySpriteDraw(mainValue, Projectile.oldPos[i] + Projectile.Center - Projectile.position - Main.screenPosition,
-                null, color * alp * alp2 * 0.5f, Projectile.ai[0], CWRUtils.GetOrig(mainValue), Projectile.scale * slp, SpriteEffects.None, 0);
+                null, color * alp * alp2 * 0.5f, Projectile.ai[0], mainValue.GetOrig(), Projectile.scale * slp, SpriteEffects.None, 0);
         }
 
         return false;

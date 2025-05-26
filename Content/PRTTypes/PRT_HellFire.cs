@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Rectangle rectangle = CWRUtils.GetRec(TexValue, (int)ai[1], 4);
+            Rectangle rectangle = TexValue.GetRectangle((int)ai[1], 4);
             Main.EntitySpriteDraw(
                 TexValue, Position - Main.screenPosition,
                 rectangle, Color.White * (Opacity / 255f), Rotation, rectangle.Size() / 2,

@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-            Rectangle rectangle = CWRUtils.GetRec(value, (int)Projectile.ai[2], maxFrame);
+            Rectangle rectangle = value.GetRectangle((int)Projectile.ai[2], maxFrame);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, rectangle
             , MurasamaOverride.NameIsVergil(Owner) ? Color.BlueViolet : Color.White, Projectile.rotation
             , rectangle.Size() / 2, Projectile.scale, spriteEffects, 0);

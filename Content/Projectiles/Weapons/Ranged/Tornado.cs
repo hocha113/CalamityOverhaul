@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 5);
             Lighting.AddLight(Projectile.Center, 0f, 1.25f, 1.25f);
             if (Projectile.scale <= 3f) {
                 Projectile.scale *= 1.03f;
@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-                , Projectile.GetAlpha(lightColor), Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 6)
+                , Projectile.GetAlpha(lightColor), Projectile.rotation, VaultUtils.GetOrig(value, 6), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

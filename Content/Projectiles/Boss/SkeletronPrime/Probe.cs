@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 float sengs = Math.Abs(MathF.Sin(Projectile.ai[0] * 0.04f));
                 float slp = sengs * 0.2f + 0.6f;
                 Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.Red * (0.3f + sengs)
-                , Projectile.rotation, CWRUtils.GetOrig(value), slp, SpriteEffects.FlipHorizontally, 0);
+                , Projectile.rotation, value.GetOrig(), slp, SpriteEffects.FlipHorizontally, 0);
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                     , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

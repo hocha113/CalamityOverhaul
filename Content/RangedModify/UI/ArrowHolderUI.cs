@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                 arrowDrawStackCount = 6;
             }
 
-            Rectangle rectangle = CWRUtils.GetRec(CWRAsset.Quiver_back_Asset.Value, 0, 4);
+            Rectangle rectangle = CWRAsset.Quiver_back_Asset.Value.GetRectangle(0, 4);
             spriteBatch.Draw(CWRAsset.Quiver_back_Asset.Value, DrawPosition, rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (GlobalBow.IsArrow) {
                 Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + arrowDrawStackCount * Weith / 4, Height);

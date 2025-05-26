@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(texture);
+            Rectangle rectangle = texture.GetRectangle();
             Vector2 drawOrigin = rectangle.Size() / 2;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {

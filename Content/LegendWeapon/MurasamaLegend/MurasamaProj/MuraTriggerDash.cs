@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 12);
 
             if (Time == 0 && !Projectile.IsOwnedByLocalPlayer()) {
                 Owner.CWR().RisingDragonCharged = 0;
@@ -216,9 +216,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 return false;
             }
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 13), lightColor
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 13), lightColor
             , Projectile.rotation + (Projectile.velocity.X > 0 ? MathHelper.ToRadians(100) : MathHelper.ToRadians(80)) + MathHelper.Pi
-                , CWRUtils.GetOrig(value, 13), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                , VaultUtils.GetOrig(value, 13), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
     }

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
+            VaultUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
             Vector2 posChange = Main.player[Projectile.owner].CWR().PlayerPositionChange;
             if (Projectile.ai[0] == 0) {
                 Player owner = CWRUtils.GetPlayerInstance(Projectile.owner);
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             float alp = Projectile.timeLeft / 30f;
-            Rectangle rectangle = CWRUtils.GetRec(texture, Projectile.frameCounter, maxFrame);
+            Rectangle rectangle = texture.GetRectangle(Projectile.frameCounter, maxFrame);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, rectangle, Color.White * alp
                 , Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;

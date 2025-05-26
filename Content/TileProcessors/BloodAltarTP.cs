@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.TileProcessors
 
                 if (!VaultUtils.isServer) {
                     SpanDustEfset();
-                    CWRUtils.ClockFrame(ref frameIndex, 6, 3);
+                    VaultUtils.ClockFrame(ref frameIndex, 6, 3);
                     Lighting.AddLight(Center, Color.DarkRed.ToVector3() * (Math.Abs(MathF.Sin(Time * 0.005f)) * 23 + 2));
                 }
 

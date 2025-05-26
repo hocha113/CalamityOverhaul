@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void OnKill(int timeLeft) {
-            if (CWRUtils.GetProjectileHasNum(Type) > 120) {
+            if (VaultUtils.CountProjectilesOfID(Type) > 120) {
                 return;
             }
 

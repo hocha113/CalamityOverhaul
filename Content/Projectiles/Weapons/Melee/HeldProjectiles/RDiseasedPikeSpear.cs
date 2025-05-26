@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Main.EntitySpriteDraw(
                     value, Projectile.Center - Main.screenPosition, null, lightColor,
                     Projectile.rotation + MathHelper.PiOver4 + (Owner.direction > 0 ? MathHelper.PiOver2 : MathHelper.Pi)
-                    , CWRUtils.GetOrig(value), Projectile.scale, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                    , value.GetOrig(), Projectile.scale, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
                 return false;
             }
             return base.PreDraw(ref lightColor);

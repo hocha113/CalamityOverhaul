@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addTile(Type);
         }
 
-        public override void MouseOver(int i, int j) => CWRUtils.SetMouseOverByTile(Main.LocalPlayer, ModContent.ItemType<BloodOrb>());
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile<BloodOrb>();
 
         public override bool CanExplode(int i, int j) => false;
 

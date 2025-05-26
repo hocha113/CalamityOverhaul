@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             Texture2D value = Tail.Value;
-            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
+            Rectangle rectangle = value.GetRectangle(frame, 4);
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);
             Texture2D value2 = Tail_Glow.Value;

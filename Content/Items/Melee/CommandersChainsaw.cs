@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(SoundID.Item22, Projectile.Center);
                 Projectile.soundDelay = 20;
             }
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 1);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 1);
             Vector2 playerCenter = Owner.GetPlayerStabilityCenter();
 
             if (DownLeft) {
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Rectangle rectangle = CWRUtils.GetRec(TextureValue, Projectile.frame, 2);
+            Rectangle rectangle = TextureValue.GetRectangle(Projectile.frame, 2);
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, rectangle
                 , lightColor, Projectile.rotation - MathHelper.PiOver2, rectangle.Size() / 2, Projectile.scale
                 , Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

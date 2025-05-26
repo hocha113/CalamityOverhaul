@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     ThermalData.Temperature--;
                     ThermalData.UEvalue += GeneratingSpeed;
                 }
-                CWRUtils.ClockFrame(ref frame, 5, MaxFrame, 1);
+                VaultUtils.ClockFrame(ref frame, 5, MaxFrame, 1);
             }
             else {
                 frame = 0;

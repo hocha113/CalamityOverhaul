@@ -99,8 +99,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Charge = 0;
                     level1 = level2 = level3 = true;
                 }
-                CWRUtils.ClockFrame(ref Projectile.frame, 2, 6);
-                CWRUtils.ClockFrame(ref uiframe, 5, 6);
+                VaultUtils.ClockFrame(ref Projectile.frame, 2, 6);
+                VaultUtils.ClockFrame(ref uiframe, 5, 6);
             }
             else {
                 BowArrowDrawNum = 1;
@@ -155,8 +155,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 float newCharge = Charge / 60f * 80;
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge / 60f * 80, uiframe);
             }
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 7), CanFire ? Color.White : lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 7), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 7), CanFire ? Color.White : lightColor
+                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 7), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

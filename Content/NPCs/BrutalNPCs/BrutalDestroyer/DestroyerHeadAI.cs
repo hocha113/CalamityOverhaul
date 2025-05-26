@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void HandleMouth() {
-            CWRUtils.ClockFrame(ref glowFrame, 5, 3);
+            VaultUtils.ClockFrame(ref glowFrame, 5, 3);
 
             float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(player.Center).UnitVector());
             float toPlayerLang = npc.Distance(player.Center);
@@ -368,8 +368,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             Texture2D value = Head.Value;
-            Rectangle rectangle = CWRUtils.GetRec(value, frame, 4);
-            Rectangle glowRectangle = CWRUtils.GetRec(value, glowFrame, 4);
+            Rectangle rectangle = value.GetRectangle(frame, 4);
+            Rectangle glowRectangle = value.GetRectangle(glowFrame, 4);
 
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , rectangle, drawColor, npc.rotation + MathHelper.Pi, rectangle.Size() / 2, npc.scale, SpriteEffects.None, 0);

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
                 Projectile.tileCollide = true;
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            CWRUtils.ClockFrame(ref Projectile.frame, 4, 2);
+            VaultUtils.ClockFrame(ref Projectile.frame, 4, 2);
             Lighting.AddLight(Projectile.Center, Color.LightYellow.ToVector3());
             LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 7, 1.7f, Color.Goldenrod);
             GeneralParticleHandler.SpawnParticle(spark2);

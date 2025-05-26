@@ -102,9 +102,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Projectile.scale = 1.5f;
             }
             SetHeld();
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 15);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 15);
             if (canatcck2) {
-                CWRUtils.ClockFrame(ref uiframe, 5, 6);
+                VaultUtils.ClockFrame(ref uiframe, 5, 6);
             }
             float rot = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
@@ -132,16 +132,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, 90) - Main.screenPosition;
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(sengs / maxatcck * barFG.Width), barFG.Height);
                 Color color = Color.White;
-                Main.spriteBatch.Draw(barBG, drawPos, CWRUtils.GetRec(barBG, uiframe, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), barScale, 0, 0f);
-                Main.spriteBatch.Draw(barFG, drawPos + new Vector2(2, 4), frameCrop, color, 0f, CWRUtils.GetOrig(barFG, 1), barScale, 0, 0f);
+                Main.spriteBatch.Draw(barBG, drawPos, barBG.GetRectangle(uiframe, 7), color, 0f, VaultUtils.GetOrig(barBG, 7), barScale, 0, 0f);
+                Main.spriteBatch.Draw(barFG, drawPos + new Vector2(2, 4), frameCrop, color, 0f, VaultUtils.GetOrig(barFG, 1), barScale, 0, 0f);
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             DrawBar(Owner, Projectile.ai[0], uiframe);
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 16)
-                , Color.White, Projectile.rotation + MathHelper.PiOver4 * Owner.direction, CWRUtils.GetOrig(value, 16) + new Vector2(0, 5 * Owner.direction)
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, value.GetRectangle(Projectile.frame, 16)
+                , Color.White, Projectile.rotation + MathHelper.PiOver4 * Owner.direction, VaultUtils.GetOrig(value, 16) + new Vector2(0, 5 * Owner.direction)
                 , Projectile.scale, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }

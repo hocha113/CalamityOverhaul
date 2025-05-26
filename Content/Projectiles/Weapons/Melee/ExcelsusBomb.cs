@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 orig = CWRUtils.GetOrig(mainValue);
+            Vector2 orig = mainValue.GetOrig();
             float rot = Projectile.rotation + MathHelper.PiOver4;
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);

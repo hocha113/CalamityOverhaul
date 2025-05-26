@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return; // 如果没有能量，无法运行
             }
 
-            CWRUtils.ClockFrame(ref frame, 5, 3);
+            VaultUtils.ClockFrame(ref frame, 5, 3);
 
             bool canDig = true;
             for (int i = 0; i < 3; i++) {

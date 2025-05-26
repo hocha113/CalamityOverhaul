@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             base.SaveData(tag);
         }
         public override void Update() {
-            CWRUtils.ClockFrame(ref frame, 8, 3);
+            VaultUtils.ClockFrame(ref frame, 8, 3);
             if (frame != 2) {
                 Lighting.AddLight(Center, Color.White.ToVector3() * (Main.GameUpdateCount % 40 / 40f));
             }

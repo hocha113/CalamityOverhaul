@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             if (Projectile.ai[0] == 0) {
                 roar = SoundEngine.PlaySound(Yharon.RoarSound with { Pitch = 0.2f }, Owner.Center);
             }
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
 
             if (SoundEngine.TryGetActiveSound(roar, out ActiveSound activeSound)) {
                 activeSound.Position = Projectile.Center;
@@ -105,8 +105,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             float rot = Projectile.rotation + MathHelper.PiOver4 + (Owner.direction > 0 ? 0 : MathHelper.PiOver2);
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Vector2 origin = CWRUtils.GetOrig(texture, 4);
-            Main.EntitySpriteDraw(texture, drawPosition, CWRUtils.GetRec(texture, Projectile.frame, 4), Projectile.GetAlpha(lightColor)
+            Vector2 origin = VaultUtils.GetOrig(texture, 4);
+            Main.EntitySpriteDraw(texture, drawPosition, texture.GetRectangle(Projectile.frame, 4), Projectile.GetAlpha(lightColor)
                 , rot, origin, Projectile.scale * 0.7f, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }

@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         public override void UpdateMachine() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
             if (--activeTime > 0 || fullLoad) {
-                CWRUtils.ClockFrame(ref frame, 5, 5);
+                VaultUtils.ClockFrame(ref frame, 5, 5);
             }
 
             drawColor = Color.White * (MachineData.UEvalue / MaxUEValue);
