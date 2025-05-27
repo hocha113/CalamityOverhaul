@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+using Terraria.GameContent.ObjectInteractions;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
@@ -61,11 +62,29 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
+            //设置声音和挖掘强度，毕竟属于敌对建筑
+            HitSound = SoundID.Item14;
+            MineResist = 4f;
         }
+
+        public override bool CanExplode(int i, int j) => false;
 
         public override bool CreateDust(int i, int j, ref int type) {
             Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
             return false;
+        }
+
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
+
+        public override void NumDust(int i, int j, bool fail, ref int num) {
+            num = fail ? 1 : 3;
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out WGGCollectorTP collector)) {
+                return;
+            }
+            collector.wGGCollectorArm.byHitSyncopeTime = 60;
         }
 
         public override bool CanDrop(int i, int j) => false;
@@ -103,12 +122,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override int TargetTileID => ModContent.TileType<WGGCollectorTile>();
         public override int TargetItem => ModContent.ItemType<WGGCollector>();
         public override bool ReceivedEnergy => true;
+        public override bool CanDrop => false;
         public override float MaxUEValue => 800;
         internal WGGCollectorArm wGGCollectorArm;
         internal bool altState;
-        public override void SetBattery() {
-            PlaceNet = true;
-        }
+        public override void SetBattery() => PlaceNet = true;
         public override void Initialize() => altState = Main.rand.NextBool();
         public override void UpdateMachine() {
             if (!VaultUtils.isClient && (wGGCollectorArm == null || !wGGCollectorArm.Projectile.Alives())) {
@@ -119,6 +137,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             if (wGGCollectorArm != null && wGGCollectorArm.Projectile.Alives()) {
                 wGGCollectorArm.Projectile.timeLeft = 2;
+            }
+        }
+        public override void MachineKill() {
+            if (!VaultUtils.isClient) {
+                DropItem(ModContent.ItemType<Collector>());
             }
         }
     }
@@ -143,6 +166,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private ArmState currentState = ArmState.Idle;
         private int attackTimer;
         private int idleWiggleTime;
+        private float syncopeRotAngle;
+        internal int byHitSyncopeTime;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -160,6 +185,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             Projectile.damage = Projectile.originalDamage;
+
+            if (byHitSyncopeTime > 0) {
+                byHitSyncopeTime--;
+                DoSyncopeMotion(); // 受到攻击后的晕厥
+                return;
+            }
 
             if (player?.Alives() != true) {
                 player = startPos.FindClosestPlayer(600);
@@ -231,6 +262,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.ChasingBehavior(retreatPos, 6f);
         }
 
+        private void DoSyncopeMotion() {
+            // 每帧递增计时器
+            idleWiggleTime++;
+
+            // 抖动半径 + 衰减效果
+            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - byHitSyncopeTime / 60f); // 随时间减弱
+            float angle = idleWiggleTime * 0.3f;
+            Vector2 offset = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle * 1.3f)) * shakeRadius;
+
+            // 设置旋转角度偏移（模拟旋转晕头感）
+            syncopeRotAngle += (float)Math.Sin(idleWiggleTime / 5f) * 0.05f;
+            Projectile.rotation = syncopeRotAngle;
+
+            // 目标点偏移
+            Vector2 syncopeTarget = startPos + offset + new Vector2(0, -60f);
+            Projectile.ChasingBehavior(syncopeTarget, 2.5f); // 晕厥时移动缓慢
+        }
+
         private void DoIdleMotion() {
             idleWiggleTime++;
             float xOffset = (float)Math.Sin(idleWiggleTime / 30f) * 40f;
@@ -265,7 +314,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             // 生成掉落物
             int newItemIndex = Item.NewItem(
-                Projectile.GetSource_OnHit(target), Projectile.Hitbox, item.type, 1,
+                Projectile.GetSource_OnHit(target), Projectile.Hitbox, item.type, item.stack,
                 noBroadcast: false, prefixGiven: item.prefix
             );
 
@@ -274,10 +323,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             // 让物品从背包中消失
-            item.stack--;
-            if (item.stack <= 0) {
-                item.TurnToAir();
-            }
+            item.TurnToAir();
 
             SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
         }
@@ -286,6 +332,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (startPos == Vector2.Zero) {
                 return false;
             }
+
             Texture2D tex = arm.Value;
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;

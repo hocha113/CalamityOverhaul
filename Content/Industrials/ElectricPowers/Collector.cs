@@ -251,6 +251,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.localAI[0] = 1f;
             }
 
+            if (collectorTP == null) {
+                return;
+            }
+
             if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
                 if (collectorTP.Chest == null) {
                     Projectile.velocity = Vector2.Zero;
@@ -316,6 +320,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (startPos == Vector2.Zero) {
                 return false;
             }
+
             Texture2D tex = arm.Value;
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
