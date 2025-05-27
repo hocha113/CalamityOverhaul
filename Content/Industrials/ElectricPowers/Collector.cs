@@ -216,7 +216,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 10086;
+            Projectile.timeLeft = 120;
+            Projectile.ignoreWater = true;
         }
 
         internal Item FindItem() {

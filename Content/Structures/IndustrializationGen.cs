@@ -1,10 +1,12 @@
 ﻿using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Structures.DatIO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,7 +21,154 @@ namespace CalamityOverhaul.Content.Structures
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
             SpawnWindGrivenGenerator();
+            //SpawnWGGCollectorTile();
             RocketHut.SpawnRocketHut();
+        }
+
+        public static void Shuffle<T>(IList<T> list) {
+            int n = list.Count;
+            while (n > 1) {
+                n--;
+                int k = WorldGen.genRand.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        public static void SpawnWGGCollectorTile() {
+            int minY = (int)(Main.worldSurface + 50);
+            int maxY = (int)(Main.maxTilesY * 0.6);
+            int minX = 100;
+            int maxX = Main.maxTilesX - 100;
+
+            int wggCollectorTile = ModContent.TileType<WGGCollectorTile>();
+
+            // 支撑地块类型（用于判断底部是否稳定）
+            int[] validGroundTiles = [
+                TileID.Stone, TileID.Mud, TileID.JungleGrass,
+                TileID.ClayBlock, TileID.Silt, TileID.Sandstone
+            ];
+
+            List<Point16> candidateSpots = new();
+
+            // === 第一步：收集所有可能放置的平地点 ===
+            for (int x = minX; x < maxX - 2; x++) {
+                for (int y = minY; y < maxY - 4; y++) {
+                    bool valid = true;
+
+                    // 检查底部 3 个支撑块是否稳定
+                    for (int i = 0; i < 3; i++) {
+                        Point16 bottom = new(x + i, y + 1);
+                        if (!WorldGen.InWorld(bottom.X, bottom.Y)) {
+                            valid = false;
+                            break;
+                        }
+
+                        Tile tile = Framing.GetTileSafely(bottom);
+                        if (!tile.HasTile || !tile.HasSolidTile() || !validGroundTiles.Contains(tile.TileType)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (!valid) {
+                        continue;
+                    }
+
+                    // 检查 3x5 区域是否为空（用于建筑空间）
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = -4; j <= 0; j++) {
+                            Point16 check = new(x + i, y + j);
+                            if (!WorldGen.InWorld(check.X, check.Y)) {
+                                valid = false;
+                                break;
+                            }
+
+                            Tile tile = Framing.GetTileSafely(check);
+                            if (tile.HasTile && tile.HasSolidTile()) {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        if (!valid) {
+                            break;
+                        }
+                    }
+
+                    if (valid) {
+                        candidateSpots.Add(new Point16(x, y));
+                    }
+                }
+            }
+
+            // === 第二步：稀疏性筛选，过滤靠得太近的点位 ===
+            List<Point16> sparseFiltered = new();
+            int minDistance = 60; // 曼哈顿距离最小值
+
+            Shuffle(candidateSpots); // 打乱点位以避免集中排序偏差
+
+            foreach (var pos in candidateSpots) {
+                bool tooClose = false;
+
+                foreach (var existing in sparseFiltered) {
+                    int dist = Math.Abs(pos.X - existing.X) + Math.Abs(pos.Y - existing.Y);
+                    if (dist < minDistance) {
+                        tooClose = true;
+                        break;
+                    }
+                }
+
+                if (!tooClose) {
+                    sparseFiltered.Add(pos);
+                }
+            }
+
+            // === 第三步：根据深度与地形做进一步筛选（丛林/深度优先） ===
+            List<Point16> finalSpots = new();
+
+            foreach (var pos in sparseFiltered) {
+                Tile below = Framing.GetTileSafely(pos.X + 1, pos.Y + 1);
+                bool isJungle = below.TileType == TileID.Mud || below.TileType == TileID.JungleGrass;
+
+                // 深度因子（越深越容易留下）
+                float depth = (float)(pos.Y - minY) / (maxY - minY);
+                float keepChance = 0.1f + depth * 0.9f; // 0.1 ~ 1.0
+
+                if (isJungle) {
+                    keepChance += 0.2f; // 丛林额外提升概率
+                }
+
+                if (Main.rand.NextFloat() < keepChance) {
+                    finalSpots.Add(pos);
+                }
+            }
+
+            // 最多保留300个（世界级限制）
+            if (finalSpots.Count > 300) {
+                Shuffle(finalSpots);
+                finalSpots = finalSpots.Take(300).ToList();
+            }
+
+            // === 最后正式放置 ===
+            foreach (var pos in finalSpots) {
+                // 清理区域
+                for (int i = 0; i < 3; i++) {
+                    for (int j = -4; j <= 0; j++) {
+                        Point16 clear = new(pos.X + i, pos.Y + j);
+                        if (WorldGen.InWorld(clear.X, clear.Y)) {
+                            Tile tile = Framing.GetTileSafely(clear);
+                            if (tile.HasTile && tile.HasSolidTile()) {
+                                WorldGen.KillTile(clear.X, clear.Y, noItem: true);
+                            }
+                        }
+                    }
+                }
+
+                // 放置拾荒者（偏移：原点(1,3)）
+                WorldGen.PlaceTile(pos.X + 1, pos.Y - 1, wggCollectorTile, mute: true);
+            }
         }
 
         internal static void SpawnWindGrivenGenerator() {

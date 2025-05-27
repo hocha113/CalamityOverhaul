@@ -2,19 +2,18 @@
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
-using Terraria.GameContent.ObjectInteractions;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.value = Item.buyPrice(0, 2, 40, 0);
-            Item.rare = ItemRarityID.LightRed;
+            Item.rare = ItemRarityID.Green;
             Item.createTile = ModContent.TileType<WGGCollectorTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 800;
@@ -84,7 +83,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!TileProcessorLoader.ByPositionGetTP(point, out WGGCollectorTP collector)) {
                 return;
             }
+            if (collector.wGGCollectorArm == null || !collector.wGGCollectorArm.Projectile.Alives()) {
+                return;
+            }
             collector.wGGCollectorArm.byHitSyncopeTime = 60;
+            collector.wGGCollectorArm.Projectile.netUpdate = true;
         }
 
         public override bool CanDrop(int i, int j) => false;
@@ -126,17 +129,49 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override float MaxUEValue => 800;
         internal WGGCollectorArm wGGCollectorArm;
         internal bool altState;
-        public override void SetBattery() => PlaceNet = true;
+        public override void SetBattery() {
+            IdleDistance = 2000;
+            PlaceNet = true;
+        }
         public override void Initialize() => altState = Main.rand.NextBool();
+        private bool IsArm() {
+            if (wGGCollectorArm == null) {
+                return false;
+            }
+            if (!wGGCollectorArm.Projectile.Alives()) {
+                return false;
+            }
+            if (wGGCollectorArm.Projectile.type != ModContent.ProjectileType<WGGCollectorArm>()) {
+                return false;
+            }
+            return true;
+        }
         public override void UpdateMachine() {
-            if (!VaultUtils.isClient && (wGGCollectorArm == null || !wGGCollectorArm.Projectile.Alives())) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            bool playerInRorge = false;
+            int rorgeSQ = 1400 * 1400;
+            foreach (var p in Main.ActivePlayers) {
+                if (p.DistanceSQ(CenterInWorld) < rorgeSQ) {
+                    playerInRorge = true;
+                    break;
+                }
+            }
+
+            if (IsArm()) {
+                if (playerInRorge) {
+                    wGGCollectorArm.Projectile.timeLeft = 2;
+                }
+                else {
+                    wGGCollectorArm.Projectile.Kill();
+                }
+            }
+            else if (playerInRorge) {
                 wGGCollectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
                     , CenterInWorld + new Vector2(0, 14), Vector2.Zero
                     , ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).ModProjectile as WGGCollectorArm;
-            }
-
-            if (wGGCollectorArm != null && wGGCollectorArm.Projectile.Alives()) {
-                wGGCollectorArm.Projectile.timeLeft = 2;
             }
         }
         public override void MachineKill() {
@@ -155,7 +190,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private static Asset<Texture2D> clamp;//手臂的夹子纹理
         private Player player;
         internal Vector2 startPos;//记录这个弹幕的起点位置
-        enum ArmState
+        private ArmState currentState = ArmState.Idle;
+        private enum ArmState
         {
             Idle,
             Searching,
@@ -163,7 +199,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Attacking,
             Retreating
         }
-        private ArmState currentState = ArmState.Idle;
         private int attackTimer;
         private int idleWiggleTime;
         private float syncopeRotAngle;
@@ -172,9 +207,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 10086;
+            Projectile.timeLeft = 120;
             Projectile.hostile = true;
             Projectile.penetrate = -1;
+            Projectile.ignoreWater = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {           
+            writer.Write(attackTimer);
+            writer.Write(idleWiggleTime);
+            writer.Write(byHitSyncopeTime);
+            writer.Write((byte)currentState);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            attackTimer = reader.ReadInt32();
+            idleWiggleTime = reader.ReadInt32();
+            byHitSyncopeTime = reader.ReadInt32();
+            currentState = (ArmState)reader.ReadByte();
         }
 
         public override void AI() {
@@ -182,9 +232,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 startPos = Projectile.Center;
                 Projectile.localAI[0] = 1f;
                 currentState = ArmState.Searching;
+                Projectile.netUpdate = true;
             }
 
             Projectile.damage = Projectile.originalDamage;
+            if (currentState != ArmState.Retreating && Projectile.Distance(startPos) > 1000) {
+                currentState = ArmState.Retreating;
+                Projectile.netUpdate = true;
+            }
 
             if (byHitSyncopeTime > 0) {
                 byHitSyncopeTime--;
@@ -192,15 +247,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            if (player?.Alives() != true) {
+            if (player?.Alives() != true && Projectile.Center.Distance(startPos) < 1200) {
                 player = startPos.FindClosestPlayer(600);
                 if (player == null) {
                     Projectile.damage = 0;
                     DoIdleMotion(); // 无目标时的摆动待机状态
                     return;
                 }
-                else {
+                else if (currentState != ArmState.ApproachingTarget) {
                     currentState = ArmState.ApproachingTarget;
+                    Projectile.netUpdate = true;
                 }
             }
 
@@ -223,13 +279,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         private void ApproachTarget() {
             float dist = Vector2.Distance(Projectile.Center, player.Center);
-            if (dist > 600f) {
+
+            if (dist > 800f) {
+                Projectile.netUpdate = true;
+                currentState = ArmState.Retreating;
+                player = null;
+                return;
+            }
+
+            if (dist > 400f) {
+                Projectile.netUpdate = true;
                 currentState = ArmState.Searching;
                 player = null;
                 return;
             }
 
             if (dist < 100f) {
+                Projectile.netUpdate = true;
                 attackTimer = 0;
                 currentState = ArmState.Attacking;
                 return;
@@ -249,6 +315,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             else if (attackTimer > 16) {
                 Projectile.velocity /= 2;
                 currentState = ArmState.Retreating;
+                Projectile.netUpdate = true;
             }
         }
 
@@ -256,6 +323,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 retreatPos = startPos + new Vector2(0, -120);
             if (Projectile.Center.Distance(retreatPos) < 10f) {
                 currentState = ArmState.Searching;
+                Projectile.netUpdate = true;
                 return;
             }
 

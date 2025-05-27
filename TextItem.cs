@@ -1,8 +1,12 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Structures;
 using InnoVault;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -77,8 +81,32 @@ namespace CalamityOverhaul
 
         public override void HoldItem(Player player) {
         }
-
+        int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            //List<TileProcessor> tps = [];
+            //foreach (var p in TileProcessorLoader.TP_InWorld) {
+            //    if (!p.Active || p.ID != TileProcessorLoader.GetModuleID<WGGCollectorTP>()) {
+            //        continue;
+            //    }
+            //    tps.Add(p);
+            //}
+
+            //if (tpIndex < tps.Count) {
+            //    player.Center = tps[tpIndex].CenterInWorld;
+            //    tpIndex++;
+            //}
+            //else {
+            //    tpIndex = 0;
+            //}
+            int num = 0;
+            foreach (var p in Main.ActiveProjectiles) {
+                if (p.type != ModContent.ProjectileType<WGGCollectorArm>()) {
+                    continue;
+                }
+                num++;
+            }
+            num.Domp();
+            //IndustrializationGen.SpawnWGGCollectorTile();
             //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<MechanicalArm>(), 100, 0);
             //Framing.GetTileSafely((Main.MouseWorld / 16).ToPoint()).Domp();
             //bool copy = false;
