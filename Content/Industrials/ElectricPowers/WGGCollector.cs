@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -13,6 +14,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
@@ -133,7 +135,27 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             IdleDistance = 2000;
             PlaceNet = true;
         }
-        public override void Initialize() => altState = Main.rand.NextBool();
+        public override void Initialize() {
+            altState = Main.rand.NextBool();
+            MachineData.UEvalue = MaxUEValue;
+        }
+        public override void SendData(ModPacket data) {
+            if (wGGCollectorArm != null) {
+                data.Write(wGGCollectorArm.Projectile.identity);
+            }
+            else {
+                data.Write(-1);
+            }
+        }
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            int index = reader.ReadInt32();
+            if (index >= 0) {
+                Projectile projectile = Main.projectile[index];
+                if (projectile.type == ModContent.ProjectileType<WGGCollectorArm>()) {
+                    wGGCollectorArm = projectile.ModProjectile as WGGCollectorArm;
+                }
+            }
+        }
         private bool IsArm() {
             if (wGGCollectorArm == null) {
                 return false;
@@ -147,10 +169,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return true;
         }
         public override void UpdateMachine() {
-            if (VaultUtils.isClient) {
-                return;
-            }
-
             bool playerInRorge = false;
             int rorgeSQ = 1400 * 1400;
             foreach (var p in Main.ActivePlayers) {
@@ -163,15 +181,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (IsArm()) {
                 if (playerInRorge) {
                     wGGCollectorArm.Projectile.timeLeft = 2;
+                    wGGCollectorArm.wGGCollectorTP = this;
                 }
                 else {
                     wGGCollectorArm.Projectile.Kill();
                 }
             }
-            else if (playerInRorge) {
+            else if (playerInRorge && !VaultUtils.isClient) {
                 wGGCollectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
                     , CenterInWorld + new Vector2(0, 14), Vector2.Zero
                     , ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).ModProjectile as WGGCollectorArm;
+                SendData();
             }
         }
         public override void MachineKill() {
@@ -179,6 +199,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 DropItem(ModContent.ItemType<Collector>());
             }
         }
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
 
     internal class WGGCollectorArm : ModProjectile
@@ -199,10 +220,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Attacking,
             Retreating
         }
+        internal WGGCollectorTP wGGCollectorTP;
         private int attackTimer;
         private int idleWiggleTime;
         private float syncopeRotAngle;
         internal int byHitSyncopeTime;
+        internal bool BatteryPrompt;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -213,7 +236,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.ignoreWater = true;
         }
 
-        public override void SendExtraAI(BinaryWriter writer) {           
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.WriteVector2(startPos);
             writer.Write(attackTimer);
             writer.Write(idleWiggleTime);
             writer.Write(byHitSyncopeTime);
@@ -221,6 +245,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
+            startPos = reader.ReadVector2();
             attackTimer = reader.ReadInt32();
             idleWiggleTime = reader.ReadInt32();
             byHitSyncopeTime = reader.ReadInt32();
@@ -235,6 +260,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.netUpdate = true;
             }
 
+            if (wGGCollectorTP == null) {
+                return;
+            }
+
             Projectile.damage = Projectile.originalDamage;
             if (currentState != ArmState.Retreating && Projectile.Distance(startPos) > 1000) {
                 currentState = ArmState.Retreating;
@@ -245,6 +274,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 byHitSyncopeTime--;
                 DoSyncopeMotion(); // 受到攻击后的晕厥
                 return;
+            }
+
+            if (wGGCollectorTP.MachineData.UEvalue < 800 && !VaultUtils.isClient) {
+                player = startPos.FindClosestPlayer(600);
+                if (player == null || !player.Alives() || startPos.Distance(player.Center) > 600) {
+                    wGGCollectorTP.MachineData.UEvalue += 0.2f;
+                    if (++Projectile.localAI[1] > 60) {
+                        wGGCollectorTP.SendData();
+                        Projectile.localAI[1] = 0;//间隔一秒发包，防止制造数据洪流
+                    }
+                }
+            }
+
+            if (wGGCollectorTP.MachineData.UEvalue < 10) {
+                Projectile.damage = 0;
+                if (!BatteryPrompt) {
+                    CombatText.NewText(wGGCollectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    BatteryPrompt = true;
+                }
+                DoIdleMotion(); // 能量不够时的摆动待机状态
+                return;
+            }
+            else {
+                BatteryPrompt = false;
             }
 
             if (player?.Alives() != true && Projectile.Center.Distance(startPos) < 1200) {
@@ -311,6 +364,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 // 发起冲刺
                 Vector2 dashDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.velocity = dashDir * 18f;
+                if (wGGCollectorTP.MachineData.UEvalue > 10) {
+                    wGGCollectorTP.MachineData.UEvalue -= 10;
+                    wGGCollectorTP.SendData();
+                }
             }
             else if (attackTimer > 16) {
                 Projectile.velocity /= 2;
@@ -356,6 +413,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            if (!Main.masterMode) {
+                return;//只在大师模式下偷东西
+            }
+
             if (Main.rand.NextBool()) {
                 return;
             }
@@ -363,7 +424,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             // 获取一个非空物品槽（排除空格、空气物品）
             List<int> validSlots = new();
             for (int i = 0; i < 59; i++) { // 只检查背包部分（0~58）
-                if (i == player.selectedItem) {
+                if (i == target.selectedItem) {
                     continue;//手上拿的不要丢
                 }
                 if (!target.inventory[i].IsAir && target.inventory[i].stack > 0) {
@@ -386,8 +447,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 noBroadcast: false, prefixGiven: item.prefix
             );
 
-            if (!VaultUtils.isSinglePlayer && newItemIndex >= 0) {
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, newItemIndex);
+            if (newItemIndex >= 0 && newItemIndex < Main.maxItems) {
+                Main.item[newItemIndex].noGrabDelay = 120;
+                if (!VaultUtils.isSinglePlayer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, newItemIndex);
+                }
             }
 
             // 让物品从背包中消失
@@ -399,6 +463,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool PreDraw(ref Color lightColor) {
             if (startPos == Vector2.Zero) {
                 return false;
+            }
+
+            if (BatteryPrompt) {
+                lightColor.R /= 2;
+                lightColor.G /= 2;
+                lightColor.B /= 2;
+                lightColor.A = 255;
             }
 
             Texture2D tex = arm.Value;

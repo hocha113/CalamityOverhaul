@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class HoChaMeditatorItem : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/HoChaMeditatorItem";
+        public const int DropProbabilityDenominator = 12000;
         public override void SetDefaults() {
             Item.width = 28;
             Item.height = 20;

@@ -1,11 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow;
-using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,8 +14,8 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
-using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
@@ -128,11 +128,33 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int frame;
         internal bool workState;
         internal Chest Chest;
+        public override void SendData(ModPacket data) {
+            data.Write(workState);
+            data.Write(CollectorArms.Count);
+            foreach (var arm in CollectorArms) {
+                data.Write(arm.Projectile.identity);
+            }
+        }
+        public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            workState = reader.ReadBoolean();
+            int count = reader.ReadInt32();
+            CollectorArms.Clear();
+            for (int i = 0; i < count; i++) {
+                int index = reader.ReadInt32();
+                Projectile projectile = Main.projectile[index];
+                if (projectile.type == ModContent.ProjectileType<WGGCollectorArm>()) {
+                    CollectorArms.Add(projectile.ModProjectile as CollectorArm);
+                }
+            }
+        }
         private void FindFrame() {
             int maxFrame = workState ? 7 : 24;
             if (!workState && frame == 23) {
                 frame = 0;//立刻让帧归零防止越界
                 workState = true;
+                if (Main.dedServ) {
+                    SendData();
+                }
                 SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
             }
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
@@ -151,10 +173,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 textIdleTime = 300;
             }
 
-            if (!VaultUtils.isClient) {
-                CollectorArms.RemoveAll(p => !p.Projectile.Alives());
-            }
-            
+            CollectorArms.RemoveAll(p => !p.Projectile.Alives() || p.Type != ModContent.ProjectileType<CollectorArm>());
+
             if (textIdleTime > 0) {
                 textIdleTime--;
             }
@@ -173,17 +193,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     , CenterInWorld + new Vector2(0, 14), Vector2.Zero
                     , ModContent.ProjectileType<CollectorArm>(), 0, 0, -1).ModProjectile as CollectorArm;
                     CollectorArms.Add(collectorArm);
+                    SendData();
                 }
             }
 
-            if (!VaultUtils.isClient) {
-                int index = 0;
-                foreach (CollectorArm arm in CollectorArms) {
-                    arm.offsetIndex = index;
-                    arm.Projectile.timeLeft = 2;
-                    arm.collectorTP = this;
-                    index++;
-                }
+            int index = 0;
+            foreach (CollectorArm arm in CollectorArms) {
+                arm.offsetIndex = index;
+                arm.Projectile.timeLeft = 2;
+                arm.collectorTP = this;
+                index++;
             }
         }
 
@@ -194,9 +213,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             CollectorArms.Clear();
         }
 
-        public override void MachineKill() {
-            KillArm();
-        }
+        public override void MachineKill() => KillArm();
+
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
 
     internal class CollectorArm : ModProjectile
@@ -212,12 +231,27 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Vector2 startPos;//记录这个弹幕的起点位置
         internal int offsetIndex;
         private Item graspItem;
+        internal bool BatteryPrompt;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 120;
             Projectile.ignoreWater = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.WriteVector2(startPos);
+            writer.Write(offsetIndex);
+            writer.Write(BatteryPrompt);
+            ItemIO.Send(graspItem, writer);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            startPos = reader.ReadVector2();
+            offsetIndex = reader.ReadInt32();
+            BatteryPrompt = reader.ReadBoolean();
+            graspItem = ItemIO.Receive(reader);
         }
 
         internal Item FindItem() {
@@ -250,6 +284,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (Projectile.localAI[0] == 0f) {
                 startPos = Projectile.Center;
                 Projectile.localAI[0] = 1f;
+                Projectile.netUpdate = true;
             }
 
             if (collectorTP == null) {
@@ -267,6 +302,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
                     }
                     Projectile.ai[0] = 0;
+                    Projectile.netUpdate = true;
                     return;
                 }
 
@@ -284,21 +320,43 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     collectorTP.Chest.AddItem(graspItem);
                     graspItem.TurnToAir();
                     Projectile.ai[0] = 0;
+                    Projectile.netUpdate = true;
                 }
                 return;
             }
 
             Item item = collectorTP.Chest == null ? null : FindItem();
 
+            if (collectorTP.MachineData.UEvalue < 100) {
+                item = null;
+                if (!BatteryPrompt) {
+                    CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    BatteryPrompt = true;
+                    Projectile.netUpdate = true;
+                }
+            }
+            else {
+                if (BatteryPrompt) {
+                    Projectile.netUpdate = true;
+                }
+                BatteryPrompt = false;
+            }
+
             if (item != null) {
                 item.CWR().TargetByCollector = Projectile.identity;
                 Projectile.ChasingBehavior(item.Center, 8);
                 Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
                 if (item.Center.Distance(Projectile.Center) < 32) {
+                    if (collectorTP.MachineData.UEvalue > 4 && !VaultUtils.isClient) {
+                        collectorTP.MachineData.UEvalue -= 4;
+                        collectorTP.SendData();
+                    }
+
                     graspItem = item.Clone();
                     item.TurnToAir();
                     graspItem.CWR().TargetByCollector = Projectile.identity;
                     Projectile.ai[0] = 1;
+                    Projectile.netUpdate = true;
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
                 }
                 return;
@@ -320,6 +378,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool PreDraw(ref Color lightColor) {
             if (startPos == Vector2.Zero) {
                 return false;
+            }
+
+            if (BatteryPrompt) {
+                lightColor.R /= 2;
+                lightColor.G /= 2;
+                lightColor.B /= 2;
+                lightColor.A = 255;
             }
 
             Texture2D tex = arm.Value;

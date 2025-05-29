@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Painting;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -275,6 +276,12 @@ namespace CalamityOverhaul.Content
             }
             if (Main.rand.NextBool(WUTIVSelfPortrait.DropProbabilityDenominator)) {
                 int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<WUTIVSelfPortrait>());
+                if (!VaultUtils.isSinglePlayer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                }
+            }
+            if (Main.rand.NextBool(HoChaMeditatorItem.DropProbabilityDenominator)) {
+                int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<HoChaMeditatorItem>());
                 if (!VaultUtils.isSinglePlayer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                 }

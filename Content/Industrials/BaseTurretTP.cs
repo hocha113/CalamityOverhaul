@@ -144,13 +144,6 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual void SetTurret() { }
 
         public override void UpdateMachine() {
-            if (InScreen) {
-                HoverTP = HitBox.Intersects(Main.MouseWorld.GetRectangle(1));
-            }
-            else {
-                HoverTP = false;
-            }
-
             PreUpdate();
 
             CanFire = false;
