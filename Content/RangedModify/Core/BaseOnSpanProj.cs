@@ -50,10 +50,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         /// <param name="projectile"></param>
         public static void FlowerAI(Projectile projectile) {
-            Projectile owner = null;
-            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles) {
-                owner = Main.projectile[(int)projectile.ai[1]];
-            }
+            Projectile owner = Main.projectile.FindByIdentity((int)projectile.ai[1]);
             if (owner == null) {
                 projectile.Kill();
                 return;

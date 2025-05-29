@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Projectile.ai[1] *= 1.06f;
             }
 
-            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
             if (homeProj.Alives() && homeProj.type > ProjectileID.None) {
                 Projectile.Center = homeProj.Center;
                 Projectile.rotation = homeProj.rotation + Projectile.ai[1];

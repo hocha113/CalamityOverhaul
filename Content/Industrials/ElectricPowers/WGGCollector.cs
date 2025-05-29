@@ -85,11 +85,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!TileProcessorLoader.ByPositionGetTP(point, out WGGCollectorTP collector)) {
                 return;
             }
-            if (collector.wGGCollectorArm == null || !collector.wGGCollectorArm.Projectile.Alives()) {
-                return;
-            }
-            collector.wGGCollectorArm.byHitSyncopeTime = 60;
-            collector.wGGCollectorArm.Projectile.netUpdate = true;
+            collector.byHitSyncopeTime = 60;
+            collector.SendData();
         }
 
         public override bool CanDrop(int i, int j) => false;
@@ -129,7 +126,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool ReceivedEnergy => true;
         public override bool CanDrop => false;
         public override float MaxUEValue => 800;
-        internal WGGCollectorArm wGGCollectorArm;
+        public Vector2 ArmPos => CenterInWorld + new Vector2(0, 14);
+        internal const int killerArmDistance = 1400;
+        internal int dontSpawnArmTime;
+        internal int byHitSyncopeTime;
+        internal int ArmIndex = -1;
         internal bool altState;
         public override void SetBattery() {
             IdleDistance = 2000;
@@ -140,58 +141,29 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             MachineData.UEvalue = MaxUEValue;
         }
         public override void SendData(ModPacket data) {
-            if (wGGCollectorArm != null) {
-                data.Write(wGGCollectorArm.Projectile.identity);
-            }
-            else {
-                data.Write(-1);
-            }
+            data.Write(byHitSyncopeTime);
+            data.Write(ArmIndex);
         }
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            int index = reader.ReadInt32();
-            if (index >= 0) {
-                Projectile projectile = Main.projectile[index];
-                if (projectile.type == ModContent.ProjectileType<WGGCollectorArm>()) {
-                    wGGCollectorArm = projectile.ModProjectile as WGGCollectorArm;
-                }
-            }
-        }
-        private bool IsArm() {
-            if (wGGCollectorArm == null) {
-                return false;
-            }
-            if (!wGGCollectorArm.Projectile.Alives()) {
-                return false;
-            }
-            if (wGGCollectorArm.Projectile.type != ModContent.ProjectileType<WGGCollectorArm>()) {
-                return false;
-            }
-            return true;
+            byHitSyncopeTime = reader.ReadInt32();
+            ArmIndex = reader.ReadInt32();
         }
         public override void UpdateMachine() {
-            bool playerInRorge = false;
-            int rorgeSQ = 1400 * 1400;
-            foreach (var p in Main.ActivePlayers) {
-                if (p.DistanceSQ(CenterInWorld) < rorgeSQ) {
-                    playerInRorge = true;
-                    break;
-                }
+            if (byHitSyncopeTime > 0) {
+                byHitSyncopeTime--;
             }
 
-            if (IsArm()) {
-                if (playerInRorge) {
-                    wGGCollectorArm.Projectile.timeLeft = 2;
-                    wGGCollectorArm.wGGCollectorTP = this;
-                }
-                else {
-                    wGGCollectorArm.Projectile.Kill();
-                }
+            if (dontSpawnArmTime > 0) {
+                dontSpawnArmTime--;
             }
-            else if (playerInRorge && !VaultUtils.isClient) {
-                wGGCollectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , CenterInWorld + new Vector2(0, 14), Vector2.Zero
-                    , ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).ModProjectile as WGGCollectorArm;
-                SendData();
+
+            if (ArmPos.FindClosestPlayer(killerArmDistance) != null && dontSpawnArmTime <= 0 && !VaultUtils.isClient) {
+                CollectorTP.CheckArm(ref ArmIndex, ModContent.ProjectileType<WGGCollectorArm>(), ArmPos);
+                if (ArmIndex == -1) {
+                    ArmIndex = Projectile.NewProjectileDirect(this.FromObjectGetParent()
+                    , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).identity;
+                    SendData();
+                }
             }
         }
         public override void MachineKill() {
@@ -210,6 +182,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/WGGMechanicalClamp")]
         private static Asset<Texture2D> clamp;//手臂的夹子纹理
         private Player player;
+        internal WGGCollectorTP collectorTP;
+        private int attackTimer;
+        private int idleWiggleTime;
+        private float syncopeRotAngle;
+        internal bool BatteryPrompt;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private ArmState currentState = ArmState.Idle;
         private enum ArmState
@@ -220,12 +197,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Attacking,
             Retreating
         }
-        internal WGGCollectorTP wGGCollectorTP;
-        private int attackTimer;
-        private int idleWiggleTime;
-        private float syncopeRotAngle;
-        internal int byHitSyncopeTime;
-        internal bool BatteryPrompt;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -240,7 +211,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             writer.WriteVector2(startPos);
             writer.Write(attackTimer);
             writer.Write(idleWiggleTime);
-            writer.Write(byHitSyncopeTime);
             writer.Write((byte)currentState);
         }
 
@@ -248,7 +218,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             startPos = reader.ReadVector2();
             attackTimer = reader.ReadInt32();
             idleWiggleTime = reader.ReadInt32();
-            byHitSyncopeTime = reader.ReadInt32();
             currentState = (ArmState)reader.ReadByte();
         }
 
@@ -260,7 +229,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.netUpdate = true;
             }
 
-            if (wGGCollectorTP == null) {
+            if (TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
+                Projectile.timeLeft = 2;
+                startPos = collectorTP.ArmPos;
+                //验证唯一性，防止在一些情况下重叠生成
+                if (Projectile.identity != collectorTP.ArmIndex) {
+                    Projectile.Kill();
+                    return;
+                }
+            }
+            else {
+                Projectile.Kill();
+                return;
+            }
+
+            if (startPos.FindClosestPlayer(WGGCollectorTP.killerArmDistance) == null) {
+                collectorTP.dontSpawnArmTime = 60;//添加一个延迟时间，防止因为某些距离误差而疯狂进行生成尝试
+                Projectile.Kill();
                 return;
             }
 
@@ -270,27 +255,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.netUpdate = true;
             }
 
-            if (byHitSyncopeTime > 0) {
-                byHitSyncopeTime--;
+            if (collectorTP.byHitSyncopeTime > 0) {
                 DoSyncopeMotion(); // 受到攻击后的晕厥
                 return;
             }
 
-            if (wGGCollectorTP.MachineData.UEvalue < 800 && !VaultUtils.isClient) {
+            if (collectorTP.MachineData.UEvalue < 800 && !VaultUtils.isClient) {
                 player = startPos.FindClosestPlayer(600);
                 if (player == null || !player.Alives() || startPos.Distance(player.Center) > 600) {
-                    wGGCollectorTP.MachineData.UEvalue += 0.2f;
+                    collectorTP.MachineData.UEvalue += 0.2f;
                     if (++Projectile.localAI[1] > 60) {
-                        wGGCollectorTP.SendData();
+                        collectorTP.SendData();
                         Projectile.localAI[1] = 0;//间隔一秒发包，防止制造数据洪流
                     }
                 }
             }
 
-            if (wGGCollectorTP.MachineData.UEvalue < 10) {
+            if (collectorTP.MachineData.UEvalue < 10) {
                 Projectile.damage = 0;
                 if (!BatteryPrompt) {
-                    CombatText.NewText(wGGCollectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
                     BatteryPrompt = true;
                 }
                 DoIdleMotion(); // 能量不够时的摆动待机状态
@@ -364,9 +348,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 // 发起冲刺
                 Vector2 dashDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.velocity = dashDir * 18f;
-                if (wGGCollectorTP.MachineData.UEvalue > 10) {
-                    wGGCollectorTP.MachineData.UEvalue -= 10;
-                    wGGCollectorTP.SendData();
+                if (collectorTP.MachineData.UEvalue > 10) {
+                    collectorTP.MachineData.UEvalue -= 10;
+                    collectorTP.SendData();
                 }
             }
             else if (attackTimer > 16) {
@@ -392,7 +376,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             idleWiggleTime++;
 
             // 抖动半径 + 衰减效果
-            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - byHitSyncopeTime / 60f); // 随时间减弱
+            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - collectorTP.byHitSyncopeTime / 60f); // 随时间减弱
             float angle = idleWiggleTime * 0.3f;
             Vector2 offset = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle * 1.3f)) * shakeRadius;
 

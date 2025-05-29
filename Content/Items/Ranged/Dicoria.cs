@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AI() {
-            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
             if (homeProj.Alives() && homeProj.ModProjectile is BaseFeederGun gun) {
                 Projectile.Center = gun.ShootPos;
                 Projectile.rotation = homeProj.rotation;

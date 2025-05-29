@@ -6,6 +6,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -123,29 +124,27 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override int TargetItem => ModContent.ItemType<Collector>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 800;
-        private readonly List<CollectorArm> CollectorArms = [];
+        public Vector2 ArmPos => CenterInWorld + new Vector2(0, 14);
         private int textIdleTime;
         internal int frame;
         internal bool workState;
         internal Chest Chest;
+        internal const int killerArmDistance = 2400;
+        internal int dontSpawnArmTime;
+        internal int ArmIndex0 = -1;
+        internal int ArmIndex1 = -1;
+        internal int ArmIndex2 = -1;
         public override void SendData(ModPacket data) {
             data.Write(workState);
-            data.Write(CollectorArms.Count);
-            foreach (var arm in CollectorArms) {
-                data.Write(arm.Projectile.identity);
-            }
+            data.Write(ArmIndex0);
+            data.Write(ArmIndex1);
+            data.Write(ArmIndex2);
         }
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             workState = reader.ReadBoolean();
-            int count = reader.ReadInt32();
-            CollectorArms.Clear();
-            for (int i = 0; i < count; i++) {
-                int index = reader.ReadInt32();
-                Projectile projectile = Main.projectile[index];
-                if (projectile.type == ModContent.ProjectileType<WGGCollectorArm>()) {
-                    CollectorArms.Add(projectile.ModProjectile as CollectorArm);
-                }
-            }
+            ArmIndex0 = reader.ReadInt32();
+            ArmIndex1 = reader.ReadInt32();
+            ArmIndex2 = reader.ReadInt32();
         }
         private void FindFrame() {
             int maxFrame = workState ? 7 : 24;
@@ -158,6 +157,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
             }
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
+        }
+
+        internal static void CheckArm(ref int armIndex, int armID, Vector2 armPos) {
+            if (armIndex < 0) {
+                return;
+            }
+
+            Projectile projectile = Main.projectile.FindByIdentity(armIndex);
+            if (!projectile.Alives() || projectile.type != armID) {
+                armIndex = -1;
+                return;
+            }
         }
 
         public override void UpdateMachine() {
@@ -173,47 +184,50 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 textIdleTime = 300;
             }
 
-            CollectorArms.RemoveAll(p => !p.Projectile.Alives() || p.Type != ModContent.ProjectileType<CollectorArm>());
-
             if (textIdleTime > 0) {
                 textIdleTime--;
             }
+            if (dontSpawnArmTime > 0) {
+                dontSpawnArmTime--;
+            }
 
-            if (CollectorArms.Count < 3) {
-                if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
-                    if (textIdleTime <= 0) {
-                        CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
-                        textIdleTime = 300;
-                    }
-                    return;
+            if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
+                if (textIdleTime <= 0) {
+                    CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
+                    textIdleTime = 300;
+                }
+                return;
+            }
+
+            if (ArmPos.FindClosestPlayer(killerArmDistance) != null && dontSpawnArmTime <= 0 && !VaultUtils.isClient) {
+                bool doNet = false;
+
+                CheckArm(ref ArmIndex0, ModContent.ProjectileType<CollectorArm>(), ArmPos);
+                if (ArmIndex0 == -1) {
+                    ArmIndex0 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
+                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 0).identity;
+                    doNet = true;
                 }
 
-                if (!VaultUtils.isClient) {
-                    CollectorArm collectorArm = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , CenterInWorld + new Vector2(0, 14), Vector2.Zero
-                    , ModContent.ProjectileType<CollectorArm>(), 0, 0, -1).ModProjectile as CollectorArm;
-                    CollectorArms.Add(collectorArm);
+                CheckArm(ref ArmIndex1, ModContent.ProjectileType<CollectorArm>(), ArmPos);
+                if (ArmIndex1 == -1) {
+                    ArmIndex1 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
+                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 1).identity;
+                    doNet = true;
+                }
+
+                CheckArm(ref ArmIndex2, ModContent.ProjectileType<CollectorArm>(), ArmPos);
+                if (ArmIndex2 == -1) {
+                    ArmIndex2 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
+                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 2).identity;
+                    doNet = true;
+                }
+
+                if (doNet) {
                     SendData();
                 }
             }
-
-            int index = 0;
-            foreach (CollectorArm arm in CollectorArms) {
-                arm.offsetIndex = index;
-                arm.Projectile.timeLeft = 2;
-                arm.collectorTP = this;
-                index++;
-            }
         }
-
-        internal void KillArm() {
-            foreach (CollectorArm collectorArm in CollectorArms) {
-                collectorArm.Projectile.Kill();
-            }
-            CollectorArms.Clear();
-        }
-
-        public override void MachineKill() => KillArm();
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
@@ -229,9 +243,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private static Asset<Texture2D> clampGlow;//手臂的夹子的光效纹理
         internal CollectorTP collectorTP;
         internal Vector2 startPos;//记录这个弹幕的起点位置
-        internal int offsetIndex;
         private Item graspItem;
         internal bool BatteryPrompt;
+        private bool spawn;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -242,14 +256,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.WriteVector2(startPos);
-            writer.Write(offsetIndex);
             writer.Write(BatteryPrompt);
+            graspItem ??= new Item();
             ItemIO.Send(graspItem, writer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             startPos = reader.ReadVector2();
-            offsetIndex = reader.ReadInt32();
             BatteryPrompt = reader.ReadBoolean();
             graspItem = ItemIO.Receive(reader);
         }
@@ -259,15 +272,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float maxFindSQ = 4000000;
             foreach (var i in Main.ActiveItems) {
                 if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
-                    //如果发现目标物品已经物有所主，就判断是否自己比那个主人更加的近，近的话就换自己上去拿
-                    //当然，如果别的手因为某种原因已经不活跃了，就直接换自己上
-                    //Projectile otherArm = Main.projectile[i.CWR().TargetByCollector];
-                    //if (!otherArm.Alives() || otherArm.DistanceSQ(i.Center) < Projectile.DistanceSQ(i.Center)) {
-                    //    i.CWR().TargetByCollector = Projectile.identity;
-                    //}
-                    //else {
-                    //    continue;
-                    //}
                     continue;
                 }
 
@@ -281,14 +285,39 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AI() {
-            if (Projectile.localAI[0] == 0f) {
-                startPos = Projectile.Center;
-                Projectile.localAI[0] = 1f;
-                Projectile.netUpdate = true;
+            if (!spawn) {
+                if (!VaultUtils.isClient) {
+                    startPos = Projectile.Center;
+                    Projectile.netUpdate = true;
+                }
+                spawn = true;               
             }
 
-            if (collectorTP == null) {
+            if (TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
+                Projectile.timeLeft = 2;
+                startPos = collectorTP.ArmPos;
+                //验证唯一性，防止在一些情况下重叠生成
+                if (Projectile.ai[1] == 0 && Projectile.identity != collectorTP.ArmIndex0) {
+                    Projectile.Kill();
+                    return;
+                }
+                if (Projectile.ai[1] == 1 && Projectile.identity != collectorTP.ArmIndex1) {
+                    Projectile.Kill();
+                    return;
+                }
+                if (Projectile.ai[1] == 2 && Projectile.identity != collectorTP.ArmIndex2) {
+                    Projectile.Kill();
+                    return;
+                }
+            }
+            else {
+                Projectile.Kill();
                 return;
+            }
+
+            if (startPos.FindClosestPlayer(CollectorTP.killerArmDistance) == null) {
+                collectorTP.dontSpawnArmTime = 60;//添加一个延迟时间，防止因为某些距离误差而疯狂进行生成尝试
+                Projectile.Kill();
             }
 
             if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
@@ -363,10 +392,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             else {
                 Vector2 offset = new Vector2(0, -120);
-                if (offsetIndex == 1) {
+                if (Projectile.ai[1] == 1) {
                     offset = new Vector2(120, -20);
                 }
-                if (offsetIndex == 2) {
+                if (Projectile.ai[1] == 2) {
                     offset = new Vector2(-120, -20);
                 }
                 Projectile.ChasingBehavior(startPos + offset, 8);

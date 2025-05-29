@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AI() {
-            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
+            homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
             if (homeProj.Alives()) {
                 Projectile.Center = homeProj.Center;
                 Projectile.rotation = homeProj.rotation + Projectile.ai[1];
