@@ -133,6 +133,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int ArmIndex = -1;
         internal bool altState;
         public override void SetBattery() {
+            Efficiency = 0;//敌对建筑不具备电力传输能力
             IdleDistance = 2000;
             PlaceNet = true;
         }

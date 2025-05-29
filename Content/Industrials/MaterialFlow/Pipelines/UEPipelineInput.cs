@@ -105,47 +105,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
 
                 // 如果有能量传递的需求，且相邻的是管道
-                else if (externalTP is UEPipelineInputTP pipelineInputTP) {
-                    float totalUE = coreTP.MachineData.UEvalue + pipelineInputTP.MachineData.UEvalue;
+                else if (externalTP is BaseUEPipelineTP basePipTP) {
+                    float totalUE = coreTP.MachineData.UEvalue + basePipTP.MachineData.UEvalue;
                     float averageUE = totalUE / 2;
 
                     float transferUE = Math.Min(efficiency, Math.Abs(coreTP.MachineData.UEvalue - averageUE));
 
                     if (coreTP.MachineData.UEvalue > averageUE) {
                         coreTP.MachineData.UEvalue -= transferUE;
-                        pipelineInputTP.MachineData.UEvalue += transferUE;
+                        basePipTP.MachineData.UEvalue += transferUE;
                     }
                     else {
                         coreTP.MachineData.UEvalue += transferUE;
-                        pipelineInputTP.MachineData.UEvalue -= transferUE;
+                        basePipTP.MachineData.UEvalue -= transferUE;
                     }
 
-                    if (pipelineInputTP.Decussation || pipelineInputTP.Turning) {
+                    if (basePipTP.Decussation || basePipTP.Turning) {
                         canDraw = false;
                     }
-                    linkID = 2;
-                }
-
-                // 如果有能量传递的需求，且相邻的是管道，注意，这种管道是另一种管道
-                else if (externalTP is UEPipelineTP pipelineTP) {
-                    float totalUE = coreTP.MachineData.UEvalue + pipelineTP.MachineData.UEvalue;
-                    float averageUE = totalUE / 2;
-
-                    float transferUE = Math.Min(efficiency, Math.Abs(coreTP.MachineData.UEvalue - averageUE));
-
-                    if (coreTP.MachineData.UEvalue > averageUE) {
-                        coreTP.MachineData.UEvalue -= transferUE;
-                        pipelineTP.MachineData.UEvalue += transferUE;
-                    }
-                    else {
-                        coreTP.MachineData.UEvalue += transferUE;
-                        pipelineTP.MachineData.UEvalue -= transferUE;
-                    }
-
-                    if (pipelineTP.Decussation || pipelineTP.Turning) {
-                        canDraw = false;
-                    }
-                    linkID = 1;
+                    linkID = basePipTP.ID == TileProcessorLoader.GetModuleID<UEPipelineTP>() ? 1 : 2;
                 }
 
                 // 如果挨着的是电池
@@ -193,7 +171,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
     }
 
-    internal class UEPipelineInputTP : MachineTP
+    internal class UEPipelineInputTP : BaseUEPipelineTP
     {
         public override int TargetTileID => ModContent.TileType<UEPipelineInputTile>();
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
@@ -217,12 +195,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         internal List<SideStateInput> SideState { get; private set; }
-        internal int TurningID { get; private set; }
-        internal bool Turning { get; private set; }
-        internal bool Decussation { get; private set; }
-        internal int ThreeCrutchesID { get; private set; }
+        
         public override int TargetItem => ModContent.ItemType<UEPipelineInput>();
-        public override float MaxUEValue => 20;
+        
         public override void SetMachine() {
             SideState = [
             new (new Point16(0, -1)),//上0

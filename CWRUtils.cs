@@ -101,23 +101,6 @@ namespace CalamityOverhaul
         public static void SetArrowRot(int proj) => Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         public static void SetArrowRot(this Projectile proj) => proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
 
-        public static void UpdateOldPosCache(this Projectile projectile, bool useCenter = true, bool addVelocity = true) {
-            for (int i = 0; i < projectile.oldPos.Length - 1; i++)
-                projectile.oldPos[i] = projectile.oldPos[i + 1];
-            projectile.oldPos[^1] = (useCenter ? projectile.Center : projectile.position) + (addVelocity ? projectile.velocity : Vector2.Zero);
-        }
-
-        public static void InitOldPosCache(this Projectile projectile, int trailCount, bool useCenter = true) {
-            projectile.oldPos = new Vector2[trailCount];
-
-            for (int i = 0; i < trailCount; i++) {
-                if (useCenter)
-                    projectile.oldPos[i] = projectile.Center;
-                else
-                    projectile.oldPos[i] = projectile.position;
-            }
-        }
-
         /// <summary>
         /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
         /// </summary>
@@ -141,18 +124,6 @@ namespace CalamityOverhaul
         /// <param name="npc"></param>
         /// <returns></returns>
         public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
-
-        /// <summary>
-        /// 物块坐标转世界实体坐标
-        /// </summary>
-        /// <param name="tilePos"></param>
-        /// <returns></returns>
-        public static Vector2 TilePosToWEPos(Vector2 tilePos) {
-            float wePosX = (float)(tilePos.X * 16f);
-            float wePosY = (float)(tilePos.Y * 16f);
-
-            return new Vector2(wePosX, wePosY);
-        }
 
         /// <summary>
         /// 根据索引返回在player域中的player实例，同时考虑合法性校验

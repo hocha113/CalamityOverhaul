@@ -511,7 +511,12 @@ namespace CalamityOverhaul.Content
                 CWRItems cwrDestination = destination.CWR();
                 CWRItems cwrSource = source.CWR();
                 if (cwrDestination.StorageUE && cwrSource.StorageUE) {
-                    cwrDestination.UEValue += cwrSource.UEValue;
+                    float addUE = Math.Min(cwrSource.UEValue, cwrSource.MaxUEValue) * numToTransfer;
+                    if (cwrSource.UEValue < addUE) {
+                        addUE = 0;
+                    }
+                    cwrSource.UEValue -= addUE;
+                    cwrDestination.UEValue += addUE;
                 }
             }
         }

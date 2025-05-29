@@ -130,6 +130,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual Asset<Texture2D> GetBarrelGlowAsset => ModifyTurretLoader.BarrelGlowAssetDic[ID];
         #endregion
         public override void SetBattery() {
+            Efficiency = Friend ? 2 : 0;//敌对建筑不具备电力传输能力
             IdleDistance = TurretIdleDistance;
             Offset = new Vector2(0, -24);
             if (TargetCenter == default) {

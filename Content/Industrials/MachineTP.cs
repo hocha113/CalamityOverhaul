@@ -1,7 +1,12 @@
-﻿using CalamityOverhaul.Content.Industrials.Modifys;
+﻿using CalamityMod.NPCs.TownNPCs;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Industrials.Modifys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -17,6 +22,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual float MaxUEValue => 1000;
         public virtual int TargetItem => ItemID.None;
         public virtual bool CanDrop => true;
+        public int Efficiency = 2;
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
@@ -35,6 +41,9 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public sealed override void Update() {
+            if (Efficiency > 0) {
+                UpdateConductive();
+            }
             UpdateMachine();
         }
 
@@ -64,6 +73,77 @@ namespace CalamityOverhaul.Content.Industrials
             int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
             if (VaultUtils.isServer) {
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+            }
+        }
+
+        public void UpdateConductive() {
+            // 存储所有相关物块（机械物块本身 + 相邻管道）
+            List<BaseUEPipelineTP> connectedTiles = new List<BaseUEPipelineTP>();
+            int tileWidth = Width / 16;
+            int tileHeight = Height / 16;
+            // 检测四周的管道（上下左右）
+            // 上边界
+            for (int i = Position.X; i < Position.X + tileWidth; i++) {
+                Point16 point = new Point16(i, Position.Y - 1);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
+                    connectedTiles.Add(pipelineTP);
+                }
+            }
+
+            // 下边界
+            for (int i = Position.X; i < Position.X + tileWidth; i++) {
+                Point16 point = new Point16(i, Position.Y + tileHeight);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
+                    connectedTiles.Add(pipelineTP);
+                }
+            }
+
+            // 左边界
+            for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
+                Point16 point = new Point16(Position.X - 1, j);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
+                    connectedTiles.Add(pipelineTP);
+                }
+            }
+
+            // 右边界
+            for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
+                Point16 point = new Point16(Position.X + tileWidth, j);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
+                    connectedTiles.Add(pipelineTP);
+                }
+            }
+
+            // 去重（防止重复添加同一管道）
+            connectedTiles = [.. connectedTiles.Distinct()];
+
+            // 如果没有相邻管道，直接返回
+            if (connectedTiles.Count == 0) {
+                return;
+            }
+
+            // 计算总电量和平均电量
+            float totalUE = 0f;
+            foreach (var tile in connectedTiles) {
+                if (tile.MachineData != null) {
+                    totalUE += tile.MachineData.UEvalue;
+                }
+            }
+            float averageUE = totalUE / connectedTiles.Count;
+
+            // 考虑效率限制，平衡电量
+            float efficiency = this.Efficiency;
+            foreach (var tile in connectedTiles) {
+                if (tile.MachineData == null)
+                    continue;
+
+                float transferUE = Math.Min(efficiency, Math.Abs(tile.MachineData.UEvalue - averageUE));
+                if (tile.MachineData.UEvalue > averageUE) {
+                    tile.MachineData.UEvalue -= transferUE;
+                }
+                else {
+                    tile.MachineData.UEvalue += transferUE;
+                }
             }
         }
 
