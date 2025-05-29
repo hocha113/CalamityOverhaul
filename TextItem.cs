@@ -1,12 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using CalamityOverhaul.Content.Structures;
-using InnoVault;
-using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -98,22 +91,23 @@ namespace CalamityOverhaul
             //else {
             //    tpIndex = 0;
             //}
-            int num = 0;
-            foreach (var p in Main.ActiveProjectiles) {
-                if (p.type != ModContent.ProjectileType<WGGCollectorArm>()) {
-                    continue;
-                }
-                num++;
-            }
-            num.Domp();
+            //int num = 0;
+            //foreach (var p in Main.ActiveProjectiles) {
+            //    if (p.type != ModContent.ProjectileType<WGGCollectorArm>()) {
+            //        continue;
+            //    }
+            //    num++;
+            //}
+            //num.Domp();
             //IndustrializationGen.SpawnWGGCollectorTile();
-            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<MechanicalArm>(), 100, 0);
-            //Framing.GetTileSafely((Main.MouseWorld / 16).ToPoint()).Domp();
+            //if (player.ownedProjectileCounts[ModContent.ProjectileType<RegionProj>()] == 0)
+            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<RegionProj>(), 0, 0, player.whoAmI);
+            //(Main.MouseWorld / 16).ToPoint().Domp();
             //bool copy = false;
             //if (copy) {
-            //    RocketHut.InitializeData();
-            //    Point startPoint = new Point(4187, 576);
-            //    Point endPoint = new Point(4203, 587);
+            //    JunkmanBase.InitializeData();
+            //    Point startPoint = new Point(4202, 985);
+            //    Point endPoint = new Point(4392, 1024);
             //    int heiget = Math.Abs(startPoint.Y - endPoint.Y);
             //    int wid = Math.Abs(startPoint.X - endPoint.X);
             //    using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
@@ -121,7 +115,7 @@ namespace CalamityOverhaul
             //        for (int x = 0; x < wid; x++) {
             //            for (int y = 0; y < heiget; y++) {
             //                Point offsetPoint = new Point(x, y);
-            //                RocketHut.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
+            //                JunkmanBase.WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
             //            }
             //        }
             //    }
@@ -130,11 +124,11 @@ namespace CalamityOverhaul
             //    using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
             //        int count = reader.ReadInt32();
             //        for (int x = 0; x < count; x++) {
-            //            RocketHut.ReadTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
+            //            JunkmanBase.ReadTile(reader, new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
             //        }
             //    }
             //}
-
+            //JunkmanBase.Spawn();
             return true;
         }
     }

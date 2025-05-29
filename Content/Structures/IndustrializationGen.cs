@@ -21,8 +21,11 @@ namespace CalamityOverhaul.Content.Structures
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = CWRLocText.Instance.IndustrializationGenMessage.Value;
             SpawnWindGrivenGenerator();
-            //SpawnWGGCollectorTile();
-            RocketHut.SpawnRocketHut();
+            if (Main.getGoodWorld) {
+                SpawnWGGCollectorTile();
+            }
+            JunkmanBase.Spawn();
+            RocketHut.Spawn();
         }
 
         public static void Shuffle<T>(IList<T> list) {

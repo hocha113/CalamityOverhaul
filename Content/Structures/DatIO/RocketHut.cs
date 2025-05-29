@@ -110,12 +110,14 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
             tile.Slope = (SlopeType)slope;
 
-            tile.TileType = tileType;
-            tile.TileFrameX = frameX;
-            tile.TileFrameY = frameY;
+            if (tileType > 0) {
+                tile.TileType = tileType;
+                tile.TileFrameX = frameX;
+                tile.TileFrameY = frameY;
+            }
         }
 
-        public static void SpawnRocketHut() {
+        public static void Spawn() {
             Point startPos = new Point(Main.spawnTileX, Main.spawnTileY);
             startPos.X += WorldGen.genRand.Next(-16, 16);
             startPos.Y += 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(6);
