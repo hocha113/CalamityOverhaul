@@ -1092,12 +1092,23 @@ Items: {
 
 	WGGCollector: {
 		DisplayName: Junkman
-		Tooltip: ""
+		Tooltip:
+			'''
+			It’s passionate about recycling — including you.
+			To it, there’s no real difference between a plastic bottle and your spinal cord.
+			'''
 	}
 
 	LaserEnergyTrans: {
 		DisplayName: Laser Energy Trans
-		Tooltip: ""
+		Tooltip:
+			'''
+			Remote power transmission.
+			After placement, right-click to activate the laser navigation, 
+			and then right-click on other power buildings to link them.
+			The farther the transmission distance, the greater the energy loss. 
+			The maximum loss is 100%.
+			'''
 	}
 }
 

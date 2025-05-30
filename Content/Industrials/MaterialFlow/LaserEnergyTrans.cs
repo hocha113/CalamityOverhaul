@@ -1,9 +1,13 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -31,6 +35,24 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
             Item.createTile = ModContent.TileType<LaserEnergyTransTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 20;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
+                AddIngredient(ItemID.Lens, 4).
+                AddTile(TileID.Anvils).
+                Register();
+
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 8).
+                AddIngredient(ItemID.Ruby, 1).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 
@@ -75,6 +97,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 
     internal class LaserEnergyTransTP : BaseBattery
     {
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> MaskLaserLine;
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        private static Asset<Texture2D> LaserEnergyTransHead;
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        private static Asset<Texture2D> LaserEnergyTransHeadGlow;
         public override int TargetTileID => ModContent.TileType<LaserEnergyTransTile>();
         public override int TargetItem => ModContent.ItemType<LaserEnergyTrans>();
         public override bool ReceivedEnergy => true;
@@ -82,6 +110,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         internal Vector2 TrueCenter => CenterInWorld - new Vector2(0, 12);
         internal Player fromePlayer;
         internal MachineTP targetMachine;
+        internal const float MaxTransDistance = 1200;
         private int time;
         private Vector2 toMouse;
         private bool oldDownR;
@@ -167,13 +196,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 
         internal void RightClick(Player player) {
             if (targetMachine != null) {
+                SoundEngine.PlaySound(CWRSound.Select);
                 targetMachine = null;
             }
 
             if (fromePlayer != player) {
+                SoundEngine.PlaySound(CWRSound.Select);
                 fromePlayer = player;
             }
             else {
+                SoundEngine.PlaySound(CWRSound.Select);
                 fromePlayer = null;
             }
 
@@ -190,6 +222,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
             if (!TileProcessorLoader.ByPositionGetTP(truePoint, out var tp)) {
                 return;
             }
+            if (tp.Position == Position) {
+                return;//防止链接自己
+            }
             if (tp is not MachineTP machine) {
                 return;
             }
@@ -197,6 +232,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
             toMouse = TrueCenter.To(machine.CenterInWorld);
 
             if (!oldDownR && fromePlayer.PressKey(false)) {
+                SoundEngine.PlaySound(CWRSound.Select);
                 targetMachine = machine;
                 fromePlayer = null;
                 SendData();
@@ -213,11 +249,24 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                 return;
             }
 
+            //计算目标与当前的向量差
             toMouse = TrueCenter.To(targetMachine.CenterInWorld);
-            float transferAmount = Math.Min(Efficiency, Math.Min(MachineData.UEvalue, targetMachine.MaxUEValue - targetMachine.MachineData.UEvalue));
-            if (transferAmount > 0) {
+
+            //计算距离（像素）
+            float distance = toMouse.Length();
+
+            //计算能量衰减比例：MaxTransDistance 像素时为 0，越近越高，最远为 MaxTransDistance
+            float efficiencyScale = 1f - MathHelper.Clamp(distance / MaxTransDistance, 0f, 1f);
+
+            //计算实际可传输的能量值
+            float baseTransfer = Math.Min(Efficiency, Math.Min(MachineData.UEvalue, targetMachine.MaxUEValue - targetMachine.MachineData.UEvalue));
+
+            //加入距离衰减影响
+            float transferAmount = baseTransfer * efficiencyScale;
+
+            if (transferAmount > 0f) {
                 targetMachine.MachineData.UEvalue += transferAmount;
-                MachineData.UEvalue -= transferAmount;
+                MachineData.UEvalue -= baseTransfer;
             }
         }
 
@@ -241,15 +290,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
 
         public override void BackDraw(SpriteBatch spriteBatch) {
             if (fromePlayer.Alives() || targetMachine != null) {
-                Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+                Texture2D value = MaskLaserLine.Value;
+                //计算距离（像素）
+                float distance = toMouse.Length();
+                //计算能量衰减比例：MaxTransDistance 像素时为 0，越近越高，最远为 MaxTransDistance
+                float efficiencyScale = 1f - MathHelper.Clamp(distance / MaxTransDistance, 0f, 1f);
                 Color drawColor = Color.White;
                 drawColor.A = 0;
                 Vector2 size = new Vector2(toMouse.Length() / value.Width, 0.03f + MathF.Sin(time * 0.1f) * 0.006f);
-                Main.EntitySpriteDraw(value, TrueCenter - Main.screenPosition, null, drawColor
+                Main.EntitySpriteDraw(value, TrueCenter - Main.screenPosition, null, drawColor * efficiencyScale
                     , toMouse.ToRotation(), new Vector2(0, value.Height / 2f), size, SpriteEffects.None, 0);
             }
-            Texture2D head = CWRUtils.GetT2DValue(CWRConstant.Asset + "MaterialFlow/LaserEnergyTransHead");
+
+            Texture2D head = LaserEnergyTransHead.Value;
             Main.EntitySpriteDraw(head, TrueCenter - Main.screenPosition, null, Lighting.GetColor(TrueCenter.ToTileCoordinates())
+                , toMouse.ToRotation(), head.Size() / 2, 1f, SpriteEffects.None, 0);
+            head = LaserEnergyTransHeadGlow.Value;
+            Main.EntitySpriteDraw(head, TrueCenter - Main.screenPosition, null, Color.White
                 , toMouse.ToRotation(), head.Size() / 2, 1f, SpriteEffects.None, 0);
         }
 

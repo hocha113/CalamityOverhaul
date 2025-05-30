@@ -1074,12 +1074,21 @@ Items: {
 
 	WGGCollector: {
 		DisplayName: 拾荒者
-		Tooltip: ""
+		Tooltip:
+			'''
+			它热衷于回收一切废品——包括你
+			在它眼中，塑料瓶和脊柱骨没什么本质区别
+			'''
 	}
 
 	LaserEnergyTrans: {
 		DisplayName: 激光传导器
-		Tooltip: ""
+		Tooltip:
+			'''
+			远程传输电力
+			放置后右键启动激光导航，再右键其他电力建筑进行链接
+			传输距离越远能量损耗越大，最大为100%损耗
+			'''
 	}
 }
 

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,7 +7,6 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -44,6 +44,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.createTile = ModContent.TileType<CollectorTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 800;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(15).
+                AddIngredient<MysteriousCircuitry>(20).
+                AddRecipeGroup(CWRRecipes.TungstenBarGroup, 8).
+                AddIngredient(ItemID.Hook, 3).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 
@@ -289,7 +299,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     startPos = Projectile.Center;
                     Projectile.netUpdate = true;
                 }
-                spawn = true;               
+                spawn = true;
             }
 
             if (TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {

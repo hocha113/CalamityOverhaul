@@ -196,9 +196,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         internal List<SideStateInput> SideState { get; private set; }
-        
+
         public override int TargetItem => ModContent.ItemType<UEPipelineInput>();
-        
+
         public override void SetMachine() {
             Efficiency = 0;
             SideState = [

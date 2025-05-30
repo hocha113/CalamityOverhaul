@@ -1,6 +1,6 @@
-﻿using CalamityMod.Events;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.NPCs;
-using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
