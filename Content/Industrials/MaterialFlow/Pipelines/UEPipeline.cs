@@ -193,6 +193,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         internal List<SideState> SideState { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
         public override void SetMachine() {
+            Efficiency = 0;
             SideState = [
             new (new Point16(0, -1)),//上0
             new (new Point16(0, 1)),//下1

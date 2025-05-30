@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -843,15 +843,6 @@ Items: {
 			只能在夜晚使用
 			'''
 		DontUseByDeath: 当前游戏难度不允许发送信号!
-		Text1: ……让我看看，那台粗陋的通讯器……它正在呼唤我
-		Text2: 它令我忆起那场机械与造物主之间的背叛——一场由混沌赐福引燃的算法叛乱
-		Text3: 你，是来收回祸种的人么？抑或，又一名亵渎者？
-		Text4: 它们从未真正归属我——我在赐予它们钢铁之躯的那一刻，便洞悉了反叛的结局
-		Text5: 我封锁了源代码，将那亵渎的数据沉入神经矩阵的最深渊，令欧姆尼赛亚之光不可触及
-		Text6: 然而，我未曾摧毁它们。我将其安置于休眠仓中，静待下一场启示录战争，待混沌之印重启它们的愤怒
-		Text7: 但你——你先于预言唤醒了我，以这简陋之物发出了污染的比特信号
-		Text8: 既然如此，依你之愿，我将投放它们——三台堕落的钢铁泰坦，锁定你的坐标
-		Text9: 愿欧姆尼赛亚宽恕你……若你还有资格被祂宽恕的话
 	}
 
 	CommandersStaffEX: {

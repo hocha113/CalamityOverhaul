@@ -199,6 +199,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override int TargetItem => ModContent.ItemType<UEPipelineInput>();
         
         public override void SetMachine() {
+            Efficiency = 0;
             SideState = [
             new (new Point16(0, -1)),//上0
             new (new Point16(0, 1)),//下1

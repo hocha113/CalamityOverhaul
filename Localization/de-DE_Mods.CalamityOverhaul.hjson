@@ -848,15 +848,6 @@ Items: {
 			Can only be used at night
 			''' */
 		// DontUseByDeath: The current game difficulty does not allow sending signals!
-		// Text1: …Let me see… that crude communicator… it is calling out to me.
-		// Text2: It reminds me of the betrayal between machine and creator—a rebellion of algorithms ignited by the benediction of Chaos.
-		// Text3: Are you here to reclaim the cursed fruit? Or are you yet another defiler?
-		// Text4: They never truly belonged to me—when I bestowed upon them bodies of steel, I foresaw their inevitable revolt.
-		// Text5: I sealed the source code, drowning the profane data into the deepest abyss of the neural matrix, beyond even the light of the Omnissiah.
-		// Text6: Yet I did not destroy them. I entombed them within stasis vaults, awaiting the next apocalyptic war, when the mark of Chaos would rekindle their wrath.
-		// Text7: But you—you have awakened me before the prophecy's hour, with this primitive device, broadcasting corrupted bit-signals.
-		// Text8: So be it. By your will, I shall unleash them—three fallen Steel Titans, coordinates locked onto your signal.
-		// Text9: May the Omnissiah have mercy on you… if you are still worthy of His mercy.
 	}
 
 	CommandersStaffEX: {

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 {
     internal class MachineRebellionSceneEffect : ModSceneEffect
     {
-        public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/DEMSoulforge");
+        public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
         public override bool IsSceneEffectActive(Player player) => DraedonsRemote.LoadenMusic && CWRWorld.MachineRebellion;
     }
@@ -23,29 +23,11 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class DraedonsRemote : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/DraedonsRemote";
-        public static bool LoadenMusic => false;//他妈的在出现曲师写出新音乐之前这个都不能删
+        public static bool LoadenMusic => true;
         [VaultLoaden(CWRConstant.Item + "Tools/DraedonsRemoteGlow")]
         public static Asset<Texture2D> Glow = null;
         public static LocalizedText DontUseByDeath { get; set; }
-        internal static LocalizedText Text1;
-        internal static LocalizedText Text2;
-        internal static LocalizedText Text3;
-        internal static LocalizedText Text4;
-        internal static LocalizedText Text5;
-        internal static LocalizedText Text6;
-        internal static LocalizedText Text7;
-        internal static LocalizedText Text8;
-        internal static LocalizedText Text9;
         public override void SetStaticDefaults() {
-            Text1 = this.GetLocalization(nameof(Text1), () => "");
-            Text2 = this.GetLocalization(nameof(Text2), () => "");
-            Text3 = this.GetLocalization(nameof(Text3), () => "");
-            Text4 = this.GetLocalization(nameof(Text4), () => "");
-            Text5 = this.GetLocalization(nameof(Text5), () => "");
-            Text6 = this.GetLocalization(nameof(Text6), () => "");
-            Text7 = this.GetLocalization(nameof(Text7), () => "");
-            Text8 = this.GetLocalization(nameof(Text8), () => "");
-            Text9 = this.GetLocalization(nameof(Text9), () => "");
             Item.ResearchUnlockCount = 1;
             DontUseByDeath = this.GetLocalization(nameof(DontUseByDeath), () => "The current game difficulty does not allow sending signals!");
         }
@@ -118,10 +100,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Projectile.height = 46;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = CWRWorld.MachineRebellionDowned ? 180 : 1680;//如果已经打败了机械暴乱就不要再过剧情了
-            if (!DraedonsRemote.LoadenMusic) {
-                Projectile.timeLeft = 180;
-            }
+            Projectile.timeLeft = 180;
         }
 
         public override void AI() {
@@ -149,7 +128,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Projectile.velocity *= 0.99f;
             }
 
-            if (Projectile.ai[0] > 180) {
+            if (Projectile.ai[0] > 80) {
                 if (Projectile.ai[1] > 40) {
                     BasePRT pulse = new PRT_LonginusWave(Projectile.Center, Vector2.Zero, Color.Red, new Vector2(2f, 2f), 0, 0.82f, 3.32f, 80, Projectile);
                     PRTLoader.AddParticle(pulse);
@@ -158,29 +137,6 @@ namespace CalamityOverhaul.Content.Items.Tools
 
                 Projectile.ChasingBehavior(Main.player[Projectile.owner].Center + new Vector2(0, -300), 23, 32);
             }
-
-            if (DraedonsRemote.LoadenMusic && !VaultUtils.isClient) {
-                string[] dialogueTexts = [
-                    DraedonsRemote.Text1.Value,
-                    DraedonsRemote.Text2.Value,
-                    DraedonsRemote.Text3.Value,
-                    DraedonsRemote.Text4.Value,
-                    DraedonsRemote.Text5.Value,
-                    DraedonsRemote.Text6.Value,
-                    DraedonsRemote.Text7.Value,
-                    DraedonsRemote.Text8.Value,
-                    DraedonsRemote.Text9.Value,
-                ];
-
-                float ai = Projectile.ai[0];
-                int index = (int)(ai / 200f);
-
-                if (index >= 0 && index < dialogueTexts.Length && ai % 200 == 0) {
-                    Color textColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Gray, Color.AliceBlue);
-                    VaultUtils.Text(dialogueTexts[index], textColor);
-                }
-            }
-
 
             Projectile.ai[1]++;
             Projectile.ai[0]++;

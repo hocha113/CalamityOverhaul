@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (!Main.expertMode) {
                 return true;
             }//如果不是专家模式，就不要使用重做后的绘制
-            if (CalamityWorld.revenge || CalamityWorld.death || BossRushEvent.BossRushActive) {
+            if (CalamityWorld.revenge || CalamityWorld.death || BossRushEvent.BossRushActive || CWRWorld.MachineRebellion) {
                 return false;
             }//如果没有开启任何难度，也不要使用重做后的绘制
             return true;

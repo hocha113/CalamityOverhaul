@@ -22,8 +22,12 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static bool MachineRebellionDowned;
 
-        public override void ClearWorld() {
-            MachineRebellion = false;
+        public override void OnWorldLoad() {
+            MachineRebellionDowned = false;
+        }
+
+        public override void OnWorldUnload() {
+            MachineRebellionDowned = false;
         }
 
         public override void PostUpdateEverything() {
