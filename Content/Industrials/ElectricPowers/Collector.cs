@@ -144,12 +144,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
         public override void SendData(ModPacket data) {
+            base.SendData(data);
             data.Write(workState);
             data.Write(ArmIndex0);
             data.Write(ArmIndex1);
             data.Write(ArmIndex2);
         }
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
             workState = reader.ReadBoolean();
             ArmIndex0 = reader.ReadInt32();
             ArmIndex1 = reader.ReadInt32();

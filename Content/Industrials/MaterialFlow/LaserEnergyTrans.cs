@@ -120,6 +120,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void SendData(ModPacket data) {
+            base.SendData(data);
             if (fromePlayer == null) {
                 data.Write(-1);
             }
@@ -138,6 +139,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
             int playerIndex = reader.ReadInt32();
             string tpName = reader.ReadString();
             Point16 tpPos = reader.ReadPoint16();
@@ -163,6 +165,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void SaveData(TagCompound tag) {
+            base.SaveData(tag);
             if (targetMachine == null || !targetMachine.Active) {
                 tag["targetMachine_LoadenName"] = "";
                 tag["targetMachine_Position"] = new Point16(0, 0);
@@ -174,6 +177,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void LoadData(TagCompound tag) {
+            base.LoadData(tag);
             if (!tag.TryGet("targetMachine_LoadenName", out string tpName)) {
                 tpName = "";
             }
