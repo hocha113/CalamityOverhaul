@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

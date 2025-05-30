@@ -3,7 +3,7 @@ using CalamityMod.CustomRecipes;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;

@@ -1096,6 +1096,11 @@ Items: {
 		// DisplayName: Junkman
 		// Tooltip: ""
 	}
+
+	LaserEnergyTrans: {
+		// DisplayName: Laser Energy Trans
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

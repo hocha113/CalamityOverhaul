@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;

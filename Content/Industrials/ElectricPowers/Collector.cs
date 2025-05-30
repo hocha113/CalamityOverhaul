@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -62,7 +62,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            Main.tileSolidTop[Type] = true;
             AddMapEntry(new Color(67, 72, 81), VaultUtils.GetLocalizedItemName<Collector>());
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);

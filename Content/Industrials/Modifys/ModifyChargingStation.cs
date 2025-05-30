@@ -3,7 +3,7 @@ using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.TileModify.Core;
 using InnoVault.TileProcessors;
