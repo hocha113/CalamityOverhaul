@@ -79,8 +79,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class DeathhailStaffHeld : BaseMagicStaff<DeathhailStaff> { }
     internal class DeathhailStaffRItem : RMagicStaff<DeathhailStaff> { }
 
-    internal class DivineRetributionHeld : BaseMagicStaff<DivineRetribution> { }
-    internal class DivineRetributionRItem : RMagicStaff<DivineRetribution> { }
+    //internal class DivineRetributionHeld : BaseMagicStaff<DivineRetribution> { }
+    //internal class DivineRetributionRItem : RMagicStaff<DivineRetribution> { }//TODO
 
     internal class DownpourHeld : BaseMagicStaff<Downpour> { }
     internal class DownpourRItem : RMagicStaff<Downpour> { }
@@ -128,8 +128,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     }
     internal class ElementalRayRItem : RMagicStaff<ElementalRay> { }
 
-    internal class FabstaffHeld : BaseMagicStaff<Fabstaff> { }
-    internal class FabstaffRItem : RMagicStaff<Fabstaff> { }
+    //internal class FabstaffHeld : BaseMagicStaff<Fabstaff> { }
+    //internal class FabstaffRItem : RMagicStaff<Fabstaff> { }
 
     internal class GleamingMagnoliaHeld : BaseMagicStaff<GleamingMagnolia> { }
     internal class GleamingMagnoliaRItem : RMagicStaff<GleamingMagnolia> { }

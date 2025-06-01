@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
+using CalamityMod.Items.Potions;
 using CalamityMod.Items.Potions.Alcohol;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.TileModify
             }
             //愚人节快乐
             //尝试召唤至尊灾厄而不是开启音乐
-            bool vodka = Main.LocalPlayer.GetItem().type == ModContent.ItemType<FabsolsVodka>() && Main.zenithWorld;
+            bool vodka = Main.LocalPlayer.GetItem().type == ModContent.ItemType<DeliciousMeat>() && Main.zenithWorld;//TODO
 
             if (NPC.AnyNPCs(ModContent.NPCType<SupremeCalamitas>()) || BossRushEvent.BossRushActive) {
                 return false;

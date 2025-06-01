@@ -292,11 +292,13 @@ namespace CalamityOverhaul.Content
         private void DompTemporaryVersionText() {
             string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
             soubText = soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
-            soubText = soubText.Replace("[V2]", "0.6");
+            soubText = soubText.Replace("[V2]", "0.6.8.2");
             SpwanTextProj.New(Player, () => VaultUtils.Text(soubText, Color.IndianRed));
         }
 
         public override void OnEnterWorld() {
+            DompTemporaryVersionText();
+
             CWRHook.CheckHookStatus();
 
             if (!ModGanged.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
