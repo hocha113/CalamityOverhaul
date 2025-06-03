@@ -5098,6 +5098,39 @@ RemakeItems: {
 
 	// ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
 	// ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
+
+	RSylvestaff: {
+		// DisplayName: Sylveon Staff
+		/* Tooltip:
+			'''
+			Fires a radiant beam of moonlight that splits into starlight projectiles when near enemies
+			    		"The power of elegance, blooming in moonlight!"
+			''' */
+	}
+
+	RSuperradiantSlaughterer: {
+		// DisplayName: Superradiant Sawblade
+		/* Tooltip:
+			'''
+			[MAIN]
+			[ALT]
+			[c/ad1717:"It used to be a tool... until one day it stopped telling wood from flesh."]
+			''' */
+		/* MainInfo:
+			'''
+			Hold left-click to spin up a close-range elemental sawblade.
+			Releasing left-click throws the sawblade, which bounces off terrain and shreds enemies.
+			The sawblade returns when it stops moving, releasing homing projectiles based on hits and bounces.
+			Holding the sawblade longer increases its damage and penetration.
+			''' */
+		/* AltInfo:
+			'''
+			Hold right-click to launch a hovering sawblade that continuously fires homing projectiles.
+			Activating this ability launches you quickly in your current movement direction.
+			This ability has a cooldown of {0} seconds.
+			During cooldown, the returning sawblade tracks the cursor and keeps releasing projectiles.
+			''' */
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

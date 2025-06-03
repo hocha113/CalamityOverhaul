@@ -286,9 +286,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     {
         public override int TargetID => ItemID.GoldenShower;
         public override string HeldProjName => "GoldenShower";
-        public override void SetDefaults(Item item) {
-            base.SetDefaults(item);
-
-        }
     }
 }

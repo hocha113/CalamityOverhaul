@@ -30,9 +30,5 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.createTile = ModContent.TileType<NeutronStarIngotTile>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronStarIngot;
         }
-
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
-        }
     }
 }

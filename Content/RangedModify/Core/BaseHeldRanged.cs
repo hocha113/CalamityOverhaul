@@ -398,11 +398,13 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public override bool ExtraPreSet() {
             if (Item.type != TargetID) { //只需要判断原版的物品
                 Projectile.Kill();
+                NetUpdate();
                 return false;
             }
 
             if (Owner.CCed || !Owner.active || Owner.dead) {
                 Projectile.Kill();
+                NetUpdate();
                 return false;
             }
 

@@ -5094,6 +5094,39 @@ RemakeItems: {
 
 	ModifyAncientNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
 	ModifyNecroHelmet.UpdateArmorText: 在换弹过程中如果受到伤害将抛出几个骨头
+
+	RSylvestaff: {
+		DisplayName: 仙子伊布法杖
+		Tooltip:
+			'''
+			发射一道闪耀的月光束，接近敌人时分裂成星辉光束
+			“优雅之力，月光绽放！”
+			'''
+	}
+
+	RSuperradiantSlaughterer: {
+		DisplayName: 超辐戮锯
+		Tooltip:
+			'''
+			[MAIN]
+			[ALT]
+			[c/ad1717:“它曾是一把工具，直到某天决定不再区分木头和肉”]
+			'''
+		MainInfo:
+			'''
+			按住左键以旋转出一把近战用的元素圆锯
+			松开左键会将圆锯投掷出去，它会在地形上弹跳、撕裂敌人
+			圆锯在停止时将返回玩家，并根据期间的命中与反弹次数释放追踪飞矢
+			持续蓄力可提升圆锯的伤害和穿透能力
+			'''
+		AltInfo:
+			'''
+			按住右键向光标方向发射一枚悬停圆锯，持续发射追踪飞矢
+			激活此能力时，你会被迅速推向当前移动方向
+			此能力有{0}秒冷却
+			冷却期间，圆锯会在返回时自动追踪光标并释放飞矢
+			'''
+	}
 }
 
 NPCs.DestroyerDrawHeadIconNPC.DisplayName: 毁灭者
