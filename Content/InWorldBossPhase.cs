@@ -6,11 +6,9 @@ using Terraria;
 namespace CalamityOverhaul.Content
 {
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
-    public class InWorldBossPhase : ICWRLoader
+    public static class InWorldBossPhase
     {
         #region Data
-        public static InWorldBossPhase Instance { get; private set; }
-
         public static bool Level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
 
         public static bool Level1 => DownedV1.Invoke() || Downed1.Invoke();
@@ -250,9 +248,6 @@ namespace CalamityOverhaul.Content
         public static int YharonKillCount;
 
         #endregion
-
-        void ICWRLoader.LoadData() => Instance = new InWorldBossPhase();
-        void ICWRLoader.UnLoadData() => Instance = null;
 
         public static int SHPC_Level() {
             int level = 0;

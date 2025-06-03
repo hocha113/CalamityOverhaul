@@ -400,6 +400,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;//只在大师模式下偷东西
             }
 
+            if (Main.myPlayer != target.whoAmI) {
+                return;//只在受击玩家的客户端上运行
+            }
+
             if (Main.rand.NextBool()) {
                 return;
             }

@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 Charge = 0;
             }
 
-            if (OnHandheldDisplayBool) {
+            if (OnHandheldDisplayBool || Charge > 0) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
             }
@@ -196,9 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {
-            if (OnHandheldDisplayBool) {
-                BoxDraw(ref lightColor);
-            }
+            BoxDraw(ref lightColor);
             return false;
         }
 
@@ -207,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             float rotation = Projectile.rotation;
             Color drawColor = lightColor;
             SpriteEffects spriteEffects = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-            if (Charge <= 0) {
+            if (Charge <= 0 && OnHandheldDisplayBool) {
                 Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos + Owner.CWR().SpecialDrawPositionOffset
                     , null, drawColor, rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             }

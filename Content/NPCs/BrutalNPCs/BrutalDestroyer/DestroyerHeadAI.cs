@@ -157,7 +157,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return;
             }
 
-            int idleTime = BossRush ? 240 : 360;
+            int idleTime = 600;
+            if (MasterMode) {
+                idleTime -= 60;
+            }
+            if (Death) {
+                idleTime -= 90;
+            }
+            if (BossRush) {
+                idleTime -= 120;
+            }
+
+            // 收集体节
             if (++AttackAIs[0] > idleTime) {
                 Bodys.Clear();
                 foreach (var body in Main.ActiveNPCs) {
@@ -169,23 +180,92 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     Bodys.Add(body);
                 }
-                AttackAIs[1] = Bodys.Count - 1;
-                AttackAIs[0] = 0;
+                AttackAIs[1] = Bodys.Count - 1; // 体节索引
+                AttackAIs[0] = 0; // 重置计时器
+                AttackAIs[4] = 0; // 初始化模式计数器
+                AttackAIs[5] = 0; // 初始化波次计数器
             }
 
-            if (AttackAIs[1] > 0 && ++AttackAIs[2] > 4) {
-                NPC thisBody = npc;
-                int index = (int)AttackAIs[1];
-                if (index >= 0 && index < Bodys.Count) {
-                    thisBody = Bodys[(int)AttackAIs[1]];
+            // 控制节奏的延迟
+            if (AttackAIs[3] == 0) {
+                AttackAIs[3] = 4; // 默认发射间隔
+            }
+
+            // 节奏模式逻辑
+            if (AttackAIs[1] > 0 && ++AttackAIs[2] > AttackAIs[3]) {
+                // 模式选择（每完成一个完整周期切换模式）
+                if (AttackAIs[4] == 0) {
+                    AttackAIs[4] = Main.rand.Next(1, 4); // 随机选择模式（1-3）
+                    AttackAIs[5] = 0; // 重置波次计数器
                 }
 
-                Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center
-                , Vector2.Zero, ModContent.ProjectileType<SpawnLaserEffect>()
-                , 0, 0f, Main.myPlayer, AttackAIs[1] % 3, thisBody.whoAmI, player.whoAmI);
+                int pattern = (int)AttackAIs[4];
+                NPC thisBody = npc;
+                Vector2 shootVelocity;
 
-                AttackAIs[2] = 0;
-                AttackAIs[1]--;
+                if (pattern == 1) {
+                    // 模式1：波浪式发射（从两端向中间）
+                    int halfCount = Bodys.Count / 2;
+                    int index = (int)(AttackAIs[5] < halfCount ? AttackAIs[5] : Bodys.Count - 1 - AttackAIs[5]);
+                    if (index >= 0 && index < Bodys.Count) {
+                        thisBody = Bodys[index];
+                        shootVelocity = thisBody.Center.To(player.Center).UnitVector();
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center,
+                            shootVelocity, ModContent.ProjectileType<SpawnLaserEffect>(),
+                            0, 0f, Main.myPlayer, AttackAIs[5] % 3, thisBody.whoAmI, player.whoAmI);
+                    }
+                    AttackAIs[5]++;
+                    if (AttackAIs[5] >= Bodys.Count) {
+                        AttackAIs[4] = 0; // 模式结束，重置
+                        AttackAIs[1] = Bodys.Count - 1;
+                    }
+                }
+                else if (pattern == 2) {
+                    // 模式2：分组发射（每3个体节同时发射）
+                    int groupSize = 3;
+                    int startIndex = (int)AttackAIs[5] * groupSize;
+                    for (int i = startIndex; i < startIndex + groupSize && i < Bodys.Count; i++) {
+                        thisBody = Bodys[i];
+                        shootVelocity = thisBody.Center.To(player.Center).UnitVector();
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center,
+                            shootVelocity, ModContent.ProjectileType<SpawnLaserEffect>(),
+                            0, 0f, Main.myPlayer, i % 3, thisBody.whoAmI, player.whoAmI);
+                    }
+                    AttackAIs[5]++;
+                    if (startIndex + groupSize >= Bodys.Count) {
+                        AttackAIs[4] = 0; // 模式结束，重置
+                        AttackAIs[1] = Bodys.Count - 1;
+                    }
+                }
+                else if (pattern == 3) {
+                    // 模式3：随机双发射（随机选择两个体节同时发射）
+                    int index1 = Main.rand.Next(Bodys.Count);
+                    int index2 = Main.rand.Next(Bodys.Count);
+                    while (index2 == index1 && Bodys.Count > 1) {
+                        index2 = Main.rand.Next(Bodys.Count); // 确保两个索引不同
+                    }
+                    thisBody = Bodys[index1];
+                    shootVelocity = thisBody.Center.To(player.Center).UnitVector();
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center,
+                        shootVelocity, ModContent.ProjectileType<SpawnLaserEffect>(),
+                        0, 0f, Main.myPlayer, index1 % 3, thisBody.whoAmI, player.whoAmI);
+                    if (index2 < Bodys.Count) {
+                        thisBody = Bodys[index2];
+                        shootVelocity = thisBody.Center.To(player.Center).UnitVector();
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), thisBody.Center,
+                            shootVelocity, ModContent.ProjectileType<SpawnLaserEffect>(),
+                            0, 0f, Main.myPlayer, index2 % 3, thisBody.whoAmI, player.whoAmI);
+                    }
+                    AttackAIs[5]++;
+                    if (AttackAIs[5] >= 3) { // 限制波次
+                        AttackAIs[4] = 0; // 模式结束，重置
+                        AttackAIs[1] = Bodys.Count - 1;
+                    }
+                }
+
+                AttackAIs[2] = 0; // 重置发射计时器
+                AttackAIs[3] = Main.rand.Next(3, 6); // 动态调整发射间隔，增加节奏感
+                AttackAIs[1]--; // 减少体节计数
             }
         }
 

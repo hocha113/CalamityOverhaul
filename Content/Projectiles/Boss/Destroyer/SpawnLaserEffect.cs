@@ -20,9 +20,19 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             Projectile.timeLeft = IdleTime;
         }
 
+        public override bool ShouldUpdatePosition() => false;
+
         public override void AI() {
+            NPC thisBody = Main.npc[(int)Projectile.ai[1]];
+            if (!thisBody.Alives()) {
+                Projectile.Kill();
+                return;
+            }
+
+            Projectile.Center = thisBody.Center;
+            Projectile.rotation = Projectile.velocity.ToRotation();
+
             if (Projectile.localAI[0] == 0 && !Main.dedServ) {
-                NPC thisBody = Main.npc[(int)Projectile.ai[1]];
                 Color telegraphColor;
                 Particle spark;
 
@@ -46,6 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                         break;
                 }
             }
+
             Projectile.localAI[0]++;
         }
 
@@ -55,8 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             }
 
             NPC thisBody = Main.npc[(int)Projectile.ai[1]];
-            Player player = Main.player[(int)Projectile.ai[2]];
-            Vector2 shootVelocity = thisBody.Center.To(player.Center).UnitVector();
+            Vector2 shootVelocity = Projectile.velocity.UnitVector();
             shootVelocity *= (DestroyerHeadAI.Death || DestroyerHeadAI.MasterMode) ? 12 : 9;
             if (DestroyerHeadAI.BossRush) {
                 shootVelocity *= 1.6f;

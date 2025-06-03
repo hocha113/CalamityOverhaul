@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Vector2 rand = CWRUtils.randVr(480, 800);
                 Vector2 pos = Main.MouseWorld + rand;
                 Vector2 vr = rand.UnitVector() * -ShootSpeedModeFactor;
-                if (Framing.GetTileSafely(pos / 16).HasSolidTile()) {
+                if (Framing.GetTileSafely(pos).HasSolidTile()) {
                     pos = Projectile.Center;
                     vr = ShootVelocity * Main.rand.NextFloat(0.3f, 1.13f);
                 }

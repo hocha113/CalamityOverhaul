@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
-            DompTemporaryVersionText();
+            //DompTemporaryVersionText();
 
             CWRHook.CheckHookStatus();
 
