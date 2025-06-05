@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 }
                 else if (Projectile.ai[0] == Inder1) {
                     Projectile.velocity = Vector2.Zero;
-                    if (Main.myPlayer == Projectile.owner) {
+                    if (Projectile.IsOwnedByLocalPlayer()) {
                         origVer = Projectile.Center.DirectionTo(Main.player[Projectile.owner].Center) * 45;
                         Projectile.netUpdate = true;
                     }

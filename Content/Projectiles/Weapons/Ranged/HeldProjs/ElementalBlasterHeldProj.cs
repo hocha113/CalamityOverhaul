@@ -1,9 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.RangedModify.Core;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+﻿namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     //TODO
     //internal class ElementalBlasterHeldProj : BaseGun

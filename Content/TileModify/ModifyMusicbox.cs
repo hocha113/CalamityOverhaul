@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items.Potions;
-using CalamityMod.Items.Potions.Alcohol;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;

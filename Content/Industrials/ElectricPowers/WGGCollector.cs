@@ -204,6 +204,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.hostile = true;
             Projectile.penetrate = -1;
             Projectile.ignoreWater = true;
+            Projectile.netImportant = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {

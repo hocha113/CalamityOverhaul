@@ -263,6 +263,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.tileCollide = false;
             Projectile.timeLeft = 120;
             Projectile.ignoreWater = true;
+            Projectile.netImportant = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {

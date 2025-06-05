@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 180);
-            if (Main.myPlayer == Projectile.owner && Projectile.numHits == 0) {
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0) {
                 _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
                     , ModContent.ProjectileType<BrimstoneSwordExplosion>(), (int)(Projectile.damage * 0.5), hit.Knockback, Projectile.owner);
             }
