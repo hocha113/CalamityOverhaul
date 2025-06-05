@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -5226,36 +5226,40 @@ RemakeItems: {
 	// ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
 
 	RSylvestaff: {
-		// DisplayName: Sylveon Staff
-		/* Tooltip:
+		DisplayName: Посох Сильвиион
+		Tooltip:
 			'''
-			Fires a radiant beam of moonlight that splits into starlight projectiles when near enemies
-			    		"The power of elegance, blooming in moonlight!"
-			''' */
+			Выпускает сияющий лунный луч, 
+			который при приближении к врагу расщепляется на звездные лучи.
+			«Грация во плоти, лунный свет — вперёд!»
+			'''
 	}
 
 	RSuperradiantSlaughterer: {
-		// DisplayName: Superradiant Sawblade
-		/* Tooltip:
+		DisplayName: Сверхлучевая Мясорубка
+		Tooltip:
 			'''
 			[MAIN]
 			[ALT]
-			[c/ad1717:"It used to be a tool... until one day it stopped telling wood from flesh."]
-			''' */
-		/* MainInfo:
+			[c/ad1717:"В инструкции не сказано, что ею нельзя резать людей."]
 			'''
-			Hold left-click to spin up a close-range elemental sawblade.
-			Releasing left-click throws the sawblade, which bounces off terrain and shreds enemies.
-			The sawblade returns when it stops moving, releasing homing projectiles based on hits and bounces.
-			Holding the sawblade longer increases its damage and penetration.
-			''' */
-		/* AltInfo:
+		MainInfo:
 			'''
-			Hold right-click to launch a hovering sawblade that continuously fires homing projectiles.
-			Activating this ability launches you quickly in your current movement direction.
-			This ability has a cooldown of {0} seconds.
-			During cooldown, the returning sawblade tracks the cursor and keeps releasing projectiles.
-			''' */
+			Удерживайте левую кнопку, чтобы вращать элементарную циркулярную пилу ближнего боя.
+			Отпустите кнопку, чтобы метнуть пилу — она будет отскакивать от стен и кромсать врагов.
+			Когда пила останавливается, она возвращается к игроку и выпускает 
+			самонаводящиеся болты в зависимости от количества ударов и рикошетов.
+			Длительная зарядка увеличивает урон и пробивную способность пилы.
+			'''
+		AltInfo:
+			'''
+			Удерживайте правую кнопку, чтобы выпустить парящую пилу в 
+			направлении курсора — она будет стрелять самонаводящимися болтами.
+			При активации способности вы стремительно бросаетесь в сторону движения.
+			Перезарядка способности составляет {0} секунд.
+			Во время перезарядки пила будет автоматически следовать 
+			за курсором при возвращении и выпускать болты.
+			'''
 	}
 }
 
