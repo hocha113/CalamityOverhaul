@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.CalPlayer;
 using CalamityMod.Cooldowns;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
@@ -25,9 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<SuperradiantSlaughterer>();
         public override bool DrawingInfo => false;
-        public override void SetDefaults(Item item) {
-            item.shoot = ModContent.ProjectileType<SuperradiantSlaughtererHeld>();
-        }
+        public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<SuperradiantSlaughtererHeld>();
         public override void ModifyRecipe(Recipe recipe) => recipe.RemoveIngredient(ModContent.ItemType<SpeedBlaster>());
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {//重新补上修改，因为描述替换会让原本的修改操作失效
             tooltips.ReplaceTooltip("[MAIN]"
@@ -131,14 +130,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             }
 
             if (DownRight && !Owner.HasCooldown(SuperradiantSawBoost.ID)) {
-                Owner.AddCooldown(SuperradiantSawBoost.ID, SuperradiantSlaughterer.DashCooldown);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Owner.AddCooldown(SuperradiantSawBoost.ID, SuperradiantSlaughterer.DashCooldown);
+                }
+                
                 Owner.Calamity().sBlasterDashActivated = true;
+                Owner.velocity += UnitToMouseV * 22;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Custom/MeatySlash"), TruePosition);
 
                 float clampedMouseDist = MathHelper.Clamp(Vector2.Distance(TruePosition, Owner.Calamity().mouseWorld), 0f, 960f);
                 float adjustedMouseDist = clampedMouseDist / 21f;
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), TruePosition, Projectile.velocity.SafeNormalize(Vector2.UnitY) * adjustedMouseDist
+
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), TruePosition, Projectile.velocity.SafeNormalize(Vector2.UnitY) * adjustedMouseDist
                     , ModContent.ProjectileType<SuperradiantSawLingering>(), (int)(Projectile.damage * 1.5f), Projectile.knockBack, Projectile.owner);
+                }
+
                 if (Projectile.ai[1] >= 2f) {
                     NoSawByHeld = true;
                     FromArmLength -= 16f;

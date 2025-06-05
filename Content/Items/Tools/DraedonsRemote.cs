@@ -13,17 +13,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
-    internal class MachineRebellionSceneEffect : ModSceneEffect
-    {
-        public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-        public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => DraedonsRemote.LoadenMusic && CWRWorld.MachineRebellion;
-    }
+    //internal class MachineRebellionSceneEffect : ModSceneEffect
+    //{
+    //    public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+    //    public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
+    //    public override bool IsSceneEffectActive(Player player) => CWRWorld.MachineRebellion;
+    //}
 
     internal class DraedonsRemote : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/DraedonsRemote";
-        public static bool LoadenMusic => true;
         [VaultLoaden(CWRConstant.Item + "Tools/DraedonsRemoteGlow")]
         public static Asset<Texture2D> Glow = null;
         public static LocalizedText DontUseByDeath { get; set; }

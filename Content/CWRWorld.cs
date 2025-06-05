@@ -30,33 +30,44 @@ namespace CalamityOverhaul.Content
             MachineRebellionDowned = false;
         }
 
-        public override void PostUpdateEverything() {
-            if (MachineRebellion) {//在机械暴乱开启下，检测如果全程机械Boss被杀死了后就自动关闭
-                bool noBoss = true;
+        public static void UpdateMachineRebellion() {
+            if (!MachineRebellion) {
+                return;
+            }
 
-                foreach (var npc in Main.ActiveNPCs) {
-                    if (npc.type == NPCID.SkeletronPrime) {
-                        noBoss = false;
-                    }
-                    else if (npc.type == NPCID.Spazmatism) {
-                        noBoss = false;
-                    }
-                    else if (npc.type == NPCID.Retinazer) {
-                        noBoss = false;
-                    }
-                    else if (npc.type == NPCID.TheDestroyer) {
-                        noBoss = false;
-                    }
+            if (!Main.dedServ) {
+                Main.LocalPlayer.CurrentSceneEffect.music.value 
+                    = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+            }
+
+            bool noBoss = true;
+            //在机械暴乱开启下，检测如果全程机械Boss被杀死了后就自动关闭
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type == NPCID.SkeletronPrime) {
+                    noBoss = false;
                 }
-
-                if (DontCloseMachineRebellion > 0) {
-                    DontCloseMachineRebellion--;
+                else if (npc.type == NPCID.Spazmatism) {
+                    noBoss = false;
                 }
-
-                if (noBoss && DontCloseMachineRebellion <= 0) {
-                    MachineRebellion = false;
+                else if (npc.type == NPCID.Retinazer) {
+                    noBoss = false;
+                }
+                else if (npc.type == NPCID.TheDestroyer) {
+                    noBoss = false;
                 }
             }
+
+            if (DontCloseMachineRebellion > 0) {
+                DontCloseMachineRebellion--;
+            }
+
+            if (noBoss && DontCloseMachineRebellion <= 0) {
+                MachineRebellion = false;
+            }
+        }
+
+        public override void PostUpdateEverything() {
+            UpdateMachineRebellion();
         }
 
         public override void NetSend(BinaryWriter writer) {

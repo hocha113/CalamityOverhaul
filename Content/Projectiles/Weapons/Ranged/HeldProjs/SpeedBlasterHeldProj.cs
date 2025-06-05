@@ -72,7 +72,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 UpdateMagazineContents();
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity, Item.shoot
                     , (int)(WeaponDamage * DashShotDamageMult), WeaponKnockback, Owner.whoAmI, ColorValue, 3f);
-                Owner.AddCooldown(SpeedBlasterBoost.ID, DashCooldown);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Owner.AddCooldown(SpeedBlasterBoost.ID, DashCooldown);
+                } 
                 Owner.Calamity().sBlasterDashActivated = true;
                 if (Owner.velocity != Vector2.Zero) {
                     Color ColorUsed = SpeedBlasterShot.GetColor(ColorValue);
