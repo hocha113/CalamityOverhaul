@@ -860,8 +860,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        public override BitsByte SandBitsByte(BitsByte flags) {
-            flags = base.SandBitsByte(flags);
+        public override BitsByte SendBitsByte(BitsByte flags) {
+            flags = base.SendBitsByte(flags);
             flags[5] = IsKreload;
             flags[6] = ManualReloadStart;
             flags[7] = automaticPolishingInShootStartFarg;

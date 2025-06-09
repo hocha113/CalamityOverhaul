@@ -449,40 +449,6 @@ namespace CalamityOverhaul
             }
         }
 
-        public static Chest FindNearestChest(int x, int y, int distance = 99999) {
-            int newDistance = distance;
-            Chest nearestChest = null;
-
-            for (int c = 0; c < Main.chest.Length; c++) {
-                Chest currentChest = Main.chest[c];
-                if (currentChest != null) {
-                    int length = (int)Math.Sqrt(Math.Pow(x - currentChest.x, 2) + Math.Pow(y - currentChest.y, 2));
-                    if (length < newDistance) {
-                        nearestChest = currentChest;
-                        newDistance = length;
-                    }
-                }
-            }
-            return nearestChest;
-        }
-
-        public static void AddItem(this Chest chest, Item item) {
-            Item infoItem = item.Clone();
-            for (int i = 0; i < chest.item.Length; i++) {
-                if (chest.item[i] == null) {
-                    chest.item[i] = new Item();
-                }
-                if (chest.item[i].type == ItemID.None) {
-                    chest.item[i] = infoItem;
-                    return;
-                }
-                if (chest.item[i].type == item.type) {
-                    chest.item[i].stack += infoItem.stack;
-                    return;
-                }
-            }
-        }
-
         public static Color[] GetColorDate(Texture2D tex) {
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);
@@ -492,7 +458,7 @@ namespace CalamityOverhaul
                     nonTransparentColors.Add(color);
                 }
             }
-            return nonTransparentColors.ToArray();
+            return [.. nonTransparentColors];
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -189,7 +190,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            Chest = CWRUtils.FindNearestChest(Position.X, Position.Y, 100);
+            Chest = Position.FindClosestChest(100, false, (Chest c) => c.CanItemBeAddedToChest());
             if (Chest == null && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
@@ -247,11 +248,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override string Texture => CWRConstant.Placeholder;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalArm")]
-        private static Asset<Texture2D> arm;//手臂的体节纹理
+        private static Asset<Texture2D> arm = null;//手臂的体节纹理
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClamp")]
-        private static Asset<Texture2D> clamp;//手臂的夹子纹理
+        private static Asset<Texture2D> clamp = null;//手臂的夹子纹理
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
-        private static Asset<Texture2D> clampGlow;//手臂的夹子的光效纹理
+        private static Asset<Texture2D> clampGlow = null;//手臂的夹子的光效纹理
         internal CollectorTP collectorTP;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private Item graspItem;
@@ -358,7 +359,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
                 if (toChest < 32) {//将物品放进箱子
                     Projectile.velocity = Vector2.Zero;
-                    collectorTP.Chest.AddItem(graspItem);
+                    collectorTP.Chest.AddItem(graspItem, true);
                     graspItem.TurnToAir();
                     Projectile.ai[0] = 0;
                     Projectile.netUpdate = true;

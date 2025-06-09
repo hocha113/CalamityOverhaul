@@ -74,7 +74,7 @@ namespace CalamityOverhaul
 
         public override void HoldItem(Player player) {
         }
-        int tpIndex = 0;
+        //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //List<TileProcessor> tps = [];
             //foreach (var p in TileProcessorLoader.TP_InWorld) {

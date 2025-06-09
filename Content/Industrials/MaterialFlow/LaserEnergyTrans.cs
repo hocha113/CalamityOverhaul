@@ -98,11 +98,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
     internal class LaserEnergyTransTP : BaseBattery
     {
         [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> MaskLaserLine;
+        private static Asset<Texture2D> MaskLaserLine = null;
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
-        private static Asset<Texture2D> LaserEnergyTransHead;
+        private static Asset<Texture2D> LaserEnergyTransHead = null;
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
-        private static Asset<Texture2D> LaserEnergyTransHeadGlow;
+        private static Asset<Texture2D> LaserEnergyTransHeadGlow = null;
         public override int TargetTileID => ModContent.TileType<LaserEnergyTransTile>();
         public override int TargetItem => ModContent.ItemType<LaserEnergyTrans>();
         public override bool ReceivedEnergy => true;

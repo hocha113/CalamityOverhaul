@@ -462,6 +462,8 @@ namespace CalamityOverhaul.Content
                     writer.Write(ammo.CWR().AmmoProjectileReturn);
                 }
             }
+
+            writer.Write(TargetByCollector);
         }
 
         public override void NetReceive(Item item, BinaryReader reader) {
@@ -490,6 +492,8 @@ namespace CalamityOverhaul.Content
                 }
                 MagazineContents = list.ToArray();
             }
+
+            TargetByCollector = reader.ReadInt32();
         }
         #endregion
 

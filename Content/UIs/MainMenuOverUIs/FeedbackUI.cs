@@ -13,9 +13,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     {
         internal static FeedbackUI Instance { get; private set; }
         [VaultLoaden(CWRConstant.UI + "GithubOAC")]
-        private static Asset<Texture2D> githubOAC;
+        private static Asset<Texture2D> githubOAC = null;
         [VaultLoaden(CWRConstant.UI + "SteamOAC")]
-        private static Asset<Texture2D> steamOAC;
+        private static Asset<Texture2D> steamOAC = null;
         private const float githubSiz1 = 0.001f;
         private const float githubSiz2 = 0.05f;
         private int Time;

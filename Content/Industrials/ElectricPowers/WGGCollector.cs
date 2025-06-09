@@ -177,9 +177,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override string Texture => CWRConstant.Placeholder;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/WGGMechanicalArm")]
-        private static Asset<Texture2D> arm;//手臂的体节纹理
+        private static Asset<Texture2D> arm = null;//手臂的体节纹理
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/WGGMechanicalClamp")]
-        private static Asset<Texture2D> clamp;//手臂的夹子纹理
+        private static Asset<Texture2D> clamp = null;//手臂的夹子纹理
         private Player player;
         internal WGGCollectorTP collectorTP;
         private int attackTimer;

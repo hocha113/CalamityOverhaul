@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                     orb.velocity = Vector2.Zero;
                 }
                 else {
-                    Chest chest = CWRUtils.FindNearestChest(Position.X, Position.Y);
+                    Chest chest = Position.FindClosestChest(600, false);
                     if (chest != null) {
                         Vector2 chestPos = new Vector2(chest.x, chest.y) * 16;
                         Lighting.AddLight(chestPos, TorchID.Red);

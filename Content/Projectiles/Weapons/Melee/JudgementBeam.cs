@@ -38,20 +38,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             return base.CanHitNPC(target);
         }
 
+        private void SpawnEffect() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            ProjColorDate ??= CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
+            Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
+
+            for (int i = 0; i < 5; i++) {
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);
+                Vector2 particleSpeed = Projectile.velocity * 0.75f;
+                BasePRT lightdust = new PRT_Light(pos, particleSpeed
+                    , Main.rand.NextFloat(0.3f, 0.5f), color, 60, 1, 1.5f, hueShift: 0.0f);
+                PRTLoader.AddParticle(lightdust);
+            }
+        }
+
         public override void AI() {
             cooldenDamageTime--;
-            ProjColorDate ??= CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 5; i++) {
-                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);
-                    Vector2 particleSpeed = Projectile.velocity * 0.75f;
-                    BasePRT lightdust = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.3f, 0.5f), color, 60, 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(lightdust);
-                }
-            }
+            SpawnEffect();
 
             if (Projectile.timeLeft % 5 == 0) {
                 SpawnGemDust(8, 3);

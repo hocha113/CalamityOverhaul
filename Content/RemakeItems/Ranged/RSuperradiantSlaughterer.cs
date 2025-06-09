@@ -420,11 +420,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class SuperradiantSawOverhaul : BaseHeldProj
     {
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSawOutline")]
-        public static Asset<Texture2D> SawOutline;
+        public static Asset<Texture2D> SawOutline = null;
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSawSmallSlash")]
-        public static Asset<Texture2D> SmallSlash;
+        public static Asset<Texture2D> SmallSlash = null;
         [VaultLoaden("@CalamityMod/Projectiles/Ranged/SuperradiantSawLargeSlash")]
-        public static Asset<Texture2D> LargeSlash;
+        public static Asset<Texture2D> LargeSlash = null;
         public override string Texture => "CalamityMod/Projectiles/Ranged/SuperradiantSaw";
         public override LocalizedText DisplayName => ProjectileLoader.GetProjectile(ModContent.ProjectileType<SuperradiantSaw>()).DisplayName;
         public ref float SawPowerLevel => ref Projectile.ai[0];

@@ -172,8 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             fodingDownKey = flags[3];
         }
 
-        public override BitsByte SandBitsByte(BitsByte flags) {
-            BitsByte bytes = base.SandBitsByte(flags);
+        public override BitsByte SendBitsByte(BitsByte flags) {
+            BitsByte bytes = base.SendBitsByte(flags);
             bytes[2] = triggerKeyDown;
             flags[3] = fodingDownKey;
             return bytes;

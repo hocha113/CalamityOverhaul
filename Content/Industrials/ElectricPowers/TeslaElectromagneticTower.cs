@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTowerTile";
         [VaultLoaden(CWRConstant.Asset + "ElectricPowers/TeslaElectromagneticTowerTileGlow")]
-        public static Asset<Texture2D> tileGlowAsset;
+        public static Asset<Texture2D> tileGlowAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;

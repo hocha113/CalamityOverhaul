@@ -216,8 +216,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public override BitsByte SandBitsByte(BitsByte flags) {
-            flags = base.SandBitsByte(flags);
+        public override BitsByte SendBitsByte(BitsByte flags) {
+            flags = base.SendBitsByte(flags);
             flags[2] = _safeMouseInterfaceValue;
             flags[3] = onFire;
             flags[4] = onFireR;

@@ -54,7 +54,7 @@ namespace CalamityOverhaul
         [VaultLoaden("@CalamityMod/UI/MiscTextures/GenericBarFront")]
         public static Asset<Texture2D> GenericBarFront = null;
         [VaultLoaden("@CalamityMod/Particles/MediumMist")]
-        public static Asset<Texture2D> MediumMist;
+        public static Asset<Texture2D> MediumMist = null;
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/DraedonContactPanel")]
         public static Asset<Texture2D> DraedonContactPanel = null;
         [VaultLoaden(CWRConstant.Item_Melee + "IceSickle")]

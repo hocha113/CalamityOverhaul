@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
         [VaultLoaden(CWRConstant.Asset + "ElectricPowers/ElectricMinRocketGlow")]
-        public static Asset<Texture2D> Glow;
+        public static Asset<Texture2D> Glow = null;
         public override void SetDefaults() {
             Item.width = 28;
             Item.height = 40;
