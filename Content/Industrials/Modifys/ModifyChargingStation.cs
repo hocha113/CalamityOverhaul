@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.DraedonMisc;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
@@ -28,6 +29,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void SetDefaults(Item item) {
             item.CWR().StorageUE = true;
             item.CWR().ConsumeUseUE = 1000;
+        }
+
+        public override void AddRecipe() {
+            CreateRecipe().
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 4).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 4).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

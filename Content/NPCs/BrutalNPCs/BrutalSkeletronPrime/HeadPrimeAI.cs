@@ -7,6 +7,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -150,6 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             rule2.Add(ModContent.ItemType<SoulofFrightEX>());
             rule2.Add(ModContent.ItemType<SoulofMightEX>());
             rule2.Add(ModContent.ItemType<SoulofSightEX>());
+            rule2.Add(ModContent.ItemType<MetalMusicBox>(), dropRateInt:5);
             npcLoot.Add(rule2);
         }
 

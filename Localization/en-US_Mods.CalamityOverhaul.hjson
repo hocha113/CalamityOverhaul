@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1110,6 +1110,11 @@ Items: {
 			The maximum loss is 100%.
 			'''
 	}
+
+	MetalMusicBox: {
+		DisplayName: Music Box (Machine Rebellion)
+		Tooltip: Plays 'Fall of the Bit' by Ryusa
+	}
 }
 
 Projectiles: {
@@ -1659,6 +1664,7 @@ TextContent: {
 		KreloadTimeAddText: "Ammunition reloading time increased "
 		KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Death Mode Item
+		DropInMachineRebellion: Dropped by the Mech Trio EX
 		DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Only in Zenith World
 		Event_TungstenRiot_Name: Tungsten Riot

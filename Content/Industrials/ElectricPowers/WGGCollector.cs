@@ -396,58 +396,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.ChasingBehavior(idleTarget, 4f);
         }
 
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            if (!Main.masterMode) {
-                return;//只在大师模式下偷东西
-            }
-
-            if (Main.myPlayer != target.whoAmI) {
-                return;//只在受击玩家的客户端上运行
-            }
-
-            if (Main.rand.NextBool()) {
-                return;
-            }
-
-            // 获取一个非空物品槽（排除空格、空气物品）
-            List<int> validSlots = new();
-            for (int i = 0; i < 59; i++) { // 只检查背包部分（0~58）
-                if (i == target.selectedItem) {
-                    continue;//手上拿的不要丢
-                }
-                if (!target.inventory[i].IsAir && target.inventory[i].stack > 0) {
-                    validSlots.Add(i);
-                }
-            }
-
-            // 没有可丢弃物品
-            if (validSlots.Count == 0) {
-                return;
-            }
-
-            // 随机选择一个非空格子
-            int slot = Main.rand.Next(validSlots);
-            Item item = target.inventory[slot];
-
-            // 生成掉落物
-            int newItemIndex = Item.NewItem(
-                Projectile.GetSource_OnHit(target), Projectile.Hitbox, item.type, item.stack,
-                noBroadcast: false, prefixGiven: item.prefix
-            );
-
-            if (newItemIndex >= 0 && newItemIndex < Main.maxItems) {
-                Main.item[newItemIndex].noGrabDelay = 120;
-                if (!VaultUtils.isSinglePlayer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, newItemIndex);
-                }
-            }
-
-            // 让物品从背包中消失
-            item.TurnToAir();
-
-            SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
-        }
-
         public override bool PreDraw(ref Color lightColor) {
             if (startPos == Vector2.Zero) {
                 return false;

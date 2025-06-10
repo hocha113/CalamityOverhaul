@@ -1092,6 +1092,11 @@ Items: {
 			传输距离越远能量损耗越大，最大为100%损耗
 			'''
 	}
+
+	MetalMusicBox: {
+		DisplayName: 音乐盒(机械暴乱)
+		Tooltip: 演奏由 'Ryusa' 创作的曲子《位元堕落》
+	}
 }
 
 Projectiles: {
@@ -1640,6 +1645,7 @@ TextContent: {
 		KreloadTimeAddText: 弹药装填时间增加
 		KreloadTimeLessenText: 弹药装填时间减少
 		DeathModeItem: 死亡模式
+		DropInMachineRebellion: 掉落自机械三王EX
 		DontUseMagicConch: 你被一个强大的生物盯住了...
 		OnlyZenith: 仅在天顶世界
 		Event_TungstenRiot_Name: 钨钢暴乱

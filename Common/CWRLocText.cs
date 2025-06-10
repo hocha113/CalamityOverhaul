@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText KreloadTimeAddText { get; private set; }
         public LocalizedText KreloadTimeLessenText { get; private set; }
         public LocalizedText DeathModeItem { get; private set; }
+        public LocalizedText DropInMachineRebellion { get; private set; }
         public LocalizedText DontUseMagicConch { get; private set; }
         public LocalizedText OnlyZenith { get; private set; }
         public LocalizedText Event_TungstenRiot_Name { get; private set; }

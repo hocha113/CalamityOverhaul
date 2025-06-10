@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -1120,6 +1120,11 @@ Items: {
 			The maximum loss is 100%.
 			''' */
 	}
+
+	MetalMusicBox: {
+		// DisplayName: Music Box (Machine Rebellion)
+		// Tooltip: Plays 'Fall of the Bit' by Ryusa
+	}
 }
 
 Projectiles: {
@@ -1682,6 +1687,7 @@ TextContent: {
 		// KreloadTimeAddText: "Ammunition reloading time increased "
 		// KreloadTimeLessenText: "Ammunition reloading time is reduced "
 		DeathModeItem: Предмет режима Смерть
+		// DropInMachineRebellion: Dropped by the Mech Trio EX
 		// DontUseMagicConch: You're being watched by a powerful creature...
 		OnlyZenith: Только в мирах с сидом «Get fixed boi»
 		Event_TungstenRiot_Name: Вольфрамовое востание

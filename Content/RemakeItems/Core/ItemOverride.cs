@@ -933,5 +933,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public virtual void AddRecipe() {
 
         }
+        /// <summary>
+        /// 快捷调用一个创建配方的窗口
+        /// </summary>
+        /// <param name="amount">需求数量，默认为1</param>
+        /// <returns></returns>
+        public Recipe CreateRecipe(int amount = 1) => Recipe.Create(TargetID, amount);
     }
 }

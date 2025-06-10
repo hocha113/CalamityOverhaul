@@ -37,6 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
     {
         public bool CanDrop(DropAttemptInfo info) => CWRWorld.MachineRebellion;
         public bool CanShowItemDropInUI() => CalamityWorld.death;
-        public string GetConditionDescription() => "EX";
+        public string GetConditionDescription() => CWRLocText.Instance.DropInMachineRebellion.Value;
     }
 }
