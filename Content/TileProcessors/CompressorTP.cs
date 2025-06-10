@@ -21,12 +21,6 @@ namespace CalamityOverhaul.Content.TileProcessors
         private int gloawTime;
         internal int frame;
         internal Vector2 Center => PosInWorld + new Vector2(DarkMatterCompressor.Width, DarkMatterCompressor.Height) * 8;
-        public override void LoadData(TagCompound tag) {
-            base.LoadData(tag);
-        }
-        public override void SaveData(TagCompound tag) {
-            base.SaveData(tag);
-        }
         public override void Update() {
             VaultUtils.ClockFrame(ref frame, 8, 3);
             if (frame != 2) {

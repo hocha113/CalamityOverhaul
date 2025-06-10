@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault;
@@ -95,6 +96,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override bool CanDrop(int i, int j) => false;
 
+        public override bool RightClick(int i, int j) {
+            if (TileProcessorLoader.AutoPositionGetTP(i, j, out CollectorTP collector)) {
+                collector.RightClick(Main.LocalPlayer);
+            }
+            return base.RightClick(i, j);
+        }
+
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<Collector>());
+
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return false;
@@ -134,18 +144,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override int TargetItem => ModContent.ItemType<Collector>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 800;
+        internal const int maxFindChestMode = 600;
+        internal const int killerArmDistance = 2400;
         public Vector2 ArmPos => CenterInWorld + new Vector2(0, 14);
         private int textIdleTime;
         internal int frame;
         internal bool workState;
         internal Chest Chest;
-        internal const int killerArmDistance = 2400;
+        internal int TagItemSign;
         internal int dontSpawnArmTime;
         internal int ArmIndex0 = -1;
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
         public override void SendData(ModPacket data) {
             base.SendData(data);
+            data.Write(TagItemSign);
             data.Write(workState);
             data.Write(ArmIndex0);
             data.Write(ArmIndex1);
@@ -153,11 +166,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
+            TagItemSign = reader.ReadInt32();
             workState = reader.ReadBoolean();
             ArmIndex0 = reader.ReadInt32();
             ArmIndex1 = reader.ReadInt32();
             ArmIndex2 = reader.ReadInt32();
         }
+        public override void SaveData(TagCompound tag) {
+            base.SaveData(tag);
+            tag["_TagItemSign"] = TagItemSign;
+        }
+        public override void LoadData(TagCompound tag) {
+            base.LoadData(tag);
+            if (!tag.TryGet("_TagItemSign", out TagItemSign)) {
+                TagItemSign = ItemID.None;
+            }
+        }
+
         private void FindFrame() {
             int maxFrame = workState ? 7 : 24;
             if (!workState && frame == 23) {
@@ -183,6 +208,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
+        internal void RightClick(Player player) {
+            Item item = player.GetItem();
+            if (!item.Alives()) {
+                if (TagItemSign != ItemID.None) {
+                    SoundEngine.PlaySound(CWRSound.Select with { Pitch = 0.2f });
+                    TagItemSign = ItemID.None;
+                }
+                return;
+            }
+            if (TagItemSign > ItemID.None && TagItemSign == item.type) {
+                SoundEngine.PlaySound(CWRSound.Select with { Pitch = 0.2f });
+                TagItemSign = ItemID.None;
+                return;
+            }
+            SoundEngine.PlaySound(CWRSound.Select with { Pitch = -0.2f });
+            TagItemSign = item.type;
+            SendData();
+        }
+
         public override void UpdateMachine() {
             FindFrame();
 
@@ -190,10 +234,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            Chest = Position.FindClosestChest(100, false, (Chest c) => c.CanItemBeAddedToChest());
+            Chest = Position.FindClosestChest(maxFindChestMode, false, (Chest c) => c.CanItemBeAddedToChest());
             if (Chest == null && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
+                //生成一个效果环
+                for (int i = 0; i < 220; i++) {
+                    Vector2 spwanPos = PosInWorld + CWRUtils.randVr(maxFindChestMode, maxFindChestMode + 1);
+                    int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
+                    Main.dust[dust].noGravity = true;
+                }
             }
 
             if (textIdleTime > 0) {
@@ -241,7 +291,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
+        public override void FrontDraw(SpriteBatch spriteBatch) {
+            if (TagItemSign > ItemID.None) {
+                VaultUtils.SimpleDrawItem(Main.spriteBatch, TagItemSign
+                    , CenterInWorld - Main.screenPosition + new Vector2(0, 32)
+                    , itemWidth: 32, 0, 0, Lighting.GetColor(Position.ToPoint()));
+            }
+            DrawChargeBar();
+        }
     }
 
     internal class CollectorArm : ModProjectile
@@ -285,6 +342,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float maxFindSQ = 4000000;
             foreach (var i in Main.ActiveItems) {
                 if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
+                    continue;
+                }
+
+                if (collectorTP.TagItemSign > ItemID.None && i.type != collectorTP.TagItemSign) {
                     continue;
                 }
 

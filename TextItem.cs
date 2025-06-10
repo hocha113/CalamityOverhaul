@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -34,7 +35,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -76,6 +77,12 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            if (Main.MouseWorld.ToTileCoordinates16().TryFindClosestChest(out var c)) {
+                Item item = new Item(ItemID.Mushroom);
+                if (c.CanItemBeAddedToChest(item)) {
+                    c.AddItem(item, true);
+                }
+            }
             //List<TileProcessor> tps = [];
             //foreach (var p in TileProcessorLoader.TP_InWorld) {
             //    if (!p.Active || p.ID != TileProcessorLoader.GetModuleID<WGGCollectorTP>()) {
