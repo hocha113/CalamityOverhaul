@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5174,6 +5174,24 @@ RemakeItems: {
 			This ability has a cooldown of {0} seconds.
 			During cooldown, the returning sawblade tracks the cursor and keeps releasing projectiles.
 			'''
+	}
+
+	ModifyLores: {
+		ModifyLoreAbyss: {
+			DisplayName: Abyss
+			Tooltip:
+				'''
+				When you gaze into the abyss, the abyss is also gazing back at you.
+				[legend]
+				'''
+			Legend: When you gaze into the abyss, the abyss is also gazing back at you.
+		}
+
+		ModifyLoreBloodMoon: {
+			DisplayName: 血月
+			Tooltip: Mods.CalamityMod.Items.Lore.LoreBloodMoon.Tooltip
+			Legend: Mods.CalamityOverhaul.RemakeItems.ModifyLores.ModifyLoreBloodMoon.Legend
+		}
 	}
 }
 

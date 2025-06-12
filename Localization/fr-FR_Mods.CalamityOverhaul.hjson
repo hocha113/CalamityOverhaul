@@ -5090,6 +5090,24 @@ RemakeItems: {
 			During cooldown, the returning sawblade tracks the cursor and keeps releasing projectiles.
 			''' */
 	}
+
+	ModifyLores: {
+		ModifyLoreAbyss: {
+			// DisplayName: Abyss
+			/* Tooltip:
+				'''
+				When you gaze into the abyss, the abyss is also gazing back at you.
+				[legend]
+				''' */
+			// Legend: When you gaze into the abyss, the abyss is also gazing back at you.
+		}
+
+		ModifyLoreBloodMoon: {
+			// DisplayName: 血月
+			// Tooltip: Mods.CalamityMod.Items.Lore.LoreBloodMoon.Tooltip
+			// Legend: Mods.CalamityOverhaul.RemakeItems.ModifyLores.ModifyLoreBloodMoon.Legend
+		}
+	}
 }
 
 // NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer

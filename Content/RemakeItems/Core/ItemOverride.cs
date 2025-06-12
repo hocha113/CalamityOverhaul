@@ -109,6 +109,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
             ByID.Add(TargetID, this);
             HandlerCanOverride.CanOverrideByID.Add(TargetID, true);
+            PostSetStaticDefaults();
+        }
+
+        /// <summary>
+        /// 执行在内容加载的靠后部分，此时本地化设置、实例添加已经完成
+        /// </summary>
+        public virtual void PostSetStaticDefaults() {
+
         }
 
         /// <summary>
