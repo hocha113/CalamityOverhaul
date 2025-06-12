@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -613,7 +614,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
                     Shoot();
                     if (GlobalItemBehavior) {
-                        foreach (var g in RangedLoader.ItemLoader_Shoot_Hook.Enumerate(Item)) {
+                        foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(Item)) {
                             g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootID), ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack);
                         }
                     }

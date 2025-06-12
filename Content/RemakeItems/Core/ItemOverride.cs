@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 在RemakeItems里面添加本地化
         /// </summary>
-        public string LocalizationCategory => "RemakeItems";
+        public virtual string LocalizationCategory => "RemakeItems";
         /// <summary>
         /// 是否加载这个重制节点的本地化信息
         /// </summary>
@@ -519,6 +519,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="tooltips"></param>
         public virtual void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
 
+        }
+        /// <summary>
+        /// 修改该物品的介绍栏位
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="tooltips"></param>
+        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModItem方法与G方法。
+        /// 返回<see langword="true"/>仅仅会继续执行原ModItem方法而阻止全局Item类的额外修改运行。
+        /// 返回<see langword="false"/>阻止后续所有修改的运行</returns>
+        public virtual bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            return null;
         }
         /// <summary>
         /// 修改物品暴击

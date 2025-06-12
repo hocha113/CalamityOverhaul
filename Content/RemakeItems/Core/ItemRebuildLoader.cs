@@ -2,6 +2,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +11,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.RemakeItems.Core.ItemOverride;
 
@@ -37,6 +40,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         internal delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
         internal delegate bool On_AltFunctionUse_Delegate(Item item, Player player);
         internal delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
+        internal delegate List<TooltipLine> On_ModifyTooltips_Delegate(Item item, ref int numTooltips, string[] names, ref string[] text
+            , ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor, int prefixlineIndex);
         internal delegate string On_GetItemNameValue_Delegate(int id);
         internal delegate string On_GetItemName_get_Delegate(Item item);
 
@@ -61,9 +66,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onModifyWeaponDamageMethod;
         public static MethodBase onUpdateAccessoryMethod;
         public static MethodBase onAltFunctionUseMethod;
+        public static MethodBase onModifyTooltipsMethod;
         public static MethodBase onGetItemNameValueMethod;
         public static MethodBase onItemNamePropertyGetMethod;
         public static MethodBase onAffixNameMethod;
+        private static FieldInfo TooltipLine_ModName_Field { get; set; } 
+            = typeof(TooltipLine).GetField("Mod", BindingFlags.Public | BindingFlags.Instance);
+        private static FieldInfo TooltipLine_OneDropLogo_Field { get; set; } 
+            = typeof(TooltipLine).GetField("OneDropLogo", BindingFlags.NonPublic | BindingFlags.Instance);
+        public static GlobalHookList<GlobalItem> ItemLoader_Shoot_Hook { get; private set; }
+        public static GlobalHookList<GlobalItem> ItemLoader_CanUse_Hook { get; private set; }
+        public static GlobalHookList<GlobalItem> ItemLoader_UseItem_Hook { get; private set; }
+        public static GlobalHookList<GlobalItem> ItemLoader_ModifyTooltips_Hook { get; private set; }
+
+        public static GlobalHookList<GlobalItem> GetItemLoaderHookTargetValue(string key)
+            => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
 
         void ICWRLoader.SetupData() {
             CWRMod.Instance.Logger.Info($"{ByID.Count} key pair is loaded into the RItemIndsDict");
@@ -75,6 +92,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             CWRItems.ItemAllowPrefixDic ??= [];
             CWRItems.ItemMeleePrefixDic ??= [];
             CWRItems.ItemRangedPrefixDic ??= [];
+
+            ItemLoader_Shoot_Hook = GetItemLoaderHookTargetValue("HookShoot");
+            ItemLoader_CanUse_Hook = GetItemLoaderHookTargetValue("HookCanUseItem");
+            ItemLoader_UseItem_Hook = GetItemLoaderHookTargetValue("HookUseItem");
+            ItemLoader_ModifyTooltips_Hook = GetItemLoaderHookTargetValue("HookModifyTooltips");
 
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
@@ -97,6 +119,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onAllowPrefixMethod = itemLoaderType.GetMethod("AllowPrefix", BindingFlags.Public | BindingFlags.Static);
             onMeleePrefixMethod = itemLoaderType.GetMethod("MeleePrefix", BindingFlags.NonPublic | BindingFlags.Static);
             onRangedPrefixMethod = itemLoaderType.GetMethod("RangedPrefix", BindingFlags.NonPublic | BindingFlags.Static);
+            onModifyTooltipsMethod = itemLoaderType.GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Static);
             onGetItemNameValueMethod = typeof(Lang).GetMethod("GetItemNameValue", BindingFlags.Public | BindingFlags.Static);
             onItemNamePropertyGetMethod = typeof(Item).GetProperty("Name", BindingFlags.Instance | BindingFlags.Public).GetGetMethod();
             onAffixNameMethod = typeof(Item).GetMethod("AffixName", BindingFlags.Instance | BindingFlags.Public);
@@ -164,6 +187,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onGetItemNameValueMethod != null) {
                 //CWRHook.Add(onGetItemNameValueMethod, OnGetItemNameValueHook);
             }
+            if (onModifyTooltipsMethod != null) {
+                CWRHook.Add(onModifyTooltipsMethod, On_ModifyTooltips_Hook);
+            }
             if (onItemNamePropertyGetMethod != null) {
                 CWRHook.Add(onItemNamePropertyGetMethod, On_Name_Get_Hook);
             }
@@ -180,6 +206,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             CWRItems.ItemAllowPrefixDic?.Clear();
             CWRItems.ItemMeleePrefixDic?.Clear();
             CWRItems.ItemRangedPrefixDic?.Clear();
+
+            ItemLoader_Shoot_Hook = null;
+            ItemLoader_CanUse_Hook = null;
+            ItemLoader_UseItem_Hook = null;
+            ItemLoader_ModifyTooltips_Hook = null;
 
             itemLoaderType = null;
             onSetDefaultsMethod = null;
@@ -200,6 +231,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onAltFunctionUseMethod = null;
             onMeleePrefixMethod = null;
             onRangedPrefixMethod = null;
+            onModifyTooltipsMethod = null;
             onAllowPrefixMethod = null;
             onGetItemNameValueMethod = null;
             onItemNamePropertyGetMethod = null;
@@ -207,12 +239,66 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             On_Player.UpdateArmorSets -= UpdateArmorSetHook;
         }
 
-        //public string OnGetItemNameValueHook(On_GetItemNameValue_Delegate orig, int id) {
-        //    if (ItemIDToOverrideDic.TryGetValue(id, out var itemOverride)) {
-        //        return itemOverride.DisplayName.Value;
-        //    }
-        //    return orig.Invoke(id);
-        //}
+        public static List<TooltipLine> On_ModifyTooltips_Hook(On_ModifyTooltips_Delegate orig, Item item, ref int numTooltips, string[] names, ref string[] text
+            , ref bool[] modifier, ref bool[] badModifier, ref int oneDropLogo, out Color?[] overrideColor, int prefixlineIndex) {
+            List<TooltipLine> tooltips = new List<TooltipLine>();
+            for (int k = 0; k < numTooltips; k++) {
+                TooltipLine tooltip = new TooltipLine(CWRMod.Instance, names[k], text[k]);
+                TooltipLine_ModName_Field.SetValue(tooltip, "Terraria");
+                tooltip.IsModifier = modifier[k];
+                tooltip.IsModifierBad = badModifier[k];
+                if (k == oneDropLogo) {
+                    //tooltip.OneDropLogo = true;
+                    TooltipLine_OneDropLogo_Field.SetValue(tooltip, true);
+                }
+
+                tooltips.Add(tooltip);
+            }
+            if (item.prefix >= PrefixID.Count && prefixlineIndex != -1) {
+                IEnumerable<TooltipLine> tooltipLines = PrefixLoader.GetPrefix(item.prefix)?.GetTooltipLines(item);
+                if (tooltipLines != null) {
+                    foreach (TooltipLine line in tooltipLines) {
+                        tooltips.Insert(prefixlineIndex, line);
+                        prefixlineIndex++;
+                    }
+                }
+            }
+
+            bool reset = true;
+            if (TryFetchByID(item.type, out ItemOverride ritem)) {
+                bool? newReset = ritem.On_ModifyTooltips(item, tooltips);
+                if (newReset.HasValue) {
+                    reset = newReset.Value;
+                }
+            }
+
+            if (reset) {
+                item.ModItem?.ModifyTooltips(tooltips);
+                if (!item.IsAir) {
+                    foreach (var modifyTooltip in ItemLoader_ModifyTooltips_Hook.Enumerate(item)) {
+                        modifyTooltip.ModifyTooltips(item, tooltips);
+                    }
+                }
+            }
+
+            tooltips.RemoveAll((TooltipLine x) => !x.Visible);
+            numTooltips = tooltips.Count;
+            text = new string[numTooltips];
+            modifier = new bool[numTooltips];
+            badModifier = new bool[numTooltips];
+            oneDropLogo = -1;
+            overrideColor = new Color?[numTooltips];
+            for (int k = 0; k < numTooltips; k++) {
+                text[k] = tooltips[k].Text;
+                modifier[k] = tooltips[k].IsModifier;
+                badModifier[k] = tooltips[k].IsModifierBad;
+                if ((bool)TooltipLine_OneDropLogo_Field.GetValue(tooltips[k])) {//tooltips[k].OneDropLogo
+                    oneDropLogo = k;
+                }
+                overrideColor[k] = tooltips[k].OverrideColor;
+            }
+            return tooltips;
+        }
 
         /// <summary>
         /// <br>这个钩子非常危险，未来很可能移除，因为它钩的是属性的get行为，这可能会带来较大的性能开销和适配性问题，同时，编写代码时也得非常小心，否则可能引起无限迭代让游戏闪退</br>
@@ -456,7 +542,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             if (!CWRLoad.ItemIsHeldSwing[item.type]) {//手持挥舞类的物品不能直接调用gItem的Shoot，所以这里判断一下
-                foreach (var g in RangedLoader.ItemLoader_Shoot_Hook.Enumerate(item)) {
+                foreach (var g in ItemLoader_Shoot_Hook.Enumerate(item)) {
                     rest = g.Shoot(item, player, source, position, velocity, type, damage, knockback);
                 }
             }

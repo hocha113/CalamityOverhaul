@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul.Content.RangedModify
 {
@@ -18,20 +16,10 @@ namespace CalamityOverhaul.Content.RangedModify
         public static event Func<Item, Player, bool> IsAmmunitionUnlimitedEvent;
         public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
         public static Dictionary<Type, Asset<Texture2D>> TypeToGlowAsset { get; private set; } = [];
-        public static GlobalHookList<GlobalItem> ItemLoader_Shoot_Hook { get; private set; }
-        public static GlobalHookList<GlobalItem> ItemLoader_CanUse_Hook { get; private set; }
-        public static GlobalHookList<GlobalItem> ItemLoader_UseItem_Hook { get; private set; }
-
-        public static GlobalHookList<GlobalItem> GetItemLoaderHookTargetValue(string key)
-            => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
-
         void ICWRLoader.LoadData() {
             GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
-            ItemLoader_Shoot_Hook = GetItemLoaderHookTargetValue("HookShoot");
-            ItemLoader_CanUse_Hook = GetItemLoaderHookTargetValue("HookCanUseItem");
-            ItemLoader_UseItem_Hook = GetItemLoaderHookTargetValue("HookUseItem");
         }
         void ICWRLoader.LoadAsset() {
             var indss = VaultUtils.GetSubclassInstances<BaseHeldRanged>();
@@ -47,9 +35,6 @@ namespace CalamityOverhaul.Content.RangedModify
             GlobalRangeds?.Clear();
             TypeToGlowAsset?.Clear();
             IsAmmunitionUnlimitedEvent = null;
-            ItemLoader_Shoot_Hook = null;
-            ItemLoader_CanUse_Hook = null;
-            ItemLoader_CanUse_Hook = null;
         }
 
         /// <summary>
