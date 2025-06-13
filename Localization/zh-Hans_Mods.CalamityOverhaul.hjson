@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5140,10 +5140,7 @@ RemakeItems: {
 ModifyLores: {
 	ModifyLoreAbyss: {
 		DisplayName: 深渊
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			尽管深海腹地遍布着无数裂隙与断层，那些宛如死者旧伤般幽暗、沉默的裂缝，
@@ -5173,10 +5170,7 @@ ModifyLores: {
 
 	ModifyLoreBloodMoon: {
 		DisplayName: 血月
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			血月的起源，早在纪年被记录前便已埋下种子。
@@ -5198,10 +5192,7 @@ ModifyLores: {
 
 	ModifyLoreAquaticScourge: {
 		DisplayName: 渊海灾虫
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			曾有一种海蛇，被记录在远古的矿石纹理与渔人的梦语中。
@@ -5230,10 +5221,7 @@ ModifyLores: {
 
 	ModifyLoreArchmage: {
 		DisplayName: 大法师
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他竟还活着？
@@ -5266,10 +5254,7 @@ ModifyLores: {
 
 	ModifyLoreAstralInfection: {
 		DisplayName: 星辉瘟疫
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			这片梦景早已病入膏肓，尽管它披着星辰的皮肤，却和凡尘污泥中滋生的腐败并无二致。
@@ -5291,10 +5276,7 @@ ModifyLores: {
 
 	ModifyLoreAstrumAureus: {
 		DisplayName: 白金星舰
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			嘉登一向不信神，也从不崇圣。他的信仰只属于齿轮的契合与火药的低语。
@@ -5318,10 +5300,7 @@ ModifyLores: {
 
 	ModifyLoreAstrumDeus: {
 		DisplayName: 星神游龙
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在我们这片残缺不全的现实中，这种生物被古老学派奉为“夜喉”，一位星空的神祇。
@@ -5342,10 +5321,7 @@ ModifyLores: {
 
 	ModifyLoreAwakening: {
 		DisplayName: 苏醒
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			巨龙的墓穴不再沉寂。地壳微震，尘砂在峭壁高处无声滑落，如星辰老去时留下的皮屑。
@@ -5369,10 +5345,7 @@ ModifyLores: {
 
 	ModifyLoreAzafure: {
 		DisplayName: 阿萨福勒
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			通常被称为第一城，其动荡的历史可以追溯至巨龙仍巡游地壳深处的时代。
@@ -5392,10 +5365,7 @@ ModifyLores: {
 
 	ModifyLoreBrainofCthulhu: {
 		DisplayName: 克苏鲁之脑
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			那些如今早已被视作寻常灾祸的畸变，在我眼中依旧令人作呕。
@@ -5416,10 +5386,7 @@ ModifyLores: {
 
 	ModifyLoreBrimstoneElemental: {
 		DisplayName: 硫磺火元素
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			那是一个极为古怪的存在。
@@ -5449,10 +5416,7 @@ ModifyLores: {
 
 	ModifyLoreCalamitas: {
 		DisplayName: 灾厄
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			我初见她时，她不过是个瘦弱的女孩，衣衫焦灼，沉默地跪在我面前。
@@ -5479,10 +5443,7 @@ ModifyLores: {
 
 	ModifyLoreCalamitasClone: {
 		DisplayName: 灾厄之影
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			我记得自己曾在夜幕低垂时与那东西擦肩而过。
@@ -5503,10 +5464,7 @@ ModifyLores: {
 
 	ModifyLoreCeaselessVoid: {
 		DisplayName: 无尽虚空
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			那是一道本应永远沉默的门扉——封闭、无声、没有气息，如同一具被封进铅棺的尸体，被遗弃在地牢深处的石壁之中。	
@@ -5523,10 +5481,7 @@ ModifyLores: {
 
 	ModifyLoreCorruption: {
 		DisplayName: 腐化之地
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			杀死神明之后，我们本该焚尽祂的血、割净祂的骨，把所有属于祂的东西都从这片大地上洗净。
@@ -5541,10 +5496,7 @@ ModifyLores: {
 
 	ModifyLoreCrabulon: {
 		DisplayName: 菌生蟹
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			一个在潮汐中挣扎的蟹壳，一团在阴影中寻找脉搏的真菌。
@@ -5560,10 +5512,7 @@ ModifyLores: {
 
 	ModifyLoreCrimson: {
 		DisplayName: 猩红之地
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			污秽的空气如同裹尸布般紧紧勒住咽喉，每一次呼吸都伴随着铁锈与腐朽的恶臭。
@@ -5577,10 +5526,7 @@ ModifyLores: {
 
 	ModifyLoreCynosure: {
 		DisplayName: 万物的焦点
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			你所立之处，是诸界崩塌的边缘，万象倾颓，唯你不动。
@@ -5597,10 +5543,7 @@ ModifyLores: {
 
 	ModifyLoreDesertScourge: {
 		DisplayName: 荒漠灾虫
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			这条巨蛇原本沉睡于沙海之下，以细菌与盐晶维生，世代不争。
@@ -5613,10 +5556,7 @@ ModifyLores: {
 
 	ModifyLoreDestroyer: {
 		DisplayName: 毁灭者
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在那场未曾被铭刻的战争中，寻神骑士是我最锋锐的矛头。
@@ -5629,10 +5569,7 @@ ModifyLores: {
 
 	ModifyLoreDevourerofGods: {
 		DisplayName: 神明吞噬者
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他自称“吞神者”，这等傲慢本不该被容忍，可他的确曾践行了这个名字的全部含义。
@@ -5649,10 +5586,7 @@ ModifyLores: {
 
 	ModifyLoreDragonfolly: {
 		DisplayName: 痴愚金龙
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在巨龙血脉尚未衰竭之时，有一批残碎异种悄然现身，脱离了龙裔既定的尊序。
@@ -5667,10 +5601,7 @@ ModifyLores: {
 
 	ModifyLoreDukeFishron: {
 		DisplayName: 猪龙鱼公爵
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			海域深处的霸主常常不符合陆上学者的逻辑。
@@ -5685,10 +5616,7 @@ ModifyLores: {
 
 	ModifyLoreEaterofWorlds: {
 		DisplayName: 世界吞噬者
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			关于那条扭动着的黑虫，有着数不清的传言，它能吞噬大陆、穿透星核、腐蚀一切。
@@ -5703,10 +5631,7 @@ ModifyLores: {
 
 	ModifyLoreEmpressofLight: {
 		DisplayName: 光之女皇
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			她是璀璨的具现，是白昼本身的骄傲投影。
@@ -5721,10 +5646,7 @@ ModifyLores: {
 
 	ModifyLoreKingSlime: {
 		DisplayName: 史莱姆王
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			史莱姆本是最原始的生物，诞生于混沌初生之刻。
@@ -5738,10 +5660,7 @@ ModifyLores: {
 
 	ModifyLoreLeviathanAnahita: {
 		DisplayName: 利维坦和阿娜希塔
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			阿娜希塔曾是深海之律的维持者，是海洋意志的温柔代言。
@@ -5756,10 +5675,7 @@ ModifyLores: {
 
 	ModifyLoreMechs: {
 		DisplayName: 机械动乱
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			嘉登，曾是最锋锐的思想者，也是我最信任的同袍之一。
@@ -5775,10 +5691,7 @@ ModifyLores: {
 
 	ModifyLorePlantera: {
 		DisplayName: 世纪之花
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在一次愚蠢的尝试中，那些妄图与自然订立契约的凡人，种下了这朵饱饮灵魂的花。
@@ -5793,10 +5706,7 @@ ModifyLores: {
 
 	ModifyLorePolterghast: {
 		DisplayName: 噬魂幽花
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它不是怪物，是悔恨的回声，是命令中遗漏的名字，是失败未曾清算的重量。
@@ -5811,10 +5721,7 @@ ModifyLores: {
 
 	ModifyLoreQueenBee: {
 		DisplayName: 蜂后
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			她本不属于暴力之列，只是自然母性的执念具现，是对秩序与共生的最后一次温柔试探。
@@ -5828,10 +5735,7 @@ ModifyLores: {
 
 	ModifyLoreExoMechs: {
 		DisplayName: 星流巨械
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			这是钢铁的福音，是灵魂与零件交汇处诞生的三位一体，是毁灭自身的辉煌宣言。
@@ -5847,10 +5751,7 @@ ModifyLores: {
 
 	ModifyLoreEyeofCthulhu: {
 		DisplayName: 克苏鲁之眼
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它是一道注视的伤口，是未竟之神的意识余烬，是腐败意志在无形中持续渗出的窥视。
@@ -5862,10 +5763,7 @@ ModifyLores: {
 
 	ModifyLoreGolem: {
 		DisplayName: 石巨人
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他们造了一个神来取代被沉默的旧神，这就是他们的石质忏悔碑。
@@ -5878,10 +5776,7 @@ ModifyLores: {
 
 	ModifyLoreHiveMind: {
 		DisplayName: 腐巢意志
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			神的思维无法被杀死，它只会变得断裂、残暴、无法沟通。
@@ -5894,10 +5789,7 @@ ModifyLores: {
 
 	ModifyLoreQueenSlime: {
 		DisplayName: 史莱姆女皇
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			她是碎神最后的梦境，是将逃亡化为进化的试验品。
@@ -5910,10 +5802,7 @@ ModifyLores: {
 
 	ModifyLorePrelude: {
 		DisplayName: 序章
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在那光辉尚未碎裂的纪元，天穹尚存主宰者的翅影。
@@ -5928,10 +5817,7 @@ ModifyLores: {
 
 	ModifyLoreSulphurSea: {
 		DisplayName: 硫磺海
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			曾几何时，这里是丰盈与创造的海洋，如今却成了腐蚀意志的炼狱边缘。
@@ -5945,10 +5831,7 @@ ModifyLores: {
 
 	ModifyLoreTwins: {
 		DisplayName: 双子魔眼
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它们是注视的兵器，是不眠之神的眼睑，是嘉登逻辑战争机器中最锋利的感知。
@@ -5962,10 +5845,7 @@ ModifyLores: {
 
 	ModifyLoreProfanedGuardians: {
 		DisplayName: 亵渎守卫
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			亵渎守卫并非生命体，而是普罗维登斯意志的编译体，是将神性本身模块化的装甲偶像。
@@ -5979,10 +5859,7 @@ ModifyLores: {
 
 	ModifyLoreProvidence: {
 		DisplayName: 亵渎天神，普罗维登斯
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			她是一段代码中的“删除一切”语句，是秩序的极端演绎者，是光之暴政的先知。
@@ -5997,10 +5874,7 @@ ModifyLores: {
 
 	ModifyLoreRavager: {
 		DisplayName: 毁灭魔像
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它是一团无名的亵渎，纠缠着血与脏器、不死的意志与永恒的怒火。
@@ -6027,10 +5901,7 @@ ModifyLores: {
 
 	ModifyLoreRequiem: {
 		DisplayName: 安魂曲
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			在光辉巨龙沉眠于天巢最深处之时，那名僧侣前来朝见。
@@ -6061,10 +5932,7 @@ ModifyLores: {
 
 	ModifyLoreSignus: {
 		DisplayName: 西格纳斯
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它诞生于一次现实边缘的错位回响中，那种扭曲本不该存在，却又不断重演的命运回声。
@@ -6090,10 +5958,7 @@ ModifyLores: {
 
 	ModifyLoreSkeletron: {
 		DisplayName: 骷髅王
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他曾是一位学者，在探寻禁忌时闯入了亵渎图书馆，那是旧日教派最后的沉眠之地。
@@ -6107,10 +5972,7 @@ ModifyLores: {
 
 	ModifyLoreWallofFlesh: {
 		DisplayName: 血肉墙
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			这堵血肉之墙并非守卫，而是封印器官，是为封存一位堕神精纯所铸的临时结构。
@@ -6125,10 +5987,7 @@ ModifyLores: {
 
 	ModifyLoreYharon: {
 		DisplayName: 璀璨华焰，犽戎
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			黄金时代的巨龙终结于虚空烈焰之中，除了犽戎，他是唯一幸存者，也是唯一未放弃怒火者。
@@ -6146,10 +6005,7 @@ ModifyLores: {
 
 	ModifyLoreOldDuke: {
 		DisplayName: 硫海遗爵
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			这头存在并不属于时间。它早在金源纪的昏暗梦境中便已苏醒，是自然对诸神的最初抗议。
@@ -6164,10 +6020,7 @@ ModifyLores: {
 
 	ModifyLorePerforators: {
 		DisplayName: 血肉寄生者和宿主
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他们并非生物，而是瘟血中滋生的记忆化身，是被遗弃神明的残渣聚合出的意识洪流。
@@ -6181,10 +6034,7 @@ ModifyLores: {
 
 	ModifyLorePlaguebringerGoliath: {
 		DisplayName: 瘟疫使者歌莉娅
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			她曾是丛林的主宰者，一位无害的蜂后，直到嘉登用钢铁和炼金术掀起了她的王冠。
@@ -6199,10 +6049,7 @@ ModifyLores: {
 
 	ModifyLoreSkeletronPrime: {
 		DisplayName: 机械骷髅王
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			他们的灵魂被仇恨焚烧殆尽，誓死效忠于我这个堕落的主宰。
@@ -6215,10 +6062,7 @@ ModifyLores: {
 
 	ModifyLoreSlimeGod: {
 		DisplayName: 史莱姆之神
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			曾几何时，它是被尊奉为自然平衡的化身，
@@ -6245,10 +6089,7 @@ ModifyLores: {
 
 	ModifyLoreStormWeaver: {
 		DisplayName: 风暴编织者
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			它的身形不及它那位更为骇人的同胞，却依旧携带着可吞万物的威胁。
@@ -6269,10 +6110,7 @@ ModifyLores: {
 
 	ModifyLoreUnderworld: {
 		DisplayName: 地狱
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend:
 			'''
 			“地狱”之名不过近世之称。

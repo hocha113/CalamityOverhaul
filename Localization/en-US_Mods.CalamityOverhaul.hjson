@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5180,487 +5180,325 @@ RemakeItems: {
 ModifyLores: {
 	ModifyLoreAbyss: {
 		DisplayName: Abyss
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreBloodMoon: {
 		DisplayName: Blood Moon
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAquaticScourge: {
 		DisplayName: Aquatic Scourge
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreArchmage: {
 		DisplayName: Archmage
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAstralInfection: {
 		DisplayName: Astral Infection
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAstrumAureus: {
 		DisplayName: Astrum Aureus
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAstrumDeus: {
 		DisplayName: AstrumDeus
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAwakening: {
 		DisplayName: Awakening
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreAzafure: {
 		DisplayName: Azafure
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreBrainofCthulhu: {
 		DisplayName: Brainof Cthulhu
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreBrimstoneElemental: {
 		DisplayName: Brimstone Elemental
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCalamitas: {
 		DisplayName: Calamitas
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCalamitasClone: {
 		DisplayName: Calamitas Clone
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCeaselessVoid: {
 		DisplayName: Ceaseles's Void
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCorruption: {
 		DisplayName: Corruption
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCrabulon: {
 		DisplayName: Crabulon
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCrimson: {
 		DisplayName: Crimson
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreCynosure: {
 		DisplayName: Cynosure
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreDesertScourge: {
 		DisplayName: Desert Scourge
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreDestroyer: {
 		DisplayName: Destroyer
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreDevourerofGods: {
 		DisplayName: Devourerof Gods
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreDragonfolly: {
 		DisplayName: Dragonfolly
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreDukeFishron: {
 		DisplayName: Duke Fishron
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreEaterofWorlds: {
 		DisplayName: Eaterof Worlds
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreEmpressofLight: {
 		DisplayName: Empressof Light
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreKingSlime: {
 		DisplayName: LoreKing Slime
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreLeviathanAnahita: {
 		DisplayName: Leviathan Anahita
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreMechs: {
 		DisplayName: Mechs
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLorePlantera: {
 		DisplayName: Plantera
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLorePolterghast: {
 		DisplayName: Polterghast
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreQueenBee: {
 		DisplayName: Queen Bee
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreExoMechs: {
 		DisplayName: Exo Mechs
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreEyeofCthulhu: {
 		DisplayName: Eye of Cthulhu
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreGolem: {
 		DisplayName: Golem
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreHiveMind: {
 		DisplayName: Hive Mind
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreQueenSlime: {
 		DisplayName: Queen Slime
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLorePrelude: {
 		DisplayName: Prelude
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreSulphurSea: {
 		DisplayName: Sulphur Sea
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreTwins: {
 		DisplayName: Twins
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreProfanedGuardians: {
 		DisplayName: Profaned Guardians
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreProvidence: {
 		DisplayName: Providence
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreRavager: {
 		DisplayName: Ravager
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreRequiem: {
 		DisplayName: Requiem
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreSignus: {
 		DisplayName: Signus
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreSkeletron: {
 		DisplayName: Skeletron
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreWallofFlesh: {
 		DisplayName: Wall of Flesh
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreYharon: {
 		DisplayName: Yharon
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreOldDuke: {
 		DisplayName: OldDuke
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLorePerforators: {
 		DisplayName: Perforators
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLorePlaguebringerGoliath: {
 		DisplayName: Plaguebringer Goliath
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreSkeletronPrime: {
 		DisplayName: Skeletron Prime
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreSlimeGod: {
 		DisplayName: SlimeGod
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreStormWeaver: {
 		DisplayName: StormWeaver
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 
 	ModifyLoreUnderworld: {
 		DisplayName: Underworld
-		Tooltip:
-			'''
-			[legend]
-			'''
+		Tooltip: "[legend]"
 		Legend: ""
 	}
 }

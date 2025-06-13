@@ -5134,330 +5134,326 @@ RemakeItems: {
 ModifyLores: {
 	ModifyLoreAbyss: {
 		// DisplayName: Abyss
-		/* Tooltip:
-			'''
-			When you gaze into the abyss, the abyss is also gazing back at you.
-			[legend]
-			''' */
-		// Legend: When you gaze into the abyss, the abyss is also gazing back at you.
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreBloodMoon: {
-		// DisplayName: 血月
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreBloodMoon.Tooltip
-		// Legend: Mods.CalamityOverhaul.RemakeItems.ModifyLores.ModifyLoreBloodMoon.Legend
+		// DisplayName: Blood Moon
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAquaticScourge: {
-		// DisplayName: 渊海灾虫
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAquaticScourge.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAquaticScourge.Legend
+		// DisplayName: Aquatic Scourge
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreArchmage: {
-		// DisplayName: 大法师
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreArchmage.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreArchmage.Legend
+		// DisplayName: Archmage
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAstralInfection: {
-		// DisplayName: 星辉瘟疫
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAstralInfection.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAstralInfection.Legend
+		// DisplayName: Astral Infection
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAstrumAureus: {
-		// DisplayName: 白金星舰
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAstrumAureus.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAstrumAureus.Legend
+		// DisplayName: Astrum Aureus
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAstrumDeus: {
-		// DisplayName: 星神游龙
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAstrumDeus.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAstrumDeus.Legend
+		// DisplayName: AstrumDeus
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAwakening: {
-		// DisplayName: 苏醒
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAwakening.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAwakening.Legend
+		// DisplayName: Awakening
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreAzafure: {
-		// DisplayName: 阿萨福勒
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreAzafure.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreAzafure.Legend
+		// DisplayName: Azafure
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreBrainofCthulhu: {
-		// DisplayName: 克苏鲁之脑
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreBrainofCthulhu.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreBrainofCthulhu.Legend
+		// DisplayName: Brainof Cthulhu
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreBrimstoneElemental: {
-		// DisplayName: 硫磺火元素
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreBrimstoneElemental.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreBrimstoneElemental.Legend
+		// DisplayName: Brimstone Elemental
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCalamitas: {
-		// DisplayName: 灾厄
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCalamitas.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCalamitas.Legend
+		// DisplayName: Calamitas
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCalamitasClone: {
-		// DisplayName: 灾厄之影
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCalamitasClone.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCalamitasClone.Legend
+		// DisplayName: Calamitas Clone
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCeaselessVoid: {
-		// DisplayName: 无尽虚空
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCeaselessVoid.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCeaselessVoid.Legend
+		// DisplayName: Ceaseles's Void
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCorruption: {
-		// DisplayName: 腐化之地
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCorruption.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCorruption.Legend
+		// DisplayName: Corruption
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCrabulon: {
-		// DisplayName: 菌生蟹
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCrabulon.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCrabulon.Legend
+		// DisplayName: Crabulon
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCrimson: {
-		// DisplayName: 猩红之地
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCrimson.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCrimson.Legend
+		// DisplayName: Crimson
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreCynosure: {
-		// DisplayName: 万物的焦点
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreCynosure.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreCynosure.Legend
+		// DisplayName: Cynosure
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreDesertScourge: {
-		// DisplayName: 荒漠灾虫
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreDesertScourge.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreDesertScourge.Legend
+		// DisplayName: Desert Scourge
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreDestroyer: {
-		// DisplayName: 毁灭者
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreDestroyer.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreDestroyer.Legend
+		// DisplayName: Destroyer
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreDevourerofGods: {
-		// DisplayName: 神明吞噬者
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreDevourerofGods.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreDevourerofGods.Legend
+		// DisplayName: Devourerof Gods
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreDragonfolly: {
-		// DisplayName: 痴愚金龙
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreDragonfolly.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreDragonfolly.Legend
+		// DisplayName: Dragonfolly
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreDukeFishron: {
-		// DisplayName: 猪龙鱼公爵
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreDukeFishron.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreDukeFishron.Legend
+		// DisplayName: Duke Fishron
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreEaterofWorlds: {
-		// DisplayName: 世界吞噬者
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreEaterofWorlds.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreEaterofWorlds.Legend
+		// DisplayName: Eaterof Worlds
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreEmpressofLight: {
-		// DisplayName: 光之女皇
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreEmpressofLight.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreEmpressofLight.Legend
+		// DisplayName: Empressof Light
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreKingSlime: {
-		// DisplayName: 史莱姆王
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreKingSlime.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreKingSlime.Legend
+		// DisplayName: LoreKing Slime
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreLeviathanAnahita: {
-		// DisplayName: 利维坦和阿娜希塔
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreLeviathanAnahita.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreLeviathanAnahita.Legend
+		// DisplayName: Leviathan Anahita
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreMechs: {
-		// DisplayName: 机械动乱
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreMechs.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreMechs.Legend
+		// DisplayName: Mechs
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLorePlantera: {
-		// DisplayName: 世纪之花
-		// Tooltip: Mods.CalamityMod.Items.Lore.LorePlantera.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLorePlantera.Legend
+		// DisplayName: Plantera
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLorePolterghast: {
-		// DisplayName: 噬魂幽花
-		// Tooltip: Mods.CalamityMod.Items.Lore.LorePolterghast.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLorePolterghast.Legend
+		// DisplayName: Polterghast
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreQueenBee: {
-		// DisplayName: 蜂后
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreQueenBee.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreQueenBee.Legend
+		// DisplayName: Queen Bee
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreExoMechs: {
-		// DisplayName: 星流巨械
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreExoMechs.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreExoMechs.Legend
+		// DisplayName: Exo Mechs
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreEyeofCthulhu: {
-		// DisplayName: 克苏鲁之眼
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreEyeofCthulhu.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreEyeofCthulhu.Legend
+		// DisplayName: Eye of Cthulhu
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreGolem: {
-		// DisplayName: 石巨人
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreGolem.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreGolem.Legend
+		// DisplayName: Golem
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreHiveMind: {
-		// DisplayName: 腐巢意志
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreHiveMind.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreHiveMind.Legend
+		// DisplayName: Hive Mind
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreQueenSlime: {
-		// DisplayName: 史莱姆女皇
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreQueenSlime.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreQueenSlime.Legend
+		// DisplayName: Queen Slime
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLorePrelude: {
-		// DisplayName: 序章
-		// Tooltip: Mods.CalamityMod.Items.Lore.LorePrelude.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLorePrelude.Legend
+		// DisplayName: Prelude
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreSulphurSea: {
-		// DisplayName: 硫磺海
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreSulphurSea.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreSulphurSea.Legend
+		// DisplayName: Sulphur Sea
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreTwins: {
-		// DisplayName: 双子魔眼
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreTwins.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreTwins.Legend
+		// DisplayName: Twins
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreProfanedGuardians: {
-		// DisplayName: 亵渎守卫
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreProfanedGuardians.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreProfanedGuardians.Legend
+		// DisplayName: Profaned Guardians
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreProvidence: {
-		// DisplayName: 亵渎天神，普罗维登斯
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreProvidence.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreProvidence.Legend
+		// DisplayName: Providence
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreRavager: {
-		// DisplayName: 毁灭魔像
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreRavager.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreRavager.Legend
+		// DisplayName: Ravager
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreRequiem: {
-		// DisplayName: 安魂曲
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreRequiem.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreRequiem.Legend
+		// DisplayName: Requiem
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreSignus: {
-		// DisplayName: 西格纳斯
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreSignus.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreSignus.Legend
+		// DisplayName: Signus
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreSkeletron: {
-		// DisplayName: 骷髅王
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreSkeletron.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreSkeletron.Legend
+		// DisplayName: Skeletron
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreWallofFlesh: {
-		// DisplayName: 血肉墙
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreWallofFlesh.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreWallofFlesh.Legend
+		// DisplayName: Wall of Flesh
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreYharon: {
-		// DisplayName: 璀璨华焰，犽戎
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreYharon.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreYharon.Legend
+		// DisplayName: Yharon
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreOldDuke: {
-		// DisplayName: 硫海遗爵
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreOldDuke.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreOldDuke.Legend
+		// DisplayName: OldDuke
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLorePerforators: {
-		// DisplayName: 血肉寄生者和宿主
-		// Tooltip: Mods.CalamityMod.Items.Lore.LorePerforators.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLorePerforators.Legend
+		// DisplayName: Perforators
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLorePlaguebringerGoliath: {
-		// DisplayName: 瘟疫使者歌莉娅
-		// Tooltip: Mods.CalamityMod.Items.Lore.LorePlaguebringerGoliath.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLorePlaguebringerGoliath.Legend
+		// DisplayName: Plaguebringer Goliath
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreSkeletronPrime: {
-		// DisplayName: 机械骷髅王
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreSkeletronPrime.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreSkeletronPrime.Legend
+		// DisplayName: Skeletron Prime
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreSlimeGod: {
-		// DisplayName: 史莱姆之神
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreSlimeGod.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreSlimeGod.Legend
+		// DisplayName: SlimeGod
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreStormWeaver: {
-		// DisplayName: 风暴编织者
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreStormWeaver.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreStormWeaver.Legend
+		// DisplayName: StormWeaver
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 
 	ModifyLoreUnderworld: {
-		// DisplayName: 地狱
-		// Tooltip: Mods.CalamityMod.Items.Lore.LoreUnderworld.Tooltip
-		// Legend: Mods.CalamityOverhaul.ModifyLores.ModifyLoreUnderworld.Legend
+		// DisplayName: Underworld
+		// Tooltip: "[legend]"
+		// Legend: ""
 	}
 }
 
