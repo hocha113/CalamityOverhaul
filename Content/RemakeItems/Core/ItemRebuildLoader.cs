@@ -70,10 +70,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onGetItemNameValueMethod;
         public static MethodBase onItemNamePropertyGetMethod;
         public static MethodBase onAffixNameMethod;
-        private static FieldInfo TooltipLine_ModName_Field { get; set; } 
-            = typeof(TooltipLine).GetField("Mod", BindingFlags.Public | BindingFlags.Instance);
-        private static FieldInfo TooltipLine_OneDropLogo_Field { get; set; } 
-            = typeof(TooltipLine).GetField("OneDropLogo", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo TooltipLine_ModName_Field { get; set; }
+        private static FieldInfo TooltipLine_OneDropLogo_Field { get; set; }
         public static GlobalHookList<GlobalItem> ItemLoader_Shoot_Hook { get; private set; }
         public static GlobalHookList<GlobalItem> ItemLoader_CanUse_Hook { get; private set; }
         public static GlobalHookList<GlobalItem> ItemLoader_UseItem_Hook { get; private set; }
@@ -92,6 +90,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             CWRItems.ItemAllowPrefixDic ??= [];
             CWRItems.ItemMeleePrefixDic ??= [];
             CWRItems.ItemRangedPrefixDic ??= [];
+
+            TooltipLine_ModName_Field = typeof(TooltipLine).GetField("Mod", BindingFlags.Public | BindingFlags.Instance);
+            TooltipLine_OneDropLogo_Field = typeof(TooltipLine).GetField("OneDropLogo", BindingFlags.NonPublic | BindingFlags.Instance);
 
             ItemLoader_Shoot_Hook = GetItemLoaderHookTargetValue("HookShoot");
             ItemLoader_CanUse_Hook = GetItemLoaderHookTargetValue("HookCanUseItem");
@@ -207,6 +208,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             CWRItems.ItemMeleePrefixDic?.Clear();
             CWRItems.ItemRangedPrefixDic?.Clear();
 
+            TooltipLine_ModName_Field = null;
+            TooltipLine_OneDropLogo_Field = null;
+
             ItemLoader_Shoot_Hook = null;
             ItemLoader_CanUse_Hook = null;
             ItemLoader_UseItem_Hook = null;
@@ -264,21 +268,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
             }
 
-            bool reset = true;
+            bool? reset = null;
             if (TryFetchByID(item.type, out ItemOverride ritem)) {
-                bool? newReset = ritem.On_ModifyTooltips(item, tooltips);
-                if (newReset.HasValue) {
-                    reset = newReset.Value;
-                }
+                reset = ritem.On_ModifyTooltips(item, tooltips);
             }
 
-            if (reset) {
+            if (!reset.HasValue) {
                 item.ModItem?.ModifyTooltips(tooltips);
                 if (!item.IsAir) {
                     foreach (var modifyTooltip in ItemLoader_ModifyTooltips_Hook.Enumerate(item)) {
                         modifyTooltip.ModifyTooltips(item, tooltips);
                     }
                 }
+            }
+            else if (reset.Value) {
+                item.ModItem?.ModifyTooltips(tooltips);
             }
 
             tooltips.RemoveAll((TooltipLine x) => !x.Visible);
