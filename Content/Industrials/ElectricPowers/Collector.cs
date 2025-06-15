@@ -410,6 +410,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
 
                 graspItem.CWR().TargetByCollector = Projectile.identity;
+
                 Vector2 chestPos = new Vector2(collectorTP.Chest.x, collectorTP.Chest.y) * 16 + new Vector2(8, 8);
                 Projectile.ChasingBehavior(chestPos, 8);
                 graspItem.Center = Projectile.Center;
@@ -422,6 +423,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     Projectile.velocity = Vector2.Zero;
                     collectorTP.Chest.AddItem(graspItem, true);
                     graspItem.TurnToAir();
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
                     Projectile.ai[0] = 0;
                     Projectile.netUpdate = true;
                 }
@@ -446,7 +448,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (item != null) {
+                int oldNum = item.CWR().TargetByCollector;
                 item.CWR().TargetByCollector = Projectile.identity;
+                if (!VaultUtils.isSinglePlayer && oldNum != Projectile.identity) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+                }
+
                 Projectile.ChasingBehavior(item.Center, 8);
                 Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
                 if (item.Center.Distance(Projectile.Center) < 32) {
@@ -457,6 +464,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                     graspItem = item.Clone();
                     item.TurnToAir();
+                    if (!VaultUtils.isSinglePlayer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+                    }
                     graspItem.CWR().TargetByCollector = Projectile.identity;
                     Projectile.ai[0] = 1;
                     Projectile.netUpdate = true;
