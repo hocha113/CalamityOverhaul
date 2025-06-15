@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 2;
             ItemID.Sets.CanGetPrefixes[Type] = false;
-            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MusicBox;          
+            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MusicBox;
         }
         public override void SetDefaults() => Item.DefaultToMusicBox(ModContent.TileType<MetalMusicBoxTile>());
     }
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 return;
             }
             Tile tile = Main.tile[i, j];
-            if (tile.TileFrameX == 36 && tile.TileFrameY % 36 == 0 
+            if (tile.TileFrameX == 36 && tile.TileFrameY % 36 == 0
                 && (int)Main.timeForVisualEffects % 7 == 0 && Main.rand.NextBool(3)) {
                 int goreType = Main.rand.Next(570, 573);
                 Vector2 position = new Vector2(i * 16 + 8, j * 16 - 8);

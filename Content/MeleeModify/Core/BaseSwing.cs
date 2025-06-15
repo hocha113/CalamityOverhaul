@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;

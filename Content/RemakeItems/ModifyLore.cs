@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         public override string LocalizationCategory => "ModifyLores";
         public override int TargetID => ModContent.ItemType<T>();
         public override bool DrawingInfo => false;
-        public LocalizedText Legend {  get; set; }
+        public LocalizedText Legend { get; set; }
         public override void PostSetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));
         //只修改中文区，因为其他语言的文本暂时没有制作完成
         //暂时全部禁用，在写手把那些故事重写完成之前不要进行修改

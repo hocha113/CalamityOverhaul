@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.CalPlayer;
 using CalamityMod.Cooldowns;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
@@ -133,7 +132,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Owner.AddCooldown(SuperradiantSawBoost.ID, SuperradiantSlaughterer.DashCooldown);
                 }
-                
+
                 Owner.Calamity().sBlasterDashActivated = true;
                 Owner.velocity += UnitToMouseV * 22;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Custom/MeatySlash"), TruePosition);

@@ -1,9 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

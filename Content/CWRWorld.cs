@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (!Main.dedServ) {
-                Main.LocalPlayer.CurrentSceneEffect.music.value 
+                Main.LocalPlayer.CurrentSceneEffect.music.value
                     = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
             }
 

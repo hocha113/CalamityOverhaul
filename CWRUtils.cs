@@ -1,7 +1,5 @@
 ﻿using CalamityMod;
-using CalamityMod.Cooldowns;
 using CalamityMod.Events;
-using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +7,6 @@ using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;

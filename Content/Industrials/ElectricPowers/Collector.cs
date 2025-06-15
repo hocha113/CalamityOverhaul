@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

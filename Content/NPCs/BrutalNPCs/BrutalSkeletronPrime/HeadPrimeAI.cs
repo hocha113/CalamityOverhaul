@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             rule2.Add(ModContent.ItemType<SoulofFrightEX>());
             rule2.Add(ModContent.ItemType<SoulofMightEX>());
             rule2.Add(ModContent.ItemType<SoulofSightEX>());
-            rule2.Add(ModContent.ItemType<MetalMusicBox>(), dropRateInt:5);
+            rule2.Add(ModContent.ItemType<MetalMusicBox>(), dropRateInt: 5);
             npcLoot.Add(rule2);
         }
 
