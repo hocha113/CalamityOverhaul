@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -27,11 +28,42 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
         }
+
         public override void LoadData(Item item, TagCompound tag) {
             if (item.type == DarkMatterBall.ID) {
                 if (!tag.TryGet("DarkMatterBall_dorpItems", out dorpItems)) {
                     dorpItems = [];//如果没有存档就初始化
                 }
+            }
+        }
+
+        public override void NetSend(Item item, BinaryWriter writer) {
+            if (!item.Alives() || item.type != DarkMatterBall.ID) {
+                return;
+            }
+
+            dorpItems ??= [];
+            if (dorpItems.Count > 0) {
+                dorpItems.RemoveAll(item => !item.Alives());
+            }
+
+            writer.Write(dorpItems.Count);
+            foreach (var dorp in dorpItems) {
+                ItemIO.Send(dorp, writer, true);
+            }
+        }
+
+        public override void NetReceive(Item item, BinaryReader reader) {
+            if (!item.Alives() || item.type != DarkMatterBall.ID) {
+                return;
+            }
+
+            int count = reader.ReadInt32();
+            dorpItems ??= [];
+            dorpItems.Clear();
+
+            for (int i = 0; i < count; i++) {
+                dorpItems.Add(ItemIO.Receive(reader, true));
             }
         }
     }
@@ -40,7 +72,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     {
         public static DarMatterUI Instance => UIHandleLoader.GetUIHandleOfType<DarMatterUI>();
         public static DarMatterGlobal darMatterGlobal;
-        public bool uiActive {
+        public static bool UIActive {
             get {
                 if (Main.gameMenu || Main.HoverItem.type != DarkMatterBall.ID) {
                     return false;
@@ -55,11 +87,11 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
         }
-        public override bool Active => uiActive || _sengs > 0;
+        public override bool Active => UIActive || _sengs > 0;
         public List<DarMatterItemVidElement> darMatterItemVidElements = [];
         public float _sengs;
         public override void Update() {
-            if (uiActive) {
+            if (UIActive) {
                 if (_sengs < 1) {
                     _sengs += 0.1f;
                 }
@@ -187,7 +219,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
         public override void SetStaticDefaults() {
             Contents = this.GetLocalization("Contents", () => "Contents:");
-            Item.ResearchUnlockCount = 9999;
+            Item.ResearchUnlockCount = 64;
             ID = Type;
         }
         public override void SetDefaults() {

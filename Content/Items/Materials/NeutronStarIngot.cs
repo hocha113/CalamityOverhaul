@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Materials
     {
         public override string Texture => CWRConstant.Item + "Materials/NeutronStarIngot";
         public override void SetStaticDefaults() {
-            Item.ResearchUnlockCount = 9999;
+            Item.ResearchUnlockCount = 64;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 18));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }

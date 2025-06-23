@@ -8,7 +8,6 @@ using InnoVault.PRT;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
@@ -73,28 +72,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             ProcessTilesInArea(pos, 500, 500);
         }
 
-        private void SpawnSpark(Vector2 position, Vector2 velocity) {
+        private static void SpawnSpark(Vector2 position, Vector2 velocity) {
             PRT_HeavenfallStar spark = new PRT_HeavenfallStar(position, velocity, false, 13, 1
                 , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
             PRTLoader.AddParticle(spark);
         }
 
         private void ProcessTilesInArea(Vector2 startPos, int width, int height) {
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    Vector2 tilePos = startPos + new Vector2(x, y);
-                    Tile tile = Framing.GetTileSafely(tilePos);
-                    if (!tile.HasTile || tile.TileType == TileID.Cactus) {
-                        continue;
-                    }
-                    ProcessTile(tile, tilePos);
+            for (int x = 0; x < width / 16; x++) {
+                for (int y = 0; y < height / 16; y++) {
+                    Vector2 tilePos = startPos + new Vector2(x, y) * 16;
+                    ProcessTile(Framing.GetTileSafely(tilePos), tilePos);
                 }
             }
         }
 
         private void ProcessTile(Tile tile, Vector2 tilePos) {
             tile.LiquidAmount = 0;
-            if (WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
+            tilePos /= 16;//坐标默认为世界实体坐标，所以需要除以16进行换算
+            //判断是否进行挖掘
+            if (tile.HasTile && WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
                 if (VaultUtils.IsTopLeft((int)tilePos.X, (int)tilePos.Y, out _)) {
                     int dorptype = tile.GetTileDorp();
                     if (dorptype != 0) {
@@ -103,7 +100,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 }
                 WorldGen.KillTile((int)tilePos.X, (int)tilePos.Y, noItem: true);
             }
-            if (tile.WallType != 0) {
+            //锤子形态下才能拆墙
+            if (Projectile.ai[0] == 0 && tile.WallType != 0) {
                 if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
                     dorpTypes.Add(wallValue);
                 }
@@ -160,6 +158,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 }
                 span.darkMatterBall = darkMatterBall;
             }
+            projectile.netUpdate = true;
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

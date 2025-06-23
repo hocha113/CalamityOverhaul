@@ -1,21 +1,40 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 {
-    internal class SpanDMBall : ModProjectile
+    internal class SpanDMBall : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
         internal DarkMatterBall darkMatterBall;
-        private Player Owner => Main.player[Projectile.owner];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.timeLeft = 130;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
             Projectile.hostile = false;
+        }
+
+        public override void NetHeldSend(BinaryWriter writer) {
+            if (darkMatterBall != null && darkMatterBall.Type > ItemID.None) {
+                ItemIO.Send(darkMatterBall.Item, writer, true);
+            }
+            else {
+                ItemIO.Send(new Item(), writer, true);
+            }
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            var item = ItemIO.Receive(reader, true);
+            if (item.Alives() && item.ModItem != null && item.ModItem is DarkMatterBall _darkMatterBall) {
+                darkMatterBall = _darkMatterBall;
+            }
         }
 
         public override void AI() {

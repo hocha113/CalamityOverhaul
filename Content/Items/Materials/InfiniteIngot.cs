@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Materials
     {
         public override string Texture => CWRConstant.Item + "Materials/InfiniteIngot";
         public override void SetStaticDefaults() {
-            Item.ResearchUnlockCount = 9999;
+            Item.ResearchUnlockCount = 64;
             ItemID.Sets.SortingPriorityMaterials[Type] = 114;
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 11));

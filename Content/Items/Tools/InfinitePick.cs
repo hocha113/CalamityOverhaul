@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class ModifyInfinitePick : ItemOverride
     {
         public override int TargetID => ModContent.ItemType<InfinitePick>();
+        public override bool DrawingInfo => false;
         public override bool CanLoadLocalization => false;
         //在某些不应该的情况下，武器会被禁止使用，使用这个钩子来防止这种事情的发生
         public override bool? On_CanUseItem(Item item, Player player) => true;

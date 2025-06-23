@@ -326,13 +326,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             writer.WriteVector2(startPos);
             writer.Write(BatteryPrompt);
             graspItem ??= new Item();
-            ItemIO.Send(graspItem, writer);
+            ItemIO.Send(graspItem, writer, true);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             startPos = reader.ReadVector2();
             BatteryPrompt = reader.ReadBoolean();
-            graspItem = ItemIO.Receive(reader);
+            graspItem = ItemIO.Receive(reader, true);
         }
 
         internal Item FindItem() {

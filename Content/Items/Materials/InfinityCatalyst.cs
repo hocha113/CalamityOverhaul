@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         }
         private static bool hasMod(string name) => ModLoader.Mods.Any(mod => mod.Name == name);
         public override void SetStaticDefaults() {
-            Item.ResearchUnlockCount = 9999;
+            Item.ResearchUnlockCount = 64;
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(10, 6));
         }

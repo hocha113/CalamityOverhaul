@@ -79,9 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         internal Color ColorFunction(float completionRatio) {
-            if (colorDates == null) {
-                colorDates = CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
-            }
+            colorDates ??= CWRUtils.GetColorDate(TextureAssets.Projectile[Type].Value);
             return VaultUtils.MultiStepColorLerp((150 - Projectile.timeLeft) / 150f, colorDates);
         }
 
