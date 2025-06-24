@@ -509,17 +509,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
             return result.HasValue ? result.Value : orig(item, player);
         }
-
-        /// <summary>
-        /// 这个钩子用于挂载一个提前于TML方法的SetDefaults，以此来进行一些高级的修改
-        /// </summary>
-        [Obsolete]
-        public void OnSetDefaultsHook(On_SetDefaults_Dalegate orig, Item item, bool createModItem) {
-            orig.Invoke(item, true);
-            if (TryFetchByID(item.type, out ItemOverride ritem)) {
-                ritem.On_PostSetDefaults(item);
-            }
-        }
         /// <summary>
         /// 提前于TML的方法执行，这样继承重写<br/><see cref="ItemOverride.On_Shoot"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
@@ -939,21 +928,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public override void SaveData(Item item, TagCompound tag) {
             ProcessRemakeAction(item, (inds) => inds.SaveData(item, tag));
         }
-
-        //public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-        //    , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-        //    if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
-        //        return false;
-        //    }
-
-        //    bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
-        //    if ((!rest.HasValue || rest.Value) && item.type != ItemID.None && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
-        //        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-        //        return false;
-        //    }
-
-        //    return rest ?? base.Shoot(item, player, source, position, velocity, type, damage, knockback);
-        //}
 
         public override void SplitStack(Item destination, Item source, int numToTransfer) {
             ProcessRemakeAction(destination, (inds) => inds.SplitStack(destination, source, numToTransfer));

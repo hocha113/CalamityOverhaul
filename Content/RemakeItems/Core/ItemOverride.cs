@@ -749,14 +749,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         }
         /// <summary>
-        /// 创建这个物品时设置他的各种实例，这个钩子会在TML的moditem方法与global钩子执行后再执行，继承重写这个函数用于防止一些修改被覆盖
-        /// </summary>
-        /// <param name="item"></param>
-        [Obsolete("这个钩子函数最终被证明是不稳定的，所以被废弃")]
-        public virtual void On_PostSetDefaults(Item item) {
-
-        }
-        /// <summary>
         /// 该物品在进行射击行为时会调用的方法，返回返回<see langword="false"/>将阻止对物品的射击行为
         /// </summary>
         /// <param name="item"></param>
