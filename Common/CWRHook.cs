@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Common
 {
     /// <summary>
     /// 这是一个负责管理和应用方法钩子的类
-    /// 该类实现了ILoader接口，确保对钩子的正确加载和卸载
     /// </summary>
     public class CWRHook : ICWRLoader
     {
