@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public static Dictionary<int, ItemOverride> ByID { get; internal set; } = [];
         /// <summary>
-        /// 一个不变的ID字段，它会在加载的时候获取一次<see cref="TargetID"/>的值
-        /// </summary>
-        public int SetReadonlyTargetID;
-        /// <summary>
         /// 重置对象的目标ID，默认为<see cref="ItemID.None"/>，即什么都不做
         /// </summary>
         public virtual int TargetID => ItemID.None;
