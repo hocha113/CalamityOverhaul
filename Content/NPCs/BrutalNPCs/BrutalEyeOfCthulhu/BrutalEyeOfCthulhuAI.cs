@@ -1,9 +1,8 @@
-﻿using CalamityOverhaul.Content.NPCs.Core;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 {
-    internal class BrutalEyeOfCthulhuAI : NPCOverride
+    internal class BrutalEyeOfCthulhuAI : CWRNPCOverride
     {
         public override int TargetID => NPCID.EyeofCthulhu;
         public override void SetProperty() {

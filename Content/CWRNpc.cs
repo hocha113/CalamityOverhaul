@@ -15,7 +15,6 @@ using CalamityOverhaul.Content.Items.Painting;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -33,10 +32,6 @@ namespace CalamityOverhaul.Content
     {
         #region Data
         public override bool InstancePerEntity => true;
-        /// <summary>
-        /// 这个NPC实体的对应修改副本
-        /// </summary>
-        internal NPCOverride NPCOverride = new NPCOverride();
         /// <summary>
         /// 瘟疫命中锚点
         /// </summary>
@@ -156,16 +151,43 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        /// <summary>
+        /// 接收NPC基本数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        public static void NPCbasicDataHandler(BinaryReader reader) {
+            int whoAmI = reader.ReadByte();
+            Vector2 pos = reader.ReadVector2();
+            float rot = reader.ReadSingle();
+
+            NPC npc = CWRUtils.GetNPCInstance(whoAmI);
+
+            if (npc == null) {
+                return;
+            }
+
+            npc.position = pos;
+            npc.rotation = rot;
+
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.NPCbasicData);
+            modPacket.Write((byte)npc.whoAmI);
+            modPacket.WriteVector2(npc.position);
+            modPacket.Write(npc.rotation);
+            modPacket.Send();
+        }
+
         public override void ResetEffects(NPC npc) {
             IceParclose = false;
             VoidErosionBool = false;
             HellfireExplosion = false;
             SoulfireExplosion = false;
             FrozenActivity = false;
-        }
-
-        public override void SetDefaults(NPC npc) {
-            NPCOverride.SetDefaults(npc);
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
@@ -203,10 +225,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void BossHeadSlot(NPC npc, ref int index) => NPCOverride.BossHeadSlot(ref index);
-
-        public override void BossHeadRotation(NPC npc, ref float rotation) => NPCOverride.BossHeadRotation(ref rotation);
-
         public override bool PreAI(NPC npc) {
             UpdateOverBeatBack(npc);
             return base.PreAI(npc);
@@ -219,16 +237,6 @@ namespace CalamityOverhaul.Content
                 }
             }
         }
-
-        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
-            NPCOverride.ModifyHitByItem(player, item, ref modifiers);
-        }
-
-        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
-            NPCOverride.ModifyHitByProjectile(projectile, ref modifiers);
-        }
-
-        public override bool CheckActive(NPC npc) => NPCOverride.CheckActive();
 
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == CWRLoad.AstrumDeusHead) {
@@ -366,10 +374,6 @@ namespace CalamityOverhaul.Content
             else if (npc.type == ModContent.NPCType<OldDuke>()) {
                 dontExpertRule.Add(ModContent.ItemType<SandVortexOfTheDecayedSea>(), 6);
                 npcLoot.Add(dontExpertRule);
-            }
-            //不要用TryFetchByID或者直接访问NPCOverride
-            if (NPCSystem.IDToNPCSetDic.TryGetValue(npc.type, out var npcOverride)) {
-                npcOverride.ModifyNPCLoot(npc, npcLoot);
             }
         }
 

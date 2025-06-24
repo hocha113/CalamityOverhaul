@@ -1,13 +1,13 @@
-﻿using CalamityMod.Events;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.World;
-using CalamityOverhaul.Content.NPCs.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal abstract class PrimeArm : NPCOverride
+    internal abstract class PrimeArm : CWRNPCOverride
     {
         internal bool bossRush;
         internal bool masterMode;
@@ -20,11 +20,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal Player player;
         internal int frame;
         internal bool dontAttack;
-        public sealed override bool? CanOverride() {
+        internal CalamityGlobalNPC calNPC => npc.Calamity();
+        public sealed override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
 
         public sealed override void SetProperty() {

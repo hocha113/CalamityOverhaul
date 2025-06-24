@@ -6,10 +6,10 @@ using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -24,7 +24,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class SpazmatismAI : NPCOverride, ICWRLoader
+    internal class SpazmatismAI : CWRNPCOverride, ICWRLoader
     {
         private delegate void TwinsBigProgressBarDrawDelegate(TwinsBigProgressBar inds, ref BigProgressBarInfo info, SpriteBatch spriteBatch);
         public override int TargetID => NPCID.Spazmatism;
@@ -69,11 +69,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             _headIndexField = null;
         }
 
-        public override bool? CanOverride() {
+        public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
 
         public override void BossHeadSlot(ref int index) {
@@ -249,10 +249,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Vector2 toTarget = npc.Center.To(player.Center);
             Vector2 toPoint = skeletronPrime.Center;
             npc.damage = npc.defDamage;
+            HeadPrimeAI headPrime = skeletronPrime.GetOverride<HeadPrimeAI>();
             bool skeletronPrimeInSprint = skeletronPrime.ai[1] == 1;
-            bool LaserWall = skeletronPrime.CWR().NPCOverride.ai[3] == 2;
+            bool LaserWall = headPrime.ai[3] == 2;
             bool isDestroyer = HeadPrimeAI.setPosingStarmCount > 0;
-            bool isIdle = skeletronPrime.CWR().NPCOverride.ai[10] > 0;
+            bool isIdle = headPrime.ai[10] > 0;
 
             if (isIdle) {
                 toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 50 : -50, -100);

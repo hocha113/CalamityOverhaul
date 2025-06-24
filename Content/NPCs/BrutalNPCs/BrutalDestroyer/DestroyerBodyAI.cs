@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
+using CalamityMod.NPCs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class DestroyerBodyAI : NPCOverride, ICWRLoader
+    internal class DestroyerBodyAI : CWRNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.TheDestroyerBody;
@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
         private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
         private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
+        private CalamityGlobalNPC calNPC => npc.Calamity();
         private float enrageScale;
         private int noFlyZoneBoxHeight;
         private int totalSegments;
@@ -78,11 +79,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool CheckActive() => false;
 
-        public override bool? CanOverride() {
+        public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
 
         public override void SetProperty() {
@@ -283,7 +284,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void UpdateEnrageScale() {
             enrageScale = DestroyerHeadAI.BossRush ? 1f : 0f;
             if (Main.IsItDay() || DestroyerHeadAI.BossRush) {
-                calNPC.CurrentlyEnraged = !DestroyerHeadAI.BossRush;
+                npc.Calamity().CurrentlyEnraged = !DestroyerHeadAI.BossRush;
                 enrageScale += 2f;
             }
         }

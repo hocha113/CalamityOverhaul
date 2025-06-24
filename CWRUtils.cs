@@ -228,6 +228,19 @@ namespace CalamityOverhaul
             }
         }
 
+        /// <summary>
+        /// 在必要的时候使用这个发送NPC基本数据
+        /// </summary>
+        /// <param name="npc"></param>
+        public static void SendNPCbasicData(this NPC npc, int player = -1) {
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.NPCbasicData);
+            modPacket.Write((byte)npc.whoAmI);
+            modPacket.WriteVector2(npc.position);
+            modPacket.Write(npc.rotation);
+            modPacket.Send(player);
+        }
+
         #endregion
 
         #endregion

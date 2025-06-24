@@ -10,10 +10,10 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
-using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -27,7 +27,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class HeadPrimeAI : NPCOverride, ICWRLoader
+    internal class HeadPrimeAI : CWRNPCOverride, ICWRLoader
     {
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
         private bool noEye;
         internal static int setPosingStarmCount;
+        internal CalamityGlobalNPC calNPC => npc.Calamity();
         internal ref float ai0 => ref ai[0];
         internal ref float ai1 => ref ai[1];
         internal ref float ai2 => ref ai[2];
@@ -163,11 +164,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override bool CanLoad() => true;
 
-        public override bool? CanOverride() {
+        public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
 
         internal static bool DontReform() {
@@ -187,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0) && setPosingStarmCount <= 0) {
+            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.GetOverride<HeadPrimeAI>().ai[10] > 0) && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
                 Rectangle drawRec = BSPRAM.Value.GetRectangle();
@@ -199,7 +200,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 drawPos.Y -= Main.screenPosition.Y;
                 spriteBatch.Draw(BSPRAM.Value, drawPos, drawRec, color7, rotation7, drawOrig, 1f, spriteEffects, 0f);
                 spriteBatch.Draw(BSPRAMGlow.Value, drawPos, drawRec, Color.White, rotation7, drawOrig, 1f, spriteEffects, 0f);
-
 
                 int num24 = Dust.NewDust(rCurrentNPC.Center, 10, 10, DustID.FireworkFountain_Red, 0, 0, 0, Color.Gold, 0.5f);
                 Main.dust[num24].noGravity = false;
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 type = 3;
             }
 
-            NPCOverride pCOverride = head.CWR().NPCOverride;
+            NPCOverride pCOverride = head.GetOverride<HeadPrimeAI>();
             for (int i = 0; i < arm.buffImmune.Length; i++) {
                 arm.buffImmune[i] = true;
             }
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (head.ai[1] != 1 && head.ai[1] != 2) {
                 return false;
             }
-            float rot = pCOverride.ai[9] * 0.1f + MathHelper.TwoPi / 4 * type;
+            float rot = pCOverride.ai[9] * 0.2f + MathHelper.TwoPi / 4 * type;
             Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
             float origeRot = head.Center.To(arm.Center).ToRotation();
             arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.5f);

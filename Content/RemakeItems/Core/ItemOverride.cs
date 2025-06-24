@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;

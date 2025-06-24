@@ -1,19 +1,18 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class ProbeAI : NPCOverride
+    internal class ProbeAI : CWRNPCOverride
     {
         public override int TargetID => NPCID.Probe;
-        public override bool? CanOverride() {
+        public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
         public override void SetProperty() {
             if (CWRWorld.MachineRebellion) {

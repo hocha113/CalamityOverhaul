@@ -1,11 +1,10 @@
 ﻿using CalamityMod.NPCs.HiveMind;
-using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.HiveMindOverride
 {
-    internal class HiveMindAI : NPCOverride
+    internal class HiveMindAI : CWRNPCOverride
     {
         public override int TargetID => ModContent.NPCType<HiveMind>();
         public override bool CanLoad() {

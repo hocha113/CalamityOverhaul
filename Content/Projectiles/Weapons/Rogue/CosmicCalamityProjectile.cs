@@ -42,27 +42,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public override void AI() {
-            // 更新弹幕旋转方向
+            //更新弹幕旋转方向
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            // 如果不是服务器模式，创建粒子效果
+            //如果不是服务器模式，创建粒子效果
             if (Main.netMode != NetmodeID.Server) {
                 CreateSparkEffect();
             }
 
-            // 如果时间超过某个值，执行相关行为
+            //如果时间超过某个值，执行相关行为
             if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {
                 TrackNearestNPC();
                 UpdateUndergroundBehavior();
             }
 
-            // 增加计时
+            //增加计时
             Time++;
         }
 
         private void CreateSparkEffect() {
             Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-            BasePRT spark = new PRT_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
+            BasePRT spark = new PRT_Spark(Projectile.Center - Projectile.velocity * 8f
+                , -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
             PRTLoader.AddParticle(spark);
         }
 
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
             // 添加光照效果
             Vector3 DustLight = new Vector3(0.171f, 0.124f, 0.086f);
-            Lighting.AddLight(Projectile.Center + Projectile.velocity, DustLight * 4);
+            Lighting.AddLight(Projectile.Center + Projectile.velocity, DustLight * 14);
 
             // 播放地下声音
             if (Time % 15 == 0 && TimeUnderground < 120) {
@@ -146,8 +147,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 if (Projectile.Calamity().stealthStrike) {
-                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, MathHelper.PiOver4.ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
-                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, (MathHelper.PiOver2 + MathHelper.PiOver4).ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, MathHelper.PiOver4.ToRotationVector2() * 13
+                        , ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center
+                        , (MathHelper.PiOver2 + MathHelper.PiOver4).ToRotationVector2() * 13
+                        , ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
                     for (int i = 0; i < 4; i++) {
                         float rot = MathHelper.PiOver2 * i;
                         Vector2 vr = rot.ToRotationVector2() * 10;
@@ -155,9 +159,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                             float slp = j / 16f;
                             float slp2 = 16f / j;
                             Vector2 spanPos = Projectile.Center + rot.ToRotationVector2() * 64 * j;
-                            BasePRT pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Gold, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f, 60);
+                            BasePRT pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f
+                                , Color.Gold, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f, 60);
                             PRTLoader.AddParticle(pulse);
-                            BasePRT pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.OrangeRed, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f, 50);
+                            BasePRT pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f
+                                , Color.OrangeRed, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f, 50);
                             PRTLoader.AddParticle(pulse2);
                         }
                     }
@@ -173,9 +179,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             }
 
             if (!Projectile.Calamity().stealthStrike) {
-                BasePRT pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
+                BasePRT pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f
+                    , Projectile.velocity / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
                 PRTLoader.AddParticle(pulse);
-                BasePRT pulse2 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Aqua, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
+                BasePRT pulse2 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.40f
+                    , Projectile.velocity / 1.5f * 0.9f, Color.Aqua, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
                 PRTLoader.AddParticle(pulse2);
             }
 
@@ -214,7 +222,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         internal Color ColorFunction(float completionRatio) {
             float amount = MathHelper.Lerp(0.65f, 1f, (float)Math.Cos((0f - Main.GlobalTimeWrappedHourly) * 3f) * 0.5f + 0.5f);
             float num = Utils.GetLerpValue(1f, 0.64f, completionRatio, clamped: true) * Projectile.Opacity;
-            Color value = Color.Lerp(Main.hslToRgb(1, 1f, 0.8f), Color.PaleTurquoise, (float)Math.Sin(completionRatio * MathF.PI * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
+            Color value = Color.Lerp(Main.hslToRgb(1, 1f, 0.8f), Color.PaleTurquoise
+                , (float)Math.Sin(completionRatio * MathF.PI * 1.6f - Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
             return Color.Lerp(Color.White, value, amount) * num;
         }
 
@@ -229,7 +238,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
 
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

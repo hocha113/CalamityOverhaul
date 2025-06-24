@@ -5,7 +5,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
-    internal class DestroyerHeadAI : NPCOverride, ICWRLoader
+    internal class DestroyerHeadAI : CWRNPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.TheDestroyer;
         private const int maxFindMode = 60000;
@@ -68,11 +67,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        public override bool? CanOverride() {
+        public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
             }
-            return base.CanOverride();
+            return null;
         }
 
         public override bool CheckActive() => false;
@@ -131,7 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     continue;
                 }
 
-                NPCSystem.SendNPCbasicData(npc, findPlayer.whoAmI);
+                npc.SendNPCbasicData(findPlayer.whoAmI);
             }
         }
 

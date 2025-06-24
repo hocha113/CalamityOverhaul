@@ -267,16 +267,18 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         ];
         }
         private void ToMusicFunc() {
-            if (Main.gameMenu && OnActive()) {
-                int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
-                for (int i = 0; i < Main.musicFade.Length; i++) {
-                    if (i == targetID) {
-                        continue;
-                    }
-                    Main.musicFade[i] = (musicFade50 / 120f);
-                }
-                Main.newMusic = targetID;
+            if (!Main.gameMenu || !OnActive()) {
+                return;
             }
+
+            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
+            for (int i = 0; i < Main.musicFade.Length; i++) {
+                if (i == targetID) {
+                    continue;
+                }
+                Main.musicFade[i] = (musicFade50 / 120f);
+            }
+            Main.newMusic = targetID;
         }
         private void DecideOnTOWMusicEvent(On_Main.orig_UpdateAudio_DecideOnTOWMusic orig, Main self) {
             orig.Invoke(self);

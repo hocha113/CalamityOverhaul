@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools

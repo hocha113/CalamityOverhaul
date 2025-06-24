@@ -1,11 +1,10 @@
 ﻿using CalamityMod.NPCs.Perforator;
-using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
 {
-    internal class PerforatorAI : NPCOverride
+    internal class PerforatorAI : CWRNPCOverride
     {
         public override int TargetID => ModContent.NPCType<PerforatorHive>();
         public override bool CanLoad() {

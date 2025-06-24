@@ -1,13 +1,13 @@
-﻿using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
+using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.DamageModify
 {
-    internal class EDNPCCustomizer : NPCCustomizer, ICWRLoader
+    internal class ModifyNPCDamage : NPCOverride, ICWRLoader
     {
         private static List<int> nihilityProjs = [];
 
