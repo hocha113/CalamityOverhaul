@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor.Core
 {
-    internal abstract class BaseRangedArmor : ItemOverride
+    internal abstract class BaseRangedArmor : CWRItemOverride
     {
         public override bool CanLoadLocalization => false;
         public override bool DrawingInfo => false;

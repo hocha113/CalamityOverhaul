@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTitanArm : ItemOverride
+    internal class RTitanArm : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<TitanArm>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

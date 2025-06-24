@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
-    internal class RFrostcrushValari : ItemOverride
+    internal class RFrostcrushValari : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<FrostcrushValari>();
 

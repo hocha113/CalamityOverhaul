@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -9,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSwordsplosion : ItemOverride
+    internal class RSwordsplosion : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Swordsplosion>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<SwordsplosionHeld>();

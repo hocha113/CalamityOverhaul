@@ -4,7 +4,6 @@ using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal abstract class RMagicBook<TItem> : ItemOverride where TItem : ModItem
+    internal abstract class RMagicBook<TItem> : CWRItemOverride where TItem : ModItem
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         }
     }
 
-    internal abstract class RMagicBook : ItemOverride
+    internal abstract class RMagicBook : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -7,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RFlamarang : ItemOverride
+    internal class RFlamarang : CWRItemOverride
     {
         public override int TargetID => ItemID.Flamarang;
         public override void SetDefaults(Item item) {

@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
 {
-    internal class ModifyArkoftheCosmos : ItemOverride
+    internal class ModifyArkoftheCosmos : CWRItemOverride
     {
         public override int TargetID => ItemType<ArkoftheCosmos>();
         public override bool CanLoadLocalization => false;

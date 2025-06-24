@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class REntropicClaymore : ItemOverride
+    internal class REntropicClaymore : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<EntropicClaymore>();
         public static readonly Color EntropicColor1 = new Color(25, 5, 9);

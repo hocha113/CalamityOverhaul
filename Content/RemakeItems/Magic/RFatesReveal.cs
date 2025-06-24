@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RFatesReveal : ItemOverride
+    internal class RFatesReveal : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<FatesReveal>();
         public override void SetDefaults(Item item) {

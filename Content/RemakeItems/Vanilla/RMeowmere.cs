@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMeowmere : ItemOverride
+    internal class RMeowmere : CWRItemOverride
     {
         public override int TargetID => ItemID.Meowmere;
         public override bool FormulaSubstitution => false;

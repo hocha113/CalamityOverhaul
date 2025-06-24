@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RSylvestaff : ItemOverride
+    internal class RSylvestaff : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Sylvestaff>();
         public override bool DrawingInfo => false;

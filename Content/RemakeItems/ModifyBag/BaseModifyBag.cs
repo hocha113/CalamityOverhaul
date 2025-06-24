@@ -1,8 +1,6 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
-
-namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
+﻿namespace CalamityOverhaul.Content.RemakeItems.ModifyBag
 {
-    internal abstract class BaseModifyBag : ItemOverride
+    internal abstract class BaseModifyBag : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => false;

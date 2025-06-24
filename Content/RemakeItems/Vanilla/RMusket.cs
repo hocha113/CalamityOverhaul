@@ -1,13 +1,12 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RMusket : ItemOverride
+    internal class RMusket : CWRItemOverride
     {
         public override int TargetID => ItemID.Musket;
         public override bool FormulaSubstitution => false;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -7,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RHeatRay : ItemOverride
+    internal class RHeatRay : CWRItemOverride
     {
         public override int TargetID => ItemID.HeatRay;
         public override void SetDefaults(Item item) => item.SetHeldProj<HeatRayHeld>();

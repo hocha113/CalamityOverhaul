@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class REarth : ItemOverride
+    internal class REarth : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Earth>();
         public override void SetDefaults(Item item) {

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.RemakeItems.Core
+namespace CalamityOverhaul.Content.RemakeItems
 {
     //老实说我没想好是否开放这个功能，所以将相关的代码集中到一起，方便决定是否加载到线上版本里面去
     internal class HandlerCanOverride

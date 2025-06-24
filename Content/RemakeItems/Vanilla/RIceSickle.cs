@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 冰雪镰刀
     /// </summary>
-    internal class RIceSickle : ItemOverride
+    internal class RIceSickle : CWRItemOverride
     {
         public override int TargetID => ItemID.IceSickle;
         public override bool IsVanilla => true;

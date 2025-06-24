@@ -1,5 +1,5 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -191,27 +191,34 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         internal void SetItemVidousList() {
             itemVidousList = [];
             foreach (var rItem in ItemOverride.Instances) {
-                if (rItem.DrawingInfo && rItem.TargetID > 0) {
-                    Item ccItem = new Item(rItem.TargetID);
-                    if (!tabControlMelee.Tab && (ccItem.DamageType == DamageClass.Melee
-                                || ccItem.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()
-                                || ccItem.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                                || ccItem.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>())) {
-                        continue;
-                    }
-                    if (!tabControlRanged.Tab && ccItem.DamageType == DamageClass.Ranged) {
-                        continue;
-                    }
-                    if (!tabControlMagic.Tab && ccItem.DamageType == DamageClass.Magic) {
-                        continue;
-                    }
-                    if (!tabControlRogue.Tab && ccItem.DamageType == CWRLoad.RogueDamageClass) {
-                        continue;
-                    }
-                    var itemVidous = new ItemVidous();
-                    itemVidous.BaseRItem = rItem;
-                    itemVidousList.Add(itemVidous);
+                if (rItem.Mod != CWRMod.Instance || !rItem.DrawingInfo || rItem.TargetID <= 0) {
+                    continue;
                 }
+
+                Item ccItem = new Item(rItem.TargetID);
+
+                if (!tabControlMelee.Tab && (ccItem.DamageType == DamageClass.Melee
+                            || ccItem.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()
+                            || ccItem.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                            || ccItem.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>())) {
+                    continue;
+                }
+
+                if (!tabControlRanged.Tab && ccItem.DamageType == DamageClass.Ranged) {
+                    continue;
+                }
+
+                if (!tabControlMagic.Tab && ccItem.DamageType == DamageClass.Magic) {
+                    continue;
+                }
+
+                if (!tabControlRogue.Tab && ccItem.DamageType == CWRLoad.RogueDamageClass) {
+                    continue;
+                }
+
+                var itemVidous = new ItemVidous();
+                itemVidous.BaseRItem = rItem;
+                itemVidousList.Add(itemVidous);
             }
         }
 

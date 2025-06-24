@@ -2,7 +2,6 @@
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -10,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal abstract class RMagicStaff<TItem> : ItemOverride where TItem : ModItem
+    internal abstract class RMagicStaff<TItem> : CWRItemOverride where TItem : ModItem
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
@@ -23,14 +22,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         }
     }
 
-    internal abstract class RMagicStaff : ItemOverride
+    internal abstract class RMagicStaff : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override bool FormulaSubstitution => true;
         public override bool CanLoadLocalization => false;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";
-        public static bool CanLoadFunc(ItemOverride itemOverride) {
+        public static bool CanLoadFunc(CWRItemOverride itemOverride) {
             if (itemOverride.DrawingInfo) {
                 return true;
             }

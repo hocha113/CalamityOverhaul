@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Healing;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBurntSienna : ItemOverride
+    internal class RBurntSienna : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<BurntSienna>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

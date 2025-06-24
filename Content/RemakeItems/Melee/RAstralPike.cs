@@ -5,7 +5,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -15,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAstralPike : ItemOverride
+    internal class RAstralPike : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<AstralPike>();
         public const int InTargetProjToLang = 1220;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -7,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
-    internal class ModifyShroomiteMask : ItemOverride
+    internal class ModifyShroomiteMask : CWRItemOverride
     {
         public override int TargetID => ItemID.ShroomiteMask;
         public static int SpawnTime;
@@ -38,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
 
-    internal class ModifyShroomiteHeadgear : ItemOverride
+    internal class ModifyShroomiteHeadgear : CWRItemOverride
     {
         public override int TargetID => ItemID.ShroomiteHeadgear;
         public override bool DrawingInfo => false;
@@ -46,7 +45,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         public override void UpdateArmorByHead(Player player, Item body, Item legs) => ModifyShroomiteMask.UpdateArmor(player, body, legs);
     }
 
-    internal class ModifyShroomiteHelmet : ItemOverride
+    internal class ModifyShroomiteHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.ShroomiteHelmet;
         public override bool DrawingInfo => false;

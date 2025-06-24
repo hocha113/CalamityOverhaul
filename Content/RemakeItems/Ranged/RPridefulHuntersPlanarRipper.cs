@@ -1,12 +1,11 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RPridefulHuntersPlanarRipper : ItemOverride
+    internal class RPridefulHuntersPlanarRipper : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<PridefulHuntersPlanarRipper>();
         public override void SetDefaults(Item item) {

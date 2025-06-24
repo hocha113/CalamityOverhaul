@@ -1,14 +1,13 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class REviscerator : ItemOverride
+    internal class REviscerator : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override void SetDefaults(Item item) => item.SetCartridgeGun<EvisceratorHeld>(22);

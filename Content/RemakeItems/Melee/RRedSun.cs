@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RRedSun : ItemOverride
+    internal class RRedSun : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<RedSun>();
         public override void SetDefaults(Item item) {

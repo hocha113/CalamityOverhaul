@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDevilsDevastation : ItemOverride
+    internal class RDevilsDevastation : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<DevilsDevastation>();
         private int Level;

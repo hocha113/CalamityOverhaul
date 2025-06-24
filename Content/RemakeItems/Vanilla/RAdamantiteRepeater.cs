@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RAdamantiteRepeater : ItemOverride
+    internal class RAdamantiteRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.AdamantiteRepeater;
         public override bool FormulaSubstitution => false;

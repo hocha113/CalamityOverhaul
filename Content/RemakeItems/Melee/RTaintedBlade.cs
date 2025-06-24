@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTaintedBlade : ItemOverride
+    internal class RTaintedBlade : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<TaintedBlade>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<TaintedBladeHeld>();

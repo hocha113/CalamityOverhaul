@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.RangedModify
             owner ??= Main.LocalPlayer;
             Item weapon = owner.GetItem();
             if (weapon.type == ItemID.None) {
-                return true;
+                return false;
             }
 
             if (ModGanged.LuiAFKSetAmmoIsNoConsume(ammoItem)) {//适配LuiAFK

@@ -4,7 +4,6 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDragonRage : ItemOverride
+    internal class RDragonRage : CWRItemOverride
     {
         private int Level;
         private int LevelAlt;

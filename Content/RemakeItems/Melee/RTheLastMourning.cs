@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheLastMourning : ItemOverride
+    internal class RTheLastMourning : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheLastMourning>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;

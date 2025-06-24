@@ -7,7 +7,6 @@ using CalamityMod.Projectiles.Healing;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -20,7 +19,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class REssenceFlayer : ItemOverride
+    internal class REssenceFlayer : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<EssenceFlayer>();
         public override void SetDefaults(Item item) {

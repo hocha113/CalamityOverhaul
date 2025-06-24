@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

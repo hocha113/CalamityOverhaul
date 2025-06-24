@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RCometQuasher : ItemOverride
+    internal class RCometQuasher : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<CometQuasher>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

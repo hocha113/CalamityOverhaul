@@ -5,7 +5,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -15,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTerrorBlade : ItemOverride, ICWRLoader
+    internal class RTerrorBlade : CWRItemOverride, ICWRLoader
     {
         public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public const float TerrorBladeMaxRageEnergy = 5000;

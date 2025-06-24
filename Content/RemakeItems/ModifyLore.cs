@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.LoreItems;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -10,16 +9,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal abstract class ModifyLore<T> : ItemOverride where T : ModItem
+    internal abstract class ModifyLore<T> : CWRItemOverride where T : ModItem
     {
         public override string LocalizationCategory => "ModifyLores";
         public override int TargetID => ModContent.ItemType<T>();
         public override bool DrawingInfo => false;
         public LocalizedText Legend { get; set; }
-        public override void PostSetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));
+        public override void AfterLoadenContent() => Legend = this.GetLocalization(nameof(Legend));
         //只修改中文区，因为其他语言的文本暂时没有制作完成
         //暂时全部禁用，在写手把那些故事重写完成之前不要进行修改
-        public override bool? CanOverride(int id) => false;// id == TargetID && Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese;
+        public override bool? CanCWROverride() => false;// id == TargetID && Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese;
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRItems.OverModifyTooltip(item, tooltips);
             KeyboardState state = Keyboard.GetState();

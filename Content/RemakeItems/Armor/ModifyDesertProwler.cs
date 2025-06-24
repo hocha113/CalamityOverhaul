@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Armor.DesertProwler;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     // 荒漠迅游者
-    internal class ModifyDesertProwler : ItemOverride
+    internal class ModifyDesertProwler : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<DesertProwlerHat>();
         public override bool CanLoadLocalization => false;

@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RStarfury : ItemOverride
+    internal class RStarfury : CWRItemOverride
     {
         public override int TargetID => ItemID.Starfury;
         public override void SetDefaults(Item item) {

@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RProximityMineLauncher : ItemOverride
+    internal class RProximityMineLauncher : CWRItemOverride
     {
         public override int TargetID => ItemID.ProximityMineLauncher;
         public override bool FormulaSubstitution => false;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     /// <summary>
     /// 种子弯刀
     /// </summary>
-    internal class RSeedler : ItemOverride
+    internal class RSeedler : CWRItemOverride
     {
         public override int TargetID => ItemID.Seedler;
         public override bool IsVanilla => true;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 银弓
     /// </summary>
-    internal class RSilverBow : ItemOverride
+    internal class RSilverBow : CWRItemOverride
     {
         public override int TargetID => ItemID.SilverBow;
         public override bool IsVanilla => true;

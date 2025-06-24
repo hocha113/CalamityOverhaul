@@ -3,14 +3,13 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RNettlevineGreatbow : ItemOverride
+    internal class RNettlevineGreatbow : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<NettlevineGreatbow>();
         public override void SetDefaults(Item item) {

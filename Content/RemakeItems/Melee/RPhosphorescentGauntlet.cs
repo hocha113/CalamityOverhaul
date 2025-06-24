@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RPhosphorescentGauntlet : ItemOverride
+    internal class RPhosphorescentGauntlet : CWRItemOverride
     {
         public const int OnHitIFrames = 15;
         public override int TargetID => ModContent.ItemType<PhosphorescentGauntlet>();

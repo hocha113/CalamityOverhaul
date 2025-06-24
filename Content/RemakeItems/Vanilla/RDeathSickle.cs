@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -17,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 死神镰刀
     /// </summary>
-    internal class RDeathSickle : ItemOverride
+    internal class RDeathSickle : CWRItemOverride
     {
         public override int TargetID => ItemID.DeathSickle;
         public override bool IsVanilla => true;

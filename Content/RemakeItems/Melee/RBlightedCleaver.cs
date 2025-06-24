@@ -4,7 +4,6 @@ using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBlightedCleaver : ItemOverride
+    internal class RBlightedCleaver : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<BlightedCleaver>();
         public const float BlightedCleaverMaxRageEnergy = 5000;

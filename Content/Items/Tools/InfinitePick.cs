@@ -3,7 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -19,7 +19,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
-    internal class ModifyInfinitePick : ItemOverride
+    internal class ModifyInfinitePick : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<InfinitePick>();
         public override bool DrawingInfo => false;

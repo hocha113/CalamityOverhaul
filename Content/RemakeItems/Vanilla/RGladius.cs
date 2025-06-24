@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 罗马短剑
     /// </summary>
-    internal class RGladius : ItemOverride
+    internal class RGladius : CWRItemOverride
     {
         public override int TargetID => ItemID.Gladius;
         public override bool IsVanilla => true;

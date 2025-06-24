@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Armor.Victide;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     // 潮胜
-    internal class ModifyVictide : ItemOverride
+    internal class ModifyVictide : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<VictideHeadRanged>();
         public override bool CanLoadLocalization => false;

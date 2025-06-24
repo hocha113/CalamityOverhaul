@@ -2,7 +2,6 @@
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -12,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RSolsticeClaymore : ItemOverride
+    internal class RSolsticeClaymore : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<SolsticeClaymore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

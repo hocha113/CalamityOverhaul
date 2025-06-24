@@ -7,7 +7,7 @@ using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.PRT;
 using System;
@@ -21,7 +21,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class ModifyHeavenfallLongbow : ItemOverride
+    internal class ModifyHeavenfallLongbow : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<HeavenfallLongbow>();
         public override bool DrawingInfo => false;

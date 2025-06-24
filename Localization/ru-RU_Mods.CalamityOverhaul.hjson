@@ -5267,6 +5267,11 @@ RemakeItems: {
 			за курсором при возвращении и выпускать болты.
 			'''
 	}
+
+	CWRItemOverride: {
+		// DisplayName: CWRItemOverride
+		// Tooltip: ""
+	}
 }
 
 ModifyLores: {

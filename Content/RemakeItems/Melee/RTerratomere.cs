@@ -6,7 +6,6 @@ using CalamityMod.Projectiles.Healing;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -15,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTerratomere : ItemOverride
+    internal class RTerratomere : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Terratomere>();
         public override void SetDefaults(Item item) {

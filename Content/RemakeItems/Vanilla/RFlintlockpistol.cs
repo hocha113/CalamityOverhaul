@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RFlintlockpistol : ItemOverride
+    internal class RFlintlockpistol : CWRItemOverride
     {
         public override int TargetID => ItemID.FlintlockPistol;
         public override bool FormulaSubstitution => false;

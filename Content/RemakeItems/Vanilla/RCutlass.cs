@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 海盗弯刀
     /// </summary>
-    internal class RCutlass : ItemOverride
+    internal class RCutlass : CWRItemOverride
     {
         public override int TargetID => ItemID.Cutlass;
         public override bool IsVanilla => true;

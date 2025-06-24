@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Others;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -9,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     //死灵
-    internal class ModifyNecroHelmet : ItemOverride
+    internal class ModifyNecroHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.NecroHelmet;
         public static LocalizedText UpdateArmorText { get; private set; }

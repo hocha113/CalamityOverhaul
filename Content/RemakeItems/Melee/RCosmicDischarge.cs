@@ -1,13 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RCosmicDischarge : ItemOverride
+    internal class RCosmicDischarge : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<CosmicDischarge>();
         public override bool FormulaSubstitution => false;

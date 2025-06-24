@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RMagicConch : ItemOverride
+    internal class RMagicConch : CWRItemOverride
     {
         public override int TargetID => ItemID.MagicConch;
         public override bool DrawingInfo => false;
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         }
     }
 
-    internal class RDemonConch : ItemOverride
+    internal class RDemonConch : CWRItemOverride
     {
         public override int TargetID => ItemID.DemonConch;
         public override bool DrawingInfo => false;

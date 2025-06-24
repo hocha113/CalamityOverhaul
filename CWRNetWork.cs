@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.TileModify.Core;
 using System.IO;
 using Terraria.ModLoader;

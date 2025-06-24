@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Typeless;
 using CalamityOverhaul.Content.Projectiles.Weapons.Typeless;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -9,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 星光之眼
     /// </summary>
-    internal class RLunicEye : ItemOverride
+    internal class RLunicEye : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<LunicEye>();
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 马格努斯之眼
     /// </summary>
-    internal class REyeofMagnus : ItemOverride
+    internal class REyeofMagnus : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<EyeofMagnus>();
@@ -31,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// <summary>
     /// 美学魔杖
     /// </summary>
-    internal class RAestheticus : ItemOverride
+    internal class RAestheticus : CWRItemOverride
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<Aestheticus>();

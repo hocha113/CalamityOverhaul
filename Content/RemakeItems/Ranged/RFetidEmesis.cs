@@ -3,14 +3,13 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RFetidEmesis : ItemOverride
+    internal class RFetidEmesis : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<FetidEmesis>();
 

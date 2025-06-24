@@ -1,9 +1,9 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
+﻿using CalamityOverhaul.Content.RemakeItems;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets
 {
-    internal abstract class BaseTurretItem : ItemOverride
+    internal abstract class BaseTurretItem : CWRItemOverride
     {
         public override void SetDefaults(Item item) {
             item.CWR().StorageUE = true;

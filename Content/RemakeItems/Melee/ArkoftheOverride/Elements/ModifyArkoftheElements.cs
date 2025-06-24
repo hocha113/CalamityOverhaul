@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -21,7 +20,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
 {
-    internal class ModifyArkoftheElements : ItemOverride
+    internal class ModifyArkoftheElements : CWRItemOverride
     {
         public override int TargetID => ItemType<ArkoftheElements>();
         public override bool CanLoadLocalization => false;

@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSlagMagnum : ItemOverride
+    internal class RSlagMagnum : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<SlagMagnum>();
         public override void SetDefaults(Item item) {

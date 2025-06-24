@@ -5,7 +5,7 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
     /// <summary>
     /// 妖刀
     /// </summary>
-    internal class MurasamaOverride : ItemOverride
+    internal class MurasamaOverride : CWRItemOverride
     {
         #region Data
         /// <summary>
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             return false;
         }
 
-        public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
+        public override bool? On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
             => PreDrawInInventoryFunc(item, spriteBatch, position, frame, origin, scale);
 

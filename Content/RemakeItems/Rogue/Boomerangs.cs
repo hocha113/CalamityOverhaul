@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -10,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
-    internal class ModifyBananarang : ItemOverride
+    internal class ModifyBananarang : CWRItemOverride
     {
         public override int TargetID => ItemID.Bananarang;
         public override void SetDefaults(Item item) {
@@ -79,7 +78,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
         }
     }
 
-    internal class ModifyTrimarang : ItemOverride
+    internal class ModifyTrimarang : CWRItemOverride
     {
         public override int TargetID => ItemID.Trimarang;
         public override void SetDefaults(Item item) {
@@ -174,7 +173,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
         }
     }
 
-    internal class ModifyIceBoomerang : ItemOverride
+    internal class ModifyIceBoomerang : CWRItemOverride
     {
         public override int TargetID => ItemID.IceBoomerang;
         public override void SetDefaults(Item item) {

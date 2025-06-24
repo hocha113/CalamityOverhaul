@@ -5,7 +5,7 @@ using CalamityMod.Items.Placeables.DraedonStructures;
 using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.TileModify.Core;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
@@ -22,7 +22,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
-    internal class ModifyChargingStationItem : ItemOverride
+    internal class ModifyChargingStationItem : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<ChargingStationItem>();
         public override bool DrawingInfo => false;

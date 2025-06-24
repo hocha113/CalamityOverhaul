@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Projectiles.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {
-    internal class RWaveSkipper : ItemOverride
+    internal class RWaveSkipper : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<WaveSkipper>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<WaveSkipper>()] = true;

@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.NPCs
 {
     internal abstract class CWRNPCOverride : NPCOverride
     {
-        public override bool CanOverride() {
+        public sealed override bool CanOverride() {
             bool? result = CanCWROverride();
             if (result.HasValue) {
                 return result.Value;

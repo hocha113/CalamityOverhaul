@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 蘑菇回旋镖
     /// </summary>
-    internal class RShroomerang : ItemOverride
+    internal class RShroomerang : CWRItemOverride
     {
         public override int TargetID => ItemID.Shroomerang;
         public override bool IsVanilla => true;

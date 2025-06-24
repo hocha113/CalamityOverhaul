@@ -1,13 +1,12 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RStarWrath : ItemOverride
+    internal class RStarWrath : CWRItemOverride
     {
         public override int TargetID => ItemID.StarWrath;
         public override bool IsVanilla => true;

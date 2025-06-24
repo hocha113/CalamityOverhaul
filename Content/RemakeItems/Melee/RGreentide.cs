@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -12,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RGreentide : ItemOverride
+    internal class RGreentide : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Greentide>();
         public override bool? AltFunctionUse(Item item, Player player) => true;

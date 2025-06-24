@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5134,6 +5134,11 @@ RemakeItems: {
 			此能力有{0}秒冷却
 			冷却期间，圆锯会在返回时自动追踪光标并释放飞矢
 			'''
+	}
+
+	CWRItemOverride: {
+		// DisplayName: CWRItemOverride
+		// Tooltip: ""
 	}
 }
 

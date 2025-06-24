@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using System;
 using Terraria;
 using Terraria.Audio;

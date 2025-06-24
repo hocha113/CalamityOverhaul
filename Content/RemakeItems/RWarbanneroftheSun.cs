@@ -2,14 +2,13 @@
 using CalamityMod.CalPlayer;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class RWarbanneroftheSun : ItemOverride
+    internal class RWarbanneroftheSun : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<WarbanneroftheSun>();
         public override bool DrawingInfo => false;

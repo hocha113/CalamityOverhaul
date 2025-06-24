@@ -5,7 +5,6 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -21,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RSuperradiantSlaughterer : ItemOverride
+    internal class RSuperradiantSlaughterer : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<SuperradiantSlaughterer>();
         public override bool DrawingInfo => false;

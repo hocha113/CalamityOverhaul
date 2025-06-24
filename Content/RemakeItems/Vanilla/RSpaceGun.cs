@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -7,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RSpaceGun : ItemOverride
+    internal class RSpaceGun : CWRItemOverride
     {
         public override int TargetID => ItemID.SpaceGun;
         public override bool IsVanilla => true;

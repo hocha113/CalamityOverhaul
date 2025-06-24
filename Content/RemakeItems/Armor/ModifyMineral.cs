@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Others;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -10,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
     //秘银
-    internal class ModifyMythrilHood : ItemOverride
+    internal class ModifyMythrilHood : CWRItemOverride
     {
         public override int TargetID => ItemID.MythrilHat;
         public static LocalizedText UpdateArmorText { get; private set; }
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //山铜
-    internal class ModifyOrichalcumHelmet : ItemOverride
+    internal class ModifyOrichalcumHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.OrichalcumHelmet;
         public static LocalizedText UpdateArmorText { get; private set; }
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //钯金
-    internal class ModifyPalladiumHelmet : ItemOverride
+    internal class ModifyPalladiumHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.PalladiumHelmet;
         public static LocalizedText UpdateArmorText { get; private set; }
@@ -91,7 +90,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //钴蓝
-    internal class ModifyCobaltMask : ItemOverride
+    internal class ModifyCobaltMask : CWRItemOverride
     {
         public override int TargetID => ItemID.CobaltMask;
         public static LocalizedText UpdateArmorText { get; private set; }
@@ -114,7 +113,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //钛金
-    internal class ModifyTitaniumHelmet : ItemOverride
+    internal class ModifyTitaniumHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.TitaniumHelmet;
         public override bool CanLoadLocalization => false;
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //精金
-    internal class ModifyAdamantiteMask : ItemOverride
+    internal class ModifyAdamantiteMask : CWRItemOverride
     {
         public override int TargetID => ItemID.AdamantiteMask;
         public override bool CanLoadLocalization => false;
@@ -144,7 +143,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //精金
-    internal class ModifyHallowedHelmet : ItemOverride
+    internal class ModifyHallowedHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.HallowedHelmet;
         public override bool CanLoadLocalization => false;
@@ -159,7 +158,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //叶绿
-    internal class ModifyChlorophyteHelmet : ItemOverride
+    internal class ModifyChlorophyteHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.ChlorophyteHelmet;
         public static int SpawnTime;
@@ -192,7 +191,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
         }
     }
     //星璇
-    internal class ModifyVortexHelmet : ItemOverride
+    internal class ModifyVortexHelmet : CWRItemOverride
     {
         public override int TargetID => ItemID.VortexHelmet;
         public override bool CanLoadLocalization => false;

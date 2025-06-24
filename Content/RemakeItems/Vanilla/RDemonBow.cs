@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDemonBow : ItemOverride
+    internal class RDemonBow : CWRItemOverride
     {
         public override int TargetID => ItemID.DemonBow;
         public override bool IsVanilla => true;

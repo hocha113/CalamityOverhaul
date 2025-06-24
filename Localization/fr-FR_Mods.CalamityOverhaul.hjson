@@ -5090,6 +5090,11 @@ RemakeItems: {
 			During cooldown, the returning sawblade tracks the cursor and keeps releasing projectiles.
 			''' */
 	}
+
+	CWRItemOverride: {
+		// DisplayName: CWRItemOverride
+		// Tooltip: ""
+	}
 }
 
 ModifyLores: {

@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAnarchyBlade : ItemOverride
+    internal class RAnarchyBlade : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<AnarchyBlade>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

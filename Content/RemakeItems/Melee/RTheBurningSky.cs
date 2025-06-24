@@ -1,14 +1,13 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTheBurningSky : ItemOverride
+    internal class RTheBurningSky : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<TheBurningSky>();
         public override void SetDefaults(Item item) {

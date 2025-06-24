@@ -1,14 +1,13 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBasher : ItemOverride
+    internal class RBasher : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Basher>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

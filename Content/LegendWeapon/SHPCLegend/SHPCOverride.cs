@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,11 +9,11 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.InWorldBossPhase;
-using static CalamityOverhaul.Content.RemakeItems.Core.ItemRebuildLoader;
+using static InnoVault.GameSystem.ItemRebuildLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
-    internal class SHPCOverride : ItemOverride, ICWRLoader
+    internal class SHPCOverride : CWRItemOverride, ICWRLoader
     {
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>

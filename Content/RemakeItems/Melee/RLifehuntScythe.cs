@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RLifehuntScythe : ItemOverride
+    internal class RLifehuntScythe : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<LifehuntScythe>();
         private int swingIndex = 0;

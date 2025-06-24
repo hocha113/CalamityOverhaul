@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 凤凰爆破枪
     /// </summary>
-    internal class RPhoenixBlaster : ItemOverride
+    internal class RPhoenixBlaster : CWRItemOverride
     {
         public override int TargetID => ItemID.PhoenixBlaster;
         public override bool IsVanilla => true;

@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RTeardropCleaver : ItemOverride
+    internal class RTeardropCleaver : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<TeardropCleaver>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<TeardropCleaverHeld>();

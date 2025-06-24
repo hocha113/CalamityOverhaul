@@ -14,7 +14,7 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using System.Linq;
@@ -633,22 +633,13 @@ namespace CalamityOverhaul.Content
             }
             {//添加配方的操作
                 AddResultContent();
-                for (int i = 0; i < ItemLoader.ItemCount; i++) {
-                    if (ItemOverride.TryFetchByID(i, out var rItem)) {
-                        rItem.AddRecipe();
-                    }
-                }
             }
         }
 
         public override void PostAddRecipes() {
             //遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
             for (int i = 0; i < Recipe.numRecipes; i++) {
-                Recipe recipe = Main.recipe[i];
-                ModifyResultContent(recipe);
-                if (ItemOverride.TryFetchByID(recipe.createItem.type, out var rItem)) {
-                    rItem.ModifyRecipe(recipe);
-                }
+                ModifyResultContent(Main.recipe[i]);
             }
         }
 

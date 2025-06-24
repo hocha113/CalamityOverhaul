@@ -2,13 +2,12 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RGalactusBlade : ItemOverride
+    internal class RGalactusBlade : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<GalactusBlade>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<GalactusBladeHeld>();

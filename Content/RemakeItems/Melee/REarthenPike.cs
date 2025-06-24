@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -12,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class REarthenPike : ItemOverride
+    internal class REarthenPike : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<EarthenPike>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
@@ -22,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.SetKnifeHeld<EarthenPikeHeld>();
         }
         public override bool? AltFunctionUse(Item item, Player player) => true;
-        public override void ModifyShootStats(Item item, Player player, ref ShootStats shootStats) {
+        public override void ModifyShootStats(Item item, Player player, ref ItemShootState shootStats) {
             item.useTime = 25;
             if (player.altFunctionUse == 2) {
                 item.useTime = 40;

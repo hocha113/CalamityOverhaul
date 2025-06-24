@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RChlorophyteSaber : ItemOverride
+    internal class RChlorophyteSaber : CWRItemOverride
     {
         public override int TargetID => ItemID.ChlorophyteSaber;
         public override bool CanLoadLocalization => false;
@@ -16,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
     }
 
-    internal class RChlorophyteClaymore : ItemOverride
+    internal class RChlorophyteClaymore : CWRItemOverride
     {
         public override int TargetID => ItemID.ChlorophyteClaymore;
         public override bool CanLoadLocalization => false;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 冰雪弓
     /// </summary>
-    internal class RIceBow : ItemOverride
+    internal class RIceBow : CWRItemOverride
     {
         public override int TargetID => ItemID.IceBow;
         public override bool IsVanilla => true;

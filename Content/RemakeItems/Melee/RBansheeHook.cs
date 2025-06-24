@@ -8,7 +8,6 @@ using CalamityOverhaul.Content.MeleeModify;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -22,7 +21,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBansheeHook : ItemOverride
+    internal class RBansheeHook : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<BansheeHook>();
         internal static int index;

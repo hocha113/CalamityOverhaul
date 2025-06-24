@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 肌腱弓
     /// </summary>
-    internal class RTendonBow : ItemOverride
+    internal class RTendonBow : CWRItemOverride
     {
         public override int TargetID => ItemID.TendonBow;
         public override bool IsVanilla => true;

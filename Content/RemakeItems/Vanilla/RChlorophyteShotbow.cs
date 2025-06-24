@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RChlorophyteShotbow : ItemOverride
+    internal class RChlorophyteShotbow : CWRItemOverride
     {
         public override int TargetID => ItemID.ChlorophyteShotbow;
         public override bool IsVanilla => true;

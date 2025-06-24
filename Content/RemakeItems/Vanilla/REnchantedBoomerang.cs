@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 附魔回旋镖
     /// </summary>
-    internal class REnchantedBoomerang : ItemOverride
+    internal class REnchantedBoomerang : CWRItemOverride
     {
         public override int TargetID => ItemID.EnchantedBoomerang;
         public override bool IsVanilla => true;

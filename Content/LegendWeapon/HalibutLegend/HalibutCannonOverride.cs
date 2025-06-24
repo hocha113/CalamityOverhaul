@@ -3,7 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -13,7 +13,7 @@ using static CalamityOverhaul.Content.InWorldBossPhase;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutCannonOverride : ItemOverride
+    internal class HalibutCannonOverride : CWRItemOverride
     {
         #region Data
         public override int TargetID => ModContent.ItemType<HalibutCannon>();

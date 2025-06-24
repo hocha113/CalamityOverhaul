@@ -1,10 +1,12 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.RemakeItems;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -31,6 +33,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
+
         internal class ProjItem
         {
             public int index;
@@ -89,19 +92,21 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     , position.X - textSize.X / 2, position.Y, color * textAlp, Color.Black * textAlp, new Vector2(0.2f), 1);
             }
         }
+
         internal class EffectEntity : ProjItem
         {
             protected int ai0;
             private float rotation;
             public float rotSpeed;
             public int itemID;
-            private Item item {
+            private Item Item {
                 get {
                     Item inds = new Item();
                     inds.SetDefaults(itemID);
                     return inds;
                 }
             }
+
             public EffectEntity(int index, int timeLeft, float size, int alp, Color color
                 , Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime
                 , int ai0, float rotation, int itemID, float rotSpeed)
@@ -113,7 +118,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             public static int SpwanItemID() {
-                int id = ItemOverride.Instances[Main.rand.Next(ItemOverride.Instances.Count)].TargetID;
+                List<ItemOverride> list = [.. ItemOverride.Instances.Where(inds => inds.Mod == CWRMod.Instance)];
+                int id = list[Main.rand.Next(list.Count)].TargetID;
                 Main.instance.LoadItem(id);
                 return id;
             }
@@ -149,10 +155,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 Rectangle? rectangle = null;
                 Vector2 orig = texture.Size() / 2;
                 Color newColor = color * sengs * (alp / 255f);
-                if (item != null) {
-                    rectangle = Main.itemAnimations[item.type] != null ?
-                        Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
-                        : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
+                if (Item != null) {
+                    rectangle = Main.itemAnimations[Item.type] != null ?
+                        Main.itemAnimations[Item.type].GetFrame(TextureAssets.Item[Item.type].Value)
+                        : TextureAssets.Item[Item.type].Value.Frame(1, 1, 0, 0);
                 }
                 if (rectangle.HasValue) {
                     orig = rectangle.Value.Size() / 2;
@@ -160,6 +166,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 spriteBatch.Draw(texture, position, rectangle, newColor, rotation, orig, size, SpriteEffects.None, 0);
             }
         }
+
         public bool OnActive() => _active || _sengs > 0;
         public override bool CanLoad() => true;
         void ICWRLoader.SetupData() => LoadName();

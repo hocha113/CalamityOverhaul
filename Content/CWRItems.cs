@@ -5,7 +5,7 @@ using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
-using CalamityOverhaul.Content.RemakeItems.Core;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -209,6 +210,16 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public Item TargetLockAmmo;
         #endregion
+        public override void Load() {
+            ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
+            ItemRebuildLoader.PostSetDefaultsEvent += PostSetDefaults;
+            ItemRebuildLoader.PreModifyTooltipsEvent += OverModifyTooltip;
+        }
+        public override void Unload() {
+            ItemRebuildLoader.PreSetDefaultsEvent -= PreSetDefaults;
+            ItemRebuildLoader.PostSetDefaultsEvent -= PostSetDefaults;
+            ItemRebuildLoader.PreModifyTooltipsEvent -= OverModifyTooltip;
+        }
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
@@ -257,30 +268,34 @@ namespace CalamityOverhaul.Content
                 item.value = Item.buyPrice(0, 0, 0, 15);
             }
         }
+
         //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
         public override void SetDefaults(Item item) { }
         //调用在 ItemRebuildLoader.SetDefaults 之前
-        public void PreSetDefaults(Item item) {
-            ai = new float[MaxAISlot];
-            TargetLockAmmo = new Item();
-            InitializeMagazine();
+        public static void PreSetDefaults(Item item) {
+            CWRItems cwrItem = item.CWR();
+            cwrItem.ai = new float[MaxAISlot];
+            cwrItem.TargetLockAmmo = new Item();
+            InitializeMagazine(cwrItem);
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
         }
         //调用在 ItemRebuildLoader.SetDefaults 之后
-        public void PostSetDefaults(Item item) {
-            if (isInfiniteItem) {
-                destructTime = 5;
+        public static void PostSetDefaults(Item item) {
+            CWRItems cwrItem = item.CWR();
+
+            if (cwrItem.isInfiniteItem) {
+                cwrItem.destructTime = 5;
             }
-            if (AmmoCapacity == 0) {
-                AmmoCapacity = 1;
+            if (cwrItem.AmmoCapacity == 0) {
+                cwrItem.AmmoCapacity = 1;
             }
 
-            if (MaxUEValue <= 0) {
-                MaxUEValue = ConsumeUseUE;
+            if (cwrItem.MaxUEValue <= 0) {
+                cwrItem.MaxUEValue = cwrItem.ConsumeUseUE;
             }
-            if (MaxUEValue <= 0) {
-                MaxUEValue = 20;
+            if (cwrItem.MaxUEValue <= 0) {
+                cwrItem.MaxUEValue = 20;
             }
 
             if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
@@ -420,6 +435,25 @@ namespace CalamityOverhaul.Content
             }
             SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
             AmmoViewUI.Instance.LoadAmmos(this);
+        }
+
+        /// <summary>
+        /// 将枪械的弹匣数据初始化
+        /// </summary>
+        public static void InitializeMagazine(CWRItems cwrItem) {
+            cwrItem.AmmoProjectileReturn = true;
+            cwrItem.IsKreload = false;
+            cwrItem.NumberBullets = 0;
+            cwrItem.NoKreLoadTime = 10;
+            cwrItem.MagazineContents = new Item[cwrItem.AmmoCapacity];
+            for (int i = 0; i < cwrItem.MagazineContents.Length; i++) {
+                cwrItem.MagazineContents[i] = new Item();
+            }
+            if (!CWRServerConfig.Instance.MagazineSystem) {
+                cwrItem.IsKreload = true;
+            }
+            cwrItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
+            AmmoViewUI.Instance.LoadAmmos(cwrItem);
         }
         #endregion
 
@@ -669,8 +703,13 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (ItemOverride.TryFetchByID(item.type, out var rItem) && rItem.CanLoadLocalization) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, rItem.Tooltip);
+            if (ItemOverride.TryFetchByID(item.type, out Dictionary<Type, ItemOverride> itemOverrides)) {
+                foreach (var rItem in itemOverrides.Values) {
+                    if (!rItem.CanLoadLocalization || rItem.Mod != CWRMod.Instance) {
+                        continue;
+                    }
+                    CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, rItem.Tooltip);
+                }
             }
 
             if (Main.LocalPlayer.CWR().ThermalGenerationActiveTime > 0 && FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
@@ -720,9 +759,18 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (ItemOverride.TryFetchByID(item.type, out ItemOverride ritem) && ritem.DrawingInfo) {
+            if (!ItemOverride.TryFetchByID(item.type, out Dictionary<Type, ItemOverride> itemOverrides)) {
+                return;
+            }
+
+            bool result = true;
+            foreach (var rItem in itemOverrides.Values) {
+                result = rItem.DrawingInfo;
+            }
+
+            if (result) {
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
-                    , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
+                , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }
         }
     }

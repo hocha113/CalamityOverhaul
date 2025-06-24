@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RMajesticGuard : ItemOverride
+    internal class RMajesticGuard : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<MajesticGuard>();
         public override void SetDefaults(Item item) {

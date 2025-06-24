@@ -4,14 +4,13 @@ using CalamityMod.Projectiles.Magic;
 using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
-    internal class RThunderstorm : ItemOverride
+    internal class RThunderstorm : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<Thunderstorm>();
         public override void SetDefaults(Item item) {

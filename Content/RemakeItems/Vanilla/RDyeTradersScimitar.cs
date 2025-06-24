@@ -1,11 +1,10 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class RDyeTradersScimitar : ItemOverride
+    internal class RDyeTradersScimitar : CWRItemOverride
     {
         public override int TargetID => ItemID.DyeTradersScimitar;
         public override bool IsVanilla => true;

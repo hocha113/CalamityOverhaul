@@ -4,14 +4,13 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RPlagueKeeper : ItemOverride
+    internal class RPlagueKeeper : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<PlagueKeeper>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

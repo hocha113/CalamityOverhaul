@@ -6,7 +6,6 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Linq;
@@ -17,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RDefiledGreatsword : ItemOverride, ICWRLoader
+    internal class RDefiledGreatsword : CWRItemOverride, ICWRLoader
     {
         public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
         public const float DefiledGreatswordMaxRageEnergy = 15000;

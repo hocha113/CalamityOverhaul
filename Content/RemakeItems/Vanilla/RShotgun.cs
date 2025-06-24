@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     /// <summary>
     /// 霰弹枪
     /// </summary>
-    internal class RShotgun : ItemOverride
+    internal class RShotgun : CWRItemOverride
     {
         public override int TargetID => ItemID.Shotgun;
         public override bool FormulaSubstitution => false;

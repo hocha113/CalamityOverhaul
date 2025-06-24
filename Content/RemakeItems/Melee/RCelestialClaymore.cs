@@ -2,14 +2,13 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RCelestialClaymore : ItemOverride
+    internal class RCelestialClaymore : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<CelestialClaymore>();
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
