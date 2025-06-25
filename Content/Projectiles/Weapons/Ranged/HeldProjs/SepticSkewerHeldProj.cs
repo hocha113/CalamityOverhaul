@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = -10;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
-            ControlForce = 0.02f;
+            ControlForce = 0;
             Recoil = 0.2f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
@@ -40,20 +41,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void PostShootEverthing() {
-            if (MagazineSystem) {
-                FireTime = 1;
+        public override void HanderPlaySound() {
+            if (BulletNum % 2 == 0) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             }
         }
 
         public override void FiringShoot() {
-            GunPressure = 0;
-            RecoilRetroForceMagnitude = 0;
-            if (BulletNum == 7) {
-                GunPressure = 0.3f;
-                RecoilRetroForceMagnitude = 6;
-            }
-
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f)
                 , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
