@@ -275,6 +275,8 @@ namespace CalamityOverhaul
             return false;
         }
 
+        public static bool BladeArmEnchant(this Player player) => player.Calamity().bladeArmEnchant;
+
         public static bool AdrenalineMode(this Player player) => player.Calamity().adrenalineModeActive;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {

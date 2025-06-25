@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RemakeItems;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RangedModify
@@ -21,6 +23,7 @@ namespace CalamityOverhaul.Content.RangedModify
             GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             VaultHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
+            ItemRebuildLoader.PreShootEvent += PreShootHook;
         }
         void ICWRLoader.LoadAsset() {
             var indss = VaultUtils.GetSubclassInstances<BaseHeldRanged>();
@@ -36,6 +39,7 @@ namespace CalamityOverhaul.Content.RangedModify
             GlobalRangeds?.Clear();
             TypeToGlowAsset?.Clear();
             IsAmmunitionUnlimitedEvent = null;
+            ItemRebuildLoader.PreShootEvent -= PreShootHook;
         }
 
         /// <summary>
@@ -128,6 +132,47 @@ namespace CalamityOverhaul.Content.RangedModify
             }
 
             return ammo;
+        }
+
+        private static bool PreShootHook(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true) {
+            if (HandlerCanOverride.CanOverrideByID.TryGetValue(item.type, out bool value) && !value) {
+                //return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
+                return true;
+            }
+
+            bool? rest;
+            if (ItemOverride.TryFetchByID(item.type, out ItemOverride ritem)) {
+                rest = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
+                if (rest.HasValue) {
+                    return rest.Value;
+                }
+            }
+
+            if (player.BladeArmEnchant()) {//我不知道为什么需要这行代码
+                return false;
+            }
+
+            if (!CWRLoad.ItemIsHeldSwing[item.type]) {//手持挥舞类的物品不能直接调用gItem的Shoot，所以这里判断一下
+                foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(item)) {
+                    rest = g.Shoot(item, player, source, position, velocity, type, damage, knockback);
+                }
+            }
+
+            rest = ItemRebuildLoader.ProcessRemakeAction(item, (inds) 
+                => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
+
+            if ((!rest.HasValue || rest.Value)
+                && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                return false;
+            }
+
+            if (rest.HasValue) {
+                return rest.Value;
+            }
+
+            return true;
         }
     }
 }

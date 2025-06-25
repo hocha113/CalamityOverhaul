@@ -2,16 +2,16 @@
 using CalamityMod.CalPlayer;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
-using CalamityOverhaul.Content.Players.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using CalamityOverhaul.Content.RangedModify;
+using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Players
 {
-    internal class RippersPlayer : PlayerSet, ICWRLoader
+    internal class RippersPlayer : PlayerOverride, ICWRLoader
     {
         public static List<int> noRippersProj = [];
 
@@ -33,15 +33,15 @@ namespace CalamityOverhaul.Content.Players
             noRippersProj?.Clear();
         }
 
-        public override bool On_ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers) {
-            CalamityPlayer mp = player.Calamity();
+        public override bool On_ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers) {
+            CalamityPlayer mp = Player.Calamity();
             if (mp.adrenalineModeActive) {
                 if (noRippersProj.Contains(proj.type)) {
                     return false;
                 }
-                GlobalGun.AdrenalineByGunDamageAC(player, ref modifiers);
+                GlobalGun.AdrenalineByGunDamageAC(Player, ref modifiers);
             }
-            return base.On_ModifyHitNPCWithProj(player, proj, target, ref modifiers);
+            return base.On_ModifyHitNPCWithProj(proj, target, ref modifiers);
         }
     }
 }

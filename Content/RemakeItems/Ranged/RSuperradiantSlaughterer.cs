@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                 }
 
                 Owner.Calamity().sBlasterDashActivated = true;
-                Owner.velocity += UnitToMouseV * 22;
+                //Owner.velocity += UnitToMouseV * 22;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Custom/MeatySlash"), TruePosition);
 
                 float clampedMouseDist = MathHelper.Clamp(Vector2.Distance(TruePosition, Owner.Calamity().mouseWorld), 0f, 960f);

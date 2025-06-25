@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems;
+using InnoVault.GameSystem;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

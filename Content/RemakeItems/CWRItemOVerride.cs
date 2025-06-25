@@ -1,9 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
+using Terraria;
+using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
-    internal class CWRItemOverride : ItemOverride
+    internal abstract class CWRItemOverride : ItemOverride
     {
         public sealed override void PostSetStaticDefaults() {
             HandlerCanOverride.CanOverrideByID.Add(TargetID, true);
