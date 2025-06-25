@@ -91,10 +91,10 @@ namespace CalamityOverhaul.Content.Players.Core
             onModifyHitNPCWithProjMethod = getPublicStaticMethod("ModifyHitNPCWithProj");
 
             if (onModifyHitNPCWithItemMethod != null) {
-                CWRHook.Add(onModifyHitNPCWithItemMethod, OnModifyHitNPCWithItemHook);
+                VaultHook.Add(onModifyHitNPCWithItemMethod, OnModifyHitNPCWithItemHook);
             }
             if (onModifyHitNPCWithProjMethod != null) {
-                CWRHook.Add(onModifyHitNPCWithProjMethod, OnModifyHitNPCWithProjHook);
+                VaultHook.Add(onModifyHitNPCWithProjMethod, OnModifyHitNPCWithProjHook);
             }
         }
 

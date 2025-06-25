@@ -4,6 +4,7 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RangedModify.Core;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -200,7 +201,7 @@ namespace CalamityOverhaul.Common
                     weaponOut_WeaponLayer_1_Method = weaponOut_WeaponLayer_1_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
                 }
                 if (weaponOut_WeaponLayer_1_Method != null) {
-                    CWRHook.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
+                    VaultHook.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
                 }
                 else {
                     LogFailedLoad("weaponOut_WeaponLayer_1_Method", "WeaponLayer1.Draw");
@@ -210,7 +211,7 @@ namespace CalamityOverhaul.Common
                     weaponOut_WeaponLayer_2_Method = weaponOut_WeaponLayer_2_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
                 }
                 if (weaponOut_WeaponLayer_2_Method != null) {
-                    CWRHook.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
+                    VaultHook.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
                 }
                 else {
                     LogFailedLoad("weaponOut_WeaponLayer_2_Method", "WeaponLayer12.Draw");
@@ -238,7 +239,7 @@ namespace CalamityOverhaul.Common
                     LogFailedLoad("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
                 }
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
-                    CWRHook.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
+                    VaultHook.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
             }
             else {
@@ -264,7 +265,7 @@ namespace CalamityOverhaul.Common
                     LogFailedLoad("weaponDisplayLite_ModifyDrawInfo_Method", "WeaponDisplayPlayerLite.ModifyDrawInfo");
                 }
                 if (weaponDisplayLite_ModifyDrawInfo_Method != null) {
-                    CWRHook.Add(weaponDisplayLite_ModifyDrawInfo_Method, On_MP_Draw_5_Hook);
+                    VaultHook.Add(weaponDisplayLite_ModifyDrawInfo_Method, On_MP_Draw_5_Hook);
                 }
             }
             else {
@@ -301,7 +302,7 @@ namespace CalamityOverhaul.Common
                 if (trO_PlayerHoldOutAnimation_Type != null) {
                     trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
                     if (trO_PlayerHoldOutAnimation_Method != null) {
-                        CWRHook.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
+                        VaultHook.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
                     }
                     else {
                         LogFailedLoad("trO_PlayerHoldOutAnimation_Method", "PlayerHoldOutAnimation.ShouldForceUseAnim");
@@ -327,7 +328,7 @@ namespace CalamityOverhaul.Common
                 if (trO_itemPowerAttacksTypes != null) {
                     trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = trO_itemPowerAttacksTypes.GetMethod("AttemptPowerAttackStart", BindingFlags.Instance | BindingFlags.Public);
                     if (trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method != null) {
-                        CWRHook.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
+                        VaultHook.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
                     }
                     else {
                         LogFailedLoad("trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method", "TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart");
@@ -340,7 +341,7 @@ namespace CalamityOverhaul.Common
                 if (trO_Broadsword_Type != null) {
                     trO_Broadsword_ShouldApplyItemOverhaul_Method = trO_Broadsword_Type.GetMethod("ShouldApplyItemOverhaul", BindingFlags.Instance | BindingFlags.Public);
                     if (trO_Broadsword_ShouldApplyItemOverhaul_Method != null) {
-                        CWRHook.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
+                        VaultHook.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
                     }
                     else {
                         LogFailedLoad("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
@@ -383,14 +384,14 @@ namespace CalamityOverhaul.Common
                 }
 
                 if (FGS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
-                    CWRHook.Add(FGS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
+                    VaultHook.Add(FGS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
                     LogFailedLoad("FGS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
                 }
 
                 if (FGS_FGSGlobalProj_PostAI_Method != null) {
-                    CWRHook.Add(FGS_FGSGlobalProj_PostAI_Method, On_FGS_FGSGlobalProj_PostAI_Hook);
+                    VaultHook.Add(FGS_FGSGlobalProj_PostAI_Method, On_FGS_FGSGlobalProj_PostAI_Hook);
                 }
                 else {
                     LogFailedLoad("FGS_FGSGlobalProj_PostAI_Method", "FargoSoulsGlobalProjectile.PostAI");
@@ -416,7 +417,7 @@ namespace CalamityOverhaul.Common
                         .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 if (coolerItemVisualEffect_Method != null) {
-                    CWRHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
+                    VaultHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
                 }
                 else {
                     LogFailedLoad("coolerItemVisualEffect_Method", "MeleeModifyPlayer.ModifyDrawInfo");
@@ -452,7 +453,7 @@ namespace CalamityOverhaul.Common
                 BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager)
                     .GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
                 if (BossHealthBarManager_Draw_Method != null) {
-                    CWRHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+                    VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
                 }
                 else {
                     LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
@@ -461,7 +462,7 @@ namespace CalamityOverhaul.Common
                 calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils)
                     .GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
                 if (calamityUtils_GetReworkedReforge_Method != null) {
-                    CWRHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
+                    VaultHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
                 }
                 else {
                     LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
@@ -476,7 +477,7 @@ namespace CalamityOverhaul.Common
                     if (type != null) {
                         MethodInfo dditEnrageTooltipsMethod = type.GetMethod("EditEnrageTooltips", BindingFlags.Public | BindingFlags.Static);
                         //这个问题并不一定发生，并且不是模组自己的问题，因此不必要进行挂载
-                        //CWRHook.Add(dditEnrageTooltipsMethod, On_EditEnrageTooltips_Hook);
+                        //VaultHook.Add(dditEnrageTooltipsMethod, On_EditEnrageTooltips_Hook);
                     }
                 }
             }

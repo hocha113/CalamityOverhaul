@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Structures
         void ICWRLoader.LoadData() {
             WorldgenManagementSystem_ModifyWorldGenTasks = typeof(WorldgenManagementSystem)
                 .GetMethod("ModifyWorldGenTasks", BindingFlags.Instance | BindingFlags.Public);
-            CWRHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
+            VaultHook.Add(WorldgenManagementSystem_ModifyWorldGenTasks, ModifyWorldGenTasks);
         }
 
         void ICWRLoader.UnLoadData() {

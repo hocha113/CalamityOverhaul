@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -299,7 +300,10 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             //DompTemporaryVersionText();
 
-            CWRHook.CheckHookStatus();
+            if (!VaultHook.CheckHookStatus(out int num)) {
+                string hookDownText1 = $"{num} " + CWRLocText.GetTextValue("Error_1");
+                VaultUtils.Text(hookDownText1, Color.Red);
+            }
 
             if (!ModGanged.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");

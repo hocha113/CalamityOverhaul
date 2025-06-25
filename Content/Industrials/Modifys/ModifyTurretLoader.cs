@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             List<Type> turretTypes = VaultUtils.GetSubclassTypeList(typeof(TEBaseTurret));
             foreach (var type in turretTypes) {
                 MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
-                CWRHook.Add(info, OnUpdateHook);
+                VaultHook.Add(info, OnUpdateHook);
                 info = type.GetMethod("Update", BindingFlags.Public | BindingFlags.Instance);
-                CWRHook.Add(info, OnUpdateHook);
+                VaultHook.Add(info, OnUpdateHook);
             }
         }
 

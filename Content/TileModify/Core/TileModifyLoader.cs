@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.TileModify.Core
             TileOverrides.RemoveAll(tile => !tile.CanLoad() || tile.TargetID < 0);
             MethodInfo method = typeof(TileLoader).GetMethod("RightClick", BindingFlags.Static | BindingFlags.Public);
             if (method != null) {
-                CWRHook.Add(method, HookRightClick);
+                VaultHook.Add(method, HookRightClick);
             }
         }
         void ICWRLoader.SetupData() {

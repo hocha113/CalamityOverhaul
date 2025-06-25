@@ -14,7 +14,6 @@ using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using System.Linq;

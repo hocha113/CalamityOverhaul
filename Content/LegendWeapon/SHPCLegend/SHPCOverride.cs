@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
             MethodInfo methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-            CWRHook.Add(methodInfo, OnSHPCToolFunc);
+            VaultHook.Add(methodInfo, OnSHPCToolFunc);
         }
         /// <summary>
         /// 获得成长等级

@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using InnoVault.GameSystem;
 using System;
 using System.Reflection;
 using Terraria;
@@ -17,8 +18,8 @@ namespace CalamityOverhaul.Content.Structures
         void ICWRLoader.LoadData() {
             Type draedonStructures = typeof(DraedonStructures);
             MethodInfo getMethod(string key) => draedonStructures.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
-            CWRHook.Add(getMethod("FillPlanetoidLaboratoryChest"), OnPlanetoidChest);
-            //CWRHook.Add(getMethod("FillPlagueLaboratoryChest"), OnPlagueChest);
+            VaultHook.Add(getMethod("FillPlanetoidLaboratoryChest"), OnPlanetoidChest);
+            //VaultHook.Add(getMethod("FillPlagueLaboratoryChest"), OnPlagueChest);
         }
 
         void ICWRLoader.UnLoadData() { }

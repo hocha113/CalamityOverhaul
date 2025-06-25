@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -19,7 +20,7 @@ namespace CalamityOverhaul.Content.RangedModify
         void ICWRLoader.LoadData() {
             GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
-            CWRHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
+            VaultHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
         }
         void ICWRLoader.LoadAsset() {
             var indss = VaultUtils.GetSubclassInstances<BaseHeldRanged>();
