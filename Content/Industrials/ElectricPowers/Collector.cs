@@ -172,11 +172,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            tag["_TagItemSign"] = TagItemSign;
+            string result;
+            //因为对于模组来讲，物品的ID是动态的，为了避免模组变动导致的ID偏移问题，这里存储物品的内部名
+            if (TagItemSign < ItemID.Count) {
+                result = TagItemSign.ToString();
+            }
+            else {
+                result = ItemLoader.GetItem(TagItemSign).FullName;
+            }
+            tag["_TagItemFullName"] = result;
         }
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("_TagItemSign", out TagItemSign)) {
+            if (tag.TryGet("_TagItemFullName", out string fullName)) {
+                TagItemSign = VaultUtils.GetItemTypeFromFullName(fullName);
+            }
+            else {
                 TagItemSign = ItemID.None;
             }
         }

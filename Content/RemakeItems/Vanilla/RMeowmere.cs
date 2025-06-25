@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.MeleeModify.Core;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -66,36 +67,34 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         }
 
         public override bool PreInOwner() {
-            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.6f, phase1SwingSpeed: 9.2f, phase2SwingSpeed: 8f, swingSound: SoundID.Item58);
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.6f, phase1SwingSpeed: 9.2f, phase2SwingSpeed: 8f);
             return base.PreInOwner();
         }
     }
 
-    internal class MeowmereGlobalShoot : GlobalProjectile
+    internal class ModifyMeowmereShoot : ProjOverride
     {
-        public override void SetDefaults(Projectile projectile) {
-            if (projectile.type == ProjectileID.Meowmere) {
-                projectile.timeLeft = 160;
-                projectile.penetrate = 2;
-            }
+        public override int TargetID => ProjectileID.Meowmere;
+        public override void SetProperty() {
+            projectile.timeLeft = 160;
+            projectile.penetrate = 2;
         }
 
-        public override void PostAI(Projectile projectile) {
-            if (projectile.type == ProjectileID.Meowmere) {
-                projectile.velocity.X *= 0.98f;
-                projectile.velocity.Y += 0.01f;
-            }
+        public override bool AI() {
+            projectile.velocity.X *= 0.98f;
+            projectile.velocity.Y += 0.01f;
+            return base.AI();
         }
 
-        public override void OnKill(Projectile projectile, int timeLeft) {
+        public override void OnKill(int timeLeft) {
             RMeowmere.SpanDust(projectile, 0.2f);
         }
 
-        public override void OnHitPlayer(Projectile projectile, Player target, Player.HurtInfo info) {
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
         }
 
-        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             RMeowmere.SpanDust(projectile);
         }
     }
