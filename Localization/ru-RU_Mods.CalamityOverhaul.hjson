@@ -1128,7 +1128,11 @@ Items: {
 
 	Hydroelectric: {
 		// DisplayName: Hydroelectric
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Generating electricity by placing in water
+			"One application of fluid mechanics"
+			''' */
 	}
 }
 

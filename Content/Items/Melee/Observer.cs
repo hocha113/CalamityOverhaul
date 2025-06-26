@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = 32;
             Item.height = 34;
             Item.DamageType = DamageClass.MeleeNoSpeed;
-            Item.damage = 59;
+            Item.damage = 52;
             Item.knockBack = 4f;
             Item.useTime = 22;
             Item.useAnimation = 22;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.penetrate = -1;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            Projectile.localNPCHitCooldown = 18;
         }
 
         public override void AI() {

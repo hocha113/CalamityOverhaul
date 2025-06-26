@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 AddIngredient<DubiousPlating>(20).
                 AddIngredient<MysteriousCircuitry>(20).
                 AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.GoldBarGroup, 15).
+                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
                 AddTile(TileID.MythrilAnvil).
                 Register();
         }
