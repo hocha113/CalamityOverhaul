@@ -71,7 +71,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
-        public override bool CanDrop(int i, int j) => false;
         public override void MouseOver(int i, int j) {
             Item item = Main.LocalPlayer.GetItem();
             int type = TargetItem;

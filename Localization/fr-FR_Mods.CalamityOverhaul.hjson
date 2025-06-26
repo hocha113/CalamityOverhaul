@@ -1103,6 +1103,11 @@ Items: {
 		// DisplayName: Music Box (Machine Rebellion)
 		// Tooltip: Plays 'Fall of the Bit' by Ryusa
 	}
+
+	Hydroelectric: {
+		// DisplayName: Hydroelectric
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

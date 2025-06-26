@@ -350,6 +350,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item item = null;
             float maxFindSQ = 4000000;
             foreach (var i in Main.ActiveItems) {
+                if (i.IsAir || !i.active) {
+                    continue;
+                }
                 if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
                     continue;
                 }

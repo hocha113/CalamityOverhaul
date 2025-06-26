@@ -5,13 +5,6 @@
         public virtual int MaxFindMode => 300;
         public BaseGeneratorUI GeneratorUI;
         public sealed override void SetMachine() {
-            MachineData ??= GetGeneratorDataInds();
-            if (TrackItem != null && TrackItem.type == TargetItem) {
-                MachineData.UEvalue = TrackItem.CWR().UEValue;
-                if (MachineData.UEvalue > MaxUEValue) {
-                    MachineData.UEvalue = MaxUEValue;
-                }
-            }
             SetGenerator();
         }
 

@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.addTile(Type);
         }
-        public override bool CanDrop(int i, int j) => false;
     }
 
     internal class WGGWildernessTP : BaseWindGrivenTP

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1096,6 +1096,15 @@ Items: {
 	MetalMusicBox: {
 		DisplayName: 音乐盒(机械暴乱)
 		Tooltip: 演奏由 'Ryusa' 创作的曲子《位元堕落》
+	}
+
+	Hydroelectric: {
+		DisplayName: 水力发电机
+		Tooltip:
+			'''
+			放置在水中进行发电
+			"流体力学的一种应用"
+			'''
 	}
 }
 
