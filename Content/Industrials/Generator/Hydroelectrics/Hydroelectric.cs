@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,8 +85,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         private Vector2 FlabellumPos => CenterInWorld + new Vector2(22, -12);
         private float flabellumRot;
         private float flabellumRotVlome;
-        private SlotId loopingSoundSlot;
-        private SoundStyle loopingSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
+        private SlotId hydroelectricSoundSlot;
+        private SoundStyle hydroelectricSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
             IsLooped = true,
             MaxInstances = 6,
         };
@@ -115,13 +114,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                     MachineData.UEvalue += flabellumRotVlome * 0.1f;
                 }
 
-                if (Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
-                    PRTLoader.NewParticle<PRT_Bubble>(FlabellumPos + CWRUtils.randVr(32), new Vector2(0, -4)
+                if (InScreen && Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
+                    PRTLoader.NewParticle<PRT_WaterBubble>(FlabellumPos + CWRUtils.randVr(32), new Vector2(0, -4)
                         , Color.White, Main.rand.NextFloat(0.4f, 0.8f));
                 }
                 
-                if (!SoundEngine.TryGetActiveSound(loopingSoundSlot, out var activeSound)) {
-                    loopingSoundSlot = SoundEngine.PlaySound(loopingSoundStyle, FlabellumPos, LoopingSoundUpdate);
+                if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
+                    hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, FlabellumPos, LoopingSoundUpdate);
                 }
             }
             else {
@@ -140,7 +139,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
 
-    internal class PRT_Bubble : BasePRT
+    internal class PRT_WaterBubble : BasePRT
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetProperty() {
