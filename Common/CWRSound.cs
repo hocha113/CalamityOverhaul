@@ -79,5 +79,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle ArcCharging = new SoundStyle(CWRConstant.Asset + "Sounds/ArcCharging");
         public static SoundStyle CollectorStart = new SoundStyle(CWRConstant.Asset + "Sounds/CollectorStart");
         public static SoundStyle Select = new SoundStyle(CWRConstant.Asset + "Sounds/Select");
+        public static SoundStyle RollingMERoer = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer");
     }
 }

@@ -1,10 +1,13 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using ReLogic.Utilities;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -83,6 +86,23 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         private Vector2 FlabellumPos => CenterInWorld + new Vector2(22, -12);
         private float flabellumRot;
         private float flabellumRotVlome;
+        private SlotId loopingSoundSlot;
+        private SoundStyle loopingSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
+            IsLooped = true,
+            MaxInstances = 6,
+        };
+
+        private bool LoopingSoundUpdate(ActiveSound soundInstance) {
+            if (!Active) {
+                return false;//TP实体死亡后停止播放声音
+            }
+
+            soundInstance.Pitch = (-0.4f + flabellumRotVlome) * 2.5f;
+            soundInstance.Position = FlabellumPos;
+            soundInstance.Volume = flabellumRotVlome * 2f;
+            return true;
+        }
+
         public override void GeneratorUpdate() {
             Tile tile = Framing.GetTileSafely(FlabellumPos);
             if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
@@ -98,6 +118,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 if (Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
                     PRTLoader.NewParticle<PRT_Bubble>(FlabellumPos + CWRUtils.randVr(32), new Vector2(0, -4)
                         , Color.White, Main.rand.NextFloat(0.4f, 0.8f));
+                }
+                
+                if (!SoundEngine.TryGetActiveSound(loopingSoundSlot, out var activeSound)) {
+                    loopingSoundSlot = SoundEngine.PlaySound(loopingSoundStyle, FlabellumPos, LoopingSoundUpdate);
                 }
             }
             else {
