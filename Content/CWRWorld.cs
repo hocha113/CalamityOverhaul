@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content
                 return;
             }
 
+            NPC.mechQueen = -1;
+
             if (!Main.dedServ) {
                 Main.LocalPlayer.CurrentSceneEffect.music.value
                     = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");

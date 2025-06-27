@@ -280,6 +280,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             FindTarget();
             HandleMouth();
 
+            if (NPC.IsMechQueenUp && !CWRWorld.MachineRebellion) {
+                Time = StretchTime + 60;
+            }
+
             //这里判定一个时间进行冲刺，用于展开体节，实际冲刺的时间需要比预定的展开时间长一些
             if (Time < StretchTime + 60 && Time > 10) {
                 if (DashVeloctiy == Vector2.Zero || npc.position.X > Main.maxTilesX * 16 - 50
@@ -308,7 +312,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             if (Time > StretchTime && ByMasterStageIndex > 0 && ByMasterStageIndex != 99) {
                 NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
-                if (skeletronPrime != null && (skeletronPrime.life / (float)skeletronPrime.lifeMax < 0.4f)) {
+                if (skeletronPrime != null && (skeletronPrime.life / (float)skeletronPrime.lifeMax) < 0.6f) {
                     ByMasterStageIndex = 99;//骷髅王低于这个血量时脱战
                     VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), new(155, 215, 115));
                     return false;

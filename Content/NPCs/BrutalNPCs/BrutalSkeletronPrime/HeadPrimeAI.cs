@@ -348,14 +348,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         internal static void CheakDead(NPC npc, NPC head) {
             // 所以，如果头部死亡，那么手臂也立马死亡
-            if (!head.active) {
-                npc.ai[2] += 10f;
-                if (npc.ai[2] > 50f || Main.netMode != NetmodeID.Server) {
-                    npc.life = -1;
-                    npc.HitEffect(0, 10.0);
-                    npc.active = false;
-                }
+            if (head.active) {
+                return;
             }
+
+            npc.ai[2] += 10f;
+            if (npc.ai[2] <= 50f && Main.netMode == NetmodeID.Server) {
+                return;
+            }
+
+            npc.life = -1;
+            npc.HitEffect(0, 10.0);
+            npc.active = false;
         }
 
         internal static void CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive) {

@@ -541,23 +541,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void Move(float segmentVelocity) {
-            // 获取NPC和目标的中心点
-            Vector2 npcCenter = npc.Center;
-            Vector2 targetCenter = Target.Center;
-
-            // 对中心点进行16像素网格对齐
-            npcCenter.X = (int)(npcCenter.X / 16f) * 16;
-            npcCenter.Y = (int)(npcCenter.Y / 16f) * 16;
-            targetCenter.X = (int)(targetCenter.X / 16f) * 16 - npcCenter.X;
-            targetCenter.Y = (int)(targetCenter.Y / 16f) * 16 - npcCenter.Y;
-
+            float dampingInertia = 0.18f;
             float baseLengBySegment = 64;
             if (HeadPrimeAI.DontReform()) {
                 baseLengBySegment = 40f;
             }
             if (NPC.IsMechQueenUp) {
                 baseLengBySegment = 24f;
+                dampingInertia += 0.1f;
             }
+
             // 计算段比例缩放
             int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
 
@@ -568,19 +561,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 float absoluteTileOffset = mechdusaSegmentScale - mechdusaSegmentScale * ((mechdusaCurvedSpineSegmentIndex - 1f) * 0.1f);
                 absoluteTileOffset = MathHelper.Clamp(absoluteTileOffset, 0f, mechdusaSegmentScale);
 
-                segmentTarget.Y += absoluteTileOffset;
+                segmentTarget.Y -= absoluteTileOffset;
             }
 
-            // 更新旋转方向
-            npc.rotation = (float)Math.Atan2(segmentTarget.Y, segmentTarget.X) + MathHelper.PiOver2;
+            if (SegmentNPC.rotation != npc.rotation) {
+                segmentTarget = segmentTarget.RotatedBy(MathHelper.WrapAngle(SegmentNPC.rotation - npc.rotation) * dampingInertia);
+                segmentTarget = segmentTarget.MoveTowards((SegmentNPC.rotation - npc.rotation).ToRotationVector2(), 1f);
+            }
 
-            // 调整目标距离
-            float targetTileDist = (segmentTarget.Length() - mechdusaSegmentScale) / segmentTarget.Length();
-            segmentTarget *= targetTileDist;
-
-            // 更新NPC位置
             npc.velocity = Vector2.Zero;
-            npc.position += segmentTarget;
+            npc.rotation = segmentTarget.ToRotation() + MathHelper.PiOver2;
+            npc.Center = SegmentNPC.Center - segmentTarget.SafeNormalize(Vector2.Zero) * mechdusaSegmentScale;
 
             // 计算最小接触速度和伤害速度
             float minimalContactDamageVelocity = segmentVelocity * 0.25f;
