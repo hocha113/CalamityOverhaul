@@ -35,14 +35,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 18, 25, 0);
-            Item.shoot = ModContent.ProjectileType<StormGoddessSpearProj>();
+            Item.shoot = ModContent.ProjectileType<StormGoddessSpearHeld>();
             Item.shootSpeed = 15f;
             Item.rare = ModContent.RarityType<DarkBlue>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 7;
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<StormGoddessSpearProj>()] <= 0;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<StormGoddessSpearHeld>()] <= 0;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
 

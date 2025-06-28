@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             for (int i = 0; i < bulletinBoardElements.Count; i++) {
                 BulletinBoardElement bulletinBoardElement = bulletinBoardElements[i];
                 bulletinBoardElement.Draw(spriteBatch);
-            }
+            }           
 
             Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(ModNameAndVersion, ModNameSize, 1000)
                 , Main.screenWidth - ModNameSize.X - 4, DrawPosition.Y, textColor * sengs, Color.Black, new Vector2(0.2f), 1);

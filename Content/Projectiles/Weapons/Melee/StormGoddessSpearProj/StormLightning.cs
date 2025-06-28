@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Projectile.alpha = 255;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true;
-            Projectile.extraUpdates = 4;
+            Projectile.extraUpdates = 6;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120 * (Projectile.extraUpdates + 1);
         }
@@ -58,7 +58,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         public override void AI() {
-            Projectile.velocity.X += -0.1f * Math.Sign(Projectile.velocity.X);
+            Projectile.localAI[1] += Main.rand.NextFloat(1.4f);
+            if (Projectile.localAI[1] > 12f) {
+                Projectile.velocity = Projectile.velocity.RotatedByRandom(0.6f);
+                Projectile.localAI[1] = 0f;
+            }
+            //Projectile.velocity.X += -0.1f * Math.Sign(Projectile.velocity.X);
             if (Math.Abs(Projectile.velocity.X) < 0.1f) {
                 if (Math.Abs(Projectile.velocity.Y) < 1) {
                     Projectile.velocity.Y *= 1.01f;

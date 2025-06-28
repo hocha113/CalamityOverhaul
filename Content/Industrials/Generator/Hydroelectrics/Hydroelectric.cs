@@ -145,22 +145,27 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         public override void SetProperty() {
             Lifetime = Main.rand.Next(180, 220);
             ai[1] = Main.rand.NextFloat(12);
+            Opacity = 1f;
         }
 
         public override void AI() {
             if (ai[0] == 0) {
-                Tile tile = Framing.GetTileSafely(Position);
+                Tile tile = Framing.GetTileSafely(Position + Velocity * 2);
                 if (tile.LiquidAmount == 0 || tile.LiquidType != LiquidID.Water) {
                     ai[0] = 1;
-                    ai[2] = Main.rand.Next(4);
+                    ai[2] = Main.rand.Next(14);
+                    Velocity /= 6;
                 }
             }
-            else if (--ai[2] <= 0) {
-                for (int i = 0; i < 6; i++) {
-                    Vector2 dustVer = CWRUtils.randVr(6);
-                    Dust.NewDust(Position - new Vector2(6, 6), 12, 12, DustID.Water_Snow, dustVer.X, dustVer.Y);
+            else {
+                Opacity *= 0.9f;
+                if (--ai[2] <= 0) {
+                    for (int i = 0; i < 6; i++) {
+                        Vector2 dustVer = CWRUtils.randVr(6);
+                        Dust.NewDust(Position - new Vector2(6, 6), 12, 12, DustID.Water_Snow, dustVer.X, dustVer.Y);
+                    }
+                    Kill();
                 }
-                Kill();
             }
 
             ai[1] += Main.rand.NextFloat(2);
@@ -174,7 +179,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             Main.instance.LoadProjectile(ProjectileID.Bubble);
             Texture2D value = TextureAssets.Projectile[ProjectileID.Bubble].Value;
             spriteBatch.Draw(value, Position - Main.screenPosition, null
-                , Lighting.GetColor(Position.ToTileCoordinates()) * (1f - LifetimeCompletion)
+                , Lighting.GetColor(Position.ToTileCoordinates()) * (1f - LifetimeCompletion) * Opacity
                 , Rotation, value.Size() / 2, Scale, SpriteEffects.None, 0);
             return false;
         }

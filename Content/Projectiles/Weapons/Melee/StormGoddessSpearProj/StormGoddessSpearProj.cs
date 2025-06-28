@@ -1,32 +1,23 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
-    internal class StormGoddessSpearProj : ModProjectile
+    internal class StormGoddessSpearHeld : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<StormGoddessSpear>();
-
-        public Color Light => Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
-
+        public Color Light => Lighting.GetColor(Projectile.Center.ToTileCoordinates());
         public override string Texture => CWRConstant.Projectile_Melee + "StormGoddessSpearProj";
-
-        public Player Owner => Main.player[Projectile.owner];
-
-        public Item elementalLance => Owner.HeldItem;
-
         protected float HoldoutRangeMin => -24f;
         protected float HoldoutRangeMax => 96f;
-
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;
@@ -43,9 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         }
 
         public override void AI() {
-            Player player = Main.player[Projectile.owner];
-            player.heldProj = Projectile.whoAmI;
-            int duration = player.itemAnimationMax;
+            SetHeld();
+            int duration = Owner.itemAnimationMax;
             if (Projectile.timeLeft > duration) {
                 Projectile.timeLeft = duration;
             }
@@ -55,9 +45,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             if (Projectile.timeLeft == duration / 2) {
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * 15
-                , ModContent.ProjectileType<StormLightning>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner, Projectile.velocity.ToRotation());
+                    , ModContent.ProjectileType<StormLightning>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner, Projectile.velocity.ToRotation());
                 }
-                if (Main.netMode != NetmodeID.Server) {
+                if (!VaultUtils.isServer) {
                     for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                         Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13);
                         Vector2 particleSpeed = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)).UnitVector() * Main.rand.NextFloat(15.5f, 37.7f);
@@ -67,9 +57,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     }
                 }
             }
-            Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + 
+                Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+            SetDirection();
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

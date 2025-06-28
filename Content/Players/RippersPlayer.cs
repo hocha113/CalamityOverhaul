@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Players
                 ModContent.ProjectileType<CosmicDischargeFlail>(),
                 ModContent.ProjectileType<CosmicIceBurst>(),
                 ModContent.ProjectileType<MuraExecutionCut>(),
-                ModContent.ProjectileType<StormGoddessSpearProj>(),
+                ModContent.ProjectileType<StormGoddessSpearHeld>(),
                 ModContent.ProjectileType<StormArc>(),
                 ModContent.ProjectileType<StormLightning>(),
             ];

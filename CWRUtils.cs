@@ -210,22 +210,10 @@ namespace CalamityOverhaul
         /// <summary>
         /// 处理实体的旋转行为
         /// </summary>
-        public static void EntityToRot(this Projectile entity, float ToRot, float rotSpeed) {
-            //entity.rotation = MathHelper.SmoothStep(entity.rotation, ToRot, rotSpeed);
-
-            // 将角度限制在 -π 到 π 的范围内
+        public static void EntityToRot(this Projectile entity, float targetRot, float rotSpeed) {
             entity.rotation = MathHelper.WrapAngle(entity.rotation);
-
-            // 计算差异角度
-            float diff = MathHelper.WrapAngle(ToRot - entity.rotation);
-
-            // 选择修改幅度小的方向进行旋转
-            if (Math.Abs(diff) < MathHelper.Pi) {
-                entity.rotation += diff * rotSpeed;
-            }
-            else {
-                entity.rotation -= MathHelper.WrapAngle(-diff) * rotSpeed;
-            }
+            float diff = MathHelper.WrapAngle(targetRot - entity.rotation);
+            entity.rotation += diff * rotSpeed;
         }
 
         /// <summary>

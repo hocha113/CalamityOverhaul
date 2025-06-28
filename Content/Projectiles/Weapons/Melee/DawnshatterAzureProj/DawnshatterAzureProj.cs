@@ -1,5 +1,6 @@
 ﻿using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Content.Items.Melee;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,11 +11,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {
-    internal class DawnshatterAzureProj : ModProjectile
+    internal class DawnshatterAzureHeld : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-        public Player Owner => Main.player[Projectile.owner];
         protected float HoldoutRangeMin => -24f;
         protected float HoldoutRangeMax => 96f;
         public override void SetDefaults() {
@@ -34,9 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 
         public override void AI() {
             VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
-            Player player = Main.player[Projectile.owner];
-            player.heldProj = Projectile.whoAmI;
-            int duration = player.itemAnimationMax;
+            SetHeld();
+            int duration = Owner.itemAnimationMax;
             if (Projectile.timeLeft > duration) {
                 Projectile.timeLeft = duration;
             }
@@ -47,9 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * 15
                 , ModContent.ProjectileType<TheEndSun>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
             }
-            Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
+            Projectile.Center = Owner.MountedCenter + Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+            SetDirection();
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
