@@ -11,9 +11,10 @@ namespace CalamityOverhaul.Content.TileProcessors
         public override int TargetTileID => ModContent.TileType<Tiles.FoodStallChair>();
 
         public override void Update() {
-            if (Main.LocalPlayer.sitting.isSitting && Main.LocalPlayer.position.DistanceSQ(PosInWorld) < 1024) {
-                foreach (var player in Main.ActivePlayers) {
-                    player.CWR().InFoodStallChair = true;
+            foreach (var player in Main.ActivePlayers) {
+                if (player.sitting.isSitting
+                && player.position.DistanceSQ(PosInWorld) < 1024) {
+                    Main.LocalPlayer.CWR().InFoodStallChair = true;
                 }
             }
 
@@ -23,7 +24,8 @@ namespace CalamityOverhaul.Content.TileProcessors
                 Main.cloudAlpha = 0.99f;
                 Main.windSpeedTarget = 0.8f;
                 float sengs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
-                Lighting.AddLight(Main.LocalPlayer.Center, new Color(Main.DiscoB, Main.DiscoG, 220 + (sengs * 30)).ToVector3() * sengs * 113);
+                Lighting.AddLight(Main.LocalPlayer.Center
+                    , new Color(Main.DiscoB, Main.DiscoG, 220 + (sengs * 30)).ToVector3() * sengs * 113);
                 PunchCameraModifier modifier2 = new(Main.LocalPlayer.Center
                     , new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, nameof(FoodStallChairTP));
                 Main.instance.CameraModifiers.Add(modifier2);

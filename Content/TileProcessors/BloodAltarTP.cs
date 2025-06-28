@@ -60,43 +60,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             PRTLoader.AddParticle(particle);
         }
 
-        private static void SommonLose(Player player) {
-            VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
-            if (player != null) {
-                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
-                player.Hurt(pd, 50, 0);
-            }
-            Old_OnBoolMoon = OnBoolMoon = false;
-        }
-
-        private void FindOrb() {
-            foreach (var orb in Main.ActiveItems) {
-                if (orb.type != ModContent.ItemType<BloodOrb>()) {
-                    continue;
-                }
-
-                Vector2 orbToPos = orb.position.To(Center);
-                if (orbToPos.LengthSquared() > 32 * 32) {
-                    Vector2 orbToPosUnit = orbToPos.UnitVector();
-                    orb.position += orbToPosUnit * 8;
-                    orb.velocity = Vector2.Zero;
-                }
-                else {
-                    Chest chest = Position.FindClosestChest(600, false);
-                    if (chest != null) {
-                        Vector2 chestPos = new Vector2(chest.x, chest.y) * 16;
-                        Lighting.AddLight(chestPos, TorchID.Red);
-                        for (int z = 0; z < 32; z++) {
-                            Dust.NewDust(chestPos, 32, 32, DustID.Blood);
-                        }
-                        chest.AddItem(orb);
-                        orb.TurnToAir();
-                    }
-                }
-            }
-        }
-
-        internal bool UseInPlayerBloodOrb(Player player) {
+        internal static bool UseInPlayerBloodOrb(Player player) {
             int maxUseOrbNum = 50;
             int orbNum = 0;
 
@@ -136,6 +100,42 @@ namespace CalamityOverhaul.Content.TileProcessors
                     }
                 }
                 return true;
+            }
+        }
+
+        private static void SommonLose(Player player) {
+            VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
+            if (player != null) {
+                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
+                player.Hurt(pd, 50, 0);
+            }
+            Old_OnBoolMoon = OnBoolMoon = false;
+        }
+
+        private void FindOrb() {
+            foreach (var orb in Main.ActiveItems) {
+                if (orb.type != ModContent.ItemType<BloodOrb>()) {
+                    continue;
+                }
+
+                Vector2 orbToPos = orb.position.To(Center);
+                if (orbToPos.LengthSquared() > 32 * 32) {
+                    Vector2 orbToPosUnit = orbToPos.UnitVector();
+                    orb.position += orbToPosUnit * 8;
+                    orb.velocity = Vector2.Zero;
+                }
+                else {
+                    Chest chest = Position.FindClosestChest(600, false);
+                    if (chest != null) {
+                        Vector2 chestPos = new Vector2(chest.x, chest.y) * 16;
+                        Lighting.AddLight(chestPos, TorchID.Red);
+                        for (int z = 0; z < 32; z++) {
+                            Dust.NewDust(chestPos, 32, 32, DustID.Blood);
+                        }
+                        chest.AddItem(orb);
+                        orb.TurnToAir();
+                    }
+                }
             }
         }
 
