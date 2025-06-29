@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 0, 0);
+            Item.value = Item.buyPrice(0, 0, 60, 30);
             Item.rare = ItemRarityID.Pink;
             Item.createTile = ModContent.TileType<HydroelectricTile>();
             Item.CWR().StorageUE = true;

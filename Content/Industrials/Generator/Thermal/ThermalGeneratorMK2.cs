@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Item.buyPrice(0, 2, 20, 0);
+            Item.value = Item.buyPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.Pink;
             Item.createTile = ModContent.TileType<ThermalGeneratorMK2Tile>();
             Item.CWR().StorageUE = true;
