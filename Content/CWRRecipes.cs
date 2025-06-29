@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content
             CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
                 , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
 
-            MS_Error_Set();
+            //MS_Error_Set();
         }
 
         public static void MouldRecipeEvent(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            MS_Error_Set();
+            //MS_Error_Set();
         }
 
         public override void Unload() {

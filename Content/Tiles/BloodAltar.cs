@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override bool RightClick(int i, int j) {
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                if (TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module) && module.UseInPlayerBloodOrb(Main.LocalPlayer)) {
+                if (TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module) && BloodAltarTP.UseInPlayerBloodOrb(Main.LocalPlayer)) {
                     BloodAltarTP.targetFuncsWhoAmi = module.WhoAmI;
                     BloodAltarTP.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
                     BloodAltarTP.OnBoolMoon = !BloodAltarTP.OnBoolMoon;

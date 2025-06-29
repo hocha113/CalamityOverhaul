@@ -33,16 +33,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             Item.rare = ItemRarityID.Pink;
             Item.createTile = ModContent.TileType<HydroelectricTile>();
             Item.CWR().StorageUE = true;
-            Item.CWR().ConsumeUseUE = 2200;
+            Item.CWR().ConsumeUseUE = 1000;
         }
 
         public override void AddRecipes() {
             CreateRecipe().
-                AddIngredient<DubiousPlating>(20).
-                AddIngredient<MysteriousCircuitry>(20).
-                AddRecipeGroup(CWRRecipes.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRRecipes.TinBarGroup, 15).
-                AddTile(TileID.MythrilAnvil).
+                AddIngredient(ItemID.Bottle, 50).
+                AddRecipeGroup(RecipeGroupID.IronBar, 5).
+                AddRecipeGroup(CWRRecipes.GoldBarGroup, 5).
+                AddIngredient<DubiousPlating>(10).
+                AddIngredient<MysteriousCircuitry>(10).
+                AddTile(TileID.Anvils).
                 Register();
         }
     }
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
     {
         public override int TargetTileID => ModContent.TileType<HydroelectricTile>();
         public override int TargetItem => ModContent.ItemType<Hydroelectric>();
-        public override float MaxUEValue => 2200;
+        public override float MaxUEValue => 1000;
         [VaultLoaden(CWRConstant.Asset + "Generator/")]
         private static Asset<Texture2D> HydroelectricFlabellum { get; set; }
         private Vector2 FlabellumPos => CenterInWorld + new Vector2(22, -12);
@@ -92,14 +93,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         };
 
         private bool LoopingSoundUpdate(ActiveSound soundInstance) {
-            if (!Active) {
-                return false;//TP实体死亡后停止播放声音
-            }
-
             soundInstance.Pitch = (-0.4f + flabellumRotVlome) * 2.5f;
             soundInstance.Position = FlabellumPos;
             soundInstance.Volume = flabellumRotVlome * 2f;
-            return true;
+            return Active;
         }
 
         public override void GeneratorUpdate() {
@@ -111,7 +108,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 flabellumRot += flabellumRotVlome;
 
                 if (MachineData.UEvalue < MaxUEValue) {
-                    MachineData.UEvalue += flabellumRotVlome * 0.1f;
+                    MachineData.UEvalue += flabellumRotVlome * 0.04f;
                 }
 
                 if (InScreen && Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
@@ -171,6 +168,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             ai[1] += Main.rand.NextFloat(2);
             if (ai[1] > 12) {
                 Velocity = Velocity.RotatedByRandom(0.2f);
+                Velocity = Vector2.Lerp(Velocity, new Vector2(0, -1), 0.15f).UnitVector() * Velocity.Length();
                 ai[1] = 0;
             }
         }

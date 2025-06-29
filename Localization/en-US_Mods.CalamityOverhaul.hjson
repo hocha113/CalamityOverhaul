@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1118,6 +1118,15 @@ Items: {
 
 	Hydroelectric: {
 		DisplayName: Hydroelectric
+		Tooltip:
+			'''
+			Generating electricity by placing in water
+			"One application of fluid mechanics"
+			'''
+	}
+
+	HydroelectricMK2: {
+		DisplayName: Hydroelectric MK2
 		Tooltip:
 			'''
 			Generating electricity by placing in water

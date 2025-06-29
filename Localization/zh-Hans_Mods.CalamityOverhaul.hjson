@@ -1106,6 +1106,15 @@ Items: {
 			"流体力学的一种应用"
 			'''
 	}
+
+	HydroelectricMK2: {
+		DisplayName: 水力发电机MK2
+		Tooltip:
+			'''
+			放置在水中进行发电
+			"流体力学的一种应用"
+			'''
+	}
 }
 
 Projectiles: {

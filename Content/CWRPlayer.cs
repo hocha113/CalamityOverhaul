@@ -316,9 +316,9 @@ namespace CalamityOverhaul.Content
                 SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }
 
-            if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
-                SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
-            }
+            //if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
+            //    SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
+            //}
 
             CraftingSlotHighlighter.Instance.eyEBool = true;
             if (SupertableUI.Instance != null) {

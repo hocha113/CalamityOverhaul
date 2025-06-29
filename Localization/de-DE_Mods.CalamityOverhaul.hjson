@@ -1111,6 +1111,15 @@ Items: {
 			"One application of fluid mechanics"
 			''' */
 	}
+
+	HydroelectricMK2: {
+		// DisplayName: Hydroelectric MK2
+		/* Tooltip:
+			'''
+			Generating electricity by placing in water
+			"One application of fluid mechanics"
+			''' */
+	}
 }
 
 Projectiles: {
