@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Systems;
-using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Reflection;

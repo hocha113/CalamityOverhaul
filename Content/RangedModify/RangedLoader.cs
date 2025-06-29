@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.RangedModify
                 }
             }
 
-            rest = ItemRebuildLoader.ProcessRemakeAction(item, (inds) 
+            rest = ItemRebuildLoader.ProcessRemakeAction(item, (inds)
                 => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
 
             if ((!rest.HasValue || rest.Value)

@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                     PRTLoader.NewParticle<PRT_WaterBubble>(FlabellumPos + CWRUtils.randVr(32), new Vector2(0, -4)
                         , Color.White, Main.rand.NextFloat(0.4f, 0.8f));
                 }
-                
+
                 if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
                     hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, FlabellumPos, LoopingSoundUpdate);
                 }

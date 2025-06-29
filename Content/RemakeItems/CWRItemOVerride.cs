@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
-using Terraria;
-using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {

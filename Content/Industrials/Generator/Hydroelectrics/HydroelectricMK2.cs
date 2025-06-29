@@ -2,7 +2,6 @@
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using Terraria;
@@ -204,7 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (!spawn) {
-                return false; 
+                return false;
             }
             Main.instance.LoadProjectile(ProjectileID.Bubble);
             Texture2D value = TextureAssets.Projectile[ProjectileID.Bubble].Value;

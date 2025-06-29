@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     }
                 }
             }
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + 
+            Projectile.Center = Owner.GetPlayerStabilityCenter() +
                 Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
             Projectile.rotation = Projectile.velocity.ToRotation();
             SetDirection();

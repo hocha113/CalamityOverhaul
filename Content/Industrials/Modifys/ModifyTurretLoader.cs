@@ -1,5 +1,4 @@
 ﻿using CalamityMod.TileEntities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
 using CalamityOverhaul.Content.TileModify.Core;
 using InnoVault.GameSystem;

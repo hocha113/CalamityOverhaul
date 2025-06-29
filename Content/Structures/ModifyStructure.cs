@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.World;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.GameSystem;
 using System;
