@@ -226,6 +226,16 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(NPC npc) {
+            if (CWRPlayer.CanTimeFrozen() || FrozenActivity) {
+                npc.timeLeft++;
+                npc.aiAction = 0;
+                npc.frameCounter = 0;
+                npc.velocity = Vector2.Zero;
+                npc.position = npc.oldPosition;
+                npc.direction = npc.oldDirection;
+                return false;
+            }
+
             UpdateOverBeatBack(npc);
             return base.PreAI(npc);
         }
