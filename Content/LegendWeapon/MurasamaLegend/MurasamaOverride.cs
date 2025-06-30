@@ -6,7 +6,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems;
-using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -261,7 +260,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         }
 
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {
-            if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
+            if (Main.gameMenu || !item.Alives()) {
+                return true;
+            }
+
+            if (Main.LocalPlayer.CWR().HeldMurasamaBool && item == Main.LocalPlayer.GetItem()) {
                 if (MuraChargeUI.MuraUIStyle == MuraChargeUI.MuraUIStyleEnum.conceal) {
                     item.Initialize();
                     float charge = item.CWR().ai[0];
@@ -282,6 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                     return true;
                 }
             }
+
             spriteBatch.Draw(MuraItemAsset.Value, position, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0);
             return false;
         }

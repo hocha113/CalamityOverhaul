@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
         public override void AI() {
             if (!onInitializedBool) {
-                if (drawOrig == Vector2.Zero) {
+                if (drawOrig == Vector2.Zero && !VaultUtils.isServer) {//服务器不加载图片
                     drawOrig = new Vector2(0, TextureValue.Height);
                 }
                 if (!ShurikenOut.HasValue) {

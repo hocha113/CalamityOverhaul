@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 return false;
             }
 
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.IsOwnedByLocalPlayer() && !VaultUtils.isServer) {//以防万一生成属于服务器的弹幕读取纹理把服务器炸了
                 Rectangle mouseBox = (setAmmoBoxPos - TextureValue.Size() / 2).GetRectangle(TextureValue.Size());
                 foreach (var proj in Main.ActiveProjectiles) {
                     if (proj.ModProjectile is BaseAmmoBox && proj.Hitbox.Intersects(mouseBox)) {
