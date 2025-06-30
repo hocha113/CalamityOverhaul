@@ -48,8 +48,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.shootSpeed = 10f;
             Item.shoot = ModContent.ProjectileType<DragonRageHeld>();
             Item.rare = ModContent.RarityType<Violet>();
-            CWRItems.ItemMeleePrefixDic[Item.type] = true;
-            CWRItems.ItemRangedPrefixDic[Item.type] = false;
+            ItemMeleePrefixDic[Item.type] = true;
+            ItemRangedPrefixDic[Item.type] = false;
         }
 
         internal static bool ShootFunc(ref int Level, ref int LevelAlt, Item Item, Player player

@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 3.5f;
             Item.shootSpeed = 5f;
+            Item.UseSound = null;
             Item.noUseGraphic = true;
             Item.noMelee = true;
             Item.channel = true;

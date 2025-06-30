@@ -247,12 +247,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //修改暴政的合成
-            {
-                if (recipe.HasResult(ItemType<TheEnforcer>())) {
-                    recipe.DisableRecipe();
-                }
-            }
             //瘟疫系列修改
             {
                 //瘟疫大剑
@@ -366,14 +360,6 @@ namespace CalamityOverhaul.Content
                 .AddIngredient(ItemID.PlatinumCoin, 5)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
-            }
-            //添加暴政的新合成
-            {
-                Recipe.Create(ItemType<TheEnforcer>())
-                    .AddIngredient(ItemType<HolyCollider>())
-                    .AddIngredient(ItemType<CosmiliteBar>(), 5)
-                    .AddTile(TileType<CosmicAnvil>())
-                    .Register();
             }
             //添加圣火之刃的合成
             {

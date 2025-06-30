@@ -4,6 +4,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+using InnoVault.GameSystem;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -23,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.UseSound = null;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<WraithKunaiThrowable>();
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

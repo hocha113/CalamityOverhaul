@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.useAnimation = 45;
             item.autoReuse = true;
             item.useStyle = ItemUseStyleID.Shoot;
+            item.UseSound = null;
             item.knockBack = 1.5f;
             item.shootSpeed = 5f;
             item.noUseGraphic = true;

@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTime = 60;
             item.useAnimation = 60;
             item.autoReuse = true;
+            item.UseSound = null;
             item.useStyle = ItemUseStyleID.Shoot;
             item.knockBack = 3.5f;
             item.shootSpeed = 5f;

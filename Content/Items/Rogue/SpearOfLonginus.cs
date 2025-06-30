@@ -3,6 +3,7 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -52,8 +53,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_SpearOfLonginus;
             Item.CWR().isHeldItem = true;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;

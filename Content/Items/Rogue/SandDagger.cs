@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Terraria;
@@ -32,8 +33,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.shoot = ModContent.ProjectileType<SandDaggerThrow>();
             Item.shootSpeed = 10f;
             Item.DamageType = CWRLoad.RogueDamageClass;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
     }
 

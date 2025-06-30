@@ -4,6 +4,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -31,8 +32,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.shoot = ModContent.ProjectileType<CosmicCalamityProjectile>();
             Item.shootSpeed = 12f;
             Item.DamageType = CWRLoad.RogueDamageClass;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;

@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -32,8 +33,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronScythe;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;

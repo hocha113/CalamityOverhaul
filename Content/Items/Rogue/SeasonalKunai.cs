@@ -5,6 +5,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Melee;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -24,8 +25,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.UseSound = null;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<SeasonalKunaiThrowable>();
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

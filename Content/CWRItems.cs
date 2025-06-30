@@ -49,18 +49,6 @@ namespace CalamityOverhaul.Content
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
-        /// 如果不为<see langword="null"/>，则强行接收所有前缀
-        /// </summary>
-        public static Dictionary<int, bool?> ItemAllowPrefixDic { get; set; } = [];
-        /// <summary>
-        /// 如果不为<see langword="null"/>，则强行接收所有近战前缀
-        /// </summary>
-        public static Dictionary<int, bool?> ItemMeleePrefixDic { get; set; } = [];
-        /// <summary>
-        /// 如果不为<see langword="null"/>，则强行接收所有远程前缀
-        /// </summary>
-        public static Dictionary<int, bool?> ItemRangedPrefixDic { get; set; } = [];
-        /// <summary>
         /// AI槽位数量
         /// </summary>
         public const int MaxAISlot = 3;

@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.MeleeModify.Core;
@@ -31,6 +32,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Item.shoot = ModContent.ProjectileType<EnforcerFlame>();
             Item.shootSpeed = 2;
             Item.SetKnifeHeld<TheEnforcerHeld>();
+        }
+
+        public override void ModifyRecipe(Recipe recipe) {
+            recipe.RemoveIngredient(ModContent.ItemType<CosmiliteBar>());
+            recipe.AddIngredient(ModContent.ItemType<HolyCollider>())
+                    .AddIngredient(ModContent.ItemType<CosmiliteBar>(), 5);
         }
     }
 

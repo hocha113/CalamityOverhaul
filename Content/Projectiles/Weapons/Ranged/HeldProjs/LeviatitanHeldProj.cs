@@ -14,14 +14,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             KreloadMaxTime = 100;
             FireTime = 9;
-            ControlForce = 0.1f;
+            ControlForce = 0.04f;
             GunPressure = 0.2f;
-            Recoil = 1;
-            HandIdleDistanceX = 27;
-            HandIdleDistanceY = 5;
-            HandFireDistanceX = 27;
-            HandFireDistanceY = -8;
+            Recoil = 0.8f;
+            HandIdleDistanceX = 26;
+            HandIdleDistanceY = 6;
+            HandFireDistanceX = 26;
+            HandFireDistanceY = -4;
             CanCreateSpawnGunDust = CanCreateCaseEjection = false;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 8;
         }
 
         public override void FiringShoot() {

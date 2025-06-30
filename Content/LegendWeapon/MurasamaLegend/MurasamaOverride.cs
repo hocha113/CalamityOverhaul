@@ -6,6 +6,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -255,8 +256,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
             Item.CWR().LegendData = new MuraData();
-            CWRItems.ItemMeleePrefixDic[Item.type] = true;
-            CWRItems.ItemRangedPrefixDic[Item.type] = false;
+            ItemMeleePrefixDic[Item.type] = true;
+            ItemRangedPrefixDic[Item.type] = false;
         }
 
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {

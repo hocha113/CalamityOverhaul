@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -35,8 +36,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.CWR().DeathModeItem = true;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
     }
@@ -61,8 +62,8 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            CWRItems.ItemMeleePrefixDic[Type] = true;
-            CWRItems.ItemRangedPrefixDic[Type] = false;
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+            ItemOverride.ItemRangedPrefixDic[Type] = false;
         }
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
         public override void AddRecipes() {

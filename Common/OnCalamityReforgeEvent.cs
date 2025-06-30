@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content;
+using InnoVault.GameSystem;
 using System;
 using Terraria;
 using Terraria.GameContent.Prefixes;
@@ -42,8 +43,8 @@ namespace CalamityOverhaul.Common
             if (item.ModItem.MeleePrefix()) {
                 return true;
             }
-            if (CWRItems.ItemMeleePrefixDic[item.type].HasValue) {
-                return CWRItems.ItemMeleePrefixDic[item.type].Value;
+            if (ItemOverride.ItemMeleePrefixDic[item.type].HasValue) {
+                return ItemOverride.ItemMeleePrefixDic[item.type].Value;
             }
             return false;
         }

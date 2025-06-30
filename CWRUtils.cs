@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -325,7 +326,7 @@ namespace CalamityOverhaul
             if (item.shoot == ProjectileID.None || !item.noUseGraphic
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
                 || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                CWRItems.ItemMeleePrefixDic[item.type] = true;
+                ItemOverride.ItemMeleePrefixDic[item.type] = true;
             }
             item.noMelee = true;
             item.noUseGraphic = true;
