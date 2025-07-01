@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void HoldItem(Player player) {
             if (player.CountProjectilesOfID<LonginusHeld>() == 0 && player.CountProjectilesOfID<LonginusThrow>() == 0
-                && Main.myPlayer == player.whoAmI && CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                && Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero
                     , ModContent.ProjectileType<LonginusHeld>(), 0, 0, player.whoAmI);
             }
