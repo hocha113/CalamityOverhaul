@@ -4,6 +4,7 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -14,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : UIHandle, ICWRLoader
+    internal class AcknowledgmentUI : UIHandle, ICWRLoader, IUpdateAudio
     {
         internal static string ArtistText => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
         internal static string CodeAssistanceText => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
@@ -166,14 +167,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        public bool OnActive() => _active || _sengs > 0;
+        public static bool OnActive() => Instance._active || Instance._sengs > 0;
         public override bool CanLoad() => true;
         void ICWRLoader.SetupData() => LoadName();
         public override void Load() {
             Instance = this;
             _sengs = 0;
-            On_Main.UpdateAudio_DecideOnTOWMusic += DecideOnTOWMusicEvent;
-            On_Main.UpdateAudio_DecideOnNewMusic += DecideOnNewMusicEvent;
         }
         private static void LoadName() {
             names = [
@@ -272,7 +271,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "易燃易爆品daze" + DonorText,
         ];
         }
-        private void ToMusicFunc() {
+
+        void IUpdateAudio.DecideMusic() {
             if (!Main.gameMenu || !OnActive()) {
                 return;
             }
@@ -285,21 +285,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 Main.musicFade[i] = (musicFade50 / 120f);
             }
             Main.newMusic = targetID;
-        }
-        private void DecideOnTOWMusicEvent(On_Main.orig_UpdateAudio_DecideOnTOWMusic orig, Main self) {
-            orig.Invoke(self);
-            ToMusicFunc();
-        }
-        private void DecideOnNewMusicEvent(On_Main.orig_UpdateAudio_DecideOnNewMusic orig, Main self) {
-            orig.Invoke(self);
-            ToMusicFunc();
+            Console.WriteLine(targetID);
         }
 
         public override void UnLoad() {
             Instance = null;
             _sengs = 0;
-            On_Main.UpdateAudio_DecideOnTOWMusic -= DecideOnTOWMusicEvent;
-            On_Main.UpdateAudio_DecideOnNewMusic -= DecideOnNewMusicEvent;
             names = null;
         }
         public void Initialize() {

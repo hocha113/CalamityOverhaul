@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public static int Time;
         public static float sengs;
         public static BulletinBoardUI Instance => UIHandleLoader.GetUIHandleOfType<BulletinBoardUI>();
-        internal static bool SafeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
+        internal static bool SafeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         public static Asset<DynamicSpriteFont> Font { get; private set; }
         public static List<BulletinBoardElement> bulletinBoardElements = [];
         private static string HoverText => CWRLocText.Instance.IconUI_Text0.Value;
