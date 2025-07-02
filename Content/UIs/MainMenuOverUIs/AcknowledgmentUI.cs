@@ -285,7 +285,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 Main.musicFade[i] = (musicFade50 / 120f);
             }
             Main.newMusic = targetID;
-            Console.WriteLine(targetID);
         }
 
         public override void UnLoad() {

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 
@@ -8,6 +9,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class ProbeAI : CWRNPCOverride
     {
         public override int TargetID => NPCID.Probe;
+        [VaultLoaden(CWRConstant.NPC + "BTD/")]
+        private static Asset<Texture2D> Probe { get; set; }
+        [VaultLoaden(CWRConstant.NPC + "BTD/")]
+        private static Asset<Texture2D> Probe_Glow { get; set; }
         public override bool? CanCWROverride() {
             if (CWRWorld.MachineRebellion) {
                 return true;
@@ -35,10 +40,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 spriteEffects = SpriteEffects.FlipHorizontally;
             }
 
-            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe");
+            Texture2D value = Probe.Value;
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , null, drawColor, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
-            Texture2D value2 = CWRUtils.GetT2DValue(CWRConstant.NPC + "BTD/Probe_Glow");
+            Texture2D value2 = Probe_Glow.Value;
             spriteBatch.Draw(value2, npc.Center - Main.screenPosition
                 , null, Color.White, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
             return false;
