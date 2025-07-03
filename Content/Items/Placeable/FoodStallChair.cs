@@ -13,12 +13,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.height = 32;
             Item.value = 1150;
         }
-
         public override void AddRecipes() {
-            if (!VaultUtils.IsAprilFoolsDay) {
-                return;
-            }
-            CreateRecipe()//愚人节快乐
+            CreateRecipe()
                 .AddIngredient(ItemID.Wood)
                 .Register();
         }
