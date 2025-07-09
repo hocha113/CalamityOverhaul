@@ -127,10 +127,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int ReceivingPlatformTime;
         /// <summary>
-        /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
-        /// </summary>
-        public int TimeFrozenTick;
-        /// <summary>
         /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
         /// </summary>
         public int DontSwitchWeaponTime;
@@ -255,21 +251,6 @@ namespace CalamityOverhaul.Content
             if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
                 UnderstandWindGrivenMK2 = false;
             }
-        }
-
-        /// <summary>
-        /// 用于判断是否应该冻结时间
-        /// </summary>
-        /// <returns></returns>
-        public static bool CanTimeFrozen() {
-            if (Main.gameMenu) {
-                return false;
-            }
-            if (Main.LocalPlayer != null && Main.LocalPlayer.active
-                && Main.LocalPlayer.CWR().TimeFrozenTick > 0) {
-                return true;
-            }
-            return false;
         }
 
         public override bool CanUseItem(Item item) {
@@ -421,9 +402,6 @@ namespace CalamityOverhaul.Content
             }
             if (InspectOmigaTime > 0) {
                 InspectOmigaTime--;
-            }
-            if (TimeFrozenTick > 0) {
-                TimeFrozenTick--;
             }
             if (ThermalGenerationActiveTime > 0) {
                 ThermalGenerationActiveTime--;

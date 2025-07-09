@@ -39,12 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Projectile.Center = Main.player[Projectile.owner].Center;
 
             if (Time < CanDamageTime + 10) {
-                foreach (var player in Main.player) {
-                    if (!player.active) {
-                        continue;
-                    }
-                    player.CWR().TimeFrozenTick = 2;
-                }
+                CWRWorld.TimeFrozenTick = 2;
             }
 
             Time++;

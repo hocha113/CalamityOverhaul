@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(NPC npc) {
-            if (CWRPlayer.CanTimeFrozen() || FrozenActivity) {
+            if (CWRWorld.CanTimeFrozen() || FrozenActivity) {
                 npc.timeLeft++;
                 npc.aiAction = 0;
                 npc.frameCounter = 0;
@@ -426,19 +426,19 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ChatBubblePosition(NPC npc, ref Vector2 position, ref SpriteEffects spriteEffects) {
-            if (CWRPlayer.CanTimeFrozen()) {
+            if (CWRWorld.CanTimeFrozen()) {
                 position = new Vector2(-200, -200);
             }
             base.ChatBubblePosition(npc, ref position, ref spriteEffects);
         }
         public override void EmoteBubblePosition(NPC npc, ref Vector2 position, ref SpriteEffects spriteEffects) {
-            if (CWRPlayer.CanTimeFrozen()) {
+            if (CWRWorld.CanTimeFrozen()) {
                 position = new Vector2(-200, -200);
             }
             base.EmoteBubblePosition(npc, ref position, ref spriteEffects);
         }
         public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position) {
-            if (CWRPlayer.CanTimeFrozen()) {
+            if (CWRWorld.CanTimeFrozen()) {
                 return false;
             }
             return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);

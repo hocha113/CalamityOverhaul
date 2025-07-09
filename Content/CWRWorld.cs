@@ -21,6 +21,10 @@ namespace CalamityOverhaul.Content
         /// 是否在当前世界击败了机械暴乱
         /// </summary>
         public static bool MachineRebellionDowned;
+        /// <summary>
+        /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
+        /// </summary>
+        public static int TimeFrozenTick;
 
         public override void OnWorldLoad() {
             MachineRebellionDowned = false;
@@ -28,6 +32,21 @@ namespace CalamityOverhaul.Content
 
         public override void OnWorldUnload() {
             MachineRebellionDowned = false;
+        }
+
+        /// <summary>
+        /// 用于判断是否应该冻结时间
+        /// </summary>
+        /// <returns></returns>
+        public static bool CanTimeFrozen() {
+            if (Main.gameMenu) {
+                return false;
+            }
+            if (Main.LocalPlayer != null && Main.LocalPlayer.active
+                && TimeFrozenTick > 0) {
+                return true;
+            }
+            return false;
         }
 
         public static void UpdateMachineRebellion() {
@@ -69,6 +88,10 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostUpdateEverything() {
+            if (TimeFrozenTick > 0) {
+                TimeFrozenTick--;
+            }
+
             UpdateMachineRebellion();
         }
 
