@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
             for (int i = 0; i < 3; i++) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore, Projectile.velocity.X, Projectile.velocity.Y);
                 Main.dust[dust].noGravity = true;
-                CWRDust.SpanCycleDust(Projectile, DustID.JungleTorch, DustID.JungleTorch);
+                CWRUtils.SpanCycleDust(Projectile, DustID.JungleTorch, DustID.JungleTorch);
             }
         }
 

@@ -13,11 +13,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public LocalizedText textContent;
         public Action downFunc;
+        public bool becauseNewVersionDisco;
         public Vector2 TextSize => BulletinBoardUI.Font.Value.MeasureString(textContent.Value);
         public Vector2 trueDrawPos => new Vector2(Main.screenWidth - TextSize.X - 4, DrawPosition.Y);
-        public BulletinBoardElement Setproperty(LocalizedText textContent, Action downFunc) {
+        public BulletinBoardElement Setproperty(LocalizedText textContent, Action downFunc, bool becauseNewVersionDisco = false) {
             this.textContent = textContent;
             this.downFunc = downFunc;
+            this.becauseNewVersionDisco = becauseNewVersionDisco;
             return this;
         }
         public override void Update() {
@@ -33,6 +35,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Color color = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(BulletinBoardUI.Time * 0.035f)), Color.Gold, Color.Green);
             Color higtColor = Color.White;
             Color textColor = hoverInMainPage ? color : higtColor;
+            if (!hoverInMainPage && becauseNewVersionDisco && CheckedVersions.IsNewVersion) {
+                textColor = Main.DiscoColor;
+            }
             if (BulletinBoardUI.Instance.hoverInMainPage) {
                 textColor *= 0.3f;
             }

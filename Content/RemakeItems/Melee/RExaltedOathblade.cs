@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            CWRDust.SplashDust(Projectile, 21, DustID.FireworksRGB, DustID.Firework_Blue, 13, Main.DiscoColor);
+            CWRUtils.SplashDust(Projectile, 21, DustID.FireworksRGB, DustID.Firework_Blue, 13, Main.DiscoColor);
         }
 
         public override bool PreDraw(ref Color lightColor) {

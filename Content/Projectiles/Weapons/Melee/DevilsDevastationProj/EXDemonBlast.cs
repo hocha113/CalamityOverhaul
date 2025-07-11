@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            CWRDust.SplashDust(Projectile, 21, DustID.ShadowbeamStaff, DustID.ShadowbeamStaff, 13, Main.DiscoColor);
+            CWRUtils.SplashDust(Projectile, 21, DustID.ShadowbeamStaff, DustID.ShadowbeamStaff, 13, Main.DiscoColor);
         }
 
         public override bool PreDraw(ref Color lightColor) {

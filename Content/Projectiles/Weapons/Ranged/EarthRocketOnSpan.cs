@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Projectile.timeLeft % 5 == 0 && DownLeft) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
-                CWRDust.SpawnGunDust(Projectile, Projectile.Center, vr);
+                CWRUtils.SpawnGunDust(Projectile, Projectile.Center, vr);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }

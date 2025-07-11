@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            CWRDust.SpanCycleDust(Projectile, DustID.InfernoFork, DustID.Flare);
+            CWRUtils.SpanCycleDust(Projectile, DustID.InfernoFork, DustID.Flare);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

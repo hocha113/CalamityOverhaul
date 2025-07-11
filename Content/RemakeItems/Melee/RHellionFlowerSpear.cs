@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void OnKill(int timeLeft) {
             Lighting.AddLight(Projectile.Center, Color.Green.ToVector3());
             for (int i = 0; i < 16; i++) {
-                CWRDust.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
+                CWRUtils.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
             }
         }
 
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            CWRDust.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
+            CWRUtils.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
         }
 
         public override bool PreDraw(ref Color lightColor) {

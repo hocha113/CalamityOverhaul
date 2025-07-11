@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 tilePos = Projectile.Center;
                 Projectile.extraUpdates = 0;
                 Projectile.timeLeft = 300;
-                CWRDust.SplashDust(Projectile, 31, DustID.JungleGrass, DustID.JungleGrass, -3, Color.Goldenrod);
+                CWRUtils.SplashDust(Projectile, 31, DustID.JungleGrass, DustID.JungleGrass, -3, Color.Goldenrod);
                 Projectile.DigByTile();
                 Projectile.ai[0]++;
             }
@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            CWRDust.SplashDust(Projectile, 11, DustID.Blood, DustID.Blood, -3, Color.Goldenrod);
+            CWRUtils.SplashDust(Projectile, 11, DustID.Blood, DustID.Blood, -3, Color.Goldenrod);
         }
 
         public override void OnKill(int timeLeft) {
-            CWRDust.SplashDust(Projectile, 31, DustID.JungleGrass, DustID.JungleGrass, -3, Color.Goldenrod);
+            CWRUtils.SplashDust(Projectile, 31, DustID.JungleGrass, DustID.JungleGrass, -3, Color.Goldenrod);
         }
 
         public override bool PreDraw(ref Color lightColor) {

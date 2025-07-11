@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     Main.projectile[proj].DamageType = DamageClass.Magic;
                 }
                 else {
-                    CWRDust.SplashDust(Projectile, 21, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.DarkRed);
+                    CWRUtils.SplashDust(Projectile, 21, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.DarkRed);
                 }
             }
             Projectile.Explode(explosionSound: SoundID.Item14 with { Pitch = 0.6f });

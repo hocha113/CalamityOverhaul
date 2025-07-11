@@ -9,13 +9,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         private bool onTile;
         public override void AI() {
-            CWRDust.SplashDust(Projectile, 6, DustID.WhiteTorch, DustID.WhiteTorch
+            CWRUtils.SplashDust(Projectile, 6, DustID.WhiteTorch, DustID.WhiteTorch
                 , 0, Color.White, EffectLoader.StreamerDust);
         }
 
         public override void OnKill(int timeLeft) {
             Projectile.rotation = Projectile.velocity.ToRotation();
-            CWRDust.SplashDust(Projectile, 36, DustID.WhiteTorch, DustID.WhiteTorch
+            CWRUtils.SplashDust(Projectile, 36, DustID.WhiteTorch, DustID.WhiteTorch
                 , 10, Color.White, EffectLoader.StreamerDust);
             if (onTile) {
                 float angle = Main.rand.NextFloat(MathF.PI * 2f);

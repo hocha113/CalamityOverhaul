@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         }
 
         public override void OnKill(int timeLeft) {
-            CWRDust.SplashDust(Projectile, 121, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.White);
+            CWRUtils.SplashDust(Projectile, 121, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.White);
             Projectile.Explode();
         }
     }

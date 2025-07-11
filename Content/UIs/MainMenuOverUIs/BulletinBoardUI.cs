@@ -40,6 +40,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             sengs = 0;
             Time = 0;
         }
+        void LogFunc() {
+            CWRConstant.steamLogUrl.WebRedirection();
+            CheckedVersions.DoSave<CheckedVersions>();
+            CheckedVersions.SaveVersion = Mod.Version;
+        }
         void ICWRLoader.SetupData() {
             bulletinBoardElements = [];
 
@@ -52,7 +57,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements.Add(feedbackUIbulletinBoard);
 
             BulletinBoardElement logBulletinBoard = new BulletinBoardElement()
-                .Setproperty(CWRLocText.Instance.IconUI_Text7, () => CWRConstant.steamLogUrl.WebRedirection());
+                .Setproperty(CWRLocText.Instance.IconUI_Text7, LogFunc, true);
             bulletinBoardElements.Add(logBulletinBoard);
 
             BulletinBoardElement acknowledgmentNulletinBoard = new BulletinBoardElement()

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 if (Main.rand.NextBool(2)) {
                     Owner.HealEffect(1);
                 }
-                CWRDust.SplashDust(Projectile, 31, DustID.FireworkFountain_Yellow, DustID.FireworkFountain_Yellow
+                CWRUtils.SplashDust(Projectile, 31, DustID.FireworkFountain_Yellow, DustID.FireworkFountain_Yellow
                     , 13, Color.Gold, EffectLoader.StreamerDust);
                 return;
             }

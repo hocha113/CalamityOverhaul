@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<BurningBlood>(), 240);
 
         public override void OnKill(int timeLeft) {
-            CWRDust.BlastingSputteringDust(Projectile, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood);
+            CWRUtils.BlastingSputteringDust(Projectile, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood, DustID.Blood);
             Projectile.damage /= 2;
             Projectile.Explode(explosionSound: SoundID.Item62);
         }

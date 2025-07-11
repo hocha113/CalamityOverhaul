@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
             if (!VaultUtils.isServer) {
                 if (Projectile.ai[0] == 0) {
-                    CWRDust.BlastingSputteringDust(Projectile, DustID.Smoke, DustID.AmberBolt, DustID.AmberBolt, DustID.AmberBolt, DustID.AmberBolt);
+                    CWRUtils.BlastingSputteringDust(Projectile, DustID.Smoke, DustID.AmberBolt, DustID.AmberBolt, DustID.AmberBolt, DustID.AmberBolt);
                 }
 
                 Vector2 goreSource = Projectile.Center;

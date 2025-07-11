@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            CWRDust.BlastingSputteringDust(Projectile, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss);
+            CWRUtils.BlastingSputteringDust(Projectile, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss, DustID.LavaMoss);
             Projectile.Explode();
         }
 
