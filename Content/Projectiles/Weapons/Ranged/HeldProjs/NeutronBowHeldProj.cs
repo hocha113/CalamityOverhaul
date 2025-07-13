@@ -45,60 +45,64 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CombatText.NewText(rectext, new Color(155, 200, 100 + offsetY), key, true);
         }
 
-        public override void PostInOwner() {
-            if (CanFire) {
-                if (onFireR) {
-                    if (Charge < 80) {
-                        Charge += 0.5f;
-                        BowArrowDrawNum = 1;
-                        Item.useTime = 20;
-                        ShootCoolingValue = Charge / 4;
-                        if (ShootCoolingValue > 2) {
-                            if (level1) {
-                                NewText(NeutronBow.Lang1.Value, 0);
-                                SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.3f, Volume = 0.6f }, Projectile.Center);
-                                level1 = false;
-                            }
-                        }
-                        if (Charge > 30) {
-                            if (level2) {
-                                NewText(NeutronBow.Lang2.Value, 60);
-                                SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
-                                level2 = false;
-                            }
-                            BowArrowDrawNum++;
-                        }
-                        if (Charge > 60) {
-                            if (level3) {
-                                NewText(NeutronBow.Lang3.Value, 120);
-                                SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
-                                level3 = false;
-                                Charge = 80;
-                            }
-                            BowArrowDrawNum++;
-                        }
-                    }
-                    else {
-                        BowArrowDrawNum = 3;
-                    }
+        private void RightCharge() {
+            if (!onFireR) {
+                BowArrowDrawNum = 1;
+                Charge = 0;
+                level1 = level2 = level3 = true;
+                return;
+            }
 
-                    if (ShootCoolingValue > 19) {
-                        if (!canAltFire) {
-                            for (int i = 0; i < 3; i++) {
-                                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center, ShootVelocity, Color.BlueViolet
-                                    , new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), ShootVelocity.ToRotation(), 0.62f, 0.12f, 60, Projectile);
-                                PRTLoader.AddParticle(pulse);
-                            }
-                            canAltFire = true;
-                        }
-                        ShootCoolingValue = 19;
+            if (Charge < 80) {
+                Charge += 0.5f;
+                BowArrowDrawNum = 1;
+                Item.useTime = 20;
+                ShootCoolingValue = Charge / 4;
+                if (ShootCoolingValue > 2) {
+                    if (level1) {
+                        NewText(NeutronBow.Lang1.Value, 0);
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.3f, Volume = 0.6f }, Projectile.Center);
+                        level1 = false;
                     }
                 }
-                else {
-                    BowArrowDrawNum = 1;
-                    Charge = 0;
-                    level1 = level2 = level3 = true;
+                if (Charge > 30) {
+                    if (level2) {
+                        NewText(NeutronBow.Lang2.Value, 60);
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
+                        level2 = false;
+                    }
+                    BowArrowDrawNum++;
                 }
+                if (Charge > 60) {
+                    if (level3) {
+                        NewText(NeutronBow.Lang3.Value, 120);
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
+                        level3 = false;
+                        Charge = 80;
+                    }
+                    BowArrowDrawNum++;
+                }
+            }
+            else {
+                BowArrowDrawNum = 3;
+            }
+
+            if (ShootCoolingValue > 19) {
+                if (!canAltFire) {
+                    for (int i = 0; i < 3; i++) {
+                        PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center, ShootVelocity, Color.BlueViolet
+                            , new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), ShootVelocity.ToRotation(), 0.62f, 0.12f, 60, Projectile);
+                        PRTLoader.AddParticle(pulse);
+                    }
+                    canAltFire = true;
+                }
+                ShootCoolingValue = 19;
+            }
+        }
+
+        public override void PostInOwner() {
+            if (CanFire && CanSpanProj()) {
+                RightCharge();
                 VaultUtils.ClockFrame(ref Projectile.frame, 2, 6);
                 VaultUtils.ClockFrame(ref uiframe, 5, 6);
             }
@@ -152,7 +156,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
             if (Item != null && !Item.IsAir && Item.type == NeutronBow.PType) {
-                float newCharge = Charge / 60f * 80;
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge / 60f * 80, uiframe);
             }
             Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 7), CanFire ? Color.White : lightColor

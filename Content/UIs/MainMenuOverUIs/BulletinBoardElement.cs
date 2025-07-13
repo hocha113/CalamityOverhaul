@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Color higtColor = Color.White;
             Color textColor = hoverInMainPage ? color : higtColor;
             if (!hoverInMainPage && becauseNewVersionDisco && CheckedVersions.IsNewVersion) {
-                textColor = Main.DiscoColor;
+                textColor = new Color(Main.DiscoR, 200, Main.DiscoB);
             }
             if (BulletinBoardUI.Instance.hoverInMainPage) {
                 textColor *= 0.3f;

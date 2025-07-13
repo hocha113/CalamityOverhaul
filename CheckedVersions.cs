@@ -8,7 +8,14 @@ namespace CalamityOverhaul
     internal class CheckedVersions : SaveMod
     {
         internal static Version SaveVersion;
-        internal static bool IsNewVersion => SaveVersion < CWRMod.Instance.Version;
+        internal static bool IsNewVersion {
+            get {
+                if (CWRMod.Instance == null || CWRMod.Instance.Version == null) {
+                    return false;
+                }
+                return SaveVersion < CWRMod.Instance.Version;
+            }
+        }
         public override void SetStaticDefaults() {
             if (!HasSave) {
                 DoSave<CheckedVersions>();
