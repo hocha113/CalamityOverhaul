@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RMythrilRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.MythrilRepeater;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<MythrilRepeaterHeldProj>();
             item.useTime = 25;

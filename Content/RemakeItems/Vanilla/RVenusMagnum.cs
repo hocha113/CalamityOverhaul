@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RVenusMagnum : CWRItemOverride
     {
         public override int TargetID => ItemID.VenusMagnum;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<VenusMagnumHeldProj>();
             item.CWR().HasCartridgeHolder = true;

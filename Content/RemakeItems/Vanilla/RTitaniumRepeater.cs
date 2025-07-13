@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RTitaniumRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.TitaniumRepeater;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<TitaniumRepeaterHeldProj>();
             item.useTime = 20;

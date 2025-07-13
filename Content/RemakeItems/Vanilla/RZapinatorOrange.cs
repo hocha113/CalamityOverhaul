@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RZapinatorOrange : CWRItemOverride
     {
         public override int TargetID => ItemID.ZapinatorOrange;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<ZapinatorOrangeHeldProj>();
         }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RRedRyder : CWRItemOverride
     {
         public override int TargetID => ItemID.RedRyder;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.useTime = 60;
             item.SetHeldProj<RedRyderHeldProj>();

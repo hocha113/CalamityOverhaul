@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RMinishark : CWRItemOverride
     {
         public override int TargetID => ItemID.Minishark;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) => item.SetCartridgeGun<MinisharkHeldProj>(160);
     }
 }

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RMeowmere : CWRItemOverride
     {
         public override int TargetID => ItemID.Meowmere;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.rare = ItemRarityID.Red;
             item.UseSound = null;

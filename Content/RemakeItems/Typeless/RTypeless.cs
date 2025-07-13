@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<LunicEye>();
-        public override bool FormulaSubstitution => true;
+        
         public override void SetDefaults(Item item) => item.SetHeldProj<LunicEyeHeldProj>();
     }
 
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<EyeofMagnus>();
-        public override bool FormulaSubstitution => true;
+        
         public override void SetDefaults(Item item) => item.SetHeldProj<EyeofMagnusHeldProj>();
     }
 
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<Aestheticus>();
-        public override bool FormulaSubstitution => true;
+        
         public override void SetDefaults(Item item) => item.SetHeldProj<AestheticusHeldProj>();
     }
 }

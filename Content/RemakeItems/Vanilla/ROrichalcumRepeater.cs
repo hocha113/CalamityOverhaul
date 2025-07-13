@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class ROrichalcumRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.OrichalcumRepeater;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<OrichalcumRepeaterHeldProj>();
             item.useTime = 20;

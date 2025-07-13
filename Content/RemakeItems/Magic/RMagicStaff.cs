@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal abstract class RMagicStaff<TItem> : CWRItemOverride where TItem : ModItem
     {
         public override bool DrawingInfo => false;
-        public override bool FormulaSubstitution => true;
+        
         public override bool CanLoadLocalization => false;
         public override int TargetID => ModContent.ItemType<TItem>();
         public override void SetDefaults(Item item) {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal abstract class RMagicStaff : CWRItemOverride
     {
         public override bool DrawingInfo => false;
-        public override bool FormulaSubstitution => true;
+        
         public override bool CanLoadLocalization => false;
         public override int TargetID => ItemID.None;
         public virtual string HeldProjName => "";

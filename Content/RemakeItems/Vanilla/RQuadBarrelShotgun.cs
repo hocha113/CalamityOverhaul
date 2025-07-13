@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RQuadBarrelShotgun : CWRItemOverride
     {
         public override int TargetID => ItemID.QuadBarrelShotgun;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<QuadBarrelShotgunHeldProj>();
             item.CWR().HasCartridgeHolder = true;

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RNailGun : CWRItemOverride
     {
         public override int TargetID => ItemID.NailGun;
-        public override bool FormulaSubstitution => false;
+        
         public override void SetDefaults(Item item) {
             item.SetHeldProj<NailGunHeldProj>();
             item.CWR().HasCartridgeHolder = true;
