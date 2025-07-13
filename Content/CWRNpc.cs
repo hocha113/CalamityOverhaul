@@ -225,14 +225,18 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public static void DoTimeFrozen(NPC npc) {
+            npc.timeLeft++;
+            npc.aiAction = 0;
+            npc.frameCounter = 0;
+            npc.velocity = Vector2.Zero;
+            npc.position = npc.oldPosition;
+            npc.direction = npc.oldDirection;
+        }
+
         public override bool PreAI(NPC npc) {
             if (CWRWorld.CanTimeFrozen() || FrozenActivity) {
-                npc.timeLeft++;
-                npc.aiAction = 0;
-                npc.frameCounter = 0;
-                npc.velocity = Vector2.Zero;
-                npc.position = npc.oldPosition;
-                npc.direction = npc.oldDirection;
+                DoTimeFrozen(npc);
                 return false;
             }
 

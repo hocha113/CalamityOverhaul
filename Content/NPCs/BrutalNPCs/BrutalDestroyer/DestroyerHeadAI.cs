@@ -135,6 +135,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
             Time++;
             npc.timeLeft = 1800;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;

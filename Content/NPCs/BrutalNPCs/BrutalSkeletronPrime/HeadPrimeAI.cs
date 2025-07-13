@@ -436,6 +436,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
             SmokeDrawer.ParticleSpawnRate = 99999;
             bossRush = BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
             death = CalamityWorld.death || bossRush;

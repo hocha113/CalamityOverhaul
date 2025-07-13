@@ -28,7 +28,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.scale += 0.3f;
             }
         }
-        public override bool AI() => true;
+        public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
+            return true;
+        }
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (HeadPrimeAI.DontReform()) {
                 return true;

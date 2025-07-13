@@ -708,6 +708,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
             if (++frameCount > 5) {
                 if (++frameIndex > 3) {
                     frameIndex = 0;

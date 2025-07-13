@@ -109,6 +109,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
             if (!SegmentNPC.Alives()) {
                 npc.life = 0;
                 npc.HitEffect();

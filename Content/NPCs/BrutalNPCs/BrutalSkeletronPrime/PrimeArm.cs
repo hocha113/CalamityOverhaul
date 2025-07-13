@@ -36,6 +36,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool AI() {
+            if (CWRWorld.CanTimeFrozen()) {
+                CWRNpc.DoTimeFrozen(npc);
+                return false;
+            }
+
             bossRush = BossRushEvent.BossRushActive;
             masterMode = Main.masterMode || bossRush;
             death = CalamityWorld.death || bossRush;
