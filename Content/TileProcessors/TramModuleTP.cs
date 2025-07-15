@@ -4,6 +4,7 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -38,7 +39,9 @@ namespace CalamityOverhaul.Content.TileProcessors
                 items[i] = new Item();
             }
         }
+
         public override void SetProperty() => initializeItems();
+
         internal void TPEntityLoadenItems() {
             foreach (var item in items) {//这里给原版物品预加载一下纹理，如果有的话
                 if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
@@ -51,47 +54,68 @@ namespace CalamityOverhaul.Content.TileProcessors
                 SendData();
             }
         }
+
         public override void SendData(ModPacket data) {
             for (int i = 0; i < itemCount_W_X_H; i++) {
                 if (items[i] == null) {
                     items[i] = new Item(0);
                 }
-                data.Write(items[i].type);
-                data.Write(items[i].stack);
+                ItemIO.Send(items[i], data, true);
             }
         }
+
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             for (int i = 0; i < itemCount_W_X_H; i++) {
-                int type = reader.ReadInt32();
-                int stack = reader.ReadInt32();
-                if (type < 0 || type >= ItemLoader.ItemCount) {
-                    type = ItemID.None;
-                }
-                items[i] = new Item(type);
-                if (type > 0) {
-                    items[i].stack = stack;
-                }
+                items[i] = ItemIO.Receive(reader, true);
             }
             SupertableUI.Instance.items = items;
             SupertableUI.Instance.FinalizeCraftingResult(false);//不要进行网络发送，否则会迭代起来引发网络数据洪流
         }
+
         public override void SaveData(TagCompound tag) {
+            List<TagCompound> itemTags = [];
             for (int i = 0; i < items.Length; i++) {
                 if (items[i] == null) {
                     items[i] = new Item(0);
                 }
+                itemTags.Add(ItemIO.Save(items[i]));
             }
-            tag.Add("SupertableUI_ItemDate", items);
+            tag["itemTags"] = itemTags;
         }
-        public override void LoadData(TagCompound tag) {
-            if (tag.TryGet("SupertableUI_ItemDate", out Item[] loadSupUIItems)) {
+
+        private void OldLoadData(TagCompound tag) {
+            try {
+                if (!tag.TryGet("SupertableUI_ItemDate", out Item[] loadSupUIItems)) {
+                    return;
+                }
+
                 for (int i = 0; i < loadSupUIItems.Length; i++) {
                     if (loadSupUIItems[i] == null) {
                         loadSupUIItems[i] = new Item(0);
                     }
                 }
+
                 items = loadSupUIItems;
-            }
+            } catch { }
+        }
+
+        public override void LoadData(TagCompound tag) {
+            try {
+                //这一段用于适配老存档，防止新版本让老存档物品数据丢失
+                OldLoadData(tag);
+
+                if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
+                    return;
+                }
+
+                List<Item> resultItems = [];
+                for (int i = 0; i < itemTags.Count; i++) {
+                    var itemTag = itemTags[i];
+                    resultItems.Add(ItemIO.Load(itemTag));
+                }
+
+                items = [.. resultItems];
+            } catch { }
         }
 
         public override void Update() {

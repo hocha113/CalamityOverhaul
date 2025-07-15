@@ -96,25 +96,37 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                if (TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
-                    ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
-                    if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
-                        SupertableUI.tramModuleEntity ??= tram;
-                        SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
-                    }
-                    else {
-                        playerTramType = tram.WhoAmI;
-                        SupertableUI.tramModuleEntity = tram;
-                        SupertableUI.Instance.Active = true;
-                        SupertableUI.Instance.downSengsTime = 5;
-                        if (SupertableUI.Instance.Active && !Main.playerInventory) {
-                            //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
-                            Main.playerInventory = true;
-                        }
-                    }
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
+
+            if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
+                return true;
+            }
+
+            ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
+            if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
+                SupertableUI.tramModuleEntity ??= tram;
+                SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
+            }
+            else {
+                playerTramType = tram.WhoAmI;
+                SupertableUI.tramModuleEntity = tram;
+                SupertableUI.Instance.Active = true;
+                SupertableUI.Instance.downSengsTime = 5;
+                if (SupertableUI.Instance.Active && !Main.playerInventory) {
+                    //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
+                    Main.playerInventory = true;
                 }
-                SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
+            }
+
+            foreach (var item in SupertableUI.Instance.items) {//这里给原版物品预加载一下纹理，如果有的话
+                if (item == null || item.type == ItemID.None || item.type >= ItemID.Count) {
+                    continue;
+                }
+                Main.instance.LoadItem(item.type);
             }
 
             return true;
