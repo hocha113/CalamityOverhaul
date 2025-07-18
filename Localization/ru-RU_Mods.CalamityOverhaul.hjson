@@ -564,7 +564,7 @@ Items: {
 	}
 
 	SnowQuayMK2: {
-		DisplayName: Snow Quay MK2
+		DisplayName: Снежная гавань МК2
 		Tooltip:
 			'''
 			Используйте снежки в качестве боеприпасов
@@ -585,7 +585,7 @@ Items: {
 	}
 
 	JusticeUnveiled: {
-		DisplayName: Justice Unveiled
+		DisplayName: Лик правосудия
 		Tooltip:
 			'''
 			Стрелковые атаки имеют шанс вызвать удар правосудия.
@@ -595,7 +595,7 @@ Items: {
 	}
 
 	WeaverGrievances: {
-		DisplayName: Weaver Grievances
+		DisplayName: Недовольство Ткача
 		Tooltip:
 			'''
 			Выпустите на волю большое количество когтей злых духов и получите особые эффекты в аду и подземельях
@@ -626,22 +626,22 @@ Items: {
 	}
 
 	Starship: {
-		// DisplayName: Starship
+		// DisplayName: Звездолет
 		// Tooltip: ""
 	}
 
 	SandDagger: {
-		// DisplayName: Sand Dagger
+		// DisplayName: Песчаный кинжал
 		/* Tooltip:
 			'''
-			Throws onto sand, then jumps into the air and explodes after a while
-			Stealth attacks throw an enhanced dagger
+			Бросается на песок, затем подпрыгивает и взрывается спустя короткое время
+			При атаке из режима скрытности метает усиленный кинжал
 			''' */
 	}
 
 	UnderTheSand: {
-		// DisplayName: Beneath the Sand
-		// Tooltip: Creates several sand orbs
+		// DisplayName: Скрытое под песком
+		// Tooltip: Создаёт несколько песчаных сфер
 	}
 
 	WastelandFang: {
@@ -654,7 +654,7 @@ Items: {
 	}
 
 	Flawless: {
-		// DisplayName: Flawless
+		// DisplayName: Безупречный
 		// Tooltip: ""
 	}
 
@@ -707,10 +707,10 @@ Items: {
 	}
 
 	HandmadeDoll: {
-		DisplayName: Handmade Sewn Doll
+		DisplayName: Кукла ручной работы
 		Tooltip:
 			'''
-			Используеться в аду, чтобы призват Стену Плоти
+			Используеться в аду, чтобы призвать Стену Плоти
 			Если Гид жив, он будет принесен в жертву при использовании.
 			"Ручная работа, и гид не знает!"
 			'''
@@ -757,7 +757,7 @@ Items: {
 	}
 
 	RaiderGun: {
-		DisplayName: Raider
+		DisplayName: Налётчик
 		Tooltip:
 			'''
 			Превращает мушкетные пули в высокоскоростные пули
@@ -777,7 +777,7 @@ Items: {
 	}
 
 	RaiderGunEX: {
-		DisplayName: Raider EX
+		DisplayName: Налётчик-EX
 		Tooltip:
 			'''
 			Превращает мушкетные пули в высокоскоростные пули
@@ -796,12 +796,12 @@ Items: {
 	}
 
 	GeminisTribute: {
-		DisplayName: Twins' Tribute
+		DisplayName: Память о Близнецах
 		Tooltip:
 			'''
 			Бросает быстро вращающуюся косу, которая режет вперед и назад
 			Скрытые атаки запускают рой крылатых ракет Уничтожителя
-			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
+			"Лишь одна личность может быть главной, и, без сомнений, Глаз Магмопламени победил."
 			'''
 	}
 
@@ -816,12 +816,12 @@ Items: {
 	}
 
 	GeminisTributeEX: {
-		// DisplayName: Twins' Tribute EX
+		// DisplayName: Память о Близнецах-EX
 		/* Tooltip:
 			'''
-			Throws a fast-revolving scythe that slashes back and forth
-			Hitting an enemy spawns two additional companion scythes
-			"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
+			Бросает быстро вращающуюся косу, которая режет вперед и назад
+			Попадание по врагу призывает две дополнительные косы-спутницы
+			"Лишь одна личность может быть главной, и, без сомнений, Глаз Магмопламени победил."
 			''' */
 	}
 
@@ -829,7 +829,7 @@ Items: {
 		DisplayName: Клинок Уничтожителя
 		Tooltip:
 			'''
-			Fires thermal barrages
+			Выпускает термические залпы
 			"Содержит огромное энергетическое ядро ​​Разрушителя.."
 			'''
 	}
@@ -870,25 +870,25 @@ Items: {
 			Вызывает EX Механическое Трио
 			Можно использовать только ночью.
 			'''
-		DontUseByDeath: The current game difficulty does not allow sending signals!
+		DontUseByDeath: Текущий уровень сложности игры не позволяет отправлять сигналы!
 	}
 
 	CommandersStaffEX: {
-		// DisplayName: Commander's Staff EX
+		// DisplayName: Посох Командира-EX
 		/* Tooltip:
 			'''
-			Fires multiple spreading thermal beams
-			"Suitable for cutting metal"
+			Выпускает несколько термолучей с широким рассеиванием
+			"Эффективен для расплавления металла"
 			''' */
 	}
 
 	CommandersChainsawEX: {
-		// DisplayName: Commander's Chainsaw EX
-		// Tooltip: '''"Shreds everything in your path"'''
+		// DisplayName: Бензопила Командира-EX
+		// Tooltip: '''"Разрывает всё на своём пути"'''
 	}
 
 	ForgedLashEX: {
-		// DisplayName: Forged Lash EX
+		// DisplayName: Закалённый Кнут-EX
 		// Tooltip: ""
 	}
 
@@ -920,26 +920,26 @@ Items: {
 	}
 
 	DestroyersBladeEX: {
-		// DisplayName: Destroyers Blade EX
+		// DisplayName: Клинок Уничтожителя-EX
 		/* Tooltip:
 			'''
-			Launch a thermal barrage
-			"It's always easier to destroy than to build"
+			Открывает огонь термическим залпом
+			"Проще разрушить, чем построить"
 			''' */
 	}
 
 	ThermalGenerator: {
-		// DisplayName: Thermal Generator
+		// DisplayName: Тепловой генератор
 		/* Tooltip:
 			'''
-			Put fuel in for power generation.
-			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			Добавьте топливо для генерации энергии.
+			ПКМ по блоку — быстрая загрузка топлива, Shift + ПКМ — извлечение.
 			''' */
 	}
 
 	ThermalBattery: {
-		// DisplayName: Thermal Battery
-		// Tooltip: Store a certain amount of electrical energy
+		// DisplayName: Тепловая батарея
+		// Tooltip: Хранит определённое количество электрической энергии
 	}
 
 	WindGrivenGenerator: {
@@ -957,11 +957,11 @@ Items: {
 	}
 
 	ThermalGeneratorMK2: {
-		// DisplayName: Thermal Generator MK2
+		// DisplayName: Тепловой генератор MK2
 		/* Tooltip:
 			'''
-			Put fuel in for power generation.
-			Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
+			Добавьте топливо для генерации энергии.
+			ПКМ по блоку — быстрая загрузка топлива, Shift + ПКМ — извлечение.
 			''' */
 	}
 
@@ -1019,40 +1019,40 @@ Items: {
 	}
 
 	ElectricMinRocket: {
-		// DisplayName: Electric Mini Rocket
+		// DisplayName: Электрическая Мини-ракета
 		/* Tooltip:
 			'''
-			Place on the ground and right-click to initiate flight
-			Hold left and right mouse buttons in the air to adjust flight direction
+			Разместите на земле и щёлкните правой кнопкой мыши, чтобы начать полёт.
+			Удерживайте левую и правую кнопки мыши в воздухе для управления направлением полёта.
 			''' */
 	}
 
 	UEPipeline: {
-		// DisplayName: Energy Input Pipeline
+		// DisplayName: Трубопровод подачи энергии
 		/* Tooltip:
 			'''
-			Used for transmitting electrical energy
-			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
-			Connects to generators and other power sources to transfer energy to batteries or electrical devices
+			Используется для передачи электрической энергии
+			Щёлкните ПКМ, чтобы быстро демонтировать и забрать трубопровод в месте курсора
+			Подключается к генераторам и другим источникам питания для передачи энергии в батареи или электрические устройства
 			''' */
 	}
 
 	UEPipelineInput: {
-		// DisplayName: Energy Extraction Pipeline
+		// DisplayName: Трубопровод для извлечения энергии
 		/* Tooltip:
 			'''
-			Used for transmitting electrical energy
-			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
-			Extracts energy from batteries and other storage units to supply electrical devices
+			Используется для передачи электрической энергии.
+			Щёлкните ПКМ, чтобы быстро демонтировать и забрать трубопровод в месте курсора
+			Извлекает энергию из батарей и других накопителей для питания электрических устройств
 			''' */
 	}
 
 	EnergySword: {
-		// DisplayName: Energy Sword
+		// DisplayName: Энергетический меч
 		/* Tooltip:
 			'''
-			Expend energy to shoot lasers and penetrate multiple enemies
-			"Utilization is not high."
+			Расходует энергию для стрельбы лазерами, пробивающими несколько врагов
+			"Степень применения оставляет желать лучшего."
 			''' */
 	}
 
@@ -1066,81 +1066,81 @@ Items: {
 	}
 
 	HyperionBarrageEX: {
-		// DisplayName: Hyperion Barrage EX
+		// DisplayName: Гиперионовый Залп-EX
 		/* Tooltip:
 			'''
-			After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
-			"Beyond its intended use"
+			После попадания по цели тепловой крылатый снаряд распадается на несколько частей, нанося дополнительный урон.
+			"Выходит за рамки предполагаемого применения"
 			''' */
 	}
 
 	MiningMachine: {
-		// DisplayName: Mining Machine
+		// DisplayName: Горная машина
 		/* Tooltip:
 			'''
-			Drilling minerals by consuming electrical energy
-			It needs to be placed in an appropriate location to work properly
+			Бурит полезные ископаемые, потребляя электрическую энергию
+			Для корректной работы должна быть установлена в подходящем месте
 			''' */
-		// DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+		// DontWork: Для проведения горных работ его необходимо разместить на твердой поверхности.
 	}
 
 	HoChaMeditatorItem: {
-		// DisplayName: HoCha Meditator
+		// DisplayName: Медитационное устройство HoCha
 		// Tooltip: ""
 	}
 
 	Collector: {
-		// DisplayName: Collector
+		// DisplayName: Сборщик
 		/* Tooltip:
 			'''
-			Automatically pick up the fallen objects around and place them in the nearest box
-			It won't work if there are no boxes around
+			Автоматически подбирает выпавшие рядом предметы и помещает их в ближайший ящик
+			Не работает, если поблизости нет ящиков
 			''' */
-		// Text1: Excessive Quantity!
-		// Text2: There are no boxes around!
+		// Text1: Слишком много!
+		// Text2: Здесь нет никаких коробок!
 	}
 
 	WGGCollector: {
-		// DisplayName: Junkman
+		// DisplayName: Мусорщик
 		/* Tooltip:
 			'''
-			It’s passionate about recycling — including you.
-			To it, there’s no real difference between a plastic bottle and your spinal cord.
+			Он страстно увлечён переработкой — включая тебя
+			Для него нет особой разницы между пластиковой бутылкой и твоим позвоночником
 			''' */
 	}
 
 	LaserEnergyTrans: {
-		// DisplayName: Laser Energy Trans
+		// DisplayName: Лазерный Энергопередатчик
 		/* Tooltip:
 			'''
-			Remote power transmission.
-			After placement, right-click to activate the laser navigation, 
-			and then right-click on other power buildings to link them.
-			The farther the transmission distance, the greater the energy loss. 
-			The maximum loss is 100%.
+			Дистанционная передача энергии.
+			После установки щёлкните правой кнопкой мыши, чтобы активировать лазерную навигацию,
+			затем щёлкните ПКМ по другим энергетическим сооружениям для их подключения.
+			Чем больше расстояние передачи, тем выше потери энергии.
+			Максимальная потеря — 100%.
 			''' */
 	}
 
 	MetalMusicBox: {
-		// DisplayName: Music Box (Machine Rebellion)
-		// Tooltip: Plays 'Fall of the Bit' by Ryusa
+		// DisplayName: Музыкальная шкатулка (Мятеж Машин)
+		// Tooltip: Проигрывает «Падение Бита» — автор Ryusa
 	}
 
 	Hydroelectric: {
-		// DisplayName: Hydroelectric
+		// DisplayName: Гидроэлектрогенератор
 		/* Tooltip:
 			'''
-			Generating electricity by placing in water
-			"One application of fluid mechanics"
+			Работает, находясь в воде.
+			"Пример работы механики жидкостей"
 			''' */
 	}
 
 	HydroelectricMK2: {
-		// DisplayName: Hydroelectric MK2
+		// DisplayName: Гидроэлектрогенератор MK2
 		/* Tooltip:
 			'''
-			Generating electricity by placing in water
-			"One application of fluid mechanics"
+			Работает, находясь в воде.
+			"Пример работы механики жидкостей"
 			''' */
 	}
 }
@@ -1158,11 +1158,11 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: Дьявольский световой шар
 	RebelBladeBack.DisplayName: Меч сопротивления
 	RebelBladeSlash.DisplayName: Меч сопротивления
-	// DevilsDevastationHeld.DisplayName: Devil's Devastation
+	// DevilsDevastationHeld.DisplayName: Дьявольское опустошение
 	// EXDemonBlast.DisplayName: EX Demon Blast
 	// EXOathblade.DisplayName: EX Oathblade
 	// EXDemonBlastAlt.DisplayName: EX Demon Blast
-	// DivineJustice.DisplayName: Divine Justice
+	// DivineJustice.DisplayName: Божественное правосудие
 	// JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
 	// JUZenithWorldTime.DisplayName: J U Zenith World Time
 	// DecayedSeaOrb.DisplayName: Decayed Sea Orb
@@ -1592,11 +1592,11 @@ Configs: {
 		}
 
 		WeaponLazyRotationAngle: {
-			// Label: Weapon Inertia Rotation Angle Update
+			// Label: Обновление угла инерционного вращения оружия
 			/* Tooltip:
 				'''
-				If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
-				where the facing direction changes only once when firing.
+				Если включено, анимация использования оружия в руках будет ближе к оригинальной игре:
+				направление взгляда меняется только один раз во время атаки.
 				''' */
 		}
 
@@ -1642,8 +1642,8 @@ Configs: {
 		}
 
 		ShowReloadingProgressUI: {
-			// Label: Show Reloading Progress
-			// Tooltip: When opened, the ammo loading progress will be displayed
+			// Label: Показать ход перезарядки
+			// Tooltip: При открытии отображается прогресс загрузки боеприпасов
 		}
 	}
 }
@@ -1665,13 +1665,13 @@ Buffs: {
 	}
 
 	DestroyerSummonBuff: {
-		// DisplayName: Destroyer Summon Buff
-		// Description: The Mini Destroyer will follow you into battle
+		// DisplayName: Бафф Призыва Разрушителя
+		// Description: Мини-Разрушитель будет следовать за вами в бою
 	}
 
 	FrenziedMachineSoul: {
-		// DisplayName: Frenzied Machine Soul
-		// Description: The Machine Spirit is overjoyed!
+		// DisplayName: Душа Машины в Ярости
+		// Description: Машинный дух вне себя от радости!
 	}
 }
 
@@ -1690,23 +1690,23 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
-		// TemperatureText: Combustion Temperature
-		// EnergyShortage: Energy Shortage
-		// ChargingStation_Text1: Put in charge items
-		// ChargingStation_Text2: Put in battery
-		// ChargingStation_Text3: Need to put in something that can receive energy
-		// ChargingStation_Text4: Need to put in batteries
+		// TemperatureText: Температура сгорания
+		// EnergyShortage: Недостаток энергии
+		// ChargingStation_Text1: Положите предметы для зарядки
+		// ChargingStation_Text2: Установите батарею
+		// ChargingStation_Text3: Нужно установить устройство, способное принимать энергию
+		// ChargingStation_Text4: Необходимо вставить батареи
 		WindGriven_Text1: Эти ветряки показались вам интересными, и вы захотели создать парочку таких же...
 		WindGriven_Text2: Вы были поражены размером этой машины, и вас наполнило желанием построить такую же....
-		// Turret_Text1: Battery Runs Out
+		// Turret_Text1: Батарея разряжена
 		Turret_Text2: Обнаружен нарушитель!
-		// IndustrializationGenMessage: Industrializing The World
+		// IndustrializationGenMessage: Индустриализация мира
 		InternalStoredEnergy: Накоплено энергии
-		// KreloadTimeAddText: "Ammunition reloading time increased "
-		// KreloadTimeLessenText: "Ammunition reloading time is reduced "
+		// KreloadTimeAddText: "Время перезарядки боеприпасов увеличено "
+		// KreloadTimeLessenText: "Сокращается время перезарядки боеприпасов "
 		DeathModeItem: Предмет режима Смерть
-		// DropInMachineRebellion: Dropped by the Mech Trio EX
-		// DontUseMagicConch: You're being watched by a powerful creature...
+		// DropInMachineRebellion: Выпадает с Трио Мехов EX
+		// DontUseMagicConch: За тобой наблюдает могущественное существо...
 		OnlyZenith: Только в мирах с сидом «Get fixed boi»
 		Event_TungstenRiot_Name: Вольфрамовое востание
 		Event_TungstenRiot_Text_1: Массовое вторжение вольфрамовых биомеханизмов!
@@ -1714,7 +1714,7 @@ TextContent: {
 		Item_LegendOnMouseLang: Нажмите [Shift], чтобы прослушать историю...
 		BloodAltar_Text1: Карминовый взгляд снижается...
 		BloodAltar_Text2: У вас недостаточно кровавых жемчужин для данного взноса перед Карминовым Королем...
-		// BloodAltar_Text3: "{0} Trapped in an endless frenzy of blood and flesh"
+		// BloodAltar_Text3: "{0} Затянут в бесконечную ярость крови и плоти"
 		VoidDamageNameText: ед. пустотного урона
 		Drop_Hell_RuleText: Добыча после победы в Аду
 		Drop_GlodDragonDrop_RuleText: Добыча после повторного поражения Дракона Джунглей
@@ -1998,8 +1998,8 @@ TextContent: {
 			Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
 			'''
 		CaseEjection_TextContent: холост
-		// CaseEjection_TextContent_Coin: No Money
-		// CaseEjection_TextContent_Arrow: No Arrow
+		// CaseEjection_TextContent_Coin: Нет денег
+		// CaseEjection_TextContent_Arrow: Нет стрел
 		SupertableUI_Text1: закр
 		SupertableUI_Text2: Проверь формулу
 		SupertableUI_Text3: без
@@ -2017,18 +2017,18 @@ TextContent: {
 		CartridgeHolderUI_Text2: Осталось
 		CartridgeHolderUI_Text3: Пусто
 		CartridgeHolderUI_Text4: ПКМ - снять патроны
-		CartridgeHolderUI_Text5: Left click to fill all, right click to fill one
-		CartridgeHolderUI_Text6: The Weapon Cannot Use This Ammo!
-		CartridgeHolderUI_Text7: The Magazine Is Full!
-		// ArrowHolderUI_Text0: Left Click On The Marked Arrow
-		// ArrowHolderUI_Text1: Right Click Untag
+		CartridgeHolderUI_Text5: ЛКМ — заполнить всё, ПКМ — добавить один
+		CartridgeHolderUI_Text6: Это оружие не может использовать данный боеприпас!
+		CartridgeHolderUI_Text7: Магазин полностью заряжен!
+		// ArrowHolderUI_Text0: ЛКМ - поставить метку
+		// ArrowHolderUI_Text1: ПКМ — снять метку
 		SupertableUI_Text4: Отключить наблюдение за расстановкой
 		SupertableUI_Text5: Включить наблюдение за расстановкой
 		AmmoBox_Text: Достигнут предел размещения
 		AmmoBox_Text2: Размещение
 		AmmoBox_Text3: Размещено
-		// HellfireExplosion_DeadLang_Text: "{0} To Burn In The Flames Of Hell"
-		// SoulfireExplosion_DeadLang_Text: "{0} The Soul Rises In Fire"
+		// HellfireExplosion_DeadLang_Text: "{0} Сгореть в пламени ада"
+		// SoulfireExplosion_DeadLang_Text: "{0} Душа восстаёт в огне"
 		SupMUI_OneClick_Text1: Быстрая установка материалов
 		SupMUI_OneClick_Text2: Быстрое извлечение материалов
 		TemporaryVersion_Text:
@@ -2087,10 +2087,10 @@ TextContent: {
 		CWRGun_Recoil_Level_4: Сильная
 		CWRGun_Recoil_Level_5: Очень сильная
 		CWRGun_Recoil_Level_6: Крайне сильная
-		// SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
-		// MachineRebellion_SpawnInfo: Use the Garden remote control at night
-		// MachineRebellion_DespawnMessage: Use the Garden remote control at night
-		// MachineRebellion_DisplayName: Machine Rebellion
+		// SkeletronPrime_Text: Не пытайся убить меня этой дурацкой штукой! Умри, организм!
+		// MachineRebellion_SpawnInfo: Используйте садовый пульт управления ночью
+		// MachineRebellion_DespawnMessage: Используйте садовый пульт управления ночью
+		// MachineRebellion_DisplayName: Мятеж Машин
 	}
 }
 
@@ -2429,8 +2429,8 @@ RemakeItems: {
 		DisplayName: Космический разряд
 		Tooltip:
 			'''
-			Striking an enemy with the whip causes glacial explosions and grants the player the cosmic freeze buff
-			This buff gives the player +2 HP/s life regen while standing still and freezes enemies near the player
+			Попадание кнутом по врагу вызывает ледяные взрывы и накладывает на игрока эффект "Космический Холод"
+			Этот эффект восстанавливает 2 ед. здоровья в секунду, если игрок стоит на месте, и замораживает ближайших врагов.
 			'''
 	}
 
@@ -2538,11 +2538,11 @@ RemakeItems: {
 		DisplayName: Врагобой
 		Tooltip:
 			'''
-			Grants attribute boosts for each enemy killed with this hammer.
-			Stops growing when the maximum value is reached.
-			Switching to another item removes the bonuses.
-			Taking damage removes one attribute boost.
-			"The hammer is both evil and powerful."
+			Дарует усиления характеристик за каждого врага, убитого этим молотом.
+			Усиление прекращается при достижении максимального значения.
+			Переключение на другой предмет сбрасывает бонусы.
+			Получение урона снимает одно усиление.
+			"Молот и зловещ, и могущественен."
 			'''
 	}
 
@@ -3165,7 +3165,7 @@ RemakeItems: {
 	}
 
 	RBladedgeGreatbow: {
-		DisplayName: Bladedge Railbow
+		DisplayName: Рельсовый Лук Лезвий
 		Tooltip: "[GFB]"
 	}
 
@@ -3312,11 +3312,11 @@ RemakeItems: {
 	}
 
 	RCosmicBolter: {
-		DisplayName: Vernal Bolter
+		DisplayName: Лиственный Болтер
 		Tooltip:
 			'''
-			Fires a tight column of three arrows
-			Converts wooden arrows into sliding energy bolts
+			Стреляет узким столбом из трёх стрел
+			Преобразует деревянные стрелы в скользящие энергетические заряды
 			'''
 	}
 
@@ -3374,7 +3374,7 @@ RemakeItems: {
 	}
 
 	RDeepcoreGK2: {
-		DisplayName: Deepcore GK2
+		DisplayName: Глубинник GK2
 		Tooltip:
 			'''
 			Стреляет пулями слишком уж большого калибра
@@ -4161,11 +4161,11 @@ RemakeItems: {
 	}
 
 	RWarbanneroftheSun: {
-		DisplayName: Warbanner of the Sun
+		DisplayName: Боевой Знамя Солнца
 		Tooltip:
 			'''
-			Increases melee damage, true melee damage and melee speed the closer you are to enemies
-			Max boost is 20% increased melee damage, true melee damage and melee speed
+			Увеличивает урон в ближнем бою, истинный урон в ближнем бою и скорость атаки в ближнем бою по мере приближения к врагам
+			Максимальный бонус: +20% к урону в ближнем бою, истинному урону и скорости ближнего боя
 			'''
 	}
 
@@ -4179,21 +4179,21 @@ RemakeItems: {
 	}
 
 	REyeofMagnus: {
-		DisplayName: Eye of Magnus
+		DisplayName: Око Магнуса
 		Tooltip:
 			'''
-			Fires powerful homing beams that reduce enemy protection
-			Heals mana and health on hit
-			This weapon scales with all your damage stats at once
+			Выпускает мощные самонаводящиеся лучи, снижающие защиту врагов
+			Восстанавливает ману и здоровье при попадании
+			Это оружие масштабируется от всех ваших показателей урона одновременно
 			'''
 	}
 
 	RLunicEye: {
-		DisplayName: Lunic Eye
+		DisplayName: Лунный Глаз
 		Tooltip:
 			'''
-			Fires homing lunic beams that reduce enemy protection
-			This weapon scales with all your damage stats at once
+			Выпускает самонаводящиеся лунные лучи, снижающие защиту врагов
+			Это оружие масштабируется от всех ваших показателей урона одновременно
 			'''
 	}
 
@@ -4932,7 +4932,7 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Выстрелите 12 пулями
-			Игнорирует 15 защиту при экстремальном ближнем бою
+			Игнорирует 15 защиты при экстремальном ближнем бою
 			"Нет ничего, что не может быть решено близким всплеском, если есть, тогда еще пара всплесков"
 			'''
 	}
@@ -5113,93 +5113,93 @@ RemakeItems: {
 	}
 
 	RDemonConch: {
-		// DisplayName: Demon Conch
+		// DisplayName: Демоническая Раковина
 		/* Tooltip:
 			'''
-			Listen carefully, and you'll hear screams
-			"Be careful"
+			Прислушайся — и ты услышишь крики
+			"Будь осторожен"
 			''' */
 	}
 
 	REssenceFlayer: {
-		// DisplayName: Essence Flayer
+		// DisplayName: Расщепитель Эссенции
 		/* Tooltip:
 			'''
-			Launch the Essence Scythe, which will release healing light when killing enemies
-			"Ineffective on undead creatures"
+			Выпускает Косу Эссенции, которая испускает исцеляющий свет при убийстве врагов
+			"Неэффективен против нежити"
 			''' */
 	}
 
-	// ModifyShroomiteMask.UpdateArmorText: A lingering mushroom barrage is generated during reloading
-	// ModifyMythrilHood.UpdateArmorText: During the reloading process, taking damage will release a large number of Mythril Sparks.
-	// ModifyCobaltMask.UpdateArmorText: During the reloading process, 15% increased movement speed.
-	// ModifyOrichalcumHelmet.UpdateArmorText: During the reloading process, taking damage will cause a large number of petals to scatter and splatter.
-	// ModifyPalladiumHelmet.UpdateArmorText: During the reloading process, health will be restored more quickly.
-	// ModifyChlorophyteHelmet.UpdateArmorText: During the reloading process, a lingering spore cloud will be released.
+	// ModifyShroomiteMask.UpdateArmorText: Создаётся облако грибного залпа с задержкой.
+	// ModifyMythrilHood.UpdateArmorText:При получении урона выпускается большое количество мифриловых искр.
+	// ModifyCobaltMask.UpdateArmorText: Скорость передвижения увеличена на 15%.
+	// ModifyOrichalcumHelmet.UpdateArmorText: При получении урона разлетается множество лепестков.
+	// ModifyPalladiumHelmet.UpdateArmorText: Здоровье восстанавливается быстрее.
+	// ModifyChlorophyteHelmet.UpdateArmorText: Выпускается облако спор с задержкой.
 
 	ModifyChargingStationItem: {
-		// DisplayName: Charging Station
+		// DisplayName: Зарядная Станция
 		/* Tooltip:
 			'''
-			Uses electricity to charge electrical devices  
-			Batteries can be placed inside to store electricity  
-			Can be connected to pipelines for power transmission  
-			Right-click the block while holding a rechargeable item to quickly insert it  
-			Shift + Right-click to retrieve items
+			Использует электричество для зарядки электронных устройств
+			Внутрь можно поместить батареи для хранения энергии
+			Может быть подключена к трубопроводам для передачи энергии  
+			ПКМ по блоку с заряжаемым предметом — для быстрой установки  
+			Shift + ПКМ — чтобы забрать предметы
 			''' */
 	}
 
 	ModifyLaserTurret: {
-		// DisplayName: Laser Turret
+		// DisplayName: Лазерная Турель
 		/* Tooltip:
 			'''
-			Fires lightning-fast lasers at nearby enemies
-			Requires energy to operate
+			Стреляет сверхбыстрыми лазерами по ближайшим врагам
+			Требует энергию для работы
 			''' */
 	}
 
 	ModifyLabTurret: {
-		// DisplayName: Lab Turret
+		// DisplayName: Лабораторная Турель
 		/* Tooltip:
 			'''
-			Fires lasers at nearby enemies
-			Requires energy to operate
+			Стреляет лазерами по ближайшим врагам
+			Требует энергию для работы
 			''' */
 	}
 
 	ModifyIceTurret: {
-		// DisplayName: Ice Ball Turret
+		// DisplayName: Ледяная Турель
 		/* Tooltip:
 			'''
-			Throws fragile ice mist bombs at nearby enemies
-			Requires energy to operate
+			Бросает хрупкие бомбы с ледяным туманом по ближайшим врагам
+			Требует энергию для работы
 			''' */
 	}
 
 	ModifyOnyxTurret: {
-		// DisplayName: Onyx Turret
+		// DisplayName: Ониксовая Турель
 		/* Tooltip:
 			'''
-			Fires bullets at nearby enemies in a shotgun spread
-			Requires energy to operate
+			Стреляет по врагам пулями в стиле дробовика
+			Требует энергию для работы
 			''' */
 	}
 
 	ModifyPlagueTurret: {
-		// DisplayName: Plague Bomb Turret
+		// DisplayName: Чумная Турель
 		/* Tooltip:
 			'''
-			Fires tracking plague missiles at nearby enemies
-			Requires energy to operate
+			Выпускает самонаводящиеся чумные ракеты по ближайшим врагам
+			Требует энергию для работы
 			''' */
 	}
 
 	ModifyWaterTurret: {
-		// DisplayName: Water Stream Turret
+		// DisplayName: Водяная Турель
 		/* Tooltip:
 			'''
-			Sprays high-speed water streams at nearby enemies
-			Requires energy to operate
+			Обдаёт ближайших врагов стремительными потоками воды
+			Требует энергию для работы
 			''' */
 	}
 
@@ -5207,14 +5207,14 @@ RemakeItems: {
 		// DisplayName: Flamethrower Turret
 		/* Tooltip:
 			'''
-			Incinerates nearby enemies with a high-powered flamethrower
-			Requires energy to operate
+			Испепеляет ближайших врагов мощным огнемётом
+			Требует энергию для работы
 			''' */
 	}
 
 	RCoal: {
-		// DisplayName: Coal
-		// Tooltip: Good for fuel
+		// DisplayName: Уголь
+		// Tooltip: Хорошо подходит в качестве топлива
 	}
 
 	ModifyBananarang: {
@@ -5246,8 +5246,8 @@ RemakeItems: {
 			'''
 	}
 
-	// ModifyAncientNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
-	// ModifyNecroHelmet.UpdateArmorText: During the reloading process, if you are injured, a pile of bones will be thrown out.
+	// ModifyAncientNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
+	// ModifyNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
 
 	RSylvestaff: {
 		DisplayName: Посох Сильвиион
