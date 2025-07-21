@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -485,9 +485,9 @@ Items: {
 			ПКМ для трехступенчатой зарядки: 
 			после полной зарядки стреляет тремя мощными стрелами с гравитационным эффектом
 			'''
-		// Lang1: Trapping gravity
-		// Lang2: Is making gravity yield
-		// Lang3: Finished!!
+		Lang1: Trapping gravity
+		Lang2: Is making gravity yield
+		Lang3: Finished!!
 	}
 
 	NeutronGun: {
@@ -626,22 +626,22 @@ Items: {
 	}
 
 	Starship: {
-		// DisplayName: Звездолет
-		// Tooltip: ""
+		DisplayName: Звездолет
+		Tooltip: ""
 	}
 
 	SandDagger: {
-		// DisplayName: Песчаный кинжал
-		/* Tooltip:
+		DisplayName: Песчаный кинжал
+		Tooltip:
 			'''
 			Бросается на песок, затем подпрыгивает и взрывается спустя короткое время
 			При атаке из режима скрытности метает усиленный кинжал
-			''' */
+			'''
 	}
 
 	UnderTheSand: {
-		// DisplayName: Скрытое под песком
-		// Tooltip: Создаёт несколько песчаных сфер
+		DisplayName: Скрытое под песком
+		Tooltip: Создаёт несколько песчаных сфер
 	}
 
 	WastelandFang: {
@@ -654,8 +654,8 @@ Items: {
 	}
 
 	Flawless: {
-		// DisplayName: Безупречный
-		// Tooltip: ""
+		DisplayName: Безупречный
+		Tooltip: ""
 	}
 
 	MelodyTheSand: {
@@ -816,13 +816,13 @@ Items: {
 	}
 
 	GeminisTributeEX: {
-		// DisplayName: Память о Близнецах-EX
-		/* Tooltip:
+		DisplayName: Память о Близнецах-EX
+		Tooltip:
 			'''
 			Бросает быстро вращающуюся косу, которая режет вперед и назад
 			Попадание по врагу призывает две дополнительные косы-спутницы
 			"Лишь одна личность может быть главной, и, без сомнений, Глаз Магмопламени победил."
-			''' */
+			'''
 	}
 
 	DestroyersBlade: {
@@ -874,22 +874,22 @@ Items: {
 	}
 
 	CommandersStaffEX: {
-		// DisplayName: Посох Командира-EX
-		/* Tooltip:
+		DisplayName: Посох Командира-EX
+		Tooltip:
 			'''
 			Выпускает несколько термолучей с широким рассеиванием
 			"Эффективен для расплавления металла"
-			''' */
+			'''
 	}
 
 	CommandersChainsawEX: {
-		// DisplayName: Бензопила Командира-EX
-		// Tooltip: '''"Разрывает всё на своём пути"'''
+		DisplayName: Бензопила Командира-EX
+		Tooltip: '''"Разрывает всё на своём пути"'''
 	}
 
 	ForgedLashEX: {
-		// DisplayName: Закалённый Кнут-EX
-		// Tooltip: ""
+		DisplayName: Закалённый Кнут-EX
+		Tooltip: ""
 	}
 
 	SoulofFrightEX: {
@@ -920,26 +920,26 @@ Items: {
 	}
 
 	DestroyersBladeEX: {
-		// DisplayName: Клинок Уничтожителя-EX
-		/* Tooltip:
+		DisplayName: Клинок Уничтожителя-EX
+		Tooltip:
 			'''
 			Открывает огонь термическим залпом
 			"Проще разрушить, чем построить"
-			''' */
+			'''
 	}
 
 	ThermalGenerator: {
-		// DisplayName: Тепловой генератор
-		/* Tooltip:
+		DisplayName: Тепловой генератор
+		Tooltip:
 			'''
 			Добавьте топливо для генерации энергии.
 			ПКМ по блоку — быстрая загрузка топлива, Shift + ПКМ — извлечение.
-			''' */
+			'''
 	}
 
 	ThermalBattery: {
-		// DisplayName: Тепловая батарея
-		// Tooltip: Хранит определённое количество электрической энергии
+		DisplayName: Тепловая батарея
+		Tooltip: Хранит определённое количество электрической энергии
 	}
 
 	WindGrivenGenerator: {
@@ -957,12 +957,12 @@ Items: {
 	}
 
 	ThermalGeneratorMK2: {
-		// DisplayName: Тепловой генератор MK2
-		/* Tooltip:
+		DisplayName: Тепловой генератор MK2
+		Tooltip:
 			'''
 			Добавьте топливо для генерации энергии.
 			ПКМ по блоку — быстрая загрузка топлива, Shift + ПКМ — извлечение.
-			''' */
+			'''
 	}
 
 	WGGMK2Wilderness: {
@@ -1019,41 +1019,41 @@ Items: {
 	}
 
 	ElectricMinRocket: {
-		// DisplayName: Электрическая Мини-ракета
-		/* Tooltip:
+		DisplayName: Электрическая Мини-ракета
+		Tooltip:
 			'''
 			Разместите на земле и щёлкните правой кнопкой мыши, чтобы начать полёт.
 			Удерживайте левую и правую кнопки мыши в воздухе для управления направлением полёта.
-			''' */
+			'''
 	}
 
 	UEPipeline: {
-		// DisplayName: Трубопровод подачи энергии
-		/* Tooltip:
+		DisplayName: Трубопровод подачи энергии
+		Tooltip:
 			'''
 			Используется для передачи электрической энергии
 			Щёлкните ПКМ, чтобы быстро демонтировать и забрать трубопровод в месте курсора
 			Подключается к генераторам и другим источникам питания для передачи энергии в батареи или электрические устройства
-			''' */
+			'''
 	}
 
 	UEPipelineInput: {
-		// DisplayName: Трубопровод для извлечения энергии
-		/* Tooltip:
+		DisplayName: Трубопровод для извлечения энергии
+		Tooltip:
 			'''
 			Используется для передачи электрической энергии.
 			Щёлкните ПКМ, чтобы быстро демонтировать и забрать трубопровод в месте курсора
 			Извлекает энергию из батарей и других накопителей для питания электрических устройств
-			''' */
+			'''
 	}
 
 	EnergySword: {
-		// DisplayName: Энергетический меч
-		/* Tooltip:
+		DisplayName: Энергетический меч
+		Tooltip:
 			'''
 			Расходует энергию для стрельбы лазерами, пробивающими несколько врагов
 			"Степень применения оставляет желать лучшего."
-			''' */
+			'''
 	}
 
 	LaserPistol: {
@@ -1066,82 +1066,82 @@ Items: {
 	}
 
 	HyperionBarrageEX: {
-		// DisplayName: Гиперионовый Залп-EX
-		/* Tooltip:
+		DisplayName: Гиперионовый Залп-EX
+		Tooltip:
 			'''
 			После попадания по цели тепловой крылатый снаряд распадается на несколько частей, нанося дополнительный урон.
 			"Выходит за рамки предполагаемого применения"
-			''' */
+			'''
 	}
 
 	MiningMachine: {
-		// DisplayName: Горная машина
-		/* Tooltip:
+		DisplayName: Горная машина
+		Tooltip:
 			'''
 			Бурит полезные ископаемые, потребляя электрическую энергию
 			Для корректной работы должна быть установлена в подходящем месте
-			''' */
-		// DontWork: Для проведения горных работ его необходимо разместить на твердой поверхности.
+			'''
+		DontWork: Для проведения горных работ его необходимо разместить на твердой поверхности.
 	}
 
 	HoChaMeditatorItem: {
-		// DisplayName: Медитационное устройство HoCha
-		// Tooltip: ""
+		DisplayName: Медитационное устройство HoCha
+		Tooltip: ""
 	}
 
 	Collector: {
-		// DisplayName: Сборщик
-		/* Tooltip:
+		DisplayName: Сборщик
+		Tooltip:
 			'''
 			Автоматически подбирает выпавшие рядом предметы и помещает их в ближайший ящик
 			Не работает, если поблизости нет ящиков
-			''' */
-		// Text1: Слишком много!
-		// Text2: Здесь нет никаких коробок!
+			'''
+		Text1: Слишком много!
+		Text2: Здесь нет никаких коробок!
 	}
 
 	WGGCollector: {
-		// DisplayName: Мусорщик
-		/* Tooltip:
+		DisplayName: Мусорщик
+		Tooltip:
 			'''
 			Он страстно увлечён переработкой — включая тебя
 			Для него нет особой разницы между пластиковой бутылкой и твоим позвоночником
-			''' */
+			'''
 	}
 
 	LaserEnergyTrans: {
-		// DisplayName: Лазерный Энергопередатчик
-		/* Tooltip:
+		DisplayName: Лазерный Энергопередатчик
+		Tooltip:
 			'''
 			Дистанционная передача энергии.
 			После установки щёлкните правой кнопкой мыши, чтобы активировать лазерную навигацию,
 			затем щёлкните ПКМ по другим энергетическим сооружениям для их подключения.
 			Чем больше расстояние передачи, тем выше потери энергии.
 			Максимальная потеря — 100%.
-			''' */
+			'''
 	}
 
 	MetalMusicBox: {
-		// DisplayName: Музыкальная шкатулка (Мятеж Машин)
-		// Tooltip: Проигрывает «Падение Бита» — автор Ryusa
+		DisplayName: Музыкальная шкатулка (Мятеж Машин)
+		Tooltip: Проигрывает «Падение Бита» — автор Ryusa
 	}
 
 	Hydroelectric: {
-		// DisplayName: Гидроэлектрогенератор
-		/* Tooltip:
+		DisplayName: Гидроэлектрогенератор
+		Tooltip:
 			'''
 			Работает, находясь в воде.
 			"Пример работы механики жидкостей"
-			''' */
+			'''
 	}
 
 	HydroelectricMK2: {
-		// DisplayName: Гидроэлектрогенератор MK2
-		/* Tooltip:
+		DisplayName: Гидроэлектрогенератор MK2
+		Tooltip:
 			'''
 			Работает, находясь в воде.
 			"Пример работы механики жидкостей"
-			''' */
+			'''
 	}
 }
 
@@ -1158,308 +1158,308 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: Дьявольский световой шар
 	RebelBladeBack.DisplayName: Меч сопротивления
 	RebelBladeSlash.DisplayName: Меч сопротивления
-	// DevilsDevastationHeld.DisplayName: Дьявольское опустошение
-	// EXDemonBlast.DisplayName: EX Demon Blast
-	// EXOathblade.DisplayName: EX Oathblade
-	// EXDemonBlastAlt.DisplayName: EX Demon Blast
-	// DivineJustice.DisplayName: Божественное правосудие
-	// JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
-	// JUZenithWorldTime.DisplayName: J U Zenith World Time
-	// DecayedSeaOrb.DisplayName: Decayed Sea Orb
-	// SaltationSend.DisplayName: Saltation Send
-	// SandThorn.DisplayName: Sand Thorn
-	// BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
-	// EarthenPikeAlt.DisplayName: Earthen Pike Alt
-	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
-	// EXOathblade2.DisplayName: EX Oathblade2
-	// FlawlessHeld.DisplayName: Flawless Held
-	// WastelandFangProj.DisplayName: Wasteland Fang Proj
-	// WeaverBeam.DisplayName: Weaver Beam
-	// WeaverExplode.DisplayName: Weaver Explode
-	// WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
-	// GuardOfLife.DisplayName: Guard Of Life
-	// GuardOfLifeCore.DisplayName: Guard Of Life Core
-	// RageKillerImpact.DisplayName: Rage Killer Impact
-	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
-	// SoulSearchScythe.DisplayName: Soul Search Scythe
-	// StarshipAmmo.DisplayName: Starship Ammo
-	// SandDaggerThrow.DisplayName: Sand Dagger Throw
-	// SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
-	// SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
-	// WraithKunaiProj.DisplayName: Wraith Kunai Proj
-	// WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
-	// PowerSoundEgg.DisplayName: Power Sound Egg
-	// PhaseEnergySphere.DisplayName: Phase Energy Sphere
-	// PhaseLaser.DisplayName: Phase Laser
-	// ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
-	// ArmourPiercerHeld.DisplayName: Armour Piercer Held
-	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
-	// DragonBreathHeld.DisplayName: Dragon Breath Held
-	// HghExplosiveHeld.DisplayName: Hgh Explosive Held
-	// HghExplosiveProj.DisplayName: Hgh Explosive Proj
-	// NapalmBombBox.DisplayName: Napalm Bomb Box
-	// NapalmBombHeld.DisplayName: Napalm Bomb Held
-	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
-	// Fireball.DisplayName: Fireball
-	// Laser.DisplayName: Laser
-	// DeadLaser.DisplayName: Dead Laser
-	// Mechanicalworm.DisplayName: Mechanicalworm
-	// PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
-	// Probe.DisplayName: Probe
-	// RocketSkeleton.DisplayName: Rocket Skeleton
-	// SetPosingStarm.DisplayName: Set Posing Starm
-	// Hit.DisplayName: Hit
-	// SpwanTextProj.DisplayName: Spwan Text Proj
-	// AetherOrb.DisplayName: Aether Orb
-	// DragonsWordCut.DisplayName: Dragons Word Cut
-	// DragonsWordMouse.DisplayName: Dragons Word Mouse
-	// DragonsWordProj.DisplayName: Dragons Word Proj
-	// FateCluster.DisplayName: Fate Cluster
-	// HatredFire.DisplayName: Hatred Fire
-	// MagicStar.DisplayName: Magic Star
-	// NeutronMagchStar.DisplayName: Neutron Magch Star
-	// NeutronWandExplode.DisplayName: Neutron Wand Explode
-	// PhaseBlasting.DisplayName: Phase Blasting
-	// WaningMoonLight.DisplayName: Waning Moon Light
-	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
-	// AbominateSpirit.DisplayName: Abominate Spirit
-	// AegisBladeGuardian.DisplayName: Aegis Blade Guardian
-	// AirBomb.DisplayName: Air Bomb
-	// AnarchyBeam.DisplayName: Anarchy Beam
-	// AstralBall.DisplayName: Astral Ball
-	// AstralPikeBeam.DisplayName: Astral Pike Beam
-	// BalefulBall.DisplayName: Baleful Ball
-	// BalefulSickle.DisplayName: Baleful Sickle
-	// BlazingFireball.DisplayName: Blazing Fireball
-	// BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
-	// BrinyBaronOrb.DisplayName: Briny Baron Orb
-	// DarkIceBomb.DisplayName: Dark Ice Bomb
-	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
-	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
-	// MakeDamage.DisplayName: Make Damage
-	// TheDaybreak.DisplayName: The Daybreak
-	// TheDaybreak2.DisplayName: The Daybreak2
-	// TheDaybreak3.DisplayName: The Daybreak3
-	// TheEndSun.DisplayName: The End Sun
-	// DeathLaserSpwan.DisplayName: Death Laser Spwan
-	// DeathLaser.DisplayName: Death Laser
-	// DivineSourceBeam.DisplayName: Divine Source Beam
-	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
-	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
-	// DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
-	// SporeCloud.DisplayName: Spore Cloud
-	// EarthenBall.DisplayName: Earthen Ball
-	// MeleeFossilShard.DisplayName: Melee Fossil Shard
-	// EnforcerFlame.DisplayName: Enforcer Flame
-	// ExcelsusBomb.DisplayName: Excelsus Bomb
-	// Feathers.DisplayName: Feathers
-	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
-	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
-	// DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
-	// GiantBansheeScythe.DisplayName: Giant Banshee Scythe
-	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
-	// WraithBeam.DisplayName: Wraith Beam
-	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
-	// HyperBlade.DisplayName: Hyper Blade
-	// JudgementBeam.DisplayName: Judgement Beam
-	// EXNeutronExplode.DisplayName: EX Neutron Explode
-	// NeutronExplode.DisplayName: Neutron Explode
-	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
-	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
-	// NeutronsOrb.DisplayName: Neutrons Orb
-	// OrderbringerGuardian.DisplayName: Orderbringer Guardian
-	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
-	// PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
+	DevilsDevastationHeld.DisplayName: Дьявольское опустошение
+	EXDemonBlast.DisplayName: EX Demon Blast
+	EXOathblade.DisplayName: EX Oathblade
+	EXDemonBlastAlt.DisplayName: EX Demon Blast
+	DivineJustice.DisplayName: Божественное правосудие
+	JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
+	JUZenithWorldTime.DisplayName: J U Zenith World Time
+	DecayedSeaOrb.DisplayName: Decayed Sea Orb
+	SaltationSend.DisplayName: Saltation Send
+	SandThorn.DisplayName: Sand Thorn
+	BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
+	EarthenPikeAlt.DisplayName: Earthen Pike Alt
+	EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
+	EXOathblade2.DisplayName: EX Oathblade2
+	FlawlessHeld.DisplayName: Flawless Held
+	WastelandFangProj.DisplayName: Wasteland Fang Proj
+	WeaverBeam.DisplayName: Weaver Beam
+	WeaverExplode.DisplayName: Weaver Explode
+	WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
+	GuardOfLife.DisplayName: Guard Of Life
+	GuardOfLifeCore.DisplayName: Guard Of Life Core
+	RageKillerImpact.DisplayName: Rage Killer Impact
+	SolsticeHomeBeam.DisplayName: Solstice Home Beam
+	SoulSearchScythe.DisplayName: Soul Search Scythe
+	StarshipAmmo.DisplayName: Starship Ammo
+	SandDaggerThrow.DisplayName: Sand Dagger Throw
+	SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
+	SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
+	WraithKunaiProj.DisplayName: Wraith Kunai Proj
+	WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
+	PowerSoundEgg.DisplayName: Power Sound Egg
+	PhaseEnergySphere.DisplayName: Phase Energy Sphere
+	PhaseLaser.DisplayName: Phase Laser
+	ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
+	ArmourPiercerHeld.DisplayName: Armour Piercer Held
+	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
+	DragonBreathHeld.DisplayName: Dragon Breath Held
+	HghExplosiveHeld.DisplayName: Hgh Explosive Held
+	HghExplosiveProj.DisplayName: Hgh Explosive Proj
+	NapalmBombBox.DisplayName: Napalm Bomb Box
+	NapalmBombHeld.DisplayName: Napalm Bomb Held
+	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
+	Fireball.DisplayName: Fireball
+	Laser.DisplayName: Laser
+	DeadLaser.DisplayName: Dead Laser
+	Mechanicalworm.DisplayName: Mechanicalworm
+	PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	Probe.DisplayName: Probe
+	RocketSkeleton.DisplayName: Rocket Skeleton
+	SetPosingStarm.DisplayName: Set Posing Starm
+	Hit.DisplayName: Hit
+	SpwanTextProj.DisplayName: Spwan Text Proj
+	AetherOrb.DisplayName: Aether Orb
+	DragonsWordCut.DisplayName: Dragons Word Cut
+	DragonsWordMouse.DisplayName: Dragons Word Mouse
+	DragonsWordProj.DisplayName: Dragons Word Proj
+	FateCluster.DisplayName: Fate Cluster
+	HatredFire.DisplayName: Hatred Fire
+	MagicStar.DisplayName: Magic Star
+	NeutronMagchStar.DisplayName: Neutron Magch Star
+	NeutronWandExplode.DisplayName: Neutron Wand Explode
+	PhaseBlasting.DisplayName: Phase Blasting
+	WaningMoonLight.DisplayName: Waning Moon Light
+	AbominateHookScythe.DisplayName: Abominate Hook Scythe
+	AbominateSpirit.DisplayName: Abominate Spirit
+	AegisBladeGuardian.DisplayName: Aegis Blade Guardian
+	AirBomb.DisplayName: Air Bomb
+	AnarchyBeam.DisplayName: Anarchy Beam
+	AstralBall.DisplayName: Astral Ball
+	AstralPikeBeam.DisplayName: Astral Pike Beam
+	BalefulBall.DisplayName: Baleful Ball
+	BalefulSickle.DisplayName: Baleful Sickle
+	BlazingFireball.DisplayName: Blazing Fireball
+	BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
+	BrinyBaronOrb.DisplayName: Briny Baron Orb
+	DarkIceBomb.DisplayName: Dark Ice Bomb
+	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
+	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
+	MakeDamage.DisplayName: Make Damage
+	TheDaybreak.DisplayName: The Daybreak
+	TheDaybreak2.DisplayName: The Daybreak2
+	TheDaybreak3.DisplayName: The Daybreak3
+	TheEndSun.DisplayName: The End Sun
+	DeathLaserSpwan.DisplayName: Death Laser Spwan
+	DeathLaser.DisplayName: Death Laser
+	DivineSourceBeam.DisplayName: Divine Source Beam
+	DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
+	DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
+	SporeCloud.DisplayName: Spore Cloud
+	EarthenBall.DisplayName: Earthen Ball
+	MeleeFossilShard.DisplayName: Melee Fossil Shard
+	EnforcerFlame.DisplayName: Enforcer Flame
+	ExcelsusBomb.DisplayName: Excelsus Bomb
+	Feathers.DisplayName: Feathers
+	BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
+	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
+	DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
+	GiantBansheeScythe.DisplayName: Giant Banshee Scythe
+	LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
+	WraithBeam.DisplayName: Wraith Beam
+	HolyColliderExFire.DisplayName: Holy Collider Ex Fire
+	HyperBlade.DisplayName: Hyper Blade
+	JudgementBeam.DisplayName: Judgement Beam
+	EXNeutronExplode.DisplayName: EX Neutron Explode
+	NeutronExplode.DisplayName: Neutron Explode
+	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
+	NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	NeutronsOrb.DisplayName: Neutrons Orb
+	OrderbringerGuardian.DisplayName: Orderbringer Guardian
+	OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
+	PercussionCosmicSpiritBomb.DisplayName: Percussion Cosmic Spirit Bomb
 	EXGauntlet.DisplayName: EX Gauntlet
 	GauntletDerive.DisplayName: Gauntlet Derive
 	GauntletInAltShoot.DisplayName: Gauntlet
-	// GouldBee.DisplayName: Gould Bee
-	// PlagueBee.DisplayName: Plague Bee
-	// PlagueBeeWave.DisplayName: Plague Bee Wave
-	// FadingGloryBeam.DisplayName: Fading Glory Beam
-	// FadingGloryRapier.DisplayName: Fading Glory Rapier
-	// GladiusBeam.DisplayName: Gladius Beam
-	// GladiusRapier.DisplayName: Gladius Rapier
-	// GrandGuardianBeam.DisplayName: Grand Guardian Beam
-	// GrandGuardianRapier.DisplayName: Grand Guardian Rapier
-	// LucreciaRapier.DisplayName: Lucrecia Rapier
-	// MajesticGuardBeam.DisplayName: Majestic Guard Beam
-	// MajesticGuardRapier.DisplayName: Majestic Guard Rapier
-	// MirrorBladeRapier.DisplayName: Mirror Blade Rapier
-	// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-	// TheDarkMasterRapier.DisplayName: The Dark Master Rapier
-	// RulingPrism.DisplayName: Ruling Prism
-	// RulingPrismCore.DisplayName: Ruling Prism Core
-	// SickleLife.DisplayName: Sickle Life
-	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
-	// SoulSeeker.DisplayName: Soul Seeker
-	// LigSpark.DisplayName: Lig Spark
-	// SparkBall.DisplayName: Spark Ball
-	// SparkLightning.DisplayName: Spark Lightning
-	// SpiritFlame.DisplayName: Spirit Flame
-	// StellarStrikerBeam.DisplayName: Stellar Striker Beam
-	// StormArc.DisplayName: Storm Arc
-	// StormLightning.DisplayName: Storm Lightning
-	// SunlightBlades.DisplayName: Sunlight Blades
-	// TerrorExplode.DisplayName: Terror Explode
-	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
-	// AnimosityOnSpan.DisplayName: Animosity On Span
-	// CelestialDevourer.DisplayName: Celestial Devourer
-	// CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
-	// CosmicEddies.DisplayName: Cosmic Eddies
-	// DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
-	// DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
-	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
-	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
-	// BarracudaProj.DisplayName: Barracuda Proj
-	// BarrenOrb.DisplayName: Barren Orb
-	// BloodVerdict.DisplayName: Blood Verdict
-	// BMGBullet.DisplayName: BMG Bullet
-	// BMGFIRE.DisplayName: BMGFIRE
-	// BMGFIRE2.DisplayName: BMGFIRE2
-	// Crystal.DisplayName: Crystal
-	// CursedDartRemake.DisplayName: Cursed Dart Remake
-	// DeadArrow.DisplayName: Dead Arrow
-	// DeadWave.DisplayName: Dead Wave
-	// DeepSeaSharks.DisplayName: Deep Sea Sharks
-	// EarthRocketOnSpan.DisplayName: Earth Rocket On Span
-	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
-	// EnergyBlast.DisplayName: Energy Blast
-	// EnergyBlast2.DisplayName: Energy Blast2
-	// ExtremeColdHail.DisplayName: Extreme Cold Hail
-	// FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
-	// GraniteBullet.DisplayName: Granite Bullet
-	// GunCasing.DisplayName: Gun Casing
-	// HeavenRainbowImpact.DisplayName: Heaven Rainbow Impact
-	// InfiniteArrow.DisplayName: Infinite Arrow
-	// InfiniteRune.DisplayName: Infinite Rune
-	// ParadiseArrow.DisplayName: Paradise Arrow
-	// VientianePunishment.DisplayName: Vientiane Punishment
-	// MonsoonOnSpan.DisplayName: Monsoon On Span
-	// IceOrb.DisplayName: Ice Orb
-	// IceParclose.DisplayName: Ice Parclose
-	// IceSoulOrb.DisplayName: Ice Soul Orb
-	// LostSoulBullet.DisplayName: Lost Soul Bullet
-	// MarbleBullet.DisplayName: Marble Bullet
-	// EXNeutronArrow.DisplayName: EX Neutron Arrow
-	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion Ranged
-	// NeutronArrow.DisplayName: Neutron Arrow
-	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
-	// NeutronLaser.DisplayName: Neutron Laser
-	// NeutronBullet.DisplayName: Neutron Bullet
-	// NurgleArrow.DisplayName: Nurgle Arrow
-	// NurgleBee.DisplayName: Nurgle Bee
-	// NurgleSoul.DisplayName: Nurgle Soul
-	// NurgleTheOfBall.DisplayName: Nurgle The Of Ball
-	// PlanetaryArrow.DisplayName: Planetary Arrow
-	// RVoidTentacle.DisplayName: R Void Tentacle
-	// SandnadoOnSpan.DisplayName: Sandnado On Span
-	// SepticSkewerProj.DisplayName: Septic Skewer Proj
-	// SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
-	// SnowQuayBall.DisplayName: Snow Quay Ball
-	// SporeBombOnSpan.DisplayName: Spore Bomb On Span
-	// SporeBombs.DisplayName: Spore Bombs
-	// StakeHmmod.DisplayName: Stake Hmmod
-	// TarragonArrow.DisplayName: Tarragon Arrow
-	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
-	// TheArrowPunishment.DisplayName: The Arrow Punishment
-	// TheCurseArchdemon.DisplayName: The Curse Archdemon
-	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
-	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
-	// Tornado.DisplayName: Tornado
-	// TorrentialBullet.DisplayName: Torrential Bullet
-	// TsunamiOnSpan.DisplayName: Tsunami On Span
-	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
-	// TyphoonOnSpan.DisplayName: Typhoon On Span
-	// VoidragonOrb.DisplayName: Voidragon Orb
-	// XenopopperProj.DisplayName: Xenopopper Proj
-	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
-	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
-	// NeutronScytheHeld.DisplayName: Neutron Scythe Held
-	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
-	// FlamarangHeld.DisplayName: Flamarang Held
-	// ShroomerangHeld.DisplayName: Shroomerang Held
-	// SpearHeld.DisplayName: Spear Held
-	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
-	// Godslight.DisplayName: Godslight
-	// LonginusHeld.DisplayName: Longinus Held
-	// LonginusThrow.DisplayName: Longinus Throw
-	// PilgrimsFury.DisplayName: Pilgrims Fury
-	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
-	// Spindrift.DisplayName: Spindrift
-	// BloodBall.DisplayName: Blood Ball
-	// BloodBlast.DisplayName: Blood Blast
-	// BloodflareSouls.DisplayName: Bloodflare Souls
-	// CosmicFire.DisplayName: Cosmic Fire
-	// GhostFires.DisplayName: Ghost Fires
-	// Ieaf.DisplayName: Ieaf
-	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
-	// ATrail.DisplayName: A Trail
-	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
-	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
-	// ElementWhipProjectile.DisplayName: Element Whip Projectile
-	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
-	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
-	// WTrail.DisplayName: W Trail
-	// InfiniteEnmgs.DisplayName: Infinite Enmgs
-	// InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
-	// InfinitePickProj.DisplayName: Infinite Pick Proj
-	// SpanDMBall.DisplayName: Span D M Ball
-	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
-	// CrossPrediction.DisplayName: Cross Prediction
-	// BloodAmmoBolt.DisplayName: Blood Ammo Bolt
-	// VulcaniteFire.DisplayName: Vulcanite Fire
-	// EssencePlunder.DisplayName: Essence Plunder
-	// EssenceEnergy.DisplayName: Essence Energy
-	// PowerCoil.DisplayName: Power Coil
-	// IceExplosionFriend.DisplayName: Ice Explosion Friend
-	// CommandersRay.DisplayName: Commanders Ray
-	// WeaverGrievancesDash.DisplayName: Weaver Grievances Dash
-	// RaiderGunDash.DisplayName: Raider Gun Dash
-	// DestroyerGrenade.DisplayName: Destroyer Grenade
-	// PunisherGrenade.DisplayName: Punisher Grenade
-	// HyperionBarrageHeld.DisplayName: Hyperion Barrage Held
-	// PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
-	// RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
-	// GeminisTributeHeld.DisplayName: Geminis Tribute Held
-	// GeminisTributeAlt.DisplayName: Geminis Tribute Alt
-	// GeminisTributeEXHeld.DisplayName: Geminis Tribute EX Held
-	// PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
-	// DicoriaRay.DisplayName: Dicoria Ray
-	// EarlierSwordHeld.DisplayName: Earlier Sword Held
-	// DestroyersBeam.DisplayName: Destroyers Beam
-	// DestroyerBody.DisplayName: Destroyer Body
-	// DestroyerHead.DisplayName: Destroyer Head
-	// DestroyerTail.DisplayName: Destroyer Tail
-	// ForgedLashProjectile.DisplayName: Forged Lash Projectile
-	// CommandersClawThrow.DisplayName: Commanders Claw Throw
-	// NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
-	// PhasebladeHeld.DisplayName: Phaseblade Held
-	// ForgedLasEXhProjectile.DisplayName: Forged Las EXh Projectile
-	// ForgedLasOrb.DisplayName: Forged Las Orb
+	GouldBee.DisplayName: Gould Bee
+	PlagueBee.DisplayName: Plague Bee
+	PlagueBeeWave.DisplayName: Plague Bee Wave
+	FadingGloryBeam.DisplayName: Fading Glory Beam
+	FadingGloryRapier.DisplayName: Fading Glory Rapier
+	GladiusBeam.DisplayName: Gladius Beam
+	GladiusRapier.DisplayName: Gladius Rapier
+	GrandGuardianBeam.DisplayName: Grand Guardian Beam
+	GrandGuardianRapier.DisplayName: Grand Guardian Rapier
+	LucreciaRapier.DisplayName: Lucrecia Rapier
+	MajesticGuardBeam.DisplayName: Majestic Guard Beam
+	MajesticGuardRapier.DisplayName: Majestic Guard Rapier
+	MirrorBladeRapier.DisplayName: Mirror Blade Rapier
+	SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	TheDarkMasterRapier.DisplayName: The Dark Master Rapier
+	RulingPrism.DisplayName: Ruling Prism
+	RulingPrismCore.DisplayName: Ruling Prism Core
+	SickleLife.DisplayName: Sickle Life
+	SoulSeekerSkull.DisplayName: Soul Seeker Skull
+	SoulSeeker.DisplayName: Soul Seeker
+	LigSpark.DisplayName: Lig Spark
+	SparkBall.DisplayName: Spark Ball
+	SparkLightning.DisplayName: Spark Lightning
+	SpiritFlame.DisplayName: Spirit Flame
+	StellarStrikerBeam.DisplayName: Stellar Striker Beam
+	StormArc.DisplayName: Storm Arc
+	StormLightning.DisplayName: Storm Lightning
+	SunlightBlades.DisplayName: Sunlight Blades
+	TerrorExplode.DisplayName: Terror Explode
+	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
+	AnimosityOnSpan.DisplayName: Animosity On Span
+	CelestialDevourer.DisplayName: Celestial Devourer
+	CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
+	CosmicEddies.DisplayName: Cosmic Eddies
+	DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
+	DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
+	DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
+	ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
+	BarracudaProj.DisplayName: Barracuda Proj
+	BarrenOrb.DisplayName: Barren Orb
+	BloodVerdict.DisplayName: Blood Verdict
+	BMGBullet.DisplayName: BMG Bullet
+	BMGFIRE.DisplayName: BMGFIRE
+	BMGFIRE2.DisplayName: BMGFIRE2
+	Crystal.DisplayName: Crystal
+	CursedDartRemake.DisplayName: Cursed Dart Remake
+	DeadArrow.DisplayName: Dead Arrow
+	DeadWave.DisplayName: Dead Wave
+	DeepSeaSharks.DisplayName: Deep Sea Sharks
+	EarthRocketOnSpan.DisplayName: Earth Rocket On Span
+	ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
+	EnergyBlast.DisplayName: Energy Blast
+	EnergyBlast2.DisplayName: Energy Blast2
+	ExtremeColdHail.DisplayName: Extreme Cold Hail
+	FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
+	GraniteBullet.DisplayName: Granite Bullet
+	GunCasing.DisplayName: Gun Casing
+	HeavenRainbowImpact.DisplayName: Heaven Rainbow Impact
+	InfiniteArrow.DisplayName: Infinite Arrow
+	InfiniteRune.DisplayName: Infinite Rune
+	ParadiseArrow.DisplayName: Paradise Arrow
+	VientianePunishment.DisplayName: Vientiane Punishment
+	MonsoonOnSpan.DisplayName: Monsoon On Span
+	IceOrb.DisplayName: Ice Orb
+	IceParclose.DisplayName: Ice Parclose
+	IceSoulOrb.DisplayName: Ice Soul Orb
+	LostSoulBullet.DisplayName: Lost Soul Bullet
+	MarbleBullet.DisplayName: Marble Bullet
+	EXNeutronArrow.DisplayName: EX Neutron Arrow
+	EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion Ranged
+	NeutronArrow.DisplayName: Neutron Arrow
+	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
+	NeutronLaser.DisplayName: Neutron Laser
+	NeutronBullet.DisplayName: Neutron Bullet
+	NurgleArrow.DisplayName: Nurgle Arrow
+	NurgleBee.DisplayName: Nurgle Bee
+	NurgleSoul.DisplayName: Nurgle Soul
+	NurgleTheOfBall.DisplayName: Nurgle The Of Ball
+	PlanetaryArrow.DisplayName: Planetary Arrow
+	RVoidTentacle.DisplayName: R Void Tentacle
+	SandnadoOnSpan.DisplayName: Sandnado On Span
+	SepticSkewerProj.DisplayName: Septic Skewer Proj
+	SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
+	SnowQuayBall.DisplayName: Snow Quay Ball
+	SporeBombOnSpan.DisplayName: Spore Bomb On Span
+	SporeBombs.DisplayName: Spore Bombs
+	StakeHmmod.DisplayName: Stake Hmmod
+	TarragonArrow.DisplayName: Tarragon Arrow
+	TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
+	TheArrowPunishment.DisplayName: The Arrow Punishment
+	TheCurseArchdemon.DisplayName: The Curse Archdemon
+	TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
+	TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
+	Tornado.DisplayName: Tornado
+	TorrentialBullet.DisplayName: Torrential Bullet
+	TsunamiOnSpan.DisplayName: Tsunami On Span
+	TungstenBulletProj.DisplayName: Tungsten Bullet Proj
+	TyphoonOnSpan.DisplayName: Typhoon On Span
+	VoidragonOrb.DisplayName: Voidragon Orb
+	XenopopperProj.DisplayName: Xenopopper Proj
+	CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
+	CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
+	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
+	NeutronScytheHeld.DisplayName: Neutron Scythe Held
+	EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
+	FlamarangHeld.DisplayName: Flamarang Held
+	ShroomerangHeld.DisplayName: Shroomerang Held
+	SpearHeld.DisplayName: Spear Held
+	WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
+	Godslight.DisplayName: Godslight
+	LonginusHeld.DisplayName: Longinus Held
+	LonginusThrow.DisplayName: Longinus Throw
+	PilgrimsFury.DisplayName: Pilgrims Fury
+	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	Spindrift.DisplayName: Spindrift
+	BloodBall.DisplayName: Blood Ball
+	BloodBlast.DisplayName: Blood Blast
+	BloodflareSouls.DisplayName: Bloodflare Souls
+	CosmicFire.DisplayName: Cosmic Fire
+	GhostFires.DisplayName: Ghost Fires
+	Ieaf.DisplayName: Ieaf
+	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	ATrail.DisplayName: A Trail
+	AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
+	BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
+	ElementWhipProjectile.DisplayName: Element Whip Projectile
+	GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	WTrail.DisplayName: W Trail
+	InfiniteEnmgs.DisplayName: Infinite Enmgs
+	InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	InfinitePickProj.DisplayName: Infinite Pick Proj
+	SpanDMBall.DisplayName: Span D M Ball
+	DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	CrossPrediction.DisplayName: Cross Prediction
+	BloodAmmoBolt.DisplayName: Blood Ammo Bolt
+	VulcaniteFire.DisplayName: Vulcanite Fire
+	EssencePlunder.DisplayName: Essence Plunder
+	EssenceEnergy.DisplayName: Essence Energy
+	PowerCoil.DisplayName: Power Coil
+	IceExplosionFriend.DisplayName: Ice Explosion Friend
+	CommandersRay.DisplayName: Commanders Ray
+	WeaverGrievancesDash.DisplayName: Weaver Grievances Dash
+	RaiderGunDash.DisplayName: Raider Gun Dash
+	DestroyerGrenade.DisplayName: Destroyer Grenade
+	PunisherGrenade.DisplayName: Punisher Grenade
+	HyperionBarrageHeld.DisplayName: Hyperion Barrage Held
+	PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
+	RocketSkeletonFriendly.DisplayName: Rocket Skeleton Friendly
+	GeminisTributeHeld.DisplayName: Geminis Tribute Held
+	GeminisTributeAlt.DisplayName: Geminis Tribute Alt
+	GeminisTributeEXHeld.DisplayName: Geminis Tribute EX Held
+	PunisherGrenadeRogue.DisplayName: Punisher Grenade Rogue
+	DicoriaRay.DisplayName: Dicoria Ray
+	EarlierSwordHeld.DisplayName: Earlier Sword Held
+	DestroyersBeam.DisplayName: Destroyers Beam
+	DestroyerBody.DisplayName: Destroyer Body
+	DestroyerHead.DisplayName: Destroyer Head
+	DestroyerTail.DisplayName: Destroyer Tail
+	ForgedLashProjectile.DisplayName: Forged Lash Projectile
+	CommandersClawThrow.DisplayName: Commanders Claw Throw
+	NeutronExplosionRogue.DisplayName: Neutron Explosion Rogue
+	PhasebladeHeld.DisplayName: Phaseblade Held
+	ForgedLasEXhProjectile.DisplayName: Forged Las EXh Projectile
+	ForgedLasOrb.DisplayName: Forged Las Orb
 
 	DraedonsRemoteSpawn: {
-		// $parentVal: Draedons Remote Spawn
-		// DisplayName: Draedons Remote Spawn
+		$parentVal: Draedons Remote Spawn
+		DisplayName: Draedons Remote Spawn
 	}
 
-	// MedicalBoxHeld.DisplayName: Medical Box Held
-	// MedicalBoxProj.DisplayName: Medical Box Proj
-	// TeslaBall.DisplayName: Tesla Ball
-	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
-	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
-	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
-	// BananarangHeld.DisplayName: Bananarang Held
-	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
-	// TrimarangHeld.DisplayName: Trimarang Held
-	// TheGravityShield.DisplayName: The Gravity Shield
-	// WarpingPoint.DisplayName: Warping Point
-	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
-	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
-	// MechanicalArm.DisplayName: Mechanical Arm
-	// CollectorArm.DisplayName: Collector Arm
-	// WGGCollectorArm.DisplayName: W G G Collector Arm
+	MedicalBoxHeld.DisplayName: Medical Box Held
+	MedicalBoxProj.DisplayName: Medical Box Proj
+	TeslaBall.DisplayName: Tesla Ball
+	TeslaBallByAttack.DisplayName: Tesla Ball By Attack
+	TeslaBallByGuard.DisplayName: Tesla Ball By Guard
+	ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
+	BananarangHeld.DisplayName: Bananarang Held
+	IceBoomerangHeld.DisplayName: Ice Boomerang Held
+	TrimarangHeld.DisplayName: Trimarang Held
+	TheGravityShield.DisplayName: The Gravity Shield
+	WarpingPoint.DisplayName: Warping Point
+	EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
+	SpawnLaserEffect.DisplayName: Spawn Laser Effect
+	MechanicalArm.DisplayName: Mechanical Arm
+	CollectorArm.DisplayName: Collector Arm
+	WGGCollectorArm.DisplayName: W G G Collector Arm
 }
 
 Configs: {
@@ -1592,12 +1592,12 @@ Configs: {
 		}
 
 		WeaponLazyRotationAngle: {
-			// Label: Обновление угла инерционного вращения оружия
-			/* Tooltip:
+			Label: Обновление угла инерционного вращения оружия
+			Tooltip:
 				'''
 				Если включено, анимация использования оружия в руках будет ближе к оригинальной игре:
 				направление взгляда меняется только один раз во время атаки.
-				''' */
+				'''
 		}
 
 		BiologyOverhaul: {
@@ -1642,8 +1642,8 @@ Configs: {
 		}
 
 		ShowReloadingProgressUI: {
-			// Label: Показать ход перезарядки
-			// Tooltip: При открытии отображается прогресс загрузки боеприпасов
+			Label: Показать ход перезарядки
+			Tooltip: При открытии отображается прогресс загрузки боеприпасов
 		}
 	}
 }
@@ -1665,13 +1665,13 @@ Buffs: {
 	}
 
 	DestroyerSummonBuff: {
-		// DisplayName: Бафф Призыва Разрушителя
-		// Description: Мини-Разрушитель будет следовать за вами в бою
+		DisplayName: Бафф Призыва Разрушителя
+		Description: Мини-Разрушитель будет следовать за вами в бою
 	}
 
 	FrenziedMachineSoul: {
-		// DisplayName: Душа Машины в Ярости
-		// Description: Машинный дух вне себя от радости!
+		DisplayName: Душа Машины в Ярости
+		Description: Машинный дух вне себя от радости!
 	}
 }
 
@@ -1690,23 +1690,23 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
-		// TemperatureText: Температура сгорания
-		// EnergyShortage: Недостаток энергии
-		// ChargingStation_Text1: Положите предметы для зарядки
-		// ChargingStation_Text2: Установите батарею
-		// ChargingStation_Text3: Нужно установить устройство, способное принимать энергию
-		// ChargingStation_Text4: Необходимо вставить батареи
+		TemperatureText: Температура сгорания
+		EnergyShortage: Недостаток энергии
+		ChargingStation_Text1: Положите предметы для зарядки
+		ChargingStation_Text2: Установите батарею
+		ChargingStation_Text3: Нужно установить устройство, способное принимать энергию
+		ChargingStation_Text4: Необходимо вставить батареи
 		WindGriven_Text1: Эти ветряки показались вам интересными, и вы захотели создать парочку таких же...
 		WindGriven_Text2: Вы были поражены размером этой машины, и вас наполнило желанием построить такую же....
-		// Turret_Text1: Батарея разряжена
+		Turret_Text1: Батарея разряжена
 		Turret_Text2: Обнаружен нарушитель!
-		// IndustrializationGenMessage: Индустриализация мира
+		IndustrializationGenMessage: Индустриализация мира
 		InternalStoredEnergy: Накоплено энергии
-		// KreloadTimeAddText: "Время перезарядки боеприпасов увеличено "
-		// KreloadTimeLessenText: "Сокращается время перезарядки боеприпасов "
+		KreloadTimeAddText: "Время перезарядки боеприпасов увеличено "
+		KreloadTimeLessenText: "Сокращается время перезарядки боеприпасов "
 		DeathModeItem: Предмет режима Смерть
-		// DropInMachineRebellion: Выпадает с Трио Мехов EX
-		// DontUseMagicConch: За тобой наблюдает могущественное существо...
+		DropInMachineRebellion: Выпадает с Трио Мехов EX
+		DontUseMagicConch: За тобой наблюдает могущественное существо...
 		OnlyZenith: Только в мирах с сидом «Get fixed boi»
 		Event_TungstenRiot_Name: Вольфрамовое востание
 		Event_TungstenRiot_Text_1: Массовое вторжение вольфрамовых биомеханизмов!
@@ -1714,7 +1714,7 @@ TextContent: {
 		Item_LegendOnMouseLang: Нажмите [Shift], чтобы прослушать историю...
 		BloodAltar_Text1: Карминовый взгляд снижается...
 		BloodAltar_Text2: У вас недостаточно кровавых жемчужин для данного взноса перед Карминовым Королем...
-		// BloodAltar_Text3: "{0} Затянут в бесконечную ярость крови и плоти"
+		BloodAltar_Text3: "{0} Затянут в бесконечную ярость крови и плоти"
 		VoidDamageNameText: ед. пустотного урона
 		Drop_Hell_RuleText: Добыча после победы в Аду
 		Drop_GlodDragonDrop_RuleText: Добыча после повторного поражения Дракона Джунглей
@@ -1998,8 +1998,8 @@ TextContent: {
 			Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
 			'''
 		CaseEjection_TextContent: холост
-		// CaseEjection_TextContent_Coin: Нет денег
-		// CaseEjection_TextContent_Arrow: Нет стрел
+		CaseEjection_TextContent_Coin: Нет денег
+		CaseEjection_TextContent_Arrow: Нет стрел
 		SupertableUI_Text1: закр
 		SupertableUI_Text2: Проверь формулу
 		SupertableUI_Text3: без
@@ -2020,15 +2020,15 @@ TextContent: {
 		CartridgeHolderUI_Text5: ЛКМ — заполнить всё, ПКМ — добавить один
 		CartridgeHolderUI_Text6: Это оружие не может использовать данный боеприпас!
 		CartridgeHolderUI_Text7: Магазин полностью заряжен!
-		// ArrowHolderUI_Text0: ЛКМ - поставить метку
-		// ArrowHolderUI_Text1: ПКМ — снять метку
+		ArrowHolderUI_Text0: ЛКМ - поставить метку
+		ArrowHolderUI_Text1: ПКМ — снять метку
 		SupertableUI_Text4: Отключить наблюдение за расстановкой
 		SupertableUI_Text5: Включить наблюдение за расстановкой
 		AmmoBox_Text: Достигнут предел размещения
 		AmmoBox_Text2: Размещение
 		AmmoBox_Text3: Размещено
-		// HellfireExplosion_DeadLang_Text: "{0} Сгореть в пламени ада"
-		// SoulfireExplosion_DeadLang_Text: "{0} Душа восстаёт в огне"
+		HellfireExplosion_DeadLang_Text: "{0} Сгореть в пламени ада"
+		SoulfireExplosion_DeadLang_Text: "{0} Душа восстаёт в огне"
 		SupMUI_OneClick_Text1: Быстрая установка материалов
 		SupMUI_OneClick_Text2: Быстрое извлечение материалов
 		TemporaryVersion_Text:
@@ -2069,11 +2069,11 @@ TextContent: {
 		Spazmatism_Text7: Миссия провалена, попытка покинуть поле боя...
 		Spazmatism_Text8: Развернуты.
 		Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
-		/* Error_2:
+		Error_2:
 			'''
 			An exception has been detected and the server is attempting to load the block system in real time, 
 			which may cause a brief stutter and a few seconds of network delay
-			''' */
+			'''
 		Config_1: User
 		Config_2: The server configuration is modified
 		CWRGun_KL_Text: Нажмите клавишу [KL], чтобы перезарядить.
@@ -2087,10 +2087,10 @@ TextContent: {
 		CWRGun_Recoil_Level_4: Сильная
 		CWRGun_Recoil_Level_5: Очень сильная
 		CWRGun_Recoil_Level_6: Крайне сильная
-		// SkeletronPrime_Text: Не пытайся убить меня этой дурацкой штукой! Умри, организм!
-		// MachineRebellion_SpawnInfo: Используйте садовый пульт управления ночью
-		// MachineRebellion_DespawnMessage: Используйте садовый пульт управления ночью
-		// MachineRebellion_DisplayName: Мятеж Машин
+		SkeletronPrime_Text: Не пытайся убить меня этой дурацкой штукой! Умри, организм!
+		MachineRebellion_SpawnInfo: Используйте садовый пульт управления ночью
+		MachineRebellion_DespawnMessage: Используйте садовый пульт управления ночью
+		MachineRebellion_DisplayName: Мятеж Машин
 	}
 }
 
@@ -5113,108 +5113,108 @@ RemakeItems: {
 	}
 
 	RDemonConch: {
-		// DisplayName: Демоническая Раковина
-		/* Tooltip:
+		DisplayName: Демоническая Раковина
+		Tooltip:
 			'''
 			Прислушайся — и ты услышишь крики
 			"Будь осторожен"
-			''' */
+			'''
 	}
 
 	REssenceFlayer: {
-		// DisplayName: Расщепитель Эссенции
-		/* Tooltip:
+		DisplayName: Расщепитель Эссенции
+		Tooltip:
 			'''
 			Выпускает Косу Эссенции, которая испускает исцеляющий свет при убийстве врагов
 			"Неэффективен против нежити"
-			''' */
+			'''
 	}
 
-	// ModifyShroomiteMask.UpdateArmorText: Создаётся облако грибного залпа с задержкой.
-	// ModifyMythrilHood.UpdateArmorText:При получении урона выпускается большое количество мифриловых искр.
-	// ModifyCobaltMask.UpdateArmorText: Скорость передвижения увеличена на 15%.
-	// ModifyOrichalcumHelmet.UpdateArmorText: При получении урона разлетается множество лепестков.
-	// ModifyPalladiumHelmet.UpdateArmorText: Здоровье восстанавливается быстрее.
-	// ModifyChlorophyteHelmet.UpdateArmorText: Выпускается облако спор с задержкой.
+	ModifyShroomiteMask.UpdateArmorText: Создаётся облако грибного залпа с задержкой.
+	ModifyMythrilHood.UpdateArmorText:При получении урона выпускается большое количество мифриловых искр.
+	ModifyCobaltMask.UpdateArmorText: Скорость передвижения увеличена на 15%.
+	ModifyOrichalcumHelmet.UpdateArmorText: При получении урона разлетается множество лепестков.
+	ModifyPalladiumHelmet.UpdateArmorText: Здоровье восстанавливается быстрее.
+	ModifyChlorophyteHelmet.UpdateArmorText: Выпускается облако спор с задержкой.
 
 	ModifyChargingStationItem: {
-		// DisplayName: Зарядная Станция
-		/* Tooltip:
+		DisplayName: Зарядная Станция
+		Tooltip:
 			'''
 			Использует электричество для зарядки электронных устройств
 			Внутрь можно поместить батареи для хранения энергии
 			Может быть подключена к трубопроводам для передачи энергии  
 			ПКМ по блоку с заряжаемым предметом — для быстрой установки  
 			Shift + ПКМ — чтобы забрать предметы
-			''' */
+			'''
 	}
 
 	ModifyLaserTurret: {
-		// DisplayName: Лазерная Турель
-		/* Tooltip:
+		DisplayName: Лазерная Турель
+		Tooltip:
 			'''
 			Стреляет сверхбыстрыми лазерами по ближайшим врагам
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyLabTurret: {
-		// DisplayName: Лабораторная Турель
-		/* Tooltip:
+		DisplayName: Лабораторная Турель
+		Tooltip:
 			'''
 			Стреляет лазерами по ближайшим врагам
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyIceTurret: {
-		// DisplayName: Ледяная Турель
-		/* Tooltip:
+		DisplayName: Ледяная Турель
+		Tooltip:
 			'''
 			Бросает хрупкие бомбы с ледяным туманом по ближайшим врагам
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyOnyxTurret: {
-		// DisplayName: Ониксовая Турель
-		/* Tooltip:
+		DisplayName: Ониксовая Турель
+		Tooltip:
 			'''
 			Стреляет по врагам пулями в стиле дробовика
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyPlagueTurret: {
-		// DisplayName: Чумная Турель
-		/* Tooltip:
+		DisplayName: Чумная Турель
+		Tooltip:
 			'''
 			Выпускает самонаводящиеся чумные ракеты по ближайшим врагам
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyWaterTurret: {
-		// DisplayName: Водяная Турель
-		/* Tooltip:
+		DisplayName: Водяная Турель
+		Tooltip:
 			'''
 			Обдаёт ближайших врагов стремительными потоками воды
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	ModifyFireTurret: {
-		// DisplayName: Flamethrower Turret
-		/* Tooltip:
+		DisplayName: Flamethrower Turret
+		Tooltip:
 			'''
 			Испепеляет ближайших врагов мощным огнемётом
 			Требует энергию для работы
-			''' */
+			'''
 	}
 
 	RCoal: {
-		// DisplayName: Уголь
-		// Tooltip: Хорошо подходит в качестве топлива
+		DisplayName: Уголь
+		Tooltip: Хорошо подходит в качестве топлива
 	}
 
 	ModifyBananarang: {
@@ -5246,8 +5246,8 @@ RemakeItems: {
 			'''
 	}
 
-	// ModifyAncientNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
-	// ModifyNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
+	ModifyAncientNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
+	ModifyNecroHelmet.UpdateArmorText: Во время перезарядки, при получении урона выбрасывается куча костей.
 
 	RSylvestaff: {
 		DisplayName: Посох Сильвиион
@@ -5287,334 +5287,334 @@ RemakeItems: {
 	}
 
 	CWRItemOverride: {
-		// DisplayName: CWRItemOverride
-		// Tooltip: ""
+		DisplayName: CWRItemOverride
+		Tooltip: ""
 	}
 }
 
 ModifyLores: {
 	ModifyLoreAbyss: {
-		// DisplayName: Abyss
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Abyss
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreBloodMoon: {
-		// DisplayName: Blood Moon
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Blood Moon
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAquaticScourge: {
-		// DisplayName: Aquatic Scourge
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Aquatic Scourge
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreArchmage: {
-		// DisplayName: Archmage
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Archmage
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAstralInfection: {
-		// DisplayName: Astral Infection
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Astral Infection
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAstrumAureus: {
-		// DisplayName: Astrum Aureus
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Astrum Aureus
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAstrumDeus: {
-		// DisplayName: AstrumDeus
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: AstrumDeus
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAwakening: {
-		// DisplayName: Awakening
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Awakening
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreAzafure: {
-		// DisplayName: Azafure
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Azafure
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreBrainofCthulhu: {
-		// DisplayName: Brainof Cthulhu
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Brainof Cthulhu
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreBrimstoneElemental: {
-		// DisplayName: Brimstone Elemental
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Brimstone Elemental
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCalamitas: {
-		// DisplayName: Calamitas
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Calamitas
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCalamitasClone: {
-		// DisplayName: Calamitas Clone
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Calamitas Clone
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCeaselessVoid: {
-		// DisplayName: Ceaseles's Void
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Ceaseles's Void
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCorruption: {
-		// DisplayName: Corruption
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Corruption
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCrabulon: {
-		// DisplayName: Crabulon
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Crabulon
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCrimson: {
-		// DisplayName: Crimson
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Crimson
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreCynosure: {
-		// DisplayName: Cynosure
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Cynosure
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreDesertScourge: {
-		// DisplayName: Desert Scourge
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Desert Scourge
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreDestroyer: {
-		// DisplayName: Destroyer
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Destroyer
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreDevourerofGods: {
-		// DisplayName: Devourerof Gods
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Devourerof Gods
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreDragonfolly: {
-		// DisplayName: Dragonfolly
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Dragonfolly
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreDukeFishron: {
-		// DisplayName: Duke Fishron
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Duke Fishron
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreEaterofWorlds: {
-		// DisplayName: Eaterof Worlds
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Eaterof Worlds
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreEmpressofLight: {
-		// DisplayName: Empressof Light
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Empressof Light
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreKingSlime: {
-		// DisplayName: LoreKing Slime
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: LoreKing Slime
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreLeviathanAnahita: {
-		// DisplayName: Leviathan Anahita
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Leviathan Anahita
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreMechs: {
-		// DisplayName: Mechs
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Mechs
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLorePlantera: {
-		// DisplayName: Plantera
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Plantera
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLorePolterghast: {
-		// DisplayName: Polterghast
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Polterghast
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreQueenBee: {
-		// DisplayName: Queen Bee
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Queen Bee
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreExoMechs: {
-		// DisplayName: Exo Mechs
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Exo Mechs
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreEyeofCthulhu: {
-		// DisplayName: Eye of Cthulhu
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Eye of Cthulhu
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreGolem: {
-		// DisplayName: Golem
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Golem
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreHiveMind: {
-		// DisplayName: Hive Mind
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Hive Mind
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreQueenSlime: {
-		// DisplayName: Queen Slime
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Queen Slime
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLorePrelude: {
-		// DisplayName: Prelude
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Prelude
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreSulphurSea: {
-		// DisplayName: Sulphur Sea
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Sulphur Sea
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreTwins: {
-		// DisplayName: Twins
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Twins
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreProfanedGuardians: {
-		// DisplayName: Profaned Guardians
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Profaned Guardians
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreProvidence: {
-		// DisplayName: Providence
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Providence
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreRavager: {
-		// DisplayName: Ravager
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Ravager
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreRequiem: {
-		// DisplayName: Requiem
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Requiem
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreSignus: {
-		// DisplayName: Signus
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Signus
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreSkeletron: {
-		// DisplayName: Skeletron
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Skeletron
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreWallofFlesh: {
-		// DisplayName: Wall of Flesh
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Wall of Flesh
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreYharon: {
-		// DisplayName: Yharon
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Yharon
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreOldDuke: {
-		// DisplayName: OldDuke
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: OldDuke
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLorePerforators: {
-		// DisplayName: Perforators
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Perforators
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLorePlaguebringerGoliath: {
-		// DisplayName: Plaguebringer Goliath
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Plaguebringer Goliath
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreSkeletronPrime: {
-		// DisplayName: Skeletron Prime
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Skeletron Prime
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreSlimeGod: {
-		// DisplayName: SlimeGod
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: SlimeGod
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreStormWeaver: {
-		// DisplayName: StormWeaver
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: StormWeaver
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 
 	ModifyLoreUnderworld: {
-		// DisplayName: Underworld
-		// Tooltip: "[legend]"
-		// Legend: ""
+		DisplayName: Underworld
+		Tooltip: "[legend]"
+		Legend: ""
 	}
 }
 
