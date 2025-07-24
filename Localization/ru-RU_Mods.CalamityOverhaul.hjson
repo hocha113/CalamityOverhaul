@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -5131,7 +5131,7 @@ RemakeItems: {
 	}
 
 	ModifyShroomiteMask.UpdateArmorText: Создаётся облако грибного залпа с задержкой.
-	ModifyMythrilHood.UpdateArmorText:При получении урона выпускается большое количество мифриловых искр.
+	ModifyMythrilHood.UpdateArmorText: При получении урона выпускается большое количество мифриловых искр.
 	ModifyCobaltMask.UpdateArmorText: Скорость передвижения увеличена на 15%.
 	ModifyOrichalcumHelmet.UpdateArmorText: При получении урона разлетается множество лепестков.
 	ModifyPalladiumHelmet.UpdateArmorText: Здоровье восстанавливается быстрее.

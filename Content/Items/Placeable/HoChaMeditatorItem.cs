@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
             TileObjectData.newTile.Width = 9;
             TileObjectData.newTile.Height = 10;
-            TileObjectData.newTile.Origin = new Point16(4, 7);
+            TileObjectData.newTile.Origin = new Point16(4, 9);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16, 16, 16, 16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;

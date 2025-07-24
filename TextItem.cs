@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Projectiles.Boss;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -66,6 +67,13 @@ namespace CalamityOverhaul
             //    }
             //}
             //old = news;
+            //int num = 0;
+            //foreach (var proj in Main.ActiveProjectiles) {
+            //    if (proj.type == ProjectileID.PinkLaser || proj.type == ProjectileID.DeathLaser || proj.type == ModContent.ProjectileType<DestroyerCursedLaser>() || proj.type == ModContent.ProjectileType<DestroyerElectricLaser>()) {
+            //        num++;
+            //    }
+            //}
+            //num.Domp();
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

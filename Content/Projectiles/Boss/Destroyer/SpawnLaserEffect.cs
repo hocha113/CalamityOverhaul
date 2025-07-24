@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
             int proj = Projectile.NewProjectile(thisBody.GetSource_FromAI(), thisBody.Center
                 , shootVelocity, projectileType, damage, 0f, Main.myPlayer, 1f, 0f);
-            Main.projectile[proj].timeLeft = 1200;
+            Main.projectile[proj].timeLeft = 900;
         }
     }
 }

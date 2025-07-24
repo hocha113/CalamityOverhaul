@@ -61,6 +61,28 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<ChargingStationItem>());
     }
 
+    internal class HandlerChargingStationUI : UIHandle
+    {
+        //更新所有充能站的UI逻辑
+        public override bool Active => TileProcessorLoader.TP_ID_To_InWorld_Count[ChargingStationTP.StaticID] > 0;
+        public override void Update() {
+            if (!TileProcessorLoader.LoadenTP) {
+                return;
+            }
+            if (!TileProcessorNetWork.LoadenTPByNetWork) {
+                return;
+            }
+            foreach (var tp in TileProcessorLoader.TP_InWorld) {
+                if (!tp.Active || tp.ID != ChargingStationTP.StaticID) {
+                    continue;
+                }
+                if (tp is ChargingStationTP charging && charging.OpenUI && charging.sengs >= 1f) {
+                    charging.UpdateUI(charging.DrawPos);
+                }
+            }
+        }
+    }
+
     internal class ChargingStationTP : BaseBattery//是的，把这个东西当成是一个电池会更好写
     {
         public override int TargetTileID => ModContent.TileType<ChargingStation>();
@@ -470,9 +492,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
-            if (OpenUI && sengs >= 1f) {
-                UpdateUI(DrawPos);
-            }
             DrawUI(spriteBatch, DrawPos - Main.screenPosition, MousePos - Main.screenPosition);
             DrawChargeBar();
         }
