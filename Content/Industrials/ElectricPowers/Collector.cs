@@ -148,6 +148,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private int textIdleTime;
         internal int frame;
         internal bool workState;
+        internal bool BatteryPrompt;
         internal Chest Chest;
         internal int TagItemSign;
         internal int dontSpawnArmTime;
@@ -300,6 +301,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type != ModContent.ProjectileType<CollectorArm>()) {
+                    continue;
+                }
+                if ((proj.ai[1] == 0 && ArmIndex0 == proj.identity)
+                    || (proj.ai[1] == 1 && ArmIndex1 == proj.identity)
+                    || (proj.ai[1] == 2 && ArmIndex2 == proj.identity)) {
+                    ((CollectorArm)proj.ModProjectile).DoDraw(Lighting.GetColor(proj.Center.ToTileCoordinates()));
+                }
+            }
+        }
+
         public override void FrontDraw(SpriteBatch spriteBatch) {
             if (TagItemSign > ItemID.None) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, TagItemSign
@@ -322,7 +336,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal CollectorTP collectorTP;
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private Item graspItem;
-        internal bool BatteryPrompt;
         private bool spawn;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
@@ -335,14 +348,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.WriteVector2(startPos);
-            writer.Write(BatteryPrompt);
             graspItem ??= new Item();
             ItemIO.Send(graspItem, writer, true);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             startPos = reader.ReadVector2();
-            BatteryPrompt = reader.ReadBoolean();
             graspItem = ItemIO.Receive(reader, true);
         }
 
@@ -446,17 +457,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             if (collectorTP.MachineData.UEvalue < 100) {
                 item = null;
-                if (!BatteryPrompt) {
-                    CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
-                    BatteryPrompt = true;
+                if (!collectorTP.BatteryPrompt) {
+                    Rectangle rectangle = (collectorTP.PosInWorld + new Vector2(0, 20)).GetRectangle(collectorTP.Size);
+                    CombatText.NewText(rectangle, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    collectorTP.BatteryPrompt = true;
                     Projectile.netUpdate = true;
+                    collectorTP.SendData();
                 }
             }
             else {
-                if (BatteryPrompt) {
+                if (collectorTP.BatteryPrompt) {
                     Projectile.netUpdate = true;
+                    collectorTP.SendData();
                 }
-                BatteryPrompt = false;
+                collectorTP.BatteryPrompt = false;
             }
 
             if (item != null) {
@@ -500,12 +514,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Projectile.EntityToRot(new Vector2(0, 1).ToRotation(), 0.1f);
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        internal void DoDraw(Color lightColor) {
             if (startPos == Vector2.Zero) {
-                return false;
+                return;
             }
 
-            if (BatteryPrompt) {
+            if (collectorTP.BatteryPrompt) {
                 lightColor.R /= 2;
                 lightColor.G /= 2;
                 lightColor.B /= 2;
@@ -578,12 +592,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     , Projectile.Center - Main.screenPosition, 1f
                     , clampRot + MathHelper.PiOver2, lightColor);
             }
-
-            return false;
         }
 
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-            behindNPCsAndTiles.Add(index);
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

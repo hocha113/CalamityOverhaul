@@ -1,12 +1,11 @@
-﻿using CalamityMod.Events;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Events;
+using CalamityMod.NPCs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
-using CalamityMod.NPCs;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
