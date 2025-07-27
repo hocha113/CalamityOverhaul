@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
     internal class ReloadingProgressUI : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.Vanilla_Interface_Logic_1;
-        public override bool Active => CWRServerConfig.Instance.ShowReloadingProgressUI 
+        public override bool Active => CWRServerConfig.Instance.ShowReloadingProgressUI
             && (player.CWR().PlayerIsKreLoadTime > 0 || overTime > 0);
         [VaultLoaden(CWRConstant.UI + "ReloadingProgress")]
         internal static Asset<Texture2D> Glow { get; private set; }

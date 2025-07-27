@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RShotgun : CWRItemOverride
     {
         public override int TargetID => ItemID.Shotgun;
-        
+
         public override void SetDefaults(Item item) {
             item.damage = 28;
             item.SetHeldProj<ShotgunHeldProj>();

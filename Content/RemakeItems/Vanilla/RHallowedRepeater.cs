@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RHallowedRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.HallowedRepeater;
-        
+
         public override void SetDefaults(Item item) {
             item.damage = 60;
             item.useTime = 30;

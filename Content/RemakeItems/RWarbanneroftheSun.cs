@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems
     {
         public override int TargetID => ModContent.ItemType<WarbanneroftheSun>();
         public override bool DrawingInfo => false;
-        
+
         public override bool On_UpdateAccessory(Item item, Player player, bool hideVisual) {
             Item item2 = player.GetItem();
             if (item2.IsAir) {

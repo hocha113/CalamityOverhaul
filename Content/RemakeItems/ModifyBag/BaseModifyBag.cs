@@ -3,6 +3,6 @@
     internal abstract class BaseModifyBag : CWRItemOverride
     {
         public override bool DrawingInfo => false;
-        
+
     }
 }

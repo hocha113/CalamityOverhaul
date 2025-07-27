@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RSnowmanCannon : CWRItemOverride
     {
         public override int TargetID => ItemID.SnowmanCannon;
-        
+
         public override void SetDefaults(Item item) {
             item.useTime = 60;
             item.damage = 50;

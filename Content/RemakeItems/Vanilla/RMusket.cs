@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RMusket : CWRItemOverride
     {
         public override int TargetID => ItemID.Musket;
-        
+
         public override void SetDefaults(Item item) {
             item.useTime = 60;
             item.damage = 50;

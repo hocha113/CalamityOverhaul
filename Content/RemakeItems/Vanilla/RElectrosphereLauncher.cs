@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RElectrosphereLauncher : CWRItemOverride
     {
         public override int TargetID => ItemID.ElectrosphereLauncher;
-        
+
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<ElectrosphereLauncherHeldProj>(40);
             item.useTime = 48;

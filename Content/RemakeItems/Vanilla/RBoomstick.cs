@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RBoomstick : CWRItemOverride
     {
         public override int TargetID => ItemID.Boomstick;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<BoomstickHeldProj>();
             item.CWR().HasCartridgeHolder = true;

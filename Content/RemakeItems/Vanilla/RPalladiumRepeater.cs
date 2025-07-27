@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RPalladiumRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.PalladiumRepeater;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<PalladiumRepeaterHeldProj>();
             item.useTime = 20;

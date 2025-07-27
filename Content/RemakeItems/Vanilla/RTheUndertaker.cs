@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RTheUndertaker : CWRItemOverride
     {
         public override int TargetID => ItemID.TheUndertaker;
-        
+
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<TheUndertakerHeldProj>(6);
             item.CWR().CartridgeType = CartridgeUIEnum.Magazines;

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RGrenadeLauncher : CWRItemOverride
     {
         public override int TargetID => ItemID.GrenadeLauncher;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<GrenadeLauncherHeldProj>();
             item.CWR().HasCartridgeHolder = true;

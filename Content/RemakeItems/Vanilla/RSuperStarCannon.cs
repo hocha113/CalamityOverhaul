@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RSuperStarCannon : CWRItemOverride
     {
         public override int TargetID => ItemID.SuperStarCannon;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<SuperStarCannonHeldProj>();
             item.CWR().HasCartridgeHolder = true;

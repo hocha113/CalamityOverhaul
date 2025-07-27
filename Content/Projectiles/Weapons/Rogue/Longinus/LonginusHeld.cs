@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                     PRT_LonginusStar spark = new PRT_LonginusStar(spanStarPos, vr, false, Main.rand.Next(17, 25), Main.rand.NextFloat(0.9f, 1.1f), Color.Red, Projectile);
                     PRTLoader.AddParticle(spark);
                 }
-                
+
                 if (modPlayer.rogueStealth >= modPlayer.rogueStealthMax && longinus.ChargeGrade < 6) {
                     longinus.ChargeGrade += 1;
                     SoundStyle lightningStrikeSound = HeavenlyGale.LightningStrikeSound;
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
             }
-            
+
             Projectile.Center = Owner.GetPlayerStabilityCenter() + UnitToMouseV * 70;
             Projectile.timeLeft = 2;
         }

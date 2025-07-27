@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RFlareGun : CWRItemOverride
     {
         public override int TargetID => ItemID.FlareGun;
-        
+
         public override void SetDefaults(Item item) {
             item.holdStyle = ItemHoldStyleID.None;
             item.SetCartridgeGun<FlareGunHeldProj>(3);

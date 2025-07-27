@@ -5,7 +5,6 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -158,19 +157,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void SendData(ModPacket data) {
             base.SendData(data);
             data.Write(TagItemSign);
+            data.Write(BatteryPrompt);
             data.Write(workState);
             data.Write(ArmIndex0);
             data.Write(ArmIndex1);
             data.Write(ArmIndex2);
         }
+
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
             TagItemSign = reader.ReadInt32();
+            BatteryPrompt = reader.ReadBoolean();
             workState = reader.ReadBoolean();
             ArmIndex0 = reader.ReadInt32();
             ArmIndex1 = reader.ReadInt32();
             ArmIndex2 = reader.ReadInt32();
         }
+
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
             string result;
@@ -183,6 +186,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             tag["_TagItemFullName"] = result;
         }
+
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             if (tag.TryGet("_TagItemFullName", out string fullName)) {

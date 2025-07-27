@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RProximityMineLauncher : CWRItemOverride
     {
         public override int TargetID => ItemID.ProximityMineLauncher;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<ProximityMineLauncherHeldProj>();
             item.CWR().HasCartridgeHolder = true;

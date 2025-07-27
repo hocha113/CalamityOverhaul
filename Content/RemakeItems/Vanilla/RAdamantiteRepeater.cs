@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RAdamantiteRepeater : CWRItemOverride
     {
         public override int TargetID => ItemID.AdamantiteRepeater;
-        
+
         public override void SetDefaults(Item item) {
             item.SetHeldProj<AdamantiteRepeaterHeldProj>();
             item.useTime = 20;

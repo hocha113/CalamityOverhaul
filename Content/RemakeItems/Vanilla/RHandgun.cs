@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RHandgun : CWRItemOverride
     {
         public override int TargetID => ItemID.Handgun;
-        
+
         public override bool IsVanilla => true;
 
         public override void SetDefaults(Item item) {

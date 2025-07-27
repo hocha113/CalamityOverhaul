@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.TileProcessors
     {
         public override int TargetTileID => ModContent.TileType<Tiles.FoodStallChair>();
         private bool inFoodStallChair;
-        private RainDataStruct rainData = new ();
+        private RainDataStruct rainData = new();
         private struct RainDataStruct
         {
             public bool raining;
