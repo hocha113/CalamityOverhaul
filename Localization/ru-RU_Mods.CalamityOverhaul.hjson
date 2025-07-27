@@ -485,9 +485,9 @@ Items: {
 			ПКМ для трехступенчатой зарядки: 
 			после полной зарядки стреляет тремя мощными стрелами с гравитационным эффектом
 			'''
-		Lang1: Trapping gravity
-		Lang2: Is making gravity yield
-		Lang3: Finished!!
+		Lang1: Гравитация скована...
+		Lang2: Пространство подчинено...
+		Lang3: Завершено!!
 	}
 
 	NeutronGun: {
@@ -1997,12 +1997,12 @@ TextContent: {
 			Было установлено, что вы установили [Quality of Terraria Mod], но ваша [Quality of Terraria Mod] версия была переработана
 			Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
 			'''
-		CaseEjection_TextContent: холост
-		CaseEjection_TextContent_Coin: Нет денег
+		CaseEjection_TextContent: Пусто
+		CaseEjection_TextContent_Coin: Нет монет
 		CaseEjection_TextContent_Arrow: Нет стрел
-		SupertableUI_Text1: закр
-		SupertableUI_Text2: Проверь формулу
-		SupertableUI_Text3: без
+		SupertableUI_Text1: Закрыть
+		SupertableUI_Text2: Просмотреть рецепт
+		SupertableUI_Text3: Нет
 		OverhaulTheBibleUI_Text:
 			'''
 			Скользить по колесу мыши или тянуть левую шкалу графика и просматривать перевернутые предметы вверх и вниз
@@ -2068,14 +2068,14 @@ TextContent: {
 		Spazmatism_Text6: Начинаю эвакуацию...
 		Spazmatism_Text7: Миссия провалена, попытка покинуть поле боя...
 		Spazmatism_Text8: Развернуты.
-		Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
+		Error_1: Один из хуков вышел из строя. Чтобы восстановить нормальную работу игры, пожалуйста, закройте игру и перезапустите её. Если проблема не исчезнет, приложите экспортированный лог и обратитесь к разработчику модуля
 		Error_2:
 			'''
-			An exception has been detected and the server is attempting to load the block system in real time, 
-			which may cause a brief stutter and a few seconds of network delay
+			Обнаружено исключение, сервер пытается загрузить блочную систему в реальном времени,
+			что может вызвать кратковременные подёргивания и задержку сети на несколько секунд
 			'''
-		Config_1: User
-		Config_2: The server configuration is modified
+		Config_1: Пользователь
+		Config_2: Конфигурация сервера была изменена
 		CWRGun_KL_Text: Нажмите клавишу [KL], чтобы перезарядить.
 		CWRGun_Scope_Text: Нажмите [Scope], чтобы прицелиться.
 		CWRGun_Recoil_Text: "[Recoil] Отдача"
@@ -2145,7 +2145,7 @@ Legend: {
 			Решающее сражение близко. Эти груды металлолома собираются объединиться, чтобы попытаться нас остановить.
 			Клинками и кровью покажите им, что наша экспедиция раздавит всех чужих тварей и ненавистные интеллекты.
 			'''
-		World_Text0: " (последний раз было обновлено в мире «{0}»  | Record: <{1}>)"
+		World_Text0: " (последний раз было обновлено в мире «{0}»  | Рекорд: <{1}>)"
 	}
 }
 
@@ -2324,12 +2324,12 @@ RemakeItems: {
 
 	RAtaraxia: {
 		DisplayName: Атараксия
-		Tooltip: Хладнокровие
+		Tooltip: Коэффициент поражения поражает воображение
 	}
 
 	RAvalanche: {
 		DisplayName: Лавина
-		Tooltip: ""
+		Tooltip: Создаёт ледяные бомбы в 4 направлениях, которые взрываются кристаллами спустя 3 секунды после контакта с врагом
 	}
 
 	RBalefulHarvester: {
@@ -2381,7 +2381,11 @@ RemakeItems: {
 
 	RBrimstoneSword: {
 		DisplayName: Серный меч
-		Tooltip: При нанесении удара призывает серные гейзеры
+		Tooltip: 
+			'''
+			Жгучий короткий меч
+			При попадании по врагу создаёт серные гейзеры
+			'''
 	}
 
 	RBrinyBaron: {
@@ -2411,7 +2415,11 @@ RemakeItems: {
 
 	RCelestialClaymore: {
 		DisplayName: Неземной клеймор
-		Tooltip: Взмахнув рукой, создай вокруг себя взрыв бри
+		Tooltip: 
+			'''
+			При взмахе вокруг появляются взрывающиеся сияющие звёзды
+			Если лезвие касается сияющей звезды, оно отбрасывает её в направлении курсора
+			'''
 	}
 
 	RCometQuasher: {
@@ -2531,7 +2539,7 @@ RemakeItems: {
 
 	REutrophicScimitar: {
 		DisplayName: Эвтрофная сабля
-		Tooltip: ""
+		Tooltip: При взмахе выпускает два лазерных выстрела, которые оглушают врагов
 	}
 
 	REvilSmasher: {
@@ -2582,12 +2590,12 @@ RemakeItems: {
 
 	RForbiddenOathblade: {
 		DisplayName: Запретный клятвенный клинок
-		Tooltip: ""
+		Tooltip: Выпускает демонический серп, при критическом ударе вызывает взрыв теневого пламени
 	}
 
 	RForsakenSaber: {
 		DisplayName: Забытая сабля
-		Tooltip: ""
+		Tooltip: Выпускает два песчаных клинка, которые автоматически меняют скорость в полёте
 	}
 
 	RGalactusBlade: {
@@ -2633,12 +2641,16 @@ RemakeItems: {
 
 	RHellfireFlamberge: {
 		DisplayName: Фламберг адского огня
-		Tooltip: ""
+		Tooltip: Выпускает несколько групп огненных шаров Бездны
 	}
 
 	RHellionFlowerSpear: {
 		DisplayName: Копьё непокорного цветка
-		Tooltip: ""
+		Tooltip:
+			'''
+			При взмахе выпускает сопровождающие листья,
+			которые следуют за листьями жизни и пронзают врагов
+			'''
 	}
 
 	RHellkite: {
@@ -2662,11 +2674,7 @@ RemakeItems: {
 
 	RLucrecia: {
 		DisplayName: Лукреция
-		Tooltip:
-			'''
-			Выпускает цепь ДНК
-			Изящество
-			'''
+		Tooltip: Выпускает магические кристаллические шипы
 	}
 
 	RMajesticGuard: {
@@ -2812,21 +2820,25 @@ RemakeItems: {
 
 	RSubmarineShocker: {
 		DisplayName: Подводный шокер
-		Tooltip: Выпускает электрические искры, разлетаюшщиеся во все сторону
+		Tooltip: Выпускает электрические искры, разлетаюшщиеся во все стороны
 	}
 
 	RSwordsplosion: {
-		DisplayName: Взрывной Меч
+		DisplayName: Взрыв мечей
 		Tooltip:
 			'''
-			Позволяет мечам радуги падать с небес.
-			"Это решает только Камень!"
+			Призывает несколько радужных клинков с неба
+			"Потому что приказы Тины — закон!"
 			'''
 	}
 
 	RTaintedBlade: {
 		DisplayName: Порочный клинок
-		Tooltip: При нанесении удара по врагу накладывает дебафф «{$BuffName.Poisoned}»
+		Tooltip: 
+			'''
+			При попадании по врагу накладывает дебафф отравления
+			«Мой клинок — отравлен до предела!»
+			'''
 	}
 
 	RTeardropCleaver: {
@@ -4410,7 +4422,7 @@ RemakeItems: {
 		DisplayName: Гатлингатор
 		Tooltip:
 			'''
-			Я люблю пушки с акулами, но крокодилов люблю больше. 
+			Я люблю пушки с акулами, но крокодилов люблю больше
 			В конце концов, у всех них есть одна общая черта: они могут откусить палец потребителю в любой момент
 			'''
 	}
@@ -4453,7 +4465,7 @@ RemakeItems: {
 
 	RHandgun: {
 		DisplayName: Пистолет
-		Tooltip: ""
+		Tooltip: '''Бах! Бах!! Бах!!!'''
 	}
 
 	RHeatRay: {
@@ -4482,7 +4494,7 @@ RemakeItems: {
 	}
 
 	RIceSickle: {
-		DisplayName: "{$ItemName.IceSickle}"
+		DisplayName: Ледяная коса
 		Tooltip: Выпускает ледяную косу
 	}
 
@@ -5204,7 +5216,7 @@ RemakeItems: {
 	}
 
 	ModifyFireTurret: {
-		DisplayName: Flamethrower Turret
+		DisplayName: Турель-огнемёт
 		Tooltip:
 			'''
 			Испепеляет ближайших врагов мощным огнемётом
