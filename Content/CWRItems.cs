@@ -49,6 +49,14 @@ namespace CalamityOverhaul.Content
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
+        /// 清理计数
+        /// </summary>
+        private static int checkAllTrackedItems_cleanupTimer;
+        /// <summary>
+        /// 所有的物品实例均在此有所存储
+        /// </summary>
+        public static readonly HashSet<Item> AllTrackedItems = new();
+        /// <summary>
         /// AI槽位数量
         /// </summary>
         public const int MaxAISlot = 3;
@@ -57,7 +65,7 @@ namespace CalamityOverhaul.Content
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
-        public float[] ai = new float[MaxAISlot];
+        public float[] ai = new float[MaxAISlot];       
         /// <summary>
         /// 是否正在真近战
         /// </summary>
@@ -201,13 +209,18 @@ namespace CalamityOverhaul.Content
             ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
             ItemRebuildLoader.PostSetDefaultsEvent += PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent += OverModifyTooltip;
+            AllTrackedItems.Clear();
         }
         public override void Unload() {
             ItemRebuildLoader.PreSetDefaultsEvent -= PreSetDefaults;
             ItemRebuildLoader.PostSetDefaultsEvent -= PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent -= OverModifyTooltip;
+            AllTrackedItems.Clear();
         }
-        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
+        public override GlobalItem Clone(Item from, Item to) {
+            AllTrackedItems.Remove(from);
+            return CloneCWRItem((CWRItems)base.Clone(from, to));
+        }
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
             cwr.closeCombat = closeCombat;
@@ -258,6 +271,7 @@ namespace CalamityOverhaul.Content
 
         //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
         public override void SetDefaults(Item item) { }
+
         //调用在 ItemRebuildLoader.SetDefaults 之前
         public static void PreSetDefaults(Item item) {
             CWRItems cwrItem = item.CWR();
@@ -578,11 +592,18 @@ namespace CalamityOverhaul.Content
                 tag.Add("_IsKreload", IsKreload);
             }
 
-            LegendData?.SaveData(item, tag);
+            try {
+                LegendData?.DoUpdate();
+                LegendData?.SaveData(item, tag);
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[LegendData:SaveData] an error has occurred:{ex.Message}");
+            }
 
             if (StorageUE) {
                 tag["UEValue"] = UEValue;
             }
+
+            AllTrackedItems.Clear();
         }
 
         public override void LoadData(Item item, TagCompound tag) {
@@ -615,12 +636,35 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            LegendData?.LoadData(item, tag);
+            try {
+                LegendData?.LoadData(item, tag);
+                LegendData?.DoUpdate();
+            } catch (Exception ex){
+                CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
+            }
 
             if (StorageUE) {
                 if (!tag.TryGet("UEValue", out UEValue)) {
                     UEValue = 0;
                 }
+            }
+
+            AllTrackedItems.Add(item);
+        }
+
+        internal static void CheckAllTrackedItems() {
+            if (++checkAllTrackedItems_cleanupTimer > 60) {
+                AllTrackedItems.RemoveWhere(item => !item.Alives());
+                checkAllTrackedItems_cleanupTimer = 0;
+            }
+        }
+
+        internal static void UpdateAllTrackedItems() {
+            foreach (var item in AllTrackedItems) {
+                if (!item.Alives()) {
+                    continue;
+                }
+                item.CWR().LegendData?.DoUpdate();
             }
         }
 
@@ -645,6 +689,10 @@ namespace CalamityOverhaul.Content
         public override void UpdateInventory(Item item, Player player) {
             LegendData?.DoUpdate();
             RecoverUnloadedItem.UpdateInventory(item, player);
+        }
+
+        public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {
+            LegendData?.DoUpdate();
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {

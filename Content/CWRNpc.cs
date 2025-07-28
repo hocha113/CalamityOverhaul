@@ -281,6 +281,10 @@ namespace CalamityOverhaul.Content
                 return;
             }
 
+            if (npc.boss) {
+                CWRItems.UpdateAllTrackedItems();
+            }
+
             if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                 for (int i = 0; i < Main.rand.Next(3, 6); i++) {
                     int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<DubiousPlating>(), Main.rand.Next(7, 13));
