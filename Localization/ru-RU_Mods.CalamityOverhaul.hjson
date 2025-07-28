@@ -2381,7 +2381,7 @@ RemakeItems: {
 
 	RBrimstoneSword: {
 		DisplayName: Серный меч
-		Tooltip: 
+		Tooltip:
 			'''
 			Жгучий короткий меч
 			При попадании по врагу создаёт серные гейзеры
@@ -2415,7 +2415,7 @@ RemakeItems: {
 
 	RCelestialClaymore: {
 		DisplayName: Неземной клеймор
-		Tooltip: 
+		Tooltip:
 			'''
 			При взмахе вокруг появляются взрывающиеся сияющие звёзды
 			Если лезвие касается сияющей звезды, оно отбрасывает её в направлении курсора
@@ -2834,7 +2834,7 @@ RemakeItems: {
 
 	RTaintedBlade: {
 		DisplayName: Порочный клинок
-		Tooltip: 
+		Tooltip:
 			'''
 			При попадании по врагу накладывает дебафф отравления
 			«Мой клинок — отравлен до предела!»
@@ -4465,7 +4465,7 @@ RemakeItems: {
 
 	RHandgun: {
 		DisplayName: Пистолет
-		Tooltip: '''Бах! Бах!! Бах!!!'''
+		Tooltip: Бах! Бах!! Бах!!!
 	}
 
 	RHeatRay: {

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         private int Level;
         private int LevelAlt;
-        internal static bool coolWorld => Main.zenithWorld || Main.getGoodWorld || Main.drunkWorld || Main.worldName == "HoCha113";
+        internal static bool CoolWorld => Main.zenithWorld || Main.getGoodWorld || Main.drunkWorld || Main.worldName == "HoCha113";
         public override int TargetID => ModContent.ItemType<DragonRage>();
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<DragonRage>()] = true;
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f }, position);
                     int newLevel = 4 + LevelAlt;
                     int newDmg = damage;
-                    if (newLevel == 6 && coolWorld) {
+                    if (newLevel == 6 && CoolWorld) {
                         newDmg = (int)(damage * 0.6f);
                     }
                     Projectile.NewProjectile(source, position, velocity, type, newDmg, knockback, player.whoAmI, newLevel);

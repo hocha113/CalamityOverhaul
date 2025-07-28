@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
+using InnoVault.GameSystem;
 using System.IO;
 using Terraria;
 using Terraria.Localization;
@@ -18,6 +19,18 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// </summary>
         public string UpgradeWorldName = "";
         /// <summary>
+        /// 上一次提升等级的世界内部名字
+        /// </summary>
+        public string UpgradeWorldFullName = "";
+        /// <summary>
+        /// 标签名是否为空
+        /// </summary>
+        public bool UpgradeTagNameIsEmpty => UpgradeWorldName == "" || UpgradeWorldFullName == "";
+        /// <summary>
+        /// 当前是否是上次升级的世界
+        /// </summary>
+        public bool IsUpgradeWorld => UpgradeWorldName == Main.worldName && UpgradeWorldFullName == SaveWorld.WorldFullName;
+        /// <summary>
         /// 这个传奇应该升级到的等级
         /// </summary>
         public virtual int TargetLevle => 0;
@@ -25,12 +38,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
             writer.Write(UpgradeWorldName);
+            writer.Write(UpgradeWorldFullName);
             SendLegend(item, writer);
         }
 
         public void NetReceive(Item item, BinaryReader reader) {
             Level = reader.ReadInt32();
             UpgradeWorldName = reader.ReadString();
+            UpgradeWorldFullName = reader.ReadString();
             ReceiveLegend(item, reader);
         }
 
@@ -43,9 +58,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public static string GetWorldUpLines(CWRItems cwrItem) {
-            string worldName = cwrItem.LegendData.UpgradeWorldName;
             string text = "";
-            if (worldName != null && Main.worldName != worldName && worldName != "") {
+            if (!cwrItem.LegendData.UpgradeTagNameIsEmpty && !cwrItem.LegendData.IsUpgradeWorld) {
+                string worldName = cwrItem.LegendData.UpgradeWorldName;
                 string key = MuraText.GetTextKey("World_Text0");
                 text = VaultUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName, cwrItem.LegendData.Level)}", Color.Gold);
             }
@@ -68,20 +83,33 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (UpgradeWorldName != "") {
                 tag["LegendData:UpgradeWorldName"] = UpgradeWorldName;
             }
+            if (UpgradeWorldFullName != "") {
+                tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
+            }
         }
 
         public virtual void LoadData(Item item, TagCompound tag) {
-            if (!tag.TryGet("LegendData:Level", out Level)) {
+            try {
+                if (!tag.TryGet("LegendData:Level", out Level)) {
+                    Level = 0;
+                }
+                if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
+                    UpgradeWorldName = "";
+                }
+                if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
+                    UpgradeWorldFullName = "";
+                }
+            } catch {
                 Level = 0;
-            }
-            if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
                 UpgradeWorldName = "";
+                UpgradeWorldFullName = "";
             }
         }
 
         public virtual void Update() {
-            if (TargetLevle > Level) {
+            if (TargetLevle > Level || UpgradeTagNameIsEmpty) {
                 UpgradeWorldName = Main.worldName;
+                UpgradeWorldFullName = SaveWorld.WorldFullName;
                 Level = TargetLevle;
             }
         }
