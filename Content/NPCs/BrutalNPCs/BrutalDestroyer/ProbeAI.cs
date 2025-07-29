@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return null;
         }
         public override void SetProperty() {
+            NPCID.Sets.TrailingMode[npc.type] = 1;
+            NPCID.Sets.TrailCacheLength[npc.type] = 16;
             if (CWRWorld.MachineRebellion) {
                 npc.life = npc.lifeMax *= 28;
                 npc.defDefense = npc.defense = 20;
@@ -41,8 +43,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.TargetClosest();
             Player target = Main.player[npc.target];
 
-            Vector2 spawnOffset = Vector2.UnitY.RotatedBy(MathHelper.Lerp(-0.97f, 0.97f, npc.whoAmI % 16f / 16f)) * 300f;
-            if (npc.whoAmI * 113 % 2 == 1) {
+            //更自然的出生偏移角度（非对称 + 扰动）
+            float indexFrac = (npc.whoAmI % 16f) / 16f;
+            float angle = MathHelper.Lerp(-0.97f, 0.97f, indexFrac) + Main.rand.NextFloat(-0.1f, 0.1f);
+            Vector2 spawnOffset = Vector2.UnitY.RotatedBy(angle) * 300f;
+
+            if (npc.whoAmI % 2 == 1) {
                 spawnOffset *= -1f;
             }
 
@@ -57,32 +63,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float hoverSpeed = 22f;
             if (DestroyerHeadAI.BossRush) {
                 hoverSpeed *= 1.5f;
-            }
+            } 
 
-            //默认无伤害，只有冲刺阶段启用伤害
             npc.damage = state == 2f ? npc.defDamage : 0;
 
             switch (state) {
-                case 0f://先靠近
+                case 0f: //靠近预热
                     npc.velocity = Vector2.Lerp(npc.velocity, npc.SafeDirectionTo(destination) * hoverSpeed, 0.1f);
+                    npc.rotation = npc.AngleTo(target.Center);
+
                     if (npc.WithinRange(destination, npc.velocity.Length() * 1.35f)) {
                         npc.velocity = npc.SafeDirectionTo(target.Center) * -7f;
                         state = 1f;
                         attackTimer = 0f;
                         npc.netUpdate = true;
                     }
-                    npc.rotation = npc.AngleTo(target.Center);
                     break;
 
-                case 1f://退退退
+                case 1f: //蓄力准备
                     npc.velocity *= 0.975f;
-                    attackTimer++;
                     npc.rotation = npc.AngleTo(target.Center);
+                    attackTimer++;
+
                     if (attackTimer == ReelBackTime / 2 && !VaultUtils.isClient) {
                         SpawnPinkLaser();
                     }
+
+                    //被攻击则提前打断蓄力
+                    if (npc.justHit && attackTimer < ReelBackTime * 0.6f) {
+                        npc.velocity = -npc.SafeDirectionTo(target.Center) * 4f;
+                        state = 3f; //进入短暂停顿
+                        attackTimer = 0f;
+                        npc.netUpdate = true;
+                        break;
+                    }
+
                     if (attackTimer >= ReelBackTime) {
-                        npc.velocity = npc.SafeDirectionTo(target.Center) * hoverSpeed;
+                        //冲刺方向扰动
+                        float dashAngleOffset = Main.rand.NextFloat(-0.12f, 0.12f);
+                        Vector2 dashDir = npc.SafeDirectionTo(target.Center).RotatedBy(dashAngleOffset);
+                        npc.velocity = dashDir * hoverSpeed;
+
                         npc.oldPos = new Vector2[npc.oldPos.Length];
                         state = 2f;
                         attackTimer = 0f;
@@ -90,16 +111,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     break;
 
-                case 2f://开始蓄力冲刺
+                case 2f: //冲刺阶段
                     npc.knockBackResist = 0f;
                     npc.rotation = npc.velocity.ToRotation();
                     npc.damage = 95;
-
                     attackTimer++;
 
-                    //条件：冲刺持续时间超过一定时长 或 碰撞地形
+                    //冲刺失败后进入短暂思考状态
                     if (attackTimer > 60f || npc.collideX || npc.collideY) {
-                        npc.velocity = Vector2.Zero;
+                        npc.velocity = -Vector2.UnitY.RotatedByRandom(0.6f) * 3f;
+                        state = 3f;
+                        attackTimer = 0f;
+                        npc.netUpdate = true;
+                    }
+                    break;
+
+                case 3f: //停顿等待阶段（失败后思考）
+                    npc.velocity *= 0.9f;
+                    npc.rotation = npc.AngleTo(target.Center);
+                    attackTimer++;
+
+                    if (attackTimer > 20f) {
                         state = 0f;
                         attackTimer = 0f;
                         npc.netUpdate = true;
@@ -107,7 +139,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     break;
             }
 
-            npc.rotation += MathHelper.Pi;//旋转朝向修正
+            //最后做统一朝向修正
+            npc.rotation += MathHelper.Pi;
             generalTimer++;
             return false;
         }
@@ -144,9 +177,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             Texture2D value = Probe.Value;
+            Texture2D value2 = Probe_Glow.Value;
             spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , null, drawColor, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
-            Texture2D value2 = Probe_Glow.Value;
+
+            float sengs = 0.2f;
+            for (int i = 0; i < npc.oldPos.Length; i++) {
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                spriteBatch.Draw(value, drawOldPos, null, drawColor * sengs
+                    , drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
+                sengs *= 0.8f;
+            }
+            sengs = 0.4f;
+            for (int i = 0; i < npc.oldPos.Length; i++) {
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                spriteBatch.Draw(value2, drawOldPos, null, Color.White * sengs
+                    , drawRot, value2.Size() / 2, npc.scale, spriteEffects, 0);
+                sengs *= 0.8f;
+            }
+
             spriteBatch.Draw(value2, npc.Center - Main.screenPosition
                 , null, Color.White, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
             return false;

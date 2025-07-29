@@ -400,11 +400,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     }
                 }
 
-                Item item = new Item(fullItemTypes[fullItemTypes.Length - 1]);//获取预装填集合的末尾物品，末尾物品就是输出结果
-                if (item != null && item.type != ItemID.None && item.CWR().isInfiniteItem) {//如果这个物品是会湮灭的无尽物品，将其稳定性设置为稳定，即不发生湮灭
-                    item.CWR().NoDestruct = true;
-                    item.CWR().destructTime = 10;
-                }
+                Item item = new(fullItemTypes[^1]);//获取预装填集合的末尾物品，末尾物品就是输出结果
 
                 int minNum = int.MaxValue;
                 foreach (var value in items) {

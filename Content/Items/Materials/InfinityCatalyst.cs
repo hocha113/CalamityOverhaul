@@ -46,10 +46,9 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.width = Item.height = 32;
             Item.maxStack = 99;
             Item.rare = RarityType<HotPink>();
-            Item.value = Terraria.Item.sellPrice(gold: 99999);
+            Item.value = Item.sellPrice(gold: 99999);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.CWR().isInfiniteItem = true;
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {

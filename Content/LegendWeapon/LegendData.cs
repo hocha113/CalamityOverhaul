@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon
 {
-    public class LegendData
+    public abstract class LegendData
     {
         /// <summary>
         /// 成长等级
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>
         /// 当前是否是上次升级的世界
         /// </summary>
-        public bool IsUpgradeWorld => UpgradeWorldName == Main.worldName && UpgradeWorldFullName == SaveWorld.WorldFullName;
+        public bool IsUpgradeWorld => UpgradeWorldFullName == SaveWorld.WorldFullName;
         /// <summary>
         /// 这个传奇应该升级到的等级
         /// </summary>
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                     UpgradeWorldName = "";
                 }
                 if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
-                    UpgradeWorldFullName = "";
+                    UpgradeWorldFullName = UpgradeWorldName;//这样赋值，如果是第一次加载，可以适配旧存档
                 }
             } catch {
                 Level = 0;

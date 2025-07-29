@@ -36,7 +36,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {
@@ -85,7 +85,6 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            CWRItems.AllTrackedItems.Count.Domp();
             //if (Main.MouseWorld.ToTileCoordinates16().TryFindClosestChest(out var c)) {
             //    Item item = new Item(ItemID.Mushroom);
             //    if (c.CanItemBeAddedToChest(item)) {

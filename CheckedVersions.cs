@@ -10,7 +10,6 @@ namespace CalamityOverhaul
         internal static Version SaveVersion;
         internal static bool IsNewVersion {
             get {
-                return false;//此Hotfix版本中不需要高亮
                 if (CWRMod.Instance == null || CWRMod.Instance.Version == null) {
                     return false;
                 }

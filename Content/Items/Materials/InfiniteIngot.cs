@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.createTile = TileType<InfiniteIngotTile>();
-            Item.CWR().isInfiniteItem = true;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_InfiniteIngot;
         }
 

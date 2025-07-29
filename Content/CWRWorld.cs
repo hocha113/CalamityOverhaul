@@ -93,8 +93,6 @@ namespace CalamityOverhaul.Content
                 TimeFrozenTick--;
             }
 
-            CWRItems.CheckAllTrackedItems();
-
             UpdateMachineRebellion();
         }
 

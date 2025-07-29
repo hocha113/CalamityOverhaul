@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs;
+using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
@@ -159,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     for (int i = 0; i < numProj; i++) {
                         float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
                         Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                        if (death && masterMode || bossRush || ModGanged.InfernumModeOpenState) {
+                        if (CalamityWorld.death || CWRWorld.MachineRebellion || bossRush || ModGanged.InfernumModeOpenState) {
                             Projectile.NewProjectile(npc.GetSource_FromAI()
                             , npc.Center, perturbedSpeed
                             , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f

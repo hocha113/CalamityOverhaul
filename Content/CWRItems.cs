@@ -49,14 +49,6 @@ namespace CalamityOverhaul.Content
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
-        /// 清理计数
-        /// </summary>
-        private static int checkAllTrackedItems_cleanupTimer;
-        /// <summary>
-        /// 所有的物品实例均在此有所存储
-        /// </summary>
-        public static readonly HashSet<Item> AllTrackedItems = new();
-        /// <summary>
         /// AI槽位数量
         /// </summary>
         public const int MaxAISlot = 3;
@@ -92,18 +84,6 @@ namespace CalamityOverhaul.Content
         /// 该物品是否可以开启侦察
         /// </summary>
         public bool Scope;
-        /// <summary>
-        /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
-        /// </summary>
-        internal bool isInfiniteItem;
-        /// <summary>
-        /// 是否湮灭，在设置<see cref="isInfiniteItem"/>为<see langword="true"/>后启用，决定无尽物品是否湮灭
-        /// </summary>
-        internal bool NoDestruct;
-        /// <summary>
-        /// 湮灭倒计时间
-        /// </summary>
-        internal int destructTime;
         /// <summary>
         /// 如果该物品被一个收集者视作为目标，那么该值会被设置为对应手臂的的弹幕索引
         /// </summary>
@@ -209,18 +189,13 @@ namespace CalamityOverhaul.Content
             ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
             ItemRebuildLoader.PostSetDefaultsEvent += PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent += OverModifyTooltip;
-            AllTrackedItems.Clear();
         }
         public override void Unload() {
             ItemRebuildLoader.PreSetDefaultsEvent -= PreSetDefaults;
             ItemRebuildLoader.PostSetDefaultsEvent -= PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent -= OverModifyTooltip;
-            AllTrackedItems.Clear();
         }
-        public override GlobalItem Clone(Item from, Item to) {
-            AllTrackedItems.Remove(from);
-            return CloneCWRItem((CWRItems)base.Clone(from, to));
-        }
+        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
             cwr.closeCombat = closeCombat;
@@ -240,9 +215,6 @@ namespace CalamityOverhaul.Content
             cwr.Scope = Scope;
             cwr.AmmoProjectileReturn = AmmoProjectileReturn;
             cwr.FromUnlimitedAmmo = FromUnlimitedAmmo;
-            cwr.isInfiniteItem = isInfiniteItem;
-            cwr.NoDestruct = NoDestruct;
-            cwr.destructTime = destructTime;
             cwr.StorageUE = StorageUE;
             cwr.UEValue = UEValue;
             cwr.ConsumeUseUE = ConsumeUseUE;
@@ -285,9 +257,6 @@ namespace CalamityOverhaul.Content
         public static void PostSetDefaults(Item item) {
             CWRItems cwrItem = item.CWR();
 
-            if (cwrItem.isInfiniteItem) {
-                cwrItem.destructTime = 5;
-            }
             if (cwrItem.AmmoCapacity == 0) {
                 cwrItem.AmmoCapacity = 1;
             }
@@ -573,7 +542,6 @@ namespace CalamityOverhaul.Content
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
-            tag.Add("_NoDestruct", NoDestruct);
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
                     Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转
@@ -602,16 +570,11 @@ namespace CalamityOverhaul.Content
             if (StorageUE) {
                 tag["UEValue"] = UEValue;
             }
-
-            AllTrackedItems.Clear();
         }
 
         public override void LoadData(Item item, TagCompound tag) {
             if (!tag.TryGet("_MeleeCharge", out MeleeCharge)) {
                 MeleeCharge = 0;
-            }
-            if (!tag.TryGet("_NoDestruct", out NoDestruct)) {
-                NoDestruct = false;
             }
 
             if (HasCartridgeHolder) {
@@ -647,24 +610,6 @@ namespace CalamityOverhaul.Content
                 if (!tag.TryGet("UEValue", out UEValue)) {
                     UEValue = 0;
                 }
-            }
-
-            AllTrackedItems.Add(item);
-        }
-
-        internal static void CheckAllTrackedItems() {
-            if (++checkAllTrackedItems_cleanupTimer > 60) {
-                AllTrackedItems.RemoveWhere(item => !item.Alives());
-                checkAllTrackedItems_cleanupTimer = 0;
-            }
-        }
-
-        internal static void UpdateAllTrackedItems() {
-            foreach (var item in AllTrackedItems) {
-                if (!item.Alives()) {
-                    continue;
-                }
-                item.CWR().LegendData?.DoUpdate();
             }
         }
 
