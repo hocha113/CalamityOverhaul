@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2015,6 +2015,7 @@ TextContent: {
 		IconUI_Text6: Balance Tester
 		IconUI_Text7: View log
 		IconUI_Text8: Mod Wiki
+		IconUI_Text9: Musician
 		SPU_Text0: In
 		SPU_Text1: Perform final synthesis
 		SPU_Text2: Synthetic acquisition：

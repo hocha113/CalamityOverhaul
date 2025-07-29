@@ -139,8 +139,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     break;
             }
 
-            //最后做统一朝向修正
-            npc.rotation += MathHelper.Pi;
             generalTimer++;
             return false;
         }
@@ -171,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             SpriteEffects spriteEffects = SpriteEffects.None;
-            float drawRot = npc.rotation;
+            float drawRot = npc.rotation + MathHelper.Pi;
             if (npc.spriteDirection > 0) {
                 spriteEffects = SpriteEffects.FlipHorizontally;
             }

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     {
         internal static string ArtistText => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
         internal static string CodeAssistanceText => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
+        internal static string MusicianText => $" [{CWRLocText.GetTextValue("IconUI_Text9")}]";
         internal static string DonorText => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
         internal static string BalanceTesterText => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
         internal static string[] names = [];
@@ -30,9 +32,89 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static Asset<Texture2D> Logo = null;
         internal List<ProjItem> projectiles = [];
         internal List<EffectEntity> effectEntities = [];
+        internal List<NPCGhostItem> npcGhostItem = [];
         private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
+        private int projTimer => 4600;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
+
+        internal class NPCGhostItem : ProjItem
+        {
+            private float rotation;
+            private int frameConter;
+            private int frameIndex;
+
+            public NPCGhostItem(
+                int index, int timeLeft, float size, int alp, Color color,
+                Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime)
+                : base(index, timeLeft, size, alp, color, position, velocity, text, texture, startTime) {
+                
+            }
+
+            public override void AI(float sengs) {
+                if (--startTime > 0) {
+                    return;
+                }
+
+                position += velocity;
+                rotation = velocity.ToRotation() - MathHelper.PiOver2;
+                timeLeft--;
+
+                if (timeLeft > 60) {
+                    alp = Math.Min(alp + 5, 255);
+                }
+                else {
+                    alp = Math.Max(alp - 4, 0);
+                }
+
+                if (timeLeft <= 0 || alp <= 0) {
+                    active = false;
+                }
+
+                if (++frameConter > 5) {
+                    if (++frameIndex > 3) {
+                        frameIndex = 0;
+                    }
+                    frameConter = 0;
+                }
+            }
+
+            public override void Draw(SpriteBatch spriteBatch, float sengs) {
+                if (startTime > 0) {
+                    return;
+                }
+
+                // 用主材质或替代材质
+                Texture2D tex = index == 0 ? SpazmatismAI.SpazmatismAsset.Value : SpazmatismAI.RetinazerAsset.Value;
+                if (index == 2) {
+                    tex = SpazmatismAI.SpazmatismAltAsset.Value;
+                }
+                if (index == 3) {
+                    tex = SpazmatismAI.RetinazerAltAsset.Value;
+                }
+                Rectangle frameRect = tex.GetRectangle(frameIndex, 4);
+                SpriteEffects effects = velocity.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                Vector2 origin = frameRect.Size() / 2f;
+                float drawRot = rotation + MathHelper.PiOver2;
+                Color color = Color.White * (alp / 255f) * sengs;
+                // 残影轨迹模拟
+                float trailOpacity = 0.2f;
+                float trailScale = size * 0.7f;
+                for (int i = 0; i < 5; i++) {
+                    Vector2 offset = new Vector2(i * -velocity.X * 2f, i * -velocity.Y * 2f);
+                    Color trailColor = color * trailOpacity;
+                    spriteBatch.Draw(tex, position + offset, frameRect, trailColor,
+                        drawRot, origin, trailScale, effects, 0f);
+                    trailOpacity *= 0.75f;
+                    trailScale *= 0.95f;
+                }
+
+                // 主体绘制
+                Color colorFinal = color;
+                spriteBatch.Draw(tex, position, frameRect, colorFinal,
+                    drawRot, origin, size, effects, 0f);
+            }
+        }
 
         internal class ProjItem
         {
@@ -130,20 +212,33 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
 
                 if (timeLeft > 60) {
-                    if (alp < 255) {
-                        alp++;
-                    }
+                    alp = Math.Min(255, alp + 5);
                 }
                 else {
-                    if (alp > 0) {
-                        alp -= 4;
-                    }
+                    alp = Math.Max(0, alp - 4);
                 }
 
-                position += velocity;
+                // 波动 + 曲线偏移轨迹
+                float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + sengs + itemID) * 0.5f;
+                float curve = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.2f + sengs + itemID) * 0.3f;
+                Vector2 drift = new Vector2(curve, wave) * 0.8f;
+
+                // 旋转渐变
+                rotSpeed += (Main.rand.NextFloat() - 0.5f) * 0.002f;
+                rotSpeed = MathHelper.Clamp(rotSpeed, -0.03f, 0.03f);
                 rotation += rotSpeed;
+
+                // 漂浮
+                position += velocity + drift;
+
+                // 透明度闪动
+                if (timeLeft % 20 == 0 && timeLeft < 60) {
+                    alp -= Main.rand.Next(5, 15);
+                }
+
+                // 生命周期终止
                 timeLeft--;
-                if (timeLeft <= 0) {
+                if (timeLeft <= 0 || alp <= 0) {
                     active = false;
                 }
             }
@@ -181,6 +276,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "Cyrilly" + CodeAssistanceText,
             "瓶中微光" + CodeAssistanceText,
             "Monomon" + CodeAssistanceText,
+            "Ryusa" + MusicianText,
             "像樱花一样飘散吧" + BalanceTesterText,
             "洛千希" + BalanceTesterText,
             "闪耀£星辰" + BalanceTesterText,
@@ -265,6 +361,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "Fwoer'Vmoerd" + DonorText,
             "苍穹彼岸offest" + DonorText,
             "Кот Пельмень" + DonorText,
+            "Sodayo 的 Live" + DonorText,
             "我能看看你的小学吗" + DonorText,
             "烂柯棋缘" + DonorText,
             "华屋丘墟" + DonorText,
@@ -306,26 +403,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             try {
                 LoadName();
+
                 if (projectiles.Count < 50) {
                     Texture2D pts = CWRUtils.GetT2DValue(CWRConstant.Placeholder);
                     for (int i = 0; i < names.Length; i++) {
                         string textContent = names[i];
-                        ProjItem proj = new ProjItem(i, 4500, 1, 0, Color.White, itemPos, new Vector2(0, -1), textContent, pts, i * 90);
+                        ProjItem proj = new ProjItem(i, projTimer, 1, 0, Color.White, itemPos, new Vector2(0, -1), textContent, pts, i * 90);
                         projectiles.Add(proj);
                     }
                 }
-                if (effectEntities.Count < 10) {
-                    Texture2D effectValue;
-                    for (int i = 0; i < 10; i++) {
-                        int id = EffectEntity.SpwanItemID();
-                        effectValue = TextureAssets.Item[id].Value;
-                        EffectEntity effect = new EffectEntity(i, 390, 1, 0, Color.White
-                            , new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight))
-                            , new Vector2(0, -1), names[i], effectValue, i * 90, 0, 0, id, Main.rand.NextFloat(-0.03f, 0.03f));
-                        effectEntities.Add(effect);
-                    }
-                }
 
+                // === 更新 projectiles ===
                 foreach (ProjItem projItem in projectiles) {
                     if (projItem.index >= 0 && projItem.index < names.Length) {
                         projItem.text = names[projItem.index];
@@ -333,16 +421,31 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     if (projItem.active) {
                         continue;
                     }
+
                     projItem.color.R -= 25;
-                    projItem.timeLeft = 4500;
+                    projItem.timeLeft = projTimer;
                     projItem.position = itemPos;
                     projItem.alp = 0;
                     projItem.active = true;
                 }
+
+                if (effectEntities.Count < 10) {
+                    for (int i = 0; i < 10; i++) {
+                        int id = EffectEntity.SpwanItemID();
+                        Texture2D effectValue = TextureAssets.Item[id].Value;
+                        EffectEntity effect = new EffectEntity(i, 390, 1, 0, Color.White,
+                            new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight)),
+                            new Vector2(0, -1), names[i], effectValue, i * 90, 0, 0, id, Main.rand.NextFloat(-0.03f, 0.03f));
+                        effectEntities.Add(effect);
+                    }
+                }
+
+                // === 更新 effectEntities ===
                 foreach (EffectEntity effect in effectEntities) {
                     if (effect.active) {
                         continue;
                     }
+
                     int id = EffectEntity.SpwanItemID();
                     Texture2D effectValue = TextureAssets.Item[id].Value;
                     effect.itemID = id;
@@ -355,6 +458,58 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     effect.alp = 0;
                     effect.active = true;
                 }
+
+                // === 初始化 NPCGhostItem ===
+                if (npcGhostItem.Count < 1) {
+                    Texture2D tex = TextureAssets.Npc[NPCID.Spazmatism].Value;
+                    Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; // 示例替代图
+                    Vector2 npcStartPosition;
+                    Vector2 npcVelocity;
+                    if (Main.rand.NextBool()) {
+                        npcStartPosition = new Vector2(Main.screenWidth + 100, Main.rand.Next(150, Main.screenHeight - 150));
+                        npcVelocity = new Vector2(-Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
+                    }
+                    else {
+                        npcStartPosition = new Vector2(-100, Main.rand.Next(150, Main.screenHeight - 150));
+                        npcVelocity = new Vector2(Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
+                    }
+                    NPCGhostItem ghost = new NPCGhostItem(
+                        index: Main.rand.Next(4),
+                        timeLeft: Main.rand.Next(1400, 1600),
+                        size: 1.2f,
+                        alp: 0,
+                        color: Color.White,
+                        position: npcStartPosition,
+                        velocity: npcVelocity,
+                        text: "npc",
+                        texture: null,
+                        startTime: Main.rand.Next(120)
+                    );
+                    npcGhostItem.Add(ghost);
+                }
+
+                // === 更新 NPCGhostItem ===
+                foreach (NPCGhostItem ghost in npcGhostItem) {
+                    if (ghost.active) {
+                        continue;
+                    }
+
+                    ghost.index = Main.rand.Next(4);
+                    ghost.startTime = Main.rand.Next(60, 360);
+                    ghost.timeLeft = Main.rand.Next(1400, 1600);
+                    ghost.alp = 0;
+                    ghost.active = true;
+                    if (Main.rand.NextBool()) {
+                        ghost.position = new Vector2(Main.screenWidth + 100, Main.rand.Next(150, Main.screenHeight - 150));
+                        ghost.velocity = new Vector2(-Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
+                    }
+                    else {
+                        ghost.position = new Vector2(-100, Main.rand.Next(150, Main.screenHeight - 150));
+                        ghost.velocity = new Vector2(Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
+                    }
+                    ghost.text = "npc";
+                }
+
             } catch {
                 _sengs = 0;
                 _active = false;
@@ -379,6 +534,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
             foreach (EffectEntity effect in effectEntities) {
                 effect.AI(_sengs);
+            }
+            foreach (NPCGhostItem npc in npcGhostItem) {
+                npc.AI(_sengs);
             }
 
             //int mouS = DownStartL();
@@ -415,6 +573,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             foreach (EffectEntity effect in effectEntities) {
                 effect.Draw(spriteBatch, _sengs);
+            }            
+            foreach (NPCGhostItem npc in npcGhostItem) {
+                npc.Draw(spriteBatch, _sengs);
             }
             foreach (ProjItem projItem in projectiles) {
                 projItem.Draw(spriteBatch, _sengs);
