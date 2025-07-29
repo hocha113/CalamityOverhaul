@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public virtual void SendLegend(Item item, BinaryWriter writer) {
-
+            
         }
 
         public virtual void ReceiveLegend(Item item, BinaryReader reader) {
