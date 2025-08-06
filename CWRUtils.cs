@@ -61,7 +61,7 @@ namespace CalamityOverhaul
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
         //    try {
         //        int columnIndex = 0;
-        //        using StreamWriter sw = new(path);
+        //        using System.IO.StreamWriter sw = new(path);
         //        sw.Write("string[] fullItems = new string[] {");
         //        foreach (Item item in items) {
         //            columnIndex++;
@@ -78,11 +78,11 @@ namespace CalamityOverhaul
         //        sw.Write("};");
         //    } catch (UnauthorizedAccessException) {
         //        CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
-        //    } catch (DirectoryNotFoundException) {
+        //    } catch (System.IO.DirectoryNotFoundException) {
         //        CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
-        //    } catch (PathTooLongException) {
+        //    } catch (System.IO.PathTooLongException) {
         //        CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
-        //    } catch (IOException) {
+        //    } catch (System.IO.IOException) {
         //        CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
         //    } catch (Exception e) {
         //        CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");

@@ -404,13 +404,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 int maxNPCs = totalSegments + maxProbes;
                 int numNPCs = 0;
                 for (int i = 0; i < Main.maxNPCs; i++) {
-                    if (Main.npc[i].active) {
-                        numNPCs++;
-                        if (numNPCs >= maxNPCs) {
-                            regenerateProbeSegment = false;
-                            break;
-                        }
+                    if (!Main.npc[i].active) {
+                        continue;
                     }
+                    numNPCs++;
+                    if (numNPCs < maxNPCs) {
+                        continue;
+                    }
+                    regenerateProbeSegment = false;
+                    break;
                 }
             }
 
@@ -622,7 +624,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 rectangle = value.GetRectangle();
             }
 
-            if (time < DestroyerHeadAI.StretchTime) {
+            if (time < DestroyerHeadAI.StretchTime || npc.ai[2] == 1) {
                 value = Body_Stingless.Value;
                 spriteBatch.Draw(value, npc.Center - Main.screenPosition
                 , null, drawColor, npc.rotation + MathHelper.Pi, value.Size() / 2, npc.scale, SpriteEffects.None, 0);

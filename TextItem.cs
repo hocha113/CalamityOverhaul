@@ -39,6 +39,10 @@ namespace CalamityOverhaul
             return false;
         }
 
+        //public override void SetStaticDefaults() {
+        //    VaultUtils.LoadenNPCStaticImmunityData(NPCID.TheDestroyer, [NPCID.TheDestroyerBody, NPCID.TheDestroyerTail], 10);
+        //}
+
         public override void SetDefaults() {
             Item.width = 80;
             Item.height = 80;

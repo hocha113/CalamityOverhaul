@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     npc.velocity = Vector2.Lerp(npc.velocity, npc.SafeDirectionTo(destination) * hoverSpeed, 0.1f);
                     npc.rotation = npc.AngleTo(target.Center);
 
-                    if (npc.WithinRange(destination, npc.velocity.Length() * 1.35f)) {
+                    if (npc.WithinRange(destination, npc.velocity.Length() * 1.65f)) {
                         npc.velocity = npc.SafeDirectionTo(target.Center) * -7f;
                         state = 1f;
                         attackTimer = 0f;

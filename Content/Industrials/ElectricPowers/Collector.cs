@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            Chest = Position.FindClosestChest(maxFindChestMode, false, (Chest c) => c.CanItemBeAddedToChest());
+            Chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest());
             if (Chest == null && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
