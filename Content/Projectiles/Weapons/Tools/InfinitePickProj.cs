@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
     internal class InfinitePickProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public List<int> dorpTypes = [];
+        public List<int> dropTypes = [];
         private bool spwan;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -39,6 +39,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             }
             else {
                 HandleProjectileAIForType0();
+            }
+
+            foreach (var item in Main.ActiveItems) {
+                if (item.Hitbox.Intersects(Projectile.Hitbox)) {
+                    item.active = false;
+                }
             }
             spwan = true;
         }
@@ -90,12 +96,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
         private void ProcessTile(Tile tile, Vector2 tilePos) {
             tile.LiquidAmount = 0;
             tilePos /= 16;//坐标默认为世界实体坐标，所以需要除以16进行换算
+            if (VaultUtils.TryKillChest(tilePos.ToPoint16(), out var chestItems, true, false, false)) {
+                foreach (var item in chestItems) {
+                    dropTypes.Add(item.type);
+                }
+            }
             //判断是否进行挖掘
             if (tile.HasTile && WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
                 if (VaultUtils.IsTopLeft((int)tilePos.X, (int)tilePos.Y, out _)) {
-                    int dorptype = tile.GetTileDorp();
+                    int dorptype = tile.GetTileDrop();
                     if (dorptype != 0) {
-                        dorpTypes.Add(dorptype);
+                        dropTypes.Add(dorptype);
                     }
                 }
                 WorldGen.KillTile((int)tilePos.X, (int)tilePos.Y, noItem: true);
@@ -103,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             //锤子形态下才能拆墙
             if (Projectile.ai[0] == 0 && tile.WallType != 0) {
                 if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
-                    dorpTypes.Add(wallValue);
+                    dropTypes.Add(wallValue);
                 }
                 tile.WallType = 0;
             }
@@ -140,7 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 
             Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
             DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
-            if (dorpTypes.Count <= 0 || darkMatterBall == null) {
+            if (dropTypes.Count <= 0 || darkMatterBall == null) {
                 return;
             }
 
@@ -153,7 +164,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 , ModContent.ProjectileType<SpanDMBall>(), 0, 0, Projectile.owner, ai1: Projectile.ai[0]);
             Projectile projectile = Main.projectile[proj];
             if (projectile.ModProjectile is SpanDMBall span) {
-                foreach (var id in dorpTypes) {
+                foreach (var id in dropTypes) {
                     darkMatterBall.DorpItems.Add(new Item(id));
                 }
                 span.darkMatterBall = darkMatterBall;

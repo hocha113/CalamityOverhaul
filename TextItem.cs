@@ -36,7 +36,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         //public override void SetStaticDefaults() {
@@ -89,6 +89,10 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            VaultUtils.TryKillChest(Main.MouseWorld.ToTileCoordinates16(), out var items);
+            foreach (var item in items) {
+                VaultUtils.SpwanItem(player.FromObjectGetParent(), Main.MouseWorld.GetRectangle(32), item);
+            }
             //if (Main.MouseWorld.ToTileCoordinates16().TryFindClosestChest(out var c)) {
             //    Item item = new Item(ItemID.Mushroom);
             //    if (c.CanItemBeAddedToChest(item)) {
