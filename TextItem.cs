@@ -1,10 +1,17 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Structures.DatIO;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul
 {
@@ -85,14 +92,28 @@ namespace CalamityOverhaul
             return false;
         }
 
+        public override bool AltFunctionUse(Player player) {
+            return true;
+        }
+
         public override void HoldItem(Player player) {
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            VaultUtils.TryKillChest(Main.MouseWorld.ToTileCoordinates16(), out var items);
-            foreach (var item in items) {
-                VaultUtils.SpwanItem(player.FromObjectGetParent(), Main.MouseWorld.GetRectangle(32), item);
-            }
+            //Main.MouseWorld.ToTileCoordinates16().Domp();
+            //if (player.altFunctionUse == 2) {
+            //    MySaveStructure.DoSave<MySaveStructure>();
+            //}
+            //else {
+            //    MySaveStructure.DoLoad<MySaveStructure>();
+            //}
+            14.Domp();
+            JunkmanBase.DoLoad<JunkmanBase>();
+            /*
+            //VaultUtils.TryKillChest(Main.MouseWorld.ToTileCoordinates16(), out var items);
+            //foreach (var item in items) {
+            //    VaultUtils.SpwanItem(player.FromObjectGetParent(), Main.MouseWorld.GetRectangle(32), item);
+            //}
             //if (Main.MouseWorld.ToTileCoordinates16().TryFindClosestChest(out var c)) {
             //    Item item = new Item(ItemID.Mushroom);
             //    if (c.CanItemBeAddedToChest(item)) {
@@ -151,8 +172,21 @@ namespace CalamityOverhaul
             //        }
             //    }
             //}
-            //JunkmanBase.Spawn();
+            //JunkmanBase.Spawn();*/
             return true;
         }
     }
+
+    //internal class MySaveStructure : SaveStructure
+    //{
+    //    public override string SavePath => Path.Combine(VaultSave.RootPath, "Structure", Mod.Name, $"JunkmanBase.nbt");
+    //    public override void SaveData(TagCompound tag) {
+    //        SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
+    //    }
+
+    //    public override void LoadData(TagCompound tag) {
+    //        LoadRegion(tag, Main.MouseWorld.ToTileCoordinates16());
+    //        TagCache.Invalidate(SavePath);
+    //    }
+    //}
 }

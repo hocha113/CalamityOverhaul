@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Structures
             if (Main.getGoodWorld) {
                 SpawnWGGCollectorTile();
             }
-            JunkmanBase.Spawn();
-            RocketHut.Spawn();
+            JunkmanBase.DoLoad<JunkmanBase>();
+            RocketHut.DoLoad<RocketHut>();
         }
 
         public static void Shuffle<T>(IList<T> list) {
