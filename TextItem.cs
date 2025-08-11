@@ -1,17 +1,9 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Boss;
-using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Structures.DatIO;
-using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul
 {
@@ -63,7 +55,7 @@ namespace CalamityOverhaul
             Item.autoReuse = true;
             Item.shootSpeed = 8f;
             Item.shoot = ProjectileID.PurificationPowder;
-            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
+            Item.value = 7;
             Item.rare = ItemRarityID.Yellow;
         }
 
@@ -107,8 +99,7 @@ namespace CalamityOverhaul
             //else {
             //    MySaveStructure.DoLoad<MySaveStructure>();
             //}
-            14.Domp();
-            JunkmanBase.DoLoad<JunkmanBase>();
+            //RocketHut.DoLoad<RocketHut>();
             /*
             //VaultUtils.TryKillChest(Main.MouseWorld.ToTileCoordinates16(), out var items);
             //foreach (var item in items) {

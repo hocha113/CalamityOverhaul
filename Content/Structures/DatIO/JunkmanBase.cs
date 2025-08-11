@@ -14,12 +14,15 @@ namespace CalamityOverhaul.Content.Structures.DatIO
     {
         public override string SavePath => Path.Combine(StructurePath, "JunkmanBase_v1.nbt");
         public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/JunkmanBase_v1.nbt", SavePath);
-        public override void SaveData(TagCompound tag) { }
+        public override void SaveData(TagCompound tag) 
+            => SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
         public override void LoadData(TagCompound tag) {
+            RegionSaveData region = tag.GetRegionSaveData();
             //初始化起始位置
             Point16 startPos = new Point16(Main.spawnTileX + WorldGen.genRand.Next(-16, 16) * WorldGen.GetWorldSize() * 16
                 , Main.spawnTileY + 420 + (WorldGen.GetWorldSize() * 100) + 20 + (WorldGen.GetWorldSize() * 2) + WorldGen.genRand.Next(116));
-            LoadChest(LoadRegion(tag, startPos), startPos);
+            startPos = FindSafePlacement(region.Size, startPos, 300, 300, 100, (Tile tile) => tile.TileType < TileID.Count && tile.LiquidAmount == 0);
+            LoadChest(LoadRegion(region, startPos), startPos);
             TagCache.Invalidate(SavePath);//释放缓存
         }
 
