@@ -1012,8 +1012,10 @@ Items: {
 		DisplayName: Electric Mini Rocket
 		Tooltip:
 			'''
-			Place on the ground and right-click to initiate flight
-			Hold left and right mouse buttons in the air to adjust flight direction
+			Place it and right-click to start flying.
+			Use the left and right arrow keys mid-air to adjust direction.
+			Hold the down arrow key to descend slowly. Flight consumes electricity gradually.
+			“Made in the Soviet Union, sturdy and reliable, it almost made it to the moon.”
 			'''
 	}
 

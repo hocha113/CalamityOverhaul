@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -11,6 +12,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -49,13 +51,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class ElectricMinRocketHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
+        private ref float UEValue => ref Projectile.ai[0]; 
         public override void SetDefaults() => Projectile.width = Projectile.height = 32;
         public override void AI() {
+            Projectile.timeLeft = 2;
             Owner.Center = Projectile.Center;
             Owner.CWR().RideElectricMinRocket = true;
-            Projectile.velocity = new Vector2(Owner.velocity.X / 6, -6);
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(Owner.velocity.X / 3, Owner.controlDown ? 2 : -6), 0.1f);
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Owner.fullRotation = Projectile.velocity.X / 2f;
+            Owner.fullRotation = Projectile.velocity.X / 4f;
             Owner.fullRotationOrigin = Owner.Size / 2;
             //卸载掉玩家的所有钩爪
             Owner.RemoveAllGrapplingHooks();
@@ -67,14 +71,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.localAI[0] = 0;
             }
 
-            if (Projectile.position.Y < 800) {
+            if (Projectile.position.Y < 800 || UEValue <= 0) {
                 Projectile.Kill();
             }
 
             if (!VaultUtils.isServer) {
                 Vector2 spanPos = Owner.Center - new Vector2(Owner.direction * 20, 0).RotatedBy(Owner.fullRotation);
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = Projectile.velocity * -6,
+                    Velocity = new Vector2(Projectile.velocity.X * -6, MathHelper.Max(6f, Projectile.velocity.Y * -6)),
                     Position = spanPos,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
                     maxLifeTime = 18,
@@ -83,6 +87,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 };
                 PRTLoader.AddParticle(lavaFire);
             }
+
+            UEValue -= 0.02f;
+
+            UEValue = MathHelper.Clamp(UEValue, 0, 600);
         }
 
         public override void OnKill(int timeLeft) {
@@ -91,7 +99,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SpawnDust();
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Item item = new Item(ModContent.ItemType<ElectricMinRocket>());
-                item.CWR().UEValue = Projectile.ai[0] - 200;
+                item.CWR().UEValue = Projectile.ai[0];
                 if (item.CWR().UEValue < 0) {
                     item.CWR().UEValue = 0;
                 }
@@ -138,7 +146,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             gore.velocity += velocityOffset;
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) {
+            Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -60) - Main.screenPosition;
+            int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (UEValue / 600f));
+            // 绘制温度相关的图像
+            Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
+            Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
+
+            if (Main.keyState.PressingShift()) {
+                string textContent = (((int)UEValue) + "/" + ((int)600f) + "UE").ToString();
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(textContent);
+                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, textContent
+                            , drawPos.X - textSize.X / 2 + 18, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 0.6f);
+            }
+            return false;
+        }
     }
 
     internal class ElectricMinRocketTile : ModTile
