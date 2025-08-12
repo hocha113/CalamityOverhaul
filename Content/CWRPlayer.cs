@@ -99,6 +99,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool RideElectricMinRocket;
         /// <summary>
+        /// 卸乘电动火箭的恢复周期
+        /// </summary>
+        public int RideElectricMinRocketRecoverStateTime;
+        /// <summary>
         /// 手持状态
         /// </summary>
         public int HeldStyle;
@@ -339,6 +343,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PreUpdateMovement() {
+            if (RideElectricMinRocketRecoverStateTime > 0) {
+                RideElectricMinRocketRecoverStateTime--;
+                Player.fullRotation = MathHelper.Lerp(Player.fullRotation, 0, 0.1f);
+                if (RideElectricMinRocketRecoverStateTime == 0) {
+                    Player.fullRotation = 0;
+                }
+            }
+
             if (PendingDashVelocity.HasValue) {
                 Player.velocity = PendingDashVelocity.Value;
                 PendingDashVelocity = null;

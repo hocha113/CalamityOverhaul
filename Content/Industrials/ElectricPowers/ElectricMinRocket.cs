@@ -6,6 +6,7 @@ using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System.IO;
 using Terraria;
@@ -41,6 +42,37 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.CWR().ConsumeUseUE = 600;
         }
 
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool CanUseItem(Player player) {
+            if (player.altFunctionUse == 0) {
+                Item.createTile = ModContent.TileType<ElectricMinRocketTile>();
+            }
+            else {
+                Item.createTile = -1;
+            }
+            return player.CountProjectilesOfID<ElectricMinRocketHeld>() == 0;
+        }
+
+        public override bool ConsumeItem(Player player) => player.altFunctionUse == 0;
+
+        public override bool? UseItem(Player player) {
+            if (player.altFunctionUse == 2) {
+                if (Item.CWR().UEValue <= 0) {
+                    CombatText.NewText(player.Hitbox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    Item.createTile = ModContent.TileType<ElectricMinRocketTile>();
+                    return true;
+                }
+
+                Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
+                , ModContent.ProjectileType<ElectricMinRocketHeld>(), 0, 0, player.whoAmI, Item.CWR().UEValue);
+                Item.TurnToAir();
+                return false;
+            }
+            return null;
+        }
+
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
             spriteBatch.Draw(Glow.Value, Item.Center - Main.screenPosition
@@ -51,13 +83,39 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class ElectricMinRocketHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
-        private ref float UEValue => ref Projectile.ai[0]; 
+        private ref float UEValue => ref Projectile.ai[0];
+        private bool ControlDown {
+            get => Projectile.ai[1] == 1;
+            set => Projectile.ai[1] = value ? 1 : 0;
+        }
         public override void SetDefaults() => Projectile.width = Projectile.height = 32;
         public override void AI() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                if (ControlDown != Owner.controlDown) {
+                    Projectile.netUpdate = true;
+                }
+
+                ControlDown = Owner.controlDown;
+
+                if (Main.keyState[Keys.Space] == KeyState.Down) {
+                    Projectile.ai[2] = 1f;
+                    Projectile.netUpdate = true;
+                    Projectile.Kill();
+                    return;
+                }
+            }
+
+            if (ControlDown) {
+                Projectile.ai[2] = 1f;
+            }
+            else {
+                Projectile.ai[2] = 0f;
+            }
+
             Projectile.timeLeft = 2;
             Owner.Center = Projectile.Center;
             Owner.CWR().RideElectricMinRocket = true;
-            Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(Owner.velocity.X / 3, Owner.controlDown ? 2 : -6), 0.1f);
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(Owner.velocity.X / 3, ControlDown ? 2 : -6), 0.1f);
             Projectile.rotation = Projectile.velocity.ToRotation();
             Owner.fullRotation = Projectile.velocity.X / 4f;
             Owner.fullRotationOrigin = Owner.Size / 2;
@@ -94,9 +152,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void OnKill(int timeLeft) {
-            Owner.fullRotation = 0;
-            Projectile.Explode();
-            SpawnDust();
+            if (Projectile.ai[2] == 0) {
+                Projectile.Explode();
+                SpawnDust();
+            }
+
+            Owner.CWR().RideElectricMinRocketRecoverStateTime = 30;
+
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Item item = new Item(ModContent.ItemType<ElectricMinRocket>());
                 item.CWR().UEValue = Projectile.ai[0];
@@ -210,7 +272,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return false;
             }
 
-            if (tp.MachineData.UEvalue < 200) {
+            if (tp.MachineData.UEvalue <= 0) {
                 CombatText.NewText(tp.HitBox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
                 SoundEngine.PlaySound(SoundID.MenuClose);
                 return false;

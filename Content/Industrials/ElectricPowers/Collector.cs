@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private Item graspItem;
         private bool spawn;
-        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
