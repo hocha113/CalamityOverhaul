@@ -108,12 +108,12 @@ namespace CalamityOverhaul.Content.Tiles
 
             ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
             if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
-                SupertableUI.tramModuleEntity ??= tram;
+                SupertableUI.TramTP ??= tram;
                 SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
             }
             else {
                 playerTramType = tram.WhoAmI;
-                SupertableUI.tramModuleEntity = tram;
+                SupertableUI.TramTP = tram;
                 SupertableUI.Instance.Active = true;
                 SupertableUI.Instance.downSengsTime = 5;
                 if (SupertableUI.Instance.Active && !Main.playerInventory) {

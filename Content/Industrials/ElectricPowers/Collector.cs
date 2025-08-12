@@ -154,6 +154,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int ArmIndex0 = -1;
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
+        public override void SetBattery() {
+            //给予更多的绘制扩宽，因为爪手依赖TP的绘制，避免超出屏幕后爪手消失
+            DrawExtendMode = 2200;
+        }
+
         public override void SendData(ModPacket data) {
             base.SendData(data);
             data.Write(TagItemSign);

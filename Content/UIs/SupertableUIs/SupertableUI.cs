@@ -26,13 +26,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         private static RecipeSidebarListViewUI RecipeSidebarListView;
 
-        public static string[][] RpsDataStringArrays;
+        public static string[][] RpsDataStringArrays { get; set; } = [];
 
-        public static List<string[]> OtherRpsData_ZenithWorld_StringList = [];
+        public static List<string[]> OtherRpsData_ZenithWorld_StringList { get; set; } = [];
 
-        public static List<string[]> ModCall_OtherRpsData_StringList = [];
+        public static List<string[]> ModCall_OtherRpsData_StringList { get; set; } = [];
 
-        public static List<RecipeData> AllRecipes = [];
+        public static List<RecipeData> AllRecipes { get; set; } = [];
+
+        public readonly static float[] itemHoverSengses = new float[maxCellNumX * maxCellNumY];
 
         public string[] StaticFullItemNames;
 
@@ -54,7 +56,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public Rectangle closeRec;
 
-        public Vector2 topLeft => DrawPosition + new Vector2(16, 30);
+        public Vector2 TopLeft => DrawPosition + new Vector2(16, 30);
 
         public const int cellWid = 48;
 
@@ -66,13 +68,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 配方表最大数量，不包括天顶世界的特殊配方内容
         /// </summary>
-        public static int AllRecipesVanillaContentCount;
+        public static int AllRecipesVanillaContentCount { get; private set; }
 
-        public static TramModuleTP tramModuleEntity;
+        public static TramModuleTP TramTP {  get; set; }
 
         private Point mouseInCellCoord;
 
-        private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
+        private int InCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
 
         internal float _sengs;
 
@@ -94,16 +96,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #endregion
 
         internal void tpEntityLoadenItems() {
-            if (tramModuleEntity != null && tramModuleEntity.Active) {
-                if (tramModuleEntity.items == null) {
-                    tramModuleEntity.items = items;
+            if (TramTP != null && TramTP.Active) {
+                if (TramTP.items == null) {
+                    TramTP.items = items;
                 }
                 else {
-                    items = tramModuleEntity.items;
+                    items = TramTP.items;
                 }
 
                 if (!VaultUtils.isSinglePlayer) {
-                    tramModuleEntity.SendData();
+                    TramTP.SendData();
                 }
             }
         }
@@ -114,9 +116,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         void ICWRLoader.UnLoadData() {
-            tramModuleEntity = null;
-            RpsDataStringArrays = null;
+            TramTP = null;
+            RecipeSidebarListView = null;
+            RpsDataStringArrays = [];
+            OtherRpsData_ZenithWorld_StringList = [];
             ModCall_OtherRpsData_StringList = [];
+            AllRecipes = [];
         }
 
         public static void LoadRecipe() {
@@ -192,12 +197,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 downSengsTime--;
             }
 
-            Vector2 inUIMousePos = MousePosition - topLeft;
+            Vector2 inUIMousePos = MousePosition - TopLeft;
             int mouseXGrid = (int)(inUIMousePos.X / cellWid);
             int mouseYGrid = (int)(inUIMousePos.Y / cellHig);
             mouseInCellCoord = new Point(mouseXGrid, mouseYGrid);
-            UIHitBox = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
-            PutItemCellRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
+            UIHitBox = new Rectangle((int)TopLeft.X, (int)TopLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
+            PutItemCellRec = new Rectangle((int)TopLeft.X, (int)TopLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
             inputRec = new Rectangle((int)(DrawPosition.X + 555), (int)(DrawPosition.Y + 215), 92, 90);
             closeRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), 30, 30);
             Rectangle mouseRec = MouseHitBox;
@@ -282,32 +287,46 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 player.mouseInterface = true;
                 if (hoverInPutItemCellPage) {
                     if (museS == 1) {
-                        if (items[inCoordIndex] == null) {
-                            items[inCoordIndex] = new Item();
+                        if (items[InCoordIndex] == null) {
+                            items[InCoordIndex] = new Item();
                         }
                         KeyboardState state = Keyboard.GetState();
                         if (state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift)) {
-                            GatheringItem2(inCoordIndex, ref Main.mouseItem);
+                            GatheringItem2(InCoordIndex, ref Main.mouseItem);
                         }
                         else {
-                            HandleItemClick(ref items[inCoordIndex], ref Main.mouseItem);
+                            HandleItemClick(ref items[InCoordIndex], ref Main.mouseItem);
                         }
                         FinalizeCraftingResult();
                     }
 
                     if (CWRKeySystem.TOM_GatheringItem.Current) {
-                        GatheringItem(inCoordIndex, ref Main.mouseItem);
+                        GatheringItem(InCoordIndex, ref Main.mouseItem);
                         FinalizeCraftingResult();
                     }
 
                     if (museSR == 1) {
-                        HandleRightClick(ref items[inCoordIndex], ref Main.mouseItem);
+                        HandleRightClick(ref items[InCoordIndex], ref Main.mouseItem);
                         FinalizeCraftingResult();
                     }
 
                     if (museSR == 3) {
-                        DragDorg(ref items[inCoordIndex], ref Main.mouseItem);
+                        DragDorg(ref items[InCoordIndex], ref Main.mouseItem);
                         FinalizeCraftingResult();
+                    }
+
+                    if (InCoordIndex >= 0 && InCoordIndex < itemHoverSengses.Length) {
+                        for (int i = 0; i < itemHoverSengses.Length; i++) {
+                            if (i == InCoordIndex) {
+                                if (itemHoverSengses[i] < 1f) {
+                                    itemHoverSengses[i] += 0.1f;
+                                }
+                            }
+                            else if (itemHoverSengses[i] > 0f) {
+                                itemHoverSengses[i] -= 0.1f;
+                            }
+                            itemHoverSengses[i] = MathHelper.Clamp(itemHoverSengses[i], 0, 1f);
+                        }
                     }
                 }
             }
@@ -369,7 +388,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Vector2 ArcCellPos(int index) {
             int y = index / maxCellNumX;
             int x = index - (y * maxCellNumX);
-            return (new Vector2(x, y) * new Vector2(cellWid, cellHig)) + topLeft;
+            return (new Vector2(x, y) * new Vector2(cellWid, cellHig)) + TopLeft;
         }
 
         /// <summary>
@@ -731,7 +750,6 @@ End:;
             if (item != null && item.type != ItemID.None) {
                 Rectangle rectangle = Main.itemAnimations[item.type] != null ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
                 Vector2 vector = rectangle.Size();
-                Vector2 size = TextureAssets.Item[item.type].Value.Size();
                 if (offset == default) {
                     offset = new Vector2(cellWid, cellHig) / 2;
                 }
@@ -746,7 +764,7 @@ End:;
                 }
 
                 if (item.stack > 1) {
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), 1f);
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), overSlp);
                 }
             }
         }
@@ -765,8 +783,7 @@ End:;
                     if (previewItems[i] != null) {
                         Item item = previewItems[i];
                         if (item != null) {
-                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: 0.25f * _sengs);
-                            //Main.DrawItemIcon(spriteBatch, item, ArcCellPos(i), Color.White * 0.25f, 1);
+                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: 0.25f * _sengs, overSlp: 1f + itemHoverSengses[i] * 0.2f);
                         }
                     }
                 }
@@ -776,7 +793,7 @@ End:;
                     if (items[i] != null) {
                         Item item = items[i];
                         if (item != null) {
-                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: _sengs);
+                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: _sengs, overSlp: 1f + itemHoverSengses[i] * 0.2f);
                         }
                     }
                 }
@@ -789,14 +806,14 @@ End:;
             }
             spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
 
-            if (hoverInPutItemCellPage && inCoordIndex >= 0 && inCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
-                Item overItem = items[inCoordIndex];
+            if (hoverInPutItemCellPage && InCoordIndex >= 0 && InCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
+                Item overItem = items[InCoordIndex];
                 if (overItem == null)
                     overItem = new Item();
                 Main.HoverItem = overItem.Clone();
                 Main.hoverItemName = overItem.Name;
-                if (Main.mouseItem.type == ItemID.None && items[inCoordIndex]?.type == ItemID.None && previewItems != null) {
-                    Item previewItem = previewItems[inCoordIndex];
+                if (Main.mouseItem.type == ItemID.None && items[InCoordIndex]?.type == ItemID.None && previewItems != null) {
+                    Item previewItem = previewItems[InCoordIndex];
                     Main.HoverItem = previewItem.Clone();
                     Main.hoverItemName = previewItem.Name;
                 }
