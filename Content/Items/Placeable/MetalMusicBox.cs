@@ -40,35 +40,39 @@ namespace CalamityOverhaul.Content.Items.Placeable
             AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
         }
 
-        public override void MouseOver(int i, int j) {
-            Player localPlayer = Main.LocalPlayer;
-            localPlayer.noThrow = 2;
-            localPlayer.cursorItemIconEnabled = true;
-            localPlayer.cursorItemIconID = TileLoader.GetItemDropFromTypeAndStyle(Type);
-        }
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile<MetalMusicBox>();
 
         public override bool CreateDust(int i, int j, ref int type) => false;
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
-            if (Main.gamePaused || !Main.instance.IsActive || (Lighting.UpdateEveryFrame && !Main.rand.NextBool(4))) {
+            if (Main.gamePaused || !Main.instance.IsActive 
+                || (Lighting.UpdateEveryFrame && !Main.rand.NextBool(4))) {
                 return;
             }
+
             Tile tile = Main.tile[i, j];
-            if (tile.TileFrameX == 36 && tile.TileFrameY % 36 == 0
-                && (int)Main.timeForVisualEffects % 7 == 0 && Main.rand.NextBool(3)) {
-                int goreType = Main.rand.Next(570, 573);
-                Vector2 position = new Vector2(i * 16 + 8, j * 16 - 8);
-                Vector2 velocity = new Vector2(Main.WindForVisuals * 2f, -0.5f);
-                velocity.X *= 1f + Main.rand.NextFloat(-0.5f, 0.5f);
-                velocity.Y *= 1f + Main.rand.NextFloat(-0.5f, 0.5f);
-                if (goreType == 572) {
-                    position.X -= 8f;
-                }
-                if (goreType == 571) {
-                    position.X -= 4f;
-                }
-                Gore.NewGore(new EntitySource_TileUpdate(i, j), position, velocity, goreType, 0.8f);
+            if (tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0 
+                || (int)Main.timeForVisualEffects % 7 != 0 || !Main.rand.NextBool(3)) {
+                return;
             }
+
+            int goreType = Main.rand.Next(570, 573);
+            float wind = Main.WindForVisuals * 2f;
+            float randX = 1f + Main.rand.NextFloat(-0.5f, 0.5f);
+            float randY = 1f + Main.rand.NextFloat(-0.5f, 0.5f);
+
+            Vector2 position = new(i * 16 + 8, j * 16 - 8);
+
+            if (goreType == 572) {
+                position.X -= 8f;
+            }
+            else if (goreType == 571) {
+                position.X -= 4f;
+            }
+
+            Vector2 velocity = new(wind * randX, -0.5f * randY);
+
+            Gore.NewGore(new EntitySource_TileUpdate(i, j), position, velocity, goreType, 0.8f);
         }
     }
 }
