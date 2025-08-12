@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             //判断是否进行挖掘
             if (tile.HasTile && WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
                 if (VaultUtils.IsTopLeft((int)tilePos.X, (int)tilePos.Y, out _)) {
-                    int dorptype = tile.GetTileDrop();
+                    int dorptype = tile.GetTileDrop((int)tilePos.X, (int)tilePos.Y);
                     if (dorptype != 0) {
                         dropTypes.Add(dorptype);
                     }

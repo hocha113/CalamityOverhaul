@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.RemakeItems;
-using CalamityOverhaul.Content.TileModify.Core;
 using System.IO;
 using Terraria.ModLoader;
 
@@ -37,7 +37,7 @@ namespace CalamityOverhaul
                 HandlerCanOverride.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
             }
             else if (type == CWRMessageType.KillTileEntity) {
-                TileModifyLoader.HandlerNetKillTE(reader, whoAmI);
+                ModifyTurretLoader.HandlerNetKillTE(reader, whoAmI);
             }
         }
     }

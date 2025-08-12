@@ -75,14 +75,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool EndSkillEffectStartBool;
         /// <summary>
-        /// 是否受伤
-        /// </summary>
-        public bool OnHit;
-        /// <summary>
-        /// 是否激活锈蚀勋章效果
-        /// </summary>
-        public bool RustyMedallion_Value;
-        /// <summary>
         /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同
         /// </summary>
         public bool UIMouseInterface => Player.mouseInterface;
@@ -113,7 +105,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// Tramg归属
         /// </summary>
-        public int TETramContrType = -1;
+        public int TramTPContrType = -1;
         /// <summary>
         /// Compressor归属
         /// </summary>
@@ -214,7 +206,7 @@ namespace CalamityOverhaul.Content
 
         public override void Initialize() {
             SwingIndex = 0;
-            TETramContrType = 0;
+            TramTPContrType = 0;
             ReceivingPlatformTime = 0;
             DontUseItemTime = 0;
             ThermalGenerationActiveTime = 0;
@@ -231,11 +223,9 @@ namespace CalamityOverhaul.Content
             KreloadTimeIncrease = 1;
             HeldStyle = -1;
             ReloadingRatio = 0;
-            OnHit = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
-            RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
@@ -244,17 +234,21 @@ namespace CalamityOverhaul.Content
         }
 
         public override void SaveData(TagCompound tag) {
-            tag["UnderstandWindGriven"] = UnderstandWindGriven;
-            tag["UnderstandWindGrivenMK2"] = UnderstandWindGrivenMK2;
+            try {
+                tag["UnderstandWindGriven"] = UnderstandWindGriven;
+                tag["UnderstandWindGrivenMK2"] = UnderstandWindGrivenMK2;
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"CWRPlayer.SaveData An Error Has Cccurred: {ex.Message}"); }
         }
 
         public override void LoadData(TagCompound tag) {
-            if (!tag.TryGet("UnderstandWindGriven", out UnderstandWindGriven)) {
-                UnderstandWindGriven = false;
-            }
-            if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
-                UnderstandWindGrivenMK2 = false;
-            }
+            try {
+                if (!tag.TryGet("UnderstandWindGriven", out UnderstandWindGriven)) {
+                    UnderstandWindGriven = false;
+                }
+                if (!tag.TryGet("UnderstandWindGrivenMK2", out UnderstandWindGrivenMK2)) {
+                    UnderstandWindGrivenMK2 = false;
+                }
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"CWRPlayer.LoadData An Error Has Cccurred: {ex.Message}"); }
         }
 
         public override bool CanUseItem(Item item) {
@@ -306,13 +300,16 @@ namespace CalamityOverhaul.Content
             //}
 
             CraftingSlotHighlighter.Instance.eyEBool = true;
+
             if (SupertableUI.Instance != null) {
                 SupertableUI.Instance.Active = false;
             }
+
             if (RecipeUI.Instance != null) {
                 RecipeUI.Instance.index = 0;
                 RecipeUI.Instance.LoadPsreviewItems();
             }
+
             if (OverhaulTheBibleUI.Instance != null) {
                 OverhaulTheBibleUI.Instance.Active = false;
             }
@@ -329,9 +326,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnHurt(Player.HurtInfo info) {
-            OnHit = true;
             if (Main.myPlayer == Player.whoAmI) {
-                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<Hit>(), 0, 0, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero
+                    , ModContent.ProjectileType<Hit>(), 0, 0, Player.whoAmI);
             }
         }
 

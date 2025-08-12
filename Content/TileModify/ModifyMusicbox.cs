@@ -4,7 +4,7 @@ using CalamityMod.Items.Potions;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.TileModify.Core;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

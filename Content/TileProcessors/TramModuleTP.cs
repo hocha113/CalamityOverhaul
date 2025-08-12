@@ -73,14 +73,16 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         public override void SaveData(TagCompound tag) {
-            List<TagCompound> itemTags = [];
-            for (int i = 0; i < items.Length; i++) {
-                if (items[i] == null) {
-                    items[i] = new Item(0);
+            try {
+                List<TagCompound> itemTags = [];
+                for (int i = 0; i < items.Length; i++) {
+                    if (items[i] == null) {
+                        items[i] = new Item(0);
+                    }
+                    itemTags.Add(ItemIO.Save(items[i]));
                 }
-                itemTags.Add(ItemIO.Save(items[i]));
-            }
-            tag["itemTags"] = itemTags;
+                tag["itemTags"] = itemTags;
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.SaveData An Error Has Cccurred: {ex.Message}"); }
         }
 
         private void OldLoadData(TagCompound tag) {
@@ -96,7 +98,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 }
 
                 items = loadSupUIItems;
-            } catch { }
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.OldLoadData An Error Has Cccurred: {ex.Message}"); }
         }
 
         public override void LoadData(TagCompound tag) {
@@ -115,7 +117,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 }
 
                 items = [.. resultItems];
-            } catch { }
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"TramModuleTP.LoadData An Error Has Cccurred: {ex.Message}"); }
         }
 
         public override void Update() {
@@ -167,9 +169,9 @@ namespace CalamityOverhaul.Content.TileProcessors
                 return;
             }
 
-            if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == WhoAmI) {
+            if ((leng >= maxleng || player.dead) && modPlayer.TramTPContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
-                modPlayer.TETramContrType = -1;
+                modPlayer.TramTPContrType = -1;
                 TPEntityLoadenItems();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
@@ -177,9 +179,9 @@ namespace CalamityOverhaul.Content.TileProcessors
 
         public override void OnKill() {
             CWRPlayer modPlayer = Main.LocalPlayer.CWR();
-            if (modPlayer.TETramContrType == WhoAmI) {
+            if (modPlayer.TramTPContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
-                modPlayer.TETramContrType = -1;
+                modPlayer.TramTPContrType = -1;
             }
             if (!VaultUtils.isClient) {
                 foreach (var item in items) {

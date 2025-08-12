@@ -6,7 +6,7 @@ using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.RemakeItems;
-using CalamityOverhaul.Content.TileModify.Core;
+using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,12 +1,13 @@
 ﻿using CalamityMod.TileEntities;
 using CalamityOverhaul.Content.Industrials.Modifys.ModifyTurrets;
-using CalamityOverhaul.Content.TileModify.Core;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
@@ -82,8 +83,35 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
         internal static void OnUpdateHook(UpdateDelegate orig, ModTileEntity te) {
             //在更新时杀死所有炮塔而不运行任何逻辑，这样才能让自定义的TP实体发挥正常作用，否者这些炮塔会重叠
-            TileModifyLoader.KillTE(te);
-            TileModifyLoader.SendKillTE(te);
+            KillTE(te);
+            SendKillTE(te);
+        }
+
+        public static void KillTE(ModTileEntity te) => te.Kill(te.Position.X, te.Position.Y);
+
+        public static void SendKillTE(ModTileEntity te) {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.KillTileEntity);
+            modPacket.WritePoint16(te.Position);
+            modPacket.Send();
+        }
+
+        public static void HandlerNetKillTE(BinaryReader reader, int whoAmI) {
+            Point16 point = reader.ReadPoint16();
+            if (!TileEntity.ByPosition.TryGetValue(point, out TileEntity te)) {
+                return;
+            }
+            KillTE((ModTileEntity)te);
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.KillTileEntity);
+                modPacket.WritePoint16(te.Position);
+                modPacket.Send(-1, whoAmI);
+            }
         }
     }
 }
