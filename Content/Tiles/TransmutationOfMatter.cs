@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Tiles
                 return true;
             }
 
-            ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
+            ref int playerTramType = ref Main.LocalPlayer.CWR().TramTPContrType;
             if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
                 SupertableUI.TramTP ??= tram;
                 SupertableUI.Instance.Active = !SupertableUI.Instance.Active;

@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             get => player.CWR().SupertableUIStartBool || _sengs > 0;
             set {
                 player.CWR().SupertableUIStartBool = value;
-                tpEntityLoadenItems();
+                TPLoadenItems();
             }
         }
 
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool onCloseP;
         #endregion
 
-        internal void tpEntityLoadenItems() {
+        internal void TPLoadenItems() {
             if (TramTP != null && TramTP.Active) {
                 if (TramTP.items == null) {
                     TramTP.items = items;
@@ -210,6 +210,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             hoverInPutItemCellPage = PutItemCellRec.Intersects(mouseRec);
             onInputP = inputRec.Intersects(mouseRec);
             onCloseP = closeRec.Intersects(mouseRec);
+        }
+
+        public override void OnEnterWorld() {
+            _sengs = 0;
         }
 
         public void Initialize() {
@@ -451,7 +455,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 End:;
             }
             if (netWork) {
-                tpEntityLoadenItems();
+                TPLoadenItems();
             }
         }
 
