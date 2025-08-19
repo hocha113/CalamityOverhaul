@@ -1,21 +1,19 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
     [VaultLoaden(CWRConstant.Effects)]
-    public class EffectLoader : ICWRLoader
+    public class EffectLoader : RenderHandle
     {
-        internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
-        internal static EffectLoader Instance;
         public static ArmorShaderData StreamerDust { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> WarpShader { get; set; }
@@ -27,62 +25,21 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
-        void ICWRLoader.LoadData() {
-            Instance = this;
-            On_FilterManager.EndCapture += FilterManager_EndCapture;
-            Main.OnResolutionChanged += Main_OnResolutionChanged;
-            On_Main.DrawDust += EndDraw;
-        }
 
-        void ICWRLoader.UnLoadData() {
-            screen = null;
+        public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screen) {
+            DrawPrimitiveProjectile();
 
-            On_FilterManager.EndCapture -= FilterManager_EndCapture;
-            Main.OnResolutionChanged -= Main_OnResolutionChanged;
-            On_Main.DrawDust -= EndDraw;
-
-            Instance = null;
-        }
-
-        private void Main_OnResolutionChanged(Vector2 obj) {
-            DisposeScreen();
-            screen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-        }
-
-        // 确保旧的RenderTarget2D对象被正确释放
-        private static void DisposeScreen() {
-            screen?.Dispose();
-            screen = null;
-        }
-
-        private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) {
-            GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
-
-            screen ??= new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
-
-            if (!Main.gameMenu) {
-                DrawPrimitiveProjectile();
-
-                if (HasWarpEffect(out List<IWarpDrawable> warpSets, out List<IWarpDrawable> warpSetsNoBlueshift)) {
-                    ProcessWarpSets(graphicsDevice, warpSets, false);
-                    ProcessWarpSets(graphicsDevice, warpSetsNoBlueshift, true);
-                }
-
-                if (HasPwoerEffect()) {
-                    DrawPwoerEffect(graphicsDevice, Main.spriteBatch);
-                }
+            if (HasWarpEffect(out List<IWarpDrawable> warpSets, out List<IWarpDrawable> warpSetsNoBlueshift)) {
+                ProcessWarpSets(graphicsDevice, screen, warpSets, false);
+                ProcessWarpSets(graphicsDevice, screen, warpSetsNoBlueshift, true);
             }
 
-            orig.Invoke(self, finalTexture, screenTarget1, screenTarget2, clearColor);
+            if (HasPwoerEffect()) {
+                DrawPwoerEffect(graphicsDevice, screen, Main.spriteBatch);
+            }
         }
 
-        private void EndDraw(On_Main.orig_DrawDust orig, Main self) {
-            orig(self);
-
-            if (Main.gameMenu) {
-                return;
-            }
-
+        public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
             DrawPrimitiveProjectile();
 
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap
@@ -115,7 +72,7 @@ namespace CalamityOverhaul.Common
             }
         }
 
-        private static void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IWarpDrawable> warpSets, bool noBlueshift) {
+        private static void ProcessWarpSets(GraphicsDevice graphicsDevice, RenderTarget2D screen, List<IWarpDrawable> warpSets, bool noBlueshift) {
             if (warpSets.Count <= 0) {
                 return;
             }
@@ -159,7 +116,7 @@ namespace CalamityOverhaul.Common
             Main.spriteBatch.End();
         }
 
-        private static void DrawPwoerEffect(GraphicsDevice graphicsDevice, SpriteBatch sb) {
+        private static void DrawPwoerEffect(GraphicsDevice graphicsDevice, RenderTarget2D screen, SpriteBatch sb) {
             // 设置初始渲染目标和清除
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
