@@ -90,7 +90,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "0", "0",
             "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityMod/DarkPlasma", "CalamityMod/DarkPlasma", "CalamityMod/DarkPlasma", "CalamityOverhaul/DissipationSubstance", "0", "0",
-            "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityMod/DarkPlasma", "CalamityOverhaul/SpectralMatter", "CalamityMod/DarkPlasma", "CalamityOverhaul/DissipationSubstance", "0", "0",
+            "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityMod/DarkPlasma", "CalamityOverhaul/DecaySubstance", "CalamityMod/DarkPlasma", "CalamityOverhaul/DissipationSubstance", "0", "0",
             "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityMod/DarkPlasma", "CalamityMod/DarkPlasma", "CalamityMod/DarkPlasma", "CalamityOverhaul/DissipationSubstance", "0", "0",
             "0", "0", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "CalamityOverhaul/DissipationSubstance", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
@@ -100,7 +100,7 @@
         /// <summary>
         /// 中子星锭
         /// </summary>
-        public static string[] FullItems_NeutronStarIngot = new string[] {"CalamityOverhaul/SpectralMatter", "CalamityMod/ExoPrism", "CalamityMod/AshesofAnnihilation", "CalamityMod/AscendantSpiritEssence", "117", "706", "CalamityMod/AerialiteBar", "CalamityOverhaul/DarkMatterBall", "0",
+        public static string[] FullItems_NeutronStarIngot = new string[] {"CalamityOverhaul/DecaySubstance", "CalamityMod/ExoPrism", "CalamityMod/AshesofAnnihilation", "CalamityMod/AscendantSpiritEssence", "117", "706", "CalamityMod/AerialiteBar", "CalamityOverhaul/DarkMatterBall", "0",
             "175", "CalamityMod/CryonicBar", "1006", "3261", "CalamityMod/PerennialBar", "1552", "3467", "CalamityOverhaul/DarkMatterBall", "0",
             "CalamityMod/AstralBar", "CalamityMod/ScoriaBar", "CalamityOverhaul/PestilenceIngot", "CalamityMod/UelibloomBar", "CalamityMod/CosmiliteBar", "CalamityMod/AuricBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/DarkMatterBall", "0",
             "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "0",
@@ -115,7 +115,7 @@
         /// 无尽锭
         /// </summary>
         public static string[] FullItems_InfiniteIngot = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/BloodOrange", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/NeutronStarIngot", "0",
-            "CalamityMod/BloodwormItem", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/NeutronStarIngot", "0",
+            "CalamityOverhaul/SpectralMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/NeutronStarIngot", "0",
             "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/NeutronStarIngot", "0",
             "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "CalamityOverhaul/NeutronStarIngot", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
