@@ -25,17 +25,17 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
-
-        public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screen) {
+        public override float Weight => 1.2f;
+        public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             DrawPrimitiveProjectile();
 
             if (HasWarpEffect(out List<IWarpDrawable> warpSets, out List<IWarpDrawable> warpSetsNoBlueshift)) {
-                ProcessWarpSets(graphicsDevice, screen, warpSets, false);
-                ProcessWarpSets(graphicsDevice, screen, warpSetsNoBlueshift, true);
+                ProcessWarpSets(graphicsDevice, screenSwap, warpSets, false);
+                ProcessWarpSets(graphicsDevice, screenSwap, warpSetsNoBlueshift, true);
             }
 
             if (HasPwoerEffect()) {
-                DrawPwoerEffect(graphicsDevice, screen, Main.spriteBatch);
+                DrawPwoerEffect(graphicsDevice, screenSwap, spriteBatch);
             }
         }
 
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Common
 
             Main.spriteBatch.End();
 
-            // 处理 Shader 效果
+            //处理 Shader 效果
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
