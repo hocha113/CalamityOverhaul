@@ -5,7 +5,10 @@ using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Policy;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -350,6 +353,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private Item graspItem;
         private bool spawn;
         internal Chest Chest;
+        //不重要的东西的列表，比如小心心物品
+        private readonly static HashSet<int> unimportances = [ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple, ItemID.Star, ItemID.SoulCake];
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -375,6 +380,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float maxFindSQ = 4000000;
             foreach (var i in Main.ActiveItems) {
                 if (i.IsAir || !i.active) {
+                    continue;
+                }
+
+                if (unimportances.Contains(i.type)) {
                     continue;
                 }
 
@@ -406,138 +415,132 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     Projectile.netUpdate = true;
                 }
                 spawn = true;
+                Projectile.ai[2] = -1;//使用 ai[2] 存储目标物品的ID, -1代表无目标
             }
 
-            if (TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
-                Projectile.timeLeft = 2;
-                startPos = collectorTP.ArmPos;
-                //验证唯一性，防止在一些情况下重叠生成
-                if (Projectile.ai[1] == 0 && Projectile.identity != collectorTP.ArmIndex0) {
-                    Projectile.Kill();
-                    return;
-                }
-                if (Projectile.ai[1] == 1 && Projectile.identity != collectorTP.ArmIndex1) {
-                    Projectile.Kill();
-                    return;
-                }
-                if (Projectile.ai[1] == 2 && Projectile.identity != collectorTP.ArmIndex2) {
-                    Projectile.Kill();
-                    return;
-                }
-            }
-            else {
+            if (!TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
                 Projectile.Kill();
                 return;
             }
+
+            Projectile.timeLeft = 2;
+            startPos = collectorTP.ArmPos;
 
             if (startPos.FindClosestPlayer(CollectorTP.killerArmDistance) == null) {
-                collectorTP.dontSpawnArmTime = 60;//添加一个延迟时间，防止因为某些距离误差而疯狂进行生成尝试
+                collectorTP.dontSpawnArmTime = 60;
                 Projectile.Kill();
+                return;
             }
 
-            if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
-                if (Chest == null) {
-                    Projectile.velocity = Vector2.Zero;
+            //使用 localAI[0] 作为计时器
+            Projectile.localAI[0]++;
+
+            //状态 2: 携带物品前往箱子
+            if (Projectile.ai[0] == 2) {
+                if (graspItem == null || graspItem.type == ItemID.None) { //如果手上的物品没了, 重置
+                    Projectile.ai[0] = 0;
+                    return;
+                }
+
+                //检查箱子是否有效
+                if (Chest == null || !Main.chest.Contains(Chest)) {
+                    //箱子失效, 扔掉物品并重置
                     if (!VaultUtils.isClient) {
-                        int type = Item.NewItem(Projectile.FromObjectGetParent(), Projectile.Hitbox, graspItem.Clone());
-                        if (VaultUtils.isServer) {
-                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                        }
-                        SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
+                        VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
                     }
+                    graspItem.TurnToAir();
                     Projectile.ai[0] = 0;
                     Projectile.netUpdate = true;
                     return;
                 }
 
-                graspItem.CWR().TargetByCollector = Projectile.identity;
-
+                //移动到箱子并存入 (这段逻辑与你原来基本一致)
                 Vector2 chestPos = new Vector2(Chest.x, Chest.y) * 16 + new Vector2(8, 8);
-                Projectile.ChasingBehavior(chestPos, 8);
+                float speed = 12 + Projectile.To(chestPos).Length() / 90f;
+                Projectile.ChasingBehavior(chestPos, speed); //可以适当提高速度
                 graspItem.Center = Projectile.Center;
 
-                float toChest = chestPos.Distance(Projectile.Center);
-                if (toChest < 60) {//设置一下打开动画
+                if (Projectile.Hitbox.Intersects(Chest.GetPoint16().ToWorldCoordinates().GetRectangle(32))) {
                     Chest.eatingAnimationTime = 20;
-                }
-                if (toChest < 32) {//将物品放进箱子
-                    Projectile.velocity = Vector2.Zero;
                     Chest.AddItem(graspItem, true);
                     graspItem.TurnToAir();
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
-                    Projectile.ai[0] = 0;
+                    if (Main.netMode == NetmodeID.Server) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
+                    }
+                    Projectile.ai[0] = 0; //任务完成，返回状态0
                     Projectile.netUpdate = true;
                 }
                 return;
             }
 
-            Item item;
-            Item targetItem = FindItem();
-            if (targetItem == null) {
-                graspItem.TurnToAir();
-                item = null;
-            }
-            else {
-                Chest = collectorTP.FindChest(targetItem);
-                if (Chest == null) {
-                    if (targetItem.Alives()) {
-                        targetItem.CWR().TargetByCollector = -1;
-                    }
-
-                    graspItem.TurnToAir();
-                    item = null;
-                }
-                else {
-                    item = targetItem;
-                }
-            }
-
-            if (collectorTP.MachineData.UEvalue < collectorTP.consumeUE) {
-                item = null;
-                if (!collectorTP.BatteryPrompt) {
-                    Rectangle rectangle = (collectorTP.PosInWorld + new Vector2(0, 20)).GetRectangle(collectorTP.Size);
-                    CombatText.NewText(rectangle, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
-                    collectorTP.BatteryPrompt = true;
-                    Projectile.netUpdate = true;
-                    collectorTP.SendData();
-                }
-            }
-            else {
-                if (collectorTP.BatteryPrompt) {
-                    Projectile.netUpdate = true;
-                    collectorTP.SendData();
-                }
-                collectorTP.BatteryPrompt = false;
-            }
-
-            if (item != null && Chest != null) {
-                int oldNum = item.CWR().TargetByCollector;
-                item.CWR().TargetByCollector = Projectile.identity;
-                if (!VaultUtils.isSinglePlayer && oldNum != Projectile.identity) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
+            //状态 1: 锁定目标，前往抓取
+            if (Projectile.ai[0] == 1) {
+                int targetWhoAmI = (int)Projectile.ai[2];
+                if (targetWhoAmI < 0 || targetWhoAmI >= Main.maxItems) { //ID无效
+                    Projectile.ai[0] = 0; //重置
+                    return;
                 }
 
-                Projectile.ChasingBehavior(item.Center, 8);
+                Item targetItem = Main.item[targetWhoAmI];
+
+                //验证目标物品是否仍然有效
+                if (!targetItem.active || targetItem.type == ItemID.None || targetItem.CWR().TargetByCollector != -1 && targetItem.CWR().TargetByCollector != Projectile.identity) {
+                    Projectile.ai[0] = 0;//物品消失或被其他抓手锁定，放弃目标，返回状态0
+                    Projectile.ai[2] = -1;
+                    return;
+                }
+
+                float speed = 8 + Projectile.To(targetItem.Center).Length() / 90f;
+                //飞向目标
+                Projectile.ChasingBehavior(targetItem.Center, speed);
                 Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
-                if (item.Center.Distance(Projectile.Center) < 32) {
-                    if (collectorTP.MachineData.UEvalue > collectorTP.consumeUE && !VaultUtils.isClient) {
-                        collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
-                        collectorTP.SendData();
+
+                //到达并抓取
+                if (Projectile.Distance(targetItem.Center) < 32) {
+                    graspItem = targetItem.Clone();
+                    targetItem.TurnToAir();
+                    if (Main.netMode == NetmodeID.Server) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
                     }
 
-                    graspItem = item.Clone();
-                    item.TurnToAir();
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item.whoAmI);
-                    }
+                    //抓取成功后，再次确认箱子信息并存起来，然后切换到状态2
+                    Chest = collectorTP.FindChest(graspItem);
                     graspItem.CWR().TargetByCollector = Projectile.identity;
-                    Projectile.ai[0] = 1;
+                    Projectile.ai[0] = 2;//切换到状态2
+                    Projectile.ai[2] = -1;//清除目标ID
                     Projectile.netUpdate = true;
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
                 }
                 return;
             }
-            else {
+            //状态 0: 待机与搜索新目标
+            else if (Projectile.ai[0] == 0) {
+                //每 30 帧搜索一次，并且能量充足
+                if (Projectile.localAI[0] >= 30 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
+                    Projectile.localAI[0] = 0; //重置计时器
+
+                    Item foundItem = FindItem(); //昂贵操作只在这里被限时调用
+
+                    if (foundItem != null) {
+                        //在锁定目标前，先确认有地方放
+                        var potentialChest = collectorTP.FindChest(foundItem);
+                        if (potentialChest != null) {
+                            //锁定目标，并切换到状态1
+                            foundItem.CWR().TargetByCollector = Projectile.identity; //标记为自己的目标
+                            Projectile.ai[2] = foundItem.whoAmI;
+                            Projectile.ai[0] = 1;
+                            Projectile.netUpdate = true;
+
+                            //消耗能量
+                            if (!VaultUtils.isClient) {
+                                collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
+                                collectorTP.SendData();
+                            }
+                        }
+                    }
+                }
+
+                //待机状态下回到初始位置
                 Vector2 offset = new Vector2(0, -120);
                 if (Projectile.ai[1] == 1) {
                     offset = new Vector2(120, -20);
@@ -546,9 +549,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     offset = new Vector2(-120, -20);
                 }
                 Projectile.ChasingBehavior(startPos + offset, 8);
+                Projectile.EntityToRot(new Vector2(0, 1).ToRotation(), 0.1f);
             }
-
-            Projectile.EntityToRot(new Vector2(0, 1).ToRotation(), 0.1f);
         }
 
         internal void DoDraw(Color lightColor) {
@@ -567,12 +569,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
 
-            // 动态控制点偏移
+            //动态控制点偏移
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            // 估算真实曲线长度
+            //估算真实曲线长度
             int sampleCount = 50;
             float curveLength = 0f;
             Vector2 prev = start;
@@ -589,7 +591,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             Vector2[] points = new Vector2[segmentCount + 1];
 
-            // 构建点位
+            //构建点位
             for (int i = 0; i <= segmentCount; i++) {
                 float t = i / (float)segmentCount;
                 Vector2 pos = Vector2.Lerp(
