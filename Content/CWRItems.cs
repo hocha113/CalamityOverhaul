@@ -239,6 +239,9 @@ namespace CalamityOverhaul.Content
                 item.maxStack = 9999;
                 item.value = Item.buyPrice(0, 0, 0, 15);
             }
+            else if (type == ItemID.CopperCoin || type == ItemID.SilverCoin || type == ItemID.GoldCoin) {
+                item.maxStack = 9999;
+            }
         }
 
         //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
