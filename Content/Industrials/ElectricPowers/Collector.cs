@@ -147,10 +147,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private int textIdleTime;
         internal int frame;
         internal bool workState;
-        internal bool BatteryPrompt;
-        internal Chest Chest;
+        internal bool BatteryPrompt;       
         internal int TagItemSign;
         internal int dontSpawnArmTime;
+        internal int consumeUE = 8;
         internal int ArmIndex0 = -1;
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
@@ -246,15 +246,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SendData();
         }
 
-        public override void UpdateMachine() {
-            FindFrame();
-
-            if (!workState) {
-                return;
-            }
-
-            Chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest());
-            if (Chest == null && textIdleTime <= 0) {
+        internal Chest FindChest(Item item) {
+            Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
+            if (chest == null && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
                 //生成一个效果环
@@ -263,6 +257,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
                     Main.dust[dust].noGravity = true;
                 }
+            }
+            return chest;
+        }
+
+        public override void UpdateMachine() {
+            FindFrame();
+            consumeUE = 8;
+            if (!workState) {
+                return;
             }
 
             if (textIdleTime > 0) {
@@ -346,6 +349,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Vector2 startPos;//记录这个弹幕的起点位置
         private Item graspItem;
         private bool spawn;
+        internal Chest Chest;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -373,11 +377,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 if (i.IsAir || !i.active) {
                     continue;
                 }
+
                 if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
                     continue;
                 }
 
                 if (collectorTP.TagItemSign > ItemID.None && i.type != collectorTP.TagItemSign) {
+                    continue;
+                }
+
+                if (collectorTP.FindChest(i) == null) {
                     continue;
                 }
 
@@ -427,7 +436,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (Projectile.ai[0] == 1 && graspItem != null && graspItem.type != ItemID.None) {
-                if (collectorTP.Chest == null) {
+                if (Chest == null) {
                     Projectile.velocity = Vector2.Zero;
                     if (!VaultUtils.isClient) {
                         int type = Item.NewItem(Projectile.FromObjectGetParent(), Projectile.Hitbox, graspItem.Clone());
@@ -443,17 +452,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                 graspItem.CWR().TargetByCollector = Projectile.identity;
 
-                Vector2 chestPos = new Vector2(collectorTP.Chest.x, collectorTP.Chest.y) * 16 + new Vector2(8, 8);
+                Vector2 chestPos = new Vector2(Chest.x, Chest.y) * 16 + new Vector2(8, 8);
                 Projectile.ChasingBehavior(chestPos, 8);
                 graspItem.Center = Projectile.Center;
 
                 float toChest = chestPos.Distance(Projectile.Center);
                 if (toChest < 60) {//设置一下打开动画
-                    collectorTP.Chest.eatingAnimationTime = 20;
+                    Chest.eatingAnimationTime = 20;
                 }
                 if (toChest < 32) {//将物品放进箱子
                     Projectile.velocity = Vector2.Zero;
-                    collectorTP.Chest.AddItem(graspItem, true);
+                    Chest.AddItem(graspItem, true);
                     graspItem.TurnToAir();
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
                     Projectile.ai[0] = 0;
@@ -462,9 +471,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            Item item = collectorTP.Chest == null ? null : FindItem();
+            Item item;
+            Item targetItem = FindItem();
+            if (targetItem == null) {
+                graspItem.TurnToAir();
+                item = null;
+            }
+            else {
+                Chest = collectorTP.FindChest(targetItem);
+                if (Chest == null) {
+                    if (targetItem.Alives()) {
+                        targetItem.CWR().TargetByCollector = -1;
+                    }
 
-            if (collectorTP.MachineData.UEvalue < 100) {
+                    graspItem.TurnToAir();
+                    item = null;
+                }
+                else {
+                    item = targetItem;
+                }
+            }
+
+            if (collectorTP.MachineData.UEvalue < collectorTP.consumeUE) {
                 item = null;
                 if (!collectorTP.BatteryPrompt) {
                     Rectangle rectangle = (collectorTP.PosInWorld + new Vector2(0, 20)).GetRectangle(collectorTP.Size);
@@ -482,7 +510,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 collectorTP.BatteryPrompt = false;
             }
 
-            if (item != null) {
+            if (item != null && Chest != null) {
                 int oldNum = item.CWR().TargetByCollector;
                 item.CWR().TargetByCollector = Projectile.identity;
                 if (!VaultUtils.isSinglePlayer && oldNum != Projectile.identity) {
@@ -492,8 +520,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Projectile.ChasingBehavior(item.Center, 8);
                 Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
                 if (item.Center.Distance(Projectile.Center) < 32) {
-                    if (collectorTP.MachineData.UEvalue > 4 && !VaultUtils.isClient) {
-                        collectorTP.MachineData.UEvalue -= 4;
+                    if (collectorTP.MachineData.UEvalue > collectorTP.consumeUE && !VaultUtils.isClient) {
+                        collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
                         collectorTP.SendData();
                     }
 
