@@ -408,6 +408,56 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             return item;
         }
 
+        private static void CheckCoins(Chest chest) {
+            //使用 long 类型来存储总价值，防止钱太多导致整数溢出
+            long totalValue = 0;
+
+            for (int i = 0; i < chest.item.Length; i++) {
+                Item item = chest.item[i];
+                if (item != null && !item.IsAir && item.IsACoin) {
+                    int value = 1;
+                    if (item.type == ItemID.SilverCoin) {
+                        value = 100;
+                    }
+                    if (item.type == ItemID.GoldCoin) {
+                        value = 10000;
+                    }
+                    if (item.type == ItemID.PlatinumCoin) {
+                        value = 1000000;
+                    }
+                    totalValue += (long)value * item.stack;
+                    //从箱子中移除旧的钱币
+                    item.TurnToAir();
+                }
+            }
+
+            //如果总价值为0，就没必要继续了
+            if (totalValue <= 0) {
+                return;
+            }
+
+            //从价值最高的铂金币开始往下换算
+            if (totalValue >= 1000000) {
+                int platinumCoins = (int)(totalValue / 1000000);
+                chest.AddItem(new Item(ItemID.PlatinumCoin, platinumCoins));
+                totalValue %= 1000000;
+            }
+            if (totalValue >= 10000) {
+                int goldCoins = (int)(totalValue / 10000);
+                chest.AddItem(new Item(ItemID.GoldCoin, goldCoins));
+                totalValue %= 10000;
+            }
+            if (totalValue >= 100) {
+                int silverCoins = (int)(totalValue / 100);
+                chest.AddItem(new Item(ItemID.SilverCoin, silverCoins));
+                totalValue %= 100;
+            }
+            if (totalValue > 0) {
+                int copperCoins = (int)totalValue;
+                chest.AddItem(new Item(ItemID.CopperCoin, copperCoins));
+            }
+        }
+
         public override void AI() {
             if (!spawn) {
                 if (!VaultUtils.isClient) {
@@ -463,8 +513,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 if (Projectile.Hitbox.Intersects(Chest.GetPoint16().ToWorldCoordinates().GetRectangle(32))) {
                     Chest.eatingAnimationTime = 20;
                     Chest.AddItem(graspItem, true);
+                    CheckCoins(Chest);
                     graspItem.TurnToAir();
-                    if (Main.netMode == NetmodeID.Server) {
+                    if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
                     }
                     Projectile.ai[0] = 0; //任务完成，返回状态0
