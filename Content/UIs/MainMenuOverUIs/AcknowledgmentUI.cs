@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private int musicFade50;
         private float _sengs;
         internal bool _active;
-        internal static AcknowledgmentUI Instance { get; private set; }
+        internal static AcknowledgmentUI Instance => UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
         [VaultLoaden("CalamityOverhaul/IntactLogo")]
         private static Asset<Texture2D> Logo = null;
         internal List<ProjItem> projectiles = [];
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     return;
                 }
 
-                // 用主材质或替代材质
+                //用主材质或替代材质
                 Texture2D tex = index == 0 ? SpazmatismAI.SpazmatismAsset.Value : SpazmatismAI.RetinazerAsset.Value;
                 if (index == 2) {
                     tex = SpazmatismAI.SpazmatismAltAsset.Value;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 Vector2 origin = frameRect.Size() / 2f;
                 float drawRot = rotation + MathHelper.PiOver2;
                 Color color = Color.White * (alp / 255f) * sengs;
-                // 残影轨迹模拟
+                //残影轨迹模拟
                 float trailOpacity = 0.2f;
                 float trailScale = size * 0.7f;
                 for (int i = 0; i < 5; i++) {
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     trailScale *= 0.95f;
                 }
 
-                // 主体绘制
+                //主体绘制
                 Color colorFinal = color;
                 spriteBatch.Draw(tex, position, frameRect, colorFinal,
                     drawRot, origin, size, effects, 0f);
@@ -218,25 +218,25 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     alp = Math.Max(0, alp - 4);
                 }
 
-                // 波动 + 曲线偏移轨迹
+                //波动 + 曲线偏移轨迹
                 float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + sengs + itemID) * 0.5f;
                 float curve = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.2f + sengs + itemID) * 0.3f;
                 Vector2 drift = new Vector2(curve, wave) * 0.8f;
 
-                // 旋转渐变
+                //旋转渐变
                 rotSpeed += (Main.rand.NextFloat() - 0.5f) * 0.002f;
                 rotSpeed = MathHelper.Clamp(rotSpeed, -0.03f, 0.03f);
                 rotation += rotSpeed;
 
-                // 漂浮
+                //漂浮
                 position += velocity + drift;
 
-                // 透明度闪动
+                //透明度闪动
                 if (timeLeft % 20 == 0 && timeLeft < 60) {
                     alp -= Main.rand.Next(5, 15);
                 }
 
-                // 生命周期终止
+                //生命周期终止
                 timeLeft--;
                 if (timeLeft <= 0 || alp <= 0) {
                     active = false;
@@ -262,13 +262,15 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        public static bool OnActive() => Instance._active || Instance._sengs > 0;
+        public static bool OnActive() {
+            if (Instance == null) {
+                return false;
+            }
+            return Instance._active || Instance._sengs > 0;
+        }
         public override bool CanLoad() => true;
         void ICWRLoader.SetupData() => LoadName();
-        public override void Load() {
-            Instance = this;
-            _sengs = 0;
-        }
+        public override void Load() => _sengs = 0;
         private static void LoadName() {
             names = [
             "[icon]",
@@ -385,7 +387,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void UnLoad() {
-            Instance = null;
             _sengs = 0;
             names = null;
         }
@@ -413,7 +414,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     }
                 }
 
-                // === 更新 projectiles ===
+                //=== 更新 projectiles ===
                 foreach (ProjItem projItem in projectiles) {
                     if (projItem.index >= 0 && projItem.index < names.Length) {
                         projItem.text = names[projItem.index];
@@ -440,7 +441,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     }
                 }
 
-                // === 更新 effectEntities ===
+                //=== 更新 effectEntities ===
                 foreach (EffectEntity effect in effectEntities) {
                     if (effect.active) {
                         continue;
@@ -459,7 +460,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     effect.active = true;
                 }
 
-                // === 初始化 NPCGhostItem ===
+                //=== 初始化 NPCGhostItem ===
                 if (npcGhostItem.Count < 1) {
                     Texture2D tex = TextureAssets.Npc[NPCID.Spazmatism].Value;
                     Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; // 示例替代图
@@ -488,7 +489,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     npcGhostItem.Add(ghost);
                 }
 
-                // === 更新 NPCGhostItem ===
+                //=== 更新 NPCGhostItem ===
                 foreach (NPCGhostItem ghost in npcGhostItem) {
                     if (ghost.active) {
                         continue;
