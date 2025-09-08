@@ -10,6 +10,7 @@ namespace CalamityOverhaul
         internal static Version SaveVersion;
         internal static bool IsNewVersion {
             get {
+                return false;//小版本不进行展示
                 if (CWRMod.Instance == null || CWRMod.Instance.Version == null) {
                     return false;
                 }

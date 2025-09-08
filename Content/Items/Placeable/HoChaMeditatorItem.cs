@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             TileObjectData.addTile(Type);
         }
 
-        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile<HoChaMeditatorItem>();
+        //public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile<HoChaMeditatorItem>();
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];

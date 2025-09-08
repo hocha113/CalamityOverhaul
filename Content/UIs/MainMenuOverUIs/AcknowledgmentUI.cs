@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private int musicFade50;
         private float _sengs;
         internal bool _active;
-        internal static AcknowledgmentUI Instance => UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
+        internal static AcknowledgmentUI Instance;
         [VaultLoaden("CalamityOverhaul/IntactLogo")]
         private static Asset<Texture2D> Logo = null;
         internal List<ProjItem> projectiles = [];
@@ -270,7 +270,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         public override bool CanLoad() => true;
         void ICWRLoader.SetupData() => LoadName();
-        public override void Load() => _sengs = 0;
+        public override void SetStaticDefaults() {
+            Instance = UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
+            _sengs = 0;
+        }
         private static void LoadName() {
             names = [
             "[icon]",
@@ -387,6 +390,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void UnLoad() {
+            Instance = null;
             _sengs = 0;
             names = null;
         }
