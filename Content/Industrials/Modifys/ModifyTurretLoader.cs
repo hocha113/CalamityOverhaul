@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static Dictionary<int, Asset<Texture2D>> BarrelAssetDic { get; set; } = [];
         public static Dictionary<int, Asset<Texture2D>> BarrelGlowAssetDic { get; set; } = [];
         void ICWRLoader.LoadData() {
-            List<Type> turretTypes = VaultUtils.GetSubclassTypeList(typeof(TEBaseTurret));
+            IList<Type> turretTypes = VaultUtils.GetDerivedTypes<TEBaseTurret>();
             foreach (var type in turretTypes) {
                 MethodInfo info = type.GetMethod("UpdateClient", BindingFlags.Public | BindingFlags.Instance);
                 VaultHook.Add(info, OnUpdateHook);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         void ICWRLoader.LoadAsset() {
             TurretBase = CWRUtils.GetT2DAsset(CWRConstant.Turrets + "TurretBase");
 
-            List<BaseTurretTP> baseTurretTPs = VaultUtils.GetSubclassInstances<BaseTurretTP>();
+            List<BaseTurretTP> baseTurretTPs = VaultUtils.GetDerivedInstances<BaseTurretTP>();
             foreach (var tp in baseTurretTPs) {
                 if (tp.BodyPath != "") {
                     BodyAssetDic.Add(tp.ID, CWRUtils.GetT2DAsset(tp.BodyPath));
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 TextureAssets.Tile[tp.TargetTileID] = TurretBase;
             }
 
-            List<BaseTurretItem> baseTurretItem = VaultUtils.GetSubclassInstances<BaseTurretItem>();
+            List<BaseTurretItem> baseTurretItem = VaultUtils.GetDerivedInstances<BaseTurretItem>();
             foreach (var item in baseTurretItem) {
                 TextureAssets.Item[item.TargetID] = CWRUtils.GetT2DAsset(string.Concat(CWRConstant.Turrets, item.Name.AsSpan(6), "Item"));
             }

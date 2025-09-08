@@ -61,7 +61,7 @@ namespace CalamityOverhaul
             Instance = this;
             FindMod();
 
-            ILoaders = VaultUtils.GetSubInterface<ICWRLoader>();
+            ILoaders = VaultUtils.GetDerivedInstances<ICWRLoader>();
             foreach (var load in ILoaders) {
                 load.LoadData();
             }

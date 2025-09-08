@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             bool justRDown = rDown && !oldRDown;
             oldRDown = rDown;
 
-            if (justRDown && !player.CWR().UIMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
+            if (justRDown && !player.CWR().UIMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == ItemID.None) {
                 Projectile.NewProjectile(player.FromObjectGetParent(), player.GetPlayerStabilityCenter()
                     , player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>()
                     , Item.damage, 0, player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);

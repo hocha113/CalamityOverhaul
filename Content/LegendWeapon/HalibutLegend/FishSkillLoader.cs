@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     {
         public static List<FishSkill> fishSkills = [];
         void ICWRLoader.SetupData() {
-            fishSkills = VaultUtils.GetSubclassInstances<FishSkill>();
+            fishSkills = VaultUtils.GetDerivedInstances<FishSkill>();
             for (int i = 0; i < fishSkills.Count; i++) {
                 fishSkills[i].Item = new Item(fishSkills[i].TargetItemID);
             }

@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                 data.WritePoint16(new Point16(0, 0));
             }
             else {
-                data.Write(targetMachine.LoadenName);
+                data.Write(targetMachine.FullName);
                 data.WritePoint16(targetMachine.Position);
             }
         }
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                 tag["targetMachine_Position"] = new Point16(0, 0);
             }
             else {
-                tag["targetMachine_LoadenName"] = targetMachine.LoadenName;
+                tag["targetMachine_LoadenName"] = targetMachine.FullName;
                 tag["targetMachine_Position"] = targetMachine.Position;
             }
         }

@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3) * (i * 0.01f), -3);
                     Projectile proj = Projectile.NewProjectileDirect(Source2
                     , targetPos + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)) + new Vector2(0, i * -25 + 64)
-                    , velocity, 961, WeaponDamage * 5 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1f, 1.3f) + i * 0.06f);
+                    , velocity, ProjectileID.DeerclopsIceSpike, WeaponDamage * 5 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1f, 1.3f) + i * 0.06f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 10; i++) {
                     Vector2 velocity = inLVr;
                     velocity.Y -= Main.rand.NextFloat(0.3f);
-                    Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inLVr * i * 16, velocity, 961
+                    Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inLVr * i * 16, velocity, ProjectileID.DeerclopsIceSpike
                         , WeaponDamage * 3 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 10; i++) {
                     Vector2 velocity = inRVr;
                     velocity.Y -= Main.rand.NextFloat(0.3f);
-                    Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inRVr * i * 16, velocity, 961
+                    Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inRVr * i * 16, velocity, ProjectileID.DeerclopsIceSpike
                         , WeaponDamage * 3 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;

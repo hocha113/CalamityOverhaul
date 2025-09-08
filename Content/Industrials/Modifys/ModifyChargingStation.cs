@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
         }
 
-        public override void SetStaticProperty() => StaticID = ID;
+        public override void SetStaticDefaults() => StaticID = ID;
 
         public void RightEvent() {
             Item item = Main.LocalPlayer.GetItem();

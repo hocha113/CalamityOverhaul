@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.MeleeModify
             glowTextures = [];
         }
         void ICWRLoader.SetupData() {
-            Swings = VaultUtils.GetSubclassInstances<BaseSwing>();
+            Swings = VaultUtils.GetDerivedInstances<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
                 int type = CWRMod.Instance.Find<ModProjectile>(pathValue).Type;

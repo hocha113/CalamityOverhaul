@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -54,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3), -3);
                     Projectile proj = Projectile.NewProjectileDirect(Main.player[Projectile.owner].GetShootState().Source
                     , Projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), 0), velocity
-                    , 961, 23, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
+                    , ProjectileID.DeerclopsIceSpike, 23, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;

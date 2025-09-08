@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content
                         Vector2 velocity = new(Main.rand.NextFloat(-3, 3), -3);
                         Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
                         , projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)), velocity
-                        , 961, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
+                        , ProjectileID.DeerclopsIceSpike, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
                         proj.rotation = velocity.ToRotation();
                         proj.hostile = false;
                         proj.friendly = true;
@@ -469,7 +469,7 @@ namespace CalamityOverhaul.Content
 
                 case SpanTypesEnum.DemonBow: {
                     Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
-                        , 974, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                        , ProjectileID.LightsBane, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj2.DamageType = DamageClass.Ranged;
                     break;
                 }

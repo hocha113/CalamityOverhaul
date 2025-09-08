@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3), -3);
                     Projectile proj = Projectile.NewProjectileDirect(Owner.GetShootState().Source
                     , targetPos + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)) + new Vector2(0, i * -16 + 64)
-                    , velocity, 961, 23, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f) + i * 0.05f);
+                    , velocity, ProjectileID.DeerclopsIceSpike, 23, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f) + i * 0.05f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;

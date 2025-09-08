@@ -20,13 +20,13 @@ namespace CalamityOverhaul.Content.RangedModify
         public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
         public static Dictionary<Type, Asset<Texture2D>> TypeToGlowAsset { get; private set; } = [];
         void ICWRLoader.LoadData() {
-            GlobalRangeds = VaultUtils.GetSubclassInstances<GlobalRanged>();
+            GlobalRangeds = VaultUtils.GetDerivedInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             VaultHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
             ItemRebuildLoader.PreShootEvent += PreShootHook;
         }
         void ICWRLoader.LoadAsset() {
-            var indss = VaultUtils.GetSubclassInstances<BaseHeldRanged>();
+            var indss = VaultUtils.GetDerivedInstances<BaseHeldRanged>();
             TypeToGlowAsset = [];
             foreach (var ranged in indss) {
                 if (ranged.GlowTexPath != "") {

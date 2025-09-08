@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileID.Sets.DisableSmartCursor[Type] = true;
             TileID.Sets.FramesOnKillWall[Type] = true;
             TileID.Sets.DisableSmartCursor[Type] = true;
-            DustType = 7;
+            DustType = DustID.WoodFurniture;
             AddMapEntry(new Color(99, 50, 30), Language.GetText("MapObject.Painting"));
         }
     }
