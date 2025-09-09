@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -19,6 +21,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal static Asset<Texture2D> MainValueInCell = null;
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
+        internal bool humerdFrame;
         internal bool DrawBool;
         internal bool uiIsActive => DrawBool && !SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
@@ -57,6 +60,29 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
+        private void SetOmigaSnyContent(string[] omigaSnyContent) {
+            if (omigaSnyContent == null) {
+                return;
+            }
+
+            OmigaSnyContent = omigaSnyContent;
+
+            if (Main.GameUpdateCount % 60 == 0) {
+                humerdFrame = !humerdFrame;
+            }
+
+            if (!humerdFrame) {
+                return;
+            }
+
+            if (CWRUI.HoverItem.type == ModContent.ItemType<DarkMatterBall>()) {
+                OmigaSnyContent = SupertableRecipeDate.FullItems_DarkMatterBall2;
+            }
+            else if (CWRUI.HoverItem.type == ModContent.ItemType<CreativeUEPipeline>()) {
+                OmigaSnyContent = SupertableRecipeDate.FullItems_CreativePipeline2;
+            }
+        }
+
         public override void Update() {
             if (uiIsActive) {
                 if (_sengs < 1f) {
@@ -72,11 +98,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             _sengs = MathHelper.Clamp(_sengs, 0, 1);
             SetPosition();
             OmigaSnyContent = SupertableRecipeDate.FullItems_Null;
+
             if (CWRUI.HoverItem.type > ItemID.None) {
-                string[] _omigaSnyContent = CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type];
-                if (_omigaSnyContent != null) {
-                    OmigaSnyContent = _omigaSnyContent;
-                }
+                SetOmigaSnyContent(CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type]);
             }
 
             RecipeSidebarListViewUI recipeSidebarListView = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
@@ -135,15 +159,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
             }
 
-            if (_sengs >= 1) {
-                for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品
-                    if (items[i] != null) {
-                        Item item = items[i];
-                        if (item != null) {
-                            SupertableUI.DrawItemIcons(spriteBatch, item, ArcCellPos(i, DrawPosition + offset), new Vector2(0.0001f, 0.0001f), Color.White * 0.9f * _sengs);
-                        }
-                    }
+            if (_sengs < 1) {
+                return;
+            }
+
+            for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品
+                if (items[i] == null) {
+                    continue;
                 }
+
+                Item item = items[i];
+
+                if (item == null) {
+                    continue;
+                }
+
+                SupertableUI.DrawItemIcons(spriteBatch, item, ArcCellPos(i, DrawPosition + offset), new Vector2(0.0001f, 0.0001f), Color.White * 0.9f * _sengs);
             }
         }
     }
