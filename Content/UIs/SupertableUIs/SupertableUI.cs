@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// </summary>
         public static int AllRecipesVanillaContentCount { get; private set; }
 
-        public static TramModuleTP TramTP {  get; set; }
+        public static TramModuleTP TramTP { get; set; }
 
         private Point mouseInCellCoord;
 

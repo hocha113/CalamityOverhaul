@@ -45,13 +45,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override bool CreateDust(int i, int j, ref int type) => false;
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
-            if (Main.gamePaused || !Main.instance.IsActive 
+            if (Main.gamePaused || !Main.instance.IsActive
                 || (Lighting.UpdateEveryFrame && !Main.rand.NextBool(4))) {
                 return;
             }
 
             Tile tile = Main.tile[i, j];
-            if (tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0 
+            if (tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0
                 || (int)Main.timeForVisualEffects % 7 != 0 || !Main.rand.NextBool(3)) {
                 return;
             }

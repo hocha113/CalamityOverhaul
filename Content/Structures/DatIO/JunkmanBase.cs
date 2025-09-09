@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
     {
         public override string SavePath => Path.Combine(StructurePath, "JunkmanBase_v1.nbt");
         public override void Load() => Mod.EnsureFileFromMod("Content/Structures/DatIO/JunkmanBase_v1.nbt", SavePath);
-        public override void SaveData(TagCompound tag) 
+        public override void SaveData(TagCompound tag)
             => SaveRegion(tag, new Point16(4202, 989).GetRectangleFromPoints(new Point16(4392, 1024)));
         public override void LoadData(TagCompound tag) {
             RegionSaveData region = tag.GetRegionSaveData();
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             foreach (var chestTag in regionSaveData.Chests) {
                 num++;
                 ChestSaveData chestSaveData = ChestSaveData.FromTag(chestTag);
-                
+
                 //需要注意这里chestSaveData拿到的坐标只是相对坐标，所以需要加上orig
                 int chestIndex = Chest.FindChest(orig.X + chestSaveData.X, orig.Y + chestSaveData.Y);
                 if (chestIndex < 0) {

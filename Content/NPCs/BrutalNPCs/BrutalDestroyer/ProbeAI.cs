@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float hoverSpeed = 22f;
             if (DestroyerHeadAI.BossRush) {
                 hoverSpeed *= 1.5f;
-            } 
+            }
 
             npc.damage = state == 2f ? npc.defDamage : 0;
 

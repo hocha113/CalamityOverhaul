@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 int index, int timeLeft, float size, int alp, Color color,
                 Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime)
                 : base(index, timeLeft, size, alp, color, position, velocity, text, texture, startTime) {
-                
+
             }
 
             public override void AI(float sengs) {
@@ -578,7 +578,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             foreach (EffectEntity effect in effectEntities) {
                 effect.Draw(spriteBatch, _sengs);
-            }            
+            }
             foreach (NPCGhostItem npc in npcGhostItem) {
                 npc.Draw(spriteBatch, _sengs);
             }

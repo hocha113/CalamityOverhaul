@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private int textIdleTime;
         internal int frame;
         internal bool workState;
-        internal bool BatteryPrompt;       
+        internal bool BatteryPrompt;
         internal int TagItemSign;
         internal int dontSpawnArmTime;
         internal int consumeUE = 8;

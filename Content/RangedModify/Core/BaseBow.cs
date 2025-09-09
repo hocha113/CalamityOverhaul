@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 弓弦数据
         /// </summary>
-        public BowstringDataStruct BowstringData = new ();
+        public BowstringDataStruct BowstringData = new();
         #endregion
 
         public void SetArmInFire() {
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
 
             UpdateAimingAnimation();
-            
+
             if (HaveAmmo) {
                 ShootCoolingValue += AttackSpeed;
             }
