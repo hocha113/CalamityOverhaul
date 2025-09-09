@@ -78,9 +78,23 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public Vector2 FireOffsetVector = Vector2.Zero;
         /// <summary>
-        /// 是一把弓
+        /// 手持武器时距离玩家中心的距离，
+        /// 默认会根据武器纹理的宽度自动计算一个合理值，
+        /// 在服务端或者游戏未加载完成时，该字段默认设置为6
         /// </summary>
-        public bool IsBow = true;
+        public float HandheldDistance;
+        /// <summary>
+        /// 从闲置到瞄准姿势的动画过渡进度，范围从 0 (完全闲置) 到 1 (完全瞄准)
+        /// </summary>
+        private float fireAnimationProgress;
+        /// <summary>
+        /// 瞄准动画的过渡速度，值越大，从闲置到开火姿势的过渡越快
+        /// </summary>
+        public float AimingAnimationSpeed = 0.1f;
+        /// <summary>
+        /// 是否启用“牛仔甩枪”式的旋转瞄准动画，默认为<see langword="true"/>
+        /// </summary>
+        public bool EnableCowboySpin = true;
         /// <summary>
         /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
         /// </summary>
@@ -100,55 +114,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 弓弦数据
         /// </summary>
-        public BowstringDataStruct BowstringData = new BowstringDataStruct();
-        public struct BowstringDataStruct
-        {
-            /// <summary>
-            /// 是否裁切弓弦，这个会改变弓的绘制方式
-            /// </summary>
-            public bool CanDeduct;
-            /// <summary>
-            /// 是否额外绘制动画弓弦
-            /// </summary>
-            public bool CanDraw;
-            /// <summary>
-            /// 如果<see cref="CanDeduct"/>为<see langword="true"/>就需要设置这个矩形，用于决定裁剪的部位
-            /// </summary>
-            public Rectangle DeductRectangle = default;
-            /// <summary>
-            /// 设置这个会让整个弓弦位置移动
-            /// </summary>
-            public Vector2 CoreOffset = default;
-            /// <summary>
-            /// 上侧的位置矫正
-            /// </summary>
-            public Vector2 TopBowOffset = default;
-            /// <summary>
-            /// 下侧的位置矫正
-            /// </summary>
-            public Vector2 BottomBowOffset = default;
-            /// <summary>
-            /// 点集，为<see cref="DoEffect"/>所用
-            /// </summary>
-            public Vector2[] Points = new Vector2[3];
-            /// <summary>
-            /// 效果实例
-            /// </summary>
-            public PathEffect DoEffect = null;
-            /// <summary>
-            /// 是否自动更具<see cref="DeductRectangle"/>的宽度来设置<see cref="thicknessEvaluator"/>，默认为<see langword="true"/>
-            /// </summary>
-            public bool AutomaticWidthSetting = true;
-            /// <summary>
-            /// 弓弦宽度
-            /// </summary>
-            public TrailThicknessCalculator thicknessEvaluator = (_) => 1;
-            /// <summary>
-            /// 弓弦颜色
-            /// </summary>
-            public TrailColorEvaluator colorEvaluator = null;
-            public BowstringDataStruct() { }
-        }
+        public BowstringDataStruct BowstringData = new ();
         #endregion
 
         public void SetArmInFire() {
@@ -160,32 +126,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 Owner.SetCompositeArmFront(true, stretch, backArmRotation);
             }
         }
-
-        /// <summary>
-        /// 手持武器时距离玩家中心的距离。
-        /// 默认会根据武器纹理的宽度自动计算一个合理值。
-        /// 对于特殊形状的武器，可以在子类中重写它以进行微调
-        /// </summary>
-        protected virtual float HandheldDistance {
-            get {
-                if (VaultUtils.isServer) {//不 要 在 服 务 器 上 访 问 图 片
-                    return 0;
-                }
-                return TextureValue.Width / 2;
-            }
-        }
-        /// <summary>
-        /// 从闲置到瞄准姿势的动画过渡进度，范围从 0 (完全闲置) 到 1 (完全瞄准)
-        /// </summary>
-        private float fireAnimationProgress;
-        /// <summary>
-        /// 瞄准动画的过渡速度，值越大，从闲置到开火姿势的过渡越快
-        /// </summary>
-        public float AimingAnimationSpeed = 0.1f;
-        /// <summary>
-        /// 是否启用“牛仔甩枪”式的旋转瞄准动画，默认为<see langword="true"/>
-        /// </summary>
-        public bool EnableCowboySpin = true;
 
         /// <summary>
         /// 统一处理从闲置到开火的所有姿势过渡和动画
@@ -263,6 +203,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
+        public override void PreSetRangedProperty() {
+            //不 要 在 服 务 器 上 访 问 图 片
+            if (!VaultUtils.isServer && VaultLoad.LoadenContent && TextureValue != null) {
+                HandheldDistance = TextureValue.Width / 2;
+            }
+            else {
+                HandheldDistance = 6;
+            }
+        }
+
         public override void PostSetRangedProperty() {
             if (HandheldDistance < 16) {
                 EnableCowboySpin = false;
@@ -313,10 +263,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             fireAnimationProgress += CanFire ? AimingAnimationSpeed : -AimingAnimationSpeed;
             fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f); // 确保进度在 0 和 1 之间
 
-            if (!CanFire) {
-                if (LazyRotationUpdate) {
-                    oldSetRoting = ToMouseA;
-                }
+            if (!CanFire && LazyRotationUpdate) {
+                oldSetRoting = ToMouseA;
             }
 
             UpdateAimingAnimation();
