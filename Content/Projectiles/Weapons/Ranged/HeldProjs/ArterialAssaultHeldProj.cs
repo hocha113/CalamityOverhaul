@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ArterialAssault";
         public override int TargetID => ModContent.ItemType<ArterialAssault>();
         public override void SetRangedProperty() {
-            HandIdleDistanceX = 20;
-            HandFireDistanceX = 22;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(6, 22, 2, 60);
         }

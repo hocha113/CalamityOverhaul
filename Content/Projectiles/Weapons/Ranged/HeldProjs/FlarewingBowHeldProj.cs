@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<FlarewingBow>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
-            HandFireDistanceX = 20;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(2, 14, 2, 44);
         }

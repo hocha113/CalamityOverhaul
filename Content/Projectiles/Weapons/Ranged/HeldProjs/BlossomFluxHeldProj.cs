@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             HandRotSpeedSengs = 0.6f;
-            HandFireDistanceX = 14;
             BowstringData.DeductRectangle = new Rectangle(8, 20, 2, 28);
         }
 

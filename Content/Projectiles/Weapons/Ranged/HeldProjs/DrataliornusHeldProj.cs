@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private int chargeIndex = 35;
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandIdleDistanceX = 18;
-            HandFireDistanceX = 28;
             DrawArrowMode = -36;
             BowstringData.DeductRectangle = new Rectangle(6, 10, 2, 70);
         }

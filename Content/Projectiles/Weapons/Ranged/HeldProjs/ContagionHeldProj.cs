@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Contagion";
         public override int TargetID => ModContent.ItemType<Contagion>();
         public override void SetRangedProperty() {
-            HandIdleDistanceX = 18;
-            HandFireDistanceX = 20;
             DrawArrowMode = -26;
             CanRightClick = true;
             BowArrowDrawNum = 2;

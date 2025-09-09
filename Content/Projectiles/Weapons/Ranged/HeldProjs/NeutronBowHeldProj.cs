@@ -33,8 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ForcedConversionTargetAmmoFunc = () => true;
             ISForcedConversionDrawAmmoInversion = true;
             ToTargetAmmo = ModContent.ProjectileType<NeutronArrow>();
-            HandIdleDistanceX = 15;
-            HandFireDistanceX = 22;
             DrawArrowMode = -25;
             CanRightClick = true;
         }

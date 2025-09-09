@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Projectiles.Summon;
 using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,22 +25,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
-        /// <summary>
-        /// 手持距离，生效于非开火状态下，默认为15
-        /// </summary>
-        public float HandIdleDistanceX = 15;
-        /// <summary>
-        /// 手持距离，生效于非开火状态下，默认为0
-        /// </summary>
-        public float HandIdleDistanceY = 0;
-        /// <summary>
-        /// 手持距离，生效于开火状态下，默认为12
-        /// </summary>
-        public float HandFireDistanceX = 12;
-        /// <summary>
-        /// 手持距离，生效于开火状态下，默认为0
-        /// </summary>
-        public float HandFireDistanceY = 0;
         /// <summary>
         /// 一个开火周期中手臂动画开始的时间，默认为0
         /// </summary>
@@ -167,8 +152,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         #endregion
 
         public void SetArmInFire() {
-            ShootCoolingValue += AttackSpeed;
-            if (ShootCoolingValue > HandRotStartTime && CanFireMotion) {
+            if (ShootCoolingValue >= HandRotStartTime && CanFireMotion) {
                 float backArmRotation = Projectile.rotation * SafeGravDir + MathHelper.PiOver2 + MathHelper.Pi * DirSign;
                 float amountValue = 1 - ShootCoolingValue / (Item.useTime - HandRotStartTime);
                 Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
@@ -177,46 +161,100 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             }
         }
 
-        private void SetInFireFromeAI() {
-            Projectile.rotation = LazyRotationUpdate ? oldSetRoting : ToMouseA;
-            Owner.direction = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
-                * HandFireDistanceX + new Vector2(0, HandFireDistanceY * SafeGravDir);
-            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
-            SetCompositeArm();
+        /// <summary>
+        /// 手持武器时距离玩家中心的距离。
+        /// 默认会根据武器纹理的宽度自动计算一个合理值。
+        /// 对于特殊形状的武器，可以在子类中重写它以进行微调
+        /// </summary>
+        protected virtual float HandheldDistance {
+            get {
+                if (VaultUtils.isServer) {//不 要 在 服 务 器 上 访 问 图 片
+                    return 0;
+                }
+                return TextureValue.Width / 2;
+            }
         }
+        /// <summary>
+        /// 从闲置到瞄准姿势的动画过渡进度，范围从 0 (完全闲置) 到 1 (完全瞄准)
+        /// </summary>
+        private float fireAnimationProgress;
+        /// <summary>
+        /// 瞄准动画的过渡速度，值越大，从闲置到开火姿势的过渡越快
+        /// </summary>
+        public float AimingAnimationSpeed = 0.1f;
+        /// <summary>
+        /// 是否启用“牛仔甩枪”式的旋转瞄准动画，默认为<see langword="true"/>
+        /// </summary>
+        public bool EnableCowboySpin = true;
 
-        private void SetIdleFromeAI() {
-            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
-            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY).RotatedBy(Owner.fullRotation);
+        /// <summary>
+        /// 统一处理从闲置到开火的所有姿势过渡和动画
+        /// </summary>
+        private void UpdateAimingAnimation() {
+            //计算目标姿势 (闲置和开火)
+            int offsetY = 0;
+            if (!VaultUtils.isServer) {
+                offsetY = TextureValue.Height / 10;
+            }
+            //-- 目标闲置姿势 --
+            Vector2 idlePosition = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandheldDistance, offsetY).RotatedBy(Owner.fullRotation);
             int art = 20;
             if (SafeGravDir < 0) {
                 art = 340;
             }
             float fullRotation = MathHelper.ToDegrees(Owner.fullRotation) * Owner.direction;
             float value = art + fullRotation;
-            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
+            float idleRotation = Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
+            float idleArmRotFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
+            float idleArmRotBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
+
+            //-- 目标开火姿势 --
+            float fireRotation = LazyRotationUpdate ? oldSetRoting : ToMouseA;
+            Vector2 firePosition = Owner.GetPlayerStabilityCenter() + fireRotation.ToRotationVector2() * HandheldDistance;
+            float fireArmRot = (MathHelper.PiOver2 * SafeGravDir - fireRotation) * DirSign * SafeGravDir;
+
+            if (EnableCowboySpin) {
+                float bowTargetRotation = fireRotation;
+                bool isAimingUpwards = fireRotation.ToRotationVector2().Y * DirSign * SafeGravDir < 0;
+                if (EnableCowboySpin && isAimingUpwards) {
+                    //如果是朝右，默认不会旋转，手动给目标角度加上360度（2 * PI），强制Lerp走长路径
+                    if (Owner.direction > 0) {
+                        bowTargetRotation += MathHelper.TwoPi;
+                    }
+                }
+
+                Projectile.rotation = MathHelper.Lerp(idleRotation, bowTargetRotation, fireAnimationProgress);
+            }
+            else {
+                Projectile.rotation = idleRotation.AngleLerp(fireRotation, fireAnimationProgress);
+            }
+
+            //-- 弓身位置：插值逻辑保持不变 --
+            Projectile.Center = Vector2.Lerp(idlePosition, firePosition, fireAnimationProgress);
+
+            //-- 手臂旋转：始终使用“最短路径”插值，保持平滑 --
+            ArmRotSengsFront = idleArmRotFront.AngleLerp(fireArmRot, fireAnimationProgress);
+            ArmRotSengsBack = idleArmRotBack.AngleLerp(fireArmRot, fireAnimationProgress);
+
+            //当完全进入开火姿势时，才更新玩家朝向
+            if (fireAnimationProgress >= 0.9f) {
+                Owner.direction = fireRotation.ToRotationVector2().X > 0 ? 1 : -1;
+            }
         }
 
         public override void FiringIncident() {
+            //FiringIncident 的逻辑现在只负责更新开火状态，不再直接调用姿势函数
             if (DownLeft) {
-                SetInFireFromeAI();
-                if (HaveAmmo) {
-                    onFire = true;
-                    SetArmInFire();
-                }
+                if (HaveAmmo) onFire = true;
             }
             else {
                 onFire = false;
             }
 
             if (DownRight && CanRightClick && !onFire && SafeMousetStart) {
-                SetInFireFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;
                     onFireR = true;
-                    SetArmInFire();
                 }
             }
             else {
@@ -226,17 +264,21 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public override void PostSetRangedProperty() {
+            if (HandheldDistance < 16) {
+                EnableCowboySpin = false;
+            }
+
             foreach (var gBow in RangedLoader.GlobalRangeds) {
                 gBow.PostModifyBow(this);
             }
 
-            // 如果指定了弓弦的扣除矩形（用于纹理剪裁）
+            //如果指定了弓弦的扣除矩形（用于纹理剪裁）
             if (BowstringData.DeductRectangle != default) {
-                // 允许扣除逻辑进行
+                //允许扣除逻辑进行
                 BowstringData.CanDeduct = true;
-                // 如果开启了自动宽度设置，并且扣除矩形的宽度有效（大于0）
+                //如果开启了自动宽度设置，并且扣除矩形的宽度有效（大于0）
                 if (BowstringData.AutomaticWidthSetting && BowstringData.DeductRectangle.Width > 0) {
-                    // 设置弓弦的厚度计算器为固定值，等于扣除矩形的宽度
+                    //设置弓弦的厚度计算器为固定值，等于扣除矩形的宽度
                     BowstringData.thicknessEvaluator = (_) => BowstringData.DeductRectangle.Width / 2;
                 }
                 if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset == default) {
@@ -244,15 +286,15 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 }
             }
 
-            // 如果任意弓弦的偏移量（顶部、底部、核心）被设置，或者设置了矩形裁切，允许弓弦绘制
+            //如果任意弓弦的偏移量（顶部、底部、核心）被设置，或者设置了矩形裁切，允许弓弦绘制
             if (BowstringData.TopBowOffset != default || BowstringData.BottomBowOffset != default || BowstringData.CoreOffset != default || BowstringData.CanDeduct) {
                 BowstringData.CanDraw = true;
             }
-            // 如果仅设置了顶部偏移量，但未设置底部偏移量，则将底部偏移量与顶部偏移量保持一致
+            //如果仅设置了顶部偏移量，但未设置底部偏移量，则将底部偏移量与顶部偏移量保持一致
             if (BowstringData.TopBowOffset != default && BowstringData.BottomBowOffset == default) {
                 BowstringData.BottomBowOffset = BowstringData.TopBowOffset;
             }
-            // 如果仅设置了底部偏移量，但未设置顶部偏移量，则将顶部偏移量与底部偏移量保持一致
+            //如果仅设置了底部偏移量，但未设置顶部偏移量，则将顶部偏移量与底部偏移量保持一致
             if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset != default) {
                 BowstringData.TopBowOffset = BowstringData.BottomBowOffset;
             }
@@ -266,23 +308,26 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
             Projectile.timeLeft = 2;
 
-            if (!onFire && !onFireR) {
-                if (ShootCoolingValue > 0) {
-                    ShootCoolingValue = 0;
-                }
-                if (LazyRotationUpdate) {//在闲置期间要时刻更新待定的旋转角
+            //如果玩家正在按住攻击键，则进度条向 1 (开火姿势) 推进
+            //否则，进度条向 0 (闲置姿势) 回退
+            fireAnimationProgress += CanFire ? AimingAnimationSpeed : -AimingAnimationSpeed;
+            fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f); // 确保进度在 0 和 1 之间
+
+            if (!CanFire) {
+                if (LazyRotationUpdate) {
                     oldSetRoting = ToMouseA;
                 }
             }
 
-            if (InOwner_HandState_AlwaysSetInFireRoding) {
-                SetInFireFromeAI();
+            UpdateAimingAnimation();
+            
+            if (HaveAmmo) {
+                ShootCoolingValue += AttackSpeed;
             }
-            else {
-                SetIdleFromeAI();
-            }
+            
+            SetArmInFire();
 
-            SetCompositeArm();
+            ShootCoolingValue = MathHelper.Clamp(ShootCoolingValue, 0, Item.useTime);
 
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
@@ -321,9 +366,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 if (LazyRotationUpdate) {
                     Projectile.rotation = oldSetRoting = ToMouseA;
                 }
-
-                //在生成射弹前再执行一次 SetInFireFromeAI，以防止因为更新顺序所导致的延迟帧情况
-                SetInFireFromeAI();
 
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
@@ -491,89 +533,91 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 cooltime = Item.useTime / 3;
             }
 
-            if (CanFire && ShootCoolingValue > cooltime) {
-                int useAmmoItemType = UseAmmoItemType;
-                if (useAmmoItemType == ItemID.None) {
-                    return;
-                }
-                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
-                    Main.instance.LoadItem(useAmmoItemType);
-                }
+            if (ShootCoolingValue <= cooltime) {
+                return;
+            }
 
-                Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
-                Item arrowItemInds = new Item(useAmmoItemType);
-                ArrowResourceProcessing(ref arrowValue, arrowItemInds);
-                CustomArrowRP(ref arrowValue, arrowItemInds);
+            int useAmmoItemType = UseAmmoItemType;
+            if (useAmmoItemType == ItemID.None) {
+                return;
+            }
+            if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
+                Main.instance.LoadItem(useAmmoItemType);
+            }
 
-                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
-                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
-                    if (ToTargetAmmoInDraw > 0) {
-                        arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
+            Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
+            Item arrowItemInds = new Item(useAmmoItemType);
+            ArrowResourceProcessing(ref arrowValue, arrowItemInds);
+            CustomArrowRP(ref arrowValue, arrowItemInds);
+
+            if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
+                arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                if (ToTargetAmmoInDraw > 0) {
+                    arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
+                }
+                if (ISForcedConversionDrawAmmoInversion) {
+                    CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
+                    DrawArrowOffsetRot = MathHelper.Pi;
+                }
+            }
+            else {
+                CustomDrawOrig = Vector2.Zero;
+                DrawArrowOffsetRot = 0;
+            }
+
+            float drawRot = Projectile.rotation + MathHelper.PiOver2;
+            float chordCoefficient = 1 - ShootCoolingValue / Item.useTime;
+
+            float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;
+            Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
+            Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
+            Vector2 norlInRotUnit = inprojRot.GetNormalVector();
+            Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
+            drawPos += offsetDrawPos;
+
+            void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
+                , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos), null, lightColor
+                , drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
+
+            switch (BowArrowDrawNum) {
+                case 2:
+                    drawArrow(0.3f * chordCoefficient);
+                    drawArrow(-0.3f * chordCoefficient);
+                    break;
+                case 3:
+                    chordCoefficient += 0.5f;
+                    if (chordCoefficient > 1) {
+                        chordCoefficient = 1;
                     }
-                    if (ISForcedConversionDrawAmmoInversion) {
-                        CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
-                        DrawArrowOffsetRot = MathHelper.Pi;
+                    drawArrow(0.45f * chordCoefficient, norlInRotUnit * -1f);
+                    drawArrow();
+                    drawArrow(-0.45f * chordCoefficient, norlInRotUnit * 1f);
+                    break;
+                case 4:
+                    chordCoefficient += 0.3f;
+                    if (chordCoefficient > 1) {
+                        chordCoefficient = 1;
                     }
-                }
-                else {
-                    CustomDrawOrig = Vector2.Zero;
-                    DrawArrowOffsetRot = 0;
-                }
-
-                float drawRot = Projectile.rotation + MathHelper.PiOver2;
-                float chordCoefficient = 1 - ShootCoolingValue / Item.useTime;
-
-                float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;
-                Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
-                Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
-                Vector2 norlInRotUnit = inprojRot.GetNormalVector();
-                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
-                drawPos += offsetDrawPos;
-
-                void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
-                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos), null, lightColor
-                    , drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
-
-                switch (BowArrowDrawNum) {
-                    case 2:
-                        drawArrow(0.3f * chordCoefficient);
-                        drawArrow(-0.3f * chordCoefficient);
-                        break;
-                    case 3:
-                        chordCoefficient += 0.5f;
-                        if (chordCoefficient > 1) {
-                            chordCoefficient = 1;
-                        }
-                        drawArrow(0.45f * chordCoefficient, norlInRotUnit * -1f);
-                        drawArrow();
-                        drawArrow(-0.45f * chordCoefficient, norlInRotUnit * 1f);
-                        break;
-                    case 4:
-                        chordCoefficient += 0.3f;
-                        if (chordCoefficient > 1) {
-                            chordCoefficient = 1;
-                        }
-                        drawArrow(0.6f * chordCoefficient);
-                        drawArrow(-0.6f * chordCoefficient);
-                        drawArrow(0.2f * chordCoefficient);
-                        drawArrow(-0.2f * chordCoefficient);
-                        break;
-                    case 5:
-                        chordCoefficient += 0.3f;
-                        if (chordCoefficient > 1) {
-                            chordCoefficient = 1;
-                        }
-                        drawArrow(0.7f * chordCoefficient, norlInRotUnit * 0.3f);
-                        drawArrow(-0.7f * chordCoefficient, norlInRotUnit * -0.3f);
-                        drawArrow();
-                        drawArrow(0.35f * chordCoefficient, norlInRotUnit * 0.2f);
-                        drawArrow(-0.35f * chordCoefficient, norlInRotUnit * -0.2f);
-                        break;
-                    case 1:
-                    default:
-                        drawArrow();
-                        break;
-                }
+                    drawArrow(0.6f * chordCoefficient);
+                    drawArrow(-0.6f * chordCoefficient);
+                    drawArrow(0.2f * chordCoefficient);
+                    drawArrow(-0.2f * chordCoefficient);
+                    break;
+                case 5:
+                    chordCoefficient += 0.3f;
+                    if (chordCoefficient > 1) {
+                        chordCoefficient = 1;
+                    }
+                    drawArrow(0.7f * chordCoefficient, norlInRotUnit * 0.3f);
+                    drawArrow(-0.7f * chordCoefficient, norlInRotUnit * -0.3f);
+                    drawArrow();
+                    drawArrow(0.35f * chordCoefficient, norlInRotUnit * 0.2f);
+                    drawArrow(-0.35f * chordCoefficient, norlInRotUnit * -0.2f);
+                    break;
+                case 1:
+                default:
+                    drawArrow();
+                    break;
             }
         }
 
@@ -584,7 +628,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                 Projectile.rotation = minRot - MathHelper.Pi;
             }
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandheldDistance;
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
             SetCompositeArm();
         }

@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private int nettlevineIndex;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 4;
-            HandFireDistanceX = 20;
             DrawArrowMode = -22;
             BowstringData.DeductRectangle = new Rectangle(6, 16, 2, 34);
         }

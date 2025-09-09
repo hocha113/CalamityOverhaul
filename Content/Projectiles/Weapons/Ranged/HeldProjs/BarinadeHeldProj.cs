@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Barinade>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
-            HandIdleDistanceY = 5;
             BowstringData.DeductRectangle = new Rectangle(4, 10, 4, 32);
         }
 

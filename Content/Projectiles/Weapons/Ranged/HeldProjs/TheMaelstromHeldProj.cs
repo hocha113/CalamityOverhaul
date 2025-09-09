@@ -12,14 +12,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<TheMaelstrom>();
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandFireDistanceX = 26;
             DrawArrowMode = -30;
             BowstringData.DeductRectangle = new Rectangle(14, 18, 4, 102);
         }
         public override void PostInOwner() {
             BowstringData.CanDeduct = BowstringData.CanDraw = onFire;
             BowArrowDrawBool = onFire;
-            HandFireDistanceX = onFire ? 26 : 22;
         }
         public override void SetShootAttribute() {
             if (onFire) {

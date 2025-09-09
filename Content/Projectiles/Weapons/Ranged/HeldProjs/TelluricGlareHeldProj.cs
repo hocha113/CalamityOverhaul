@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TelluricGlare";
         public override int TargetID => ModContent.ItemType<TelluricGlare>();
         public override void SetRangedProperty() {
-            HandFireDistanceX = 20;
             DrawArrowMode = -26;
             BowstringData.DeductRectangle = new Rectangle(8, 24, 2, 28);
         }

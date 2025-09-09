@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DaemonsFlame";
         public override int TargetID => ModContent.ItemType<DaemonsFlame>();
         public override void SetRangedProperty() {
-            HandIdleDistanceX = 28;
-            HandFireDistanceX = 28;
             DrawArrowMode = -30;
             BowstringData.TopBowOffset = new Vector2(8, 4);
             BowstringData.DeductRectangle = new Rectangle(4, 4, 4, 114);

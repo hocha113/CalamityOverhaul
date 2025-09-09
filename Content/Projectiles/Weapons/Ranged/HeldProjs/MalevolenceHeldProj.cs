@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Malevolence>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
-            HandFireDistanceX = 20;
             DrawArrowMode = -24;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             BowstringData.DeductRectangle = new Rectangle(0, 14, 6, 44);

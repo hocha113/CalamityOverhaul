@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int TargetID => ModContent.ItemType<Phangasm>();
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
-            HandFireDistanceX = 22;
             DrawArrowMode = -24;
             BowstringData.DeductRectangle = new Rectangle(4, 12, 2, 58);
         }
