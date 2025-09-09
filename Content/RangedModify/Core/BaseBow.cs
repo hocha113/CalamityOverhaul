@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Summon;
 using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -272,7 +271,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (HaveAmmo) {
                 ShootCoolingValue += AttackSpeed;
             }
-            
+
+            SetCompositeArm();
             SetArmInFire();
 
             ShootCoolingValue = MathHelper.Clamp(ShootCoolingValue, 0, Item.useTime);
