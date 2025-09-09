@@ -7,6 +7,7 @@
         internal bool Turning { get; set; }
         internal bool Decussation { get; set; }
         internal int ThreeCrutchesID { get; set; }
+        public virtual Color BaseColor => Color.White;
         public override float MaxUEValue => 20;
     }
 }

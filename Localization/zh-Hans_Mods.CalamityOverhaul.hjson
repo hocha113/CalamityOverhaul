@@ -1075,6 +1075,7 @@ Items: {
 			'''
 		Text1: 数量过多!
 		Text2: 周围缺少箱子!
+		Text3: 电力不足!
 	}
 
 	WGGCollector: {
@@ -1117,6 +1118,11 @@ Items: {
 			放置在水中进行发电
 			"流体力学的一种应用"
 			'''
+	}
+
+	CreativeUEPipeline: {
+		DisplayName: 上帝能量管道
+		Tooltip: ""
 	}
 }
 

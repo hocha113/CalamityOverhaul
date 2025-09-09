@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -27,9 +26,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Collector";
         internal static LocalizedText Text1;
         internal static LocalizedText Text2;
+        internal static LocalizedText Text3;
         public override void SetStaticDefaults() {
             Text1 = this.GetLocalization(nameof(Text1), () => "Excessive Quantity!");
             Text2 = this.GetLocalization(nameof(Text2), () => "There are no boxes around!");
+            Text3 = this.GetLocalization(nameof(Text3), () => "Lack of Electricity!");
         }
         public override void SetDefaults() {
             Item.width = 32;
@@ -312,6 +313,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                 if (doNet) {
                     SendData();
+                }
+            }
+
+            BatteryPrompt = MachineData.UEvalue < consumeUE;
+            if (BatteryPrompt) {
+                if (textIdleTime <= 0) {
+                    CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
+                    textIdleTime = 300;
                 }
             }
         }
@@ -609,7 +618,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            if (collectorTP.BatteryPrompt) {
+            if (collectorTP?.BatteryPrompt == true) {
                 lightColor.R /= 2;
                 lightColor.G /= 2;
                 lightColor.B /= 2;

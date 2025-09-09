@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             float drawRot = Offset.ToVector2().ToRotation();
 
             Vector2 orig = UEPipelineInputTP.PipelineInputChannel.Size() / 2;
-            Color color = Color.White * (coreTP.MachineData.UEvalue / 10f);
+            Color color = coreTP.BaseColor * (coreTP.MachineData.UEvalue / 10f);
 
             spriteBatch.Draw(UEPipelineInputTP.PipelineInputChannel.Value, drawPos + orig, null, color
                 , drawRot, orig, 1, SpriteEffects.None, 0);
@@ -284,21 +284,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             if (ThreeCrutchesID >= 0) {
                 Rectangle rectangle = PipelineInputThreeCrutches.Value.GetRectangle(ThreeCrutchesID, 4);
-                spriteBatch.Draw(PipelineInputThreeCrutches.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(PipelineInputThreeCrutches.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineThreeCrutchesSide.Value, drawPos, rectangle, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 return;
             }
 
             if (Decussation) {
                 drawPos = CenterInWorld - Main.screenPosition;
-                spriteBatch.Draw(PipelineInputCross.Value, drawPos, null, Color.White * (MachineData.UEvalue / 10f), 0, PipelineInputCross.Size() / 2, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(PipelineInputCross.Value, drawPos, null, BaseColor * (MachineData.UEvalue / 10f), 0, PipelineInputCross.Size() / 2, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineCrossSide.Value, drawPos, null, Lighting.GetColor(Position.ToPoint()), 0, PipelineInputCross.Size() / 2, 1, SpriteEffects.None, 0);
                 return;
             }
 
             if (Turning) {
                 Rectangle rectangle = PipelineInputCorner.Value.GetRectangle(TurningID, 4);
-                spriteBatch.Draw(PipelineInputCorner.Value, drawPos, rectangle, Color.White * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(PipelineInputCorner.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(PipelineCornerSide.Value, drawPos, rectangle, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 return;
             }
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
 
             if (linkCount != 2 || linkCount2 == 2) {
-                spriteBatch.Draw(PipelineInput.Value, drawPos.GetRectangle(Size), Color.White * (MachineData.UEvalue / 10f));
+                spriteBatch.Draw(PipelineInput.Value, drawPos.GetRectangle(Size), BaseColor * (MachineData.UEvalue / 10f));
                 spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), Lighting.GetColor(Position.ToPoint()));
             }
         }

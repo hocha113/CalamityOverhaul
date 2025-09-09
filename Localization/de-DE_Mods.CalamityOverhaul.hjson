@@ -1078,6 +1078,7 @@ Items: {
 			''' */
 		// Text1: Excessive Quantity!
 		// Text2: There are no boxes around!
+		// Text3: Lack of Electricity!
 	}
 
 	WGGCollector: {
@@ -1122,6 +1123,11 @@ Items: {
 			Generating electricity by placing in water
 			"One application of fluid mechanics"
 			''' */
+	}
+
+	CreativeUEPipeline: {
+		// DisplayName: Energy Creative Pipeline
+		// Tooltip: ""
 	}
 }
 

@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -1102,6 +1102,7 @@ Items: {
 			'''
 		Text1: Слишком много!
 		Text2: Здесь нет никаких коробок!
+		// Text3: Lack of Electricity!
 	}
 
 	WGGCollector: {
@@ -1146,6 +1147,11 @@ Items: {
 			Работает, находясь в воде.
 			"Пример работы механики жидкостей"
 			'''
+	}
+
+	CreativeUEPipeline: {
+		// DisplayName: Energy Creative Pipeline
+		// Tooltip: ""
 	}
 }
 
