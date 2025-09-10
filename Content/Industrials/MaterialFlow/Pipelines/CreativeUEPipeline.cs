@@ -201,16 +201,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         [VaultLoaden(CWRConstant.Effects)]
         internal static Effect StarsShader { get; set; }
         private readonly static List<CreativeUEPipelineTP> creativePipelines = [];
+        private static int creativePipelineID;
+        public override void SetStaticDefaults() => creativePipelineID = TileProcessorLoader.GetModuleID<CreativeUEPipelineTP>();
+        //在统一逻辑处理之前先保证集合被清空
         public override bool PreSingleInstanceUpdate(TileProcessor tileProcessor) {
+            if (tileProcessor.ID != creativePipelineID) {
+                return true;//只在上帝管道的单例上运行
+            }
+
             creativePipelines.Clear();
             return true;
         }
         //在逻辑更新中统一处理管道实例的添加
         public override void SingleInstanceUpdate(TileProcessor tileProcessor) {
-            int id = TileProcessorLoader.GetModuleID<CreativeUEPipelineTP>();
+            if (tileProcessor.ID != creativePipelineID) {
+                return;//只在上帝管道的单例上运行
+            }
+
             for (int i = 0; i < TileProcessorLoader.TP_InWorld.Count; i++) {
                 TileProcessor tp = TileProcessorLoader.TP_InWorld[i];
-                if (!tp.Active || !tp.InScreen || tp.ID != id) {
+                if (!tp.Active || !tp.InScreen || tp.ID != creativePipelineID) {
                     continue;
                 }
 
@@ -226,7 +236,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             if (creativePipelines.Count > 0) {
                 spriteBatch.End();
             }
-            
+
             DoRender((tp) => tp.HideRenderDraw(spriteBatch), spriteBatch);
 
             if (creativePipelines.Count > 0) {
