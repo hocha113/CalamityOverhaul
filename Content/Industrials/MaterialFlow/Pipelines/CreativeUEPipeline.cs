@@ -1,5 +1,11 @@
 ﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.RenderHandles;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -67,6 +73,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     /// </summary>
     internal class CreativeUEPipelineTP : UEPipelineInputTP
     {
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        public static Asset<Texture2D> PipelineCreative { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        public static Asset<Texture2D> PipelineCreativeCorner { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        public static Asset<Texture2D> PipelineCreativeCross { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        public static Asset<Texture2D> PipelineCreativeChannel { get; private set; }
+        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+        public static Asset<Texture2D> PipelineCreativeThreeCrutches { get; private set; }
         public override int TargetTileID => ModContent.TileType<CreativeUEPipelineTile>();
         public override int TargetItem => ModContent.ItemType<CreativeUEPipeline>();
         public override Color BaseColor => Color.Purple;
@@ -74,15 +90,202 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// 重写机器更新逻辑
         /// </summary>
         public override void UpdateMachine() {
-            //首先，调用基类（UEPipelineInputTP）的更新方法
-            //这样做可以完全复用它所有复杂的连接判断、状态更新（是否为拐角、十字等）逻辑，无需重写
             base.UpdateMachine();
-
-            //核心逻辑：在所有状态更新完毕后，强行将自身的电力值设置为最大值
-            //这使得它在任何时候都是一个满额的电力输出源
             if (MachineData != null) {
                 MachineData.UEvalue = MaxUEValue;
             }
+        }
+
+        internal void HideRenderDraw(SpriteBatch spriteBatch) {
+            if (Decussation) {
+                return;//十字交叉下不能进行边缘绘制
+            }
+            foreach (var side in SideState) {
+                if (side.canDraw && side.linkID != 2) {//链接其他时绘制在后面
+                    if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
+                        return;
+                    }
+
+                    Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
+                    float drawRot = side.Offset.ToVector2().ToRotation();
+
+                    Vector2 orig = PipelineCreativeChannel.Size() / 2;
+                    Color color = side.coreTP.BaseColor * (side.coreTP.MachineData.UEvalue / 10f);
+
+                    spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos2 + orig, null, color
+                        , drawRot, orig, 1, SpriteEffects.None, 0);
+                }
+            }
+        }
+
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            if (Decussation) {
+                return;//十字交叉下不能进行边缘绘制
+            }
+            foreach (var side in SideState) {
+                if (side.canDraw && side.linkID != 2) {//链接其他时绘制在后面
+                    if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
+                        return;
+                    }
+
+                    Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
+                    float drawRot = side.Offset.ToVector2().ToRotation();
+
+                    Vector2 orig = PipelineCreativeChannel.Size() / 2;
+                    Color color = Lighting.GetColor(Position.ToPoint());
+                    spriteBatch.Draw(PipelineChannelSide.Value, drawPos2 + orig, null, color
+                        , drawRot, orig, 1, SpriteEffects.None, 0);
+                }
+            }
+        }
+
+        internal void RenderDraw(SpriteBatch spriteBatch) {
+            if (!Decussation) {//十字交叉下不能进行边缘绘制
+                foreach (var side in SideState) {
+                    if (side.canDraw && side.linkID == 2) {//链接管道自己时绘制在前面
+                        if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
+                            return;
+                        }
+
+                        Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
+                        float drawRot = side.Offset.ToVector2().ToRotation();
+
+                        Vector2 orig = PipelineCreativeChannel.Size() / 2;
+                        Color color = side.coreTP.BaseColor * (side.coreTP.MachineData.UEvalue / 10f);
+
+                        spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos2 + orig, null, color
+                            , drawRot, orig, 1, SpriteEffects.None, 0);
+                    }
+                }
+            }
+
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
+
+            if (ThreeCrutchesID >= 0) {
+                Rectangle rectangle = PipelineCreativeThreeCrutches.Value.GetRectangle(ThreeCrutchesID, 4);
+                spriteBatch.Draw(PipelineCreativeThreeCrutches.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                return;
+            }
+
+            if (Decussation) {
+                drawPos = CenterInWorld - Main.screenPosition;
+                spriteBatch.Draw(PipelineCreativeCross.Value, drawPos, null, BaseColor * (MachineData.UEvalue / 10f), 0, PipelineCreativeCross.Size() / 2, 1, SpriteEffects.None, 0);
+                return;
+            }
+
+            if (Turning) {
+                Rectangle rectangle = PipelineCreativeCorner.Value.GetRectangle(TurningID, 4);
+                spriteBatch.Draw(PipelineCreativeCorner.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                return;
+            }
+
+            int linkCount = 0;
+            int linkCount2 = 0;
+            foreach (var side in SideState) {
+                if (side.linkID != 0) {
+                    linkCount++;
+                    if (side.linkID != 2) {
+                        linkCount2++;
+                    }
+                }
+            }
+
+            if (linkCount != 2 || linkCount2 == 2) {
+                spriteBatch.Draw(PipelineCreative.Value, drawPos.GetRectangle(Size), BaseColor * (MachineData.UEvalue / 10f));
+            }
+        }
+    }
+
+    internal class CreativePipelineGlobalDraw : GlobalTileProcessor
+    {
+        [VaultLoaden(CWRConstant.Effects)]
+        internal static Effect StarsShader { get; set; }
+        [VaultLoaden(CWRConstant.Asset + "Sky/")]
+        internal static Texture2D StarrySky { get; set; }
+        private readonly static List<CreativeUEPipelineTP> creativePipelines = [];
+        public override bool PreSingleInstanceUpdate(TileProcessor tileProcessor) {
+            creativePipelines.Clear();
+            return true;
+        }
+        public override void SingleInstanceUpdate(TileProcessor tileProcessor) {
+            int id = TileProcessorLoader.GetModuleID<CreativeUEPipelineTP>();
+            for (int i = 0; i < TileProcessorLoader.TP_InWorld.Count; i++) {
+                TileProcessor tp = TileProcessorLoader.TP_InWorld[i];
+                if (!tp.Active || !tp.InScreen || tp.ID != id) {
+                    continue;
+                }
+
+                if (tp is not CreativeUEPipelineTP creativePipeline) {
+                    continue;
+                }
+
+                creativePipelines.Add(creativePipeline);
+            }
+        }
+        //渲染钩子放在这个位置，可以确保图层正确
+        public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
+            if (creativePipelines.Count > 0) {
+                spriteBatch.End();
+            }
+            
+            DoRender((tp) => tp.HideRenderDraw(spriteBatch), spriteBatch);
+
+            if (creativePipelines.Count > 0) {
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+                
+            return true;
+        }
+        //渲染钩子放在这个位置，可以确保图层正确
+        public override void PostDrawEverything(SpriteBatch spriteBatch) => DoRender((tp) => tp.RenderDraw(spriteBatch), spriteBatch);
+        /// <summary>
+        /// 渲染上帝管道的RT效果
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="screenSwap"></param>
+        internal static void DoRender(Action<CreativeUEPipelineTP> func, SpriteBatch spriteBatch) {
+            if (creativePipelines.Count == 0) {
+                return;
+            }
+
+            GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+            RenderTarget2D screenSwap = RenderHandleLoader.ScreenSwap;
+
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(screenSwap);
+            graphicsDevice.Clear(Color.Transparent); //改为透明，避免干扰
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+
+            foreach (var creativePipeline in creativePipelines) {
+                func.Invoke(creativePipeline);
+            }
+
+            spriteBatch.End();
+
+            //最终绘制到 Main.screenTarget
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+            graphicsDevice.Textures[1] = StarrySky;
+            StarsShader.CurrentTechnique.Passes[0].Apply();
+            StarsShader.Parameters["m"].SetValue(0.08f);
+            StarsShader.Parameters["n"].SetValue(0.01f);
+            StarsShader.Parameters["OffsetX"].SetValue((float)((Main.GlobalTimeWrappedHourly) * 0.11f));
+
+            Main.spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+            Main.spriteBatch.End();
         }
     }
 }
