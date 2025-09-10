@@ -269,7 +269,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             //开始特效绘制，设置着色器处理中间屏幕上面的管道纹理
-            //graphicsDevice.Textures[1] = StarrySky;
             StarsShader.CurrentTechnique.Passes[0].Apply();
             StarsShader.Parameters["m"].SetValue(0.08f);
             StarsShader.Parameters["n"].SetValue(0.01f);
