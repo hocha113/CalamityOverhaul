@@ -1144,6 +1144,16 @@ Items: {
 		// DisplayName: Energy Creative Pipeline
 		// Tooltip: ""
 	}
+
+	ItemFilter: {
+		// DisplayName: Item Filter Board
+		/* Tooltip:
+			'''
+			Use to open the filter panel
+			Right-click a compatible machine to apply
+			Left-click a chest to copy its contents as filter rules
+			''' */
+	}
 }
 
 Projectiles: {

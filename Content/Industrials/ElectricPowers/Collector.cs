@@ -152,19 +152,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int frame;
         internal bool workState;
         internal bool BatteryPrompt;
+        internal Item ItemFilter;
         internal int TagItemSign;
         internal int dontSpawnArmTime;
         internal int consumeUE = 8;
         internal int ArmIndex0 = -1;
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
+        internal float hoverSengs;
         public override void SetBattery() {
+            ItemFilter = new Item();
             //给予更多的绘制扩宽，因为爪手依赖TP的绘制，避免超出屏幕后爪手消失
             DrawExtendMode = 2200;
         }
 
         public override void SendData(ModPacket data) {
             base.SendData(data);
+            ItemIO.Send(ItemFilter, data);
             data.Write(TagItemSign);
             data.Write(BatteryPrompt);
             data.Write(workState);
@@ -175,6 +179,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
+            ItemFilter = ItemIO.Receive(reader);
             TagItemSign = reader.ReadInt32();
             BatteryPrompt = reader.ReadBoolean();
             workState = reader.ReadBoolean();
@@ -185,6 +190,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
+
+            ItemFilter ??= new Item();
+            tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
+
             string result;
             //因为对于模组来讲，物品的ID是动态的，为了避免模组变动导致的ID偏移问题，这里存储物品的内部名
             if (TagItemSign < ItemID.Count) {
@@ -198,6 +207,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
+            
+            if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
+                ItemFilter = ItemIO.Load(value);
+            }
+            else {
+                ItemFilter = new Item();
+            }
+
             if (tag.TryGet("_TagItemFullName", out string fullName)) {
                 TagItemSign = VaultUtils.GetItemTypeFromFullName(fullName);
             }
@@ -247,6 +264,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
             SoundEngine.PlaySound(CWRSound.Select with { Pitch = -0.2f });
             TagItemSign = item.type;
+
+            if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
+                ItemFilter = item.Clone();
+                var data = ItemFilter.GetGlobalItem<ItemFilterData>().Items.ToHashSet();
+                ItemFilter.GetGlobalItem<ItemFilterData>().Items = data;//这一个来回用于切断和原物品的过滤内容引用粘连
+            }
+
             SendData();
         }
 
@@ -270,6 +294,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             consumeUE = 8;
             if (!workState) {
                 return;
+            }
+
+            if (HoverTP) {
+                if (hoverSengs < 1f) {
+                    hoverSengs += 0.1f;
+                }
+            }
+            else {
+                if (hoverSengs > 0f) {
+                    hoverSengs -= 0.1f;
+                }
             }
 
             if (textIdleTime > 0) {
@@ -339,11 +374,43 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
+            //首先，绘制当前设置的目标物品图标
             if (TagItemSign > ItemID.None) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, TagItemSign
                     , CenterInWorld - Main.screenPosition + new Vector2(0, 32)
                     , itemWidth: 32, 0, 0, Lighting.GetColor(Position.ToPoint()));
             }
+
+            //如果设置的目标物品是“物品过滤器”，并且鼠标正在悬停(hoverSengs > 0)
+            //则以动画形式将过滤器内的物品环绕展开
+            if (TagItemSign == ModContent.ItemType<ItemFilter>() && hoverSengs > 0.01f) {
+                int[] filterItems = [.. ItemFilter.GetGlobalItem<ItemFilterData>().Items];
+                if (filterItems.Length > 0) {
+                    const float maxRadius = 150f;//定义展开的最大半径
+                    float currentRadius = maxRadius * hoverSengs;//根据hoverSengs计算当前半径
+                    float angleIncrement = MathHelper.TwoPi / filterItems.Length;//计算每个物品之间的角度间隔
+
+                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);//中心点与目标物品图标一致
+
+                    for (int i = 0; i < filterItems.Length; i++) {
+                        if (filterItems[i] <= ItemID.None) continue;//跳过无效物品ID
+
+                        //计算物品环绕排列的位置，-MathHelper.PiOver2是为了让第一个物品在正上方
+                        float currentAngle = angleIncrement * i - MathHelper.PiOver2;
+                        Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
+                        Vector2 itemPos = drawCenter + offset;
+
+                        //物品也使用hoverSengs来控制淡入和缩放效果，使其动画更平滑
+                        Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
+                        float scale = hoverSengs * 1.25f;
+
+                        VaultUtils.SafeLoadItem(filterItems[i]);
+                        VaultUtils.SimpleDrawItem(Main.spriteBatch, filterItems[i], itemPos, itemWidth: 32, scale, 0, drawColor);
+                    }
+                }
+            }
+
+            //最后绘制机器的充能条
             DrawChargeBar();
         }
     }
@@ -387,6 +454,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Item FindItem() {
             Item item = null;
             float maxFindSQ = 4000000;
+            int itemFilter = ModContent.ItemType<ItemFilter>();
             foreach (var i in Main.ActiveItems) {
                 if (i.IsAir || !i.active) {
                     continue;
@@ -400,7 +468,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     continue;
                 }
 
-                if (collectorTP.TagItemSign > ItemID.None && i.type != collectorTP.TagItemSign) {
+                if (collectorTP.TagItemSign == itemFilter) {
+                    if (!collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>().Items.Contains(i.type)) {
+                        continue;
+                    }
+                }
+                else if (collectorTP.TagItemSign > ItemID.None && i.type != collectorTP.TagItemSign) {
                     continue;
                 }
 

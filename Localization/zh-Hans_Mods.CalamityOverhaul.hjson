@@ -1124,6 +1124,16 @@ Items: {
 		DisplayName: 上帝能量管道
 		Tooltip: ""
 	}
+
+	ItemFilter: {
+		DisplayName: 物品过滤板
+		Tooltip:
+			'''
+			使用可以打开过滤面板
+			右键具备相应接口的机器以应用
+			左键点击箱子可以复制内部的物品作为过滤内容
+			'''
+	}
 }
 
 Projectiles: {
