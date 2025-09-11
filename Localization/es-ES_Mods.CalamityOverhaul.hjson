@@ -1154,6 +1154,15 @@ Items: {
 			Left-click a chest to copy its contents as filter rules
 			''' */
 	}
+
+	SporeBubbleBlaster: {
+		// DisplayName: Spore Bubble Blaster
+		/* Tooltip:
+			'''
+			Sprays a stream of spore particles
+			Causes only 50% damage during the day
+			''' */
+	}
 }
 
 Projectiles: {
@@ -1471,6 +1480,7 @@ Projectiles: {
 	// MechanicalArm.DisplayName: Mechanical Arm
 	// CollectorArm.DisplayName: Collector Arm
 	// WGGCollectorArm.DisplayName: W G G Collector Arm
+	// SporeBobo.DisplayName: Spore Bobo
 }
 
 Configs: {
@@ -5500,4 +5510,7 @@ ModifyLores: {
 	}
 }
 
-// NPCs.DestroyerDrawHeadIconNPC.DisplayName: Destroyer
+NPCs: {
+	// DestroyerDrawHeadIconNPC.DisplayName: Destroyer
+	// SleepTruffle.DisplayName: Sleeping Truffle
+}

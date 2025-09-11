@@ -1134,6 +1134,15 @@ Items: {
 			左键点击箱子可以复制内部的物品作为过滤内容
 			'''
 	}
+
+	SporeBubbleBlaster: {
+		DisplayName: 孢子气泡爆破器
+		Tooltip:
+			'''
+			喷射一串孢子气流
+			在白天只造成50%伤害
+			'''
+	}
 }
 
 Projectiles: {
@@ -1451,6 +1460,7 @@ Projectiles: {
 	// MechanicalArm.DisplayName: Mechanical Arm
 	// CollectorArm.DisplayName: Collector Arm
 	// WGGCollectorArm.DisplayName: W G G Collector Arm
+	// SporeBobo.DisplayName: Spore Bobo
 }
 
 Configs: {
@@ -6161,4 +6171,7 @@ ModifyLores: {
 	}
 }
 
-NPCs.DestroyerDrawHeadIconNPC.DisplayName: 毁灭者
+NPCs: {
+	DestroyerDrawHeadIconNPC.DisplayName: 毁灭者
+	SleepTruffle.DisplayName: 沉睡的蘑菇人
+}
