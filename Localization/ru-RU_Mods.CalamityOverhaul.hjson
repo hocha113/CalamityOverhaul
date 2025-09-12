@@ -1483,26 +1483,23 @@ Projectiles: {
 		DisplayName: Draedons Remote Spawn
 	}
 
-	MedicalBoxHeld.DisplayName: Medical Box Held
-	MedicalBoxProj.DisplayName: Medical Box Proj
-	TeslaBall.DisplayName: Tesla Ball
+	CollectorArm.DisplayName: Collector Arm
+	ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
 	TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 	TeslaBallByGuard.DisplayName: Tesla Ball By Guard
-	ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
+	WGGCollectorArm.DisplayName: W G G Collector Arm
+	EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
+	TheGravityShield.DisplayName: The Gravity Shield
+	WarpingPoint.DisplayName: Warping Point
+	// SporeBoboMagic.DisplayName: Spore Bobo Magic
+	// SporeBobo.DisplayName: Spore Bobo
+	MedicalBoxHeld.DisplayName: Medical Box Held
+	MedicalBoxProj.DisplayName: Medical Box Proj
+	// FungiAmmo.DisplayName: Fungi Ammo
+	SpawnLaserEffect.DisplayName: Spawn Laser Effect
 	BananarangHeld.DisplayName: Bananarang Held
 	IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	TrimarangHeld.DisplayName: Trimarang Held
-	TheGravityShield.DisplayName: The Gravity Shield
-	WarpingPoint.DisplayName: Warping Point
-	EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
-	SpawnLaserEffect.DisplayName: Spawn Laser Effect
-	MechanicalArm.DisplayName: Mechanical Arm
-	CollectorArm.DisplayName: Collector Arm
-	WGGCollectorArm.DisplayName: W G G Collector Arm
-	// SporeBobo.DisplayName: Spore Bobo
-	// SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
-	// SporeBoboMagic.DisplayName: Spore Bobo Magic
-	// FungiAmmo.DisplayName: Fungi Ammo
 }
 
 Configs: {
@@ -5678,18 +5675,46 @@ NPCs: {
 	DestroyerDrawHeadIconNPC.DisplayName: Уничтожитель
 
 	SleepTruffle: {
-		// DisplayName: Sleeping Truffle
-		// Chat0: ""
-		// Chat1: ""
-		// Chat2: ""
-		// Chat3: ""
-		// Chat4: ""
-		// Chat5: ""
-		// Chat6: ""
-		// Chat7: ""
-		// Chat8: ""
-		// Chat9: ""
-		// Chat10: ""
-		// Chat11: ""
+		// DisplayName: Sleepy Mushroom Man
+		/* Chat0:
+			'''
+			The belly of that crab was so cozy, I’d been living there all this time.  
+			But you split it wide open—now I’m homeless.  
+			''' */
+		/* Chat1:
+			'''
+			I once ran a mushroom farm, with my children helping me.  
+			One day I found out half of them were growing inside someone else’s stomach.  
+			''' */
+		// Chat2: "Red cap, white stem… eat it and lie flat forever.  "
+		// Chat3: "You can sell mushrooms to me, but you’ll get absolutely nothing in return.  "
+		// Chat4: "Everyone here wants to eat me.  "
+		/* Chat5:
+			'''
+			I once saw a mushroom tree, at least 2000 meters tall.  
+			They say if you climb to the top and jump off, you’ll land in the Mushroom World.  
+			''' */
+		/* Chat6:
+			'''
+			If you need soup, buy my mushrooms.  
+			At least they won’t scream in the pot.  
+			''' */
+		// Chat7: "All the mushrooms here are mine.  "
+		/* Chat8:
+			'''
+			Ten years ago, you could hire me to guide you to the Fungal Kingdom underground.  
+			I hear it’s on clearance sale now.  
+			''' */
+		/* Chat9:
+			'''
+			I think you’ve got some fungus growing in your lungs.  
+			Come check my shop—I’ve got the perfect cure.  
+			''' */
+		// Chat10: "Oh, I hate that red guy.  "
+		/* Chat11:
+			'''
+			I hate this kind of blood moon.  
+			It makes me fade… like a wilted mushroom nobody wants.  
+			''' */
 	}
 }

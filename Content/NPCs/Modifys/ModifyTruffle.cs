@@ -66,6 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             if (!NPC.AnyNPCs(NPCID.Truffle)) {
+                ModifyTruffle.FirstChat = false;
                 NPC truffle = NPC.NewNPCDirect(NPC.FromObjectGetParent(), NPC.Center, NPCID.Truffle);
                 truffle.velocity = new Vector2(NPC.To(Main.LocalPlayer.Center).UnitVector().X * Main.rand.NextFloat(3), -6);
                 truffle.direction = truffle.spriteDirection = Math.Sign(truffle.velocity.X);
@@ -229,7 +230,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (!FirstChat) {
                 FirstChat = true;
-                chat = SleepTruffle.Chats[1].Value;
+                chat = SleepTruffle.Chats[0].Value;
                 return;
             }
 

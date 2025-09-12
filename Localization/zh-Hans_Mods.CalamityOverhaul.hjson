@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1462,26 +1462,23 @@ Projectiles: {
 		// DisplayName: Draedons Remote Spawn
 	}
 
-	// MedicalBoxHeld.DisplayName: Medical Box Held
-	// MedicalBoxProj.DisplayName: Medical Box Proj
-	// TeslaBall.DisplayName: Tesla Ball
+	// CollectorArm.DisplayName: Collector Arm
+	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack
 	// TeslaBallByGuard.DisplayName: Tesla Ball By Guard
-	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
+	// WGGCollectorArm.DisplayName: W G G Collector Arm
+	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
+	// TheGravityShield.DisplayName: The Gravity Shield
+	// WarpingPoint.DisplayName: Warping Point
+	// SporeBoboMagic.DisplayName: Spore Bobo Magic
+	// SporeBobo.DisplayName: Spore Bobo
+	// MedicalBoxHeld.DisplayName: Medical Box Held
+	// MedicalBoxProj.DisplayName: Medical Box Proj
+	// FungiAmmo.DisplayName: Fungi Ammo
+	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
 	// BananarangHeld.DisplayName: Bananarang Held
 	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	// TrimarangHeld.DisplayName: Trimarang Held
-	// TheGravityShield.DisplayName: The Gravity Shield
-	// WarpingPoint.DisplayName: Warping Point
-	// EmblemOfDreadDashProj.DisplayName: Emblem Of Dread Dash Proj
-	// SpawnLaserEffect.DisplayName: Spawn Laser Effect
-	// MechanicalArm.DisplayName: Mechanical Arm
-	// CollectorArm.DisplayName: Collector Arm
-	// WGGCollectorArm.DisplayName: W G G Collector Arm
-	// SporeBobo.DisplayName: Spore Bobo
-	// SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
-	// SporeBoboMagic.DisplayName: Spore Bobo Magic
-	// FungiAmmo.DisplayName: Fungi Ammo
 }
 
 Configs: {
@@ -6199,27 +6196,43 @@ NPCs: {
 		DisplayName: 沉睡的蘑菇人
 		Chat0:
 			'''
-			那只螃蟹的肚子里太舒服了，我一直住到现在
-			但现在你把它杀了，所以你得给我提供一个新的住所!
+			那只螃蟹的肚子里很舒服，我一直住到现在
+			但你把它开膛破肚了，现在我无家可归
 			'''
 		Chat1:
 			'''
-			我曾经办理过一个蘑菇养殖厂，和我的孩子们一同经营
-			直到有一次，我发现我的孩子少了一半
+			我曾经开过一个蘑菇农场，孩子们帮我打理得很好
+			直到有一天，我发现一半孩子长在了别人的胃里
 			'''
-		Chat2:
+		Chat2: 红伞伞，白杆杆，吃完躺板板
+		Chat3: 你可以把蘑菇卖给我，但你什么都得不到
+		Chat4: 这里每个人都想吃我
+		Chat5:
 			'''
-			红伞伞，白杆杆，吃完躺板板
-			不同于另一个红色的家伙，我卖的蓝蘑菇你可以放心吃
+			我见过一棵蘑菇树，至少2000米高
+			听说爬上去再跳下来，你就会到达蘑菇世界
 			'''
-		Chat3: 你可以把蘑菇出售给我，但你什么都得不到
-		Chat4: 这里的每个人都想吃我
-		Chat5: 我见过一颗磨菇树，它至少有2000米那么高，如果爬上去，你就可以前往蘑菇世界
-		Chat6: 如果你需要炖汤，就来买我的蘑菇
-		Chat7: 这里的蘑菇全是我的，你需要用钱买才能拿走
-		Chat8: 如果是十年前，你可以雇佣我，我会带你前往地下的真菌王国
-		Chat9: 我觉得你肺部真菌感染了，来看看我的商店，里面有特效药
+		Chat6:
+			'''
+			如果你需要炖汤，就来买我的蘑菇
+			至少它们不会在锅里尖叫
+			'''
+		Chat7: 这里的蘑菇都是我的
+		Chat8:
+			'''
+			十年前你可以雇我，我会带你去地下真菌王国
+			那里现在应该在打折清仓
+			'''
+		Chat9:
+			'''
+			我觉得你肺里长了点真菌
+			来我商店看看，我这里有特效药
+			'''
 		Chat10: 哦，我讨厌那个红色的家伙
-		Chat11: 我讨厌这种血月，它让我变得不那么蓝
+		Chat11:
+			'''
+			我讨厌这种血月
+			它让我褪色，像一颗没人要的焉蘑菇
+			'''
 	}
 }
