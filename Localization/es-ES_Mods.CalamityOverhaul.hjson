@@ -1168,6 +1168,11 @@ Items: {
 		// DisplayName: Tomeof Fungal Decay
 		// Tooltip: ""
 	}
+
+	FungalRevolver: {
+		// DisplayName: Fungal Revolver
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1488,6 +1493,7 @@ Projectiles: {
 	// SporeBobo.DisplayName: Spore Bobo
 	// SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
 	// SporeBoboMagic.DisplayName: Spore Bobo Magic
+	// FungiAmmo.DisplayName: Fungi Ammo
 }
 
 Configs: {

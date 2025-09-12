@@ -1145,8 +1145,21 @@ Items: {
 	}
 
 	TomeofFungalDecay: {
-		// DisplayName: Tomeof Fungal Decay
-		// Tooltip: ""
+		DisplayName: 腐菌秘典
+		Tooltip:
+			'''
+			喷射一圈孢子气流
+			在白天只造成50%伤害
+			'''
+	}
+
+	FungalRevolver: {
+		DisplayName: 蘑菇左轮
+		Tooltip:
+			'''
+			将火枪子弹转换为真菌子弹
+			"洗干净后反而不能用了"
+			'''
 	}
 }
 
@@ -1468,6 +1481,7 @@ Projectiles: {
 	// SporeBobo.DisplayName: Spore Bobo
 	// SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
 	// SporeBoboMagic.DisplayName: Spore Bobo Magic
+	// FungiAmmo.DisplayName: Fungi Ammo
 }
 
 Configs: {
