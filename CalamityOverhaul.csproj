@@ -73,6 +73,7 @@
     <Folder Include="Assets\TileModules\" />
     <Folder Include="Assets\Painting\" />
     <Folder Include="Assets\Turrets\" />
+    <Folder Include="Assets\Arcanes\" />
     <Folder Include="Content\OtherMods\Entropys\" />
   </ItemGroup>
   <ItemGroup>

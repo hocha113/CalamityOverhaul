@@ -5575,3 +5575,12 @@ NPCs: {
 			''' */
 	}
 }
+
+Arcanes: {
+	Items: {
+		ArcaneTransformer: {
+			// DisplayName: Arcane Transformer
+			// Tooltip: ""
+		}
+	}
+}

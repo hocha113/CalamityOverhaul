@@ -29,6 +29,7 @@
         public const string Turrets = Asset + "Turrets/";
         public const string ElectricPowers = Asset + "ElectricPowers/";
         public const string Other = Asset + "Others/";
+        public const string Arcanes = Asset + "Arcanes/";
 
         public const string Cay_Item = "CalamityMod/Items/";
         public const string Cay_Wap = Cay_Item + "Weapons/";

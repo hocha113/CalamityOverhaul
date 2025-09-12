@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5611,5 +5611,14 @@ NPCs: {
 			I hate this kind of blood moon.  
 			It makes me fade… like a wilted mushroom nobody wants.  
 			'''
+	}
+}
+
+Arcanes: {
+	Items: {
+		ArcaneTransformer: {
+			DisplayName: Arcane Transformer
+			Tooltip: ""
+		}
 	}
 }

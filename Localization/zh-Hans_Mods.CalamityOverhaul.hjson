@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -6234,5 +6234,14 @@ NPCs: {
 			我讨厌这种血月
 			它让我褪色，像一颗没人要的焉蘑菇
 			'''
+	}
+}
+
+Arcanes: {
+	Items: {
+		ArcaneTransformer: {
+			DisplayName: 奥术转换器
+			Tooltip: ""
+		}
 	}
 }

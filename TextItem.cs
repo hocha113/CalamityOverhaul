@@ -1,7 +1,9 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.OtherMods.Coralite;
 using CalamityOverhaul.Content.Structures.DatIO;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -35,7 +37,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         //public override void SetStaticDefaults() {
@@ -92,6 +94,14 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            if (CWRMod.Instance.coralite == null) {
+                return true;
+            }
+
+            Point16 point = Main.MouseWorld.ToTileCoordinates16();
+
+            MagikeCrossed.GetData(point).Domp();
+
             //Main.MouseWorld.ToTileCoordinates16().Domp();
             //if (player.altFunctionUse == 2) {
             //    MySaveStructure.DoSave<MySaveStructure>();

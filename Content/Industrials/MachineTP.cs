@@ -75,6 +75,14 @@ namespace CalamityOverhaul.Content.Industrials
             }
         }
 
+        public virtual void ExtraConductive(Point16 point, TileProcessor tp) {
+
+        }
+
+        public virtual void PostUpdateConductive() {
+
+        }
+
         public void UpdateConductive() {
             // 存储所有相关物块（机械物块本身 + 相邻管道）
             List<BaseUEPipelineTP> connectedTiles = new List<BaseUEPipelineTP>();
@@ -84,32 +92,48 @@ namespace CalamityOverhaul.Content.Industrials
             // 上边界
             for (int i = Position.X; i < Position.X + tileWidth; i++) {
                 Point16 point = new Point16(i, Position.Y - 1);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
-                    connectedTiles.Add(pipelineTP);
+                ExtraConductive(point, null);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
+                    ExtraConductive(point, tp);
+                    if (tp is BaseUEPipelineTP pipelineTP) {
+                        connectedTiles.Add(pipelineTP);
+                    }
                 }
             }
 
             // 下边界
             for (int i = Position.X; i < Position.X + tileWidth; i++) {
                 Point16 point = new Point16(i, Position.Y + tileHeight);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
-                    connectedTiles.Add(pipelineTP);
+                ExtraConductive(point, null);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
+                    ExtraConductive(point, tp);
+                    if (tp is BaseUEPipelineTP pipelineTP) {
+                        connectedTiles.Add(pipelineTP);
+                    }
                 }
             }
 
             // 左边界
             for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
                 Point16 point = new Point16(Position.X - 1, j);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
-                    connectedTiles.Add(pipelineTP);
+                ExtraConductive(point, null);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
+                    ExtraConductive(point, tp);
+                    if (tp is BaseUEPipelineTP pipelineTP) {
+                        connectedTiles.Add(pipelineTP);
+                    }
                 }
             }
 
             // 右边界
             for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
                 Point16 point = new Point16(Position.X + tileWidth, j);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp) && tp is BaseUEPipelineTP pipelineTP) {
-                    connectedTiles.Add(pipelineTP);
+                ExtraConductive(point, null);
+                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
+                    ExtraConductive(point, tp);
+                    if (tp is BaseUEPipelineTP pipelineTP) {
+                        connectedTiles.Add(pipelineTP);
+                    }
                 }
             }
 
@@ -144,6 +168,8 @@ namespace CalamityOverhaul.Content.Industrials
                     tile.MachineData.UEvalue += transferUE;
                 }
             }
+
+            PostUpdateConductive();
         }
 
         public sealed override void OnKill() {
