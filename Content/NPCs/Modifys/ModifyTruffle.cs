@@ -4,21 +4,31 @@ using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
 {
     internal class SleepTruffle : ModNPC
     {
+        public const int MaxChatSlot = 12;
+        public readonly static List<LocalizedText> Chats = [];
         public override string Texture => CWRConstant.NPC + "SleepTruffle";
         private int frame;
         private int chatEllipsis;
         public override void SetStaticDefaults() {
+            for (int i = 0; i < MaxChatSlot; i++) {
+                Chats.Add(this.GetLocalization($"Chat{i}", () => ""));
+            }
+
             NPCID.Sets.NPCBestiaryDrawModifiers value = new() { Hide = true };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, value);
             NPCID.Sets.NoTownNPCHappiness[Type] = true;//这个东西可以对话，但是不算城镇NPC
@@ -42,6 +52,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             NPC.noGravity = true;
         }
 
+        public override bool CanGoToStatue(bool toKingStatue) => false;
+
         public override bool UsesPartyHat() => false;
 
         public override void SetChatButtons(ref string button, ref string button2) => button = "叫醒";
@@ -53,9 +65,18 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return;
             }
 
-            NPC truffle = NPC.NewNPCDirect(NPC.FromObjectGetParent(), NPC.Center, NPCID.Truffle);
-            truffle.velocity = new Vector2(NPC.To(Main.LocalPlayer.Center).UnitVector().X * Main.rand.NextFloat(3), -6);
-            truffle.direction = truffle.spriteDirection = Math.Sign(truffle.velocity.X);
+            if (!NPC.AnyNPCs(NPCID.Truffle)) {
+                NPC truffle = NPC.NewNPCDirect(NPC.FromObjectGetParent(), NPC.Center, NPCID.Truffle);
+                truffle.velocity = new Vector2(NPC.To(Main.LocalPlayer.Center).UnitVector().X * Main.rand.NextFloat(3), -6);
+                truffle.direction = truffle.spriteDirection = Math.Sign(truffle.velocity.X);
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.NPCDeath1);
+                for (int i = 0; i < 43; i++) {
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GlowingMushroom, Main.rand.NextFloat(-2, 2), -2);
+                }
+            }
+            
             NPC.active = false;
         }
 
@@ -86,6 +107,25 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
     internal class ModifyTruffle : GlobalNPC
     {
+        public static bool FirstChat;
+        public override void SaveData(NPC npc, TagCompound tag) {
+            if (npc.type != NPCID.Truffle) {
+                return;
+            }
+
+            tag["_FirstChat"] = FirstChat;
+        }
+
+        public override void LoadData(NPC npc, TagCompound tag) {
+            if (npc.type != NPCID.Truffle) {
+                return;
+            }
+
+            if (!tag.TryGet("_FirstChat", out FirstChat)) {
+                FirstChat = false;
+            }
+        }
+
         //去他妈的模组兼容性
         public override void ModifyActiveShop(NPC npc, string shopName, Item[] items) {
             if (npc.type != NPCID.Truffle || Main.hardMode) {
@@ -187,9 +227,26 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return;
             }
 
+            if (!FirstChat) {
+                FirstChat = true;
+                chat = SleepTruffle.Chats[1].Value;
+                return;
+            }
+
+            if (Main.bloodMoon) {
+                chat = SleepTruffle.Chats[11].Value;
+                return;
+            }
+
             WeightedRandom<string> randomChat = new WeightedRandom<string>();
-            randomChat.Add("想问我为什么在这里吗?");
-            randomChat.Add("你有事情吗?");
+            for (int i = 0; i < 9; i++) {
+                randomChat.Add(SleepTruffle.Chats[i].Value);
+            }
+
+            if (ModLoader.HasMod("AAMod")) {
+                randomChat.Add(SleepTruffle.Chats[10].Value);
+            }
+
             chat = randomChat;
         }
     }

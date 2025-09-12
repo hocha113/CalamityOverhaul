@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,12 +26,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 12;
             Item.shoot = ModContent.ProjectileType<SporeBobo>();
             Item.UseSound = CWRSound.SporeBubble;
+            Item.SetHeldProj<SporeBubbleBlasterHeld>();
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Vector2 orgVelocity = velocity;
-            velocity *= Main.rand.NextFloat(0.3f, 1f);
+            velocity *= Main.rand.NextFloat(0.8f, 1f);
             velocity = velocity.RotatedByRandom(0.12f);
             Vector2 targetPos = position + orgVelocity * 300;
             if (Main.dayTime) {
@@ -37,6 +40,64 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, targetPos.X, targetPos.Y);
             return false;
+        }
+    }
+
+    internal class SporeBubbleBlasterHeld : BaseGun
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "SporeBubbleBlasterHeld";
+        public override int TargetID => ModContent.ItemType<SporeBubbleBlaster>();
+        private int frame;
+        private int frameConter;
+        private bool OnFire;
+        public override void SetRangedProperty() {
+            FiringDefaultSound = false;
+            CanCreateSpawnGunDust = false;
+            Onehanded = true;
+            CanCreateCaseEjection = false;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
+        }
+        public override void PostInOwner() {
+            if (CanFire) {
+                if (ShootCoolingValue < 4 && ++frameConter > 2) {
+                    if (++frame > 2) {
+                        frame = 0;
+                    }
+                    frameConter = 0;
+                }
+                return;
+            }
+            if (!OnFire) {
+                frame = 0;
+                Item.useTime = 32;
+                ShootCoolingValue = 32;
+            }
+            OnFire = true;
+        }
+        public override bool PreFiringShoot() {
+            if (fireIndex == 0 || OnFire) {
+                SoundEngine.PlaySound(Item.UseSound, ShootPos);
+                OnFire = false;
+            }
+            if (++fireIndex < 10) {
+                Item.useTime = 2;
+            }
+            else {
+                frame = 0;
+                fireIndex = 0;
+                Item.useTime = 32;
+            }
+            return true;
+        }
+        public override void FiringShoot() {
+            OrigItemShoot();
+        }
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
+            Rectangle rectangle = TextureValue.GetRectangle(frame, 3);
+            Main.EntitySpriteDraw(TextureValue, drawPos, rectangle, lightColor
+                , Projectile.rotation + offsetRot, rectangle.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 
@@ -60,8 +121,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             Projectile.velocity *= 0.99f;
 
-            if (Main.rand.NextBool(4)) {
-                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, Projectile.velocity / 2);
+            if (Projectile.ai[2] > 1 && Main.rand.NextBool(3) && Projectile.velocity.Length() > 1f) {
+                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, Projectile.velocity / 3);
             }
         }
 

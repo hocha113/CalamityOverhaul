@@ -1143,6 +1143,11 @@ Items: {
 			在白天只造成50%伤害
 			'''
 	}
+
+	TomeofFungalDecay: {
+		// DisplayName: Tomeof Fungal Decay
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1461,6 +1466,8 @@ Projectiles: {
 	// CollectorArm.DisplayName: Collector Arm
 	// WGGCollectorArm.DisplayName: W G G Collector Arm
 	// SporeBobo.DisplayName: Spore Bobo
+	// SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
+	// SporeBoboMagic.DisplayName: Spore Bobo Magic
 }
 
 Configs: {
@@ -6173,5 +6180,32 @@ ModifyLores: {
 
 NPCs: {
 	DestroyerDrawHeadIconNPC.DisplayName: 毁灭者
-	SleepTruffle.DisplayName: 沉睡的蘑菇人
+
+	SleepTruffle: {
+		DisplayName: 沉睡的蘑菇人
+		Chat0:
+			'''
+			那只螃蟹的肚子里太舒服了，我一直住到现在
+			但现在你把它杀了，所以你得给我提供一个新的住所!
+			'''
+		Chat1:
+			'''
+			我曾经办理过一个蘑菇养殖厂，和我的孩子们一同经营
+			直到有一次，我发现我的孩子少了一半
+			'''
+		Chat2:
+			'''
+			红伞伞，白杆杆，吃完躺板板
+			不同于另一个红色的家伙，我卖的蓝蘑菇你可以放心吃
+			'''
+		Chat3: 你可以把蘑菇出售给我，但你什么都得不到
+		Chat4: 这里的每个人都想吃我
+		Chat5: 我见过一颗磨菇树，它至少有2000米那么高，如果爬上去，你就可以前往蘑菇世界
+		Chat6: 如果你需要炖汤，就来买我的蘑菇
+		Chat7: 这里的蘑菇全是我的，你需要用钱买才能拿走
+		Chat8: 如果是十年前，你可以雇佣我，我会带你前往地下的真菌王国
+		Chat9: 我觉得你肺部真菌感染了，来看看我的商店，里面有特效药
+		Chat10: 哦，我讨厌那个红色的家伙
+		Chat11: 我讨厌这种血月，它让我变得不那么蓝
+	}
 }

@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core
             if (Owner.CheckMana(Item)) {
                 SetShootAttribute();
 
-                if (Projectile.IsOwnedByLocalPlayer()) {
+                if (PreFiringShoot() && Projectile.IsOwnedByLocalPlayer()) {
                     if (onFire) {
                         FiringShoot();
                     }

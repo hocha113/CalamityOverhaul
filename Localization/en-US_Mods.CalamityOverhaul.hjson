@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1161,6 +1161,11 @@ Items: {
 			Causes only 50% damage during the day
 			'''
 	}
+
+	TomeofFungalDecay: {
+		DisplayName: Tomeof Fungal Decay
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1479,6 +1484,8 @@ Projectiles: {
 	CollectorArm.DisplayName: Collector Arm
 	WGGCollectorArm.DisplayName: W G G Collector Arm
 	SporeBobo.DisplayName: Spore Bobo
+	SporeBubbleBlasterHeld.DisplayName: Spore Bubble Blaster Held
+	SporeBoboMagic.DisplayName: Spore Bobo Magic
 }
 
 Configs: {
@@ -5558,5 +5565,20 @@ ModifyLores: {
 
 NPCs: {
 	DestroyerDrawHeadIconNPC.DisplayName: Destroyer
-	SleepTruffle.DisplayName: Sleeping Truffle
+
+	SleepTruffle: {
+		DisplayName: Sleeping Truffle
+		Chat0: ""
+		Chat1: ""
+		Chat2: ""
+		Chat3: ""
+		Chat4: ""
+		Chat5: ""
+		Chat6: ""
+		Chat7: ""
+		Chat8: ""
+		Chat9: ""
+		Chat10: ""
+		Chat11: ""
+	}
 }
