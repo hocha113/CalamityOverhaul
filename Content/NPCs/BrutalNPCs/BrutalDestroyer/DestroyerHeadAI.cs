@@ -28,9 +28,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const int AttackAIsMaxSlot = 12;
         private float[] AttackAIs = new float[AttackAIsMaxSlot];
         private List<NPC> Bodys = new List<NPC>();
-        internal static bool BossRush => BossRushEvent.BossRushActive || CWRWorld.MachineRebellion;
-        internal static bool MasterMode => Main.masterMode || BossRush;
-        internal static bool Death => CalamityWorld.death || BossRush;
         private int frame;
         private int glowFrame;
         private bool openMouth;
@@ -162,13 +159,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             int idleTime = 600;
-            if (MasterMode) {
+            if (CWRWorld.MasterMode) {
                 idleTime -= 60;
             }
-            if (Death) {
+            if (CWRWorld.Death) {
                 idleTime -= 90;
             }
-            if (BossRush) {
+            if (CWRWorld.BossRush) {
                 idleTime -= 120;
             }
 

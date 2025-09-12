@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Lighting.AddLight(npc.Center, Color.Red.ToVector3() * npc.scale);
 
             float hoverSpeed = 22f;
-            if (DestroyerHeadAI.BossRush) {
+            if (CWRWorld.BossRush) {
                 hoverSpeed *= 1.5f;
             }
 

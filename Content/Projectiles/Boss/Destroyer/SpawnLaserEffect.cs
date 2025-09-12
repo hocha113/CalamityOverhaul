@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
             NPC thisBody = Main.npc[(int)Projectile.ai[1]];
             Vector2 shootVelocity = Projectile.velocity.UnitVector();
-            shootVelocity *= (DestroyerHeadAI.Death || DestroyerHeadAI.MasterMode) ? 12 : 9;
-            if (DestroyerHeadAI.BossRush) {
+            shootVelocity *= (CWRWorld.Death || CWRWorld.MasterMode) ? 12 : 9;
+            if (CWRWorld.BossRush) {
                 shootVelocity *= 1.6f;
             }
 

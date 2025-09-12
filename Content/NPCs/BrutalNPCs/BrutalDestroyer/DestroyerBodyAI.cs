@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool IsBodyAlt => bodyCount % 2 == 0;
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
-        private bool Phase2 => LifeRatio < (DestroyerHeadAI.Death ? 0.4f : 0.25f);
-        private bool Phase3 => LifeRatio < (DestroyerHeadAI.Death ? 0.2f : 0.1f);
+        private bool Phase2 => LifeRatio < (CWRWorld.Death ? 0.4f : 0.25f);
+        private bool Phase3 => LifeRatio < (CWRWorld.Death ? 0.2f : 0.1f);
         private bool HasSpawnDR => ai[1] < DestroyerHeadAI.StretchTime && ai[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             totalSegments = Main.getGoodWorld ? 100 : 80;
-            bool spitLaserSpreads = DestroyerHeadAI.Death;
+            bool spitLaserSpreads = CWRWorld.Death;
             float speed, turnSpeed, segmentVelocity, velocityMultiplier;
             noFlyZoneBoxHeight = 0;
 
@@ -287,9 +287,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void UpdateEnrageScale() {
-            enrageScale = DestroyerHeadAI.BossRush ? 1f : 0f;
-            if (Main.IsItDay() || DestroyerHeadAI.BossRush) {
-                npc.Calamity().CurrentlyEnraged = !DestroyerHeadAI.BossRush;
+            enrageScale = CWRWorld.BossRush ? 1f : 0f;
+            if (Main.IsItDay() || CWRWorld.BossRush) {
+                npc.Calamity().CurrentlyEnraged = !CWRWorld.BossRush;
                 enrageScale += 2f;
             }
         }
@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 检查吴克是否存活
         /// </summary>
         private bool CheckSkeletronAlive() {
-            if (!(DestroyerHeadAI.MasterMode && !DestroyerHeadAI.BossRush && npc.localAI[3] != -1f))
+            if (!(CWRWorld.MasterMode && !CWRWorld.BossRush && npc.localAI[3] != -1f))
                 return false;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -328,21 +328,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 计算无飞行区域的高度
         /// </summary>
         private int CalculateNoFlyZoneHeight() {
-            int baseHeight = DestroyerHeadAI.MasterMode ? 1500 : 1800;
-            return baseHeight - (DestroyerHeadAI.Death ? 400 : (int)(400f * (1f - LifeRatio)));
+            int baseHeight = CWRWorld.MasterMode ? 1500 : 1800;
+            return baseHeight - (CWRWorld.Death ? 400 : (int)(400f * (1f - LifeRatio)));
         }
 
         /// <summary>
         /// 计算速度、加速度和转向速度
         /// </summary>
         private float CalculateSpeedModifiers(out float speed, out float turnSpeed, out float segmentVelocity) {
-            speed = DestroyerHeadAI.MasterMode ? 0.2f : 0.1f;
-            turnSpeed = DestroyerHeadAI.MasterMode ? 0.3f : 0.15f;
-            segmentVelocity = FlyAtTarget ? (DestroyerHeadAI.MasterMode ? 22.5f : 15f) : (DestroyerHeadAI.MasterMode ? 30f : 20f);
+            speed = CWRWorld.MasterMode ? 0.2f : 0.1f;
+            turnSpeed = CWRWorld.MasterMode ? 0.3f : 0.15f;
+            segmentVelocity = FlyAtTarget ? (CWRWorld.MasterMode ? 22.5f : 15f) : (CWRWorld.MasterMode ? 30f : 20f);
 
-            float segmentVelocityBoost = DestroyerHeadAI.Death ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
-            float speedBoost = DestroyerHeadAI.Death ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
-            float turnSpeedBoost = DestroyerHeadAI.Death ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
+            float segmentVelocityBoost = CWRWorld.Death ? (FlyAtTarget ? 4.5f : 6f) * (1f - LifeRatio) : (FlyAtTarget ? 3f : 4f) * (1f - LifeRatio);
+            float speedBoost = CWRWorld.Death ? (FlyAtTarget ? 0.1125f : 0.15f) * (1f - LifeRatio) : (FlyAtTarget ? 0.075f : 0.1f) * (1f - LifeRatio);
+            float turnSpeedBoost = CWRWorld.Death ? 0.18f * (1f - LifeRatio) : 0.12f * (1f - LifeRatio);
 
             segmentVelocity += segmentVelocityBoost;
             speed += speedBoost;
@@ -381,14 +381,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void HandleProbeRegeneration() {
             bool probeLaunched = npc.ai[2] == 1f;
 
-            if (enrageScale > 0f && !DestroyerHeadAI.BossRush) {
+            if (enrageScale > 0f && !CWRWorld.BossRush) {
                 ai[2] = Math.Min(ai[2] + 1f, 480f);
             }
             else {
                 ai[2] = Math.Max(ai[2] - 1f, 0f);
             }
 
-            if (!DestroyerHeadAI.MasterMode || !probeLaunched) {
+            if (!CWRWorld.MasterMode || !probeLaunched) {
                 return;
             }
 
@@ -503,7 +503,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 telegraphProgress = MathHelper.Clamp((ai[0] - telegraphGateValue) / BeamWarningDuration, 0f, 1f);
             }
             else if (npc.type == NPCID.TheDestroyerBody) {
-                float shootProjectileTime = DestroyerHeadAI.BossRush ? 270f : 450f;
+                float shootProjectileTime = CWRWorld.BossRush ? 270f : 450f;
                 float bodySegmentTime = npc.ai[0] * 30f;
                 float shootProjectileGateValue = bodySegmentTime + shootProjectileTime;
                 float bodyTelegraphGateValue = shootProjectileGateValue - BeamWarningDuration;

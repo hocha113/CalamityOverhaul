@@ -1,4 +1,6 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
+using CalamityMod.World;
 using InnoVault.GameSystem;
 using System.IO;
 using Terraria;
@@ -26,6 +28,10 @@ namespace CalamityOverhaul.Content
         /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
         /// </summary>
         public static int TimeFrozenTick;
+
+        internal static bool BossRush => BossRushEvent.BossRushActive || MachineRebellion;
+        internal static bool MasterMode => Main.masterMode || BossRush;
+        internal static bool Death => CalamityWorld.death || BossRush;
 
         public override void OnWorldLoad() {
             MachineRebellionDowned = false;

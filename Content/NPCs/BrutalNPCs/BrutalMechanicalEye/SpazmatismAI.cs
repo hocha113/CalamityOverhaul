@@ -1,32 +1,4 @@
-﻿//--------------------------------------------------
-// **重构与优化概要**
-//
-// 1. **枚举化状态机**:
-//    - 使用 `PrimaryAIState` 枚举管理 npc.ai[0]，代表主要的AI流程（如登场、战斗、离场）
-//    - 使用 `AttackState` 枚举管理 npc.ai[1]，代表具体的攻击模式（如冲刺、射击）
-//    - 这使得AI状态的切换和判断逻辑变得清晰易懂
-//
-// 2. **常量化数值**:
-//    - 将所有魔法数字（如计时器、速度、坐标偏移）定义为私有常量
-//    - 提高了代码的可读性和可维护性，方便未来进行数值调整
-//
-// 3. **模块化AI行为**:
-//    - 将原本臃肿的AI主方法拆分为多个职责单一的私有方法
-//    - 例如: HandleDebut (处理登场), HandleDashAttack (处理冲刺), HandleCircularShot (处理环绕射击)
-//    - 每个方法对应一个具体的AI行为，使得代码结构更加合理
-//
-// 4. **AI设计增强**:
-//    - **协同作战**: 在原生AI模式下，双子会执行非对称攻击，一只进行弹幕压制，另一只执行冲刺，增加了战斗策略性
-//    - **攻击预警**: 为高威胁攻击（如冲刺）增加了明显的前摇动作和音效，提升了战斗的公平性和交互性
-//    - **动态移动**: 优化了移动逻辑，使其不再是死板地跟随固定偏移，而是更具动态感和威胁性
-//    - **强化阶段转换**: 为二阶段转换增加了更具演出感的无敌、回血和音效，增强了Boss战的史诗感
-//
-// 5. **代码风格与规范**:
-//    - 遵循要求，所有注释均为中文，且 `//`后无空格、无句号
-//    - 移除了所有嵌套的 `if` 语句，改用逻辑与 (`&&`) 或卫语句 (Guard Clauses)
-//--------------------------------------------------
-
-using CalamityMod;
+﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
@@ -35,6 +7,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -60,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Initialization = 0, //初始化
             Debut = 1,          //登场演出
             Battle = 2,         //常规战斗
-            EnragedBattle = 3,  //狂暴战斗 (原版逻辑中的一部分，这里可以扩展)
+            EnragedBattle = 3,  //狂暴战斗
             Flee = 4            //逃跑/退场
         }
 
@@ -73,12 +46,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             PreparingDash = 2,          //冲刺准备
             Dashing = 3,                //冲刺中
             PostDash = 4,               //冲刺后调整
-
-            //随从AI攻击
-            SkeletronIdle = 0,          //骷髅王空闲时
-            SkeletronSpin = 1,          //骷髅王旋转时
-            SkeletronLaserWall = 2,     //骷髅王激光墙时
-            SkeletronDestroyer = 3,     //骷髅王毁灭者模式
         }
 
         //通用计时器索引
@@ -222,6 +189,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 npc.defDefense = npc.defense = 40;
                 npc.defDamage = npc.damage *= 2;
             }
+
+            if (CWRMod.Instance.fargowiltasSouls != null) {
+                npc.life = npc.lifeMax = (int)(npc.lifeMax * 0.6f);
+            }
         }
         #endregion
 
@@ -250,12 +221,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (player != null && player.Alives()) return;
             npc.TargetClosest(true);
             player = Main.player[npc.target];
-        }
-
-        private void NetAISend() {
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
-                npc.netUpdate = true;
-            }
         }
 
         internal bool IsSecondPhase() {
@@ -292,162 +257,330 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 NetAISend();
             }
 
+            bool reset;
             //根据是否为随从，执行不同的AI逻辑
             if (accompany) {
-                AccompanyAI();
+                reset = AccompanyAI();
             }
             else {
-                ProtogenesisAI();
+                reset = ProtogenesisAI();
             }
 
-            return false; //阻止原版AI运行
+            return reset;//阻止原版AI运行
         }
         #endregion
 
         #region 随从AI (Accompany AI)
-        private void AccompanyAI() {
+        public bool AccompanyAI() {
             NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
-            if (!skeletronPrime.Alives()) {
-                //如果骷髅王死亡，双子也退场
-                ai[0] = (int)PrimaryAIState.Flee;
-            }
-
-            player = Main.player[skeletronPrime.target];
-            if (player == null || !player.active || player.dead) {
-                ai[0] = (int)PrimaryAIState.Flee;
-            }
-
-            Lighting.AddLight(npc.Center, (npc.type == NPCID.Spazmatism ? Color.OrangeRed : Color.BlueViolet).ToVector3());
-
-            PrimaryAIState state = (PrimaryAIState)ai[0];
-            switch (state) {
-                case PrimaryAIState.Initialization:
-                    //初始化并播放对话
-                    if (!VaultUtils.isServer && npc.type == NPCID.Spazmatism) {
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TextColor1);
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
-                    }
-                    ai[0] = (int)PrimaryAIState.Debut;
-                    NetAISend();
-                    break;
-
-                case PrimaryAIState.Debut:
-                    HandleDebut();
-                    break;
-
-                case PrimaryAIState.Battle:
-                case PrimaryAIState.EnragedBattle:
-                    HandleAccompanyBattle(skeletronPrime);
-                    break;
-
-                case PrimaryAIState.Flee:
-                    HandleFlee(isAccompany: true);
-                    break;
-            }
-        }
-
-        private void HandleAccompanyBattle(NPC skeletronPrime) {
-            //根据骷髅王的状态来决定自己的行为
-            HeadPrimeAI headPrime = skeletronPrime.GetOverride<HeadPrimeAI>();
-
-            if (headPrime.ai[10] > 0) //骷髅王空闲
-            {
-                AccompanyHandleIdle(skeletronPrime);
-            }
-            else if (headPrime.ai[3] == 2) //激光墙
-            {
-                AccompanyHandleLaserWall(skeletronPrime);
-            }
-            else if (HeadPrimeAI.setPosingStarmCount > 0) //毁灭者模式
-            {
-                AccompanyHandleDestroyerMode(skeletronPrime);
-            }
-            else if (skeletronPrime.ai[1] == 1) //骷髅王冲刺
-            {
-                AccompanyHandleSpinAttack(skeletronPrime);
-            }
-            else {
-                //骷髅王处于其他状态时，进行常规伴飞和射击
-                npc.VanillaAI();
-                SetEyeRealLife(npc);
-            }
-        }
-
-        //各种随从状态下的具体行为...
-        private void AccompanyHandleIdle(NPC skeletronPrime) {
+            float lifeRog = npc.life / (float)npc.lifeMax;
+            bool bossRush = BossRushEvent.BossRushActive;
+            bool death = CalamityWorld.death || bossRush;
             bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            Vector2 toTarget = npc.Center.To(player.Center);
-            Vector2 toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 150 : -150, -100);
-            SetEyeValue(npc, player, toPoint, toTarget);
-        }
+            bool lowBloodVolume = lifeRog < 0.7f;
+            bool skeletronPrimeIsDead = !skeletronPrime.Alives();
+            bool skeletronPrimeIsTwo = skeletronPrimeIsDead ? false : (skeletronPrime.ai[0] == 3);
+            bool isSpawnFirstStage = ai[11] == 1;
+            bool isSpawnFirstStageFromeExeunt = false;
+            if (!skeletronPrimeIsDead && isSpawnFirstStage) {
+                isSpawnFirstStageFromeExeunt = ((skeletronPrime.life / (float)skeletronPrime.lifeMax) < 0.6f);
+            }
 
-        private void AccompanyHandleLaserWall(NPC skeletronPrime) {
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            Vector2 toTarget = npc.Center.To(player.Center);
-            Vector2 toPoint = player.Center + new Vector2(isSpazmatism ? 450 : -450, -400);
-            SetEyeValue(npc, player, toPoint, toTarget);
-        }
+            int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
+            int projDamage = 36;
+            if (CWRWorld.MachineRebellion) {
+                projDamage = 92;
+            }
 
-        private void AccompanyHandleDestroyerMode(NPC skeletronPrime) {
-            //毁灭者模式下的逻辑，这里可以设计的更有趣
-            //例如，双子集中火力攻击毁灭者的射出的探测器
-            //或者一只眼骚扰玩家，另一只协助攻击
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            Vector2 toTarget = npc.Center.To(player.Center);
-            float rotation = Main.GlobalTimeWrappedHourly * (isSpazmatism ? 1.5f : -1.5f);
-            Vector2 toPoint = skeletronPrime.Center + rotation.ToRotationVector2() * 500;
-            SetEyeValue(npc, player, toPoint, toTarget);
+            player = skeletronPrimeIsDead ? Main.player[npc.target] : Main.player[skeletronPrime.target];
 
-            ai[GlobalTimer]++;
-            if (ai[GlobalTimer] > 60) {
-                if (!VaultUtils.isClient) {
-                    int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-                    int projDamage = CWRWorld.MachineRebellion ? 92 : 36;
-                    float shootSpeed = CWRWorld.MachineRebellion ? 12 : 9;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, toTarget.UnitVector() * shootSpeed, projType, projDamage, 0);
+            Lighting.AddLight(npc.Center, (isSpazmatism ? Color.OrangeRed : Color.BlueViolet).ToVector3());
+
+            if (ai[0] == 0) {
+                if (!VaultUtils.isServer && isSpazmatism) {
+                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TextColor1);
+                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TextColor2);
                 }
-                ai[GlobalTimer] = 0;
+                ai[0] = 1;
                 NetAISend();
             }
-        }
 
-        private void AccompanyHandleSpinAttack(NPC skeletronPrime) {
-            //当骷髅王冲刺时，双子在两侧进行火力支援
-            bool isSpazmatism = npc.type == NPCID.Spazmatism;
-            Vector2 toTarget = npc.Center.To(player.Center);
-            Vector2 toPoint = player.Center + new Vector2(isSpazmatism ? 700 : -700, 0);
+            if (ai[0] == 1) {
+                if (AccompanyDebut()) {
+                    return false;
+                }
+            }
 
-            SetEyeValue(npc, player, toPoint, toTarget);
+            if (IsSecondPhase()) {
+                npc.HitSound = SoundID.NPCHit4;
+            }
 
-            ai[AccompanyFireTimer]++;
-            int fireRate = IsSecondPhase() ? 15 : 24; //二阶段射速更快
-            if (ai[AccompanyFireTimer] > fireRate) {
-                if (!VaultUtils.isClient) {
-                    int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-                    int projDamage = CWRWorld.MachineRebellion ? 92 : 36;
-                    float shootSpeed = 6f;
+            if (skeletronPrimeIsDead || skeletronPrime?.ai[1] == 3 || lowBloodVolume || isSpawnFirstStageFromeExeunt) {
+                npc.dontTakeDamage = true;
+                npc.position += new Vector2(0, -36);
+                if (ai[6] == 0 && !VaultUtils.isServer) {
+                    if (lowBloodVolume) {
+                        if (isSpazmatism) {
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TextColor1);
+                        }
+                        else {
+                            VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TextColor2);
+                        }
 
-                    if (IsSecondPhase()) {
-                        //二阶段发射三连发
-                        for (int i = 0; i < 3; i++) {
-                            Vector2 ver = toTarget.RotatedBy((-1 + i) * 0.08f).UnitVector() * (shootSpeed + i);
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
+                        for (int i = 0; i < 13; i++) {
+                            Item.NewItem(npc.GetSource_FromAI(), npc.Hitbox, ItemID.Heart);
                         }
                     }
+                    else if (skeletronPrime?.ai[1] == 3) {
+                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TextColor2);
+                    }
+                    else if (isSpawnFirstStageFromeExeunt) {
+                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TextColor2);
+                    }
                     else {
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, toTarget.UnitVector() * shootSpeed, projType, projDamage, 0);
+                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TextColor2);
                     }
                 }
-                ai[AccompanyFireTimer] = 0;
+                if (ai[6] > 120) {
+                    npc.active = false;
+                }
+                ai[6]++;
+                return false;
+            }
+
+            Vector2 toTarget = npc.Center.To(player.Center);
+            Vector2 toPoint = skeletronPrime.Center;
+            npc.damage = npc.defDamage;
+            HeadPrimeAI headPrime = skeletronPrime.GetOverride<HeadPrimeAI>();
+            bool skeletronPrimeInSprint = skeletronPrime.ai[1] == 1;
+            bool LaserWall = headPrime.ai[3] == 2;
+            bool isDestroyer = HeadPrimeAI.setPosingStarmCount > 0;
+            bool isIdle = headPrime.ai[10] > 0;
+
+            if (isIdle) {
+                toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 50 : -50, -100);
+                SetEyeValue(npc, player, toPoint, toTarget);
+                return false;
+            }
+
+            if (LaserWall) {
+                toPoint = player.Center + new Vector2(isSpazmatism ? 450 : -450, -400);
+                SetEyeValue(npc, player, toPoint, toTarget);
+                return false;
+            }
+
+            if (isDestroyer) {
+                Projectile projectile = null;
+                foreach (var p in Main.projectile) {
+                    if (!p.active) {
+                        continue;
+                    }
+                    if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
+                        projectile = p;
+                    }
+                }
+
+                if (projectile.Alives()) {
+                    ai[8]++;
+                }
+                if (ai[8] == Mechanicalworm.DontAttackTime + 10) {
+                    NetAISend();
+                }
+                if (ai[8] > Mechanicalworm.DontAttackTime + 10) {
+                    int fireTime = 10;
+                    if (projectile.Alives()) {
+                        fireTime = death ? 5 : 8;
+                        toTarget = npc.Center.To(projectile.Center);
+                        float speedRot = death ? 0.02f : 0.03f;
+                        int modelong = death ? 1060 : 1160;
+                        toPoint = projectile.Center + (ai[4] * speedRot + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
+                    }
+                    else {
+                        toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
+                    }
+
+                    if (++ai[5] > fireTime && ai[4] > 30) {//这里需要停一下，不要立即开火
+                        if (!VaultUtils.isClient) {
+                            float shootSpeed = 9;
+                            if (CWRWorld.MachineRebellion) {
+                                shootSpeed = 12;
+                            }
+                            Projectile.NewProjectile(npc.GetSource_FromAI()
+                                , npc.Center, toTarget.UnitVector() * shootSpeed, projType, projDamage, 0);
+                        }
+                        ai[5] = 0;
+                        NetAISend();
+                    }
+                    ai[4]++;
+                    SetEyeValue(npc, player, toPoint, toTarget);
+                    return false;
+                }
+            }
+            else if (ai[8] != 0) {
+                ai[8] = 0;
                 NetAISend();
             }
+
+            if (skeletronPrimeInSprint || ai[7] > 0) {
+                if (isDestroyer && ai[8] < Mechanicalworm.DontAttackTime + 10) {
+                    npc.damage = 0;
+                    toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -150);
+                    if (death) {
+                        toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -150);
+                    }
+                    SetEyeValue(npc, player, toPoint, toTarget);
+                    return false;
+                }
+
+                switch (ai[1]) {
+                    case 0:
+                        toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -650);
+                        if (death) {
+                            toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -650);
+                        }
+                        if (ai[2] == 30 && !VaultUtils.isClient) {
+                            float shootSpeed = death ? 8 : 6;
+                            if (CWRWorld.MachineRebellion) {
+                                shootSpeed = 12;
+                            }
+                            for (int i = 0; i < 6; i++) {
+                                Vector2 ver = (MathHelper.TwoPi / 6f * i).ToRotationVector2() * shootSpeed;
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
+                            }
+                        }
+                        if (ai[2] > 80) {
+                            ai[7] = 10;
+                            ai[1] = 1;
+                            ai[2] = 0;
+                            NetAISend();
+                        }
+                        ai[2]++;
+                        break;
+                    case 1:
+                        toPoint = player.Center + new Vector2(isSpazmatism ? 700 : -700, ai[9]);
+                        if (++ai[2] > 24) {//一阶段两侧激光发射频率，数字越大频率越慢
+                            if (!VaultUtils.isClient) {
+                                if (skeletronPrimeIsTwo) {
+                                    for (int i = 0; i < 3; i++) {
+                                        Vector2 ver = toTarget.RotatedBy((-1 + i) * 0.06f).UnitVector() * 5;
+                                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, ver, projType, projDamage, 0);
+                                    }
+                                }
+                                else {
+                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, toTarget.UnitVector() * 6, projType, projDamage, 0);
+                                }
+                            }
+                            ai[3]++;
+                            ai[2] = 0;
+                            NetAISend();
+                        }
+
+                        if (ai[2] == 2) {
+                            if (skeletronPrimeIsTwo) {//二阶段上下大幅度飞舞
+                                if (ai[10] == 0) {
+                                    ai[10] = 1;
+                                }
+                                if (!VaultUtils.isClient) {
+                                    ai[9] = isSpazmatism ? -600 : 600;
+                                    ai[9] += Main.rand.Next(-120, 90);
+                                }
+                                ai[9] *= ai[10];
+                                ai[10] *= -1;
+                                NetAISend();
+                            }
+                            else {
+                                if (!VaultUtils.isClient) {
+                                    ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
+                                }
+                                NetAISend();
+                            }
+                        }
+
+                        if (ai[3] > 6) {
+                            ai[3] = 0;
+                            ai[2] = 0;
+                            ai[1] = 0;
+                            ai[7] = 0;
+                            NetAISend();
+                        }
+                        else if (ai[7] < 2) {
+                            ai[7] = 2;
+                        }
+                        break;
+                }
+
+                SetEyeValue(npc, player, toPoint, toTarget);
+                return false;
+            }
+
+            if (ai[7] > 0) {
+                ai[7]--;
+            }
+
+            npc.VanillaAI();
+            SetEyeRealLife(npc);
+            return false;
         }
 
+        private bool AccompanyDebut() {
+            if (ai[1] == 0) {
+                npc.life = 1;
+                npc.Center = player.Center;
+                npc.Center += npc.type == NPCID.Spazmatism ? new Vector2(-1200, 1000) : new Vector2(1200, 1000);
+            }
 
+            npc.damage = 0;
+            npc.dontTakeDamage = true;
+
+            Vector2 toTarget = npc.Center.To(player.Center);
+            npc.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
+            npc.velocity = Vector2.Zero;
+            npc.position += player.velocity;
+            Vector2 toPoint = player.Center;
+
+            if (ai[1] < 60) {
+                toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? 500 : -500, 500);
+            }
+            else {
+                toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? -500 : 500, -500);
+                if (ai[1] == 90 && !VaultUtils.isServer && !accompany) {
+                    SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
+                }
+                if (ai[1] > 90) {
+                    int addNum = (int)(npc.lifeMax / 80f);
+                    if (npc.life >= npc.lifeMax) {
+                        npc.life = npc.lifeMax;
+                    }
+                    else {
+                        Lighting.AddLight(npc.Center, (npc.type == NPCID.Spazmatism ? Color.OrangeRed : Color.BlueViolet).ToVector3());
+                        npc.life += addNum;
+                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
+                    }
+                }
+            }
+
+            if (ai[1] > 180) {
+                if (!VaultUtils.isServer && !accompany) {
+                    SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
+                }
+                npc.dontTakeDamage = false;
+                npc.damage = npc.defDamage;
+                ai[0] = 2;
+                ai[1] = 0;
+                NetAISend();
+                return false;
+            }
+
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
+
+            ai[1]++;
+
+            return true;
+        }
         #endregion
 
         #region 原生AI (Protogenesis AI)
-        private void ProtogenesisAI() {
+        private bool ProtogenesisAI() {
             npc.dontTakeDamage = false;
             npc.damage = npc.defDamage;
             SetEyeRealLife(npc);
@@ -470,7 +603,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 //在这里可以添加生成粒子效果，屏幕震动等
                 NetAISend();
-                return;
+                return false;
             }
 
             PrimaryAIState state = (PrimaryAIState)ai[0];
@@ -483,7 +616,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     HandleDebut();
                     break;
                 case PrimaryAIState.Battle:
-                    HandleProtogenesisBattle(isEnraged);
+                    HandleProtogenesisBattle(isEnraged, CWRWorld.Death);
                     break;
                 case PrimaryAIState.EnragedBattle:
                     //处理阶段转换时的无敌和回血演出
@@ -499,40 +632,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             npc.dontTakeDamage = false;
                             ai[GlobalTimer] = 0;
                         }
-                        return; //在演出期间不做任何事
+                        return false; //在演出期间不做任何事
                     }
-                    HandleProtogenesisBattle(isEnraged, isPhaseTwo: true);
-                    break;
+                    return true;
                 case PrimaryAIState.Flee:
                     HandleFlee();
                     break;
             }
+
+            return false;
         }
 
-        private void HandleProtogenesisBattle(bool isEnraged, bool isPhaseTwo = false) {
+        private void HandleProtogenesisBattle(bool isEnraged, bool death = false) {
             AttackState attackState = (AttackState)ai[1];
             switch (attackState) {
                 case AttackState.CircularShot:
-                    HandleCircularShot(isEnraged, isPhaseTwo);
+                    HandleCircularShot(isEnraged, death);
                     break;
                 case AttackState.BarrageAndDash:
-                    HandleBarrageAndDash(isEnraged, isPhaseTwo);
+                    HandleBarrageAndDash(isEnraged, death);
                     break;
                 case AttackState.PreparingDash:
-                    HandlePreparingDash(isEnraged, isPhaseTwo);
+                    HandlePreparingDash(isEnraged, death);
                     break;
                 case AttackState.Dashing:
-                    HandleDashing(isEnraged, isPhaseTwo);
+                    HandleDashing(isEnraged, death);
                     break;
                 case AttackState.PostDash:
-                    HandlePostDash(isEnraged, isPhaseTwo);
+                    HandlePostDash(isEnraged, death);
                     break;
             }
             ai[GlobalTimer]++;
         }
 
         //新的、模块化的攻击行为
-        private void HandleCircularShot(bool isEnraged, bool isPhaseTwo) {
+        private void HandleCircularShot(bool isEnraged, bool death) {
             const int AttackDuration = 480;
             const int FireRate = 45;
 
@@ -547,7 +681,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
                     int projDamage = isEnraged ? 36 : 30;
                     float shootSpeed = 7f;
-                    int projectiles = isPhaseTwo ? 8 : 6; //二阶段发射更多弹幕
+                    int projectiles = death ? 8 : 6; //二阶段发射更多弹幕
                     for (int i = 0; i < projectiles; i++) {
                         Vector2 velocity = (MathHelper.TwoPi / projectiles * i).ToRotationVector2() * shootSpeed;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity, projType, projDamage, 0);
@@ -563,7 +697,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        private void HandleBarrageAndDash(bool isEnraged, bool isPhaseTwo) {
+        private void HandleBarrageAndDash(bool isEnraged, bool death) {
             const int AttackDuration = 300;
             const int FireRate = 20;
 
@@ -581,7 +715,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     if (!VaultUtils.isClient) {
                         int projType = ModContent.ProjectileType<Fireball>();
                         int projDamage = isEnraged ? 36 : 30;
-                        float spread = isPhaseTwo ? 0.3f : 0.5f;
+                        float spread = death ? 0.3f : 0.5f;
                         Vector2 velocity = toTarget.UnitVector() * 9f;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity.RotatedByRandom(spread), projType, projDamage, 0);
                     }
@@ -608,7 +742,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        private void HandlePreparingDash(bool isEnraged, bool isPhaseTwo) {
+        private void HandlePreparingDash(bool isEnraged, bool death) {
             const int PreparationTime = 60;
             npc.damage = 0;
 
@@ -630,7 +764,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        private void HandleDashing(bool isEnraged, bool isPhaseTwo) {
+        private void HandleDashing(bool isEnraged, bool death) {
             const int DashSetupTime = 10;
 
             //冲刺前短暂锁定目标
@@ -638,7 +772,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 Vector2 toTarget = npc.Center.To(player.Center);
                 float speed = isEnraged ? 32f : 26f;
-                if (isPhaseTwo) speed *= 1.2f;
+                if (death) speed *= 1.2f;
                 npc.velocity = toTarget.UnitVector() * speed;
                 npc.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
                 npc.damage = (int)(npc.defDamage * 1.5f);
@@ -657,7 +791,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        private void HandlePostDash(bool isEnraged, bool isPhaseTwo) {
+        private void HandlePostDash(bool isEnraged, bool death) {
             const int CooldownTime = 90;
 
             npc.damage = npc.defDamage;
