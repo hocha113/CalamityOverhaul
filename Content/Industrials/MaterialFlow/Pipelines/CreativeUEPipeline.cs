@@ -261,6 +261,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
             RenderTarget2D screenSwap = RenderHandleLoader.ScreenSwap;
 
+            //切换到原版的中间屏幕上，缓存原始画面
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            Main.spriteBatch.End();
+
             //切换成中间屏幕，开始绘制特效
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent); //改为透明，避免干扰
@@ -271,18 +278,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             foreach (var creativePipeline in creativePipelines) {
                 func.Invoke(creativePipeline);
             }
-
             spriteBatch.End();
 
             //切换到最终的实际屏幕对象上，开始覆盖绘制，这里先清空准备后续的覆盖
             graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+            //这里先把先前缓存的原始画面绘制上来作为底图
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            Main.spriteBatch.End();
+
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             //开始特效绘制，设置着色器处理中间屏幕上面的管道纹理
             StarsShader.CurrentTechnique.Passes[0].Apply();
             StarsShader.Parameters["m"].SetValue(0.08f);
             StarsShader.Parameters["n"].SetValue(0.01f);
-            StarsShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly); // 传入游戏时间
-            StarsShader.Parameters["worldSize"].SetValue(Main.ScreenSize.ToVector2()); // 传入屏幕分辨率
+            StarsShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);//传入游戏时间
+            StarsShader.Parameters["worldSize"].SetValue(Main.ScreenSize.ToVector2());//传入屏幕分辨率
             //绘制特效覆盖上底图
             Main.spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
