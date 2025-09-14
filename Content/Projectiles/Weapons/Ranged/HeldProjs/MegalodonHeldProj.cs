@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 4;
-            SpwanGunDustMngsData.splNum = 0.6f;
+            SpwanGunDustData.splNum = 0.6f;
         }
 
         public override void FiringShoot() {

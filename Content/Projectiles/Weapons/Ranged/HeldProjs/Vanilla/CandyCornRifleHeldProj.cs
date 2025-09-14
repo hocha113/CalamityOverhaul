@@ -30,11 +30,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
-            SpwanGunDustMngsData.dustID1 = DustID.YellowTorch;
-            SpwanGunDustMngsData.dustID2 = DustID.YellowTorch;
-            SpwanGunDustMngsData.dustID3 = DustID.YellowTorch;
+            SpwanGunDustData.dustID1 = DustID.YellowTorch;
+            SpwanGunDustData.dustID2 = DustID.YellowTorch;
+            SpwanGunDustData.dustID3 = DustID.YellowTorch;
             RecoilRetroForceMagnitude = 4;
-            SpwanGunDustMngsData.splNum = 0.6f;
+            SpwanGunDustData.splNum = 0.6f;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 3;
             LoadingAA_None.gunBodyY = 10;

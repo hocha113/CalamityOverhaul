@@ -38,10 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 4;
                 Recoil = 0.3f;
                 EjectCasingProjSize = 1;
-                SpwanGunDustMngsData.splNum = 0.3f;
-                SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Blue;
-                SpwanGunDustMngsData.dustID2 = DustID.FireworkFountain_Blue;
-                SpwanGunDustMngsData.dustID3 = DustID.FireworkFountain_Blue;
+                SpwanGunDustData.splNum = 0.3f;
+                SpwanGunDustData.dustID1 = DustID.FireworkFountain_Blue;
+                SpwanGunDustData.dustID2 = DustID.FireworkFountain_Blue;
+                SpwanGunDustData.dustID3 = DustID.FireworkFountain_Blue;
             }
             else if (onFireR) {
                 FireTime = 20;
@@ -50,10 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 14;
                 Recoil = 2.3f;
                 EjectCasingProjSize = 1.4f;
-                SpwanGunDustMngsData.splNum = 1.3f;
-                SpwanGunDustMngsData.dustID1 = 262;
-                SpwanGunDustMngsData.dustID2 = 54;
-                SpwanGunDustMngsData.dustID3 = 53;
+                SpwanGunDustData.splNum = 1.3f;
+                SpwanGunDustData.dustID1 = 262;
+                SpwanGunDustData.dustID2 = 54;
+                SpwanGunDustData.dustID3 = 53;
             }
         }
 

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             KreloadMaxTime = 45;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ProjectileID.BulletHighVelocity;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustData.splNum = 0.3f;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

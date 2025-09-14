@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 6;
             RepeatedCartridgeChange = true;
-            SpwanGunDustMngsData.dustID1 = 15;
-            SpwanGunDustMngsData.dustID2 = 57;
-            SpwanGunDustMngsData.dustID3 = 58;
+            SpwanGunDustData.dustID1 = 15;
+            SpwanGunDustData.dustID2 = 57;
+            SpwanGunDustData.dustID3 = 58;
         }
 
         public override bool KreLoadFulfill() {

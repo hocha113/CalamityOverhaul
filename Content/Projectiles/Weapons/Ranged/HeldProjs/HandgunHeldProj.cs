@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = 0;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -8;
-            SpwanGunDustMngsData.splNum = 0.4f;
+            SpwanGunDustData.splNum = 0.4f;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.8f;

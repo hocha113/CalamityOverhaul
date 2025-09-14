@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 7;
             RepeatedCartridgeChange = true;
-            SpwanGunDustMngsData.dustID1 = DustID.Blood;
-            SpwanGunDustMngsData.dustID2 = DustID.Water_BloodMoon;
-            SpwanGunDustMngsData.dustID3 = DustID.Blood;
+            SpwanGunDustData.dustID1 = DustID.Blood;
+            SpwanGunDustData.dustID2 = DustID.Water_BloodMoon;
+            SpwanGunDustData.dustID3 = DustID.Blood;
             EjectCasingProjSize = 1.2f;
             GunPressure = 0.2f;
             ControlForce = 0.04f;

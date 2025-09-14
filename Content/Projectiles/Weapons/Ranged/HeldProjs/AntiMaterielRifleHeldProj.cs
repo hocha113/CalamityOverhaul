@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = -5;
             RangeOfStress = 25;
-            SpwanGunDustMngsData.splNum = 3.3f;
+            SpwanGunDustData.splNum = 3.3f;
         }
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity

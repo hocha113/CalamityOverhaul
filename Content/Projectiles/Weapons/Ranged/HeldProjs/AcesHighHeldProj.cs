@@ -31,10 +31,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Onehanded = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
-            SpwanGunDustMngsData.splNum = 0.5f;
-            SpwanGunDustMngsData.dustID1 = DustID.BlueTorch;
-            SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
-            SpwanGunDustMngsData.dustID3 = DustID.CorruptTorch;
+            SpwanGunDustData.splNum = 0.5f;
+            SpwanGunDustData.dustID1 = DustID.BlueTorch;
+            SpwanGunDustData.dustID2 = DustID.BoneTorch;
+            SpwanGunDustData.dustID3 = DustID.CorruptTorch;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.gunBodyX = -3;
             LoadingAA_Handgun.gunBodyY = -10;

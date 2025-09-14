@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             RecoilRetroForceMagnitude = 4;
-            SpwanGunDustMngsData.splNum = 0.4f;
+            SpwanGunDustData.splNum = 0.4f;
             fireIndex = 0;
         }
 

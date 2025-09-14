@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             FireTime = 3;
             Recoil = 0.3f;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustData.splNum = 0.3f;
         }
 
         public override float GetGunInFireRot() {

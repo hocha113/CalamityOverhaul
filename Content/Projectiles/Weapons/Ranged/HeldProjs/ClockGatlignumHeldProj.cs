@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 0.9f;
             RangeOfStress = 25;
-            SpwanGunDustMngsData.splNum = 0.6f;
+            SpwanGunDustData.splNum = 0.6f;
         }
 
         public override void FiringShoot() {

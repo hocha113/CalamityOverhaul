@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.1f;
                 EnableRecoilRetroEffect = true;
                 EjectCasingProjSize = 1;
-                SpwanGunDustMngsData.splNum = 0.4f;
+                SpwanGunDustData.splNum = 0.4f;
                 return;
             }
             FireTime = 20;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.2f;
             EnableRecoilRetroEffect = false;
             EjectCasingProjSize = 1.6f;
-            SpwanGunDustMngsData.splNum = 1f;
+            SpwanGunDustData.splNum = 1f;
         }
 
         public override void FiringShoot() {

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.6f;
             Onehanded = true;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustData.splNum = 0.3f;
         }
     }
 }

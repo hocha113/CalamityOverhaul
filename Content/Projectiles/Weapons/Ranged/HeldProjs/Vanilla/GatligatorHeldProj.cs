@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.6f;
             RangeOfStress = 25;
-            SpwanGunDustMngsData.splNum = 0.35f;
+            SpwanGunDustData.splNum = 0.35f;
             LoadingAA_None.Roting = 50;
             LoadingAA_None.gunBodyX = 3;
             LoadingAA_None.gunBodyY = 15;

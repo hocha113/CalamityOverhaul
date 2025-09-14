@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            SpwanGunDustMngsData.splNum = 0.5f;
-            SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Red;
+            SpwanGunDustData.splNum = 0.5f;
+            SpwanGunDustData.dustID1 = DustID.FireworkFountain_Red;
         }
     }
 }

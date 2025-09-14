@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             KreloadMaxTime = 60;
             EjectCasingProjSize = 1.6f;
-            SpwanGunDustMngsData.dustID1 = 76;
-            SpwanGunDustMngsData.dustID2 = 149;
-            SpwanGunDustMngsData.dustID3 = 76;
+            SpwanGunDustData.dustID1 = 76;
+            SpwanGunDustData.dustID2 = 149;
+            SpwanGunDustData.dustID3 = 76;
             LoadingAA_None.Roting = -30;
             LoadingAA_None.gunBodyX = 3;
             LoadingAA_None.gunBodyY = -3;

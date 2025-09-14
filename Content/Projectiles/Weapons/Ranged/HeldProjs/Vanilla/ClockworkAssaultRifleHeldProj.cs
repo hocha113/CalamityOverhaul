@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustData.splNum = 0.3f;
         }
 
         public override void PostInOwner() { }

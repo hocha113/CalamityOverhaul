@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateCaseEjection = false;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<SnowQuayBall>();
-            SpwanGunDustMngsData.dustID1 = 76;
-            SpwanGunDustMngsData.dustID2 = 149;
-            SpwanGunDustMngsData.dustID3 = 76;
+            SpwanGunDustData.dustID1 = 76;
+            SpwanGunDustData.dustID2 = 149;
+            SpwanGunDustData.dustID3 = 76;
         }
 
         public override void PostInOwner() {

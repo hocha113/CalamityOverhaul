@@ -23,10 +23,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = -4;
             Recoil = 0.3f;
             CanRightClick = true;
-            SpwanGunDustMngsData.splNum = 0.3f;
-            SpwanGunDustMngsData.dustID1 = DustID.Vortex;
-            SpwanGunDustMngsData.dustID2 = DustID.Vortex;
-            SpwanGunDustMngsData.dustID3 = DustID.Vortex;
+            SpwanGunDustData.splNum = 0.3f;
+            SpwanGunDustData.dustID1 = DustID.Vortex;
+            SpwanGunDustData.dustID2 = DustID.Vortex;
+            SpwanGunDustData.dustID3 = DustID.Vortex;
         }
 
         public override float GetGunInFireRot() {

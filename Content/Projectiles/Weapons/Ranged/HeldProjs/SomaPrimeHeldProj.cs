@@ -27,13 +27,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
             RecoilRetroForceMagnitude = 3;
-            SpwanGunDustMngsData.splNum = 0.5f;
+            SpwanGunDustData.splNum = 0.5f;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = false;
             EnableRecoilRetroEffect = true;
-            SpwanGunDustMngsData.dustID1 = DustID.Adamantite;
-            SpwanGunDustMngsData.dustID2 = DustID.SailfishBoots;
-            SpwanGunDustMngsData.dustID3 = DustID.UltraBrightTorch;
+            SpwanGunDustData.dustID1 = DustID.Adamantite;
+            SpwanGunDustData.dustID2 = DustID.SailfishBoots;
+            SpwanGunDustData.dustID3 = DustID.UltraBrightTorch;
         }
 
         public override void FiringShoot() {

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1.8f;
             RangeOfStress = 48;
             CanCreateCaseEjection = false;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustData.splNum = 0.3f;
             Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;

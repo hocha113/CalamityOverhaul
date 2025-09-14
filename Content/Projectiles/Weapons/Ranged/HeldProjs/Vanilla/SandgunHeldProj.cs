@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.8f;
             CanRightClick = true;
             CanCreateCaseEjection = false;
-            SpwanGunDustMngsData.dustID1 = DustID.Sand;
-            SpwanGunDustMngsData.dustID2 = DustID.Sand;
+            SpwanGunDustData.dustID1 = DustID.Sand;
+            SpwanGunDustData.dustID2 = DustID.Sand;
         }
 
         public override void PostInOwner() {

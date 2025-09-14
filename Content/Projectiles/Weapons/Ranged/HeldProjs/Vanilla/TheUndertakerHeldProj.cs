@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 0.6f;
-            SpwanGunDustMngsData.splNum = 0.4f;
+            SpwanGunDustData.splNum = 0.4f;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
             if (!MagazineSystem) {

@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 12;
-            SpwanGunDustMngsData.dustID1 = DustID.Water;
-            SpwanGunDustMngsData.dustID2 = DustID.Water;
-            SpwanGunDustMngsData.dustID3 = DustID.Water;
-            SpwanGunDustMngsData.splNum = 0.8f;
+            SpwanGunDustData.dustID1 = DustID.Water;
+            SpwanGunDustData.dustID2 = DustID.Water;
+            SpwanGunDustData.dustID3 = DustID.Water;
+            SpwanGunDustData.splNum = 0.8f;
             CanCreateCaseEjection = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 3;

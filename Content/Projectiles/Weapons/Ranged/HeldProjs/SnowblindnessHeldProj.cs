@@ -33,9 +33,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Handgun.gunBodyX = -8;
             LoadingAA_Handgun.gunBodyY = -16;
             CanCreateCaseEjection = false;
-            SpwanGunDustMngsData.dustID1 = 76;
-            SpwanGunDustMngsData.dustID2 = 149;
-            SpwanGunDustMngsData.dustID3 = 76;
+            SpwanGunDustData.dustID1 = 76;
+            SpwanGunDustData.dustID2 = 149;
+            SpwanGunDustData.dustID3 = 76;
         }
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);

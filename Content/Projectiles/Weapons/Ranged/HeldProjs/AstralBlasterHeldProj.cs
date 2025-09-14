@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<AstralRound>();
-            SpwanGunDustMngsData.splNum = 0.3f;
-            SpwanGunDustMngsData.dustID1 = DustID.RedStarfish;
-            SpwanGunDustMngsData.dustID2 = DustID.YellowStarDust;
+            SpwanGunDustData.splNum = 0.3f;
+            SpwanGunDustData.dustID1 = DustID.RedStarfish;
+            SpwanGunDustData.dustID2 = DustID.YellowStarDust;
         }
     }
 }

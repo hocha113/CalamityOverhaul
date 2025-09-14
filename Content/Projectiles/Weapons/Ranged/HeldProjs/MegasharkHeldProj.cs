@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 4;
-            SpwanGunDustMngsData.splNum = 0.4f;
+            SpwanGunDustData.splNum = 0.4f;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 3;
             LoadingAA_None.gunBodyY = 20;

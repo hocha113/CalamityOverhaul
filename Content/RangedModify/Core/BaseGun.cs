@@ -194,19 +194,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
         public override bool OnHandheldDisplayBool => (HandheldDisplay || CanFire) && (WeaponHandheldDisplay || CanFire);
-
-        public struct SpwanGunDustMngsDataStruct
-        {
-            public Vector2 pos = default;
-            public Vector2 velocity = default;
-            public float splNum = 1f;
-            public int dustID1 = 262;
-            public int dustID2 = 54;
-            public int dustID3 = 53;
-            public SpwanGunDustMngsDataStruct() { }
-        }
-
-        protected SpwanGunDustMngsDataStruct SpwanGunDustMngsData = new SpwanGunDustMngsDataStruct();
+        /// <summary>
+        /// 枪焰粒子数据体
+        /// </summary>
+        protected SpwanGunDustDataStruct SpwanGunDustData = new();
 
         /// <summary>
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
@@ -485,8 +476,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public virtual void HanderSpwanDust() {
-            SpawnGunFireDust(SpwanGunDustMngsData.pos, SpwanGunDustMngsData.velocity, SpwanGunDustMngsData.splNum
-                        , SpwanGunDustMngsData.dustID1, SpwanGunDustMngsData.dustID2, SpwanGunDustMngsData.dustID3);
+            SpawnGunFireDust(SpwanGunDustData.pos, SpwanGunDustData.velocity, SpwanGunDustData.splNum
+                        , SpwanGunDustData.dustID1, SpwanGunDustData.dustID2, SpwanGunDustData.dustID3);
         }
 
         public virtual void HanderCaseEjection() {

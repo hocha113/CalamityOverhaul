@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             KreloadMaxTime = 45;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ProjectileID.BulletHighVelocity;
-            SpwanGunDustMngsData.splNum = 0.2f;
-            SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Yellow;
-            SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
-            SpwanGunDustMngsData.dustID3 = DustID.FireworkFountain_Yellow;
+            SpwanGunDustData.splNum = 0.2f;
+            SpwanGunDustData.dustID1 = DustID.FireworkFountain_Yellow;
+            SpwanGunDustData.dustID2 = DustID.BoneTorch;
+            SpwanGunDustData.dustID3 = DustID.FireworkFountain_Yellow;
             LoadingAA_None.Roting = 30;
             LoadingAA_None.gunBodyX = 0;
             LoadingAA_None.gunBodyY = 13;

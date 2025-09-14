@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 8;
-            SpwanGunDustMngsData.dustID1 = DustID.Water;
-            SpwanGunDustMngsData.dustID2 = DustID.Water;
-            SpwanGunDustMngsData.dustID3 = DustID.Water;
+            SpwanGunDustData.dustID1 = DustID.Water;
+            SpwanGunDustData.dustID2 = DustID.Water;
+            SpwanGunDustData.dustID3 = DustID.Water;
         }
 
         public override void SetShootAttribute() {

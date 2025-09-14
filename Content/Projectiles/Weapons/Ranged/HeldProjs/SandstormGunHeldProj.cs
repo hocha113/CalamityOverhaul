@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = false;
             CanCreateCaseEjection = false;
-            SpwanGunDustMngsData.dustID1 = Dust.SandStormCount;
-            SpwanGunDustMngsData.dustID2 = Dust.SandStormCount;
-            SpwanGunDustMngsData.dustID3 = Dust.SandStormCount;
+            SpwanGunDustData.dustID1 = Dust.SandStormCount;
+            SpwanGunDustData.dustID2 = Dust.SandStormCount;
+            SpwanGunDustData.dustID3 = Dust.SandStormCount;
         }
 
         public override void FiringShoot() {

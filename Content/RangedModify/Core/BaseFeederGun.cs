@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 快捷获取关于是否开启弹匣系统的设置值
         /// </summary>
-        protected bool MagazineSystem => CWRServerConfig.Instance.MagazineSystem;
+        protected static bool MagazineSystem => CWRServerConfig.Instance.MagazineSystem;
         /// <summary>
         /// 关于霰弹枪开火是否打断装填动作
         /// </summary>
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public bool InShotgun_FireForcedReloadInterruption {
             get {
-                return CWRServerConfig.Instance.ShotgunFireForcedReloadInterruption ? true : _inShotgun_FireForcedReloadInterruption;
+                return CWRServerConfig.Instance.ShotgunFireForcedReloadInterruption || _inShotgun_FireForcedReloadInterruption;
             }
             set => _inShotgun_FireForcedReloadInterruption = value;
         }

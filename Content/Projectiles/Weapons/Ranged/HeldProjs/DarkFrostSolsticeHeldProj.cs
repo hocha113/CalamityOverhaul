@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandheldDisplay = false;
             LoadingAA_None.gunBodyY = 0;
             LoadingAA_None.Roting = -10;
-            SpwanGunDustMngsData.dustID1 = 76;
-            SpwanGunDustMngsData.dustID2 = 149;
-            SpwanGunDustMngsData.dustID3 = 76;
+            SpwanGunDustData.dustID1 = 76;
+            SpwanGunDustData.dustID2 = 149;
+            SpwanGunDustData.dustID3 = 76;
         }
 
         public override void PostInOwner() {

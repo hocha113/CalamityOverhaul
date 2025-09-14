@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandFireDistanceX = 18;
             HandFireDistanceY = -5;
             CanRightClick = true;
-            SpwanGunDustMngsData.dustID1 = DustID.Water;
-            SpwanGunDustMngsData.dustID2 = DustID.Water;
-            SpwanGunDustMngsData.dustID3 = DustID.Water;
+            SpwanGunDustData.dustID1 = DustID.Water;
+            SpwanGunDustData.dustID2 = DustID.Water;
+            SpwanGunDustData.dustID3 = DustID.Water;
         }
 
         public override void SetShootAttribute() {
