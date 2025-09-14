@@ -30,7 +30,9 @@ namespace CalamityOverhaul.Content
 
         internal static bool BossRush => BossRushEvent.BossRushActive || MachineRebellion;
         internal static bool MasterMode => Main.masterMode || BossRush;
+        internal static bool ExpertMode => Main.expertMode || BossRush;
         internal static bool Death => CalamityWorld.death || BossRush;
+        internal static bool Revenge => CalamityWorld.revenge || BossRush;
 
         internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
 

@@ -1,12 +1,9 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
-using CalamityMod.Events;
 using CalamityMod.Items.Accessories;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.Signus;
 using CalamityMod.Projectiles.Boss;
-using CalamityMod.World;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -35,15 +32,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             PhaseTransition     //阶段转换时的演出
         }
 
+        //目标玩家
+        private Player Target { get; set; }
+
         //使用属性来简化对NPC.ai数组的访问，并使其更具可读性
         private AIState CurrentState {
             get => (AIState)npc.ai[0];
             set => npc.ai[0] = (float)value;
         }
 
+        //关键控制属性
         private ref float StateTimer => ref npc.ai[1];
         private ref float AttackCounter => ref npc.ai[2];
         private ref float Phase => ref npc.ai[3];
+
+        //难度和模式相关的变量
+        private double LifeRatio => npc.life / (double)npc.lifeMax;
 
         //一些用于存储动态值的变量
         private int lifeToAlpha = 0;
@@ -60,33 +64,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             CalamityGlobalNPC.signus = npc.whoAmI;
 
             //获取目标玩家
-            Player player = Main.player[npc.target];
-            if (!ValidateTarget(player)) {
+            Target = Main.player[npc.target];
+            if (!ValidateTarget()) {
                 //如果目标无效，执行默认的离场逻辑
                 DefaultDespawn();
                 return false;
             }
             npc.timeLeft = 1800; //保持Boss存活
 
-            //难度和模式相关的变量
-            bool bossRush = BossRushEvent.BossRushActive;
-            bool death = CalamityWorld.death || bossRush;
-            bool revenge = CalamityWorld.revenge || bossRush;
-            bool expertMode = Main.expertMode || bossRush;
-            double lifeRatio = npc.life / (double)npc.lifeMax;
-
             //根据生命值调整透明度，这是一个很好的视觉反馈
-            lifeToAlpha = (int)((Main.getGoodWorld ? 200D : 100D) * (1D - lifeRatio));
+            lifeToAlpha = (int)((Main.getGoodWorld ? 200D : 100D) * (1D - LifeRatio));
             npc.alpha = Math.Max(npc.alpha, lifeToAlpha);
 
             //阶段转换逻辑
-            if (Phase == 0 && lifeRatio < 0.75) {
+            if (Phase == 0 && LifeRatio < 0.75) {
                 Phase = 1;
                 CurrentState = AIState.PhaseTransition;
                 StateTimer = 0;
                 npc.netUpdate = true;
             }
-            if (Phase == 1 && lifeRatio < 0.4) {
+            if (Phase == 1 && LifeRatio < 0.4) {
                 Phase = 2;
                 CurrentState = AIState.PhaseTransition;
                 StateTimer = 0;
@@ -94,36 +91,44 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             }
 
             //天顶世界潜行机制
-            HandleStealth(npc, player);
+            HandleStealth();
             //CurrentState.Domp();
             //主AI状态机
             switch (CurrentState) {
                 case AIState.SpawnAnimation:
-                    DoSpawnAnimation(npc);
+                    DoSpawnAnimation();
                     break;
                 case AIState.Idle:
-                    DoIdle(npc, player, death);
+                    DoIdle();
                     break;
                 case AIState.TeleportAndScythe:
-                    DoTeleportAndScythe(npc, player, death, revenge);
+                    DoTeleportAndScythe();
                     break;
                 case AIState.ScytheSweep:
-                    DoScytheSweep(npc, player, death, revenge);
+                    DoScytheSweep();
                     break;
                 case AIState.Minefield:
-                    DoMinefield(npc, player, expertMode);
+                    DoMinefield();
                     break;
                 case AIState.PhantomDash:
-                    DoPhantomDash(npc, player, death, bossRush);
+                    DoPhantomDash();
                     break;
                 case AIState.PhaseTransition:
-                    DoPhaseTransition(npc);
+                    DoPhaseTransition();
                     break;
             }
 
+            UpdateDirection();
+
+            FindFrame();
+
+            return false; //阻止原版AI运行
+        }
+
+        private void UpdateDirection() {
             //通用旋转和朝向
             if (CurrentState != AIState.PhantomDash && CurrentState != AIState.ScytheSweep) {
-                Vector2 toPlayer = npc.To(player.Center);
+                Vector2 toPlayer = npc.To(Target.Center);
                 float dirVelocity = npc.velocity.X;
                 if (npc.velocity.X == 0) {
                     dirVelocity = toPlayer.UnitVector().X;
@@ -132,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                 npc.spriteDirection = npc.direction = Math.Sign(dirVelocity);
             }
             else if (CurrentState == AIState.ScytheSweep) {
-                Vector2 toPlayer = npc.To(player.Center);
+                Vector2 toPlayer = npc.To(Target.Center);
                 float dirVelocity = toPlayer.UnitVector().X;
                 npc.rotation = toPlayer.ToRotation();
                 npc.spriteDirection = npc.direction = Math.Sign(dirVelocity);
@@ -140,18 +145,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                     npc.rotation += MathHelper.Pi;
                 }
             }
-
-            FindFrame();
-
-            return false; //阻止原版AI运行
         }
 
         //验证目标是否有效
-        private bool ValidateTarget(Player player) {
-            if (player.dead || !player.active || Vector2.Distance(player.Center, npc.Center) > 6400f) {
+        private bool ValidateTarget() {
+            if (Target.dead || !Target.active || Vector2.Distance(Target.Center, npc.Center) > 6400f) {
                 npc.TargetClosest(false);
-                player = Main.player[npc.target];
-                return !player.dead && player.active && Vector2.Distance(player.Center, npc.Center) < 6400f;
+                Target = Main.player[npc.target];
+                return !Target.dead && Target.active && Vector2.Distance(Target.Center, npc.Center) < 6400f;
             }
             return true;
         }
@@ -166,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //处理天顶世界的潜行机制
-        private void HandleStealth(NPC NPC, Player player) {
+        private void HandleStealth() {
             if (!Main.zenithWorld) return;
 
             int maxStealth = 360;
@@ -176,7 +177,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                 stealthTimer++;
             }
             if (stealthTimer == stealthSoundGate) {
-                SoundEngine.PlaySound(CalamityMod.CalPlayer.CalamityPlayer.RogueStealthSound, NPC.Center);
+                SoundEngine.PlaySound(CalamityMod.CalPlayer.CalamityPlayer.RogueStealthSound, npc.Center);
             }
         }
 
@@ -191,7 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //选择下一个攻击模式
-        private void SelectNextAttack(NPC NPC) {
+        private void SelectNextAttack() {
             //根据不同阶段，攻击模式有所区别
             int[] attackPool = Phase < 1 ? [1, 2, 3] : [1, 2, 3, 4];
             int nextAttack;
@@ -216,85 +217,85 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
 
             AttackCounter = nextAttack; //记录本次攻击，以便下次不重复
             StateTimer = 0;
-            NPC.netUpdate = true;
+            npc.netUpdate = true;
         }
 
         //生成动画状态
-        private void DoSpawnAnimation(NPC NPC) {
-            NPC.damage = 0;
-            NPC.alpha -= 5;
-            if (NPC.alpha < lifeToAlpha) {
-                NPC.alpha = lifeToAlpha;
+        private void DoSpawnAnimation() {
+            npc.damage = 0;
+            npc.alpha -= 5;
+            if (npc.alpha < lifeToAlpha) {
+                npc.alpha = lifeToAlpha;
                 CurrentState = AIState.Idle;
                 StateTimer = 0;
-                NPC.netUpdate = true;
+                npc.netUpdate = true;
             }
         }
 
         //待机状态
-        private void DoIdle(NPC NPC, Player player, bool death) {
-            NPC.damage = 0;
+        private void DoIdle() {
+            npc.damage = 0;
             //缓慢飘向玩家上方的一个位置
-            Vector2 targetPos = player.Center + new Vector2(0, -300);
-            float speed = death ? 14f : 10f;
+            Vector2 targetPos = Target.Center + new Vector2(0, -300);
+            float speed = CWRWorld.Death ? 14f : 10f;
             float inertia = 20f;
-            NPC.velocity = (NPC.velocity * (inertia - 1) + (targetPos - NPC.Center).SafeNormalize(Vector2.Zero) * speed) / inertia;
+            npc.velocity = (npc.velocity * (inertia - 1) + (targetPos - npc.Center).SafeNormalize(Vector2.Zero) * speed) / inertia;
 
             StateTimer++;
             //等待一段时间后选择下一次攻击
             float waitTime = Phase > 0 ? 60f : 90f;
             if (StateTimer > waitTime) {
-                SelectNextAttack(NPC);
+                SelectNextAttack();
             }
         }
 
         //瞬移并射击镰刀
-        private void DoTeleportAndScythe(NPC NPC, Player player, bool death, bool revenge) {
-            NPC.damage = 0;
+        private void DoTeleportAndScythe() {
+            npc.damage = 0;
             StateTimer++;
 
             float teleportDelay = 45f;
             if (StateTimer < teleportDelay) {
                 //预警阶段，在即将瞬移的位置产生特效
                 if (StateTimer == 1f) {
-                    Vector2 teleportPos = player.Center + player.velocity.SafeNormalize(Vector2.Zero) * 200f;
+                    Vector2 teleportPos = Target.Center + Target.velocity.SafeNormalize(Vector2.Zero) * 200f;
                     //将目标位置存储在 localAI 中
-                    NPC.localAI[0] = teleportPos.X;
-                    NPC.localAI[1] = teleportPos.Y;
-                    NPC.netUpdate = true;
+                    npc.localAI[0] = teleportPos.X;
+                    npc.localAI[1] = teleportPos.Y;
+                    npc.netUpdate = true;
                 }
 
                 //在目标位置创建预警特效
-                Vector2 futurePos = new Vector2(NPC.localAI[0], NPC.localAI[1]);
+                Vector2 futurePos = new Vector2(npc.localAI[0], npc.localAI[1]);
                 Dust.NewDust(futurePos, 30, 30, (int)CalamityDusts.PurpleCosmilite, 0, 0, 100, default, 2f);
 
                 //自身逐渐消失
-                NPC.alpha += 6;
+                npc.alpha += 6;
             }
             else if (StateTimer == teleportDelay) {
                 //执行瞬移
-                SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
-                NPC.Center = new Vector2(NPC.localAI[0], NPC.localAI[1]);
-                NPC.velocity = Vector2.Zero;
-                NPC.alpha = lifeToAlpha;
-                NPC.netUpdate = true;
+                SoundEngine.PlaySound(SoundID.Item8, npc.Center);
+                npc.Center = new Vector2(npc.localAI[0], npc.localAI[1]);
+                npc.velocity = Vector2.Zero;
+                npc.alpha = lifeToAlpha;
+                npc.netUpdate = true;
 
                 //潜行强化
                 bool stealthed = IsStealthed();
 
                 //发射镰刀
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
-                    int scytheCount = revenge ? 5 : 3;
+                    int scytheCount = CWRWorld.Revenge ? 5 : 3;
                     if (stealthed) scytheCount += 2; //强化
 
-                    Vector2 direction = (player.Center - NPC.Center).SafeNormalize(Vector2.Zero);
+                    Vector2 direction = (Target.Center - npc.Center).SafeNormalize(Vector2.Zero);
                     float spread = MathHelper.ToRadians(stealthed ? 45f : 30f); //强化：更宽的散射范围
 
                     for (int i = 0; i < scytheCount; i++) {
-                        Vector2 perturbedSpeed = direction.RotatedBy(MathHelper.Lerp(-spread, spread, i / (float)(scytheCount - 1))) * (death ? 14f : 12f);
+                        Vector2 perturbedSpeed = direction.RotatedBy(MathHelper.Lerp(-spread, spread, i / (float)(scytheCount - 1))) * (CWRWorld.Death ? 14f : 12f);
                         int type = ModContent.ProjectileType<SignusScythe>();
-                        int damage = NPC.GetProjectileDamage(type);
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, perturbedSpeed, type, damage, 0, Main.myPlayer);
+                        int damage = npc.GetProjectileDamage(type);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed, type, damage, 0, Main.myPlayer);
                     }
                 }
             }
@@ -307,47 +308,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //镰刀横扫
-        private void DoScytheSweep(NPC NPC, Player player, bool death, bool revenge) {
-            NPC.damage = 0;
+        private void DoScytheSweep() {
+            npc.damage = 0;
             StateTimer++;
 
             if (StateTimer == 1f) {
                 //移动到屏幕一角
-                Vector2 corner = player.Center + new Vector2(Math.Sign(player.Center.X - NPC.Center.X) * 900, -400);
-                NPC.localAI[0] = corner.X;
-                NPC.localAI[1] = corner.Y;
-                NPC.netUpdate = true;
+                Vector2 corner = Target.Center + new Vector2(Math.Sign(Target.Center.X - npc.Center.X) * 900, -400);
+                npc.localAI[0] = corner.X;
+                npc.localAI[1] = corner.Y;
+                npc.netUpdate = true;
             }
 
             //飞向目标角落
-            Vector2 targetPos = new Vector2(NPC.localAI[0], NPC.localAI[1]);
-            NPC.velocity = (targetPos - NPC.Center) * 0.1f;
-            NPC.rotation = (player.Center - NPC.Center).ToRotation();
-            if (NPC.Center.X < player.Center.X) NPC.rotation += MathHelper.Pi;
+            Vector2 targetPos = new Vector2(npc.localAI[0], npc.localAI[1]);
+            npc.velocity = (targetPos - npc.Center) * 0.1f;
+            npc.rotation = (Target.Center - npc.Center).ToRotation();
+            if (npc.Center.X < Target.Center.X) npc.rotation += MathHelper.Pi;
 
 
             //到达位置后开始攻击
-            if (Vector2.Distance(NPC.Center, targetPos) < 50f || StateTimer > 120f) {
-                NPC.velocity *= 0.9f;
+            if (Vector2.Distance(npc.Center, targetPos) < 50f || StateTimer > 120f) {
+                npc.velocity *= 0.9f;
                 //每隔一段时间发射一道镰刀波
-                if (StateTimer % (death ? 20 : 30) == 0 && StateTimer > 60) {
+                if (StateTimer % (CWRWorld.Death ? 20 : 30) == 0 && StateTimer > 60) {
                     if (Main.netMode != NetmodeID.MultiplayerClient) {
-                        SoundEngine.PlaySound(SoundID.Item71, NPC.Center);
-                        Vector2 direction = (player.Center - NPC.Center).SafeNormalize(Vector2.Zero);
-                        float speed = revenge ? 11f : 9f;
+                        SoundEngine.PlaySound(SoundID.Item71, npc.Center);
+                        Vector2 direction = (Target.Center - npc.Center).SafeNormalize(Vector2.Zero);
+                        float speed = CWRWorld.Revenge ? 11f : 9f;
 
                         bool stealthed = IsStealthed(); //潜行会影响此次攻击
                         if (stealthed) speed *= 1.5f; //强化：速度更快
 
                         int type = ModContent.ProjectileType<SignusScythe>();
-                        int damage = NPC.GetProjectileDamage(type);
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, direction * speed, type, damage, 0, Main.myPlayer);
+                        int damage = npc.GetProjectileDamage(type);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, direction * speed, type, damage, 0, Main.myPlayer);
                     }
                 }
             }
 
             //结束攻击
-            int attackDuration = death ? 240 : 300;
+            int attackDuration = CWRWorld.Death ? 240 : 300;
             if (StateTimer > attackDuration) {
                 CurrentState = AIState.Idle;
                 StateTimer = 0;
@@ -355,29 +356,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //地雷阵
-        private void DoMinefield(NPC NPC, Player player, bool expertMode) {
+        private void DoMinefield() {
             StateTimer++;
 
             //移动到玩家上方并保持不动
-            Vector2 hoverPos = player.Center + new Vector2(0, -350);
-            NPC.velocity = (hoverPos - NPC.Center) * 0.05f;
-            NPC.damage = 0;
+            Vector2 hoverPos = Target.Center + new Vector2(0, -350);
+            npc.velocity = (hoverPos - npc.Center) * 0.05f;
+            npc.damage = 0;
 
             //在计时器特定时刻生成地雷
             if (Main.netMode != NetmodeID.MultiplayerClient && StateTimer > 60 && StateTimer < 180 && StateTimer % 30 == 0) {
-                SoundEngine.PlaySound(SoundID.Item122, NPC.Center);
+                SoundEngine.PlaySound(SoundID.Item122, npc.Center);
 
                 bool stealthed = IsStealthed(); //潜行会生成更多地雷
 
-                int mineCount = expertMode ? 4 : 3;
+                int mineCount = CWRWorld.ExpertMode ? 4 : 3;
                 if (stealthed) mineCount += 2; //强化
 
                 for (int i = 0; i < mineCount; i++) {
                     //在玩家周围环形生成
                     float radius = 400f + (stealthed ? 100f : 0f);
-                    Vector2 spawnPos = player.Center + Main.rand.NextVector2Circular(radius, radius);
+                    Vector2 spawnPos = Target.Center + Main.rand.NextVector2Circular(radius, radius);
                     int npcType = ModContent.NPCType<CosmicMine>();
-                    NPC.NewNPC(NPC.GetSource_FromAI(), (int)spawnPos.X, (int)spawnPos.Y, npcType);
+                    NPC.NewNPC(npc.GetSource_FromAI(), (int)spawnPos.X, (int)spawnPos.Y, npcType);
                 }
             }
 
@@ -389,9 +390,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //幻影冲刺
-        private void DoPhantomDash(NPC npc, Player player, bool death, bool bossRush) {
+        private void DoPhantomDash() {
             StateTimer++;
-            float chargeVelocity = bossRush ? 28f : death ? 24f : 20f;
+            float chargeVelocity = CWRWorld.BossRush ? 28f : CWRWorld.Death ? 24f : 20f;
 
             //这个攻击分为三个子阶段：0=准备, 1=冲刺, 2=结束
             float subState = ai[0];
@@ -402,11 +403,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                 npc.velocity *= 0.9f;
                 if (StateTimer == 1f) {
                     //选择一个屏幕外的点作为冲刺起点
-                    Vector2 chargeStartPos = player.Center + new Vector2(1000 * (Main.rand.NextBool() ? 1 : -1), Main.rand.Next(-200, 201));
+                    Vector2 chargeStartPos = Target.Center + new Vector2(1000 * (Main.rand.NextBool() ? 1 : -1), Main.rand.Next(-200, 201));
                     npc.Center = chargeStartPos;
 
                     //计算冲向玩家的方向
-                    Vector2 chargeDir = (player.Center - npc.Center).SafeNormalize(Vector2.Zero);
+                    Vector2 chargeDir = (Target.Center - npc.Center).SafeNormalize(Vector2.Zero);
                     ai[1] = chargeDir.X;
                     ai[2] = chargeDir.Y;
                     npc.netUpdate = true;
@@ -457,28 +458,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         }
 
         //阶段转换
-        private void DoPhaseTransition(NPC NPC) {
+        private void DoPhaseTransition() {
             StateTimer++;
-            NPC.damage = 0;
-            NPC.velocity *= 0.9f;
+            npc.damage = 0;
+            npc.velocity *= 0.9f;
 
             //产生特效和声音
             if (StateTimer == 1) {
-                SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
+                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 //无敌
-                NPC.dontTakeDamage = true;
+                npc.dontTakeDamage = true;
             }
 
             //抖动和粒子效果
             if (Main.rand.NextBool(3)) {
-                Dust.NewDust(NPC.position, NPC.width, NPC.height, (int)CalamityDusts.PurpleCosmilite, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 100, default, 2.5f);
+                Dust.NewDust(npc.position, npc.width, npc.height, (int)CalamityDusts.PurpleCosmilite, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 100, default, 2.5f);
             }
 
             if (StateTimer > 90) {
-                NPC.dontTakeDamage = false;
+                npc.dontTakeDamage = false;
                 CurrentState = AIState.Idle;
                 StateTimer = 0;
-                NPC.netUpdate = true;
+                npc.netUpdate = true;
             }
         }
 
