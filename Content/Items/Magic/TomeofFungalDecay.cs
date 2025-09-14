@@ -1,14 +1,14 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using System.Buffers.Text;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using Terraria.Audio;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System.Buffers.Text;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, targetPos.X, targetPos.Y);
             }
-            
+
             return false;
         }
     }

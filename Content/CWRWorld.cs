@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.World;
-using InnoVault.GameSystem;
 using System.IO;
 using Terraria;
 using Terraria.ID;

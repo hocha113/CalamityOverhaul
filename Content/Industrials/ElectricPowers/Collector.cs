@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            
+
             if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
                 ItemFilter = ItemIO.Load(value);
             }

@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             }
-                
+
             return true;
         }
         //渲染钩子放在这个位置，可以确保图层正确

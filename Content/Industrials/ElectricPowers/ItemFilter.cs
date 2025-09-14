@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 if (sengs < 0.2f) {
                     DrawPosition = MousePosition;
                 }
-                
+
                 if (sengs < 1f) {
                     sengs += 0.1f;
                 }

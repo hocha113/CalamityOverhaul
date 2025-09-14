@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GlowingMushroom, Main.rand.NextFloat(-2, 2), -2);
                 }
             }
-            
+
             NPC.active = false;
         }
 
@@ -195,10 +195,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             //下下策，判断生成源
-            if (projectile.TryGetGlobalProjectile<CWRProjectile>(out var gProj) 
-                && gProj.Source != null 
-                && gProj.Source is EntitySource_Parent entitySource 
-                && entitySource.Entity is NPC boss 
+            if (projectile.TryGetGlobalProjectile<CWRProjectile>(out var gProj)
+                && gProj.Source != null
+                && gProj.Source is EntitySource_Parent entitySource
+                && entitySource.Entity is NPC boss
                 && boss.type == ModContent.NPCType<Crabulon>()) {
                 return false;
             }
