@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
             for (int i = 0; i < 13; i++) {
                 BasePRT spark = new PRT_Spark(Projectile.Center
-                    , CWRUtils.randVr(13, 23), false, 26, Main.rand.NextFloat(2.6f, 2.8f), Color.Gold);
+                    , VaultUtils.RandVr(13, 23), false, 26, Main.rand.NextFloat(2.6f, 2.8f), Color.Gold);
                 PRTLoader.AddParticle(spark);
             }
             Projectile.timeLeft = 30;

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             int num = (int)(leng / wid) + 1;
                             for (int i = 0; i < num; i++) {
                                 Vector2 pos2 = toPosNor * (i * wid) + Projectile.Center;
-                                Vector2 vr = CWRUtils.randVr(3, 7);
+                                Vector2 vr = VaultUtils.RandVr(3, 7);
                                 var sparkier = Dust.NewDust(pos2, 1, 1, DustID.UnusedWhiteBluePurple, vr.X, vr.Y, 100, default, 1f);
                                 Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
                                 Main.dust[sparkier].noGravity = false;

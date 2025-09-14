@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[dustSpawns].noGravity = true;
                 Main.dust[dustSpawns].velocity *= 4f;
 
-                Vector2 randVr = CWRUtils.GetRandomVevtor(-170, -10, Main.rand.Next(9, 32)).RotatedBy(offset);
+                Vector2 randVr = VaultUtils.RandVrInAngleRange(-170, -10, Main.rand.Next(9, 32)).RotatedBy(offset);
                 AltSparkParticle spark = new(Projectile.Center, randVr, true, 12, Main.rand.NextFloat(1.3f, 2.2f), Color.Blue);
                 GeneralParticleHandler.SpawnParticle(spark);
                 AltSparkParticle spark2 = new(Projectile.Center, randVr, false, 9, Main.rand.NextFloat(1.1f, 1.5f), Color.AntiqueWhite);

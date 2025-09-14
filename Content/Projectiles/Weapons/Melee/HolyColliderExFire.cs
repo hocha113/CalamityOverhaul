@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
                 for (int i = 0; i < 80; i++) {
                     PRT_LavaFire lavaFire = new PRT_LavaFire {
-                        Velocity = CWRUtils.randVr(1, 9),
+                        Velocity = VaultUtils.RandVr(1, 9),
                         Position = spanPos,
 
                         Scale = Main.rand.NextFloat(2.9f, 4.6f),
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 for (int i = 0; i < 20; i++) {
                     PRT_LavaFire lavaFire = new PRT_LavaFire {
-                        Velocity = CWRUtils.randVr(3, 6),
+                        Velocity = VaultUtils.RandVr(3, 6),
                         Position = spanPos,
                         Scale = Main.rand.NextFloat(0.8f, 1.2f),
                         Color = Color.White
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             for (int i = 0; i < 80; i++) {
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = CWRUtils.randVr(1, 4),
+                    Velocity = VaultUtils.RandVr(1, 4),
                     Position = spanPos,
 
                     Scale = Main.rand.NextFloat(0.9f, 1.6f),
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             for (int i = 0; i < 20; i++) {
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = CWRUtils.randVr(3, 4),
+                    Velocity = VaultUtils.RandVr(3, 4),
                     Position = spanPos,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
                     Color = Color.White

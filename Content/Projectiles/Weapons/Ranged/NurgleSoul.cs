@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                     if (distanceToPlayer < maxFollowDistance) {
                         if (point == Vector2.Zero) {
-                            point = Projectile.Center + CWRUtils.randVr(133, 202);
+                            point = Projectile.Center + VaultUtils.RandVr(133, 202);
                         }
                         Projectile.SmoothHomingBehavior(point, 1.001f, 0.25f);
                         if (Main.rand.NextBool(1600)) {
-                            point = Projectile.Center + CWRUtils.randVr(533, 1202);
+                            point = Projectile.Center + VaultUtils.RandVr(533, 1202);
                         }
                     }
                     else {

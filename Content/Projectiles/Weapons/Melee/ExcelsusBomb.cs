@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (float spikeAngle = 0f; spikeAngle < MathHelper.TwoPi; spikeAngle += 0.15f) {
                     Vector2 offset = spikeAngle.ToRotationVector2() * Main.rand.NextFloat(3.95f, 7.05f);
                     Dust dust = Dust.NewDustPerfect(Projectile.Center
-                        + CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(16, 220))
+                        + VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(16, 220))
                         , dustType, offset, 0, default, scale);
 
                     dust.customData = 0.025f;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 10; i++)//生成这种粒子不是好主意
                     {
-                        Vector2 particleSpeed = CWRUtils.GetRandomVevtor(60, 120, -8 * (i / 20f));
+                        Vector2 particleSpeed = VaultUtils.RandVrInAngleRange(60, 120, -8 * (i / 20f));
                         Vector2 pos = Projectile.Center + new Vector2(Main.rand.Next(-16, 6), Main.rand.Next(0, 76)) + new Vector2(Main.rand.Next(-166, 166), 0);
                         Particle energyLeak = new SquishyLightParticle(pos, particleSpeed
                             , Main.rand.NextFloat(0.6f, 1.1f), Color.Purple, 60, 1, 1.5f, hueShift: 0.0f);

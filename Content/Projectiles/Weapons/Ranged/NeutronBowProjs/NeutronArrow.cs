@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                 return;
             }
             for (int i = 0; i < 3; i++) {
-                Vector2 rand = CWRUtils.randVr(560, 780);
+                Vector2 rand = VaultUtils.RandVr(560, 780);
                 Vector2 vr = rand.UnitVector() * -20;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + rand
                         , vr, ModContent.ProjectileType<NeutronLaser>(), Projectile.damage * 2, 0);

@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                         target.Center -
                         Main.player[Projectile.owner].Center.To(target.Center).UnitVector()
                         .RotatedBy(MathHelper.ToRadians(Main.rand.Next(-75, 75))) * 300,
-                        CWRUtils.randVr(6, 9),
+                        VaultUtils.RandVr(6, 9),
                         ModContent.ProjectileType<FateCluster>(),
                         Projectile.damage / 2,
                         0,

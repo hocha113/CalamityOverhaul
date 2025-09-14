@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             for (int i = 0; i < 133; i++) {
                 AltSparkParticle spark = new AltSparkParticle(
                     Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
-                    , CWRUtils.GetRandomVevtor(10, -170, Main.rand.Next(13, 33))
+                    , VaultUtils.RandVrInAngleRange(10, -170, Main.rand.Next(13, 33))
                     , false, 13, Main.rand.NextFloat(3.3f), Main.rand.NextBool(3) ? Color.Red : Color.IndianRed);
                 GeneralParticleHandler.SpawnParticle(spark);
             }

@@ -171,8 +171,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         private void SpanSoulSearchScythe(NPC target) {
-            Vector2 randOffsetTargetInPos = CWRUtils.randVr(target.width * 2);
-            Vector2 randPos = target.Center + randOffsetTargetInPos + CWRUtils.randVr(1162, 1282);
+            Vector2 randOffsetTargetInPos = VaultUtils.RandVr(target.width * 2);
+            Vector2 randPos = target.Center + randOffsetTargetInPos + VaultUtils.RandVr(1162, 1282);
             Vector2 shootVer = randPos.To(target.Center + randOffsetTargetInPos).UnitVector() * 16;
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), randPos, shootVer
                     , ModContent.ProjectileType<SoulSearchScythe>(), Projectile.damage, 10f
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
                     if (Projectile.localAI[1] % 15 == 0) {
                         for (int i = 0; i < 3; i++) {
-                            Vector2 pos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale + CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(2, 16));
+                            Vector2 pos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale + VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(2, 16));
                             Projectile.NewProjectile(Owner.FromObjectGetParent(), pos, Vector2.Zero, ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
                     }

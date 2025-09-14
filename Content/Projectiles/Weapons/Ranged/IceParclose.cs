@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(Cryogen.HitSound, Projectile.Center);
             for (int i = 0; i < 10 * Projectile.scale; i++) {
-                int index2 = Dust.NewDust(Projectile.Center + CWRUtils.randVr(Projectile.width * Projectile.scale), 1, 1, DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
+                int index2 = Dust.NewDust(Projectile.Center + VaultUtils.RandVr(Projectile.width * Projectile.scale), 1, 1, DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
                 Main.dust[index2].noGravity = true;
             }
         }

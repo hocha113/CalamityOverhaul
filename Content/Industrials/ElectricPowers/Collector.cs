@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 textIdleTime = 300;
                 //生成一个效果环
                 for (int i = 0; i < 220; i++) {
-                    Vector2 spwanPos = PosInWorld + CWRUtils.randVr(maxFindChestMode, maxFindChestMode + 1);
+                    Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
                     int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
                     Main.dust[dust].noGravity = true;
                 }

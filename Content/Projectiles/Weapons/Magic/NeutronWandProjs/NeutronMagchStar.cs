@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
             Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3());
             Projectile.rotation += Projectile.velocity.X * 0.1f;
-            BasePRT spark2 = new PRT_HeavenfallStar(Projectile.Center + CWRUtils.randVr(8)
+            BasePRT spark2 = new PRT_HeavenfallStar(Projectile.Center + VaultUtils.RandVr(8)
                         , Projectile.velocity.UnitVector() * Main.rand.Next(6, 16), false
                         , 7, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
             PRTLoader.AddParticle(spark2);
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 6; i++) {
-                Vector2 vr = CWRUtils.randVr(6);
+                Vector2 vr = VaultUtils.RandVr(6);
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch, vr.X, vr.Y);
                 Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FireworkFountain_Blue, vr.X, vr.Y)].noGravity = true;
             }

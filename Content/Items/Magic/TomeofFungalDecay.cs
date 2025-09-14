@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.velocity *= 0.96f;
 
             if (Projectile.ai[2] > 2 && Main.rand.NextBool(2) && Projectile.velocity.Length() > 1f) {
-                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + CWRUtils.randVr(32), Projectile.velocity / 3);
+                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + VaultUtils.RandVr(32), Projectile.velocity / 3);
             }
         }
 

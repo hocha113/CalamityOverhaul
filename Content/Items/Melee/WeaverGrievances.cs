@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
-            Vector2 pos = Projectile.Center + CWRUtils.randVr(Projectile.width / 2);
+            Vector2 pos = Projectile.Center + VaultUtils.RandVr(Projectile.width / 2);
             if (Main.player[Projectile.owner].ZoneDungeon) {
                 PRTLoader.NewParticle<PRT_SoulFire>(pos, new Vector2(0, -Main.rand.Next(2, 4)), default, Main.rand.NextFloat(0.3f, 1));
             }

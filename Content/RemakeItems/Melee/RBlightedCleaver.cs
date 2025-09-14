@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             int type = ModContent.ProjectileType<HyperBlade>();
             for (int i = 0; i < 4; i++) {
-                Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
+                Vector2 offsetvr = VaultUtils.RandVrInAngleRange(-127.5f, -52.5f, 360);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj = Projectile.NewProjectile(Source, spanPos,
                     offsetvr.UnitVector() * -12, type, Item.damage / 2, 0, Owner.whoAmI);

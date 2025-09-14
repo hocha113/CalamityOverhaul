@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (AmmoTypes == ProjectileID.Starfury) {
                     WeaponDamage /= 2;
                 }
-                int proj = Projectile.NewProjectile(Source, ShootPos + CWRUtils.randVr(8), ShootVelocity, AmmoTypes
+                int proj = Projectile.NewProjectile(Source, ShootPos + VaultUtils.RandVr(8), ShootVelocity, AmmoTypes
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].penetrate = 1;
                 Main.projectile[proj].timeLeft = 300;

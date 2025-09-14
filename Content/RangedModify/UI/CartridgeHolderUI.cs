@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
 
             if (player.Calamity().adrenalineModeActive) {
-                DrawPosition += CWRUtils.randVr(6);
+                DrawPosition += VaultUtils.RandVr(6);
             }
         }
 

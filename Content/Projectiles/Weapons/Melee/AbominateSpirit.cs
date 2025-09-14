@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         }
 
                         for (int i = 0; i < 13; i++) {
-                            Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(4, 7));
+                            Vector2 vr = VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(4, 7));
                             Dust.NewDust(target.Center, 13, 13, DustID.HealingPlus, vr.X, vr.Y);
                         }
 
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 if (Projectile.scale > 5) {
                     for (int i = 0; i < 13; i++) {
-                        Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(4, 7));
+                        Vector2 vr = VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(4, 7));
                         Dust.NewDust(target.Center, 13, 13, DustID.HealingPlus, vr.X, vr.Y);
                         Projectile.Kill();
                     }

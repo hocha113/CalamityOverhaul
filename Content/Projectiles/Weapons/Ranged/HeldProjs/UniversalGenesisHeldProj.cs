@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             Vector2 pos = ShootPos + new Vector2(Owner.Center.To(Main.MouseWorld).X * 0.3f, -700);
             for (int i = 0; i < 7; i++) {
-                pos += CWRUtils.randVr(134);
+                pos += VaultUtils.RandVr(134);
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor * Main.rand.NextFloat(1.9f, 2.6f);
                 Projectile.NewProjectile(Source, pos, vr, ModContent.ProjectileType<UniversalGenesisStar>(), WeaponDamage / 2, WeaponKnockback / 2, Owner.whoAmI, i, 1);
             }

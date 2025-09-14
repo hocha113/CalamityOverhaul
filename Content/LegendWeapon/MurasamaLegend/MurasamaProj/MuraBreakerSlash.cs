@@ -229,8 +229,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
                         int maxSpanNum = 13 + Level;
                         for (int i = 0; i < maxSpanNum; i++) {
-                            Vector2 spanPos = Projectile.Center + CWRUtils.randVr(1380, 2200);
-                            Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + Level * 12)).UnitVector() * 12;
+                            Vector2 spanPos = Projectile.Center + VaultUtils.RandVr(1380, 2200);
+                            Vector2 vr = spanPos.To(Projectile.Center + VaultUtils.RandVr(180, 320 + Level * 12)).UnitVector() * 12;
                             Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
 

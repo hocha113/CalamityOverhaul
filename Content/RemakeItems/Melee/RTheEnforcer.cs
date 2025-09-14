@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 4; i++) {
-                Projectile.NewProjectile(Source, target.Center + CWRUtils.randVr(660, 880), Vector2.Zero
+                Projectile.NewProjectile(Source, target.Center + VaultUtils.RandVr(660, 880), Vector2.Zero
                     , ModContent.ProjectileType<EnforcerFlame>(), Projectile.damage / 4
                     , Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(3));
             }

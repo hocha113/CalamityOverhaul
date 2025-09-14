@@ -33,6 +33,16 @@ namespace CalamityOverhaul.Content
         internal static bool MasterMode => Main.masterMode || BossRush;
         internal static bool Death => CalamityWorld.death || BossRush;
 
+        internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
+
+        public override void Load() {
+            VaultUtils.InvasionEvent += IsAcidRainEventIsOngoing;
+        }
+
+        public override void Unload() {
+            VaultUtils.InvasionEvent -= IsAcidRainEventIsOngoing;
+        }
+
         public override void OnWorldLoad() {
             MachineRebellionDowned = false;
         }

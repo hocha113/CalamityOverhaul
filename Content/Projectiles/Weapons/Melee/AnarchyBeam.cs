@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             if (Projectile.owner == Main.myPlayer) {
                 for (int i = 0; i < 13; i++) {
-                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + CWRUtils.randVr(222), Vector2.Zero
+                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + VaultUtils.RandVr(222), Vector2.Zero
                         , ModContent.ProjectileType<BrimstoneBoom>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 }
             }

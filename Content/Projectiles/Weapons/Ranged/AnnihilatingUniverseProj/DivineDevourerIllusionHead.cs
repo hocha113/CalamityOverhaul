@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             if (Projectile.IsOwnedByLocalPlayer() && ++Projectile.localAI[0] > 30) {
-                targetOffsetPos = CWRUtils.randVr(180, 300);
+                targetOffsetPos = VaultUtils.RandVr(180, 300);
                 NetUpdate();
                 Projectile.localAI[0] = 0;
             }

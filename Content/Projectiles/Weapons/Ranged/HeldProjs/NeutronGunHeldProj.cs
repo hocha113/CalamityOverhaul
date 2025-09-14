@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             //CaseEjection();
             Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, ShootPos + CWRUtils.randVr(130, 131), ShootVelocity
+            Projectile.NewProjectile(Source, ShootPos + VaultUtils.RandVr(130, 131), ShootVelocity
                 , ModContent.ProjectileType<NeutronLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (++fireIndex > 2) {
                 FireTime = 12;

@@ -127,20 +127,20 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 }
 
                 PRTLoader.NewParticle<PRT_WaterBubble>(
-                    CenterInWorld + new Vector2(62, -16) + CWRUtils.randVr(6)
+                    CenterInWorld + new Vector2(62, -16) + VaultUtils.RandVr(6)
                     , new Vector2(2, -4), Color.White, Main.rand.NextFloat(0.4f, 0.8f));
 
                 BasePRT prt;
 
                 Vector2 targetPos = CenterInWorld + new Vector2(44, 18);
-                Vector2 spawnPos = CenterInWorld + new Vector2(46, 120) + CWRUtils.randVr(46);
+                Vector2 spawnPos = CenterInWorld + new Vector2(46, 120) + VaultUtils.RandVr(46);
                 prt = PRTLoader.NewParticle<PRT_HomeBubble>(
                     spawnPos, new Vector2(0, -6), Color.White, Main.rand.NextFloat(0.2f, 0.6f));
                 prt.ai[0] = targetPos.X;
                 prt.ai[1] = targetPos.Y;
 
                 targetPos = CenterInWorld + new Vector2(24, 18);
-                spawnPos = CenterInWorld + new Vector2(12, 120) + CWRUtils.randVr(46);
+                spawnPos = CenterInWorld + new Vector2(12, 120) + VaultUtils.RandVr(46);
                 prt = PRTLoader.NewParticle<PRT_HomeBubble>(
                     spawnPos, new Vector2(0, -6), Color.White, Main.rand.NextFloat(0.2f, 0.6f));
                 prt.ai[0] = targetPos.X;

@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
                 || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
                 PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = Projectile.velocity * 0.2f,
-                    Position = Projectile.Center + CWRUtils.randVr(6),
+                    Position = Projectile.Center + VaultUtils.RandVr(6),
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
                     maxLifeTime = 20,
                     minLifeTime = 8

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 6; i++) {
-                Vector2 vr = CWRUtils.randVr(6);
+                Vector2 vr = VaultUtils.RandVr(6);
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.BlueTorch, vr.X, vr.Y);
                 Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FireworkFountain_Blue, vr.X, vr.Y)].noGravity = true;
             }

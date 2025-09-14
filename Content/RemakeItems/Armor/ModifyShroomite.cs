@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
             if (player.CWR().PlayerIsKreLoadTime > 0) {
                 if (player.whoAmI == Main.myPlayer && ++SpawnTime > 3) {
                     int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                    , player.Center + CWRUtils.randVr(124), player.velocity / 2, ProjectileID.Mushroom, 80, 2, player.whoAmI);
+                    , player.Center + VaultUtils.RandVr(124), player.velocity / 2, ProjectileID.Mushroom, 80, 2, player.whoAmI);
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
                     SpawnTime = 0;
                 }

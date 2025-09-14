@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             for (int i = 0; i < 3; i++) {
                 BasePRT particle = new PRT_Light(Projectile.Center, vr * (13 * (i + 1)), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 22, 0.2f);
                 PRTLoader.AddParticle(particle);
-                BasePRT particle2 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
+                BasePRT particle2 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), VaultUtils.RandVr(3, 16)
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 13, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
                 PRTLoader.AddParticle(particle2);

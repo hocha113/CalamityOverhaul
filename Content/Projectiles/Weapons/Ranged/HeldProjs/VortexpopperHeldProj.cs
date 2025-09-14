@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
 
             _ = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile proj = Projectile.NewProjectileDirect(Source, Main.MouseWorld + CWRUtils.randVr(130, 160), ShootVelocity / 3
+            Projectile proj = Projectile.NewProjectileDirect(Source, Main.MouseWorld + VaultUtils.RandVr(130, 160), ShootVelocity / 3
                     , ModContent.ProjectileType<XenopopperProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.localAI[0] = AmmoTypes;
             proj.localAI[1] = 22;

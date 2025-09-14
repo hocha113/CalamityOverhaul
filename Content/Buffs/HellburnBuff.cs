@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Buffs
 
         private static void SpanFire(Entity entity) {
             bool LowVel = Main.rand.NextBool() ? false : true;
-            FlameParticle ballFire = new FlameParticle(entity.Center + CWRUtils.randVr(entity.width / 2)
+            FlameParticle ballFire = new FlameParticle(entity.Center + VaultUtils.RandVr(entity.width / 2)
                 , Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed) {
                 Velocity = new Vector2(entity.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
                 * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))

@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             for (int i = 0; i < 33; i++) {
-                Vector2 pos = CenterInWorld + CWRUtils.randVr(GuardValue, GuardValue + 2);
+                Vector2 pos = CenterInWorld + VaultUtils.RandVr(GuardValue, GuardValue + 2);
                 int dust = Dust.NewDust(pos, 1, 1, DustID.Electric);
                 Main.dust[dust].noGravity = true;
             }
@@ -580,7 +580,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 5; i++) {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, CWRUtils.randVr(5));
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, VaultUtils.RandVr(5));
                 d.noGravity = true;
             }
         }

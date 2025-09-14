@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
                 if (player.whoAmI == Main.myPlayer && player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                     for (int i = 0; i < 10; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                    , player.Center + CWRUtils.randVr(124), player.velocity / 2, ModContent.ProjectileType<MythrilFlare>(), 30, 2, player.whoAmI);
+                    , player.Center + VaultUtils.RandVr(124), player.velocity / 2, ModContent.ProjectileType<MythrilFlare>(), 30, 2, player.whoAmI);
                         Main.projectile[proj].DamageType = DamageClass.Ranged;
                     }
                 }
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
                 if (player.whoAmI == Main.myPlayer && player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                     for (int i = 0; i < 16; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                        , player.Center + CWRUtils.randVr(124), CWRUtils.randVr(24, 32), ProjectileID.FlowerPetal, 30, 2, player.whoAmI);
+                        , player.Center + VaultUtils.RandVr(124), VaultUtils.RandVr(24, 32), ProjectileID.FlowerPetal, 30, 2, player.whoAmI);
                         Main.projectile[proj].DamageType = DamageClass.Ranged;
                     }
                 }
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
             if (player.CWR().PlayerIsKreLoadTime > 0) {
                 if (player.whoAmI == Main.myPlayer && ++SpawnTime > 3) {
                     int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                    , player.Center + CWRUtils.randVr(124), CWRUtils.randVr(4, 10), ProjectileID.SporeCloud, 60, 2, player.whoAmI);
+                    , player.Center + VaultUtils.RandVr(124), VaultUtils.RandVr(4, 10), ProjectileID.SporeCloud, 60, 2, player.whoAmI);
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
                     SpawnTime = 0;
                 }

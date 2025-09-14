@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (onFireTime % 15 == 0) {
                     SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
                 }
-                OffsetPos += CWRUtils.randVr(5f);
+                OffsetPos += VaultUtils.RandVr(5f);
                 onFireTime--;
             }
         }

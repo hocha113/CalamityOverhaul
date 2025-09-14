@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
             else {
                 otherOffset = new Vector2(Main.screenWidth - SwordStanceBottom.Width() - 40 + invasionSetOffsetValue, 0);
                 int targetInvasion = 0;
-                if (CWRUtils.Invasion) {
+                if (VaultUtils.IsInvasion()) {
                     targetInvasion = -250;
                 }
                 invasionSetOffsetValue = MathHelper.Lerp(invasionSetOffsetValue, targetInvasion, 0.1f);

@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.numHits > 1) {
                 return;
             }
-            Vector2 offsetVr = CWRUtils.GetRandomVevtor(-75, -105, Main.rand.Next(500, 600));
+            Vector2 offsetVr = VaultUtils.RandVrInAngleRange(-75, -105, Main.rand.Next(500, 600));
             Vector2 spanPos = target.Center + offsetVr;
             Vector2 vr = offsetVr.UnitVector() * -17;
             int proj = Projectile.NewProjectile(Source, spanPos, vr
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.numHits > 1) {
                 return;
             }
-            Vector2 offsetVr = CWRUtils.GetRandomVevtor(-75, -105, Main.rand.Next(500, 600));
+            Vector2 offsetVr = VaultUtils.RandVrInAngleRange(-75, -105, Main.rand.Next(500, 600));
             Vector2 spanPos = target.Center + offsetVr;
             Vector2 vr = offsetVr.UnitVector() * -17;
             int proj = Projectile.NewProjectile(Source, spanPos, vr

@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Projectile.frame = 4;
                 }
 
-                OffsetPos += CWRUtils.randVr(8f);
+                OffsetPos += VaultUtils.RandVr(8f);
                 onFireTime--;
             }
             else {

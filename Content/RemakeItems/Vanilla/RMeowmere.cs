@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
                 for (float i = 0f; i < 37; i += 1f) {
                     int dust = Dust.NewDust(projectile.Center, 0, 0, DustID.RainbowTorch, 0f, 0f, 0, Color.Transparent);
                     Main.dust[dust].position = projectile.Center;
-                    Main.dust[dust].velocity = CWRUtils.randVr(13, 17);
+                    Main.dust[dust].velocity = VaultUtils.RandVr(13, 17);
                     Main.dust[dust].color = Main.hslToRgb(i / 37, 1f, 0.5f);
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].scale = 1f + projectile.ai[0] / 3f + offsetScale;

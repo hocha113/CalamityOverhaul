@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Armor
                 if (player.whoAmI == Main.myPlayer && player.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                     for (int i = 0; i < 6; i++) {
                         int proj = Projectile.NewProjectile(player.FromObjectGetParent()
-                        , player.Center + CWRUtils.randVr(124), CWRUtils.randVr(24, 32), ProjectileID.BoneGloveProj, 30, 2, player.whoAmI);
+                        , player.Center + VaultUtils.RandVr(124), VaultUtils.RandVr(24, 32), ProjectileID.BoneGloveProj, 30, 2, player.whoAmI);
                         Main.projectile[proj].DamageType = DamageClass.Ranged;
                     }
                 }

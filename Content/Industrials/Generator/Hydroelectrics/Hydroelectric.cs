@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 }
 
                 if (InScreen && Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
-                    PRTLoader.NewParticle<PRT_WaterBubble>(FlabellumPos + CWRUtils.randVr(32), new Vector2(0, -4)
+                    PRTLoader.NewParticle<PRT_WaterBubble>(FlabellumPos + VaultUtils.RandVr(32), new Vector2(0, -4)
                         , Color.White, Main.rand.NextFloat(0.4f, 0.8f));
                 }
 
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 Opacity *= 0.9f;
                 if (--ai[2] <= 0) {
                     for (int i = 0; i < 6; i++) {
-                        Vector2 dustVer = CWRUtils.randVr(6);
+                        Vector2 dustVer = VaultUtils.RandVr(6);
                         Dust.NewDust(Position - new Vector2(6, 6), 12, 12, DustID.Water_Snow, dustVer.X, dustVer.Y);
                     }
                     Kill();

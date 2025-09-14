@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void PostInOwner() {
             if (onFire) {
                 if (Time % 5 == 0) {
-                    Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);
+                    Vector2 vr = VaultUtils.RandVrInAngleRange(-120, -60, 3);
                     Projectile.NewProjectile(Source2, Projectile.Center, vr,
                         ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 4, 0, Owner.whoAmI, 3);
                 }
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 ShootVelocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-20, 20))).UnitVector() * 7,
                 type, Projectile.damage, 2, Owner.whoAmI);
             }
-            Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);
+            Vector2 vr = VaultUtils.RandVrInAngleRange(-120, -60, 3);
             Projectile.NewProjectile(Source, Projectile.Center + Projectile.rotation.ToRotationVector2() * 36 + Main.rand.NextVector2Unit() * 16,
                 vr, ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 4, 0, Owner.whoAmI, 3);
         }

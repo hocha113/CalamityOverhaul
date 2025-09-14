@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            Vector2 randpos = CWRUtils.randVr(64);
+            Vector2 randpos = VaultUtils.RandVr(64);
             Projectile.Center += randpos;
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage, 0);

@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                 Projectile.SmoothHomingBehavior(target.Center + offsetByAttackPos, 1, 0.2f);
                 if (Projectile.localAI[0] % 20 == 0) {
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        offsetByAttackPos = CWRUtils.randVr(target.width * 2);
+                        offsetByAttackPos = VaultUtils.RandVr(target.width * 2);
                         NetUpdate();
                     }
 
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.Items.Summon
                     Projectile.ai[2] = 0;
                     Projectile.ai[0] = 1;
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        offsetByAttackPos = CWRUtils.randVr(520, 600 + target.width * 2);
+                        offsetByAttackPos = VaultUtils.RandVr(520, 600 + target.width * 2);
                         NetUpdate();
                     }
 
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.Items.Summon
         private void IdleAI() {
             Projectile.SmoothHomingBehavior(Owner.Center + offsetByIdlePos, 1, 0.1f);
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.localAI[0] % 20 == 0) {
-                offsetByIdlePos = CWRUtils.randVr(360);
+                offsetByIdlePos = VaultUtils.RandVr(360);
                 NetUpdate();
             }
         }

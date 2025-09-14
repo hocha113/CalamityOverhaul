@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int j = 0; j < 5; j++) {
-                    Vector2 velocity = CWRUtils.randVr(6, 9);
+                    Vector2 velocity = VaultUtils.RandVr(6, 9);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
                         , ModContent.ProjectileType<PunisherGrenade>(), (int)(Projectile.damage * 0.25), Projectile.knockBack * 0.25f, Projectile.owner);
                 }

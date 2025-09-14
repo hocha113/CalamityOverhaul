@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             if (Projectile.ai[0] == 1) {
                 SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
-                Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
+                Vector2 spanPos = ShootSpanPos + VaultUtils.RandVr(600, 700);
                 Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
                 Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             if (Projectile.ai[0] == 1) {
                 SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
-                Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
+                Vector2 spanPos = ShootSpanPos + VaultUtils.RandVr(600, 700);
                 Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
                 Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));

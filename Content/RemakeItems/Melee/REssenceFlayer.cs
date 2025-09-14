@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
                     Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.2f);
                     if (!Main.dedServ) {
-                        LineParticle spark2 = new LineParticle(Projectile.Center + CWRUtils.randVr(Projectile.width / 2)
+                        LineParticle spark2 = new LineParticle(Projectile.Center + VaultUtils.RandVr(Projectile.width / 2)
                             , -Projectile.velocity * 0.05f, false, 7, 1.7f, Color.AliceBlue);
                         GeneralParticleHandler.SpawnParticle(spark2);
                     }
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
             for (int i = 0; i < 166; i++) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.ShadowbeamStaff);
-                Main.dust[dust].velocity = CWRUtils.randVr(2, 14);
+                Main.dust[dust].velocity = VaultUtils.RandVr(2, 14);
             }
         }
 

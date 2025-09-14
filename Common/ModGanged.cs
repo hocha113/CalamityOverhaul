@@ -630,7 +630,7 @@ namespace CalamityOverhaul.Common
             int startHeight = 100;
             int x = Main.screenWidth - 420;
             int y = Main.screenHeight - startHeight;
-            if (Main.playerInventory || CWRUtils.Invasion) {
+            if (Main.playerInventory || VaultUtils.IsInvasion()) {
                 x -= 250;
             }
             Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);

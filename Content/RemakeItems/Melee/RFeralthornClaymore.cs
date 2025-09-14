@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void Shoot() {
             Vector2 spanPos = ShootSpanPos + ShootVelocity.UnitVector() * Length * Main.rand.NextFloat(0.6f, 8.2f);
-            Projectile.NewProjectile(Source, spanPos, CWRUtils.randVr(23, 35)
+            Projectile.NewProjectile(Source, spanPos, VaultUtils.RandVr(23, 35)
                 , ModContent.ProjectileType<ThornBase>(), (int)(Item.damage * 0.5), 0f, Main.myPlayer);
         }
 

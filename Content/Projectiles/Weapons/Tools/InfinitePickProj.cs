@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 
             if (!Main.dedServ) {
                 for (int i = 0; i < 8; i++) {
-                    SpawnSpark(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity);
+                    SpawnSpark(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity);
                 }
             }
 
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
             }
             if (!Main.dedServ) {
                 for (int i = 0; i < 188; i++) {
-                    SpawnSpark(InMousePos + CWRUtils.randVr(213), new Vector2(0, 3));
+                    SpawnSpark(InMousePos + VaultUtils.RandVr(213), new Vector2(0, 3));
                 }
             }
             Vector2 pos = InMousePos - new Vector2(500, 500) / 2;

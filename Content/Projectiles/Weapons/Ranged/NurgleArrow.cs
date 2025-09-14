@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = rot;
                 Projectile.position = pos;
                 if (Projectile.IsOwnedByLocalPlayer() && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.timeLeft % 30 == 0) {
-                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, CWRUtils.randVr(3, 5)
+                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, VaultUtils.RandVr(3, 5)
                         , ModContent.ProjectileType<NurgleTheOfBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1, 0f);
                 }
             }

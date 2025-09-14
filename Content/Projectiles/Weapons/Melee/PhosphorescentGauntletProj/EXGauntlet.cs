@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
 
             for (int i = 0; i < 136; i++) {
                 Vector2 vr = normVr * (Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(3, 113);
-                Dust sulphurousAcid = Dust.NewDustPerfect(Projectile.Center + CWRUtils.randVr(13), DustID.JungleTorch);
+                Dust sulphurousAcid = Dust.NewDustPerfect(Projectile.Center + VaultUtils.RandVr(13), DustID.JungleTorch);
                 sulphurousAcid.velocity = vr;
                 sulphurousAcid.noGravity = true;
                 sulphurousAcid.scale = Main.rand.NextFloat(1, 2.2f);

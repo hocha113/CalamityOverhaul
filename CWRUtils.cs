@@ -657,43 +657,6 @@ namespace CalamityOverhaul
         #endregion
 
         #region MathUtils
-
-        public static Vector2 randVr(int min, int max) {
-            return Main.rand.NextVector2Unit() * Main.rand.Next(min, max);
-        }
-
-        public static Vector2 randVr(int max) {
-            return Main.rand.NextVector2Unit() * Main.rand.Next(0, max);
-        }
-
-        public static Vector2 randVr(float min, float max) {
-            return Main.rand.NextVector2Unit() * Main.rand.NextFloat(min, max);
-        }
-
-        public static Vector2 randVr(float max) {
-            return Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, max);
-        }
-
-        public static float GetCorrectRadian(float minusRadian) {
-            return minusRadian < 0 ? (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi : minusRadian / MathHelper.TwoPi;
-        }
-
-        /// <summary>
-        /// 获取一个随机方向的向量
-        /// </summary>
-        /// <param name="startAngle">开始角度,输入角度单位的值</param>
-        /// <param name="targetAngle">目标角度,输入角度单位的值</param>
-        /// <param name="ModeLength">返回的向量的长度</param>
-        /// <returns></returns>
-        public static Vector2 GetRandomVevtor(float startAngle, float targetAngle, float ModeLength) {
-            float angularSeparation = targetAngle - startAngle;
-            float randomPosx = ((angularSeparation * Main.rand.NextFloat()) + startAngle) * (MathHelper.Pi / 180);
-            float cosValue = MathF.Cos(randomPosx);
-            float sinValue = MathF.Sin(randomPosx);
-
-            return new Vector2(cosValue, sinValue) * ModeLength;
-        }
-
         /// <summary>
         /// 检测索引的合法性
         /// </summary>

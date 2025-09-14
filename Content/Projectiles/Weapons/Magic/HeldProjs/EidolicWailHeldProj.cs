@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
         public override void PostInOwner() {
             if (onFire) {
-                //OffsetPos += CWRUtils.randVr(0.5f + (Item.useTime - GunShootCoolingValue) * 0.03f);
+                //OffsetPos += VaultUtils.RandVr(0.5f + (Item.useTime - GunShootCoolingValue) * 0.03f);
                 if (Time % 10 == 0) {
                     Vector2 spanPos = Main.MouseWorld;
                     spanPos.X += Main.rand.Next(-260, 260);
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 13; i++) {
-                Vector2 rand = CWRUtils.randVr(480, 800);
+                Vector2 rand = VaultUtils.RandVr(480, 800);
                 Vector2 pos = Main.MouseWorld + rand;
                 Vector2 vr = rand.UnitVector() * -ShootSpeedModeFactor;
                 if (Framing.GetTileSafely(pos).HasSolidTile()) {

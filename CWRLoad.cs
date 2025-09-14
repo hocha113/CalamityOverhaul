@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;
@@ -319,7 +320,7 @@ namespace CalamityOverhaul
             /// <summary>
             /// 是否免疫冻结
             /// </summary>
-            public static Dictionary<int, bool> ImmuneFrozen = [];
+            public readonly static Dictionary<int, bool> ImmuneFrozen = [];
             public static bool ISTheofSteel(NPC npc) {
                 if ((npc.HitSound != SoundID.NPCHit4 && npc.HitSound != SoundID.NPCHit41 && npc.HitSound != SoundID.NPCHit2 &&
                 npc.HitSound != SoundID.NPCHit5 && npc.HitSound != SoundID.NPCHit11 && npc.HitSound != SoundID.NPCHit30 &&
@@ -338,7 +339,7 @@ namespace CalamityOverhaul
             /// <summary>
             /// 是否免疫冻结
             /// </summary>
-            public static Dictionary<int, bool> ImmuneFrozen = [];
+            public readonly static Dictionary<int, bool> ImmuneFrozen = [];
         }
 
         public static void Setup() {

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 4; i++) {
-                PRT_Spark spark = new PRT_Spark(Projectile.Center, CWRUtils.randVr(14, 26), false, 4, 0.8f, Color.White);
+                PRT_Spark spark = new PRT_Spark(Projectile.Center, VaultUtils.RandVr(14, 26), false, 4, 0.8f, Color.White);
                 PRTLoader.AddParticle(spark);
             }
         }
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             for (int i = 0; i < 4; i++) {
-                PRT_Spark spark = new PRT_Spark(Projectile.Center, CWRUtils.randVr(14, 26), false, 4, 0.8f, Color.White);
+                PRT_Spark spark = new PRT_Spark(Projectile.Center, VaultUtils.RandVr(14, 26), false, 4, 0.8f, Color.White);
                 PRTLoader.AddParticle(spark);
             }
             Projectile.velocity = new Vector2(0, -Projectile.velocity.Y);

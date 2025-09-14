@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Common
                 Vector2 offsetRotV = proj.rotation.ToRotationVector2() * 1500;
                 Vector2 basePosition = proj.Center + Vector2.Normalize((proj.Left - proj.Center)
                     .RotatedBy(proj.rotation)) * screenDiagonalLength / 2 - Main.screenPosition + offsetRotV;
-                float correctedRotation = CWRUtils.GetCorrectRadian(proj.rotation);
+                float correctedRotation = VaultUtils.GetCorrectRadian(proj.rotation);
 
                 // 主体绘制，减少重复绘制代码
                 sb.Draw(texture, basePosition, new Rectangle(0, 0, 1, 1),

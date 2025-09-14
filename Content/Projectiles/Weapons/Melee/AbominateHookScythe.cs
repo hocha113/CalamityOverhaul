@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         Projectile.NewProjectile(
                             Projectile.FromObjectGetParent(),
                             spanPos,
-                            CWRUtils.GetRandomVevtor(0, 360, 3),
+                            VaultUtils.RandVrInAngleRange(0, 360, 3),
                             ModContent.ProjectileType<AbominateSpirit>(),
                             Projectile.damage,
                             Projectile.knockBack,
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.rand.NextBool(5) && Projectile.numHits < 5) {
-                Vector2 offset = CWRUtils.GetRandomVevtor(70, 110, Main.rand.Next(500, 600));
+                Vector2 offset = VaultUtils.RandVrInAngleRange(70, 110, Main.rand.Next(500, 600));
                 Vector2 spanPos = target.Center + offset;
                 int status = Main.rand.Next(3);
                 Projectile.NewProjectile(

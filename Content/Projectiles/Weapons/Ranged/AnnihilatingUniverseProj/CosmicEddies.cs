@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.Explode(800);
             if (!VaultUtils.isServer) {//生成这种粒子不是好主意
                 for (int i = 0; i < Rots; i++) {
-                    Vector2 particleSpeed = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(16, 49));
+                    Vector2 particleSpeed = VaultUtils.RandVrInAngleRange(0, 360, Main.rand.Next(16, 49));
                     Vector2 pos = Projectile.Center;
                     BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.4f, 1.2f), Color.Purple, 60, 1, 1.5f, hueShift: 0.0f);

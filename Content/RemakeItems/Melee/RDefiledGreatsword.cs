@@ -229,13 +229,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             int type = ModContent.ProjectileType<SunlightBlades>();
             int randomLengs = Main.rand.Next(150);
             for (int i = 0; i < 3; i++) {
-                Vector2 offsetvr = CWRUtils.GetRandomVevtor(-15, 15, 900 + randomLengs);
+                Vector2 offsetvr = VaultUtils.RandVrInAngleRange(-15, 15, 900 + randomLengs);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj1 = Projectile.NewProjectile(
                     player.FromObjectGetParent(), spanPos,
                     offsetvr.UnitVector() * -13,
                     type, Item.damage - 50, 0, player.whoAmI);
-                Vector2 offsetvr2 = CWRUtils.GetRandomVevtor(165, 195, 900 + randomLengs);
+                Vector2 offsetvr2 = VaultUtils.RandVrInAngleRange(165, 195, 900 + randomLengs);
                 Vector2 spanPos2 = target.Center + offsetvr2;
                 int proj2 = Projectile.NewProjectile(
                     player.FromObjectGetParent(), spanPos2,

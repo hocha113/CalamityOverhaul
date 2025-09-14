@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content
         public override bool PreKill(NPC npc) {
             if (ContagionOnHitNum > 0 && CreateHitPlayer != null) {
                 if (Main.myPlayer == CreateHitPlayer.whoAmI && CreateHitPlayer.ownedProjectileCounts[ModContent.ProjectileType<NurgleSoul>()] <= 13) {
-                    Projectile proj = Projectile.NewProjectileDirect(CreateHitPlayer.FromObjectGetParent(), npc.Center, CWRUtils.randVr(13)
+                    Projectile proj = Projectile.NewProjectileDirect(CreateHitPlayer.FromObjectGetParent(), npc.Center, VaultUtils.RandVr(13)
                         , ModContent.ProjectileType<NurgleSoul>(), npc.damage, 2, CreateHitPlayer.whoAmI);
                     proj.scale = (npc.width / proj.width) * npc.scale;
                 }
@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content
         public override void DrawEffects(NPC npc, ref Color drawColor) {
             if (VoidErosionBool) {
                 drawColor.R = 100;
-                VoidErosion.SpanStar(npc, CWRUtils.randVr(npc.width / 2));
+                VoidErosion.SpanStar(npc, VaultUtils.RandVr(npc.width / 2));
             }
         }
 

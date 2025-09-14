@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             if (Projectile.ai[2] > 0) {
                 Projectile.extraUpdates = 0;
                 if (Projectile.ai[0] == 0 && Projectile.IsOwnedByLocalPlayer()) {
-                    origPos = Projectile.Center + CWRUtils.randVr(132, 660);
+                    origPos = Projectile.Center + VaultUtils.RandVr(132, 660);
                     Projectile.netUpdate = true;
                 }
 

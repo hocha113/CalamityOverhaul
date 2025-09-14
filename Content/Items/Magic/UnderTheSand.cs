@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
             for (int i = 0; i < 2; i++) {
                 int proj = Projectile.NewProjectile(Source
-                , ShootPos + CWRUtils.randVr(84) - ShootVelocity.UnitVector() * 80
+                , ShootPos + VaultUtils.RandVr(84) - ShootVelocity.UnitVector() * 80
                 , ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
             }

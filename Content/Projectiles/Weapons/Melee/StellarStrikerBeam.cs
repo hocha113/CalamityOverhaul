@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             if (Projectile.numHits == 0 && onhitNPCBool) {
                 for (int i = 0; i < 6; i++) {
-                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + CWRUtils.randVr(255), Vector2.Zero, ProjectileID.LunarFlare
+                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + VaultUtils.RandVr(255), Vector2.Zero, ProjectileID.LunarFlare
                         , (int)(Projectile.damage * 0.5), 0, Main.myPlayer, 0f, Main.rand.Next(3));
                     if (proj.WithinBounds(Main.maxProjectiles)) {
                         Main.projectile[proj].DamageType = DamageClass.Melee;

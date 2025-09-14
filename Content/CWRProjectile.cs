@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content
                 NetMessage.SendData(MessageID.SyncProjectile, -1, projectile.owner, null, proj);
             }
             else if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
-                _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, CWRUtils.randVr(6, 9)
+                _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, VaultUtils.RandVr(6, 9)
                     , ModContent.ProjectileType<BarrenOrb>(), projectile.damage / 2, 0, projectile.owner, 0);
             }
             else if (SpanTypes == (byte)SpanTypesEnum.AngelicShotgun) {
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content
             else if (projectile.type == ProjectileID.SnowBallFriendly) {
                 if (projectile.numHits == 0) {
                     for (int i = 0; i < 3; i++) {
-                        Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
+                        Vector2 spanPos = projectile.Center + VaultUtils.RandVr(1160, 1290);
                         Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
                         Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                         , ProjectileID.FrostBeam, projectile.damage / 2, 0, projectile.owner, 1);
@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content
 
                 case SpanTypesEnum.Voidragon: {
                     Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center
-                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
+                    , VaultUtils.RandVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
                     break;
@@ -468,7 +468,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.DemonBow: {
-                    Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
+                    Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, VaultUtils.RandVr(0.1f)
                         , ProjectileID.LightsBane, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj2.DamageType = DamageClass.Ranged;
                     break;
@@ -512,7 +512,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.CopperBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 3; i++) {
-                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(560, 690);
+                            Vector2 spanPos = projectile.Center + VaultUtils.RandVr(560, 690);
                             Vector2 vr = spanPos.To(target.Center).UnitVector() * 13;
                             Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ProjectileID.CopperCoin, 2, projectile.knockBack, projectile.owner, 1);
@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.SilverBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 4; i++) {
-                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(660, 790);
+                            Vector2 spanPos = projectile.Center + VaultUtils.RandVr(660, 790);
                             Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
                             Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ProjectileID.SilverCoin, 2, projectile.knockBack, projectile.owner, 1);
@@ -540,7 +540,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.GoldBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 5; i++) {
-                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(760, 790);
+                            Vector2 spanPos = projectile.Center + VaultUtils.RandVr(760, 790);
                             Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
                             Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ProjectileID.GoldCoin, 2, projectile.knockBack, projectile.owner, 1);
@@ -555,7 +555,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.AstralRepeater: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 2; i++) {
-                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(860, 990);
+                            Vector2 spanPos = projectile.Center + VaultUtils.RandVr(860, 990);
                             Vector2 vr = spanPos.To(target.Center).UnitVector() * 20;
                             Projectile proj7 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
                             , ModContent.ProjectileType<AstralStar>(), projectile.damage / 4, projectile.knockBack, projectile.owner, 1);
@@ -657,7 +657,7 @@ namespace CalamityOverhaul.Content
             else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                 player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
                 for (int i = 0; i < 6; i++) {
-                    BasePRT particle = new PRT_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
+                    BasePRT particle = new PRT_Light(projectile.Center, VaultUtils.RandVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
                     PRTLoader.AddParticle(particle);
                 }
             }

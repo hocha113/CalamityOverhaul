@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 if (isSolid) {
                     PRT_LavaFire lavaFire = new PRT_LavaFire {
                         Velocity = new Vector2(unitVer.X, -Main.rand.NextFloat(2, 6)),
-                        Position = targetPos + CWRUtils.randVr(36),
+                        Position = targetPos + VaultUtils.RandVr(36),
                         Scale = Main.rand.NextFloat(0.8f, 1.2f),
                         maxLifeTime = 20,
                         minLifeTime = 8,

@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void HitEffect() {
-            Projectile.Center += CWRUtils.randVr(2);
+            Projectile.Center += VaultUtils.RandVr(2);
 
             if (Owner.name == "CHAINSAW DEVIL") {
                 Owner.HealEffect(2, true);
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Owner.SetDummyItemTime(2);
 
             Projectile.Center = playerCenter + Projectile.velocity;
-            Projectile.Center += CWRUtils.randVr(2);
+            Projectile.Center += VaultUtils.RandVr(2);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Owner.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
             Projectile.velocity.X *= 1f + Main.rand.Next(-3, 4) * 0.01f;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void HitEffect() {
-            Projectile.Center += CWRUtils.randVr(2);
+            Projectile.Center += VaultUtils.RandVr(2);
 
             if (Owner.name == "CHAINSAW DEVIL") {
                 Owner.HealEffect(2, true);

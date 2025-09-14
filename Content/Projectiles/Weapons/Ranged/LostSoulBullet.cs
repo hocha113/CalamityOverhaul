@@ -45,14 +45,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.timeLeft -= 15;
             for (int i = 0; i < 36; i++) {
-                Vector2 vr = CWRUtils.randVr(13);
+                Vector2 vr = VaultUtils.RandVr(13);
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.SpectreStaff, vr.X, vr.Y, 200, default, Main.rand.NextFloat(1, 2.2f));
             }
         }
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 36; i++) {
-                Vector2 vr = CWRUtils.randVr(13);
+                Vector2 vr = VaultUtils.RandVr(13);
                 BasePRT particle = new PRT_Light(Projectile.Center, vr, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23);
                 PRTLoader.AddParticle(particle);
             }

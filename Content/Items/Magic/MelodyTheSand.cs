@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 chargeIndex++;
                 if (chargeIndex > 11) {
                     RecoilOffsetRecoverValue = 0.65f;
-                    OffsetPos += CWRUtils.randVr(0.1f + chargeIndex * 0.05f);
+                    OffsetPos += VaultUtils.RandVr(0.1f + chargeIndex * 0.05f);
                 }
             }
             else {

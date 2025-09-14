@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
                 Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.01f);
             }
             for (int i = 0; i < 6; i++) {
-                StreamGougeMetaball.SpawnParticle(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
+                StreamGougeMetaball.SpawnParticle(Projectile.Center + VaultUtils.RandVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
             }
         }
 

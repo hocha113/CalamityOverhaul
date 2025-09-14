@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.Explode(62, SoundID.Item88);
             Vector2 pos = Projectile.Center;
             for (int i = 0; i < 20; i++) {
-                Vector2 randVr = CWRUtils.GetRandomVevtor(-170, -10, Main.rand.Next(7, 22));
+                Vector2 randVr = VaultUtils.RandVrInAngleRange(-170, -10, Main.rand.Next(7, 22));
                 AltSparkParticle spark = new(pos, randVr, true, 12, Main.rand.NextFloat(0.5f, 1.2f), Color.White);
                 GeneralParticleHandler.SpawnParticle(spark);
                 AltSparkParticle spark2 = new(pos, randVr, false, 9, Main.rand.NextFloat(0.1f, 1.3f), Color.WhiteSmoke);
