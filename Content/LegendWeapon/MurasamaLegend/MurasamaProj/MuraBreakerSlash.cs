@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             npc.CWR().OverBeatBackBool = true;
             npc.CWR().OldNPCPos = npc.position;
             npc.CWR().OverBeatBackVr = flyVr;
-            npc.CWR().OverBeatBackAttenuationForce = 0.99f;
+            npc.CWR().OverBeatBackAttenuationForce = npc.IsWormBody() ? 0.96f : 0.99f;
             CWRNpc.OverBeatBackSend(npc);
         }
 
