@@ -525,8 +525,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.ai[0] = 3;
             }
 
-            FindFrame();
-
             ai9++;
             return false;
         }
@@ -1007,27 +1005,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void FindFrame() {
-            if (++frameCount > 10) {
-                if (npc.ai[1] == 0) {
-                    if (noArm && ai9 > 2) {
-                        if (++frame > 11) {
-                            frame = 8;
-                        }
-                    }
-                    else {
-                        if (++frame > 3) {
-                            frame = 0;
-                        }
-                    }
-                }
-                else if (npc.ai[1] == 1) {
-                    if (++frame > 7) {
-                        frame = 4;
-                    }
-                }
-                frameCount = 0;
+        public override bool FindFrame(int frameHeight) {
+            if (++frameCount <= 10) {
+                return false;
             }
+
+            if (npc.ai[1] == 0) {
+                if (noArm && ai9 > 2) {
+                    if (++frame > 11) {
+                        frame = 8;
+                    }
+                }
+                else {
+                    if (++frame > 3) {
+                        frame = 0;
+                    }
+                }
+            }
+            else if (npc.ai[1] == 1) {
+                if (++frame > 7) {
+                    frame = 4;
+                }
+            }
+
+            frameCount = 0;
+            return false;
         }
 
         private bool InIdleAI() {

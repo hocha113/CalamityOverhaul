@@ -6,7 +6,6 @@ using CalamityMod.NPCs.Signus;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -16,7 +15,6 @@ using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
 {
@@ -57,6 +55,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         //一些用于存储动态值的变量
         private int lifeToAlpha = 0;
         private int stealthTimer = 0;
+
+        //动画帧
+        private int frame;
 
         //保留原有的材质引用
         public static Asset<Texture2D> AltTexture => Signus.AltTexture;
@@ -99,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
 
             //天顶世界潜行机制
             HandleStealth();
-            //CurrentState.Domp();
+            CurrentState.Domp();
             //主AI状态机
             switch (CurrentState) {
                 case AIState.SpawnAnimation:
@@ -126,8 +127,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             }
 
             UpdateDirection();
-
-            FindFrame();
 
             return false; //阻止原版AI运行
         }
@@ -289,7 +288,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                 bool stealthed = IsStealthed();
 
                 //发射更密集的镰刀
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     int scytheCount = CWRWorld.Revenge ? 8 : 6;
                     if (stealthed) {
                         scytheCount += 4; //强化：数量剧增
@@ -344,7 +343,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                     fireRate -= 4;
                 }
                 if (StateTimer % fireRate == 0 && StateTimer > 60) {
-                    if (Main.netMode != NetmodeID.MultiplayerClient) {
+                    if (!VaultUtils.isClient) {
                         SoundEngine.PlaySound(SoundID.Item71, npc.Center);
 
                         //本体朝玩家发射
@@ -393,7 +392,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
 
 
             //在移动过程中持续生成地雷
-            if (Main.netMode != NetmodeID.MultiplayerClient && StateTimer > 30 && StateTimer < 210) {
+            if (!VaultUtils.isClient && StateTimer > 30 && StateTimer < 210) {
                 int spawnRate = CWRWorld.Death ? 15 : 20;
                 if (StateTimer % spawnRate == 0) {
                     SoundEngine.PlaySound(SoundID.Item122, npc.Center);
@@ -536,7 +535,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             //释放毁灭性弹幕环
             if (StateTimer == 120) {
                 SoundEngine.PlaySound(SoundID.Item92, npc.Center);
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     int scytheCount = CWRWorld.Revenge ? 48 : 36; //巨量弹幕
                     float speed = 10f;
                     for (int i = 0; i < scytheCount; i++) {
@@ -564,11 +563,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             }
         }
 
-        private double frameCounter;
-        private int frame;
-        public void FindFrame() {
+        public override bool FindFrame(int frameHeight) {
             //根据不同的AI状态，我们应用不同的动画逻辑
-            frameCounter++;
+            npc.frameCounter++;
 
             //获取当前状态所使用的纹理的总帧数 (原版灾厄Signus所有纹理都是6帧)
             const int totalFrames = 6;
@@ -592,7 +589,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             }
 
             //计算当前应该在哪一帧
-            frame = (int)(frameCounter / frameTicks) % totalFrames;
+            frame = (int)(npc.frameCounter / frameTicks) % totalFrames;
+            return false;
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
