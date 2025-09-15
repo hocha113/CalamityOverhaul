@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1171,6 +1171,11 @@ Items: {
 		DisplayName: Fungal Revolver
 		Tooltip: ""
 	}
+
+	FungalFeed: {
+		DisplayName: Fungal Feed
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1489,6 +1494,7 @@ Projectiles: {
 	BananarangHeld.DisplayName: Bananarang Held
 	IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	TrimarangHeld.DisplayName: Trimarang Held
+	FungalFeedProj.DisplayName: Fungal Feed Proj
 }
 
 Configs: {

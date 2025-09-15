@@ -2,6 +2,7 @@
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     };
                 }
                 else if (i == 3) {
-                    items[i] = new(ModContent.ItemType<DecapoditaSprout>()) {
+                    items[i] = new(ModContent.ItemType<FungalFeed>()) {
                         value = 150000
                     };
                 }
