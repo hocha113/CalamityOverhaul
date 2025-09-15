@@ -22,9 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                 int types = ModContent.ProjectileType<FateCluster>();
                 for (int i = 0; i < 4; i++) {
-                    Vector2 vr = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * Main.rand.Next(8, 18);
-                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    int doms = Projectile.NewProjectile(Source, pos, vr, types, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    Vector2 velocity = ShootVelocity.UnitVector().RotatedByRandom(0.1f) * Main.rand.Next(8, 18);
+                    int doms = Projectile.NewProjectile(Source, ShootPos, velocity, types, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     Projectile newDoms = Main.projectile[doms];
                     newDoms.DamageType = DamageClass.Ranged;
                     newDoms.timeLeft = 120;
@@ -33,11 +32,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             else {
                 for (int i = 0; i < 4; i++) {
-                    Vector2 vr = Projectile.rotation.ToRotationVector2() * Main.rand.Next(20, 30);
-                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    Projectile.NewProjectile(Source2, ShootPos, ShootVelocity.UnitVector() * Main.rand.Next(20, 30), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 }
-                Projectile.NewProjectile(Source, Projectile.Center, Projectile.rotation.ToRotationVector2() * 18
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
                     , ModContent.ProjectileType<DaemonsFlameArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
         }
