@@ -26,8 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
-                NPC npc = CWRUtils.GetNPCInstance((int)Fuerrs);
-                if (npc == null || effusionDirection == null) {
+                if (!((int)Fuerrs).TryGetNPC(out NPC npc) || effusionDirection == null) {
                     Projectile.Kill();
                     return;
                 }
@@ -60,11 +59,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Projectile.ai[2] == 1) {
                 Projectile.velocity.Y += 0.5f;
-                //for(int i = 0; i < Projectile.oldPos.Length; i++)
-                //{
-                //    Dust.NewDust(Projectile.oldPos[i], Projectile.width, Projectile.height
-                //    , DustID.Blood, Projectile.velocity.X * 0.75f, Projectile.velocity.Y * 0.75f);
-                //}
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.Blood, Projectile.velocity.X * 0.75f, Projectile.velocity.Y * 0.75f);
             }

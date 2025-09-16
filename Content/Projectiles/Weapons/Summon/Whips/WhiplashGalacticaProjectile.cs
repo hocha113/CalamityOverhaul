@@ -170,8 +170,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             public int fowerIndex { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
 
             public override void AI() {
-                Projectile ownProj = CWRUtils.GetProjectileInstance(fowerIndex);
-                if (ownProj != null) {
+                if (fowerIndex.TryGetProjectile(out Projectile ownProj)) {
                     List<Vector2> toPos = ownProj.GetWhipControlPoints();
                     int index = toPos.Count - 2;
                     if (index < toPos.Count && index >= 0) {

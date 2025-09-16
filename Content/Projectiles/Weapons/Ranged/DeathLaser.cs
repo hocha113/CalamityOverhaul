@@ -52,7 +52,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             wit = (10 - Projectile.timeLeft) / 15f;
 
             if (Status == 0) {
-                Projectile heldBow = CWRUtils.GetProjectileInstance(HeldProj);
+                if (!HeldProj.TryGetProjectile(out Projectile heldBow)) {
+                    Projectile.Kill();
+                    return;
+                }
                 if (!Owner.Alives() || !(heldBow != null && heldBow.type == ModContent.ProjectileType<DeathwindHeldProj>())) {
                     Projectile.Kill();
                     return;

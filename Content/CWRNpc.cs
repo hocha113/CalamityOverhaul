@@ -161,9 +161,7 @@ namespace CalamityOverhaul.Content
             Vector2 pos = reader.ReadVector2();
             float rot = reader.ReadSingle();
 
-            NPC npc = CWRUtils.GetNPCInstance(whoAmI);
-
-            if (npc == null) {
+            if (!whoAmI.TryGetNPC(out NPC npc)) {
                 return;
             }
 

@@ -165,7 +165,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
         public override bool ShouldUpdatePosition() => false;
         public override void AI() {
-            Projectile homeProj;
+            if (!((int)Projectile.ai[1]).TryGetProjectile(out Projectile homeProj)) {
+                Projectile.Kill();
+                return;
+            }
 
             if (Projectile.localAI[0] == 0) {
                 Projectile.oldPos = new Vector2[MaxPos];
@@ -173,7 +176,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     Projectile.oldPos[i] = Projectile.Center + Projectile.velocity.UnitVector() * 160;
                 }
 
-                homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
                 if (homeProj.Alives() && homeProj.type == ModContent.ProjectileType<EssencePlunder>()) {
                     origInHomePos = homeProj.Center;
                 }
@@ -192,8 +194,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             Projectile.velocity = Projectile.velocity.RotatedBy(0.11f) * 0.9f;
             offset += Projectile.velocity;
 
-            homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[1]);
-            if (homeProj.Alives() && homeProj.type == ModContent.ProjectileType<EssencePlunder>()) {
+            if (homeProj.type == ModContent.ProjectileType<EssencePlunder>()) {
                 origInHomePos = Vector2.Lerp(origInHomePos, homeProj.Center, 0.2f);
             }
             else {

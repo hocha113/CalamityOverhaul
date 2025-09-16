@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null && target.whoAmI == Projectile.ai[0]) {
+            if (((int)Projectile.ai[0]).TryGetNPC(out var _) && target.whoAmI == Projectile.ai[0]) {
                 return true;
             }
             return false;

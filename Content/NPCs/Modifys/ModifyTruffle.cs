@@ -3,6 +3,7 @@ using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             if (!NPC.AnyNPCs(NPCID.Truffle)) {
-                ModifyTruffle.FirstChat = false;
                 NPC truffle = NPC.NewNPCDirect(NPC.FromObjectGetParent(), NPC.Center, NPCID.Truffle);
                 truffle.velocity = new Vector2(NPC.To(Main.LocalPlayer.Center).UnitVector().X * Main.rand.NextFloat(3), -6);
                 truffle.direction = truffle.spriteDirection = Math.Sign(truffle.velocity.X);
@@ -107,33 +107,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
     }
 
-    internal class ModifyTruffle : GlobalNPC
+    internal class ModifyTruffle : NPCOverride
     {
-        public static bool FirstChat;
-        public override void SaveData(NPC npc, TagCompound tag) {
-            if (npc.type != NPCID.Truffle) {
-                return;
-            }
-
-            tag["_FirstChat"] = FirstChat;
-        }
-
-        public override void LoadData(NPC npc, TagCompound tag) {
-            if (npc.type != NPCID.Truffle) {
-                return;
-            }
-
-            if (!tag.TryGet("_FirstChat", out FirstChat)) {
-                FirstChat = false;
-            }
-        }
-
-        //去他妈的模组兼容性
-        public override void ModifyActiveShop(NPC npc, string shopName, Item[] items) {
-            if (npc.type != NPCID.Truffle || Main.hardMode) {
-                return;
-            }
-
+        public override int TargetID => NPCID.Truffle;
+        public bool FirstChat;
+        public override bool CanOverride() => !Main.hardMode;//只在肉前生效
+        public override void ModifyActiveShop(string shopName, Item[] items) {//去他妈的模组兼容性
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
                 if (!item.Alives()) {
@@ -174,23 +153,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
 
-        public override bool CanBeHitByNPC(NPC npc, NPC attacker) {
-            if (npc.type != NPCID.Truffle) {
-                return true;
-            }
-
+        public override bool? CanBeHitByNPC(NPC attacker) {
             if (npc.type == ModContent.NPCType<Crabulon>() || npc.type == ModContent.NPCType<CrabShroom>()) {
                 return false;
             }
-
-            return true;
+            return null;
         }
 
-        public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile) {
-            if (npc.type != NPCID.Truffle) {
-                return null;
-            }
-
+        public override bool? CanBeHitByProjectile(Projectile projectile) {
             if (projectile.type == ModContent.ProjectileType<MushBomb>() || projectile.type == ModContent.ProjectileType<MushBombFall>()) {
                 return false;
             }
@@ -203,36 +173,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 && boss.type == ModContent.NPCType<Crabulon>()) {
                 return false;
             }
-
             return null;
         }
 
-        public override void OnKill(NPC npc) {
-            if (Main.hardMode || VaultUtils.isClient) {
-                return;
-            }
-
-            if (npc.type != ModContent.NPCType<Crabulon>()) {
-                return;
-            }
-
-            if (NPC.AnyNPCs(NPCID.Truffle) || NPC.AnyNPCs(ModContent.NPCType<SleepTruffle>())) {
-                return;
-            }
-
-            NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, ModContent.NPCType<SleepTruffle>());
-            truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
-        }
-
-        public override void GetChat(NPC npc, ref string chat) {
-            if (npc.type != NPCID.Truffle || Main.hardMode) {
-                return;
-            }
-
+        public override void GetChat(ref string chat) {
             if (!FirstChat) {
                 FirstChat = true;
-                chat = SleepTruffle.Chats[0].Value;
-                return;
+
+                if (npc.homeless) {//只在没有住房的情况下触发这个台词
+                    chat = SleepTruffle.Chats[0].Value;
+                    return;
+                }
             }
 
             if (Main.bloodMoon) {

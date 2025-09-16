@@ -162,24 +162,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             public int fowerIndex { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
 
             public override void AI() {
-                Projectile ownProj = CWRUtils.GetProjectileInstance(fowerIndex);
-                if (ownProj != null) {
+                if (fowerIndex.TryGetProjectile(out Projectile ownProj)) {
                     List<Vector2> toPos = ownProj.GetWhipControlPoints();
                     int index = toPos.Count - 2;
                     if (index < toPos.Count && index >= 0) {
                         float rot = toPos[toPos.Count - 3].To(toPos[toPos.Count - 2]).ToRotation();
                         Projectile.velocity = Projectile.Center.To(toPos[toPos.Count - 2]) + rot.ToRotationVector2() * 62;
-
-                        if (Main.netMode != NetmodeID.Server) {
-                            //for (int i = 0; i < 10; i++)
-                            //{
-                            //    Vector2 center = Projectile.Center + Main.rand.NextVector2Circular(50f, 10f);
-                            //    FusableParticleManager.GetParticleSetByType<DivineSourceParticleSet>()?.SpawnParticle(center, 30f);
-                            //    float sizeStrength = MathHelper.Lerp(24f, 64f, CalamityUtils.Convert01To010(i / 19f));
-                            //    center = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * MathHelper.Lerp(-40f, 90f, i / 19f);
-                            //    FusableParticleManager.GetParticleSetByType<DivineSourceParticleSet>()?.SpawnParticle(center, sizeStrength);
-                            //}
-                        }
                     }
 
                     Projectile.timeLeft = 2;

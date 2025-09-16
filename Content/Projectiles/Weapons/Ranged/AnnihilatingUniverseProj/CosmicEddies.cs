@@ -36,8 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void AI() {
-            Projectile homeProj = CWRUtils.GetProjectileInstance((int)Projectile.ai[0]);
-            if (!Owner.Alives()) {
+            if (!Owner.Alives() || !((int)Projectile.ai[0]).TryGetProjectile(out Projectile homeProj)) {
                 Projectile.Kill();
                 return;
             }

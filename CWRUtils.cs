@@ -158,20 +158,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 根据索引返回在projectile域中的Projectile实例，同时考虑合法性校验
-        /// </summary>
-        /// <returns>当获取值非法时将返回 <see cref="null"/> </returns>
-        public static Projectile GetProjectileInstance(int projectileIndex) {
-            if (projectileIndex.ValidateIndex(Main.projectile)) {
-                Projectile proj = Main.projectile[projectileIndex];
-                return proj.Alives() ? proj : null;
-            }
-            else {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// 获取鞭类弹幕的路径点集
         /// </summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {

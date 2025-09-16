@@ -1482,6 +1482,8 @@ Projectiles: {
 	// IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	// TrimarangHeld.DisplayName: Trimarang Held
 	// FungalFeedProj.DisplayName: Fungal Feed Proj
+	// CrabulonFiredHitbox.DisplayName: Crabulon Fired Hitbox
+	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 }
 
 Configs: {
