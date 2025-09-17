@@ -53,6 +53,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Item_Melee + "ObserverYoyo";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Observer>()).DisplayName;
+        [VaultLoaden(CWRConstant.Item_Melee + "ObserverYoyoGlow")]
+        public static Asset<Texture2D> Glow = null;
         private int Time;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.YoyosLifeTimeMultiplier[Type] = 40f * 2;
@@ -98,6 +100,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Type], lightColor, 1);
+            value = Glow.Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
+            , Projectile.rotation, value.GetOrig(), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

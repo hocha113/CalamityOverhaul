@@ -1183,6 +1183,11 @@ Items: {
 		// DisplayName: Mushroom Saddle
 		// Tooltip: ""
 	}
+
+	SporeboundRoller: {
+		// DisplayName: Sporebound Roller
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
