@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public int DontMount;
         public bool hoverNPC;
         private float jumpHeightUpdate;
-        private float jumpHeightUpdate2;
+        private float jumpHeightSetFrame;
         private delegate bool On_Player_Delegate(CrabulonMusicScene crabulonMusicScene, Player player);
 
         public override void Load() {
@@ -131,6 +131,138 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
 
+        public override bool AI() {
+            //当FeedValue大于0时，进入驯服状态
+            if (FeedValue <= 0f) {
+                //如果不在驯服状态，则执行原版AI
+                return true;
+            }
+
+            npc.timeLeft = 1800;
+            npc.ModNPC.Music = -1;
+            npc.BossBar = ModContent.GetInstance<CrabulonFriendBar>();
+            //取消Boss状态，设置为对玩家友好
+            npc.boss = false;
+            npc.friendly = true;
+            npc.damage = 0;
+
+            //如果没有找到可跟随的玩家，则原地减速并进入站立动画
+            if (!Owner.Alives()) {
+                npc.velocity.X *= 0.9f;
+                //使用站立动画
+                npc.ai[0] = 0f;
+                //返回false以阻止原版AI运行
+                return false;
+            }
+
+            hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
+            //首先，默认尝试在地面移动，受重力影响
+            npc.noGravity = false;
+            npc.noTileCollide = false;
+
+            if (!Collision.CanHitLine(Owner.Center, 10, 10, npc.Center, 10, 10)) {
+                npc.noTileCollide = true;
+            }
+
+            if (jumpHeightUpdate > 0) {
+                jumpHeightSetFrame = 60;
+                jumpHeightUpdate -= 14;
+                npc.position.Y -= 14;
+                npc.noGravity = true;
+            }
+
+            if (jumpHeightSetFrame > 0) {
+                jumpHeightSetFrame--;
+            }
+
+            CrabulonPlayer.IsMount = false;
+            if (!MountAI()) {
+                return false;
+            }
+
+            if (Crouch) {
+                npc.velocity.X /= 2;
+                npc.velocity.Y /= 2;
+                npc.ai[0] = 0f;
+                return false;
+            }
+
+            if (Owner.Distance(npc.Center) > 2600) {
+                if (++ai[6] > 160) {
+                    ai[6] = 0;
+                    npc.Center = Owner.Center + new Vector2(0, -200);//远离后瞬移过来
+                    SoundEngine.PlaySound(SoundID.Item8, npc.Center);//魔法瞬移声
+                    for (int i = 0; i < 132; i++) {
+                        Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
+                        int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
+                        Main.dust[dust].velocity *= 0.5f;
+                        Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
+                    }
+                    return false;
+                }
+            }
+
+            //定义AI所需的参数
+            float moveSpeed = 4f; //移动速度
+            float inertia = 15f; //惯性，数值越大，转向和加减速越平滑
+            float followDistance = 150f; //开始跟随的水平距离
+
+            //计算从NPC指向玩家的向量
+            Vector2 targetPos = Owner.Center;
+
+            TargetNPC = npc.Center.FindClosestNPC(1000, false);
+            if (TargetNPC != null) {
+                targetPos = TargetNPC.Center;
+                followDistance = 100;
+                moveSpeed = 8;
+            }
+
+            Vector2 toDis = targetPos - npc.Center;
+
+            //水平移动逻辑
+            if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
+                //如果玩家在右边，向右移动
+                if (toDis.X > 0) {
+                    npc.velocity.X = (npc.velocity.X * inertia + moveSpeed) / (inertia + 1f);
+                    npc.direction = 1;
+                }
+                //如果玩家在左边，向左移动
+                else {
+                    npc.velocity.X = (npc.velocity.X * inertia - moveSpeed) / (inertia + 1f);
+                    npc.direction = -1;
+                }
+                //使用行走动画，这会触发Crabulon原代码中的FindFrame逻辑来播放对应动画
+                npc.ai[0] = 1f;
+            }
+            else {
+                //当足够近时，水平速度逐渐减慢
+                npc.velocity.X *= 0.9f;
+                //使用站立动画
+                npc.ai[0] = 0f;
+                if (TargetNPC != null) {//说明锁定了敌人
+                    npc.ai[0] = 3f;
+                    if (npc.velocity.Y == 0) {
+                        npc.velocity.Y -= 12;
+                    }
+                    else {
+                        npc.velocity.Y += 0.2f;
+                    }
+                    JumpFloorEffect(60, 6f);
+                }
+            }
+
+            AutoStepClimbing();
+
+            //根据移动方向设置NPC的图像朝向
+            npc.spriteDirection = npc.direction;
+
+            if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
+                npc.velocity.Y = -20;
+            }
+
+            return false;
+        }
+
         public Vector2 GetMountPos() => npc.Top + new Vector2(0, npc.gfxOffY);
 
         public bool MountAI() {
@@ -144,12 +276,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     MountACrabulon = true;
                 }
                 if (MountACrabulon) {
-                    Owner.CWR().IsRotatingDuringDash = true;
                     Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
+                    Owner.CWR().IsRotatingDuringDash = true;
                     Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
                     Owner.CWR().PendingDashRotSpeedMode = 0.06f;
                     Owner.CWR().PendingDashVelocity = Owner.velocity;
-                    //Owner.Center = Vector2.Lerp(Owner.Center, GetMountPos(), 0.02f);
+
                     if (Owner.Center.To(GetMountPos()).Length() < Owner.width) {
                         Mount = true;
                         MountACrabulon = false;
@@ -219,7 +351,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.ai[0] = 3f;
                 }
 
-                if (jumpHeightUpdate2 > 0) {
+                if (jumpHeightSetFrame > 0) {
                     npc.ai[0] = 1f;
                 }
 
@@ -341,144 +473,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return false;
         }
 
-        public override bool AI() {
-            //当FeedValue大于0时，进入驯服状态
-            if (FeedValue <= 0f) {
-                //如果不在驯服状态，则执行原版AI
-                return true;
-            }
-
-            npc.timeLeft = 1800;
-            npc.ModNPC.Music = -1;
-            npc.BossBar = ModContent.GetInstance<CrabulonFriendBar>();
-            //取消Boss状态，设置为对玩家友好
-            npc.boss = false;
-            npc.friendly = true;
-            npc.damage = 0;
-
-            //如果没有找到可跟随的玩家，则原地减速并进入站立动画
-            if (!Owner.Alives()) {
-                npc.velocity.X *= 0.9f;
-                //使用站立动画
-                npc.ai[0] = 0f;
-                //返回false以阻止原版AI运行
-                return false;
-            }
-
-            hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
-            //首先，默认尝试在地面移动，受重力影响
-            npc.noGravity = false;
-            npc.noTileCollide = false;
-
-            if (!Collision.CanHitLine(Owner.Center, 10, 10, npc.Center, 10, 10)) {
-                npc.noTileCollide = true;
-            }
-
-            if (jumpHeightUpdate > 0) {
-                jumpHeightUpdate2 = 60;
-                jumpHeightUpdate -= 14;
-                npc.position.Y -= 14;
-                npc.noGravity = true;
-            }
-
-            if (jumpHeightUpdate2 > 0) {
-                jumpHeightUpdate2--;
-            }
-
-            CrabulonPlayer.IsMount = false;
-            if (!MountAI()) {
-                return false;
-            }
-
-            if (Crouch) {
-                npc.velocity.X /= 2;
-                npc.velocity.Y /= 2;
-                npc.ai[0] = 0f;
-                return false;
-            }
-
-            if (Owner.Distance(npc.Center) > 2600) {
-                if (++ai[6] > 160) {
-                    ai[6] = 0;
-                    npc.Center = Owner.Center + new Vector2(0, -200);//远离后瞬移过来
-                    SoundEngine.PlaySound(SoundID.Item8, npc.Center);//魔法瞬移声
-                    for (int i = 0; i < 132; i++) {
-                        Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
-                        int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
-                        Main.dust[dust].velocity *= 0.5f;
-                        Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
-                    }
-                    return false;
-                }
-            }
-
-            //定义AI所需的参数
-            float moveSpeed = 4f; //移动速度
-            float inertia = 15f; //惯性，数值越大，转向和加减速越平滑
-            float followDistance = 150f; //开始跟随的水平距离
-
-            //计算从NPC指向玩家的向量
-            Vector2 targetPos = Owner.Center;
-
-            TargetNPC = npc.Center.FindClosestNPC(1000, false);
-            if (TargetNPC != null) {
-                targetPos = TargetNPC.Center;
-                followDistance = 100;
-                moveSpeed = 8;
-            }
-
-            Vector2 toDis = targetPos - npc.Center;
-
-            //水平移动逻辑
-            if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
-                //如果玩家在右边，向右移动
-                if (toDis.X > 0) {
-                    npc.velocity.X = (npc.velocity.X * inertia + moveSpeed) / (inertia + 1f);
-                    npc.direction = 1;
-                }
-                //如果玩家在左边，向左移动
-                else {
-                    npc.velocity.X = (npc.velocity.X * inertia - moveSpeed) / (inertia + 1f);
-                    npc.direction = -1;
-                }
-                //使用行走动画，这会触发Crabulon原代码中的FindFrame逻辑来播放对应动画
-                npc.ai[0] = 1f;
-            }
-            else {
-                //当足够近时，水平速度逐渐减慢
-                npc.velocity.X *= 0.9f;
-                //使用站立动画
-                npc.ai[0] = 0f;
-                if (TargetNPC != null) {//说明锁定了敌人
-                    npc.ai[0] = 3f;
-                    if (npc.velocity.Y == 0) {
-                        npc.velocity.Y -= 12;
-                    }
-                    else {
-                        npc.velocity.Y += 0.2f;
-                    }
-                    JumpFloorEffect(60, 6f);
-                }
-            }
-
-            AutoStepClimbing();
-
-            //根据移动方向设置NPC的图像朝向
-            npc.spriteDirection = npc.direction;
-
-            if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
-                npc.velocity.Y = -20;
-            }
-
-            return false;
-        }
-
-        public void HoverDraw() {
-            if (!hoverNPC) {
-                return;
-            }
-        }
-
         public void MountDrawPlayer() {
             if (!CrabulonPlayer.IsMount) {
                 return;
@@ -515,7 +509,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
             }
-            HoverDraw();
             return true;
         }
     }
@@ -526,7 +519,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private float sengs;
         private NPC crabulon;
         private ModifyCrabulon modify;
-        internal bool Opne {
+        internal bool Open {
             get {
                 crabulon = player.GetOverride<CrabulonPlayer>().LatelyCrabulon;
                 if (crabulon == null) {
@@ -536,13 +529,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return crabulon.DistanceSQ(player.Center) < 90000 && !modify.Mount;
             }
         }
-        public override bool Active => Opne || sengs > 0f;
+        public override bool Active => Open || sengs > 0f;
         public override void Update() {
             Vector2 size = new Vector2(100, 40);
             DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 11) - size / 2;
             UIHitBox = DrawPosition.GetRectangle(size);
 
-            if (!Opne) {
+            if (!Open) {
                 if (sengs > 0f) {
                     sengs -= 0.1f;
                 }
@@ -579,193 +572,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
                         , drawPos.X, drawPos.Y, Color.White * sengs, Color.Black * sengs, Vector2.Zero, textScale);
 
-            if (Opne && modify.hoverNPC) {
+            if (Open && modify.hoverNPC) {
                 Item itme = player.GetItem();
                 if (itme.type == ModContent.ItemType<MushroomSaddle>()) {
                     VaultUtils.SimpleDrawItem(spriteBatch, itme.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
                 }
             }
-        }
-    }
-
-    internal class CrabulonMountBar : UIHandle
-    {
-        public bool Open => player.GetOverride<CrabulonPlayer>().MountCrabulonIndex != -1;
-        private float sengs;
-        public override bool Active => Open || sengs > 0f;
-        public static readonly List<CrabulonLife> crabulonLives = [];
-        public NPC npc;
-        public const int liveMargin = 4;
-        public const int crabulonLiveCount = 20;
-        public const int crabulonLiveColumn = 2;
-        public const int crabulonLiveLine = crabulonLiveCount / crabulonLiveColumn;
-        public override void OnEnterWorld() {
-            crabulonLives.Clear();
-            for (int i = 0; i < crabulonLiveCount; i++) {
-                crabulonLives.Add(new CrabulonLife() { index = i} );
-            }
-        }
-        public override void Update() {
-            if (!Open) {
-                if (sengs > 0f) {
-                    sengs -= 0.1f;
-                }
-                return;
-            }
-            else {
-                if (sengs < 1f) {
-                    sengs += 0.1f;
-                }
-            }
-
-            if (!player.GetOverride<CrabulonPlayer>().MountCrabulonIndex.TryGetNPC(out npc)) {
-                return;
-            }
-
-            Vector2 lifeSize = CrabulonLife.Life.Size();
-
-            Vector2 uiSize = new Vector2((lifeSize.X + liveMargin) * crabulonLiveLine, (lifeSize.Y + liveMargin) * crabulonLiveColumn);
-
-            DrawPosition = new Vector2(((int)(Main.screenWidth / 2 - uiSize.X / 2)), ((int)(Main.screenHeight / 2 + uiSize.X / 2 + Main.screenHeight / 10 * 1)));
-
-            UIHitBox = DrawPosition.GetRectangle(uiSize);
-
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
-
-            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 0, UIHitBox.Y);
-
-            for (int i = 0; i < crabulonLiveCount; i++) {
-                var crabulonLive = crabulonLives[i];
-                crabulonLive.DrawPosition = DrawPosition + CrabulonLife.Life.Size() / 2;
-                crabulonLive.npc = npc;
-                crabulonLive.DrawPosition.X += (i % crabulonLiveLine) * (lifeSize.X + liveMargin);
-                crabulonLive.DrawPosition.Y += (i / crabulonLiveLine) * (lifeSize.Y + liveMargin);
-                crabulonLive.sengs = sengs;
-                crabulonLive.Update();
-            }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (!npc.Alives()) {
-                return;
-            }
-
-            foreach (var crabulonLive in crabulonLives) {
-                crabulonLive.Draw(spriteBatch);
-            }
-
-            if (hoverInMainPage) {
-                string content = $"{npc.life}/{npc.lifeMax}";
-                float textScale = 1f;
-                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content) * textScale;
-                Vector2 drawPos = MousePosition + new Vector2(0, 36);
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
-                            , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), textScale);
-            }
-        }
-    }
-
-    internal class CrabulonLife : UIHandle
-    {
-        [VaultLoaden(CWRConstant.UI + "CrabulonLife")]
-        public static Asset<Texture2D> Life;
-        public override LayersModeEnum LayersMode => LayersModeEnum.None;
-
-        public int lifeValue; //存储此生命单元当前拥有的生命值
-        public int index;     //此生命单元的索引
-        public NPC npc;       //关联的NPC
-
-        internal float sengs;
-
-        //用于实现动态效果的私有字段
-        private float shakeTime;        //抖动效果的持续时间计时器
-        private float dynamicScale = 1f;    //用于“濒危”状态的动态缩放
-        private float dynamicRotation;  //用于抖动的动态旋转
-        private Vector2 shakeOffset = Vector2.Zero; //用于抖动的动态位置偏移
-
-        public override void Update() {
-            //确保我们有一个有效的NPC实例
-            if (npc == null || !npc.active) {
-                return;
-            }
-
-            //计算每个生命单元能代表的最大生命值
-            int maxLifePerUnit = npc.lifeMax / CrabulonMountBar.crabulonLiveCount;
-            if (maxLifePerUnit <= 0) { //避免除以零的错误
-                return;
-            }
-
-            //计算当前帧此单元“应该”拥有的生命值
-            int newLifeValue = (int)MathHelper.Clamp(npc.life - index * maxLifePerUnit, 0, maxLifePerUnit);
-
-            //--- 1. 实现掉血抖动效果 ---
-            //如果新计算的生命值比上一帧的要低，说明掉血了
-            if (newLifeValue < lifeValue) {
-                shakeTime = 20f; //启动一个持续20帧的抖动效果
-            }
-
-            //如果抖动计时器正在生效
-            if (shakeTime > 0) {
-                shakeTime--;
-                float intensity = shakeTime / 20f; //抖动强度随时间衰减
-                                                   //生成随机的位置偏移和旋转
-                shakeOffset = Main.rand.NextVector2Circular(intensity * 4f, intensity * 4f);
-                dynamicRotation = Main.rand.NextFloat(-0.2f, 0.2f) * intensity;
-            }
-            else {
-                //效果结束后，恢复默认值
-                shakeOffset = Vector2.Zero;
-                dynamicRotation = 0f;
-            }
-
-            //更新当前生命值，以便下一帧进行比较
-            lifeValue = newLifeValue;
-
-            //--- 2. 实现濒危颤抖效果 ---
-            float lifePercent = (float)lifeValue / maxLifePerUnit;
-
-            //如果生命值在0%到35%之间，则触发效果
-            if (lifePercent > 0 && lifePercent < 0.35f) {
-                float pulseSpeed = 12f; //颤抖速度
-                float pulseIntensity = 0.12f; //颤抖幅度
-                                              //使用正弦函数制造平滑的、循环的缩放动画
-                dynamicScale = 1f + (float)Math.Sin(Main.GameUpdateCount * (pulseSpeed / 60f)) * pulseIntensity;
-            }
-            else {
-                dynamicScale = 1f; //不在危险区域时，恢复默认大小
-            }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (npc == null || !npc.active) {
-                return;
-            }
-
-            int maxLifePerUnit = npc.lifeMax / CrabulonMountBar.crabulonLiveCount;
-            if (maxLifePerUnit <= 0) {
-                return;
-            }
-
-            //计算此单元的填充比例，用于决定基础大小和颜色
-            float fillRatio = (float)lifeValue / maxLifePerUnit;
-
-            //如果生命完全耗尽，则不绘制
-            if (fillRatio <= 0) {
-                return;
-            }
-
-            //颜色会随着生命值降低而变暗
-            Color drawColor = Color.White * fillRatio;
-            drawColor.A = (byte)(255 * (0.2f + fillRatio * 0.8f));
-
-            //最终的绘制大小 = 基础大小 * 动态缩放
-            float finalScale = 0.5f + fillRatio * dynamicScale * 0.5f;
-
-            //最终的绘制位置 = 基础位置 + 抖动偏移
-            Vector2 finalDrawPosition = DrawPosition + shakeOffset;
-
-            //使用所有动态参数进行绘制
-            spriteBatch.Draw(Life.Value, finalDrawPosition, null, drawColor * sengs, dynamicRotation, Life.Size() / 2, finalScale, SpriteEffects.None, 0);
         }
     }
 
@@ -851,12 +663,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Projectile.penetrate = -1;
         }
 
+        public override bool ShouldUpdatePosition() => false;
+
         public override void AI() {
             if (((int)Projectile.ai[0]).TryGetNPC(out var npc)) {
                 Projectile.Center = npc.Center;
             }
         }
-
-        public override bool ShouldUpdatePosition() => false;
     }
 }
