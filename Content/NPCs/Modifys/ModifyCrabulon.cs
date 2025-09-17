@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (!Mount) {
                 //按下交互键骑乘
-                if (!MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                if (Saddle && !MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
                     MountACrabulon = true;
                 }
                 if (MountACrabulon) {
@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         Main.dust[dust].velocity *= 0.5f;
                         Main.dust[dust].velocity.Y *= impactStrength / Main.rand.NextFloat(160, 230);
                     }
-                   
+
                     if (!VaultUtils.isClient) {
                         float multiplicative = Owner.GetDamage(DamageClass.Generic).Multiplicative;
                         int baseDmg = 120 + (int)(impactStrength / 60f);
