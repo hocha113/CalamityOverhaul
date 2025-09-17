@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.DamageModify
     {
         private static List<int> nihilityProjs = [];
 
+        public override int TargetID => -1;
+
         void ICWRLoader.SetupData() {
             nihilityProjs = [
                 ModContent.ProjectileType<Godslight>(),

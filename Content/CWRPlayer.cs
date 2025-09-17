@@ -171,6 +171,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public Vector2? PendingDashVelocity { get; set; } = null;
         /// <summary>
+        /// 翻滚时的旋转速度倍率
+        /// </summary>
+        public float PendingDashRotSpeedMode = 0.015f;
+        /// <summary>
         /// 用于记录减速过程的计数器，表示减速剩余的帧数
         /// </summary>
         public float DecelerationCounter { get; set; }
@@ -355,8 +359,9 @@ namespace CalamityOverhaul.Content
             }
 
             if (IsRotatingDuringDash) {
-                Player.fullRotation += Player.velocity.Length() * 0.015f * RotationDirection;
+                Player.fullRotation += Player.velocity.Length() * PendingDashRotSpeedMode * RotationDirection;
                 Player.fullRotationOrigin = Player.Size / 2;
+                PendingDashRotSpeedMode = 0.015f;
             }
 
             if (RotationResetCounter > 0) {

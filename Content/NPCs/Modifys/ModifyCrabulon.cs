@@ -1,10 +1,9 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
-using InnoVault;
+using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -24,12 +23,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override int TargetID => ModContent.NPCType<Crabulon>();
         public CrabulonPlayer CrabulonPlayer => Owner.GetOverride<CrabulonPlayer>();
         public float FeedValue = 0;
+        public NPC TargetNPC;
         public Player Owner;
+        public bool Crouch;
         public bool Mount;
+        public bool Saddle;
         public bool MountACrabulon;
         public bool OnJump;
         public int DontMount;
         public bool hoverNPC;
+        private float jumpHeightUpdate;
+        private float jumpHeightUpdate2;
         private delegate bool On_Player_Delegate(CrabulonMusicScene crabulonMusicScene, Player player);
 
         public override void Load() {
@@ -127,9 +131,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
 
-        public Vector2 GetMountPos() {
-            return npc.Top + new Vector2(0, npc.gfxOffY);
-        }
+        public Vector2 GetMountPos() => npc.Top + new Vector2(0, npc.gfxOffY);
 
         public bool MountAI() {
             if (DontMount > 0) {
@@ -142,21 +144,34 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     MountACrabulon = true;
                 }
                 if (MountACrabulon) {
-                    Owner.velocity = Vector2.Zero;
-                    Owner.Center = Vector2.Lerp(Owner.Center, GetMountPos(), 0.1f);
-                    if (Owner.Center.To(GetMountPos()).Length() < Owner.width / 2) {
+                    Owner.CWR().IsRotatingDuringDash = true;
+                    Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
+                    Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
+                    Owner.CWR().PendingDashRotSpeedMode = 0.06f;
+                    Owner.CWR().PendingDashVelocity = Owner.velocity;
+                    //Owner.Center = Vector2.Lerp(Owner.Center, GetMountPos(), 0.02f);
+                    if (Owner.Center.To(GetMountPos()).Length() < Owner.width) {
                         Mount = true;
                         MountACrabulon = false;
                         CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
                     }
+
+                    if (++ai[5] > 60) {
+                        if (ai[5] == 60) {
+                            CrabulonPlayer.CloseDuringDash(Owner);
+                        }
+                        ai[5] = 0;
+                        MountACrabulon = false;//防止某些极端情况下的超时
+                    }
                 }
             }
             else {
+                CrabulonPlayer.CloseDuringDash(Owner);
                 CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
                 CrabulonPlayer.IsMount = true;
                 //--- 移动控制 ---
                 float accel = 0.5f;     //加速度
-                float maxSpeed = 12f;   //最大速度
+                float maxSpeed = 6f;   //最大速度
                 float friction = 0.85f; //摩擦系数
 
                 Vector2 input = Vector2.Zero;
@@ -170,12 +185,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 if (Owner.holdDownCardinalTimer[0] == 2 && !Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {//下平台
-                    npc.velocity.Y = 12;
+                    npc.velocity.Y += 0.2f;
+                    if (npc.velocity.Y < 12) {
+                        npc.velocity.Y = 12;
+                    }
                 }
 
                 //跳跃（只在接触地面时生效，防止无限连跳）
                 if (Owner.justJumped && npc.collideY) {
-                    npc.velocity.Y = -maxSpeed * 2f;
+                    npc.velocity.Y = -maxSpeed * 4f;
                     OnJump = true;
                 }
 
@@ -201,6 +219,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.ai[0] = 3f;
                 }
 
+                if (jumpHeightUpdate2 > 0) {
+                    npc.ai[0] = 1f;
+                }
+
                 //--- 玩家位置同步 ---
                 Owner.Center = GetMountPos();
                 Owner.velocity = Vector2.Zero; //禁用玩家自身移动
@@ -209,6 +231,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     Mount = false;
                     DontMount = 30;
                     MountACrabulon = false;
+
+                    Owner.fullRotation = 0;
+                    Owner.velocity.Y -= 5;
                 }
 
                 //根据移动方向设置NPC的图像朝向
@@ -219,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
 
-        public void JumpFloorEffect() {
+        public void JumpFloorEffect(int checkDis = 300, float slp = 1f) {
             //如果不在地面，累积下落距离
             if (!npc.collideY) {
                 ai[3] += Math.Abs(npc.velocity.Y); //累积下落的“速度距离”
@@ -233,8 +258,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
             else {
                 //落地瞬间检测：上一帧在下落，这一帧接触地面
-                if (npc.oldVelocity.Y > 2f && ai[4] > 300) {
-                    float impactStrength = ai[4];
+                if (npc.oldVelocity.Y > 2f && ai[4] > checkDis) {
+                    float impactStrength = ai[4] * slp;
 
                     //播放音效：强度越高，音效音量/音调可变
                     SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f + Math.Min(impactStrength / 600f, 0.5f) }, npc.Center);
@@ -265,6 +290,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public void AutoStepClimbing() {
+            if (npc.noTileCollide) {
+                return;
+            }
+
             if (!npc.collideX || npc.velocity.Y != 0) {
                 return;
             }
@@ -283,13 +312,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             if (jumpCount > 0) {
-                npc.position -= new Vector2(0, jumpCount * 8);//提升位置
+                jumpHeightUpdate = jumpCount;
                 canStepUp = true;
             }
 
             if (canStepUp) {
                 //避免卡进方块
-                npc.velocity.Y = 0f;
+                npc.velocity.Y /= 2;
             }
         }
 
@@ -341,9 +370,46 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             npc.noGravity = false;
             npc.noTileCollide = false;
 
+            if (!Collision.CanHitLine(Owner.Center, 10, 10, npc.Center, 10, 10)) {
+                npc.noTileCollide = true;
+            }
+
+            if (jumpHeightUpdate > 0) {
+                jumpHeightUpdate2 = 60;
+                jumpHeightUpdate -= 14;
+                npc.position.Y -= 14;
+                npc.noGravity = true;
+            }
+
+            if (jumpHeightUpdate2 > 0) {
+                jumpHeightUpdate2--;
+            }
+
             CrabulonPlayer.IsMount = false;
             if (!MountAI()) {
                 return false;
+            }
+
+            if (Crouch) {
+                npc.velocity.X /= 2;
+                npc.velocity.Y /= 2;
+                npc.ai[0] = 0f;
+                return false;
+            }
+
+            if (Owner.Distance(npc.Center) > 2600) {
+                if (++ai[6] > 160) {
+                    ai[6] = 0;
+                    npc.Center = Owner.Center + new Vector2(0, -200);//远离后瞬移过来
+                    SoundEngine.PlaySound(SoundID.Item8, npc.Center);//魔法瞬移声
+                    for (int i = 0; i < 132; i++) {
+                        Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
+                        int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
+                        Main.dust[dust].velocity *= 0.5f;
+                        Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
+                    }
+                    return false;
+                }
             }
 
             //定义AI所需的参数
@@ -352,12 +418,21 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             float followDistance = 150f; //开始跟随的水平距离
 
             //计算从NPC指向玩家的向量
-            Vector2 toPlayer = Owner.Center - npc.Center;
+            Vector2 targetPos = Owner.Center;
+
+            TargetNPC = npc.Center.FindClosestNPC(1000, false);
+            if (TargetNPC != null) {
+                targetPos = TargetNPC.Center;
+                followDistance = 100;
+                moveSpeed = 8;
+            }
+
+            Vector2 toDis = targetPos - npc.Center;
 
             //水平移动逻辑
-            if (Math.Abs(toPlayer.X) > followDistance) {
+            if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
                 //如果玩家在右边，向右移动
-                if (toPlayer.X > 0) {
+                if (toDis.X > 0) {
                     npc.velocity.X = (npc.velocity.X * inertia + moveSpeed) / (inertia + 1f);
                     npc.direction = 1;
                 }
@@ -370,20 +445,38 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 npc.ai[0] = 1f;
             }
             else {
-                //当离玩家足够近时，水平速度逐渐减慢
+                //当足够近时，水平速度逐渐减慢
                 npc.velocity.X *= 0.9f;
                 //使用站立动画
                 npc.ai[0] = 0f;
+                if (TargetNPC != null) {//说明锁定了敌人
+                    npc.ai[0] = 3f;
+                    if (npc.velocity.Y == 0) {
+                        npc.velocity.Y -= 12;
+                    }
+                    else {
+                        npc.velocity.Y += 0.2f;
+                    }
+                    JumpFloorEffect(60, 6f);
+                }
             }
+
+            AutoStepClimbing();
 
             //根据移动方向设置NPC的图像朝向
             npc.spriteDirection = npc.direction;
 
-            if (Owner.Bottom.Y < npc.Bottom.Y - 400) {
-                npc.velocity += new Vector2(0, -2);
+            if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
+                npc.velocity.Y = -20;
             }
 
             return false;
+        }
+
+        public void HoverDraw() {
+            if (!hoverNPC) {
+                return;
+            }
         }
 
         public void MountDrawPlayer() {
@@ -392,7 +485,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
+                , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             CrabulonPlayer.MountDraw = true;
             var mountPlayer = Main.player[Owner.whoAmI];
             float originalRotation = mountPlayer.fullRotation;
@@ -405,26 +499,103 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             mountPlayer.fullRotationOrigin = oldRotOrigin;
             CrabulonPlayer.MountDraw = false;
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
+                , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (hoverNPC) {
-                Vector2 drawPos = npc.Top + new Vector2(0, -22) - Main.screenPosition;
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, "骑乘"
-                            , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), 1.6f);
-            }
             if (Mount && Owner != null) {
                 MountDrawPlayer();
             }
             return null;
         }
+
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (Saddle) {
+                spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16) - Main.screenPosition, null, drawColor
+                , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
+            }
+            HoverDraw();
+            return true;
+        }
+    }
+
+    internal class CrouchBotton : UIHandle
+    {
+        private bool isCrouch;
+        private float sengs;
+        private NPC crabulon;
+        private ModifyCrabulon modify;
+        internal bool Opne {
+            get {
+                crabulon = player.GetOverride<CrabulonPlayer>().LatelyCrabulon;
+                if (crabulon == null) {
+                    return false;
+                }
+                modify = crabulon.GetOverride<ModifyCrabulon>();
+                return crabulon.DistanceSQ(player.Center) < 90000 && !modify.Mount;
+            }
+        }
+        public override bool Active => Opne || sengs > 0f;
+        public override void Update() {
+            Vector2 size = new Vector2(100, 40);
+            DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 11) - size / 2;
+            UIHitBox = DrawPosition.GetRectangle(size);
+
+            if (!Opne) {
+                if (sengs > 0f) {
+                    sengs -= 0.1f;
+                }
+                return;
+            }
+            else {
+                if (sengs < 1f) {
+                    sengs += 0.1f;
+                }
+            }
+
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+
+            isCrouch = modify.Crouch;
+
+            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
+                modify.Crouch = !modify.Crouch;
+            }
+
+            if (modify.hoverNPC) {
+                Item itme = player.GetItem();
+                if (itme.type == ModContent.ItemType<MushroomSaddle>() && keyLeftPressState == KeyPressState.Pressed) {
+                    modify.Saddle = true;
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, Color.AliceBlue * sengs, Color.Wheat * sengs);
+            string content = isCrouch ? "跟随" : "等待";
+            float textScale = 1.2f;
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content) * textScale;
+            Vector2 drawPos = DrawPosition + UIHitBox.Size() / 2 - textSize / 2;
+            Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
+                        , drawPos.X, drawPos.Y, Color.White * sengs, Color.Black * sengs, Vector2.Zero, textScale);
+
+            if (Opne && modify.hoverNPC) {
+                Item itme = player.GetItem();
+                if (itme.type == ModContent.ItemType<MushroomSaddle>()) {
+                    VaultUtils.SimpleDrawItem(spriteBatch, itme.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
+                }
+            }
+        }
     }
 
     internal class CrabulonMountBar : UIHandle
     {
-        public override bool Active => player.GetOverride<CrabulonPlayer>().MountCrabulonIndex != -1;
+        public bool Open => player.GetOverride<CrabulonPlayer>().MountCrabulonIndex != -1;
+        private float sengs;
+        public override bool Active => Open || sengs > 0f;
         public static readonly List<CrabulonLife> crabulonLives = [];
+        public NPC npc;
+        public const int liveMargin = 4;
         public const int crabulonLiveCount = 20;
         public const int crabulonLiveColumn = 2;
         public const int crabulonLiveLine = crabulonLiveCount / crabulonLiveColumn;
@@ -435,38 +606,76 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
         public override void Update() {
-            if (!player.GetOverride<CrabulonPlayer>().MountCrabulonIndex.TryGetNPC(out NPC npc)) {
+            if (!Open) {
+                if (sengs > 0f) {
+                    sengs -= 0.1f;
+                }
+                return;
+            }
+            else {
+                if (sengs < 1f) {
+                    sengs += 0.1f;
+                }
+            }
+
+            if (!player.GetOverride<CrabulonPlayer>().MountCrabulonIndex.TryGetNPC(out npc)) {
                 return;
             }
 
-            DrawPosition = new Vector2(Main.screenWidth / 2, 0);
+            Vector2 lifeSize = CrabulonLife.Life.Size();
+
+            Vector2 uiSize = new Vector2((lifeSize.X + liveMargin) * crabulonLiveLine, (lifeSize.Y + liveMargin) * crabulonLiveColumn);
+
+            DrawPosition = new Vector2(((int)(Main.screenWidth / 2 - uiSize.X / 2)), ((int)(Main.screenHeight / 2 + uiSize.X / 2 + Main.screenHeight / 10 * 1)));
+
+            UIHitBox = DrawPosition.GetRectangle(uiSize);
+
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 0, UIHitBox.Y);
 
             for (int i = 0; i < crabulonLiveCount; i++) {
                 var crabulonLive = crabulonLives[i];
                 crabulonLive.DrawPosition = DrawPosition + CrabulonLife.Life.Size() / 2;
                 crabulonLive.npc = npc;
-                crabulonLive.DrawPosition.X += (i % crabulonLiveLine) * 50;
-                crabulonLive.DrawPosition.Y += (i / crabulonLiveLine) * 40;
+                crabulonLive.DrawPosition.X += (i % crabulonLiveLine) * (lifeSize.X + liveMargin);
+                crabulonLive.DrawPosition.Y += (i / crabulonLiveLine) * (lifeSize.Y + liveMargin);
+                crabulonLive.sengs = sengs;
                 crabulonLive.Update();
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (!npc.Alives()) {
+                return;
+            }
+
             foreach (var crabulonLive in crabulonLives) {
                 crabulonLive.Draw(spriteBatch);
+            }
+
+            if (hoverInMainPage) {
+                string content = $"{npc.life}/{npc.lifeMax}";
+                float textScale = 1f;
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content) * textScale;
+                Vector2 drawPos = MousePosition + new Vector2(0, 36);
+                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
+                            , drawPos.X, drawPos.Y, Color.White, Color.Black, new Vector2(0.3f), textScale);
             }
         }
     }
 
     internal class CrabulonLife : UIHandle
     {
-        [VaultLoaden("@CalamityMod/NPCs/Crabulon/Crabulon_Head_Boss")]
+        [VaultLoaden(CWRConstant.UI + "CrabulonLife")]
         public static Asset<Texture2D> Life;
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
         public int lifeValue; //存储此生命单元当前拥有的生命值
         public int index;     //此生命单元的索引
         public NPC npc;       //关联的NPC
+
+        internal float sengs;
 
         //用于实现动态效果的私有字段
         private float shakeTime;        //抖动效果的持续时间计时器
@@ -556,7 +765,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Vector2 finalDrawPosition = DrawPosition + shakeOffset;
 
             //使用所有动态参数进行绘制
-            spriteBatch.Draw(Life.Value, finalDrawPosition, null, drawColor, dynamicRotation, Life.Size() / 2, finalScale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Life.Value, finalDrawPosition, null, drawColor * sengs, dynamicRotation, Life.Size() / 2, finalScale, SpriteEffects.None, 0);
         }
     }
 
@@ -578,9 +787,41 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         ///骑乘的菌生蟹索引
         ///</summary>
         public int MountCrabulonIndex;
+        private int oldMountCrabulonIndex;
         public bool IsMount;
         public bool MountDraw;
-        public override void ResetEffects() => MountCrabulonIndex = -1;
+        public NPC LatelyCrabulon;
+        public override void ResetEffects() {
+            MountCrabulonIndex = -1;
+            LatelyCrabulon = null;
+        }
+        public static void CloseDuringDash(Player player) {
+            CWRPlayer modPlayer = player.CWR();
+            player.fullRotation = 0;
+            modPlayer.IsRotatingDuringDash = false;
+            modPlayer.RotationResetCounter = 15;
+            modPlayer.RotationDirection = player.direction;
+            modPlayer.DashCooldownCounter = 95;
+            modPlayer.CustomCooldownCounter = 90;
+        }
+        public override void PostUpdate() {
+            if (MountCrabulonIndex == -1) {
+                IsMount = false;
+                MountDraw = false;
+                if (oldMountCrabulonIndex != -1) {
+                    CloseDuringDash(Player);
+                }
+            }
+            
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.boss || npc.type != ModContent.NPCType<Crabulon>()) {
+                    continue;
+                }
+                LatelyCrabulon = npc;
+            }
+
+            oldMountCrabulonIndex = MountCrabulonIndex;
+        }
         public override bool PreDrawPlayers(Camera camera, IEnumerable<Player> players) {
             if (!IsMount) {
                 return true;

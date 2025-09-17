@@ -83,6 +83,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             modifyCrabulon.Feed(Projectile.owner);
         }
 
+        public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {
+            width = height = 22;
+            return true;
+        }
+
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (Projectile.velocity.X != oldVelocity.X && Math.Abs(oldVelocity.X) > 1f) {
                 Projectile.velocity.X = oldVelocity.X * -0.2f;

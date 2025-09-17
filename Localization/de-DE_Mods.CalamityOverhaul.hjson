@@ -1163,6 +1163,11 @@ Items: {
 		// DisplayName: Fungal Feed
 		// Tooltip: ""
 	}
+
+	MushroomSaddle: {
+		// DisplayName: Mushroom Saddle
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
