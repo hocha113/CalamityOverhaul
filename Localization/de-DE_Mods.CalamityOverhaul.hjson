@@ -1494,6 +1494,7 @@ Projectiles: {
 	// FungalFeedProj.DisplayName: Fungal Feed Proj
 	// CrabulonFiredHitbox.DisplayName: Crabulon Fired Hitbox
 	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
+	// Glomushroom.DisplayName: Glomushroom
 }
 
 Configs: {
