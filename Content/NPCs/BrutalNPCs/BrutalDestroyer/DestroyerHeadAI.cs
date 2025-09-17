@@ -1,12 +1,11 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -17,6 +16,48 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
+    internal class ModifyDestroyerHeadIcon : CWRNPCOverride, ICWRLoader
+    {
+        public override int TargetID => -1;
+        internal readonly static HashSet<int> HeadWhoAmIs = [];
+        void ICWRLoader.LoadData() => On_Main.DrawMap += On_Main_DrawMap;
+        void ICWRLoader.UnLoadData() => On_Main.DrawMap -= On_Main_DrawMap;
+        //该死的瑞德你他妈告诉我为什么要给毁灭者在这坨几千行函数里写个特判
+        private static void On_Main_DrawMap(On_Main.orig_DrawMap orig, Main self, GameTime gameTime) {
+            if (CWRPlayer.TheDestroyer == -1 || HeadPrimeAI.DontReform()) {//是-1就说明一个毁灭者也没有
+                orig.Invoke(self, gameTime);
+                return;
+            }
+
+            HeadWhoAmIs.Clear();
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.boss && npc.type == NPCID.TheDestroyer) {
+                    HeadWhoAmIs.Add(npc.whoAmI);
+                    npc.type = NPCID.None;//改成0来避开任何可能的ID特判检查，幸运的是这个函数里，改动ID这种事情并不危险
+                }
+            }
+
+            orig.Invoke(self, gameTime);//<---ModifyDestroyerHeadIcon的钩子会在这里运行，所以运行顺序不会出问题
+
+            foreach (var whoAmI in HeadWhoAmIs) {
+                Main.npc[whoAmI].type = NPCID.TheDestroyer;//恢复，不然这个NPC就变成幽灵状态了
+            }
+        }
+
+        public override void ModifyDrawNPCHeadBoss(ref float x, ref float y, ref int bossHeadId
+            , ref byte alpha, ref float headScale, ref float rotation, ref SpriteEffects effects) {
+            //因为是非常规修改，npc的ID被临时修改为0，所以原版的GetBossHeadRotation不会运行，这里进行补充修改
+            rotation = npc.rotation + MathHelper.Pi;
+        }
+
+        public override int GetBossHeadTextureIndex() {
+            if (HeadWhoAmIs.Contains(npc.whoAmI)) {
+                return DestroyerHeadAI.iconIndex;
+            }
+            return -1;
+        }
+    }
+
     internal class DestroyerHeadAI : CWRNPCOverride, ICWRLoader
     {
         public override int TargetID => NPCID.TheDestroyer;
@@ -27,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private ref float ByMasterStageIndex => ref ai[3];
         private const int AttackAIsMaxSlot = 12;
         private float[] AttackAIs = new float[AttackAIsMaxSlot];
-        private List<NPC> Bodys = new List<NPC>();
+        private readonly List<NPC> Bodys = [];
         private int frame;
         private int glowFrame;
         private bool openMouth;
@@ -55,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
             iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
         }
-
+        
         public override void SetProperty() {
             if (CWRWorld.MachineRebellion) {
                 npc.life = npc.lifeMax *= 32;
@@ -72,14 +113,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool CheckActive() => false;
-
-        public override void BossHeadSlot(ref int index) {
-            if (!HeadPrimeAI.DontReform()) {
-                index = iconIndex_Void;
-            }
-        }
-
-        public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
 
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             IItemDropRuleCondition condition = new DropInDeathMode();
@@ -132,6 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
+            CWRPlayer.TheDestroyer = npc.whoAmI;
             if (CWRWorld.CanTimeFrozen()) {
                 CWRNpc.DoTimeFrozen(npc);
                 return false;
@@ -272,10 +306,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         internal bool OrigAI() {
             if (ByMasterStageIndex == 0) {
-                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
-                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
-                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
-                }
                 ByMasterStageIndex = 1;
             }
 
@@ -325,10 +355,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (ByMasterStageIndex == 0) {
                 ByMasterStageIndex = 1;
                 npc.ai[0] = 1;//将这个设置为否则他妈的其他地方就会再生成一次身体
-                if (!HeadPrimeAI.DontReform() && !VaultUtils.isClient) {
-                    NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center
-                        , ModContent.NPCType<DestroyerDrawHeadIconNPC>(), 0, npc.whoAmI);
-                }
                 SpawnBody();
                 npc.netUpdate = true;
             }

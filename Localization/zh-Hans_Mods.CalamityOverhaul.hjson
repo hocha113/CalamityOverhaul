@@ -6208,11 +6208,14 @@ ModifyLores: {
 	}
 }
 
-NPCs: {
-	DestroyerDrawHeadIconNPC.DisplayName: 毁灭者
+NPCModifys: {
+	ModifyCrabulon: {
+		CrouchText: 等待
+		CrouchAltText: 跟随
+	}
 
-	SleepTruffle: {
-		DisplayName: 沉睡的蘑菇人
+	ModifyTruffle: {
+		ButtonText: 叫醒
 		Chat0:
 			'''
 			那只螃蟹的肚子里很舒服，我一直住到现在

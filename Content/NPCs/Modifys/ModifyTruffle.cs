@@ -1,117 +1,153 @@
-﻿using CalamityMod.Items.SummonItems;
-using CalamityMod.NPCs.Crabulon;
+﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
 {
-    internal class SleepTruffle : ModNPC
+    internal class ModifyTruffle : NPCOverride, ILocalizedModType
     {
+        [VaultLoaden(CWRConstant.NPC + "SleepTruffle")]
+        public static Asset<Texture2D> SleepTruffle;
         public const int MaxChatSlot = 12;
+        public static LocalizedText ButtonText { get; set; }
         public readonly static List<LocalizedText> Chats = [];
-        public override string Texture => CWRConstant.NPC + "SleepTruffle";
+        /// <summary>
+        /// 全局睡眠设置，在蘑菇人生成时会采用这个的值，用于在生成NPC时临时设置进行赋值，一次生成后自动恢复为false
+        /// </summary>
+        public static bool GlobalSleepState = false;
+        public override int TargetID => NPCID.Truffle;
+        public string LocalizationCategory => "NPCModifys";
         private int frame;
-        private int chatEllipsis;
+        public bool Sleep;
+        public bool FirstChat;
+        public override bool CanOverride() => !Main.hardMode;//只在肉前生效
+
         public override void SetStaticDefaults() {
+            ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
             for (int i = 0; i < MaxChatSlot; i++) {
                 Chats.Add(this.GetLocalization($"Chat{i}", () => ""));
             }
-
-            NPCID.Sets.NPCBestiaryDrawModifiers value = new() { Hide = true };
-            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, value);
-            NPCID.Sets.NoTownNPCHappiness[Type] = true;//这个东西可以对话，但是不算城镇NPC
-            Main.npcFrameCount[NPC.type] = 2;
         }
 
-        public override void SetDefaults() {
-            NPC.townNPC = true;
-            NPC.friendly = true;
-            NPC.width = 56;
-            NPC.height = 10;//高度稍微矮一些，这样才能接触到地面
-            NPC.alpha = 0;
-            NPC.npcSlots = 0;
-            NPC.aiStyle = -1;
-            NPC.lifeMax = 250;
-            NPC.damage = 0;
-            NPC.defense = 0;
-            NPC.knockBackResist = 0;
-            NPC.dontTakeDamage = true;
-            NPC.immortal = true;
-            NPC.noGravity = true;
+        public void SetNPCDefault() {
+            if (Sleep) {
+                npc.townNPC = true;
+                npc.friendly = true;
+                npc.width = 56;
+                npc.height = 10;//高度稍微矮一些，这样才能接触到地面
+                npc.aiStyle = -1;
+                npc.damage = 0;
+                npc.defense = 0;
+                npc.lifeMax = 250;
+                npc.HitSound = null;
+                npc.DeathSound = null;
+                npc.knockBackResist = 0;
+                npc.npcSlots = 0;
+                npc.dontTakeDamage = true;
+                npc.immortal = true;
+                npc.noGravity = true;
+            }
+            else {
+                npc.townNPC = true;
+                npc.friendly = true;
+                npc.width = 18;
+                npc.height = 40;
+                npc.aiStyle = 7;
+                npc.damage = 10;
+                npc.defense = 15;
+                npc.lifeMax = 250;
+                npc.HitSound = SoundID.NPCHit1;
+                npc.DeathSound = SoundID.NPCDeath1;
+                npc.knockBackResist = 0.5f;
+                npc.npcSlots = 1;
+                npc.dontTakeDamage = false;
+                npc.immortal = false;
+                npc.noGravity = false;
+            }
         }
 
-        public override bool CanGoToStatue(bool toKingStatue) => false;
+        public override void SetProperty() {
+            Sleep = GlobalSleepState;
+            SetNPCDefault();
+            GlobalSleepState = false;
+            FirstChat = true;//设置为第一次对话的待定
+        }
 
-        public override bool UsesPartyHat() => false;
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!Sleep) {
+                return null;
+            }
+            var effects = npc.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            Texture2D value = SleepTruffle.Value;
+            Rectangle rectangle = value.GetRectangle(frame, 2);
+            spriteBatch.Draw(value, npc.Center - screenPos, rectangle, npc.GetAlpha(drawColor)
+                , npc.rotation, rectangle.Size() / 2, npc.scale, effects, 0);
+            return false;
+        }
 
-        public override void SetChatButtons(ref string button, ref string button2) => button = "叫醒";
+        public override bool? CanGoToStatue(bool toKingStatue) {
+            if (Sleep) {
+                return false;
+            }
+            return null;
+        }
 
-        public override string GetChat() => "Zzzzzz...";
+        public override bool? PreUsesPartyHat() {
+            if (Sleep) {
+                return false;
+            }
+            return null;
+        }
 
-        public override void OnChatButtonClicked(bool firstButton, ref string shopName) {
-            if (!firstButton) {
+        public override bool SetChatButtons(ref string button, ref string button2) {
+            if (Sleep) {
+                button = ButtonText.Value;
+            }
+            return true;
+        }
+
+        public override void OnChatButtonClicked(bool firstButton) {
+            if (!Sleep || !firstButton) {
                 return;
             }
 
-            if (!NPC.AnyNPCs(NPCID.Truffle)) {
-                NPC truffle = NPC.NewNPCDirect(NPC.FromObjectGetParent(), NPC.Center, NPCID.Truffle);
-                truffle.velocity = new Vector2(NPC.To(Main.LocalPlayer.Center).UnitVector().X * Main.rand.NextFloat(3), -6);
-                truffle.direction = truffle.spriteDirection = Math.Sign(truffle.velocity.X);
-            }
-            else {
-                SoundEngine.PlaySound(SoundID.NPCDeath1);
-                for (int i = 0; i < 43; i++) {
-                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GlowingMushroom, Main.rand.NextFloat(-2, 2), -2);
+            npc.direction = ((int)npc.To(Main.LocalPlayer.Center).UnitVector().X);
+            npc.velocity = new Vector2(npc.direction * 3, -8);//给NPC一个向上弹起的速度
+
+            Sleep = false;
+            SetNPCDefault();
+        }
+
+        public override bool AI() {
+            if (Sleep) {
+                npc.velocity.Y += 0.12f;
+                npc.velocity.X *= 0.98f;
+
+                if (npc.velocity.X > 0.1f) {
+                    npc.direction = npc.spriteDirection = Math.Sign(npc.velocity.X);
                 }
-            }
+                else {
+                    npc.velocity.X = 0;
+                }
 
-            NPC.active = false;
+                VaultUtils.ClockFrame(ref frame, 20, 1);
+                return false;
+            }
+            return true;
         }
 
-        public override void AI() {
-            NPC.velocity.Y += 0.12f;
-            NPC.velocity.X *= 0.98f;
-
-            if (NPC.velocity.X > 0.1f) {
-                NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-            }
-            else {
-                NPC.velocity.X = 0;
-            }
-
-            VaultUtils.ClockFrame(ref frame, 20, 1);
-            VaultUtils.ClockFrame(ref chatEllipsis, 10, 6);
-        }
-
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            var effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Texture2D value = TextureAssets.Npc[NPC.type].Value;
-            Rectangle rectangle = value.GetRectangle(frame, 2);
-            spriteBatch.Draw(TextureAssets.Npc[NPC.type].Value, NPC.Center - screenPos, rectangle
-                , NPC.GetAlpha(drawColor), NPC.rotation, rectangle.Size() / 2, NPC.scale, effects, 0);
-            return false;
-        }
-    }
-
-    internal class ModifyTruffle : NPCOverride
-    {
-        public override int TargetID => NPCID.Truffle;
-        public bool FirstChat;
-        public override bool CanOverride() => !Main.hardMode;//只在肉前生效
         public override void ModifyActiveShop(string shopName, Item[] items) {//去他妈的模组兼容性
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
@@ -177,27 +213,32 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override void GetChat(ref string chat) {
-            if (!FirstChat) {
-                FirstChat = true;
+            if (Sleep) {
+                chat = "Zzzzzz...";
+                return;
+            }
 
-                if (npc.homeless) {//只在没有住房的情况下触发这个台词
-                    chat = SleepTruffle.Chats[0].Value;
+            if (FirstChat) {
+                FirstChat = false;//完成了第一次对话
+
+                if (npc.homeless) {//只在没有住房的情况下加第一次对话情况下必定触发这个台词
+                    chat = Chats[0].Value;
                     return;
                 }
             }
 
             if (Main.bloodMoon) {
-                chat = SleepTruffle.Chats[11].Value;
+                chat = Chats[11].Value;
                 return;
             }
 
             WeightedRandom<string> randomChat = new WeightedRandom<string>();
             for (int i = 0; i < 9; i++) {
-                randomChat.Add(SleepTruffle.Chats[i].Value);
+                randomChat.Add(Chats[i].Value);
             }
 
             if (ModLoader.HasMod("AAMod")) {
-                randomChat.Add(SleepTruffle.Chats[10].Value);
+                randomChat.Add(Chats[10].Value);
             }
 
             chat = randomChat;

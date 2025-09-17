@@ -206,6 +206,10 @@ namespace CalamityOverhaul.Content
         /// 大于0时不能使用物品，该值每帧减一直至归零
         /// </summary>
         public int DontUseItemTime;
+        /// <summary>
+        /// 毁灭者的存在索引
+        /// </summary>
+        public static int TheDestroyer = -1;
         #endregion
 
         public override void Initialize() {
@@ -227,6 +231,7 @@ namespace CalamityOverhaul.Content
             KreloadTimeIncrease = 1;
             HeldStyle = -1;
             ReloadingRatio = 0;
+            TheDestroyer = -1;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;

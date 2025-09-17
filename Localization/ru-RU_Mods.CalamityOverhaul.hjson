@@ -5690,11 +5690,14 @@ ModifyLores: {
 	}
 }
 
-NPCs: {
-	DestroyerDrawHeadIconNPC.DisplayName: Уничтожитель
+NPCModifys: {
+	ModifyCrabulon: {
+		// CrouchText: Await
+		// CrouchAltText: Follow
+	}
 
-	SleepTruffle: {
-		// DisplayName: Sleepy Mushroom Man
+	ModifyTruffle: {
+		// ButtonText: Awaken
 		/* Chat0:
 			'''
 			The belly of that crab was so cozy, I’d been living there all this time.  

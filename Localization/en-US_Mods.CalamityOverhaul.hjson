@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5585,11 +5585,14 @@ ModifyLores: {
 	}
 }
 
-NPCs: {
-	DestroyerDrawHeadIconNPC.DisplayName: Destroyer
+NPCModifys: {
+	ModifyCrabulon: {
+		CrouchText: Await
+		CrouchAltText: Follow
+	}
 
-	SleepTruffle: {
-		DisplayName: Sleepy Mushroom Man
+	ModifyTruffle: {
+		ButtonText: Awaken
 		Chat0:
 			'''
 			The belly of that crab was so cozy, I’d been living there all this time.  

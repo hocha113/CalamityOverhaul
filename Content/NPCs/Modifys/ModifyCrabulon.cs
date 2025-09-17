@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -14,14 +13,18 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
 {
-    internal class ModifyCrabulon : NPCOverride//驯养菌生蟹，不依赖生物大修
+    internal class ModifyCrabulon : NPCOverride, ILocalizedModType//驯养菌生蟹，不依赖生物大修
     {
         public override int TargetID => ModContent.NPCType<Crabulon>();
         public CrabulonPlayer CrabulonPlayer => Owner.GetOverride<CrabulonPlayer>();
+        public static LocalizedText CrouchText { get; set; }
+        public static LocalizedText CrouchAltText { get; set; }
+        public string LocalizationCategory => "NPCModifys";
         public float FeedValue = 0;
         public NPC TargetNPC;
         public Player Owner;
@@ -40,6 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             MethodInfo methodInfo = typeof(CrabulonMusicScene).GetMethod("IsSceneEffectActive", BindingFlags.Instance | BindingFlags.Public);
             VaultHook.Add(methodInfo, OnCrabulonMusicSceneIsSceneEffectActive);
         }
+
         //这是一个笨办法，并不优雅，但有效
         private static bool OnCrabulonMusicSceneIsSceneEffectActive(On_Player_Delegate orig, CrabulonMusicScene crabulonMusicScene, Player player) {
             bool reset = false;
@@ -55,6 +59,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
             
             return false;
+        }
+
+        public override void SetStaticDefaults() {
+            CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
+            CrouchAltText = this.GetLocalization(nameof(CrouchAltText), () => "Follow");
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) {
@@ -84,11 +93,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return null;
             }
 
-            if (NPC.AnyNPCs(NPCID.Truffle) || NPC.AnyNPCs(ModContent.NPCType<SleepTruffle>())) {
+            if (NPC.AnyNPCs(NPCID.Truffle)) {
                 return null;
             }
 
-            NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, ModContent.NPCType<SleepTruffle>());
+            ModifyTruffle.GlobalSleepState = true;
+            NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, NPCID.Truffle);
             truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
 
             return null;
@@ -565,7 +575,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override void Draw(SpriteBatch spriteBatch) {
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, Color.AliceBlue * sengs, Color.Wheat * sengs);
-            string content = isCrouch ? "跟随" : "等待";
+            string content = isCrouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
             float textScale = 1.2f;
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content) * textScale;
             Vector2 drawPos = DrawPosition + UIHitBox.Size() / 2 - textSize / 2;
