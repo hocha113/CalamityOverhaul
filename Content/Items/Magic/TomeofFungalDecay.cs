@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
             if (Projectile.ai[2] > 2 && Main.rand.NextBool(2) && Projectile.velocity.Length() > 1f) {
                 var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + VaultUtils.RandVr(32), Projectile.velocity / 3);
-                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().ByDye);
+                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
             }
         }
 

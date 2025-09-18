@@ -9,6 +9,25 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs
 {
+    #region 资源
+    [VaultLoaden(CWRConstant.UI + "DyeMachineUI")]
+    internal static class DyeMachineAsset
+    {
+        public static Texture2D BeDyeSymbol;
+        public static Texture2D BeDyeSymbolAlt;
+        public static Texture2D DyeSymbol;
+        public static Texture2D DyeSymbolAlt;
+        public static Texture2D OutputSymbol;
+        public static Texture2D OutputSymbolAlt;
+        public static Texture2D DyeVatSlot;
+        public static Texture2D DyeVatUI;       
+        public static Texture2D SpectrometerSlot;
+        public static Texture2D SpectrometerUI;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Texture2D SoftGlow;
+    }
+    #endregion
+
     #region 基类与通用组件
 
     /// <summary>
@@ -19,6 +38,8 @@ namespace CalamityOverhaul.Content.UIs
         internal bool CanOpen;
         internal float sengs;
         internal float hoverSengs;
+
+        internal virtual Texture2D UITex => (this is SpectrometerUI) ? DyeMachineAsset.SpectrometerUI : DyeMachineAsset.DyeVatUI;
 
         public abstract BaseDyeMachineSlot DyeSlot { get; }
         public abstract BaseDyeMachineSlot BeDyedItem { get; }
@@ -65,9 +86,9 @@ namespace CalamityOverhaul.Content.UIs
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (hoverSengs > 0) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.DraedonContactPanel.Value, 16, UIHitBox, Color.Gold * hoverSengs, Color.Aqua * hoverSengs, 1.01f, Vector2.Zero);
+                spriteBatch.Draw(UITex, UIHitBox.OffsetSize(6, 6), Color.Gold * hoverSengs);
             }
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.DraedonContactPanel.Value, 12, UIHitBox, Color.Azure, Color.Aqua, 1, Vector2.Zero);
+            spriteBatch.Draw(UITex, UIHitBox, Color.White);
             DyeSlot.Draw(spriteBatch);
             BeDyedItem.Draw(spriteBatch);
             ResultDyedItem.Draw(spriteBatch);
@@ -85,7 +106,9 @@ namespace CalamityOverhaul.Content.UIs
         internal float sengs;
         internal float hoverSengs;
         internal float slotIndex;
-
+        public virtual Texture2D SlotTex => (ParentUI is SpectrometerUI) ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
+        public abstract Texture2D SymbolTex { get; }
+        public abstract Texture2D SymbolTexAlt { get; }
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public override bool Active => true;
         public virtual bool CanCheckLeft(Item heldItem) => true;
@@ -96,7 +119,9 @@ namespace CalamityOverhaul.Content.UIs
             if (sengs < 1f) {
                 sengs += 0.1f;
             }
-            UIHitBox = DrawPosition.GetRectangle((int)(60 * sengs));
+
+            Size = new Vector2(60);
+            UIHitBox = DrawPosition.GetRectangle(Size * sengs);
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1)) && sengs > 0.8f;
             if (hoverInMainPage) {
                 ItemFilterUI.Instance.hoverSlotIndex = slotIndex;
@@ -144,10 +169,25 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            Color drawColor;
             if (hoverSengs > 0) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 16, UIHitBox, Color.Gold * hoverSengs, Color.Aqua * hoverSengs, 1.1f, Vector2.Zero);
+                drawColor = Color.Gold with { A = 0 } * hoverSengs;
+                spriteBatch.Draw(DyeMachineAsset.SoftGlow, DrawPosition + Size / 2, null
+                    , drawColor, 0, DyeMachineAsset.SoftGlow.Size() / 2f, 1.62f, SpriteEffects.None, 0);
             }
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 16, UIHitBox, Color.Azure, Color.Aqua, 1, Vector2.Zero);
+
+            drawColor = Color.White;
+            spriteBatch.Draw(SlotTex, DrawPosition, null, drawColor
+                , 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+
+            if (Item.type == ItemID.None) {
+                drawColor = Color.White * (1f - hoverSengs);
+                spriteBatch.Draw(SymbolTex, DrawPosition + Size / 2, null, drawColor
+                , 0, SymbolTex.Size() / 2f, 1f, SpriteEffects.None, 0);
+                drawColor = Color.White * hoverSengs;
+                spriteBatch.Draw(SymbolTexAlt, DrawPosition + Size / 2, null, drawColor
+                    , 0, SymbolTex.Size() / 2f, 1f, SpriteEffects.None, 0);
+            }
 
             if (hoverInMainPage && Item.type > ItemID.None) {
                 Main.HoverItem = Item.Clone();
@@ -165,11 +205,11 @@ namespace CalamityOverhaul.Content.UIs
         //将物品绘制逻辑提取为虚方法，方便子类重写以添加特效
         protected virtual void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
-                CWRItems.AddByDyeEffectByUI(Item, Item.CWR().ByDye);
+                CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
             }
             VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + UIHitBox.Size() / 2, 64, 1.2f + hoverSengs * 0.2f, 0f, color);
             if (Item.type > ItemID.None) {
-                CWRItems.CloseByDyeEffectByUI(Item.CWR().ByDye);
+                CWRItems.CloseByDyeEffectByUI();
             }
         }
     }
@@ -181,6 +221,10 @@ namespace CalamityOverhaul.Content.UIs
     {
         public float DyeProgress = 0f;
 
+        public override Texture2D SymbolTex => DyeMachineAsset.BeDyeSymbol;
+
+        public override Texture2D SymbolTexAlt => DyeMachineAsset.BeDyeSymbolAlt;
+
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             //通过ParentUI访问染料槽，实现解耦
             int beDye = ParentUI.DyeSlot.Item.type;
@@ -188,7 +232,7 @@ namespace CalamityOverhaul.Content.UIs
 
             base.DrawItemWithEffect(spriteBatch, color);
 
-            CWRItems.CloseByDyeEffectByUI(beDye);
+            CWRItems.CloseByDyeEffectByUI();
 
             //绘制进度条
             if (DyeProgress > 0f && DyeProgress < 1f) {
@@ -205,6 +249,10 @@ namespace CalamityOverhaul.Content.UIs
     /// </summary>
     internal class ResultDyedItemSlot : BaseDyeMachineSlot
     {
+        public override Texture2D SymbolTex => DyeMachineAsset.OutputSymbol;
+
+        public override Texture2D SymbolTexAlt => DyeMachineAsset.OutputSymbolAlt;
+
         //重写预检查，不允许放入任何物品，只允许取出
         public override bool PreCheckLeft(Item heldItem) {
             if (heldItem.type == ItemID.None && Item.type != ItemID.None) {
@@ -218,12 +266,11 @@ namespace CalamityOverhaul.Content.UIs
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
                 //从物品自身获取应用的染料ID
-                int beDye = Item.CWR().ByDye;
-                CWRItems.AddByDyeEffectByUI(Item, beDye);
+                CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
 
                 base.DrawItemWithEffect(spriteBatch, color);
 
-                CWRItems.CloseByDyeEffectByUI(beDye);
+                CWRItems.CloseByDyeEffectByUI();
             }
             else {
                 //如果没有物品，就调用基类方法绘制空槽
@@ -262,6 +309,10 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class DyeVatDyeSlot : BaseDyeMachineSlot
     {
+        public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
+
+        public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
+
         public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
 
         public override void UpdateSlot() {
@@ -279,14 +330,14 @@ namespace CalamityOverhaul.Content.UIs
                     resultDyedItemSlot.Item = dyedItemSlot.Item.Clone();
 
                     if (!Item.IsWaterBucket()) {
-                        resultDyedItemSlot.Item.CWR().ByDye = Item.type;
+                        resultDyedItemSlot.Item.CWR().DyeItemID = Item.type;
                         Item.stack--;
                         if (Item.stack <= 0) {
                             Item.TurnToAir();
                         }
                     }
                     else {
-                        resultDyedItemSlot.Item.CWR().ByDye = 0;
+                        resultDyedItemSlot.Item.CWR().DyeItemID = 0;
                         if (Item.consumable) {
                             Item.TurnToAir();
                         }
@@ -333,6 +384,10 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class SpectrometerDyeSlot : BaseDyeMachineSlot
     {
+        public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
+
+        public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
+
         public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
 
         public override void UpdateSlot() {
@@ -353,10 +408,10 @@ namespace CalamityOverhaul.Content.UIs
                     resultDyedItemSlot.Item = dyedItemSlot.Item.Clone();
 
                     if (!Item.IsWaterBucket()) {
-                        resultDyedItemSlot.Item.CWR().ByDye = Item.type;
+                        resultDyedItemSlot.Item.CWR().DyeItemID = Item.type;
                     }
                     else {
-                        resultDyedItemSlot.Item.CWR().ByDye = 0;
+                        resultDyedItemSlot.Item.CWR().DyeItemID = 0;
                         if (Item.consumable) {
                             Item.TurnToAir();
                         }

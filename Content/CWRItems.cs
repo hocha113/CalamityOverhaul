@@ -186,9 +186,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public Item TargetLockAmmo;
         /// <summary>
-        /// 使用的染色ID
+        /// 使用的染色物品ID
         /// </summary>
-        public int ByDye;
+        public int DyeItemID;
         #endregion
         public override void Load() {
             ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content
             cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             cwr.LegendData = LegendData;
-            cwr.ByDye = ByDye;
+            cwr.DyeItemID = DyeItemID;
             return cwr;
         }
 
@@ -771,7 +771,7 @@ namespace CalamityOverhaul.Content
                 return;
             }
             if (_isAddByDyeEffectByUI) {
-                CloseByDyeEffectByUI(byDye);
+                CloseByDyeEffectByUI();
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
@@ -784,8 +784,8 @@ namespace CalamityOverhaul.Content
         /// 关闭染色效果
         /// </summary>
         /// <param name="cwr"></param>
-        public static void CloseByDyeEffectByUI(int byDye) {
-            if (byDye <= 0) {
+        public static void CloseByDyeEffectByUI() {
+            if (!_isAddByDyeEffectByUI) {
                 return;
             }           
             Main.spriteBatch.End();
@@ -804,7 +804,7 @@ namespace CalamityOverhaul.Content
                 return;
             }
             if (_isAddByDyeEffectByWorld) {
-                CloseByDyeEffectByWorld(byDye);
+                CloseByDyeEffectByWorld();
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
@@ -817,8 +817,8 @@ namespace CalamityOverhaul.Content
         /// 关闭染色效果
         /// </summary>
         /// <param name="cwr"></param>
-        public static void CloseByDyeEffectByWorld(int byDye) {
-            if (byDye <= 0 || !_isAddByDyeEffectByWorld) {
+        public static void CloseByDyeEffectByWorld() {
+            if (!_isAddByDyeEffectByWorld) {
                 return;
             }
             Main.spriteBatch.End();
@@ -829,24 +829,24 @@ namespace CalamityOverhaul.Content
 
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            AddByDyeEffectByUI(item, ByDye);
+            AddByDyeEffectByUI(item, DyeItemID);
             return true;
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            CloseByDyeEffectByUI(ByDye);
+            CloseByDyeEffectByUI();
         }
 
         public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            AddByDyeEffectByWorld(item, ByDye);
+            AddByDyeEffectByWorld(item, DyeItemID);
             return true;
         }
 
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
-            CloseByDyeEffectByWorld(ByDye);
+            CloseByDyeEffectByWorld();
         }
     }
 }

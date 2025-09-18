@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content
         private float oldNPCRot;
         private float npcRotUpdateSengs;
         private int halibutAmmoTime;
-        internal int ByDye;
+        internal int DyeItemID;
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
 
@@ -114,16 +114,16 @@ namespace CalamityOverhaul.Content
 
                 if (source is EntitySource_Parent parent) {
                     if (parent.Entity is Item item && item.type > ItemID.None) {
-                        ByDye = item.CWR().ByDye;
+                        DyeItemID = item.CWR().DyeItemID;
                     }
                     else if (parent.Entity is Player player) {
                         Item heldItem = player.GetItem();
                         if (heldItem.type > ItemID.None) {
-                            ByDye = heldItem.CWR().ByDye;
+                            DyeItemID = heldItem.CWR().DyeItemID;
                         }
                     }
                     else if (parent.Entity is Projectile monProj) {
-                        ByDye = monProj.CWR().ByDye;
+                        DyeItemID = monProj.CWR().DyeItemID;
                     }
                 }
             }
@@ -733,12 +733,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            CWRItems.AddByDyeEffectByWorld(projectile, ByDye);
+            CWRItems.AddByDyeEffectByWorld(projectile, DyeItemID);
             return true;
         }
 
         public override void PostDraw(Projectile projectile, Color lightColor) {
-            CWRItems.CloseByDyeEffectByWorld(ByDye);
+            CWRItems.CloseByDyeEffectByWorld();
         }
     }
 }

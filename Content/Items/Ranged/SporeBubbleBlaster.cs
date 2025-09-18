@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             if (Projectile.ai[2] > 1 && Main.rand.NextBool(3) && Projectile.velocity.Length() > 1f) {
                 var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, Projectile.velocity / 3);
-                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().ByDye);
+                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
             }
         }
 
