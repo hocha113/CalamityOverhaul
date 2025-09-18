@@ -44,13 +44,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        public override void ModifyDrawNPCHeadBoss(ref float x, ref float y, ref int bossHeadId
-            , ref byte alpha, ref float headScale, ref float rotation, ref SpriteEffects effects) {
-            //因为是非常规修改，npc的ID被临时修改为0，所以原版的GetBossHeadRotation不会运行，这里进行补充修改
-            rotation = npc.rotation + MathHelper.Pi;
+        public override float? GetBossHeadRotation() {
+            //因为是非常规修改，npc的ID被临时修改为0，所以原版的 GetBossHeadRotation 不会运行，这里进行补充修改
+            if (HeadWhoAmIs.Contains(npc.whoAmI)) {
+                return npc.rotation + MathHelper.Pi;
+            }
+            return null;
         }
 
         public override int GetBossHeadTextureIndex() {
+            //因为是非常规修改，npc的ID被临时修改为0，所以原版的 GetBossHeadTextureIndex 不会运行，这里进行补充修改
             if (HeadWhoAmIs.Contains(npc.whoAmI)) {
                 return DestroyerHeadAI.iconIndex;
             }
