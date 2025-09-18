@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -88,6 +89,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Dust dust = Main.dust[dustIndex];
                 dust.velocity *= 0.6f;
                 dust.noGravity = true;
+                dust.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
             }
         }
 

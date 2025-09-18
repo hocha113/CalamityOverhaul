@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            modifyCrabulon.Feed(Projectile.owner);
+            modifyCrabulon.Feed(Projectile);
         }
 
         public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {

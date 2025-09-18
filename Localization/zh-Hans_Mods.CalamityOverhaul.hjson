@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1163,23 +1163,24 @@ Items: {
 	}
 
 	FungalFeed: {
-		// DisplayName: Fungal Feed
-		// Tooltip: ""
+		DisplayName: 真菌饲料
+		Tooltip: ""
 	}
 
 	MushroomSaddle: {
-		// DisplayName: Mushroom Saddle
-		// Tooltip: ""
+		DisplayName: 蘑菇鞍
+		Tooltip: ""
+		UseCombat: 只能安放到菌生蟹上
 	}
 
 	SporeboundRoller: {
-		// DisplayName: Sporebound Roller
-		// Tooltip: ""
+		DisplayName: 牵滚菌
+		Tooltip: ""
 	}
 
 	Spectrometer: {
-		// DisplayName: Spectrometer
-		// Tooltip: ""
+		DisplayName: 光谱机
+		Tooltip: ""
 	}
 }
 

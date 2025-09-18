@@ -230,20 +230,23 @@ namespace CalamityOverhaul.Content.UIs
             spriteBatch.Draw(SymbolTexAlt, drawPos, null, Color.White * hoverSengs * sengs, 0, symbolOrigin, symbolScale, SpriteEffects.None, 0);
         }
 
+        protected void DrawItemStack(SpriteBatch spriteBatch) {
+            if (Item.stack <= 1) {
+                return;
+            }
+            string stack = Item.stack.ToString();
+            Vector2 stackSize = FontAssets.MouseText.Value.MeasureString(stack);
+            Vector2 drawPos = DrawPosition + Size / 2 + new Vector2(0, 24 + 6 * hoverSengs);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, stack
+                , drawPos.X, drawPos.Y, Color.White, Color.Black, stackSize / 2, 0.9f + 0.1f * hoverSengs);
+        }
+
         protected virtual void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
                 CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
-
-                if (Item.stack > 1) {
-                    string stack = Item.stack.ToString();
-                    Vector2 stackSize = FontAssets.MouseText.Value.MeasureString(stack);
-                    Vector2 drawPos = DrawPosition + Size / 2 + new Vector2(0, 24 + 6 * hoverSengs);
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, stack
-                        , drawPos.X, drawPos.Y, Color.White, Color.Black, stackSize / 2, 0.9f + 0.1f * hoverSengs);
-                }
-
                 CWRItems.CloseByDyeEffectByUI();
+                DrawItemStack(spriteBatch);
             }
         }
     }
@@ -258,12 +261,7 @@ namespace CalamityOverhaul.Content.UIs
         public override Texture2D SymbolTexAlt => DyeMachineAsset.BeDyeSymbolAlt;
 
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
-            if (Item.type > ItemID.None) {
-                int beDye = ParentUI.DyeSlot.Item.type;
-                CWRItems.AddByDyeEffectByUI(Item, beDye);
-                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
-                CWRItems.CloseByDyeEffectByUI();
-            }
+            base.DrawItemWithEffect(spriteBatch, color);
 
             if (DyeProgress > 0f && DyeProgress < 1f) {
                 Rectangle hitbox = UIHitBox;
@@ -282,14 +280,10 @@ namespace CalamityOverhaul.Content.UIs
         public override Texture2D SymbolTex => DyeMachineAsset.OutputSymbol;
         public override Texture2D SymbolTexAlt => DyeMachineAsset.OutputSymbolAlt;
 
-        public override bool PreCheckLeft(Item heldItem) => false; //结果槽完全禁止放入和交换
+        public override bool PreCheckLeft(Item heldItem) => heldItem.type == ItemID.None;
 
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
-            if (Item.type > ItemID.None) {
-                CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
-                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
-                CWRItems.CloseByDyeEffectByUI();
-            }
+            base.DrawItemWithEffect(spriteBatch, color);
         }
     }
 

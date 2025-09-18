@@ -12,6 +12,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -30,13 +31,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public Player Owner;
         public bool Crouch;
         public bool Mount;
-        public bool Saddle;
+        public Item SaddleItem = new();
         public bool MountACrabulon;
         public bool OnJump;
         public int DontMount;
         public bool hoverNPC;
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
+        private float dontTurnTo;
+        internal int DyeItemID;
         private delegate bool On_Player_Delegate(CrabulonMusicScene crabulonMusicScene, Player player);
 
         public override void Load() {
@@ -73,10 +76,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return null;
         }
 
-        public void Feed(int i) {
+        public void Feed(Projectile projectile) {
+            DyeItemID = projectile.CWR().DyeItemID;
             npc.lifeMax = Main.masterMode ? 8000 : 6000;
             npc.life = (int)MathHelper.Clamp(npc.life, 0, npc.lifeMax);
-            Owner = Main.player[i];
+            Owner = Main.player[projectile.owner];
             npc.friendly = true;
             npc.npcSlots = 0;
             //每次喂食增加500点驯服值
@@ -105,39 +109,43 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool FindFrame(int frameHeight) {
-            if (FeedValue > 0f && Mount) {
-                //空中：跳跃 / 下落帧
-                if (!npc.collideY) {
-                    if (npc.velocity.Y < 0) {
-                        ai[11] = MathHelper.Lerp(ai[11], 1, 0.1f);
-                    }
-                    else {
-                        ai[11] = MathHelper.Lerp(ai[11], 4, 0.2f);
-                    }
-                    npc.frame.Y = frameHeight * (int)ai[11];//第5帧是下落
-                    npc.frameCounter = 0;//避免和跑动动画冲突
+            if (FeedValue <= 0f) {
+                return true;
+            }
+
+            //空中：跳跃 / 下落帧
+            if (!npc.collideY) {
+                if (npc.velocity.Y < 0 || groundClearance > 100) {
+                    ai[11] = MathHelper.Lerp(ai[11], 1, 0.1f);
                 }
                 else {
-                    if (Math.Abs(npc.velocity.X) > 0.1f)//跑动
-                    {
-                        npc.frameCounter += Math.Abs(npc.velocity.X) * 0.04;
-                        if (npc.frameCounter >= Main.npcFrameCount[npc.type])
-                            npc.frameCounter = 0;
+                    dontTurnTo = 10;
+                    ai[11] = MathHelper.Lerp(ai[11], 4, 0.2f);
+                }
+                npc.frame.Y = frameHeight * (int)ai[11];//第5帧是下落
+                npc.frameCounter = 0;//避免和跑动动画冲突
+            }
+            else {
+                if (Math.Abs(npc.velocity.X) > 0.1f)//跑动
+                {
+                    npc.frameCounter += Math.Abs(npc.velocity.X) * 0.04;
+                    if (npc.frameCounter >= Main.npcFrameCount[npc.type])
+                        npc.frameCounter = 0;
 
-                        int frame = (int)npc.frameCounter % 4;//0~3帧是跑动动画
-                        npc.frame.Y = frame * frameHeight;
-                    }
-                    else//Idle
-                    {
-                        npc.frameCounter += 0.05;
-                        if (npc.frameCounter >= Main.npcFrameCount[npc.type])
-                            npc.frameCounter = 0;
+                    int frame = (int)npc.frameCounter % 4;//0~3帧是跑动动画
+                    npc.frame.Y = frame * frameHeight;
+                }
+                else//Idle
+                {
+                    npc.frameCounter += 0.05;
+                    if (npc.frameCounter >= Main.npcFrameCount[npc.type])
+                        npc.frameCounter = 0;
 
-                        int frame = (int)npc.frameCounter % 2;//0~1帧是Idle动画
-                        npc.frame.Y = frame * frameHeight;
-                    }
+                    int frame = (int)npc.frameCounter % 2;//0~1帧是Idle动画
+                    npc.frame.Y = frame * frameHeight;
                 }
             }
+
             return true;
         }
 
@@ -165,14 +173,27 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false;
             }
 
+            if (ai[7] > 0) {
+                ai[7]--;
+            }
+
+            if (dontTurnTo > 0) {
+                dontTurnTo--;
+            }
+
+            GetDistanceToGround();
+
             hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
+            if (hoverNPC) {
+                Item item = Owner.GetItem();
+                if (item.type == ModContent.ItemType<MushroomSaddle>() && item.ModItem is MushroomSaddle saddle) {
+                    saddle.ModifyCrabulon = this;
+                }
+            }
+
             //首先，默认尝试在地面移动，受重力影响
             npc.noGravity = false;
             npc.noTileCollide = false;
-
-            if (!Collision.CanHitLine(Owner.Center, 10, 10, npc.Center, 10, 10)) {
-                npc.noTileCollide = true;
-            }
 
             if (jumpHeightUpdate > 0) {
                 jumpHeightSetFrame = 60;
@@ -207,6 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
                         Main.dust[dust].velocity *= 0.5f;
                         Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
+                        Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(DyeItemID);
                     }
                     return false;
                 }
@@ -228,6 +250,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             Vector2 toDis = targetPos - npc.Center;
+
+            if (!Collision.CanHitLine(targetPos, 10, 10, npc.Center, 10, 10)) {
+                //npc.noTileCollide = true;
+            }
 
             //水平移动逻辑
             if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
@@ -263,11 +289,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             AutoStepClimbing();
 
-            //根据移动方向设置NPC的图像朝向
-            npc.spriteDirection = npc.direction;
+            if (dontTurnTo <= 0f) {
+                //根据移动方向设置NPC的图像朝向
+                npc.spriteDirection = npc.direction;
+            }
 
             if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
                 npc.velocity.Y = -20;
+            }
+
+            if (targetPos.Y < npc.Bottom.Y) {
+                ai[7] = 110;
             }
 
             return false;
@@ -280,34 +312,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 DontMount--;
             }
 
-            if (!Mount) {
-                //按下交互键骑乘
-                if (Saddle && !MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
-                    MountACrabulon = true;
-                }
-                if (MountACrabulon) {
-                    Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
-                    Owner.CWR().IsRotatingDuringDash = true;
-                    Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
-                    Owner.CWR().PendingDashRotSpeedMode = 0.06f;
-                    Owner.CWR().PendingDashVelocity = Owner.velocity;
-
-                    if (Owner.Center.To(GetMountPos()).Length() < Owner.width) {
-                        Mount = true;
-                        MountACrabulon = false;
-                        CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
-                    }
-
-                    if (++ai[5] > 60) {
-                        if (ai[5] == 60) {
-                            CrabulonPlayer.CloseDuringDash(Owner);
-                        }
-                        ai[5] = 0;
-                        MountACrabulon = false;//防止某些极端情况下的超时
-                    }
-                }
-            }
-            else {
+            if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
                 CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
                 CrabulonPlayer.IsMount = true;
@@ -378,12 +383,59 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     Owner.velocity.Y -= 5;
                 }
 
-                //根据移动方向设置NPC的图像朝向
-                npc.spriteDirection = npc.direction = Math.Sign(npc.velocity.X);
+                if (dontTurnTo <= 0f) {
+                    //根据移动方向设置NPC的图像朝向
+                    npc.spriteDirection = npc.direction = Math.Sign(npc.velocity.X);
+                }
+
                 return false; //阻止默认AI
+            }
+            else {
+                //按下交互键骑乘
+                if (SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                    MountACrabulon = true;
+                }
+                if (MountACrabulon) {
+                    Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
+                    Owner.CWR().IsRotatingDuringDash = true;
+                    Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
+                    Owner.CWR().PendingDashRotSpeedMode = 0.06f;
+                    Owner.CWR().PendingDashVelocity = Owner.velocity;
+
+                    if (++ai[5] > 60f || Owner.Center.To(GetMountPos()).Length() < Owner.width) {//ai[5]防止某些极端情况下超时
+                        ai[5] = 0f;
+                        Mount = true;
+                        MountACrabulon = false;
+                        CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
+                    }
+                }
             }
 
             return true;
+        }
+
+        int groundClearance;
+        public void GetDistanceToGround() {
+            groundClearance = 0;
+            Vector2 startPos = npc.Bottom;
+            while (true) {
+                Vector2 pos = startPos + new Vector2(0, groundClearance);
+                Tile tile = Framing.GetTileSafely(pos.ToTileCoordinates16());
+                bool hitTile;
+                if (CanFallThroughPlatforms() == true) {
+                    hitTile = tile.HasSolidTile();
+                }
+                else {
+                    hitTile = tile.HasTile;
+                }
+                if (hitTile) {
+                    break;
+                }
+                if (groundClearance > 1000) {
+                    break;
+                }
+                groundClearance += 16;
+            }
         }
 
         public void JumpFloorEffect(int checkDis = 300, float slp = 1f) {
@@ -413,6 +465,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
                         Main.dust[dust].velocity *= 0.5f;
                         Main.dust[dust].velocity.Y *= impactStrength / Main.rand.NextFloat(160, 230);
+                        Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(DyeItemID);
                     }
 
                     if (!VaultUtils.isClient) {
@@ -465,10 +518,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool? CanFallThroughPlatforms() {
-            if (Mount) {
-                if (npc.velocity.Y < 0 || Owner.holdDownCardinalTimer[0] > 2) {
-                    return true;
-                }
+            if (Mount && Owner.holdDownCardinalTimer[0] > 2) {
+                return true;
+            }
+            if (ai[7] > 0) {
+                return false;
             }
             return null;
         }
@@ -511,13 +565,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (Mount && Owner != null) {
                 MountDrawPlayer();
             }
+            if (DyeItemID > 0) {
+                CWRItems.AddByDyeEffectByWorld(npc, DyeItemID);
+            }
             return null;
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (Saddle) {
+            if (DyeItemID > 0) {
+                CWRItems.CloseByDyeEffectByWorld();//结束关于Draw开启的着色效果
+            }
+
+            if (SaddleItem.Alives()) {
+                CWRItems.AddByDyeEffectByWorld(npc, SaddleItem.CWR().DyeItemID);
                 spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
+                CWRItems.CloseByDyeEffectByWorld();
             }
             return true;
         }
@@ -563,13 +626,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
                 modify.Crouch = !modify.Crouch;
-            }
-
-            if (modify.hoverNPC) {
-                Item itme = player.GetItem();
-                if (itme.type == ModContent.ItemType<MushroomSaddle>() && keyLeftPressState == KeyPressState.Pressed) {
-                    modify.Saddle = true;
-                }
             }
         }
 

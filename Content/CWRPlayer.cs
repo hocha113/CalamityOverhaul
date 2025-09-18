@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Humanizer;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -30,10 +31,6 @@ namespace CalamityOverhaul.Content
         /// 是否拥有大修宝典
         /// </summary>
         public bool HasOverhaulTheBibleBook;
-        /// <summary>
-        /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
-        /// </summary>
-        public int TheRelicLuxor = 0;
         /// <summary>
         /// 装备的制动器等级，0则不装备
         /// </summary>
@@ -209,8 +206,57 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 毁灭者的存在索引
         /// </summary>
-        public static int TheDestroyer = -1;
+        internal static int TheDestroyer = -1;
         #endregion
+
+        public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
+            cwr.HasOverhaulTheBibleBook = HasOverhaulTheBibleBook;
+            cwr.LoadMuzzleBrakeLevel = LoadMuzzleBrakeLevel;
+            cwr.PressureIncrease = PressureIncrease;
+            cwr.KreloadTimeIncrease = KreloadTimeIncrease;
+            cwr.OffsetScreenPos = OffsetScreenPos;
+            cwr.ScreenShakeValue = ScreenShakeValue;
+            cwr.ThermalGenerationActiveTime = ThermalGenerationActiveTime;
+            cwr.SupertableUIStartBool = SupertableUIStartBool;
+            cwr.InFoodStallChair = InFoodStallChair;
+            cwr.HeldMurasamaBool = HeldMurasamaBool;
+            cwr.EndSkillEffectStartBool = EndSkillEffectStartBool;
+            cwr.UnderstandWindGriven = UnderstandWindGriven;
+            cwr.UnderstandWindGrivenMK2 = UnderstandWindGrivenMK2;
+            cwr.RideElectricMinRocket = RideElectricMinRocket;
+            cwr.RideElectricMinRocketRecoverStateTime = RideElectricMinRocketRecoverStateTime;
+            cwr.HeldStyle = HeldStyle;
+            cwr.RisingDragonCharged = RisingDragonCharged;
+            cwr.TramTPContrType = TramTPContrType;
+            cwr.CompressorContrType = CompressorContrType;
+            cwr.InspectOmigaTime = InspectOmigaTime;
+            cwr.SwingIndex = SwingIndex;
+            cwr.ReceivingPlatformTime = ReceivingPlatformTime;
+            cwr.DontSwitchWeaponTime = DontSwitchWeaponTime;
+            cwr.PlayerIsKreLoadTime = PlayerIsKreLoadTime;
+            cwr.ReloadingRatio = ReloadingRatio;
+            cwr.DontHasSemberDarkMasterCloneTime = DontHasSemberDarkMasterCloneTime;
+            cwr.SpecialDrawPositionOffset = SpecialDrawPositionOffset;
+            cwr.PlayerPositionChange = PlayerPositionChange;
+            cwr.oldPlayerPositionChange = oldPlayerPositionChange;
+            cwr.HellfireExplosion = HellfireExplosion;
+            cwr.SoulfireExplosion = SoulfireExplosion;
+            cwr.DestroyerOwner = DestroyerOwner;
+            cwr.IsJusticeUnveiled = IsJusticeUnveiled;
+            cwr.PendingDashVelocity = PendingDashVelocity;
+            cwr.PendingDashRotSpeedMode = PendingDashRotSpeedMode;
+            cwr.DecelerationCounter = DecelerationCounter;
+            cwr.IsRotatingDuringDash = IsRotatingDuringDash;
+            cwr.RotationDirection = RotationDirection;
+            cwr.DashCooldownCounter = DashCooldownCounter;
+            cwr.RotationResetCounter = RotationResetCounter;
+            cwr.RotationResetDuration = RotationResetDuration;
+            cwr.CustomCooldownCounter = CustomCooldownCounter;
+            cwr.DontUseItemTime = DontUseItemTime;
+            return cwr;
+        }
+
+        public override ModPlayer Clone(Player newEntity) => CloneCWRPlayer((CWRPlayer)base.Clone(newEntity));
 
         public override void Initialize() {
             SwingIndex = 0;
@@ -225,7 +271,6 @@ namespace CalamityOverhaul.Content
 
         private void Reset() {
             OffsetScreenPos = Vector2.Zero;
-            TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
             KreloadTimeIncrease = 1;
@@ -370,6 +415,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (RotationResetCounter > 0) {
+                IsRotatingDuringDash = false;
                 RotationResetCounter--;
                 float resetProgress = RotationResetCounter / RotationResetDuration;
                 Player.fullRotation = MathHelper.Lerp(0, Player.fullRotation, resetProgress);

@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1180,6 +1180,7 @@ Items: {
 	MushroomSaddle: {
 		DisplayName: Mushroom Saddle
 		Tooltip: ""
+		UseCombat: Can only be used for Crabulon
 	}
 
 	SporeboundRoller: {

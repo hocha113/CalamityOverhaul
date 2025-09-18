@@ -1182,6 +1182,7 @@ Items: {
 	MushroomSaddle: {
 		// DisplayName: Mushroom Saddle
 		// Tooltip: ""
+		// UseCombat: Can only be used for Crabulon
 	}
 
 	SporeboundRoller: {
