@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Industrials.Modifys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -9,10 +10,12 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    #region 资源
+    #region 资源与常量
     [VaultLoaden(CWRConstant.UI + "DyeMachineUI")]
     internal static class DyeMachineAsset
     {
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Texture2D SoftGlow;
         public static Texture2D BeDyeSymbol;
         public static Texture2D BeDyeSymbolAlt;
         public static Texture2D DyeSymbol;
@@ -20,51 +23,61 @@ namespace CalamityOverhaul.Content.UIs
         public static Texture2D OutputSymbol;
         public static Texture2D OutputSymbolAlt;
         public static Texture2D DyeVatSlot;
-        public static Texture2D DyeVatUI;       
+        public static Texture2D DyeVatUI;
         public static Texture2D SpectrometerSlot;
         public static Texture2D SpectrometerUI;
-        [VaultLoaden(CWRConstant.Masking)]
-        public static Texture2D SoftGlow;
+    }
+
+    /// <summary>
+    /// 存储UI相关的常量，便于统一管理和调整
+    /// </summary>
+    internal static class DyeMachineConstants
+    {
+        //动画
+        public const float AnimationSpeed = 0.18f; //所有UI动画的缓动速度
+        public const float HoverScaleMultiplier = 1.1f; //鼠标悬停时物品槽的放大倍数
+
+        //尺寸
+        public static readonly Vector2 MainUISize = new(280, 280);
+        public static readonly Vector2 SlotSize = new(60, 60);
+
+        //染色速率
+        public const float DyeVatRate = 0.0012f; //染缸染色速率
+        public const float SpectrometerRate = 0.004f; //光谱仪染色速率
     }
     #endregion
 
     #region 基类与通用组件
 
     /// <summary>
-    /// 染色机器UI的抽象基类，处理通用窗口逻辑
+    /// 染色机器UI的抽象基类
     /// </summary>
     internal abstract class BaseDyeMachineUI : UIHandle
     {
         internal bool CanOpen;
         internal float sengs;
         internal float hoverSengs;
-
         internal virtual Texture2D UITex => (this is SpectrometerUI) ? DyeMachineAsset.SpectrometerUI : DyeMachineAsset.DyeVatUI;
 
         public abstract BaseDyeMachineSlot DyeSlot { get; }
         public abstract BaseDyeMachineSlot BeDyedItem { get; }
         public abstract BaseDyeMachineSlot ResultDyedItem { get; }
-
         public object TileEntity { get; set; }
 
         public override bool Active {
-            get { return CanOpen || sengs > 0f; }
+            get { return CanOpen || sengs > 0.01f; } //防止sengs过小时UI仍在活动
             set { CanOpen = value; }
         }
 
         public override void Update() {
-            if (CanOpen) {
-                if (sengs < 1f) {
-                    sengs += 0.1f;
-                }
+            //使用Lerp进行平滑过渡，优化动画手感
+            float targetSengs = CanOpen ? 1f : 0f;
+            sengs = MathHelper.Lerp(sengs, targetSengs, DyeMachineConstants.AnimationSpeed);
+            if (Math.Abs(sengs - targetSengs) < 0.01f) {
+                sengs = targetSengs;
             }
-            else {
-                if (sengs > 0f) {
-                    sengs -= 0.1f;
-                }
-            }
-            sengs = MathHelper.Clamp(sengs, 0, 1f);
-            Size = new Vector2(280 * sengs);
+
+            Size = DyeMachineConstants.MainUISize * sengs;
             DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 9) - Size / 2;
             UIHitBox = DrawPosition.GetRectangle(Size);
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1)) && sengs > 0.8f;
@@ -75,20 +88,23 @@ namespace CalamityOverhaul.Content.UIs
                 player.mouseInterface = true;
             }
 
-            Vector2 offsetTopLeft = new Vector2(60, 60) * sengs;
-            DyeSlot.DrawPosition = DrawPosition + offsetTopLeft;
+            //更新插槽位置和状态
+            Vector2 center = DrawPosition + Size / 2 - DyeMachineConstants.SlotSize / 2 * sengs;
+            Vector2 SengsOffset = DyeMachineConstants.SlotSize / 2 * (1f - sengs) * -1f;//这个变量用于让收缩时对齐中心
+            DyeSlot.DrawPosition = center + new Vector2(-60, -60) * sengs + SengsOffset;
             DyeSlot.Update();
-            BeDyedItem.DrawPosition = DyeSlot.DrawPosition + new Vector2(0, 100) * sengs;
+            BeDyedItem.DrawPosition = center + new Vector2(-60, 60) * sengs + SengsOffset;
             BeDyedItem.Update();
-            ResultDyedItem.DrawPosition = DyeSlot.DrawPosition + new Vector2(100, 50) * sengs;
+            ResultDyedItem.DrawPosition = center + new Vector2(60, 0) * sengs + SengsOffset;
             ResultDyedItem.Update();
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            if (sengs <= 0) return; //完全关闭后不绘制
             if (hoverSengs > 0) {
                 spriteBatch.Draw(UITex, UIHitBox.OffsetSize(6, 6), Color.Gold * hoverSengs);
             }
-            spriteBatch.Draw(UITex, UIHitBox, Color.White);
+            spriteBatch.Draw(UITex, UIHitBox, Color.White * sengs);
             DyeSlot.Draw(spriteBatch);
             BeDyedItem.Draw(spriteBatch);
             ResultDyedItem.Draw(spriteBatch);
@@ -100,15 +116,17 @@ namespace CalamityOverhaul.Content.UIs
     /// </summary>
     internal abstract class BaseDyeMachineSlot : UIHandle
     {
-        //引入父级UI的引用，用于解耦，替代单例调用
         public BaseDyeMachineUI ParentUI;
         internal Item Item = new();
         internal float sengs;
         internal float hoverSengs;
+        internal float scale; //用于实现悬停放大动画
         internal float slotIndex;
+
         public virtual Texture2D SlotTex => (ParentUI is SpectrometerUI) ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
         public abstract Texture2D SymbolTex { get; }
         public abstract Texture2D SymbolTexAlt { get; }
+
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public override bool Active => true;
         public virtual bool CanCheckLeft(Item heldItem) => true;
@@ -116,77 +134,69 @@ namespace CalamityOverhaul.Content.UIs
         public virtual void UpdateSlot() { }
 
         public override void Update() {
-            if (sengs < 1f) {
-                sengs += 0.1f;
-            }
+            //更新插槽出现动画
+            sengs = ParentUI.sengs;
+            Size = DyeMachineConstants.SlotSize;
+            UIHitBox = DrawPosition.GetRectangle(Size * sengs * scale); //碰撞箱也跟随缩放
 
-            Size = new Vector2(60);
-            UIHitBox = DrawPosition.GetRectangle(Size * sengs);
+            bool lastHover = hoverInMainPage;
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1)) && sengs > 0.8f;
-            if (hoverInMainPage) {
-                ItemFilterUI.Instance.hoverSlotIndex = slotIndex;
-                if (hoverSengs < 1f) {
-                    hoverSengs += 0.1f;
-                }
 
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    Item heldItem = Main.mouseItem;
-                    if (PreCheckLeft(heldItem)) {
-                        if (heldItem.type != ItemID.None) {
-                            if (CanCheckLeft(heldItem)) {
-                                if (Item.type == ItemID.None) {
-                                    SoundEngine.PlaySound(SoundID.Grab);
-                                    Item = heldItem.Clone();
-                                    Item.stack = 1;
-                                    heldItem.stack--;
-                                    if (heldItem.stack <= 0) {
-                                        heldItem.TurnToAir();
-                                    }
-                                }
-                                else {
-                                    SoundEngine.PlaySound(SoundID.MenuTick);
-                                }
-                            }
-                            else {
-                                SoundEngine.PlaySound(SoundID.MenuTick);
-                            }
-                        }
-                        else {
-                            if (Item.type != ItemID.None) {
-                                SoundEngine.PlaySound(SoundID.Grab);
-                                Main.mouseItem = Item.Clone();
-                                Item.TurnToAir();
-                            }
-                        }
-                    }
+            if (hoverInMainPage && !lastHover) {
+                SoundEngine.PlaySound(SoundID.MenuTick); //鼠标首次悬停时播放音效
+            }
+
+            //缓动动画更新
+            float targetHoverSengs = hoverInMainPage ? 1f : 0f;
+            float targetScale = hoverInMainPage ? DyeMachineConstants.HoverScaleMultiplier : 1f;
+            hoverSengs = MathHelper.Lerp(hoverSengs, targetHoverSengs, DyeMachineConstants.AnimationSpeed);
+            scale = MathHelper.Lerp(scale, targetScale, DyeMachineConstants.AnimationSpeed);
+
+            //处理物品交互
+            if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
+                HandleItemSlotting();
+            }
+        }
+
+        /// <summary>
+        /// 处理复杂的物品放入、取出和交换逻辑
+        /// </summary>
+        private void HandleItemSlotting() {
+            if (!PreCheckLeft(Main.mouseItem)) {
+                return;
+            }
+
+            //情况1: 玩家手上有物品
+            if (Main.mouseItem.type != ItemID.None) {
+                if (CanCheckLeft(Main.mouseItem)) {
+                    SoundEngine.PlaySound(SoundID.Grab);
+                    //与槽内物品交换
+                    Utils.Swap(ref Item, ref Main.mouseItem);
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.MenuClose); //用更明确的失败音效
                 }
             }
-            else {
-                if (hoverSengs > 0f) {
-                    hoverSengs -= 0.1f;
-                }
+            //情况2: 玩家手空，槽内有物品
+            else if (Item.type != ItemID.None) {
+                SoundEngine.PlaySound(SoundID.Grab);
+                //直接取出
+                Main.mouseItem = Item.Clone();
+                Item.TurnToAir();
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            Color drawColor;
-            if (hoverSengs > 0) {
-                drawColor = Color.Gold with { A = 0 } * hoverSengs;
-                spriteBatch.Draw(DyeMachineAsset.SoftGlow, DrawPosition + Size / 2, null
-                    , drawColor, 0, DyeMachineAsset.SoftGlow.Size() / 2f, 1.62f, SpriteEffects.None, 0);
-            }
+            if (sengs <= 0) return;
 
-            drawColor = Color.White;
-            spriteBatch.Draw(SlotTex, DrawPosition, null, drawColor
-                , 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            Vector2 origin = Size / 2f;
+            Vector2 drawPos = DrawPosition + origin;
+
+            DrawHoverGlow(spriteBatch, drawPos, origin);
+            DrawSlotBackground(spriteBatch, drawPos, origin);
 
             if (Item.type == ItemID.None) {
-                drawColor = Color.White * (1f - hoverSengs);
-                spriteBatch.Draw(SymbolTex, DrawPosition + Size / 2, null, drawColor
-                , 0, SymbolTex.Size() / 2f, 1f, SpriteEffects.None, 0);
-                drawColor = Color.White * hoverSengs;
-                spriteBatch.Draw(SymbolTexAlt, DrawPosition + Size / 2, null, drawColor
-                    , 0, SymbolTex.Size() / 2f, 1f, SpriteEffects.None, 0);
+                DrawEmptySymbol(spriteBatch, drawPos, origin);
             }
 
             if (hoverInMainPage && Item.type > ItemID.None) {
@@ -198,17 +208,41 @@ namespace CalamityOverhaul.Content.UIs
             float mode = 0.6f + 0.4f * hoverSengs;
             Color itemColor = new Color(mode, mode, mode, 1f) * sengs;
 
-            //预览效果和最终效果的绘制逻辑移动到具体的子类中
             DrawItemWithEffect(spriteBatch, itemColor);
         }
 
-        //将物品绘制逻辑提取为虚方法，方便子类重写以添加特效
+        private void DrawHoverGlow(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 origin) {
+            if (hoverSengs > 0) {
+                Color glowColor = Color.Gold with { A = 0 } * hoverSengs;
+                spriteBatch.Draw(DyeMachineAsset.SoftGlow, drawPos, null, glowColor, 0, DyeMachineAsset.SoftGlow.Size() / 2f, scale * 1.62f, SpriteEffects.None, 0);
+            }
+        }
+
+        private void DrawSlotBackground(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 origin) {
+            spriteBatch.Draw(SlotTex, drawPos, null, Color.White * sengs, 0, origin, scale, SpriteEffects.None, 0);
+        }
+
+        private void DrawEmptySymbol(SpriteBatch spriteBatch, Vector2 drawPos, Vector2 origin) {
+            float symbolScale = scale * (1 + (hoverSengs * 0.1f)); //符号也跟随轻微放大
+            Vector2 symbolOrigin = SymbolTex.Size() / 2f;
+            //淡入淡出效果
+            spriteBatch.Draw(SymbolTex, drawPos, null, Color.White * (1f - hoverSengs) * sengs, 0, symbolOrigin, symbolScale, SpriteEffects.None, 0);
+            spriteBatch.Draw(SymbolTexAlt, drawPos, null, Color.White * hoverSengs * sengs, 0, symbolOrigin, symbolScale, SpriteEffects.None, 0);
+        }
+
         protected virtual void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
                 CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
-            }
-            VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + UIHitBox.Size() / 2, 64, 1.2f + hoverSengs * 0.2f, 0f, color);
-            if (Item.type > ItemID.None) {
+                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
+
+                if (Item.stack > 1) {
+                    string stack = Item.stack.ToString();
+                    Vector2 stackSize = FontAssets.MouseText.Value.MeasureString(stack);
+                    Vector2 drawPos = DrawPosition + Size / 2 + new Vector2(0, 24 + 6 * hoverSengs);
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, stack
+                        , drawPos.X, drawPos.Y, Color.White, Color.Black, stackSize / 2, 0.9f + 0.1f * hoverSengs);
+                }
+
                 CWRItems.CloseByDyeEffectByUI();
             }
         }
@@ -220,21 +254,17 @@ namespace CalamityOverhaul.Content.UIs
     internal class BeDyedItemSlot : BaseDyeMachineSlot
     {
         public float DyeProgress = 0f;
-
         public override Texture2D SymbolTex => DyeMachineAsset.BeDyeSymbol;
-
         public override Texture2D SymbolTexAlt => DyeMachineAsset.BeDyeSymbolAlt;
 
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
-            //通过ParentUI访问染料槽，实现解耦
-            int beDye = ParentUI.DyeSlot.Item.type;
-            CWRItems.AddByDyeEffectByUI(Item, beDye);
+            if (Item.type > ItemID.None) {
+                int beDye = ParentUI.DyeSlot.Item.type;
+                CWRItems.AddByDyeEffectByUI(Item, beDye);
+                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
+                CWRItems.CloseByDyeEffectByUI();
+            }
 
-            base.DrawItemWithEffect(spriteBatch, color);
-
-            CWRItems.CloseByDyeEffectByUI();
-
-            //绘制进度条
             if (DyeProgress > 0f && DyeProgress < 1f) {
                 Rectangle hitbox = UIHitBox;
                 int progressHeight = (int)(hitbox.Height * DyeProgress);
@@ -250,56 +280,96 @@ namespace CalamityOverhaul.Content.UIs
     internal class ResultDyedItemSlot : BaseDyeMachineSlot
     {
         public override Texture2D SymbolTex => DyeMachineAsset.OutputSymbol;
-
         public override Texture2D SymbolTexAlt => DyeMachineAsset.OutputSymbolAlt;
 
-        //重写预检查，不允许放入任何物品，只允许取出
-        public override bool PreCheckLeft(Item heldItem) {
-            if (heldItem.type == ItemID.None && Item.type != ItemID.None) {
-                SoundEngine.PlaySound(SoundID.Grab);
-                Main.mouseItem = Item.Clone();
-                Item.TurnToAir();
-            }
-            return false;
-        }
+        public override bool PreCheckLeft(Item heldItem) => false; //结果槽完全禁止放入和交换
 
         protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
-                //从物品自身获取应用的染料ID
                 CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
-
-                base.DrawItemWithEffect(spriteBatch, color);
-
+                VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
                 CWRItems.CloseByDyeEffectByUI();
-            }
-            else {
-                //如果没有物品，就调用基类方法绘制空槽
-                base.DrawItemWithEffect(spriteBatch, color);
             }
         }
     }
 
     #endregion
 
-    #region 染缸 UI 实现
+    #region 模板方法模式应用
+
+    /// <summary>
+    /// 染料槽的基类，使用模板方法模式定义染色流程
+    /// </summary>
+    internal abstract class BaseDyeSlot : BaseDyeMachineSlot
+    {
+        public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
+        public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
+        public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
+
+        /// <summary>
+        /// 模板方法：定义了染色的标准流程骨架
+        /// </summary>
+        public sealed override void UpdateSlot() {
+            if (CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot)) {
+                if (ConsumeResources()) {
+                    UpdateProgress(dyedItemSlot);
+                    if (dyedItemSlot.DyeProgress >= 1f) {
+                        FinishDyeing(dyedItemSlot, resultSlot);
+                    }
+                }
+            }
+            else if (ParentUI.BeDyedItem is BeDyedItemSlot itemSlot && itemSlot.DyeProgress > 0) {
+                //如果条件不满足，平滑地回退进度
+                itemSlot.DyeProgress = MathHelper.Lerp(itemSlot.DyeProgress, 0, 0.05f);
+            }
+        }
+
+        private bool CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot) {
+            dyedItemSlot = ParentUI.BeDyedItem as BeDyedItemSlot;
+            resultSlot = ParentUI.ResultDyedItem;
+            return dyedItemSlot != null && resultSlot != null &&
+                   Item.type > ItemID.None &&
+                   dyedItemSlot.Item.type > ItemID.None &&
+                   resultSlot.Item.type == ItemID.None;
+        }
+
+        private void FinishDyeing(BeDyedItemSlot dyedItemSlot, BaseDyeMachineSlot resultSlot) {
+            dyedItemSlot.DyeProgress = 0f;
+            resultSlot.Item = dyedItemSlot.Item.Clone();
+            if (!Item.IsWaterBucket()) {
+                resultSlot.Item.CWR().DyeItemID = Item.type;
+            }
+            else {
+                resultSlot.Item.CWR().DyeItemID = 0; //水桶用于洗去染色
+                if (Item.consumable) {
+                    Item.TurnToAir();
+                }
+            }
+            dyedItemSlot.Item.TurnToAir();
+            SoundEngine.PlaySound(SoundID.Item37);
+        }
+
+        //子类必须实现的差异化步骤
+        protected abstract bool ConsumeResources();
+        protected abstract void UpdateProgress(BeDyedItemSlot dyedItemSlot);
+    }
+
+    #endregion
+
+    #region 具体UI实现
 
     internal class DyeVatUI : BaseDyeMachineUI
     {
         internal DyeVatTP DyeVatTP;
-
-        //实例化插槽
         private readonly DyeVatDyeSlot _dyeSlot = new();
         private readonly BeDyedItemSlot _beDyedItem = new();
         private readonly ResultDyedItemSlot _resultDyedItem = new();
 
-        //实现基类的抽象属性
         public override BaseDyeMachineSlot DyeSlot => _dyeSlot;
         public override BaseDyeMachineSlot BeDyedItem => _beDyedItem;
         public override BaseDyeMachineSlot ResultDyedItem => _resultDyedItem;
-
         internal static DyeVatUI Instance => UIHandleLoader.GetUIHandleOfType<DyeVatUI>();
 
-        //构造函数中进行依赖注入
         public DyeVatUI() {
             _dyeSlot.ParentUI = this;
             _beDyedItem.ParentUI = this;
@@ -307,74 +377,37 @@ namespace CalamityOverhaul.Content.UIs
         }
     }
 
-    internal class DyeVatDyeSlot : BaseDyeMachineSlot
+    internal class DyeVatDyeSlot : BaseDyeSlot
     {
-        public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
-
-        public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
-
-        public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
-
-        public override void UpdateSlot() {
-            //通过ParentUI安全地获取其他槽位，并进行类型转换
-            if (ParentUI.BeDyedItem is not BeDyedItemSlot dyedItemSlot) {
-                return;
-            }
-            BaseDyeMachineSlot resultDyedItemSlot = ParentUI.ResultDyedItem;
-
-            if (Item.type > ItemID.None && dyedItemSlot.Item.type > ItemID.None && resultDyedItemSlot.Item.type == ItemID.None) {
-                dyedItemSlot.DyeProgress += 0.0006f;
-
-                if (dyedItemSlot.DyeProgress >= 1f) {
-                    dyedItemSlot.DyeProgress = 0f;
-                    resultDyedItemSlot.Item = dyedItemSlot.Item.Clone();
-
-                    if (!Item.IsWaterBucket()) {
-                        resultDyedItemSlot.Item.CWR().DyeItemID = Item.type;
-                        Item.stack--;
-                        if (Item.stack <= 0) {
-                            Item.TurnToAir();
-                        }
-                    }
-                    else {
-                        resultDyedItemSlot.Item.CWR().DyeItemID = 0;
-                        if (Item.consumable) {
-                            Item.TurnToAir();
-                        }
-                    }
-                    dyedItemSlot.Item.TurnToAir();
-                    SoundEngine.PlaySound(SoundID.Item37);
+        //实现模板方法的具体步骤
+        protected override bool ConsumeResources() {
+            //染缸染色前会先消耗染料
+            if (!Item.IsWaterBucket()) {
+                Item.stack--;
+                if (Item.stack <= 0) {
+                    Item.TurnToAir();
                 }
             }
-            else {
-                if (dyedItemSlot.DyeProgress > 0f) {
-                    dyedItemSlot.DyeProgress = 0f;
-                }
-            }
+            return true; //消耗成功
+        }
+
+        protected override void UpdateProgress(BeDyedItemSlot dyedItemSlot) {
+            dyedItemSlot.DyeProgress += DyeMachineConstants.DyeVatRate;
         }
     }
-
-    #endregion
-
-    #region 光谱仪 UI 实现
 
     internal class SpectrometerUI : BaseDyeMachineUI
     {
         internal SpectrometerTP SpectrometerTP;
-
-        //实例化插槽
         private readonly SpectrometerDyeSlot _dyeSlot = new();
         private readonly BeDyedItemSlot _beDyedItem = new();
         private readonly ResultDyedItemSlot _resultDyedItem = new();
 
-        //实现基类的抽象属性
         public override BaseDyeMachineSlot DyeSlot => _dyeSlot;
         public override BaseDyeMachineSlot BeDyedItem => _beDyedItem;
         public override BaseDyeMachineSlot ResultDyedItem => _resultDyedItem;
-
         internal static SpectrometerUI Instance => UIHandleLoader.GetUIHandleOfType<SpectrometerUI>();
 
-        //构造函数中进行依赖注入
         public SpectrometerUI() {
             _dyeSlot.ParentUI = this;
             _beDyedItem.ParentUI = this;
@@ -382,49 +415,20 @@ namespace CalamityOverhaul.Content.UIs
         }
     }
 
-    internal class SpectrometerDyeSlot : BaseDyeMachineSlot
+    internal class SpectrometerDyeSlot : BaseDyeSlot
     {
-        public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
-
-        public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
-
-        public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
-
-        public override void UpdateSlot() {
-            if (ParentUI is not SpectrometerUI spectrometerUI || spectrometerUI.BeDyedItem is not BeDyedItemSlot dyedItemSlot) {
-                return;
+        //实现模板方法的具体步骤
+        protected override bool ConsumeResources() {
+            var tp = (ParentUI as SpectrometerUI)?.SpectrometerTP;
+            if (tp != null && tp.MachineData.UEvalue > 1f) {
+                tp.MachineData.UEvalue--;
+                return true; //电力充足
             }
-            BaseDyeMachineSlot resultDyedItemSlot = spectrometerUI.ResultDyedItem;
+            return false; //电力不足
+        }
 
-            if (Item.type > ItemID.None && dyedItemSlot.Item.type > ItemID.None && resultDyedItemSlot.Item.type == ItemID.None) {
-                var tp = spectrometerUI.SpectrometerTP;
-                if (tp != null && tp.MachineData.UEvalue > 1f) {
-                    tp.MachineData.UEvalue--;
-                    dyedItemSlot.DyeProgress += 0.002f;
-                }
-
-                if (dyedItemSlot.DyeProgress >= 1f) {
-                    dyedItemSlot.DyeProgress = 0f;
-                    resultDyedItemSlot.Item = dyedItemSlot.Item.Clone();
-
-                    if (!Item.IsWaterBucket()) {
-                        resultDyedItemSlot.Item.CWR().DyeItemID = Item.type;
-                    }
-                    else {
-                        resultDyedItemSlot.Item.CWR().DyeItemID = 0;
-                        if (Item.consumable) {
-                            Item.TurnToAir();
-                        }
-                    }
-                    dyedItemSlot.Item.TurnToAir();
-                    SoundEngine.PlaySound(SoundID.Item37);
-                }
-            }
-            else {
-                if (dyedItemSlot.DyeProgress > 0f) {
-                    dyedItemSlot.DyeProgress = 0f;
-                }
-            }
+        protected override void UpdateProgress(BeDyedItemSlot dyedItemSlot) {
+            dyedItemSlot.DyeProgress += DyeMachineConstants.SpectrometerRate;
         }
     }
 
