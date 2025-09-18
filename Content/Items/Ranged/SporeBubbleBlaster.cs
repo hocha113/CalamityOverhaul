@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -122,7 +123,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.velocity *= 0.99f;
 
             if (Projectile.ai[2] > 1 && Main.rand.NextBool(3) && Projectile.velocity.Length() > 1f) {
-                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, Projectile.velocity / 3);
+                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, Projectile.velocity / 3);
+                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().ByDye);
             }
         }
 
@@ -137,7 +139,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetProperty() {
             Scale = Main.rand.NextFloat(0.8f, 1.22f);
             Lifetime = Main.rand.Next(18, 36);
-            Frame = TexValue.GetRectangle(Main.rand.Next(6), 6);
+            Frame = TexValue.GetRectangle(Main.rand.Next(4), 4);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Opacity = Main.rand.NextFloat(0.2f, 0.6f);
         }

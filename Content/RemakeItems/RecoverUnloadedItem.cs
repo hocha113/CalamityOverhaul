@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Rogue;
+using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -16,11 +17,14 @@ namespace CalamityOverhaul.Content.RemakeItems
         /// </summary>
         internal static Dictionary<string, int> RecoverUnloadedItemDic { get; private set; } = [];
         void ICWRLoader.SetupData() {
-            foreach (var rItem in CWRItemOverride.Instances) {
+            foreach (var rItem in ItemOverride.Instances) {
+                if (rItem.Mod != CWRMod.Instance) {
+                    continue;
+                }
                 Item ectypeItem = new Item(rItem.TargetID);
                 if (ectypeItem.ModItem != null) {
                     string key = "CalamityOverhaul/" + ectypeItem.ModItem.Name + "EcType";
-                    RecoverUnloadedItemDic.Add(key, rItem.TargetID);
+                    RecoverUnloadedItemDic.TryAdd(key, rItem.TargetID);
                 }
             }
             RecoverUnloadedItemDic.Add("CalamityOverhaul/BlackMatterStick", ModContent.ItemType<NeutronStarIngot>());

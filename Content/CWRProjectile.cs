@@ -10,10 +10,12 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -98,14 +100,31 @@ namespace CalamityOverhaul.Content
         private float oldNPCRot;
         private float npcRotUpdateSengs;
         private int halibutAmmoTime;
-
+        internal int ByDye;
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
 
-            if (source?.Context == "CWRGunShoot") {
-                Item heldItem = Main.player[projectile.owner].GetItem();
-                if (heldItem.type != ItemID.None) {
-                    cwrItem = heldItem.CWR();
+            if (source != null) {
+                if (source.Context == "CWRGunShoot") {
+                    Item heldItem = Main.player[projectile.owner].GetItem();
+                    if (heldItem.type != ItemID.None) {
+                        cwrItem = heldItem.CWR();
+                    }
+                }
+
+                if (source is EntitySource_Parent parent) {
+                    if (parent.Entity is Item item && item.type > ItemID.None) {
+                        ByDye = item.CWR().ByDye;
+                    }
+                    else if (parent.Entity is Player player) {
+                        Item heldItem = player.GetItem();
+                        if (heldItem.type > ItemID.None) {
+                            ByDye = heldItem.CWR().ByDye;
+                        }
+                    }
+                    else if (parent.Entity is Projectile monProj) {
+                        ByDye = monProj.CWR().ByDye;
+                    }
                 }
             }
 
@@ -711,6 +730,15 @@ namespace CalamityOverhaul.Content
             WhipHit(projectile, target);
             SpanTypesOnHitNPC(player, projectile, target, hit);
             SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
+        }
+
+        public override bool PreDraw(Projectile projectile, ref Color lightColor) {
+            CWRItems.AddByDyeEffectByWorld(projectile, ByDye);
+            return true;
+        }
+
+        public override void PostDraw(Projectile projectile, Color lightColor) {
+            CWRItems.CloseByDyeEffectByWorld(ByDye);
         }
     }
 }

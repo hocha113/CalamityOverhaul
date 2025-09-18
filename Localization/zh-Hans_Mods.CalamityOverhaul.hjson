@@ -1176,6 +1176,11 @@ Items: {
 		// DisplayName: Sporebound Roller
 		// Tooltip: ""
 	}
+
+	Spectrometer: {
+		// DisplayName: Spectrometer
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

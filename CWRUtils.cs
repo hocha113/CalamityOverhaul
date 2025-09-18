@@ -234,6 +234,8 @@ namespace CalamityOverhaul
 
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
 
+        public static bool IsWaterBucket(this Item item) => item.type == ItemID.WaterBucket;
+
         /// <summary>
         /// 目标弹药是否应该判定为一个木箭
         /// </summary>

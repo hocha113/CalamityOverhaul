@@ -303,7 +303,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             UIHitBox = DrawPosition.GetRectangle((int)(420 * sengs));
             hoverInMainPage = UIHitBox.Intersects(MousePosition.GetRectangle(1)) && sengs > 0.8f;
 
-
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 0, Main.screenWidth - UIHitBox.Width);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 0, Main.screenHeight - UIHitBox.Height);
 

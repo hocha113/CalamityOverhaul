@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -262,6 +263,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static bool PreDrawInInventoryFunc(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Vector2 origin, float scale) {
             if (Main.gameMenu || !item.Alives()) {
                 return true;
+            }
+
+            if (item.CWR().ByDye > 0) {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+                //应用染色
+                GameShaders.Armor.GetShaderFromItemId(item.CWR().ByDye)?.Apply(item, new Terraria.DataStructures.DrawData?());
             }
 
             if (Main.LocalPlayer.CWR().HeldMurasamaBool && item == Main.LocalPlayer.GetItem()) {

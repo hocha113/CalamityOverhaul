@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -184,6 +185,10 @@ namespace CalamityOverhaul.Content
         /// 需要锁定的弹药类型
         /// </summary>
         public Item TargetLockAmmo;
+        /// <summary>
+        /// 使用的染色ID
+        /// </summary>
+        public int ByDye;
         #endregion
         public override void Load() {
             ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
@@ -221,6 +226,7 @@ namespace CalamityOverhaul.Content
             cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             cwr.LegendData = LegendData;
+            cwr.ByDye = ByDye;
             return cwr;
         }
 
@@ -618,7 +624,7 @@ namespace CalamityOverhaul.Content
             if (heldProjType > 0) {
                 //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
                 if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
-                    Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero
+                    Projectile.NewProjectileDirect(item.GetSource_FromThis(), player.Center, Vector2.Zero
                         , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
                 if (CWRLoad.ItemIsRanged[item.type]) {
@@ -752,6 +758,95 @@ namespace CalamityOverhaul.Content
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                 , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }
+        }
+
+        private static bool _isAddByDyeEffectByUI;
+        /// <summary>
+        /// 添加染色效果，一定要在合适的时候调用 <see cref="CloseByDyeEffectByUI"/> 关闭效果
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="byDye"></param>
+        public static void AddByDyeEffectByUI(Entity entity, int byDye) {
+            if (byDye <= 0) {
+                return;
+            }
+            if (_isAddByDyeEffectByUI) {
+                CloseByDyeEffectByUI(byDye);
+            }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+            //应用染色
+            GameShaders.Armor.GetShaderFromItemId(byDye)?.Apply(entity, new Terraria.DataStructures.DrawData?());
+            _isAddByDyeEffectByUI = true;
+        }
+        /// <summary>
+        /// 关闭染色效果
+        /// </summary>
+        /// <param name="cwr"></param>
+        public static void CloseByDyeEffectByUI(int byDye) {
+            if (byDye <= 0) {
+                return;
+            }           
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+            _isAddByDyeEffectByUI = false;
+        }
+        private static bool _isAddByDyeEffectByWorld;
+        /// <summary>
+        /// 添加染色效果，一定要在合适的时候调用 <see cref="CloseByDyeEffectByWorld"/> 关闭效果
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="byDye"></param>
+        public static void AddByDyeEffectByWorld(Entity entity, int byDye) {
+            if (byDye <= 0) {
+                return;
+            }
+            if (_isAddByDyeEffectByWorld) {
+                CloseByDyeEffectByWorld(byDye);
+            }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+            //应用染色
+            GameShaders.Armor.GetShaderFromItemId(byDye)?.Apply(entity, new Terraria.DataStructures.DrawData?());
+            _isAddByDyeEffectByWorld = true;
+        }
+        /// <summary>
+        /// 关闭染色效果
+        /// </summary>
+        /// <param name="cwr"></param>
+        public static void CloseByDyeEffectByWorld(int byDye) {
+            if (byDye <= 0 || !_isAddByDyeEffectByWorld) {
+                return;
+            }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+            _isAddByDyeEffectByWorld = false;
+        }
+
+        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
+            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+            AddByDyeEffectByUI(item, ByDye);
+            return true;
+        }
+
+        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
+            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+            CloseByDyeEffectByUI(ByDye);
+        }
+
+        public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
+            AddByDyeEffectByWorld(item, ByDye);
+            return true;
+        }
+
+        public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
+            , Color alphaColor, float rotation, float scale, int whoAmI) {
+            CloseByDyeEffectByWorld(ByDye);
         }
     }
 }

@@ -2,11 +2,10 @@
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using System.Buffers.Text;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -111,7 +110,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.velocity *= 0.96f;
 
             if (Projectile.ai[2] > 2 && Main.rand.NextBool(2) && Projectile.velocity.Length() > 1f) {
-                PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + VaultUtils.RandVr(32), Projectile.velocity / 3);
+                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + VaultUtils.RandVr(32), Projectile.velocity / 3);
+                prt.shader = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().ByDye);
             }
         }
 

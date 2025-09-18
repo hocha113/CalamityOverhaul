@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using CalamityOverhaul.Content.RemakeItems.ModifyBag;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
