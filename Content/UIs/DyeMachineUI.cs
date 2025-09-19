@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.UIs
         public abstract BaseDyeMachineSlot DyeSlot { get; }
         public abstract BaseDyeMachineSlot BeDyedItem { get; }
         public abstract BaseDyeMachineSlot ResultDyedItem { get; }
-        public object TileEntity { get; set; }
+        public BaseDyeTP DyeTP { get; set; }
 
         public override bool Active {
             get { return CanOpen || sengs > 0.01f; } //防止sengs过小时UI仍在活动
@@ -350,7 +350,6 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class DyeVatUI : BaseDyeMachineUI
     {
-        internal DyeVatTP DyeVatTP;
         private readonly DyeVatDyeSlot _dyeSlot = new();
         private readonly BeDyedItemSlot _beDyedItem = new();
         private readonly ResultDyedItemSlot _resultDyedItem = new();
@@ -388,7 +387,6 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class SpectrometerUI : BaseDyeMachineUI
     {
-        internal SpectrometerTP SpectrometerTP;
         private readonly SpectrometerDyeSlot _dyeSlot = new();
         private readonly BeDyedItemSlot _beDyedItem = new();
         private readonly ResultDyedItemSlot _resultDyedItem = new();
@@ -409,7 +407,7 @@ namespace CalamityOverhaul.Content.UIs
     {
         //实现模板方法的具体步骤
         protected override bool ConsumeResources() {
-            var tp = (ParentUI as SpectrometerUI)?.SpectrometerTP;
+            var tp = (ParentUI as SpectrometerUI)?.DyeTP;
             if (tp != null && tp.MachineData.UEvalue > 1f) {
                 tp.MachineData.UEvalue--;
                 return true; //电力充足

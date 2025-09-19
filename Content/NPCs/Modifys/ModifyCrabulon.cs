@@ -1,8 +1,8 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
 using InnoVault.UIHandles;
@@ -12,14 +12,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
 {
@@ -45,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private float dontTurnTo;
         internal int DyeItemID;
         private delegate bool On_Player_Delegate(CrabulonMusicScene crabulonMusicScene, Player player);
-
+        
         public override void Load() {
             MethodInfo methodInfo = typeof(CrabulonMusicScene).GetMethod("IsSceneEffectActive", BindingFlags.Instance | BindingFlags.Public);
             VaultHook.Add(methodInfo, OnCrabulonMusicSceneIsSceneEffectActive);
@@ -92,6 +90,71 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             ai[8] = 120;
             npc.netUpdate = true;
             NetAISend();
+        }
+
+        public void SaveData(TagCompound tag) {
+            tag["root"] = "root";
+            if (FeedValue <= 0f) {
+                return;
+            }
+            tag["a"] = npc.position;
+            tag["b"] = npc.life;
+            tag["c"] = npc.lifeMax;
+            tag["d"] = FeedValue;
+            tag["e"] = Crouch;
+            tag["f"] = Mount;
+            tag["g"] = MountACrabulon;
+            tag["h"] = DontMount;
+            tag["i"] = DyeItemID;
+            tag["j"] = Owner.Alives() ? Owner.name : string.Empty;
+            tag["k"] = ItemIO.Save(SaddleItem);
+        }
+
+        public void LoadData(TagCompound tag) {
+            if (tag.ContainsKey("a")) {
+                npc.position = tag.Get<Vector2>("a");
+            }
+            if (tag.ContainsKey("b")) {
+                npc.life = tag.GetInt("b");
+            }
+            if (tag.ContainsKey("c")) {
+                npc.lifeMax = tag.GetInt("c");
+            }
+            if (tag.ContainsKey("d")) {
+                FeedValue = tag.GetFloat("d");
+            }
+            if (tag.ContainsKey("e")) {
+                Crouch = tag.GetBool("e");
+            }
+            if (tag.ContainsKey("f")) {
+                Mount = tag.GetBool("f");
+            }
+            if (tag.ContainsKey("g")) {
+                MountACrabulon = tag.GetBool("g");
+            }
+            if (tag.ContainsKey("h")) {
+                DontMount = tag.GetInt("h");
+            }
+            if (tag.ContainsKey("i")) {
+                DyeItemID = tag.GetInt("i");
+            }
+            if (tag.ContainsKey("j")) {
+                string playerName = tag.GetString("j");
+                Player player = null;
+                foreach (var p in Main.player) {
+                    if (!p.active) {
+                        continue;
+                    }
+                    if (p.name != playerName) {
+                        continue;
+                    }
+                    player = p;
+                }
+                Owner = player;
+            }
+            if (tag.ContainsKey("k")) {
+                SaddleItem = ItemIO.Load(tag.Get<TagCompound>("k"));
+            }
         }
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
@@ -636,96 +699,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16 + npc.gfxOffY) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
                 CWRItem.CloseByDyeEffectByWorld();
-            }
-            return true;
-        }
-    }
-
-    internal class CrouchBotton : UIHandle
-    {
-        private bool isCrouch;
-        private float sengs;
-        private NPC crabulon;
-        private ModifyCrabulon modify;
-        private float hoverSengs;
-        internal bool Open {
-            get {
-                crabulon = player.GetOverride<CrabulonPlayer>().LatelyCrabulon;
-                if (crabulon == null) {
-                    return false;
-                }
-                modify = crabulon.GetOverride<ModifyCrabulon>();
-                return crabulon.DistanceSQ(player.Center) < 90000 && !modify.Mount;
-            }
-        }
-        public override bool Active => Open || sengs > 0f;
-        public override void Update() {
-            Vector2 size = new Vector2(100, 40);
-            DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 11) - size / 2;
-            UIHitBox = DrawPosition.GetRectangle(size);
-
-            if (!Open) {
-                if (sengs > 0f) {
-                    sengs -= 0.1f;
-                }
-                return;
-            }
-            else {
-                if (sengs < 1f) {
-                    sengs += 0.1f;
-                }
-            }
-
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
-
-            isCrouch = modify.Crouch;
-
-            if (hoverInMainPage) {
-                if (hoverSengs < 1f) {
-                    hoverSengs += 0.1f;
-                }
-                player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    SoundEngine.PlaySound(CWRSound.ButtonZero);
-                    modify.Crouch = !modify.Crouch;
-                }
-            }
-            else {
-                if (hoverSengs > 0f) {
-                    hoverSengs -= 0.1f;
-                }
-            }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch) {
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, Color.AliceBlue * sengs, Color.Wheat * sengs);
-
-            string content = isCrouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
-
-            float textScale = 1.2f + 0.1f * hoverSengs;
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content);
-            Vector2 drawPos = DrawPosition + UIHitBox.Size() / 2;
-            Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
-                        , drawPos.X, drawPos.Y, Color.White * sengs, Color.Black * sengs, textSize / 2, textScale);
-
-            if (Open && modify.hoverNPC) {
-                Item item = player.GetItem();
-                if (item.type == ModContent.ItemType<MushroomSaddle>()) {
-                    CWRItem.AddByDyeEffectByUI(item, item.CWR().DyeItemID);
-                    VaultUtils.SimpleDrawItem(spriteBatch, item.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
-                    CWRItem.CloseByDyeEffectByUI();
-                }
-            }
-        }
-    }
-
-    internal class CrabulonFriendBar : ModBossBar
-    {
-        public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
-            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
-                if (modifyCrabulon.FeedValue > 0f) {
-                    return false;
-                }
             }
             return true;
         }

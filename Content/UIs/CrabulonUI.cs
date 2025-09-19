@@ -1,11 +1,16 @@
-﻿using CalamityOverhaul.Content.NPCs.Modifys;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.NPCs.Modifys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -243,6 +248,96 @@ namespace CalamityOverhaul.Content.UIs
 
             //使用所有动态参数进行绘制
             spriteBatch.Draw(Life.Value, finalDrawPosition, null, drawColor * sengs, dynamicRotation, Life.Size() / 2, finalScale, SpriteEffects.None, 0);
+        }
+    }
+
+    internal class CrouchBotton : UIHandle
+    {
+        private bool isCrouch;
+        private float sengs;
+        private NPC crabulon;
+        private ModifyCrabulon modify;
+        private float hoverSengs;
+        internal bool Open {
+            get {
+                crabulon = player.GetOverride<CrabulonPlayer>().LatelyCrabulon;
+                if (crabulon == null) {
+                    return false;
+                }
+                modify = crabulon.GetOverride<ModifyCrabulon>();
+                return crabulon.DistanceSQ(player.Center) < 90000 && !modify.Mount;
+            }
+        }
+        public override bool Active => Open || sengs > 0f;
+        public override void Update() {
+            Vector2 size = new Vector2(100, 40);
+            DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 11) - size / 2;
+            UIHitBox = DrawPosition.GetRectangle(size);
+
+            if (!Open) {
+                if (sengs > 0f) {
+                    sengs -= 0.1f;
+                }
+                return;
+            }
+            else {
+                if (sengs < 1f) {
+                    sengs += 0.1f;
+                }
+            }
+
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+
+            isCrouch = modify.Crouch;
+
+            if (hoverInMainPage) {
+                if (hoverSengs < 1f) {
+                    hoverSengs += 0.1f;
+                }
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+                    modify.Crouch = !modify.Crouch;
+                }
+            }
+            else {
+                if (hoverSengs > 0f) {
+                    hoverSengs -= 0.1f;
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, Color.AliceBlue * sengs, Color.Wheat * sengs);
+
+            string content = isCrouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
+
+            float textScale = 1.2f + 0.1f * hoverSengs;
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content);
+            Vector2 drawPos = DrawPosition + UIHitBox.Size() / 2;
+            Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, content
+                        , drawPos.X, drawPos.Y, Color.White * sengs, Color.Black * sengs, textSize / 2, textScale);
+
+            if (Open && modify.hoverNPC) {
+                Item item = player.GetItem();
+                if (item.type == ModContent.ItemType<MushroomSaddle>()) {
+                    CWRItem.AddByDyeEffectByUI(item, item.CWR().DyeItemID);
+                    VaultUtils.SimpleDrawItem(spriteBatch, item.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
+                    CWRItem.CloseByDyeEffectByUI();
+                }
+            }
+        }
+    }
+
+    internal class CrabulonFriendBar : ModBossBar
+    {
+        public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
+            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
+                if (modifyCrabulon.FeedValue > 0f) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

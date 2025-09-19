@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using Terraria;
@@ -19,30 +20,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ItemID.DyeVat);
     }
 
-    internal class DyeVatTP : TileProcessor
+    internal class DyeVatTP : BaseDyeTP
     {
         public override int TargetTileID => TileID.DyeVat;
-        
-        public void RightClick(Player player) {
-            if (player.whoAmI != Main.myPlayer) {
-                return;
-            }
-
-            if (DyeVatUI.Instance.DyeVatTP == this) {
-                DyeVatUI.Instance.CanOpen = !DyeVatUI.Instance.CanOpen;
-            }
-            else {
-                DyeVatUI.Instance.DyeVatTP = this;
-                DyeVatUI.Instance.CanOpen = true;
-            }
-            SpectrometerUI.Instance.CanOpen = false;//关闭其他同类UI
-        }
-
-        public override void Update() {
-            if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
-                DyeVatUI.Instance.CanOpen = false;
-            }
-            DyeVatUI.Instance.DyeSlot.UpdateSlot();
-        }
+        public override bool CanDrop => false;
+        public override bool ReceivedEnergy => true;
+        public override float MaxUEValue => 0;
+        public override BaseDyeMachineUI DyeMachineUI => DyeVatUI.Instance;
     }
 }

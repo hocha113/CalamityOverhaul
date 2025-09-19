@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1139,18 +1139,12 @@ Items: {
 
 	SporeBubbleBlaster: {
 		DisplayName: 喷菇炮
-		Tooltip:
-			'''
-			喷射一串孢子气流
-			'''
+		Tooltip: 喷射一串孢子气流
 	}
 
 	TomeofFungalDecay: {
 		DisplayName: 腐菌秘典
-		Tooltip:
-			'''
-			喷射一圈孢子气流
-			'''
+		Tooltip: 喷射一圈孢子气流
 	}
 
 	FungalRevolver: {
