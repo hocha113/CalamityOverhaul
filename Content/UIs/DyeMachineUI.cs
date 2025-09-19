@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+﻿using CalamityOverhaul.Content.Industrials;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +23,8 @@ namespace CalamityOverhaul.Content.UIs
         public static Texture2D DyeSymbolAlt;
         public static Texture2D OutputSymbol;
         public static Texture2D OutputSymbolAlt;
+        public static Texture2D DyeDroplets;
+        public static Texture2D OutputSymbolArrows;
         public static Texture2D DyeVatSlot;
         public static Texture2D DyeVatUI;
         public static Texture2D SpectrometerSlot;
@@ -105,6 +108,18 @@ namespace CalamityOverhaul.Content.UIs
                 spriteBatch.Draw(UITex, UIHitBox.OffsetSize(6, 6), Color.Gold * hoverSengs);
             }
             spriteBatch.Draw(UITex, UIHitBox, Color.White * sengs);
+
+            float activationThreshold = 0.8f;
+            if (sengs >= activationThreshold) {
+                float normalizedProgress = (sengs - activationThreshold) / (1f - activationThreshold);
+                Color drawColor = Color.White * normalizedProgress * 0.6f;
+                drawColor.R /= 2;
+                spriteBatch.Draw(DyeMachineAsset.DyeDroplets, DrawPosition + new Vector2(66, 120)
+                    , null, drawColor, 0, Vector2.Zero, normalizedProgress, SpriteEffects.None, 0);
+                spriteBatch.Draw(DyeMachineAsset.OutputSymbolArrows, DrawPosition + new Vector2(120, 174)
+                    , null, drawColor, 0, Vector2.Zero, normalizedProgress, SpriteEffects.None, 0);
+            }
+
             DyeSlot.Draw(spriteBatch);
             BeDyedItem.Draw(spriteBatch);
             ResultDyedItem.Draw(spriteBatch);
@@ -162,28 +177,32 @@ namespace CalamityOverhaul.Content.UIs
         /// 处理复杂的物品放入、取出和交换逻辑
         /// </summary>
         private void HandleItemSlotting() {
-            if (!PreCheckLeft(Main.mouseItem)) {
-                return;
+            if (PreCheckLeft(Main.mouseItem)) {
+                //情况1: 玩家手上有物品
+                if (Main.mouseItem.type != ItemID.None) {
+                    if (CanCheckLeft(Main.mouseItem)) {
+                        SoundEngine.PlaySound(SoundID.Grab);
+                        //与槽内物品交换
+                        Utils.Swap(ref Item, ref Main.mouseItem);
+                    }
+                    else {
+                        SoundEngine.PlaySound(SoundID.MenuClose); //用更明确的失败音效
+                    }
+                }
+                //情况2: 玩家手空，槽内有物品
+                else if (Item.type != ItemID.None) {
+                    SoundEngine.PlaySound(SoundID.Grab);
+                    //直接取出
+                    Main.mouseItem = Item.Clone();
+                    Item.TurnToAir();
+                }
             }
 
-            //情况1: 玩家手上有物品
-            if (Main.mouseItem.type != ItemID.None) {
-                if (CanCheckLeft(Main.mouseItem)) {
-                    SoundEngine.PlaySound(SoundID.Grab);
-                    //与槽内物品交换
-                    Utils.Swap(ref Item, ref Main.mouseItem);
-                }
-                else {
-                    SoundEngine.PlaySound(SoundID.MenuClose); //用更明确的失败音效
-                }
-            }
-            //情况2: 玩家手空，槽内有物品
-            else if (Item.type != ItemID.None) {
-                SoundEngine.PlaySound(SoundID.Grab);
-                //直接取出
-                Main.mouseItem = Item.Clone();
-                Item.TurnToAir();
-            }
+            PostHandleItemSlotting();
+        }
+
+        public virtual void PostHandleItemSlotting() {
+
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -251,6 +270,10 @@ namespace CalamityOverhaul.Content.UIs
         }
     }
 
+    #endregion
+
+    #region 模板方法模式应用
+
     /// <summary>
     /// 通用化的“待染色物品”槽，包含进度条逻辑
     /// </summary>
@@ -270,6 +293,8 @@ namespace CalamityOverhaul.Content.UIs
                 spriteBatch.Draw(TextureAssets.MagicPixel.Value, progressBar, Color.Green * 0.5f);
             }
         }
+
+        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.BeDyedItem = Item;//操作结果关联TP实体物品槽
     }
 
     /// <summary>
@@ -281,11 +306,9 @@ namespace CalamityOverhaul.Content.UIs
         public override Texture2D SymbolTexAlt => DyeMachineAsset.OutputSymbolAlt;
 
         public override bool PreCheckLeft(Item heldItem) => heldItem.type == ItemID.None;
+
+        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.ResultDyedItem = Item;//操作结果关联TP实体物品槽
     }
-
-    #endregion
-
-    #region 模板方法模式应用
 
     /// <summary>
     /// 染料槽的基类，使用模板方法模式定义染色流程
@@ -314,7 +337,9 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        private bool CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot) {
+        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.DyeSlotItem = Item;//操作结果关联TP实体物品槽
+
+        public virtual bool CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot) {
             dyedItemSlot = ParentUI.BeDyedItem as BeDyedItemSlot;
             resultSlot = ParentUI.ResultDyedItem;
             return dyedItemSlot != null && resultSlot != null &&
@@ -323,7 +348,7 @@ namespace CalamityOverhaul.Content.UIs
                    resultSlot.Item.type == ItemID.None;
         }
 
-        private void FinishDyeing(BeDyedItemSlot dyedItemSlot, BaseDyeMachineSlot resultSlot) {
+        public virtual void FinishDyeing(BeDyedItemSlot dyedItemSlot, BaseDyeMachineSlot resultSlot) {
             dyedItemSlot.DyeProgress = 0f;
             resultSlot.Item = dyedItemSlot.Item.Clone();
             if (!Item.IsWaterBucket()) {
@@ -331,12 +356,17 @@ namespace CalamityOverhaul.Content.UIs
             }
             else {
                 resultSlot.Item.CWR().DyeItemID = 0; //水桶用于洗去染色
-                if (Item.consumable) {
+                if (Item.consumable && --Item.stack <= 0) {
                     Item.TurnToAir();
                 }
             }
             dyedItemSlot.Item.TurnToAir();
             SoundEngine.PlaySound(SoundID.Item37);
+
+            //操作结果关联TP实体物品槽
+            ParentUI.DyeTP.DyeSlotItem = Item;
+            ParentUI.DyeTP.BeDyedItem = dyedItemSlot.Item;
+            ParentUI.DyeTP.ResultDyedItem = resultSlot.Item;
         }
 
         //子类必须实现的差异化步骤
@@ -368,16 +398,17 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class DyeVatDyeSlot : BaseDyeSlot
     {
-        //实现模板方法的具体步骤
-        protected override bool ConsumeResources() {
-            //染缸染色前会先消耗染料
+        protected override bool ConsumeResources() => true;
+
+        public override void FinishDyeing(BeDyedItemSlot dyedItemSlot, BaseDyeMachineSlot resultSlot) {
+            base.FinishDyeing(dyedItemSlot, resultSlot);
+            //染缸染色会消耗染料
             if (!Item.IsWaterBucket()) {
                 Item.stack--;
                 if (Item.stack <= 0) {
                     Item.TurnToAir();
                 }
             }
-            return true; //消耗成功
         }
 
         protected override void UpdateProgress(BeDyedItemSlot dyedItemSlot) {
@@ -407,9 +438,9 @@ namespace CalamityOverhaul.Content.UIs
     {
         //实现模板方法的具体步骤
         protected override bool ConsumeResources() {
-            var tp = (ParentUI as SpectrometerUI)?.DyeTP;
-            if (tp != null && tp.MachineData.UEvalue > 1f) {
+            if (ParentUI is SpectrometerUI { DyeTP: SpectrometerTP tp } && tp.MachineData.UEvalue > 1f) {
                 tp.MachineData.UEvalue--;
+                tp.workTime = 10;
                 return true; //电力充足
             }
             return false; //电力不足

@@ -1,18 +1,13 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.UIs;
 using InnoVault.TileProcessors;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
@@ -92,8 +87,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            frameYPos += spectrometer.frame * 18 * 3;
+            //根据TP中更新的frame变量来决定绘制物块的哪一帧动画
+            int frameYPos = t.TileFrameY + spectrometer.frame * 54; //每个物块帧的高度是3格*18像素=54
             Texture2D tex = TextureAssets.Tile[Type].Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
@@ -110,97 +105,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
     }
 
-    internal abstract class BaseDyeTP : BaseBattery
-    {
-        internal Item DyeSlotItem = new();
-        internal Item BeDyedItem = new();
-        internal Item ResultDyedItem = new();
-        public abstract BaseDyeMachineUI DyeMachineUI { get; }
-        public override void SaveData(TagCompound tag) {
-            base.SaveData(tag);
-            DyeSlotItem ??= new();
-            tag["DyeSlotItem"] = ItemIO.Save(DyeSlotItem);
-            BeDyedItem ??= new();
-            tag["BeDyedItem"] = ItemIO.Save(BeDyedItem);
-            ResultDyedItem ??= new();
-            tag["ResultDyedItem"] = ItemIO.Save(ResultDyedItem);
-        }
-
-        public override void LoadData(TagCompound tag) {
-            base.LoadData(tag);
-            if (tag.TryGet<TagCompound>("DyeSlotItem", out var value)) {
-                DyeSlotItem = ItemIO.Load(value);
-            }
-            else {
-                DyeSlotItem = new();
-            }
-
-            if (tag.TryGet<TagCompound>("BeDyedItem", out var value2)) {
-                BeDyedItem = ItemIO.Load(value2);
-            }
-            else {
-                BeDyedItem = new();
-            }
-
-            if (tag.TryGet<TagCompound>("ResultDyedItem", out var value3)) {
-                ResultDyedItem = ItemIO.Load(value3);
-            }
-            else {
-                ResultDyedItem = new();
-            }
-        }
-
-        public override void SendData(ModPacket data) {
-            base.SendData(data);
-            ItemIO.Send(DyeSlotItem, data, true, true);
-            ItemIO.Send(BeDyedItem, data, true, true);
-            ItemIO.Send(ResultDyedItem, data, true, true);
-        }
-
-        public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            base.ReceiveData(reader, whoAmI);
-            DyeSlotItem = ItemIO.Receive(reader, true, true);
-            BeDyedItem = ItemIO.Receive(reader, true, true);
-            ResultDyedItem = ItemIO.Receive(reader, true, true);
-        }
-
-        public void RightClick(Player player) {
-            if (player.whoAmI != Main.myPlayer) {
-                return;
-            }
-
-            SoundEngine.PlaySound(CWRSound.ButtonZero);
-            var ui = DyeMachineUI;
-            if (ui.DyeTP == this) {
-                ui.CanOpen = !DyeMachineUI.CanOpen;
-            }
-            else {
-                ui.DyeTP = this;
-                ui.CanOpen = true;
-                ui.DyeSlot.Item = DyeSlotItem;
-                ui.BeDyedItem.Item = BeDyedItem;
-                ui.ResultDyedItem.Item = ResultDyedItem;
-            }
-
-            foreach (var otherUI in UIHandleLoader.UIHandles) {
-                if (otherUI.ID != DyeMachineUI.ID && otherUI is BaseDyeMachineUI baseDyeMachineUI) {
-                    baseDyeMachineUI.CanOpen = false;//关闭其他所有同类UI面板
-                }
-            }
-        }
-
-        public override void UpdateMachine() {
-            if (DyeMachineUI.CanOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
-                DyeMachineUI.CanOpen = false;
-            }
-            DyeMachineUI.DyeSlot.UpdateSlot();
-            UpdateDyeMachine();
-        }
-
-        public virtual void UpdateDyeMachine() { }
-    }
-
     internal class SpectrometerTP : BaseDyeTP
     {
         public override int TargetTileID => ModContent.TileType<SpectrometerTile>();
@@ -210,8 +114,59 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override float MaxUEValue => 800;
         public override BaseDyeMachineUI DyeMachineUI => SpectrometerUI.Instance;
         internal int frame;
+        internal int workTime;
         public override void UpdateDyeMachine() {
-            base.UpdateDyeMachine();
+            if (workTime > 0) {
+                VaultUtils.ClockFrame(ref frame, 10, 2);
+                workTime--;
+            }
+        }
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            Item item = null;
+            if (BeDyedItem.type > ItemID.None) {
+                item = BeDyedItem;
+            }
+            if (ResultDyedItem.type > ItemID.None) {
+                item = ResultDyedItem;
+            }
+
+            if (item == null) {
+                return;
+            }
+
+            float time = Main.GlobalTimeWrappedHourly;
+            Vector2 drawPosition = CenterInWorld - Main.screenPosition;
+            Color baseColor = Lighting.GetColor(PosInWorld.ToTileCoordinates());
+
+            //机械感扫描：使用锯齿波代替正弦，制造扫描上下走动感
+            float saw = time * 2f % 2f; //范围0~2
+            float animOffsetY = (saw < 1f ? saw : 2f - saw) * 6f - 3f; //上下往返，范围-3~3
+
+            //脉冲缩放：机械感更生硬，使用abs(sin)制造周期性收缩
+            float scale = 1f + MathF.Abs(MathF.Sin(time * 5f)) * 0.07f;
+
+            float rotation = 0;
+
+            //水平偏移，模拟机器臂扫描
+            float animOffsetX = MathF.Round(MathF.Sin(time * 4f) * 2f);
+
+            Vector2 itemDrawPos = drawPosition + new Vector2(animOffsetX, animOffsetY);
+            if (workTime <= 0) {
+                scale = 1f;
+                itemDrawPos = drawPosition;
+            }
+
+            //颜色脉冲，偏冷光
+            float pulse = (MathF.Sin(time * 6f) + 1f) * 0.5f; //0~1
+            Color drawColor = Color.Lerp(baseColor, Color.Cyan, pulse * 0.4f);
+
+            if (DyeSlotItem.type > ItemID.None) {
+                CWRItem.AddByDyeEffectByWorld(item, DyeSlotItem.type);
+            }
+            VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemDrawPos, Width / 2, scale, rotation, drawColor);
+            if (DyeSlotItem.type > ItemID.None) {
+                CWRItem.CloseByDyeEffectByWorld();
+            }
         }
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }

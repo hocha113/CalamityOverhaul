@@ -2,6 +2,8 @@
 using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
 
@@ -27,5 +29,46 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 0;
         public override BaseDyeMachineUI DyeMachineUI => DyeVatUI.Instance;
+        public override void UpdateDyeMachine() {
+
+        }
+
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            Item item = null;
+            if (BeDyedItem.type > ItemID.None) {
+                item = BeDyedItem;
+            }
+            if (ResultDyedItem.type > ItemID.None) {
+                item = ResultDyedItem;
+            }
+
+            //如果被染物品槽位有物品，则绘制它并应用搅动动画
+            if (item == null) {
+                return;
+            }
+
+            //获取绘制所需的基础信息
+            float time = Main.GlobalTimeWrappedHourly; //使用游戏时间作为动画驱动
+            Vector2 drawPosition = CenterInWorld - Main.screenPosition; //计算物块在屏幕上的绘制中心点
+            Color drawColor = Lighting.GetColor(PosInWorld.ToTileCoordinates());
+
+            //计算物品的动画偏移和旋转
+            //使用Cos和Sin组合让物品进行椭圆运动
+            float animOffsetX = (float)Math.Cos(time * 2f) * 4f;
+            float animOffsetY = (float)Math.Sin(time * 2f) * 2f;
+            //使用另一个Sin函数让物品轻微旋转
+            float rotation = (float)Math.Sin(time * 1.5f) * 0.2f;
+
+            //计算物品最终的绘制位置
+            Vector2 itemDrawPos = drawPosition + new Vector2(animOffsetX, animOffsetY);
+
+            if (DyeSlotItem.type > ItemID.None) {
+                CWRItem.AddByDyeEffectByWorld(item, DyeSlotItem.type);
+            }
+            VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemDrawPos, Width / 2, 1f, rotation, drawColor);
+            if (DyeSlotItem.type > ItemID.None) {
+                CWRItem.CloseByDyeEffectByWorld();
+            }
+        }
     }
 }
