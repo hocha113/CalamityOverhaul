@@ -82,5 +82,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle RollingMERoer = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer");
         public static SoundStyle SporeBubble = new SoundStyle(CWRConstant.Asset + "Sounds/SporeBubble");
         public static SoundStyle PutSaddle = new SoundStyle(CWRConstant.Asset + "Sounds/PutSaddle");
+        public static SoundStyle ButtonZero = new SoundStyle(CWRConstant.Asset + "Sounds/ButtonZero");
     }
 }

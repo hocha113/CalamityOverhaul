@@ -99,7 +99,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             //给予每个蘑菇一个随机的初始速度，让它们向不同方向散开
             Vector2 velocity = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-1f, -1f));
             Projectile.NewProjectile(Projectile.GetSource_OnHit(target)
-                , target.Center, velocity, mushroomType, mushroomDamage, 0, Owner.whoAmI, Main.rand.NextFloat(-0.1f, 0.1f));
+                , target.Center, velocity, mushroomType, mushroomDamage
+                , 0, Owner.whoAmI, Main.rand.NextFloat(-0.1f, 0.1f), Main.rand.Next(6));
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -131,6 +132,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
+            if (Projectile.ai[1] > 0) {
+                Projectile.ai[1]--;
+            }
+
             Projectile.velocity *= 0.97f;
             Projectile.velocity.Y += Projectile.ai[0];
 
@@ -150,6 +155,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                 dust.velocity *= 0.3f;
                 dust.noGravity = true;
             }
+        }
+
+        public override bool? CanDamage() {
+            if (Projectile.ai[1] > 0) {
+                return false;
+            }
+            return base.CanDamage();
         }
 
         public override bool PreDraw(ref Color lightColor) {

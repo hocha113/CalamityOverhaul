@@ -1,7 +1,10 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameSystem;
+using InnoVault.PRT;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -85,6 +88,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             npc.npcSlots = 0;
             //每次喂食增加500点驯服值
             FeedValue += 500;
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            for (int i = 0; i < 66; i++) {
+                Vector2 spawnPos = npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
+                PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
+            }
         }
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
@@ -625,6 +637,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             isCrouch = modify.Crouch;
 
             if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
+                SoundEngine.PlaySound(CWRSound.ButtonZero);
                 modify.Crouch = !modify.Crouch;
             }
         }
@@ -639,9 +652,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         , drawPos.X, drawPos.Y, Color.White * sengs, Color.Black * sengs, Vector2.Zero, textScale);
 
             if (Open && modify.hoverNPC) {
-                Item itme = player.GetItem();
-                if (itme.type == ModContent.ItemType<MushroomSaddle>()) {
-                    VaultUtils.SimpleDrawItem(spriteBatch, itme.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
+                Item item = player.GetItem();
+                if (item.type == ModContent.ItemType<MushroomSaddle>()) {
+                    CWRItem.AddByDyeEffectByUI(item, item.CWR().DyeItemID);
+                    VaultUtils.SimpleDrawItem(spriteBatch, item.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
+                    CWRItem.CloseByDyeEffectByUI();
                 }
             }
         }

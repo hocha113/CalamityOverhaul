@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.OtherMods.Coralite;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Structures.DatIO;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -94,13 +96,18 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            if (CWRMod.Instance.coralite == null) {
-                return true;
+            //if (CWRMod.Instance.coralite == null) {
+            //    return true;
+            //}
+
+            //Point16 point = Main.MouseWorld.ToTileCoordinates16();
+
+            //MagikeCrossed.GetData(point).Domp();
+
+            for (int i = 0; i < 66; i++) {
+                Vector2 spawnPos = player.position + new Vector2(Main.rand.Next(229), Main.rand.Next(229));
+                PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
             }
-
-            Point16 point = Main.MouseWorld.ToTileCoordinates16();
-
-            MagikeCrossed.GetData(point).Domp();
 
             //Main.MouseWorld.ToTileCoordinates16().Domp();
             //if (player.altFunctionUse == 2) {

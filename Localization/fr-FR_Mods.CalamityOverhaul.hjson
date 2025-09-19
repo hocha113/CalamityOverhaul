@@ -760,6 +760,8 @@ Items: {
 			'''
 			Converts musket balls into high-speed bullets
 			Additionally fires a barrage of Destroyer Homing Missiles
+			Right click to roll dash and reload the magazine
+			The first bullet fired after rolling is converted into a Destroyer Grenade
 			"Carpet bombing"
 			''' */
 	}
