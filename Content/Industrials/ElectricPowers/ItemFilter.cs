@@ -230,12 +230,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             VaultUtils.SafeLoadItem(Item);
             float mode = 0.6f + 0.4f * hoverSengs;
             Color itemColor = new Color(mode, mode, mode, 1f) * sengs;
-            VaultUtils.SimpleDrawItem(spriteBatch, Item, DrawPosition + UIHitBox.Size() / 2, 1.2f + hoverSengs * 0.2f, 0f, itemColor);
+            VaultUtils.SimpleDrawItem(spriteBatch, Item, DrawPosition + UIHitBox.Size() / 2, 40, 1.2f + hoverSengs * 0.2f, 0f, itemColor);
         }
     }
 
     internal class ItemFilterUI : UIHandle
     {
+        [VaultLoaden(CWRConstant.UI + "ItemFilterUI")]
+        internal static Texture2D UITex;
         private bool CanOpen;
         internal float sengs;
         internal float hoverSengs;
@@ -283,7 +285,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
 
                 if (sengs < 0.2f) {
-                    DrawPosition = MousePosition;
+                    DrawPosition = MousePosition - UITex.Size() / 2f;
                 }
 
                 if (sengs < 1f) {
@@ -334,9 +336,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
         public override void Draw(SpriteBatch spriteBatch) {
             if (hoverSengs > 0) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.DraedonContactPanel.Value, 16, UIHitBox, Color.Gold * hoverSengs, Color.Aqua * hoverSengs, 1.01f, Vector2.Zero);
+                spriteBatch.Draw(UITex, DrawPosition + UITex.Size() / 2f, null, Color.BlueViolet with { A = 0 } * hoverSengs
+                    , 0, UITex.Size() / 2f, 1f + 0.02f * hoverSengs, SpriteEffects.None, 0);
             }
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.DraedonContactPanel.Value, 16, UIHitBox, Color.Azure, Color.Aqua, 1, Vector2.Zero);
+            spriteBatch.Draw(UITex, DrawPosition + UITex.Size() / 2f, null, Color.White * sengs, 0
+                , UITex.Size() / 2f, sengs, SpriteEffects.None, 0);
             foreach (var slot in Slots) {
                 slot.Draw(spriteBatch);
             }
