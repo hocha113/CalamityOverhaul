@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -65,12 +66,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 SpawnGemDust(8, -3);
             }
 
-            for (int i = 0; i < 10; i++) {
-                int shinyDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y)
-                    , Projectile.width, Projectile.height, DustID.GemDiamond, 0f, 0f, 100, default, 1.25f);
-                Main.dust[shinyDust].noGravity = true;
-                Main.dust[shinyDust].velocity *= 0.5f;
-                Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
+            if (!VaultUtils.isServer) {
+                var dye = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
+                for (int i = 0; i < 10; i++) {
+                    int shinyDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y)
+                        , Projectile.width, Projectile.height, DustID.GemDiamond, 0f, 0f, 100, default, 1.25f);
+                    Main.dust[shinyDust].noGravity = true;
+                    Main.dust[shinyDust].velocity *= 0.5f;
+                    Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
+                    Main.dust[shinyDust].shader = dye;
+                }
             }
 
             CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
@@ -78,11 +83,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         // 生成宝石光尘
         public void SpawnGemDust(int count, float velocityMultiplier) {
+            var dye = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
             for (int i = 0; i < count; i++) {
                 int shinyDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GemDiamond, 0f, 0f, 100, Main.DiscoColor, 2.25f);
                 Main.dust[shinyDust].noGravity = true;
                 Main.dust[shinyDust].velocity = Projectile.velocity.GetNormalVector() * velocityMultiplier;
                 Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
+                Main.dust[shinyDust].shader = dye;
             }
         }
 

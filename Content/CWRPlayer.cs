@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content
         /// 设置屏幕震荡模长
         /// </summary>
         /// <param name="mode"></param>
-        public void SetScreenShake(float mode) {
+        public void GetScreenShake(float mode) {
             if (ScreenShakeValue < mode)
                 ScreenShakeValue = mode;
         }

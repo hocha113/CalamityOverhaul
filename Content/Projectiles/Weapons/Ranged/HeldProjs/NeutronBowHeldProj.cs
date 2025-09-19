@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return true;
         }
         public override void SetRangedProperty() {
+            MaxFrame = 7;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             ForcedConversionTargetAmmoFunc = () => true;
             ISForcedConversionDrawAmmoInversion = true;
@@ -101,8 +102,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwner() {
             if (CanFire && CanSpanProj()) {
                 RightCharge();
-                VaultUtils.ClockFrame(ref Projectile.frame, 2, 6);
-                VaultUtils.ClockFrame(ref uiframe, 5, 6);
+                VaultUtils.ClockFrame(ref Projectile.frame, 2, MaxFrame - 1);
+                VaultUtils.ClockFrame(ref uiframe, 5, MaxFrame - 1);
             }
             else {
                 BowArrowDrawNum = 1;
@@ -135,7 +136,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            Owner.CWR().SetScreenShake(6.2f);
+            Owner.CWR().GetScreenShake(6.2f);
             AmmoTypes = ModContent.ProjectileType<EXNeutronArrow>();
             for (int i = 0; i < 3; i++) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy((-1 + i) * 0.25f)
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Item != null && !Item.IsAir && Item.type == NeutronBow.PType) {
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge / 60f * 80, uiframe);
             }
-            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 7), CanFire ? Color.White : lightColor
+            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, MaxFrame), CanFire ? Color.White : lightColor
                 , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 7), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

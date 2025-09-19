@@ -866,7 +866,13 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             if (canDrawSlashTrail) {
                 DrawSlashTrail();
             }
+            if (Item.Alives()) {
+                CWRItem.AddByDyeEffectByWorld(Projectile, Item.CWR().DyeItemID);
+            }
             DrawSwing(Main.spriteBatch, lightColor);
+            if (Item.Alives()) {
+                CWRItem.CloseByDyeEffectByWorld();
+            }
             return false;
         }
         #endregion

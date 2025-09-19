@@ -53,6 +53,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public bool BowArrowDrawBool = true;
         /// <summary>
+        /// 最大帧数，默认为1
+        /// </summary>
+        public int MaxFrame = 1;
+        /// <summary>
         /// 绘制箭矢的数量，默认值为1
         /// </summary>
         public int BowArrowDrawNum = 1;
@@ -133,7 +137,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             //计算目标姿势 (闲置和开火)
             int offsetY = 0;
             if (!VaultUtils.isServer) {
-                offsetY = TextureValue.Height / 10;
+                offsetY = TextureValue.Height / 10 / MaxFrame;
             }
             //-- 目标闲置姿势 --
             Vector2 idlePosition = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandheldDistance, offsetY).RotatedBy(Owner.fullRotation);

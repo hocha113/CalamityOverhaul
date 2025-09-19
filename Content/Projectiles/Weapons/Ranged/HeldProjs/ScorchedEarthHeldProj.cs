@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Owner.CWR().SetScreenShake(4);
+            Owner.CWR().GetScreenShake(4);
             SoundEngine.PlaySound(ScorchedEarth.ShootSound, Projectile.Center);
             CWRUtils.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
