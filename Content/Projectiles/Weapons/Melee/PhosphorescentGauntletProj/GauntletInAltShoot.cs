@@ -85,15 +85,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             SoundEngine.PlaySound(sound, Projectile.position);
             SpanDust(Projectile, 2);
             CWRNpc cwrNPC = target.CWR();
-            cwrNPC.PhosphorescentGauntletOnHitNum++;
+            cwrNPC.PhosphorescentGauntletHitCount++;
             int type = ModContent.ProjectileType<EXGauntlet>();
-            if (cwrNPC.PhosphorescentGauntletOnHitNum > 6 && Main.player[Projectile.owner].ownedProjectileCounts[type] <= 0) {
+            if (cwrNPC.PhosphorescentGauntletHitCount > 6 && Main.player[Projectile.owner].ownedProjectileCounts[type] <= 0) {
                 Vector2 randomRotVr = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2();
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center + randomRotVr * 1600
                     , randomRotVr.RotatedBy(MathHelper.Pi) * 15, type, Projectile.damage * 2, 0, Projectile.owner, target.Center.X, target.Center.Y);
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center + randomRotVr * -1600
                     , randomRotVr * 15, type, Projectile.damage * 2, 0, Projectile.owner, target.Center.X, target.Center.Y);
-                cwrNPC.PhosphorescentGauntletOnHitNum = 0;
+                cwrNPC.PhosphorescentGauntletHitCount = 0;
             }
             else {
                 float random = Main.rand.NextFloat(MathHelper.TwoPi);

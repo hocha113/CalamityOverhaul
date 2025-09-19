@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 磷光拳套攻击计数
         /// </summary>
-        public byte PhosphorescentGauntletOnHitNum = 0;
+        public byte PhosphorescentGauntletHitCount = 0;
         /// <summary>
         /// 携序之刃攻击计数
         /// </summary>
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content
         public CWRNpc CloneCWRNpc(CWRNpc cwr) {
             cwr.CreateHitPlayer = CreateHitPlayer;
             cwr.ContagionOnHitNum = ContagionOnHitNum;
-            cwr.PhosphorescentGauntletOnHitNum = PhosphorescentGauntletOnHitNum;
+            cwr.PhosphorescentGauntletHitCount = PhosphorescentGauntletHitCount;
             cwr.OrderbringerOnHitNum = OrderbringerOnHitNum;
             cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
@@ -252,12 +252,12 @@ namespace CalamityOverhaul.Content
 
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == CWRLoad.AstrumDeusHead) {
-                // 啊，经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
-                // 真是不可思议，怎么这么多年过去了，原灾厄那个bug竟然还没修复？
-                // 写这个Boss的程序员脑袋肯定有问题，性能优化根本不在他们的词典里
+                // 经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
+                // 怎么这么多年过去了，原灾厄那个bug竟然还没修复
+                // 写这个Boss的脑袋肯定有问题
                 // 一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
                 // DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
-                // 哇，n³复杂度，绝对是天才级别的优化
+                // n³复杂度，天才级别的优化
                 return false;
             }
             return base.SpecialOnKill(npc);

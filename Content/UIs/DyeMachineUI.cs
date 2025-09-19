@@ -281,10 +281,6 @@ namespace CalamityOverhaul.Content.UIs
         public override Texture2D SymbolTexAlt => DyeMachineAsset.OutputSymbolAlt;
 
         public override bool PreCheckLeft(Item heldItem) => heldItem.type == ItemID.None;
-
-        protected override void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
-            base.DrawItemWithEffect(spriteBatch, color);
-        }
     }
 
     #endregion

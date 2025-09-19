@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
             return base.RightClick(i, j, tile);
         }
+
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ItemID.DyeVat);
     }
 
     internal class DyeVatTP : TileProcessor
