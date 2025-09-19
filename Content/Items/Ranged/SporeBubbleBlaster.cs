@@ -36,9 +36,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             velocity *= Main.rand.NextFloat(0.8f, 1f);
             velocity = velocity.RotatedByRandom(0.12f);
             Vector2 targetPos = position + orgVelocity * 300;
-            if (Main.dayTime) {
-                damage /= 2;//在白天只造成一半的伤害
-            }
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, targetPos.X, targetPos.Y);
             return false;
         }
@@ -111,8 +108,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.timeLeft = 300;
             Projectile.friendly = true;
             Projectile.extraUpdates = 13;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
             Projectile.penetrate = -1;
         }
 
@@ -130,6 +125,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Poisoned, 30);
+            Projectile.damage = (int)(Projectile.damage * 0.9f);
         }
     }
 

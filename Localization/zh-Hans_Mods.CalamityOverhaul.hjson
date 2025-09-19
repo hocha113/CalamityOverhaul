@@ -1138,11 +1138,10 @@ Items: {
 	}
 
 	SporeBubbleBlaster: {
-		DisplayName: 孢子气泡爆破器
+		DisplayName: 喷菇炮
 		Tooltip:
 			'''
 			喷射一串孢子气流
-			在白天只造成50%伤害
 			'''
 	}
 
@@ -1151,7 +1150,6 @@ Items: {
 		Tooltip:
 			'''
 			喷射一圈孢子气流
-			在白天只造成50%伤害
 			'''
 	}
 

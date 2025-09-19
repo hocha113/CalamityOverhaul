@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -39,9 +40,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             for (int i = 0; i < 8; i++) {
                 velocity = velocity.RotatedBy(MathHelper.TwoPi / 8f * i);
                 Vector2 targetPos = position + velocity * 300;
-                if (Main.dayTime) {
-                    damage /= 2;//在白天只造成一半的伤害
-                }
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, targetPos.X, targetPos.Y);
             }
 
@@ -63,8 +61,15 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
         public override void PostInOwner() {
             if (CanFire) {
+                if (fireIndex != 0f) {
+                    OffsetPos = Vector2.Lerp(OffsetPos, VaultUtils.RandVr(16f), 0.2f);
+                }
+                else {
+                    OffsetPos = Vector2.Zero;
+                }
                 return;
             }
+            OffsetPos = Vector2.Zero;
             OnFire = true;
         }
         public override bool PreFiringShoot() {
@@ -73,19 +78,27 @@ namespace CalamityOverhaul.Content.Items.Magic
                 OnFire = false;
             }
             if (++fireIndex < 3) {
-                Item.useTime = 6;
+                Item.useTime = 10;
             }
             else {
                 fireIndex = 0;
-                Item.useTime = 32;
+                Item.useTime = 60;
             }
             return true;
         }
-        public override void FiringShoot() {
-            OrigItemShoot();
-        }
-        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            base.GunDraw(drawPos, ref lightColor);
+        public override void FiringShoot() => OrigItemShoot();
+        public override bool PreGunDraw(Vector2 drawPos, ref Color lightColor) {
+            if (fireIndex == 0f && CanFire) {
+                float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
+                Color color = Color.BlueViolet;
+                color.A = 0;
+                float slp = 1 + 0.2f * (Item.useTime - ShootCoolingValue) / Item.useTime;
+                Main.EntitySpriteDraw(TextureValue, drawPos, null, color
+                    , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
+                    , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            }
+            
+            return true;
         }
     }
 
@@ -98,8 +111,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.timeLeft = 300;
             Projectile.friendly = true;
             Projectile.extraUpdates = 13;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
             Projectile.penetrate = -1;
         }
 
@@ -117,6 +128,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Poisoned, 30);
+            Projectile.damage = (int)(Projectile.damage * 0.9f);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

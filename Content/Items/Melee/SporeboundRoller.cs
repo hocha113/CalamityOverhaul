@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 velocity = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-1f, -1f));
             Projectile.NewProjectile(Projectile.GetSource_OnHit(target)
                 , target.Center, velocity, mushroomType, mushroomDamage
-                , 0, Owner.whoAmI, Main.rand.NextFloat(-0.1f, 0.1f), Main.rand.Next(6));
+                , 0, Owner.whoAmI, Main.rand.NextFloat(-0.1f, 0.1f), Main.rand.Next(16));
         }
 
         public override bool PreDraw(ref Color lightColor) {
