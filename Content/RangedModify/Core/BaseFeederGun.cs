@@ -323,7 +323,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 初始化弹匣状态
         /// </summary>
         protected void InitializeMagazine() {
-            CWRItems cwrItems = Item.CWR();
+            CWRItem cwrItems = Item.CWR();
             if (cwrItems.MagazineContents == null) {
                 cwrItems.MagazineContents = new Item[cwrItems.AmmoCapacity];
                 for (int i = 0; i < cwrItems.MagazineContents.Length; i++) {
@@ -669,7 +669,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            CWRItems cwrItems = Item.CWR();
+            CWRItem cwrItems = Item.CWR();
             int quantity = LoadingQuantity > 0 ? LoadingQuantity : cwrItems.AmmoCapacity;
             if (BulletNum < cwrItems.AmmoCapacity) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);
@@ -709,7 +709,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 return;
             }
 
-            CWRItems cwrItems = Item.CWR();
+            CWRItem cwrItems = Item.CWR();
 
             if (cwrItems.MagazineContents.Length <= 0) {//弹匣已经空了
                 cwrItems.InitializeMagazine();

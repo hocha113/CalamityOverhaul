@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -88,14 +89,14 @@ namespace CalamityOverhaul.Content
     public class CWRProjectile : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
-        public CWRItems cwrItem;
+        public bool NotSubjectToSpecialEffects;
+        public bool Viscosity;
         public byte SpanTypes;
         public HitAttributeStruct HitAttribute;
         public IEntitySource Source;
-        private Vector2 offsetHitPos;
-        public bool NotSubjectToSpecialEffects;
-        public bool Viscosity;
+        private CWRItem cwrItem;
         private NPC hitNPC;
+        private Vector2 offsetHitPos;
         private float offsetHitRot;
         private float oldNPCRot;
         private float npcRotUpdateSengs;
@@ -124,6 +125,18 @@ namespace CalamityOverhaul.Content
                     }
                     else if (parent.Entity is Projectile monProj) {
                         DyeItemID = monProj.CWR().DyeItemID;
+                    }
+                }
+
+                if (source is EntitySource_ItemUse_WithAmmo shootSource) {
+                    if (shootSource.Item.type > ItemID.None) {
+                        DyeItemID = shootSource.Item.CWR().DyeItemID;
+                    }
+                    else if (shootSource.Player != null) {
+                        Item heldItem = shootSource.Player.GetItem();
+                        if (heldItem.type > ItemID.None) {
+                            DyeItemID = heldItem.CWR().DyeItemID;
+                        }
                     }
                 }
             }
@@ -224,6 +237,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {
+            cwrItem = null;
+            hitNPC = null;
+
             if (!projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -733,12 +749,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            CWRItems.AddByDyeEffectByWorld(projectile, DyeItemID);
+            CWRItem.AddByDyeEffectByWorld(projectile, DyeItemID);
             return true;
         }
 
         public override void PostDraw(Projectile projectile, Color lightColor) {
-            CWRItems.CloseByDyeEffectByWorld();
+            CWRItem.CloseByDyeEffectByWorld();
         }
     }
 }

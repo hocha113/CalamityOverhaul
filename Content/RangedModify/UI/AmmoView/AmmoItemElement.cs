@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI.AmmoView
                 }
 
                 if (keyRightPressState == KeyPressState.Pressed && leisure) {
-                    CWRItems cwrItem = CartridgeHolderUI.cwrWeapon;
+                    CWRItem cwrItem = CartridgeHolderUI.cwrWeapon;
                     SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
 
                     List<Item> newMagazine = [];

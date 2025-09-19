@@ -666,7 +666,7 @@ namespace CalamityOverhaul.Common
                 return false;
             }
 
-            CWRItems ritem = heldItem.CWR();
+            CWRItem ritem = heldItem.CWR();
             CWRPlayer modPlayer = drawPlayer.CWR();
             bool itemHasHeldProj = ritem.heldProjType > 0;
             if (ritem.hasHeldNoCanUseBool && itemHasHeldProj) {
@@ -755,7 +755,7 @@ namespace CalamityOverhaul.Common
                 return false;
             }
 
-            CWRItems ritem = heldItem.CWR();
+            CWRItem ritem = heldItem.CWR();
             CWRPlayer modPlayer = player.CWR();
             bool isHeld = ritem.isHeldItem || ritem.heldProjType > 0;
             if (isHeld) {

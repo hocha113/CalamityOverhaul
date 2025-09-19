@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
         public static CartridgeHolderUI Instance => UIHandleLoader.GetUIHandleOfType<CartridgeHolderUI>();
         public static Texture2D TextureValue;
         public static float JARSengs;
-        public static CWRItems cwrWeapon;
+        public static CWRItem cwrWeapon;
         public static Item targetWeapon;
         private Item heldItem => player.GetItem();
         private float otherPotData;
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             }
         }
 
-        private void DrawToolp(SpriteBatch spriteBatch, CWRItems cwrItem) {
+        private void DrawToolp(SpriteBatch spriteBatch, CWRItem cwrItem) {
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrWeapon.NumberBullets.ToString()
                 , DrawPosition.X + Weith + 2, DrawPosition.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"

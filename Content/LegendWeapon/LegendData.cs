@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         }
 
-        public static string GetWorldUpLines(CWRItems cwrItem) {
+        public static string GetWorldUpLines(CWRItem cwrItem) {
             string text = "";
             if (!cwrItem.LegendData.UpgradeTagNameIsEmpty && !cwrItem.LegendData.IsUpgradeWorld) {
                 string worldName = cwrItem.LegendData.UpgradeWorldName;
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return text;
         }
 
-        public static string GetLevelTrialPreText(CWRItems cwrItem, string key, string level) {
+        public static string GetLevelTrialPreText(CWRItem cwrItem, string key, string level) {
             string worldLine = GetWorldUpLines(cwrItem);
             string trialPreText = $"[c/00736d:{CWRLocText.GetTextValue(key) + " "}{level}]";
             if (worldLine == "") {

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     internal abstract class BaseHeldBox : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-        public CWRItems ModItem;
+        public CWRItem ModItem;
         public Vector2 DrawBoxOffsetPos;
         public int TargetItemID;
         /// <summary>

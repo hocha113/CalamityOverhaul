@@ -507,7 +507,7 @@ namespace CalamityOverhaul
                         WallToItem.Add(item.createWall, item.type);
                     }
 
-                    CWRItems cwrItem = item.CWR();
+                    CWRItem cwrItem = item.CWR();
 
                     string[] snyOmig = cwrItem.OmigaSnyContent;
                     if (snyOmig != null) {

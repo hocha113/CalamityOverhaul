@@ -505,7 +505,7 @@ namespace CalamityOverhaul
             return player.GetModPlayer<CWRPlayer>();
         }
 
-        public static CWRItems CWR(this Item item) {
+        public static CWRItem CWR(this Item item) {
             if (item.type == ItemID.None) {
                 string message = "ERROR: An Empty Transfer Occurred! The Value of Item.type is Zero!";
                 VaultUtils.Text(message, Color.Red);
@@ -513,7 +513,7 @@ namespace CalamityOverhaul
                 //throw new InvalidOperationException(message); // 明确终止执行，抛出异常              
                 return null;
             }
-            return item.GetGlobalItem<CWRItems>();
+            return item.GetGlobalItem<CWRItem>();
         }
 
         public static CWRProjectile CWR(this Projectile projectile) {

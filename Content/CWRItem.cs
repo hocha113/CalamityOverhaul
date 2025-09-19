@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content
         dragonBreath
     }
 
-    public class CWRItems : GlobalItem
+    public class CWRItem : GlobalItem
     {
         #region Data
         public override bool InstancePerEntity => true;
@@ -200,8 +200,8 @@ namespace CalamityOverhaul.Content
             ItemRebuildLoader.PostSetDefaultsEvent -= PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent -= OverModifyTooltip;
         }
-        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
-        public CWRItems CloneCWRItem(CWRItems cwr) {
+        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItem)base.Clone(from, to));
+        public CWRItem CloneCWRItem(CWRItem cwr) {
             cwr.ai = ai;
             cwr.closeCombat = closeCombat;
             cwr.MeleeCharge = MeleeCharge;
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content
 
         //调用在 ItemRebuildLoader.SetDefaults 之前
         public static void PreSetDefaults(Item item) {
-            CWRItems cwrItem = item.CWR();
+            CWRItem cwrItem = item.CWR();
             cwrItem.ai = new float[MaxAISlot];
             cwrItem.TargetLockAmmo = new Item();
             InitializeMagazine(cwrItem);
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content
         }
         //调用在 ItemRebuildLoader.SetDefaults 之后
         public static void PostSetDefaults(Item item) {
-            CWRItems cwrItem = item.CWR();
+            CWRItem cwrItem = item.CWR();
 
             if (cwrItem.AmmoCapacity == 0) {
                 cwrItem.AmmoCapacity = 1;
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content
 
             newAmmo.stack = addStack;
             if (newAmmo.type != ItemID.None) {
-                CWRItems cwrAmmo = newAmmo.CWR();
+                CWRItem cwrAmmo = newAmmo.CWR();
                 cwrAmmo.AmmoProjectileReturn = !isUnlimited;
             }
 
@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 将枪械的弹匣数据初始化
         /// </summary>
-        public static void InitializeMagazine(CWRItems cwrItem) {
+        public static void InitializeMagazine(CWRItem cwrItem) {
             cwrItem.AmmoProjectileReturn = true;
             cwrItem.IsKreload = false;
             cwrItem.NumberBullets = 0;
@@ -509,8 +509,8 @@ namespace CalamityOverhaul.Content
 
         public override void SplitStack(Item destination, Item source, int numToTransfer) {
             if (destination.type != ItemID.None && source.type != ItemID.None) {
-                CWRItems cwrDestination = destination.CWR();
-                CWRItems cwrSource = source.CWR();
+                CWRItem cwrDestination = destination.CWR();
+                CWRItem cwrSource = source.CWR();
                 if (cwrDestination.StorageUE && cwrSource.StorageUE) {
                     cwrDestination.UEValue = cwrSource.UEValue;
                     cwrDestination.UEValue = MathHelper.Clamp(cwrDestination.UEValue, 0, cwrDestination.ConsumeUseUE);
@@ -522,8 +522,8 @@ namespace CalamityOverhaul.Content
 
         public override void OnStack(Item destination, Item source, int numToTransfer) {
             if (destination.type != ItemID.None && source.type != ItemID.None) {
-                CWRItems cwrDestination = destination.CWR();
-                CWRItems cwrSource = source.CWR();
+                CWRItem cwrDestination = destination.CWR();
+                CWRItem cwrSource = source.CWR();
                 if (cwrDestination.StorageUE && cwrSource.StorageUE) {
                     float addUE = Math.Min(cwrSource.UEValue, cwrSource.MaxUEValue) * numToTransfer;
                     if (cwrSource.UEValue < addUE) {
@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnConsumeItem(Item item, Player player) {
             if (item.type != ItemID.None) {
-                CWRItems cwrItem = item.CWR();
+                CWRItem cwrItem = item.CWR();
                 if (cwrItem.StorageUE) {
                     cwrItem.UEValue -= cwrItem.ConsumeUseUE;
                     cwrItem.UEValue = MathHelper.Clamp(cwrItem.UEValue, 0, int.MaxValue);

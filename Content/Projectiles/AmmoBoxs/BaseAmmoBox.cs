@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public virtual bool CanClick(Item item) => item.type != ItemID.None && item.CWR().HasCartridgeHolder;
 
         public virtual void Preprocessing(Player player, Item item) {
-            CWRItems cwrItem = item.CWR();
+            CWRItem cwrItem = item.CWR();
             cwrItem.NumberBullets = cwrItem.AmmoCapacity;
             cwrItem.IsKreload = true;
             cwrItem.NoKreLoadTime = 30;
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             cwrItem.SetMagazine(list);
         }
 
-        public virtual bool ClickBehavior(Player player, CWRItems cwr) => true;
+        public virtual bool ClickBehavior(Player player, CWRItem cwr) => true;
 
         public override void AI() {
             Projectile.timeLeft = 2;

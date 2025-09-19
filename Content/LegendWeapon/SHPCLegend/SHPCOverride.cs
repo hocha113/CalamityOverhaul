@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (item.type != ModContent.ItemType<SHPC>()) {
                 return 0;
             }
-            CWRItems cwrItem = item.CWR();
+            CWRItem cwrItem = item.CWR();
             if (cwrItem == null) {
                 return 0;
             }

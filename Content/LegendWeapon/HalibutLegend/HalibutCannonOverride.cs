@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (item.type != ModContent.ItemType<HalibutCannon>()) {
                 return 0;
             }
-            CWRItems cwrItem = item.CWR();
+            CWRItem cwrItem = item.CWR();
             if (cwrItem == null) {
                 return 0;
             }

@@ -566,21 +566,21 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 MountDrawPlayer();
             }
             if (DyeItemID > 0) {
-                CWRItems.AddByDyeEffectByWorld(npc, DyeItemID);
+                CWRItem.AddByDyeEffectByWorld(npc, DyeItemID);
             }
             return null;
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (DyeItemID > 0) {
-                CWRItems.CloseByDyeEffectByWorld();//结束关于Draw开启的着色效果
+                CWRItem.CloseByDyeEffectByWorld();//结束关于Draw开启的着色效果
             }
 
             if (SaddleItem.Alives()) {
-                CWRItems.AddByDyeEffectByWorld(npc, SaddleItem.CWR().DyeItemID);
+                CWRItem.AddByDyeEffectByWorld(npc, SaddleItem.CWR().DyeItemID);
                 spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
-                CWRItems.CloseByDyeEffectByWorld();
+                CWRItem.CloseByDyeEffectByWorld();
             }
             return true;
         }

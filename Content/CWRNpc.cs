@@ -100,6 +100,10 @@ namespace CalamityOverhaul.Content
         /// 是否受到灵魂火debuff
         /// </summary>
         public bool SoulfireExplosion;
+        /// <summary>
+        /// 受到的染料物品ID
+        /// </summary>
+        public int DyeItemID;
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
@@ -404,7 +408,7 @@ namespace CalamityOverhaul.Content
                     continue;
                 }
                 Item newItem = new Item(item.type);
-                CWRItems cwrItem = newItem.CWR();
+                CWRItem cwrItem = newItem.CWR();
                 if (cwrItem.HasCartridgeHolder || cwrItem.heldProjType > 0 || cwrItem.isHeldItem) {
                     item.SetDefaults(item.type);
                 }
@@ -418,12 +422,22 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (DyeItemID > 0) {
+                CWRItem.AddByDyeEffectByWorld(npc, DyeItemID);
+            }
+            return true;
+        }
+
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (IceParclose) {
                 Texture2D value = CWRAsset.IceParcloseAsset.Value;
                 float slp = npc.scale * (npc.height / (float)value.Height) * 2;
                 float sengs = 0.3f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
                 spriteBatch.Draw(value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
+            }
+            if (DyeItemID > 0) {
+                CWRItem.CloseByDyeEffectByWorld();
             }
         }
 

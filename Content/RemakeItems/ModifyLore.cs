@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         //暂时全部禁用，在写手把那些故事重写完成之前不要进行修改
         public override bool? CanCWROverride() => false;// id == TargetID && Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese;
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRItems.OverModifyTooltip(item, tooltips);
+            CWRItem.OverModifyTooltip(item, tooltips);
             KeyboardState state = Keyboard.GetState();
             if ((state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift))) {
                 string newContent = Language.GetTextValue($"Mods.CalamityOverhaul.ModifyLores.{Name}.Legend");

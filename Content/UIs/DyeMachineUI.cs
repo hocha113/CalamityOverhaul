@@ -243,9 +243,9 @@ namespace CalamityOverhaul.Content.UIs
 
         protected virtual void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
             if (Item.type > ItemID.None) {
-                CWRItems.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
+                CWRItem.AddByDyeEffectByUI(Item, Item.CWR().DyeItemID);
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
-                CWRItems.CloseByDyeEffectByUI();
+                CWRItem.CloseByDyeEffectByUI();
                 DrawItemStack(spriteBatch);
             }
         }

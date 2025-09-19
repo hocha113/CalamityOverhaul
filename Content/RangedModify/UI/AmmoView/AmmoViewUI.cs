@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI.AmmoView
         public float _sengs;
         public bool ItemVsActive;
 
-        public void LoadAmmos(CWRItems cwrItem) {
+        public void LoadAmmos(CWRItem cwrItem) {
             ammoItemElements.Clear();
             for (int i = cwrItem.MagazineContents.Length - 1; i >= 0; i--) {//弹匣集合是正序的，但按照倒序去读，子弹先进先出
                 Item ammo = cwrItem.MagazineContents[i];

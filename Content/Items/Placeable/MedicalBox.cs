@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override string Texture => CWRConstant.Item + "Placeable/MedicalBox";
         public override bool CanClick(Item item) => true;
         public override void Preprocessing(Player player, Item item) { }
-        public override bool ClickBehavior(Player player, CWRItems cwr) {
+        public override bool ClickBehavior(Player player, CWRItem cwr) {
             _ = SoundEngine.PlaySound(SoundID.Item3, Projectile.Center);
             Owner.Heal(150);
             for (int i = 0; i < 30; i++) {

@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.RangedModify
             if (!CWRLoad.ItemIsGun[weapon.type]) {
                 return;
             }
-            CWRItems cwrItem = weapon.CWR();
+            CWRItem cwrItem = weapon.CWR();
             if (!cwrItem.HasCartridgeHolder) {
                 return;
             }
