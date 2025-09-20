@@ -266,11 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
 
             if (item.CWR().DyeItemID > 0) {
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
-                //应用染色
-                GameShaders.Armor.GetShaderFromItemId(item.CWR().DyeItemID)?.Apply(item, new Terraria.DataStructures.DrawData?());
+                CWRItem.AddByDyeEffectByUI(item, item.CWR().DyeItemID);
             }
 
             if (Main.LocalPlayer.CWR().HeldMurasamaBool && item == Main.LocalPlayer.GetItem()) {

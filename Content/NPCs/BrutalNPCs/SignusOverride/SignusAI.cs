@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
 
             //天顶世界潜行机制
             HandleStealth();
-            CurrentState.Domp();
+
             //主AI状态机
             switch (CurrentState) {
                 case AIState.SpawnAnimation:

@@ -1,5 +1,7 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Projectiles.Boss;
+using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
@@ -7,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -32,6 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private int frame;
         public bool Sleep;
         public bool FirstChat;
+        public bool BuySlimySaddle;
         public override bool CanOverride() => !Main.hardMode;//只在肉前生效
 
         public override void SetStaticDefaults() {
@@ -154,8 +158,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (!item.Alives()) {
                     continue;
                 }
+                if (item.type == ItemID.SlimySaddle) {
+                    BuySlimySaddle = true;
+                    continue;
+                }
                 item.TurnToAir();
-
+            }
+            for (int i = 0; i < items.Length; i++) {
                 if (i == 0) {
                     items[i] = new Item(ItemID.GlowingMushroom) {
                         value = 1000
@@ -181,9 +190,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     continue;
                 }
 
-                if (i == 4) {
-                    items[i] = new Item(ModContent.ItemType<SporeBubbleBlaster>()) {
-                        value = 80000
+                if (i != 4) {
+                    continue;
+                }
+
+                items[i] = new Item(ModContent.ItemType<SporeBubbleBlaster>()) {
+                    value = 80000
+                };
+                items[i + 1] = new Item(ModContent.ItemType<TomeofFungalDecay>()) {
+                    value = 82000
+                };
+                items[i + 2] = new Item(ModContent.ItemType<SporeboundRoller>()) {
+                    value = 70000
+                };
+                if (Main.LocalPlayer.inventory.Any(item => item.type == ItemID.SlimySaddle)) {
+                    items[i + 3] = new Item(ModContent.ItemType<MushroomSaddle>()) {
+                        value = 170000
                     };
                 }
             }
