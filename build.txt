@@ -1,5 +1,5 @@
 ﻿displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.5, InnoVault@1.9.57
+modReferences = CalamityMod@2.0.5, InnoVault@1.9.63
 sortAfter = CalamityMod, InnoVault
 homepage = https://calamity-overhaul.cc
 author = HoCha113

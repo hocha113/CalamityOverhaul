@@ -92,11 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             NetAISend();
         }
 
-        public void SaveData(TagCompound tag) {
-            tag["root"] = "root";
-            if (FeedValue <= 0f) {
-                return;
-            }
+        public override void SaveData(TagCompound tag) {
             tag["a"] = npc.position;
             tag["b"] = npc.life;
             tag["c"] = npc.lifeMax;
@@ -110,7 +106,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             tag["k"] = ItemIO.Save(SaddleItem);
         }
 
-        public void LoadData(TagCompound tag) {
+        public override void LoadData(TagCompound tag) {
             if (tag.ContainsKey("a")) {
                 npc.position = tag.Get<Vector2>("a");
             }
@@ -142,9 +138,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 string playerName = tag.GetString("j");
                 Player player = null;
                 foreach (var p in Main.player) {
-                    if (!p.active) {
-                        continue;
-                    }
                     if (p.name != playerName) {
                         continue;
                     }
@@ -155,7 +148,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (tag.ContainsKey("k")) {
                 SaddleItem = ItemIO.Load(tag.Get<TagCompound>("k"));
             }
+            SetFeedState();//载入进地图时设置一次驯服状态，防止有一瞬间会进入Boss状态
         }
+
+        public override bool NeedSaving() => SaddleItem.Alives() || DyeItemID > ItemID.None;
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
             FeedValue = 0f;
@@ -222,13 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return false;
         }
 
-        public override bool AI() {
-            //当FeedValue大于0时，进入驯服状态
-            if (FeedValue <= 0f) {
-                //如果不在驯服状态，则执行原版AI
-                return true;
-            }
-
+        public void SetFeedState() {
             npc.timeLeft = 1800;
             npc.ModNPC.Music = -1;
             npc.BossBar = ModContent.GetInstance<CrabulonFriendBar>();
@@ -236,6 +226,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             npc.boss = false;
             npc.friendly = true;
             npc.damage = 0;
+            if (NeedSaving()) {
+                npc.npcSlots = 0f;
+            }
+            else {
+                npc.npcSlots = 2f;
+            }
+        }
+
+        public override bool AI() {
+            //当FeedValue大于0时，进入驯服状态
+            if (FeedValue <= 0f) {
+                //如果不在驯服状态，则执行原版AI
+                return true;
+            }
+
+            SetFeedState();
 
             //如果没有找到可跟随的玩家，则原地减速并进入站立动画
             if (!Owner.Alives()) {
@@ -251,6 +257,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
             if (ai[8] > 0) {
                 ai[8]--;
+            }
+            if (ai[10] > 0) {
+                ai[10]--;
             }
 
             if (dontTurnTo > 0) {
@@ -409,6 +418,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (targetPos.Y < npc.Bottom.Y) {
                 ai[7] = 110;
+            }
+            else {
+                if (npc.collideY) {//很奇妙的一个判断时机，加了后就正常很多了
+                    ai[10] = 10;
+                }
             }
 
             return false;
@@ -633,11 +647,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool? CanFallThroughPlatforms() {
-            if (Mount && Owner.holdDownCardinalTimer[0] > 2) {
+            if (Mount && Owner.Alives() && Owner.holdDownCardinalTimer[0] > 2) {
                 return true;
             }
             if (ai[7] > 0) {
                 return false;
+            }
+            if (ai[10] > 0) {
+                return true;
             }
             return null;
         }
