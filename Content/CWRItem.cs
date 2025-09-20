@@ -442,6 +442,7 @@ namespace CalamityOverhaul.Content
                 writer.Write(ai[i]);
             }
 
+            writer.Write(DyeItemID);
             writer.Write(StorageUE);
             writer.Write(UEValue);
 
@@ -484,6 +485,7 @@ namespace CalamityOverhaul.Content
                 ai[i] = reader.ReadSingle();
             }
 
+            DyeItemID = reader.ReadInt32();
             StorageUE = reader.ReadBoolean();
             UEValue = reader.ReadSingle();
 
@@ -547,7 +549,14 @@ namespace CalamityOverhaul.Content
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
-            tag.Add("_MeleeCharge", MeleeCharge);
+            if (DyeItemID > ItemID.None) {
+                tag.Add("_DyeItemID", DyeItemID);
+            }
+
+            if (MeleeCharge != 0f) {
+                tag.Add("_MeleeCharge", MeleeCharge);
+            }
+            
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
                     Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转
@@ -579,6 +588,10 @@ namespace CalamityOverhaul.Content
         }
 
         public override void LoadData(Item item, TagCompound tag) {
+            if (!tag.TryGet("_DyeItemID", out DyeItemID)) {
+                DyeItemID = 0;
+            }
+
             if (!tag.TryGet("_MeleeCharge", out MeleeCharge)) {
                 MeleeCharge = 0;
             }
