@@ -35,8 +35,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private int frame;
         public bool Sleep;
         public bool FirstChat;
-        public bool BuySlimySaddle;
-        public override bool CanOverride() => !Main.hardMode;//只在肉前生效
 
         public override void SetStaticDefaults() {
             ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
@@ -135,80 +133,93 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool AI() {
-            if (Sleep) {
-                npc.velocity.Y += 0.12f;
-                npc.velocity.X *= 0.98f;
-
-                if (npc.velocity.X > 0.1f) {
-                    npc.direction = npc.spriteDirection = Math.Sign(npc.velocity.X);
-                }
-                else {
-                    npc.velocity.X = 0;
-                }
-
-                VaultUtils.ClockFrame(ref frame, 20, 1);
-                return false;
+            if (!Sleep) {
+                return true;
             }
-            return true;
+
+            npc.velocity.Y += 0.12f;
+            npc.velocity.X *= 0.98f;
+
+            if (npc.velocity.X > 0.1f) {
+                npc.direction = npc.spriteDirection = Math.Sign(npc.velocity.X);
+            }
+            else {
+                npc.velocity.X = 0;
+            }
+
+            VaultUtils.ClockFrame(ref frame, 20, 1);
+            return false;
         }
 
         public override void ModifyActiveShop(string shopName, Item[] items) {//去他妈的模组兼容性
+            List<Item> origItems = [];//原生的物品将被存储于此
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
                 if (!item.Alives()) {
                     continue;
                 }
-                if (item.type == ItemID.SlimySaddle) {
-                    BuySlimySaddle = true;
-                    continue;
-                }
+                origItems.Add(item.Clone());
                 item.TurnToAir();
             }
-            for (int i = 0; i < items.Length; i++) {
-                if (i == 0) {
-                    items[i] = new Item(ItemID.GlowingMushroom) {
-                        value = 1000
-                    };
-                }
-                else if (i == 1) {
-                    items[i] = new Item(ItemID.MushroomGrassSeeds) {
-                        value = 55000
-                    };
-                }
-                else if (i == 2) {
-                    items[i] = new Item(ItemID.MushroomDye) {
-                        value = 10000
-                    };
-                }
-                else if (i == 3) {
-                    items[i] = new(ModContent.ItemType<FungalFeed>()) {
-                        value = 150000
-                    };
-                }
 
-                if (!Main.LocalPlayer.ZoneGlowshroom) {
-                    continue;
-                }
+            int index = 0;
+            items[index] = new Item(ItemID.GlowingMushroom) {
+                value = 1000
+            };
+            index++;
+            items[index] = new Item(ItemID.MushroomGrassSeeds) {
+                value = 55000
+            };
+            index++;
+            items[index] = new(ModContent.ItemType<FungalFeed>()) {
+                value = 150000
+            };
+            index++;
 
-                if (i != 4) {
-                    continue;
-                }
-
-                items[i] = new Item(ModContent.ItemType<SporeBubbleBlaster>()) {
+            if (Main.LocalPlayer.ZoneGlowshroom) {
+                items[index] = new Item(ModContent.ItemType<SporeBubbleBlaster>()) {
                     value = 80000
                 };
-                items[i + 1] = new Item(ModContent.ItemType<TomeofFungalDecay>()) {
+                index++;
+                items[index] = new Item(ModContent.ItemType<TomeofFungalDecay>()) {
                     value = 82000
                 };
-                items[i + 2] = new Item(ModContent.ItemType<SporeboundRoller>()) {
+                index++;
+                items[index] = new Item(ModContent.ItemType<SporeboundRoller>()) {
                     value = 70000
                 };
+                index++;
+                if (NPC.downedBoss3) {
+                    items[index] = new Item(ModContent.ItemType<FungalRevolver>()) {
+                        value = 120000
+                    };
+                    index++;
+                }
                 if (Main.LocalPlayer.inventory.Any(item => item.type == ItemID.SlimySaddle)) {
-                    items[i + 3] = new Item(ModContent.ItemType<MushroomSaddle>()) {
+                    items[index] = new Item(ModContent.ItemType<MushroomSaddle>()) {
                         value = 170000
                     };
+                    index++;
                 }
             }
+
+            if (!Main.hardMode) {
+                items[index] = new Item(ItemID.MushroomDye) {
+                    value = 10000
+                };
+                index++;
+                return;//在肉后才把原生物品添加回去
+            }
+
+            foreach (var item in origItems) {
+                items[index] = item.Clone();
+                index++;
+            }
+
+            items[index] = new Item(ItemID.MushroomDye) {
+                value = 10000
+            };
+            index++;
         }
 
         public override bool? CanBeHitByNPC(NPC attacker) {
@@ -240,6 +251,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return;
             }
 
+            if (Main.hardMode && Main.rand.NextBool()) {
+                return;//下面的对话在肉后有50%概率生效
+            }
+
             if (FirstChat) {
                 FirstChat = false;//完成了第一次对话
 
@@ -254,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return;
             }
 
-            WeightedRandom<string> randomChat = new WeightedRandom<string>();
+            WeightedRandom<string> randomChat = new();
             for (int i = 0; i < 9; i++) {
                 randomChat.Add(Chats[i].Value);
             }

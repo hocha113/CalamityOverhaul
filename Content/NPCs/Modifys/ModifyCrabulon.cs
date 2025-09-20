@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             CrabulonPlayer.IsMount = false;
             CrabulonPlayer.MountDraw = false;
 
-            if (Main.hardMode || VaultUtils.isClient || FeedValue > 0f) {
+            if (VaultUtils.isClient || FeedValue > 0f) {
                 return null;
             }
 
