@@ -209,10 +209,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public override void PreSetRangedProperty() {
             //不 要 在 服 务 器 上 访 问 图 片
             if (!VaultUtils.isServer && VaultLoad.LoadenContent && TextureValue != null) {
-                HandheldDistance = TextureValue.Width / 2;
+                HandheldDistance = MathHelper.Max(TextureValue.Width / 2, 12);//距离最小为12
             }
             else {
-                HandheldDistance = 6;
+                HandheldDistance = 12;
             }
         }
 
