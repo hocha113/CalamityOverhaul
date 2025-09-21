@@ -773,93 +773,26 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private static bool _isAddByDyeEffectByUI;
-        /// <summary>
-        /// 添加染色效果，一定要在合适的时候调用 <see cref="CloseByDyeEffectByUI"/> 关闭效果
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="byDye"></param>
-        public static void AddByDyeEffectByUI(Entity entity, int byDye) {
-            if (byDye <= 0) {
-                return;
-            }
-            if (_isAddByDyeEffectByUI) {
-                CloseByDyeEffectByUI();
-            }
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
-                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
-            //应用染色
-            GameShaders.Armor.GetShaderFromItemId(byDye)?.Apply(entity, new Terraria.DataStructures.DrawData?());
-            _isAddByDyeEffectByUI = true;
-        }
-        /// <summary>
-        /// 关闭染色效果
-        /// </summary>
-        /// <param name="cwr"></param>
-        public static void CloseByDyeEffectByUI() {
-            if (!_isAddByDyeEffectByUI) {
-                return;
-            }           
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
-            _isAddByDyeEffectByUI = false;
-        }
-        private static bool _isAddByDyeEffectByWorld;
-        /// <summary>
-        /// 添加染色效果，一定要在合适的时候调用 <see cref="CloseByDyeEffectByWorld"/> 关闭效果
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="byDye"></param>
-        public static void AddByDyeEffectByWorld(Entity entity, int byDye) {
-            if (byDye <= 0) {
-                return;
-            }
-            if (_isAddByDyeEffectByWorld) {
-                CloseByDyeEffectByWorld();
-            }
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
-                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-            //应用染色
-            GameShaders.Armor.GetShaderFromItemId(byDye)?.Apply(entity, new Terraria.DataStructures.DrawData?());
-            _isAddByDyeEffectByWorld = true;
-        }
-        /// <summary>
-        /// 关闭染色效果
-        /// </summary>
-        /// <param name="cwr"></param>
-        public static void CloseByDyeEffectByWorld() {
-            if (!_isAddByDyeEffectByWorld) {
-                return;
-            }
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
-            _isAddByDyeEffectByWorld = false;
-        }
-
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            AddByDyeEffectByUI(item, DyeItemID);
+            item.BeginDyeEffectForUI(DyeItemID);
             return true;
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            CloseByDyeEffectByUI();
+            item.EndDyeEffectForUI();
         }
 
         public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            AddByDyeEffectByWorld(item, DyeItemID);
+            item.BeginDyeEffectForWorld(DyeItemID);
             return true;
         }
 
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
-            CloseByDyeEffectByWorld();
+            item.EndDyeEffectForWorld();
         }
     }
 }

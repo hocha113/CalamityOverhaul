@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.UIs;
+using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -161,11 +162,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Color drawColor = Color.Lerp(baseColor, Color.Cyan, pulse * 0.4f);
 
             if (DyeSlotItem.type > ItemID.None) {
-                CWRItem.AddByDyeEffectByWorld(item, DyeSlotItem.type);
+                item.BeginDyeEffectForWorld(DyeSlotItem.type);
             }
             VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemDrawPos, Width / 2, scale, rotation, drawColor);
             if (DyeSlotItem.type > ItemID.None) {
-                CWRItem.CloseByDyeEffectByWorld();
+                item.EndDyeEffectForWorld();
             }
         }
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();

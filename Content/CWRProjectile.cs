@@ -749,12 +749,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            CWRItem.AddByDyeEffectByWorld(projectile, DyeItemID);
+            projectile.BeginDyeEffectForWorld(DyeItemID);
             return true;
         }
 
         public override void PostDraw(Projectile projectile, Color lightColor) {
-            CWRItem.CloseByDyeEffectByWorld();
+            projectile.EndDyeEffectForWorld();
         }
     }
 }

@@ -321,9 +321,9 @@ namespace CalamityOverhaul.Content.UIs
             if (Open && modify.hoverNPC) {
                 Item item = player.GetItem();
                 if (item.type == ModContent.ItemType<MushroomSaddle>()) {
-                    CWRItem.AddByDyeEffectByUI(item, item.CWR().DyeItemID);
+                    item.BeginDyeEffectForUI(item.CWR().DyeItemID);
                     VaultUtils.SimpleDrawItem(spriteBatch, item.type, MousePosition + new Vector2(0, 32), 32, 1f, 0, Color.White);
-                    CWRItem.CloseByDyeEffectByUI();
+                    item.EndDyeEffectForUI();
                 }
             }
         }

@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 MountDrawPlayer();
             }
             if (DyeItemID > 0) {
-                CWRItem.AddByDyeEffectByWorld(npc, DyeItemID);
+                npc.BeginDyeEffectForWorld(DyeItemID);
             }
             if (ai[9] > 0) {
                 npc.gfxOffY = ai[9];
@@ -708,14 +708,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (DyeItemID > 0) {
-                CWRItem.CloseByDyeEffectByWorld();//结束关于Draw开启的着色效果
+                npc.EndDyeEffectForWorld();
             }
 
             if (SaddleItem.Alives()) {
-                CWRItem.AddByDyeEffectByWorld(npc, SaddleItem.CWR().DyeItemID);
+                npc.BeginDyeEffectForWorld(SaddleItem.CWR().DyeItemID);
                 spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16 + npc.gfxOffY) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
-                CWRItem.CloseByDyeEffectByWorld();
+                npc.EndDyeEffectForWorld();
             }
             return true;
         }

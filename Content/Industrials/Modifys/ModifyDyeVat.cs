@@ -63,11 +63,11 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Vector2 itemDrawPos = drawPosition + new Vector2(animOffsetX, animOffsetY);
 
             if (DyeSlotItem.type > ItemID.None) {
-                CWRItem.AddByDyeEffectByWorld(item, DyeSlotItem.type);
+                item.BeginDyeEffectForWorld(DyeSlotItem.type);
             }
             VaultUtils.SimpleDrawItem(spriteBatch, item.type, itemDrawPos, Width / 2, 1f, rotation, drawColor);
             if (DyeSlotItem.type > ItemID.None) {
-                CWRItem.CloseByDyeEffectByWorld();
+                item.EndDyeEffectForWorld();
             }
         }
     }

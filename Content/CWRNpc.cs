@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (DyeItemID > 0) {
-                CWRItem.AddByDyeEffectByWorld(npc, DyeItemID);
+                npc.BeginDyeEffectForWorld(DyeItemID);
             }
             return true;
         }
@@ -437,7 +437,7 @@ namespace CalamityOverhaul.Content
                 spriteBatch.Draw(value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
             }
             if (DyeItemID > 0) {
-                CWRItem.CloseByDyeEffectByWorld();
+                npc.EndDyeEffectForWorld();
             }
         }
 

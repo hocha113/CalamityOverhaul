@@ -867,11 +867,11 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 DrawSlashTrail();
             }
             if (Item.Alives()) {
-                CWRItem.AddByDyeEffectByWorld(Projectile, Item.CWR().DyeItemID);
+                Projectile.BeginDyeEffectForWorld(Item.CWR().DyeItemID);
             }
             DrawSwing(Main.spriteBatch, lightColor);
             if (Item.Alives()) {
-                CWRItem.CloseByDyeEffectByWorld();
+                Projectile.EndDyeEffectForWorld();
             }
             return false;
         }
