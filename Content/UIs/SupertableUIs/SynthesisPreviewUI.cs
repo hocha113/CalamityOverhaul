@@ -78,9 +78,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (CWRUI.HoverItem.type == ModContent.ItemType<DarkMatterBall>()) {
                 OmigaSnyContent = SupertableRecipeDate.FullItems_DarkMatterBall2;
             }
-            else if (CWRUI.HoverItem.type == ModContent.ItemType<CreativeUEPipeline>()) {
-                OmigaSnyContent = SupertableRecipeDate.FullItems_CreativePipeline2;
-            }
         }
 
         public override void Update() {

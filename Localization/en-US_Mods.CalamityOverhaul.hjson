@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1023,22 +1023,12 @@ Items: {
 	}
 
 	UEPipeline: {
-		DisplayName: Energy Input Pipeline
+		DisplayName: Energy Pipeline
 		Tooltip:
 			'''
 			Used for transmitting electrical energy
 			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
 			Connects to generators and other power sources to transfer energy to batteries or electrical devices
-			'''
-	}
-
-	UEPipelineInput: {
-		DisplayName: Energy Extraction Pipeline
-		Tooltip:
-			'''
-			Used for transmitting electrical energy
-			Right-click to quickly dismantle and retrieve the pipeline at the cursor position
-			Extracts energy from batteries and other storage units to supply electrical devices
 			'''
 	}
 

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -70,17 +71,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     /// <summary>
     /// 无限电力的创造管道的逻辑核心
     /// </summary>
-    internal class CreativeUEPipelineTP : UEPipelineInputTP
+    [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
+    internal class CreativeUEPipelineTP : UEPipelineTP
     {
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCreative { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCreativeCorner { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCreativeCross { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCreativeChannel { get; private set; }
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
         public static Asset<Texture2D> PipelineCreativeThreeCrutches { get; private set; }
         public override int TargetTileID => ModContent.TileType<CreativeUEPipelineTile>();
         public override int TargetItem => ModContent.ItemType<CreativeUEPipeline>();
@@ -95,102 +92,85 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
+        /// <summary>
+        /// 绘制连接臂的通用方法，使用创造模式贴图
+        /// </summary>
+        private void DrawCreativeArm(PipelineSideState side, SpriteBatch spriteBatch, bool drawSide) {
+            if (side.coreTP == null || side.externalTP == null) {
+                return;
+            }
+
+            Vector2 drawPos = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
+            float drawRot = side.Offset.ToVector2().ToRotation();
+            Vector2 orig = PipelineCreativeChannel.Size() / 2;
+
+            if (!drawSide) {
+                //使用创造管道的能量贴图 (紫色)
+                spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos + orig, null, BaseColor * (MachineData.UEvalue / 10f), drawRot, orig, 1, SpriteEffects.None, 0);
+            }
+            else {
+                //使用基础管道的侧边贴图来绘制光照和轮廓
+                spriteBatch.Draw(PipelineChannelSide.Value, drawPos + orig, null, Lighting.GetColor(Position.ToPoint()), drawRot, orig, 1, SpriteEffects.None, 0);
+            }
+        }
+
         internal void HideRenderDraw(SpriteBatch spriteBatch) {
-            if (Decussation) {
-                return;//十字交叉下不能进行边缘绘制
+            if (Shape == PipelineShape.Cross) {
+                return;
             }
             foreach (var side in SideState) {
-                if (side.canDraw && side.linkID != 2) {//链接其他时绘制在后面
-                    if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
-                        return;
-                    }
-
-                    Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
-                    float drawRot = side.Offset.ToVector2().ToRotation();
-
-                    Vector2 orig = PipelineCreativeChannel.Size() / 2;
-                    Color color = side.coreTP.BaseColor * (side.coreTP.MachineData.UEvalue / 10f);
-
-                    spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos2 + orig, null, color
-                        , drawRot, orig, 1, SpriteEffects.None, 0);
+                if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
+                    DrawCreativeArm(side, spriteBatch, false);
                 }
             }
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            if (Decussation) {
-                return;//十字交叉下不能进行边缘绘制
+            if (Shape == PipelineShape.Cross) {
+                return;
             }
             foreach (var side in SideState) {
-                if (side.canDraw && side.linkID != 2) {//链接其他时绘制在后面
-                    if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
-                        return;
-                    }
-
-                    Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
-                    float drawRot = side.Offset.ToVector2().ToRotation();
-
-                    Vector2 orig = PipelineCreativeChannel.Size() / 2;
-                    Color color = Lighting.GetColor(Position.ToPoint());
-                    spriteBatch.Draw(PipelineChannelSide.Value, drawPos2 + orig, null, color
-                        , drawRot, orig, 1, SpriteEffects.None, 0);
+                if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
+                    DrawCreativeArm(side, spriteBatch, true);
                 }
             }
         }
 
         internal void RenderDraw(SpriteBatch spriteBatch) {
-            if (!Decussation) {//十字交叉下不能进行边缘绘制
+            //首先绘制连接到其他管道的连接臂
+            if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
-                    if (side.canDraw && side.linkID == 2) {//链接管道自己时绘制在前面
-                        if (side.coreTP == null || side.coreTP.MachineData == null || side.externalTP == null) {
-                            return;
-                        }
-
-                        Vector2 drawPos2 = side.coreTP.PosInWorld + side.Offset.ToVector2() * 16 - Main.screenPosition;
-                        float drawRot = side.Offset.ToVector2().ToRotation();
-
-                        Vector2 orig = PipelineCreativeChannel.Size() / 2;
-                        Color color = side.coreTP.BaseColor * (side.coreTP.MachineData.UEvalue / 10f);
-
-                        spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos2 + orig, null, color
-                            , drawRot, orig, 1, SpriteEffects.None, 0);
+                    if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
+                        DrawCreativeArm(side, spriteBatch, false);
                     }
                 }
             }
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
-
-            if (ThreeCrutchesID >= 0) {
-                Rectangle rectangle = PipelineCreativeThreeCrutches.Value.GetRectangle(ThreeCrutchesID, 4);
-                spriteBatch.Draw(PipelineCreativeThreeCrutches.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                return;
-            }
-
-            if (Decussation) {
-                drawPos = CenterInWorld - Main.screenPosition;
-                spriteBatch.Draw(PipelineCreativeCross.Value, drawPos, null, BaseColor * (MachineData.UEvalue / 10f), 0, PipelineCreativeCross.Size() / 2, 1, SpriteEffects.None, 0);
-                return;
-            }
-
-            if (Turning) {
-                Rectangle rectangle = PipelineCreativeCorner.Value.GetRectangle(TurningID, 4);
-                spriteBatch.Draw(PipelineCreativeCorner.Value, drawPos, rectangle, BaseColor * (MachineData.UEvalue / 10f), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                return;
-            }
-
-            int linkCount = 0;
-            int linkCount2 = 0;
-            foreach (var side in SideState) {
-                if (side.linkID != 0) {
-                    linkCount++;
-                    if (side.linkID != 2) {
-                        linkCount2++;
+            Color energyColor = BaseColor * (MachineData.UEvalue / 10f);
+            //根据基类计算出的形状，使用创造贴图进行绘制
+            switch (Shape) {
+                case PipelineShape.Cross:
+                    drawPos = CenterInWorld - Main.screenPosition;
+                    spriteBatch.Draw(PipelineCreativeCross.Value, drawPos, null, energyColor, 0, PipelineCreativeCross.Size() / 2, 1, SpriteEffects.None, 0);
+                    break;
+                case PipelineShape.ThreeWay:
+                    Rectangle threeWayRect = PipelineCreativeThreeCrutches.Value.GetRectangle(ShapeRotationID, 4);
+                    spriteBatch.Draw(PipelineCreativeThreeCrutches.Value, drawPos, threeWayRect, energyColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    break;
+                case PipelineShape.Corner:
+                    Rectangle cornerRect = PipelineCreativeCorner.Value.GetRectangle(ShapeRotationID, 4);
+                    spriteBatch.Draw(PipelineCreativeCorner.Value, drawPos, cornerRect, energyColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    break;
+                case PipelineShape.Straight:
+                    break;
+                case PipelineShape.Endpoint:
+                    int linkCount = SideState.Count(s => s.LinkType != PipelineLinkType.None);
+                    int nonPipeLinkCount = SideState.Count(s => s.LinkType != PipelineLinkType.None && s.LinkType != PipelineLinkType.Pipeline);
+                    if (linkCount != 2 || nonPipeLinkCount == 2 || linkCount == 0) {
+                        spriteBatch.Draw(PipelineCreative.Value, drawPos.GetRectangle(Size), energyColor);
                     }
-                }
-            }
-
-            if (linkCount != 2 || linkCount2 == 2) {
-                spriteBatch.Draw(PipelineCreative.Value, drawPos.GetRectangle(Size), BaseColor * (MachineData.UEvalue / 10f));
+                    break;
             }
         }
     }

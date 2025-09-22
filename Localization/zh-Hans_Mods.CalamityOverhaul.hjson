@@ -1005,22 +1005,12 @@ Items: {
 	}
 
 	UEPipeline: {
-		DisplayName: 能量输入管道
+		DisplayName: 能量管道
 		Tooltip:
 			'''
 			用于传输电能
 			右键可快速拆除目标位置的管道并回收
 			连接发电机等能量来源，将电能传输至电池或其他用电设备
-			'''
-	}
-
-	UEPipelineInput: {
-		DisplayName: 能量抽取管道
-		Tooltip:
-			'''
-			用于传输电能
-			右键可快速拆除目标位置的管道并回收
-			从电池等储能设备中抽取电能，输送至用电设备
 			'''
 	}
 

@@ -321,19 +321,5 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/CreativeUEPipeline"
         ];
-        // <summary>
-        /// 上帝管道
-        /// </summary>
-        public readonly static string[] FullItems_CreativePipeline2 = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/UEPipelineInput", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/CreativeUEPipeline"
-        ];
     }
 }
