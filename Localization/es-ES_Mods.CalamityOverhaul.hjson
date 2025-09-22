@@ -5219,6 +5219,11 @@ RemakeItems: {
 		// DisplayName: CWRItemOverride
 		// Tooltip: ""
 	}
+
+	DyeGlobalItem: {
+		// DisplayName: DyeGlobalItem
+		// Tooltip: ""
+	}
 }
 
 ModifyLores: {
