@@ -138,6 +138,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 generator.MachineData.UEvalue -= transferAmount;
                 coreTP.MachineData.UEvalue += transferAmount;
             }
+            //当管道连接到发电机时，将自己的"供电状态"激活
+            coreTP.IsNetworkPowered = true;
+
             LinkType = PipelineLinkType.Generator;
         }
 
@@ -156,6 +159,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 otherPipe.MachineData.UEvalue -= transferUE;
             }
 
+            //传播"供电状态"。只要两者中有一个是供电的，就将两者都设置为供电状态
+            if (coreTP.IsNetworkPowered || otherPipe.IsNetworkPowered) {
+                coreTP.IsNetworkPowered = true;
+                otherPipe.IsNetworkPowered = true;
+            }
+
             //如果另一个管道是拐角或十字，则不绘制连接臂，避免穿帮
             if (otherPipe.Shape is PipelineShape.Cross or PipelineShape.Corner or PipelineShape.ThreeWay) {
                 canDraw = false;
@@ -165,20 +174,30 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
         //处理与电池的连接
         private void HandleBatteryConnection(BaseBattery battery) {
-            if (battery.ReceivedEnergy) { //电池需要被充能
+            //电池交互逻辑
+            if (coreTP.IsNetworkPowered) {
+                //如果管道网络由发电机供能，则无视电池的设置，强制为其充电
                 float transferAmount = Math.Min(efficiency, Math.Min(coreTP.MachineData.UEvalue, battery.MaxUEValue - battery.MachineData.UEvalue));
                 if (transferAmount > 0) {
                     battery.MachineData.UEvalue += transferAmount;
                     coreTP.MachineData.UEvalue -= transferAmount;
                 }
             }
-            else { //电池需要被放电
-                float transferAmount = Math.Min(efficiency, Math.Min(battery.MachineData.UEvalue, coreTP.MaxUEValue - coreTP.MachineData.UEvalue));
-                if (transferAmount > 0) {
-                    battery.MachineData.UEvalue -= transferAmount;
-                    coreTP.MachineData.UEvalue += transferAmount;
+            else {
+                //如果管道网络是独立的(没有发电机)，则尊重电池的设置
+                if (battery.ReceivedEnergy) {
+                    //电池想要被充电，但独立网络无法提供电力，所以什么都不做
+                }
+                else {
+                    //电池想要放电，管道从中取电为其他设备供能
+                    float transferAmount = Math.Min(efficiency, Math.Min(battery.MachineData.UEvalue, coreTP.MaxUEValue - coreTP.MachineData.UEvalue));
+                    if (transferAmount > 0) {
+                        battery.MachineData.UEvalue -= transferAmount;
+                        coreTP.MachineData.UEvalue += transferAmount;
+                    }
                 }
             }
+
             LinkType = PipelineLinkType.Battery;
         }
 
@@ -224,8 +243,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         #endregion
 
+        internal float sengs;
         internal List<PipelineSideState> SideState { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
+        /// <summary>
+        /// 判断该管道所在的网络是否由发电机供能
+        /// </summary>
+        internal bool IsNetworkPowered { get; set; }
 
         /// <summary>
         /// 当前管道的计算形状
@@ -250,12 +274,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// 更新机器状态，现在分为更新连接和判断形状两步
         /// </summary>
         public override void UpdateMachine() {
+            //在每次更新开始时，先重置自己的供电状态，等待邻居来更新
+            IsNetworkPowered = false;
+
             //第一步: 更新所有侧面的连接状态和能量交换
             foreach (var side in SideState) {
                 side.coreTP = this;
                 side.Position = Position;
                 side.Update();
             }
+
+            sengs = MathHelper.Lerp(sengs, IsNetworkPowered ? 0 : 1f, 0.1f);
 
             //第二步: 根据新的连接状态，确定管道自身的几何形状
             DeterminePipelineShape();
