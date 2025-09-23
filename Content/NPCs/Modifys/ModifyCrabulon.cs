@@ -42,30 +42,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private float jumpHeightSetFrame;
         private float dontTurnTo;
         internal int DyeItemID;
-        private delegate bool On_Player_Delegate(CrabulonMusicScene crabulonMusicScene, Player player);
-        
-        public override void Load() {
-            MethodInfo methodInfo = typeof(CrabulonMusicScene).GetMethod("IsSceneEffectActive", BindingFlags.Instance | BindingFlags.Public);
-            VaultHook.Add(methodInfo, OnCrabulonMusicSceneIsSceneEffectActive);
-        }
-
-        //这是一个笨办法，并不优雅，但有效
-        private static bool OnCrabulonMusicSceneIsSceneEffectActive(On_Player_Delegate orig, CrabulonMusicScene crabulonMusicScene, Player player) {
-            bool reset = false;
-            foreach (var npc in Main.ActiveNPCs) {
-                if (!npc.boss || npc.type != ModContent.NPCType<Crabulon>()) {
-                    continue;
-                }
-                reset = true;
-            }
-
-            if (reset) {
-                return orig.Invoke(crabulonMusicScene, player);
-            }
-            
-            return false;
-        }
-
         public override void SetStaticDefaults() {
             CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
             CrouchAltText = this.GetLocalization(nameof(CrouchAltText), () => "Follow");
@@ -235,6 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool AI() {
+            CrabulonPlayer.CrabulonIndex = npc.whoAmI;
             //当FeedValue大于0时，进入驯服状态
             if (FeedValue <= 0f) {
                 //如果不在驯服状态，则执行原版AI
@@ -723,6 +700,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
     internal class CrabulonPlayer : PlayerOverride
     {
+        /// <summary>
+        /// 存在的菌生蟹索引，如果为-1则表示没有
+        /// </summary>
+        public static int CrabulonIndex;
         ///<summary>
         ///骑乘的菌生蟹索引
         ///</summary>
@@ -732,6 +713,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public bool MountDraw;
         public NPC LatelyCrabulon;
         public override void ResetEffects() {
+            CrabulonIndex = -1;
             MountCrabulonIndex = -1;
             LatelyCrabulon = null;
         }
@@ -775,6 +757,24 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             return true;
+        }
+        public override IEnumerable<string> GetActiveSceneEffectFullNames() {
+            yield return ModContent.GetInstance<CrabulonMusicScene>().FullName;
+        }
+        public override bool? PreIsSceneEffectActive(ModSceneEffect modSceneEffect) {
+            if (CrabulonIndex == -1) {
+                return false;//直接返回，这里算作一次性能优化
+            }
+            int crabulon = ModContent.NPCType<Crabulon>();
+            foreach (var npc in Main.ActiveNPCs) {
+                if (!npc.boss) {//这里可以排除掉被驯服的菌生蟹，因为被驯服后不会被算作Boss
+                    continue;
+                }
+                if (npc.type == crabulon) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
