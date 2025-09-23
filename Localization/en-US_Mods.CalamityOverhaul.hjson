@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1506,6 +1506,7 @@ Projectiles: {
 	CrabulonFiredHitbox.DisplayName: Crabulon Fired Hitbox
 	CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 	Glomushroom.DisplayName: Glomushroom
+	SporeBurst.DisplayName: Spore Burst
 }
 
 Configs: {

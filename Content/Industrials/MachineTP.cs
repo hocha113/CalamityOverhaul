@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Industrials
 {
     public abstract class MachineTP : TileProcessor
     {
+        private readonly HashSet<BaseUEPipelineTP> _connectedTilesCache = new();
         public MachineData MachineData { get; set; }
         public virtual float MaxUEValue => 1000;
         public virtual int TargetItem => ItemID.None;
@@ -83,90 +84,55 @@ namespace CalamityOverhaul.Content.Industrials
 
         }
 
+        public void CheckPoint(Point16 point) {
+            if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
+                ExtraConductive(point, tp);
+                if (tp is BaseUEPipelineTP pipelineTP)
+                    _connectedTilesCache.Add(pipelineTP);
+            }
+            else {
+                ExtraConductive(point, null);
+            }
+        }
+
         public void UpdateConductive() {
-            // 存储所有相关物块（机械物块本身 + 相邻管道）
-            List<BaseUEPipelineTP> connectedTiles = new List<BaseUEPipelineTP>();
+            _connectedTilesCache.Clear();
+
             int tileWidth = Width / 16;
             int tileHeight = Height / 16;
-            // 检测四周的管道（上下左右）
-            // 上边界
+
+            //上下
             for (int i = Position.X; i < Position.X + tileWidth; i++) {
-                Point16 point = new Point16(i, Position.Y - 1);
-                ExtraConductive(point, null);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
-                    ExtraConductive(point, tp);
-                    if (tp is BaseUEPipelineTP pipelineTP) {
-                        connectedTiles.Add(pipelineTP);
-                    }
-                }
+                CheckPoint(new Point16(i, Position.Y - 1));
+                CheckPoint(new Point16(i, Position.Y + tileHeight));
             }
 
-            // 下边界
-            for (int i = Position.X; i < Position.X + tileWidth; i++) {
-                Point16 point = new Point16(i, Position.Y + tileHeight);
-                ExtraConductive(point, null);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
-                    ExtraConductive(point, tp);
-                    if (tp is BaseUEPipelineTP pipelineTP) {
-                        connectedTiles.Add(pipelineTP);
-                    }
-                }
-            }
-
-            // 左边界
+            //左右
             for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
-                Point16 point = new Point16(Position.X - 1, j);
-                ExtraConductive(point, null);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
-                    ExtraConductive(point, tp);
-                    if (tp is BaseUEPipelineTP pipelineTP) {
-                        connectedTiles.Add(pipelineTP);
-                    }
-                }
+                CheckPoint(new Point16(Position.X - 1, j));
+                CheckPoint(new Point16(Position.X + tileWidth, j));
             }
 
-            // 右边界
-            for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
-                Point16 point = new Point16(Position.X + tileWidth, j);
-                ExtraConductive(point, null);
-                if (TileProcessorLoader.ByPositionGetTP(point, out var tp)) {
-                    ExtraConductive(point, tp);
-                    if (tp is BaseUEPipelineTP pipelineTP) {
-                        connectedTiles.Add(pipelineTP);
-                    }
-                }
-            }
-
-            // 去重（防止重复添加同一管道）
-            connectedTiles = [.. connectedTiles.Distinct()];
-
-            // 如果没有相邻管道，直接返回
-            if (connectedTiles.Count == 0) {
+            if (_connectedTilesCache.Count == 0)
                 return;
-            }
 
-            // 计算总电量和平均电量
+            //计算总电量
             float totalUE = 0f;
-            foreach (var tile in connectedTiles) {
-                if (tile.MachineData != null) {
+            foreach (var tile in _connectedTilesCache) {
+                if (tile.MachineData != null)
                     totalUE += tile.MachineData.UEvalue;
-                }
             }
-            float averageUE = totalUE / connectedTiles.Count;
+            float averageUE = totalUE / _connectedTilesCache.Count;
 
-            // 考虑效率限制，平衡电量
+            //平衡电量
             float efficiency = this.Efficiency;
-            foreach (var tile in connectedTiles) {
+            foreach (var tile in _connectedTilesCache) {
                 if (tile.MachineData == null)
                     continue;
 
-                float transferUE = Math.Min(efficiency, Math.Abs(tile.MachineData.UEvalue - averageUE));
-                if (tile.MachineData.UEvalue > averageUE) {
-                    tile.MachineData.UEvalue -= transferUE;
-                }
-                else {
-                    tile.MachineData.UEvalue += transferUE;
-                }
+                float diff = tile.MachineData.UEvalue - averageUE;
+                float transferUE = Math.Min(efficiency, Math.Abs(diff));
+                tile.MachineData.UEvalue -= Math.Sign(diff) * transferUE;
             }
 
             PostUpdateConductive();
@@ -186,9 +152,9 @@ namespace CalamityOverhaul.Content.Industrials
 
         }
 
-        /// <summary>
-        /// 不会自动调用，需要在子类中手动调用
-        /// </summary>
+        ///<summary>
+        ///不会自动调用，需要在子类中手动调用
+        ///</summary>
         public virtual void DrawChargeBar() {
             if (!HoverTP) {
                 return;
@@ -196,7 +162,7 @@ namespace CalamityOverhaul.Content.Industrials
 
             Vector2 drawPos = CenterInWorld + new Vector2(0, Height / 2 + 20) - Main.screenPosition;
             int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-            // 绘制温度相关的图像
+            //绘制温度相关的图像
             Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
             Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
             Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);

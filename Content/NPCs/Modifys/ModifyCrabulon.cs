@@ -759,7 +759,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
-            yield return ModContent.GetInstance<CrabulonMusicScene>().FullName;
+            yield return typeof(CrabulonMusicScene).FullName;
         }
         public override bool? PreIsSceneEffectActive(ModSceneEffect modSceneEffect) {
             if (CrabulonIndex == -1) {

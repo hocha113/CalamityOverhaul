@@ -1488,6 +1488,7 @@ Projectiles: {
 	// CrabulonFiredHitbox.DisplayName: Crabulon Fired Hitbox
 	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 	// Glomushroom.DisplayName: Glomushroom
+	// SporeBurst.DisplayName: Spore Burst
 }
 
 Configs: {

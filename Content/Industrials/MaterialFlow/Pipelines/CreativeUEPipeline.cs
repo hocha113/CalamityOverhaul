@@ -52,15 +52,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.MagicMirror); // 紫色的粒子效果
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.MagicMirror);//紫色的粒子效果
             return false;
-        }
-
-        public override void MouseOver(int i, int j) {
-            Player localPlayer = Main.LocalPlayer;
-            localPlayer.cursorItemIconEnabled = true;
-            localPlayer.cursorItemIconID = ModContent.ItemType<CreativeUEPipeline>();
-            localPlayer.noThrow = 2;
         }
 
         public override bool CanDrop(int i, int j) => false;

@@ -1,9 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using InnoVault;
 using InnoVault.TileProcessors;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -80,12 +78,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override bool CreateDust(int i, int j, ref int type) {
             Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.GreenTorch);
             return false;
-        }
-        public override void MouseOver(int i, int j) {
-            Player localPlayer = Main.LocalPlayer;
-            localPlayer.cursorItemIconEnabled = true;
-            localPlayer.cursorItemIconID = ModContent.ItemType<UEPipeline>();
-            localPlayer.noThrow = 2;
         }
         public override bool CanDrop(int i, int j) => false;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
