@@ -80,6 +80,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         /// </summary>
         public override void UpdateMachine() {
             base.UpdateMachine();
+            IsNetworkPowered = true;//无限能量，自身相当于一个能量源，所以始终有电，不受外部网络影响
             if (MachineData != null) {
                 MachineData.UEvalue = MaxUEValue;
             }

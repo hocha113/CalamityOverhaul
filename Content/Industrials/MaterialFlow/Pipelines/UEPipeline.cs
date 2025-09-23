@@ -96,10 +96,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         internal UEPipelineTP coreTP;
         internal PipelineLinkType LinkType { get; private set; } = PipelineLinkType.None;
         internal bool canDraw;
-        /// <summary>
-        /// 核心更新逻辑，用于检测和处理与相邻物块的交互
-        /// </summary>
-        public void Update() {
+        public void UpdateConnectionState() {
             //初始化状态
             externalTile = default;
             externalTP = null;
@@ -108,18 +105,40 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             //获取相邻的物块和TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
-            if (!externalTile.HasTile || !VaultUtils.SafeGetTopLeft(Position + Offset, out var point) || !TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
+            if (!externalTile.HasTile || !VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
+                || !TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
                 canDraw = false;
                 return;
             }
 
-            //使用类型switch重构逻辑，提高可读性和健壮性，并修复了原代码的逻辑Bug
+            switch (externalTP) {
+                case BaseGeneratorTP:
+                    //当管道连接到发电机时，将自己的"供电状态"激活
+                    coreTP.IsNetworkPowered = true;
+                    break;
+                case UEPipelineTP otherPipe:
+                    //传播"供电状态"。只要两者中有一个是供电的，就将两者都设置为供电状态
+                    if (coreTP.IsNetworkPowered || otherPipe.IsNetworkPowered) {
+                        coreTP.IsNetworkPowered = true;
+                        otherPipe.IsNetworkPowered = true;
+                    }
+                    break;
+            }
+        }
+        /// <summary>
+        /// 核心更新逻辑，用于检测和处理与相邻物块的交互
+        /// </summary>
+        public void Update() {
+            if (!canDraw) {
+                return;
+            }
+
             switch (externalTP) {
                 case BaseGeneratorTP gen:
                     HandleGeneratorConnection(gen);
                     break;
-                case UEPipelineTP pipe:
-                    HandlePipelineConnection(pipe);
+                case UEPipelineTP otherPipe:
+                    HandlePipelineConnection(otherPipe);
                     break;
                 case BaseBattery battery:
                     HandleBatteryConnection(battery);
@@ -243,7 +262,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public static Asset<Texture2D> PipelineThreeCrutchesSide { get; private set; }
         #endregion
 
-        internal float sengs;
         internal List<PipelineSideState> SideState { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
         /// <summary>
@@ -276,17 +294,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void UpdateMachine() {
             //在每次更新开始时，先重置自己的供电状态，等待邻居来更新
             IsNetworkPowered = false;
-
-            //第一步: 更新所有侧面的连接状态和能量交换
+            //第一步: 更新每个方向的连接状态
             foreach (var side in SideState) {
                 side.coreTP = this;
                 side.Position = Position;
+                side.UpdateConnectionState();
+            }
+            //第二步: 根据新的连接状态，处理与邻居的交互
+            foreach (var side in SideState) {
                 side.Update();
             }
-
-            sengs = MathHelper.Lerp(sengs, IsNetworkPowered ? 0 : 1f, 0.1f);
-
-            //第二步: 根据新的连接状态，确定管道自身的几何形状
+            //第三步: 根据四周的连接情况，确定管道的几何形状和方向
             DeterminePipelineShape();
         }
 
