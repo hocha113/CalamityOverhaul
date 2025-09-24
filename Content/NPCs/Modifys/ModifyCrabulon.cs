@@ -14,6 +14,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
+using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -43,8 +44,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
         private float dontTurnTo;
+        private int groundClearance;
         internal int DyeItemID;
-        internal int[] oldHoldDownCardinalTimer;
         public override void SetStaticDefaults() {
             CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
             CrouchAltText = this.GetLocalization(nameof(CrouchAltText), () => "Follow");
@@ -67,9 +68,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             //每次喂食增加500点驯服值
             FeedValue += 500;
             ai[8] = 120;
-            SendFeedPacket(projectile.identity);
         }
 
+        #region NetWork
         public void SendJustJumped() {
             if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
                 return;
@@ -166,8 +167,77 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
                 modifyCrabulon.OtherNetWorkReceive(reader);//手动接收网络数据并应用
             }
-            if (VaultUtils.isServer) {//如果是服务器则正常进行广播
-                modifyCrabulon.NetOtherWorkSend = true;
+            if (VaultUtils.isServer) {//如果是服务器则进行广播
+                ModPacket netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.CrabulonModifyNetWork);
+                netMessage.Write(npc.whoAmI);
+                modifyCrabulon.OtherNetWorkSend(netMessage);//手动发送网络数据
+                netMessage.Send(-1, whoAmI);
+            }
+        }
+        /// <summary>
+        /// 发送玩家方向键按住状态
+        /// </summary>
+        public static void SendHoldDownCardinal(Player player) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.HoldDownCardinalTimer);
+            netMessage.Write(player.whoAmI);
+
+            BitsByte bitsByte = new();
+            for (int i = 0; i < 4; i++) {
+                bitsByte[i] = player.holdDownCardinalTimer[i] > 2;
+            }
+            netMessage.Write(bitsByte);
+
+            netMessage.Send();
+        }
+
+        /// <summary>
+        /// 接收玩家方向键按住状态
+        /// </summary>
+        public static void ReceiveHoldDownCardinal(BinaryReader reader, int whoAmI) {
+            if (!reader.ReadInt32().TryGetPlayer(out Player player)) {
+                return;
+            }
+
+            BitsByte bitsByte = reader.ReadByte();
+
+            for(int i = 0; i < 4; i++) {
+                player.holdDownCardinalTimer[i] = bitsByte[i] ? 4 : 0;
+            }
+
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.HoldDownCardinalTimer);
+            netMessage.Write(player.whoAmI);
+            netMessage.Write(bitsByte);
+            netMessage.Send(-1, whoAmI);
+        }
+        /// <summary>
+        /// 处理Crabulon相关的网络数据
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (type == CWRMessageType.CrabulonFeed) {
+                ReceiveFeedPacket(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.CrabulonJustJumped) {
+                ReceiveJustJumped(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.CrabulonModifyNetWork) {
+                ReceiveNetWork(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.HoldDownCardinalTimer) {
+                ReceiveHoldDownCardinal(reader, whoAmI);
             }
         }
 
@@ -192,6 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 SaddleItem = new Item();
             }
         }
+        #endregion
 
         public override void SaveData(TagCompound tag) {
             tag["a"] = npc.position;
@@ -525,6 +596,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             else {
                 if (npc.collideY) {//很奇妙的一个判断时机，加了后就正常很多了
                     ai[10] = 10;
+                    NetAISend();
                 }
             }
 
@@ -543,7 +615,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
                 CrabulonPlayer.IsMount = true;
 
-                //--- 玩家位置同步 ---
                 Owner.Center = GetMountPos();
                 Owner.velocity = Vector2.Zero; //禁用玩家自身移动
                 if (ai[9] > 0) {
@@ -552,17 +623,20 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     return false;
                 }
 
-                //--- 移动控制 ---
                 float accel = 0.5f;     //加速度
                 float maxSpeed = 6f;   //最大速度
                 float friction = 0.85f; //摩擦系数
 
                 Vector2 input = Vector2.Zero;
 
-                if (oldHoldDownCardinalTimer?.SequenceEqual(Owner.holdDownCardinalTimer) == false) {
-                    CWRNetWork.SendHoldDownCardinalTimer(Owner);
+                if (Owner.whoAmI == Main.myPlayer) {
+                    SendHoldDownCardinal(Owner);
+                    justJumped = Owner.justJumped;
+                    if (justJumped != oldJustJumped) {
+                        oldJustJumped = justJumped;
+                        SendJustJumped();
+                    }
                 }
-                oldHoldDownCardinalTimer = (int[])Owner.holdDownCardinalTimer.Clone();
 
                 //横向输入
                 if (Owner.holdDownCardinalTimer[2] > 2) { //→ 右
@@ -573,22 +647,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 if (Owner.holdDownCardinalTimer[0] == 2 && !Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {//下平台
+                    npc.netUpdate = true;
                     npc.velocity.Y += 0.2f;
                     if (npc.velocity.Y < 12) {
                         npc.velocity.Y = 12;
                     }
                 }
 
-                justJumped = Owner.justJumped;
-                if (justJumped != oldJustJumped) {
-                    oldJustJumped = justJumped;
-                    SendJustJumped();
-                }
-
                 //跳跃（只在接触地面时生效，防止无限连跳）
                 if (justJumped && npc.collideY) {
                     npc.velocity.Y = -maxSpeed * 4f;
-                    SendNetWork();
+                    npc.netUpdate = true;
                 }
 
                 JumpFloorEffect();
@@ -607,7 +676,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                 AutoStepClimbing();
 
-                //--- 状态标记（供AI或动画用） ---
                 npc.ai[0] = (Math.Abs(npc.velocity.X) > 0.1f) ? 1f : 0f;
                 if (Math.Abs(npc.velocity.Y) > 1f) {
                     npc.ai[0] = 3f;
@@ -617,7 +685,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.ai[0] = 1f;
                 }
 
-                if (hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                if (Owner.whoAmI == Main.myPlayer && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
                     Mount = false;
                     DontMount = 30;
                     MountACrabulon = false;
@@ -636,7 +704,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
             else {
                 //按下交互键骑乘
-                if (SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 
+                    && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
                     MountACrabulon = true;
                     SendNetWork();
                 }
@@ -653,6 +722,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         MountACrabulon = false;
                         CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
                         SendNetWork();
+                        NetAISend();
                     }
                 }
             }
@@ -660,7 +730,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
 
-        int groundClearance;
+        
         public void GetDistanceToGround() {
             groundClearance = 0;
             Vector2 startPos = npc.Bottom;
@@ -695,6 +765,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (ai[3] > ai[4] && npc.velocity.Y > 0) {
                     ai[4] = ai[3]; //记录最大下落强度
                 }
+                NetAISend();
             }
             else {
                 //落地瞬间检测：上一帧在下落，这一帧接触地面
@@ -714,7 +785,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(DyeItemID);
                     }
 
-                    if (!VaultUtils.isClient) {
+                    if (Owner.whoAmI == Main.myPlayer) {
                         float multiplicative = Owner.GetDamage(DamageClass.Generic).Multiplicative;
                         int baseDmg = 120 + (int)(impactStrength / 60f);
                         baseDmg = (int)(baseDmg * multiplicative);
@@ -848,14 +919,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         ///骑乘的菌生蟹索引
         ///</summary>
         public int MountCrabulonIndex;
+        public ModifyCrabulon MountCrabulon;
         private int oldMountCrabulonIndex;
         public bool IsMount;
         public bool MountDraw;
-        public NPC LatelyCrabulon;
+        public List<ModifyCrabulon> ModifyCrabulons = [];
         public override void ResetEffects() {
             CrabulonIndex = -1;
             MountCrabulonIndex = -1;
-            LatelyCrabulon = null;
         }
         public static void CloseDuringDash(Player player) {
             CWRPlayer modPlayer = player.CWR();
@@ -874,28 +945,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     CloseDuringDash(Player);
                 }
             }
+            else {
+                MountCrabulon = Main.npc[MountCrabulonIndex].GetOverride<ModifyCrabulon>();
+            }
 
+            ModifyCrabulons.Clear();
             foreach (var npc in Main.ActiveNPCs) {
                 if (npc.boss || npc.type != ModContent.NPCType<Crabulon>()) {
                     continue;
                 }
-                LatelyCrabulon = npc;
+                ModifyCrabulons.Add((npc.GetOverride<ModifyCrabulon>()));
             }
 
             oldMountCrabulonIndex = MountCrabulonIndex;
         }
-        public override bool PreDrawPlayers(Camera camera, IEnumerable<Player> players) {
-            if (!IsMount) {
-                return true;
-            }
-
-            foreach (Player player in players) {
-                if (player.whoAmI != Player.whoAmI) {
-                    continue;
-                }
-                return false;
-            }
-
+        public override bool PreDrawPlayers(Camera camera, ref IEnumerable<Player> players) {
+            players = players.Where(player => !player.GetOverride<CrabulonPlayer>().IsMount);//删掉关于骑乘玩家的绘制
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {

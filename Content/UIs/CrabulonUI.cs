@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Modifys;
+using InnoVault;
+using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -255,17 +257,52 @@ namespace CalamityOverhaul.Content.UIs
     {
         private bool isCrouch;
         private float sengs;
-        private NPC crabulon;
+        private List<ModifyCrabulon> modifys;
         private ModifyCrabulon modify;
         private float hoverSengs;
         internal bool Open {
             get {
-                crabulon = player.GetOverride<CrabulonPlayer>().LatelyCrabulon;
-                if (crabulon == null) {
+                if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
                     return false;
                 }
-                modify = crabulon.GetOverride<ModifyCrabulon>();
-                return crabulon.DistanceSQ(player.Center) < 90000 && !modify.Mount;
+
+                modifys = crabulonPlayer.ModifyCrabulons;
+                modify = null;
+                float maxDistSq = 90000; //用平方避免开方运算
+                float bestDistSq = maxDistSq;
+
+                foreach (var hover in modifys) {
+                    if (!hover.npc.Alives()) {
+                        continue;
+                    }
+
+                    //计算到玩家的距离平方
+                    float distSq = hover.npc.To(player.Center).LengthSquared();
+
+                    //如果超出范围，直接跳过
+                    if (distSq > maxDistSq) {
+                        continue;
+                    }
+
+                    // 找最近的
+                    if (distSq < bestDistSq) {
+                        bestDistSq = distSq;
+                        modify = hover;
+                    }
+                }
+
+                //没找到就返回 false
+                if (modify == null) {
+                    return false;
+                }
+
+                //必须是自己的螃蟹
+                if (modify.Owner.whoAmI != player.whoAmI) {
+                    return false;
+                }
+
+                //返回找到的螃蟹，并且它未被 Mount
+                return !modify.Mount;
             }
         }
         public override bool Active => Open || sengs > 0f;
