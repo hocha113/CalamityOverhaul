@@ -16,7 +16,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    #region Enums for Readability //为了代码可读性，引入枚举
+    #region 枚举
     /// <summary>
     /// 管道连接的目标类型枚举
     /// </summary>

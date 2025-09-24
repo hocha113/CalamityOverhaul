@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
     internal class ModifyTruffle : NPCOverride, ILocalizedModType
     {
         [VaultLoaden(CWRConstant.NPC + "SleepTruffle")]
-        public static Asset<Texture2D> SleepTruffle;
+        public static Asset<Texture2D> SleepTruffle = null;
         public const int MaxChatSlot = 12;
         public static LocalizedText ButtonText { get; set; }
         public readonly static List<LocalizedText> Chats = [];

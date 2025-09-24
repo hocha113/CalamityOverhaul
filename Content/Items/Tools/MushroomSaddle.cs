@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class MushroomSaddle : ModItem
     {
         [VaultLoaden(CWRConstant.Item_Tools)]
-        public static Asset<Texture2D> MushroomSaddlePlace;
+        public static Asset<Texture2D> MushroomSaddlePlace = null;
         public ModifyCrabulon ModifyCrabulon;
         public static LocalizedText UseCombat;
         public override string Texture => CWRConstant.Item + "Tools/MushroomSaddle";
@@ -31,6 +31,10 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanUseItem(Player player) {
+            if (player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+
             if (!ModifyCrabulon.npc.Alives() || !ModifyCrabulon.npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1))) {
                 ModifyCrabulon = null;
                 CombatText text = Main.combatText[CombatText.NewText(player.Hitbox, Color.GreenYellow, UseCombat.Value)];
@@ -40,6 +44,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             ModifyCrabulon.SaddleItem = Item.Clone();
+            ModifyCrabulon.SendNetWork();
             return true;
         }
 

@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     internal class ItemFilterUI : UIHandle
     {
         [VaultLoaden(CWRConstant.UI + "ItemFilterUI")]
-        internal static Texture2D UITex;
+        internal static Texture2D UITex = null;
         private bool CanOpen;
         internal float sengs;
         internal float hoverSengs;

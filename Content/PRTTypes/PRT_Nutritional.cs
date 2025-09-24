@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             Scale *= Main.rand.NextFloat(1.2f, 2.2f);
             Velocity.Y += Main.rand.NextFloat(-6, 2);
-            Velocity.X += Main.rand.NextFloat(-2, 2);
+            Velocity.X += Main.rand.NextFloat(-6, 6);
         }
 
         //定义粒子每一帧的行为

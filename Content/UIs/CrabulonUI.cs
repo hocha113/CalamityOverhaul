@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.UIs
     internal class CrabulonLife : UIHandle
     {
         [VaultLoaden(CWRConstant.UI + "CrabulonLife")]
-        public static Asset<Texture2D> Life;
+        public static Asset<Texture2D> Life = null;
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
         public int lifeValue;//存储此生命单元当前拥有的生命值
@@ -298,6 +298,7 @@ namespace CalamityOverhaul.Content.UIs
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero);
                     modify.Crouch = !modify.Crouch;
+                    modify.SendNetWork();
                 }
             }
             else {

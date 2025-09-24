@@ -16,19 +16,19 @@ namespace CalamityOverhaul.Content.UIs
     internal static class DyeMachineAsset
     {
         [VaultLoaden(CWRConstant.Masking)]
-        public static Texture2D SoftGlow;
-        public static Texture2D BeDyeSymbol;
-        public static Texture2D BeDyeSymbolAlt;
-        public static Texture2D DyeSymbol;
-        public static Texture2D DyeSymbolAlt;
-        public static Texture2D OutputSymbol;
-        public static Texture2D OutputSymbolAlt;
-        public static Texture2D DyeDroplets;
-        public static Texture2D OutputSymbolArrows;
-        public static Texture2D DyeVatSlot;
-        public static Texture2D DyeVatUI;
-        public static Texture2D SpectrometerSlot;
-        public static Texture2D SpectrometerUI;
+        public static Texture2D SoftGlow = null;
+        public static Texture2D BeDyeSymbol = null;
+        public static Texture2D BeDyeSymbolAlt = null;
+        public static Texture2D DyeSymbol = null;
+        public static Texture2D DyeSymbolAlt = null;
+        public static Texture2D OutputSymbol = null;
+        public static Texture2D OutputSymbolAlt = null;
+        public static Texture2D DyeDroplets = null;
+        public static Texture2D OutputSymbolArrows = null;
+        public static Texture2D DyeVatSlot = null;
+        public static Texture2D DyeVatUI = null;
+        public static Texture2D SpectrometerSlot = null;
+        public static Texture2D SpectrometerUI = null;
     }
 
     /// <summary>
@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content.UIs
     {
         internal bool CanOpen;
         internal float sengs;
-        internal float hoverSengs;
         internal virtual Texture2D UITex => (this is SpectrometerUI) ? DyeMachineAsset.SpectrometerUI : DyeMachineAsset.DyeVatUI;
 
         public abstract BaseDyeMachineSlot DyeSlot { get; }
@@ -104,9 +103,7 @@ namespace CalamityOverhaul.Content.UIs
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (sengs <= 0) return; //完全关闭后不绘制
-            if (hoverSengs > 0) {
-                spriteBatch.Draw(UITex, UIHitBox.OffsetSize(6, 6), Color.Gold * hoverSengs);
-            }
+
             spriteBatch.Draw(UITex, UIHitBox, Color.White * sengs);
 
             float activationThreshold = 0.8f;
@@ -136,8 +133,6 @@ namespace CalamityOverhaul.Content.UIs
         internal float sengs;
         internal float hoverSengs;
         internal float scale; //用于实现悬停放大动画
-        internal float slotIndex;
-
         public virtual Texture2D SlotTex => (ParentUI is SpectrometerUI) ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
         public abstract Texture2D SymbolTex { get; }
         public abstract Texture2D SymbolTexAlt { get; }

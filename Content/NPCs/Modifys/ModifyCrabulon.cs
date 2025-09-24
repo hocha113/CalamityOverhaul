@@ -9,7 +9,8 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
@@ -35,13 +36,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public bool Mount;
         public Item SaddleItem = new();
         public bool MountACrabulon;
-        public bool OnJump;
         public int DontMount;
         public bool hoverNPC;
+        private bool justJumped;
+        private bool oldJustJumped;
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
         private float dontTurnTo;
         internal int DyeItemID;
+        internal int[] oldHoldDownCardinalTimer;
         public override void SetStaticDefaults() {
             CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
             CrouchAltText = this.GetLocalization(nameof(CrouchAltText), () => "Follow");
@@ -64,8 +67,130 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             //每次喂食增加500点驯服值
             FeedValue += 500;
             ai[8] = 120;
-            npc.netUpdate = true;
-            NetAISend();
+            SendFeedPacket(projectile.identity);
+        }
+
+        public void SendJustJumped() {
+            if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
+                return;
+            }
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.CrabulonJustJumped);
+            netMessage.Write(npc.whoAmI);
+            netMessage.Write(justJumped);
+            netMessage.Send();
+        }
+
+        public static void ReceiveJustJumped(BinaryReader reader, int whoAmI) {
+            int npcIndex = reader.ReadInt32();
+            bool justJumped = reader.ReadBoolean();
+            if (!npcIndex.TryGetNPC(out NPC npc)) {
+                return;
+            }
+            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
+                modifyCrabulon.justJumped = justJumped;
+            }
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.CrabulonJustJumped);
+            netMessage.Write(npcIndex);
+            netMessage.Write(justJumped);
+            netMessage.Send(-1, whoAmI);
+        }
+
+        public void SendFeedPacket(int projIdentity) {
+            if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
+                return;
+            }
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.CrabulonFeed);
+            netMessage.Write(npc.whoAmI);
+            netMessage.Write(projIdentity);
+            netMessage.Send();
+        }
+
+        public static void ReceiveFeedPacket(BinaryReader reader, int whoAmI) {
+            int npcIndex = reader.ReadInt32();
+            int projIdentity = reader.ReadInt32();
+            if (!npcIndex.TryGetNPC(out NPC npc)) {
+                return;
+            }
+
+            Projectile match = Main.projectile.FirstOrDefault(x => x.identity == projIdentity);
+            if (match == null) {
+                return;
+            }
+
+            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
+                modifyCrabulon.Feed(match);
+            }
+
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.CrabulonFeed);
+            netMessage.Write(npcIndex);
+            netMessage.Write(projIdentity);
+            netMessage.Send(-1, whoAmI);
+            modifyCrabulon.NetAISend();
+            modifyCrabulon.NetOtherWorkSend = true;
+        }
+        /// <summary>
+        /// 允许客户端主动将数据发送网络数据到服务器，启动后服务器广播给其他客户端
+        /// </summary>
+        /// <param name="npcIndex"></param>
+        public void SendNetWork() {
+            if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
+                return;
+            }
+            ModPacket netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.CrabulonModifyNetWork);
+            netMessage.Write(npc.whoAmI);
+            OtherNetWorkSend(netMessage);//手动发送网络数据
+            netMessage.Send();
+        }
+        /// <summary>
+        /// 接收网络数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        public static void ReceiveNetWork(BinaryReader reader, int whoAmI) {
+            int npcIndex = reader.ReadInt32();
+            if (!npcIndex.TryGetNPC(out NPC npc)) {
+                return;
+            }
+            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
+                modifyCrabulon.OtherNetWorkReceive(reader);//手动接收网络数据并应用
+            }
+            if (VaultUtils.isServer) {//如果是服务器则正常进行广播
+                modifyCrabulon.NetOtherWorkSend = true;
+            }
+        }
+
+        public override void OtherNetWorkSend(ModPacket netMessage) {
+            netMessage.Write(Crouch);
+            netMessage.Write(Mount);
+            netMessage.Write(MountACrabulon);
+            netMessage.Write(DontMount);
+            netMessage.Write(DyeItemID);
+            SaddleItem ??= new Item();
+            ItemIO.Send(SaddleItem, netMessage);
+        }
+
+        public override void OtherNetWorkReceive(BinaryReader reader) {
+            Crouch = reader.ReadBoolean();
+            Mount = reader.ReadBoolean();
+            MountACrabulon = reader.ReadBoolean();
+            DontMount = reader.ReadInt32();
+            DyeItemID = reader.ReadInt32();
+            SaddleItem = ItemIO.Receive(reader);
+            if (!SaddleItem.Alives()) {
+                SaddleItem = new Item();
+            }
         }
 
         public override void SaveData(TagCompound tag) {
@@ -127,7 +252,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             SetFeedState();//载入进地图时设置一次驯服状态，防止有一瞬间会进入Boss状态
         }
 
-        public override bool NeedSaving() => SaddleItem.Alives() || DyeItemID > ItemID.None;
+        public override bool NeedSaving() => SaddleItem.Alives() || DyeItemID > ItemID.None || FeedValue > 0f;
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
             FeedValue = 0f;
@@ -247,7 +372,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (hoverNPC) {
-                Item item = Owner.GetItem();
+                Item item = Main.LocalPlayer.GetItem();
                 if (item.type == ModContent.ItemType<MushroomSaddle>() && item.ModItem is MushroomSaddle saddle) {
                     saddle.ModifyCrabulon = this;
                 }
@@ -325,6 +450,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
                         Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(DyeItemID);
                     }
+                    NetAISend();
                     return false;
                 }
             }
@@ -433,6 +559,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                 Vector2 input = Vector2.Zero;
 
+                if (oldHoldDownCardinalTimer?.SequenceEqual(Owner.holdDownCardinalTimer) == false) {
+                    CWRNetWork.SendHoldDownCardinalTimer(Owner);
+                }
+                oldHoldDownCardinalTimer = (int[])Owner.holdDownCardinalTimer.Clone();
+
                 //横向输入
                 if (Owner.holdDownCardinalTimer[2] > 2) { //→ 右
                     input.X += 1f;
@@ -448,10 +579,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     }
                 }
 
+                justJumped = Owner.justJumped;
+                if (justJumped != oldJustJumped) {
+                    oldJustJumped = justJumped;
+                    SendJustJumped();
+                }
+
                 //跳跃（只在接触地面时生效，防止无限连跳）
-                if (Owner.justJumped && npc.collideY) {
+                if (justJumped && npc.collideY) {
                     npc.velocity.Y = -maxSpeed * 4f;
-                    OnJump = true;
+                    SendNetWork();
                 }
 
                 JumpFloorEffect();
@@ -487,6 +624,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                     Owner.fullRotation = 0;
                     Owner.velocity.Y -= 5;
+                    SendNetWork();
                 }
 
                 if (dontTurnTo <= 0f) {
@@ -500,6 +638,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 //按下交互键骑乘
                 if (SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
                     MountACrabulon = true;
+                    SendNetWork();
                 }
                 if (MountACrabulon) {
                     Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
@@ -513,6 +652,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         Mount = true;
                         MountACrabulon = false;
                         CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
+                        SendNetWork();
                     }
                 }
             }

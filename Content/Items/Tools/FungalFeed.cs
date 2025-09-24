@@ -72,6 +72,10 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+
             if (target.type != ModContent.NPCType<Crabulon>()) {
                 return;
             }
