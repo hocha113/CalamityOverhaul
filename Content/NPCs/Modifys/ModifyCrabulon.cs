@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -38,6 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public bool MountACrabulon;
         public int DontMount;
         public bool hoverNPC;
+        private Player mountPlayerByDraw;
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
         private float dontTurnTo;
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.frame.Y = frame * frameHeight;
                 }
                 else//Idle
-                {                  
+                {
                     if (ai[9] > 0) {
                         npc.frameCounter += 0.1;
                         npc.frameCounter %= 2;
@@ -422,7 +422,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (Crouch) {
                 if (ai[9] < 60) {
-                    ai[9]+=2;
+                    ai[9] += 2;
                 }
                 npc.velocity.X /= 2;
                 if (npc.collideY) {
@@ -544,7 +544,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.IsMount = true;
 
                 Owner.Center = GetMountPos();
-                
+
                 if (ai[9] > 0) {
                     ai[9]--;
                     npc.ai[0] = 0f;
@@ -606,7 +606,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.ai[0] = 1f;
                 }
 
-                if (Owner.whoAmI == Main.myPlayer && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                if (Owner.whoAmI == Main.myPlayer && hoverNPC && Main.mouseRight && !Main.mouseRightRelease) {
                     Mount = false;
                     DontMount = 30;
                     MountACrabulon = false;
@@ -624,9 +624,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false; //阻止默认AI
             }
             else {
+                CrabulonPlayer.MountCrabulonIndex = -1;
+                CrabulonPlayer.IsMount = false;
                 //按下交互键骑乘
-                if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 
-                    && hoverNPC && UIHandleLoader.keyRightPressState == KeyPressState.Pressed) {
+                if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0
+                    && hoverNPC && Main.mouseRight && !Main.mouseRightRelease) {
                     MountACrabulon = true;
                     SendNetWork();
                 }
@@ -636,7 +638,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
                     Owner.CWR().PendingDashRotSpeedMode = 0.06f;
                     Owner.CWR().PendingDashVelocity = Owner.velocity;
-
+                    
                     if (++ai[5] > 60f || Owner.Center.To(GetMountPos()).Length() < Owner.width) {//ai[5]防止某些极端情况下超时
                         ai[5] = 0f;
                         Mount = true;
@@ -651,7 +653,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return true;
         }
 
-        
         public void GetDistanceToGround() {
             groundClearance = 0;
             Vector2 startPos = npc.Bottom;
@@ -768,13 +769,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) {
-            if (Mount) {
-                boundingBox = Vector2.Zero.GetRectangle(1);//修改为一个在世界零点位置的非常小的矩形，这样基本不可能摸到
+            if (!Mount) {
+                return;
             }
+            boundingBox = Vector2.Zero.GetRectangle(1);//修改为一个在世界零点位置的非常小的矩形，这样基本不可能摸到
         }
 
         public override bool CheckActive() {
-            return false;
+            if (FeedValue > 0f) {
+                return false;
+            }
+            return true;
         }
 
         public void MountDrawPlayer() {
@@ -786,15 +791,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                 , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             CrabulonPlayer.MountDraw = true;
-            var mountPlayer = Main.player[Owner.whoAmI];
-            float originalRotation = mountPlayer.fullRotation;
-            mountPlayer.fullRotation = npc.rotation + MathHelper.PiOver2;
-            Vector2 oldRotOrigin = mountPlayer.fullRotationOrigin;
-            mountPlayer.fullRotationOrigin = mountPlayer.Size / 2f;
-            mountPlayer.Center = GetMountPos();
-            Main.PlayerRenderer.DrawPlayer(Main.Camera, mountPlayer, mountPlayer.position, mountPlayer.bodyRotation, mountPlayer.fullRotationOrigin);
-            mountPlayer.fullRotation = originalRotation;
-            mountPlayer.fullRotationOrigin = oldRotOrigin;
+            mountPlayerByDraw = (Player)Owner.Clone();//此处使用克隆玩家，防止Draw的逻辑影响原玩家
+            float originalRotation = mountPlayerByDraw.fullRotation;
+            mountPlayerByDraw.fullRotation = npc.rotation + MathHelper.PiOver2;
+            Vector2 oldRotOrigin = mountPlayerByDraw.fullRotationOrigin;
+            mountPlayerByDraw.fullRotationOrigin = mountPlayerByDraw.Size / 2f;
+            mountPlayerByDraw.Center = GetMountPos();
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, mountPlayerByDraw, mountPlayerByDraw.position
+                , mountPlayerByDraw.bodyRotation, mountPlayerByDraw.fullRotationOrigin);
+            mountPlayerByDraw.fullRotation = originalRotation;
+            mountPlayerByDraw.fullRotationOrigin = oldRotOrigin;
             CrabulonPlayer.MountDraw = false;
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
@@ -821,7 +827,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (SaddleItem.Alives()) {
                 npc.BeginDyeEffectForWorld(SaddleItem.CWR().DyeItemID);
-                spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value, npc.Top + new Vector2(0, 16 + npc.gfxOffY) - Main.screenPosition, null, drawColor
+                spriteBatch.Draw(MushroomSaddle.MushroomSaddlePlace.Value
+                    , npc.Top + new Vector2(0, 16 + npc.gfxOffY) - Main.screenPosition, null, drawColor
                 , npc.rotation, MushroomSaddle.MushroomSaddlePlace.Size() / 2, 1f, SpriteEffects.None, 0);
                 npc.EndDyeEffectForWorld();
             }
