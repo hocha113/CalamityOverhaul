@@ -68,6 +68,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         #region NetWork
+        /// <summary>
+        /// 允许客户端主动将投喂数据发送网络数据到服务器，启动后服务器广播给其他客户端
+        /// </summary>
+        /// <param name="projIdentity"></param>
         public void SendFeedPacket(int projIdentity) {
             if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
                 return;
@@ -78,7 +82,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             netMessage.Write(projIdentity);
             netMessage.Send();
         }
-
+        /// <summary>
+        /// 接收投喂网络数据
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
         public static void ReceiveFeedPacket(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt32();
             int projIdentity = reader.ReadInt32();
@@ -158,6 +166,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override void OtherNetWorkSend(ModPacket netMessage) {
+            netMessage.Write(Owner.Alives() ? Owner.whoAmI : 0);
+            netMessage.Write(FeedValue);
             netMessage.Write(Crouch);
             netMessage.Write(Mount);
             netMessage.Write(MountACrabulon);
@@ -168,6 +178,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override void OtherNetWorkReceive(BinaryReader reader) {
+            Owner = Main.player[reader.ReadInt32()];
+            FeedValue = reader.ReadSingle();
             Crouch = reader.ReadBoolean();
             Mount = reader.ReadBoolean();
             MountACrabulon = reader.ReadBoolean();

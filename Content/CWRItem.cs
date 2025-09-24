@@ -757,6 +757,14 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
+        public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
+            //if (Main.GameUpdateCount % 160 > 100) {//多么酷的效果，但可惜为了玩家的视觉体验不能启用
+            //    item.BeginDyeEffectForUI(DyeItemID);
+            //}
+            
+            return true;
+        }
+
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
             if (!ItemOverride.TryFetchByID(item.type, out Dictionary<Type, ItemOverride> itemOverrides)) {
                 return;
@@ -771,6 +779,10 @@ namespace CalamityOverhaul.Content
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                 , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }
+
+            //if (Main.GameUpdateCount % 160 > 100) {//多么酷的效果，但可惜为了玩家的视觉体验不能启用
+            //    item.EndDyeEffectForUI();
+            //}
         }
 
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position
