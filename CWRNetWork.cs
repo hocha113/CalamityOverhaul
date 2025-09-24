@@ -17,9 +17,7 @@ namespace CalamityOverhaul
         ModifiIntercept_EnterWorld_ToClient,
         KillTileEntity,
         CrabulonFeed,
-        CrabulonJustJumped,
         CrabulonModifyNetWork,
-        HoldDownCardinalTimer,
     }
 
     public static class CWRNetWork

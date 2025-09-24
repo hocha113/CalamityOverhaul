@@ -14,7 +14,6 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
-using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -39,8 +38,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public bool MountACrabulon;
         public int DontMount;
         public bool hoverNPC;
-        private bool justJumped;
-        private bool oldJustJumped;
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
         private float dontTurnTo;
@@ -71,36 +68,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         #region NetWork
-        public void SendJustJumped() {
-            if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
-                return;
-            }
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.CrabulonJustJumped);
-            netMessage.Write(npc.whoAmI);
-            netMessage.Write(justJumped);
-            netMessage.Send();
-        }
-
-        public static void ReceiveJustJumped(BinaryReader reader, int whoAmI) {
-            int npcIndex = reader.ReadInt32();
-            bool justJumped = reader.ReadBoolean();
-            if (!npcIndex.TryGetNPC(out NPC npc)) {
-                return;
-            }
-            if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {
-                modifyCrabulon.justJumped = justJumped;
-            }
-            if (!VaultUtils.isServer) {
-                return;
-            }
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.CrabulonJustJumped);
-            netMessage.Write(npcIndex);
-            netMessage.Write(justJumped);
-            netMessage.Send(-1, whoAmI);
-        }
-
         public void SendFeedPacket(int projIdentity) {
             if (!VaultUtils.isClient) {//为了防止迭代发送，这里只在客户端发送
                 return;
@@ -176,51 +143,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
         /// <summary>
-        /// 发送玩家方向键按住状态
-        /// </summary>
-        public static void SendHoldDownCardinal(Player player) {
-            if (!VaultUtils.isClient) {
-                return;
-            }
-
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.HoldDownCardinalTimer);
-            netMessage.Write(player.whoAmI);
-
-            BitsByte bitsByte = new();
-            for (int i = 0; i < 4; i++) {
-                bitsByte[i] = player.holdDownCardinalTimer[i] > 2;
-            }
-            netMessage.Write(bitsByte);
-
-            netMessage.Send();
-        }
-
-        /// <summary>
-        /// 接收玩家方向键按住状态
-        /// </summary>
-        public static void ReceiveHoldDownCardinal(BinaryReader reader, int whoAmI) {
-            if (!reader.ReadInt32().TryGetPlayer(out Player player)) {
-                return;
-            }
-
-            BitsByte bitsByte = reader.ReadByte();
-
-            for(int i = 0; i < 4; i++) {
-                player.holdDownCardinalTimer[i] = bitsByte[i] ? 4 : 0;
-            }
-
-            if (!VaultUtils.isServer) {
-                return;
-            }
-
-            ModPacket netMessage = CWRMod.Instance.GetPacket();
-            netMessage.Write((byte)CWRMessageType.HoldDownCardinalTimer);
-            netMessage.Write(player.whoAmI);
-            netMessage.Write(bitsByte);
-            netMessage.Send(-1, whoAmI);
-        }
-        /// <summary>
         /// 处理Crabulon相关的网络数据
         /// </summary>
         /// <param name="type"></param>
@@ -230,14 +152,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (type == CWRMessageType.CrabulonFeed) {
                 ReceiveFeedPacket(reader, whoAmI);
             }
-            else if (type == CWRMessageType.CrabulonJustJumped) {
-                ReceiveJustJumped(reader, whoAmI);
-            }
             else if (type == CWRMessageType.CrabulonModifyNetWork) {
                 ReceiveNetWork(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.HoldDownCardinalTimer) {
-                ReceiveHoldDownCardinal(reader, whoAmI);
             }
         }
 
@@ -616,7 +532,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.IsMount = true;
 
                 Owner.Center = GetMountPos();
-                Owner.velocity = Vector2.Zero; //禁用玩家自身移动
+                
                 if (ai[9] > 0) {
                     ai[9]--;
                     npc.ai[0] = 0f;
@@ -629,24 +545,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                 Vector2 input = Vector2.Zero;
 
-                if (Owner.whoAmI == Main.myPlayer) {
-                    SendHoldDownCardinal(Owner);
-                    justJumped = Owner.justJumped;
-                    if (justJumped != oldJustJumped) {
-                        oldJustJumped = justJumped;
-                        SendJustJumped();
-                    }
-                }
-
                 //横向输入
-                if (Owner.holdDownCardinalTimer[2] > 2) { //→ 右
+                if (Owner.velocity.X > 0) { //→ 右
                     input.X += 1f;
                 }
-                if (Owner.holdDownCardinalTimer[3] > 2) { //← 左
+                if (Owner.velocity.X < 0) { //← 左
                     input.X -= 1f;
                 }
 
-                if (Owner.holdDownCardinalTimer[0] == 2 && !Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {//下平台
+                Owner.velocity = Vector2.Zero; //禁用玩家自身移动
+
+                if (Owner.controlDown && !Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {//下平台
                     npc.netUpdate = true;
                     npc.velocity.Y += 0.2f;
                     if (npc.velocity.Y < 12) {
@@ -655,7 +564,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 //跳跃（只在接触地面时生效，防止无限连跳）
-                if (justJumped && npc.collideY) {
+                if (Owner.justJumped && npc.collideY) {
                     npc.velocity.Y = -maxSpeed * 4f;
                     npc.netUpdate = true;
                 }
@@ -765,7 +674,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (ai[3] > ai[4] && npc.velocity.Y > 0) {
                     ai[4] = ai[3]; //记录最大下落强度
                 }
-                NetAISend();
             }
             else {
                 //落地瞬间检测：上一帧在下落，这一帧接触地面

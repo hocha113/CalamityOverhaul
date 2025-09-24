@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.NPCs.Modifys;
-using InnoVault;
-using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -18,7 +16,14 @@ namespace CalamityOverhaul.Content.UIs
 {
     internal class CrabulonMountLifeBar : UIHandle
     {
-        public static bool Open => player.GetOverride<CrabulonPlayer>().MountCrabulonIndex != -1;
+        public static bool Open {
+            get {
+                if (player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
+                    return crabulonPlayer.MountCrabulonIndex != -1;
+                }
+                return false;
+            }
+        }
         public static readonly List<CrabulonLife> crabulonLives = [];
         public const int liveMargin = 4;
         public const int crabulonLiveCount = 20;
