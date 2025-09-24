@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul

@@ -33,9 +33,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override int TargetID => NPCID.Truffle;
         public string LocalizationCategory => "NPCModifys";
         private int frame;
-        public bool Sleep;
-        public bool FirstChat;
-
+        public bool Sleep {//用AI槽位进行数据表达，这样就省去了额外的网络发送
+            get => ai[0] != 0;
+            set => ai[0] = value ? 1 : 0;
+        }
+        public bool FirstChat {//用AI槽位进行数据表达，这样就省去了额外的网络发送
+            get => ai[1] != 0;
+            set => ai[1] = value ? 1 : 0;
+        }
         public override void SetStaticDefaults() {
             ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
             for (int i = 0; i < MaxChatSlot; i++) {
@@ -85,6 +90,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             SetNPCDefault();
             GlobalSleepState = false;
             FirstChat = true;//设置为第一次对话的待定
+            if (!Main.gameMenu) {//避免在主菜单生成时发送网络
+                NetAISend();
+            }
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
