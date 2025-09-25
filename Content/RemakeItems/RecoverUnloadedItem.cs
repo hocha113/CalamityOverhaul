@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Rogue;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             }
             RecoverUnloadedItemDic.Add("CalamityOverhaul/BlackMatterStick", ModContent.ItemType<NeutronStarIngot>());
             RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ModContent.ItemType<SpearOfLonginus>());
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/UEPipelineInput", ModContent.ItemType<UEPipeline>());
             TargetID = ModContent.ItemType<UnloadedItem>();
         }
         void ICWRLoader.UnLoadData() => RecoverUnloadedItemDic?.Clear();
