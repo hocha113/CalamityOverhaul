@@ -48,7 +48,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             else {
                 Projectile.extraUpdates = 1;
             }
-            orig = VaultUtils.GetOrig(TextureValue, 13);
+            if (!VaultUtils.isServer) {
+                orig = VaultUtils.GetOrig(TextureValue, 13);
+            }
+            
             return base.PreThrowOut();
         }
 
