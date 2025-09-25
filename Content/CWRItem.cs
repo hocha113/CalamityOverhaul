@@ -662,7 +662,7 @@ namespace CalamityOverhaul.Content
 
         public override void UpdateInventory(Item item, Player player) {
             LegendData?.DoUpdate();
-            RecoverUnloadedItem.UpdateInventory(item, player);
+            RecoverUnloadedItem.UpdateInventory(item);
         }
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             TargetID = ModContent.ItemType<UnloadedItem>();
         }
         void ICWRLoader.UnLoadData() => RecoverUnloadedItemDic?.Clear();
-        public static void UpdateInventory(Item item, Player player) {
+        public static void UpdateInventory(Item item) {
             if (item.type != TargetID) {
                 return;
             }
