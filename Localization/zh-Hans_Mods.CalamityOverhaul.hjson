@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1148,23 +1148,42 @@ Items: {
 
 	FungalFeed: {
 		DisplayName: 真菌饲料
-		Tooltip: ""
+		Tooltip:
+			'''
+			可投掷给菌生蟹，用于驯服
+			被驯服的菌生蟹会跟随你，并与你并肩作战
+			可为其装备[i:CalamityOverhaul/MushroomSaddle]蘑菇鞍，将其变为坐骑
+			"它们最爱蘑菇"
+			'''
 	}
 
 	MushroomSaddle: {
 		DisplayName: 蘑菇鞍
-		Tooltip: ""
+		Tooltip:
+			'''
+			可装备在用[i:CalamityOverhaul/FungalFeed]真菌饲料驯服的菌生蟹身上
+			手持鞍具左键点击菌生蟹进行装备
+			右键点击装有鞍具的菌生蟹即可骑乘
+			'''
 		UseCombat: 只能安放到菌生蟹上
 	}
 
 	SporeboundRoller: {
 		DisplayName: 牵滚菌
-		Tooltip: ""
+		Tooltip:
+			'''
+			击中敌人后生成一个飘逸的小蘑菇
+			"它们喜欢滚来滚去"
+			'''
 	}
 
 	Spectrometer: {
 		DisplayName: 光谱机
-		Tooltip: ""
+		Tooltip:
+			'''
+			允许使用染料给物品上色
+			需要消耗电力才能运行
+			'''
 	}
 }
 

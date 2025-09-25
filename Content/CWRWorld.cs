@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.World;
+using CalamityOverhaul.Content.NPCs.Modifys;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -50,6 +51,13 @@ namespace CalamityOverhaul.Content
 
         public override void OnWorldUnload() {
             MachineRebellionDowned = false;
+        }
+
+        public override void PostUpdateProjectiles() {
+            if (ModifyCrabulon.mountPlayerHeldProj.TryGetProjectile(out var heldProj) && heldProj.IsOwnedByLocalPlayer()) {
+                //这里缓存手持弹幕和玩家的位置差，用于在绘制函数中二次设置进行矫正
+                ModifyCrabulon.mountPlayerHeldPosOffset = Main.LocalPlayer.To(heldProj.Center);
+            }
         }
 
         /// <summary>

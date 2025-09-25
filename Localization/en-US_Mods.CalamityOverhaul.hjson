@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1166,23 +1166,42 @@ Items: {
 
 	FungalFeed: {
 		DisplayName: Fungal Feed
-		Tooltip: ""
+		Tooltip:
+			'''
+			Throw at a Sporecrab to tame it
+			A tamed Sporecrab will follow you and fight by your side
+			Can be equipped with a [i:CalamityOverhaul/MushroomSaddle] Mushroom Saddle to become a mount
+			"They just love mushrooms"
+			'''
 	}
 
 	MushroomSaddle: {
 		DisplayName: Mushroom Saddle
-		Tooltip: ""
-		UseCombat: Can only be used for Crabulon
+		Tooltip:
+			'''
+			Can be equipped on a Sporecrab tamed with [i:CalamityOverhaul/FungalFeed] Fungal Feed
+			Left-click the Sporecrab while holding the saddle to equip it
+			Right-click an equipped Sporecrab to ride
+			'''
+		UseCombat: Can only be applied to crabulon
 	}
 
 	SporeboundRoller: {
 		DisplayName: Sporebound Roller
-		Tooltip: ""
+		Tooltip:
+			'''
+			Generates a floating little mushroom after hitting an enemy
+			"They love to keep rolling around"
+			'''
 	}
 
 	Spectrometer: {
 		DisplayName: Spectrometer
-		Tooltip: ""
+		Tooltip:
+			'''
+			Allows dyeing items with color
+			Requires power to operate
+			'''
 	}
 }
 

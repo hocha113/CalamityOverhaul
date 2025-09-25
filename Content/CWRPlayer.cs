@@ -510,6 +510,7 @@ namespace CalamityOverhaul.Content
 
             Item item = player.GetItem();
             if (HeldStyle >= 0) {
+                player.headFrame.Y = player.headFrame.Height * HeldStyle;
                 player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
             }
             if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {

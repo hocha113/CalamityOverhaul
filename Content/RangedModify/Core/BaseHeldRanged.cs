@@ -61,7 +61,16 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 在非开火的手持闲置期间是否始终使用开火状态的状态设置，包括武器旋转角度和武器位置设置，默认为<see langword="false"/>
         /// </summary>
-        public bool InOwner_HandState_AlwaysSetInFireRoding;
+        public bool InOwner_HandState_AlwaysSetInFireRoding {
+            get {
+                if (!Main.gameMenu && Owner.CWR().IsRotatingDuringDash) {
+                    return false;
+                }
+                return _inOwner_HandState_AlwaysSetInFireRoding;
+            }
+            set => _inOwner_HandState_AlwaysSetInFireRoding = value;
+        }
+        private bool _inOwner_HandState_AlwaysSetInFireRoding;
         /// <summary>
         /// 弹药类型
         /// </summary>

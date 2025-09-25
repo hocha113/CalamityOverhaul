@@ -90,9 +90,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             SetNPCDefault();
             GlobalSleepState = false;
             FirstChat = true;//设置为第一次对话的待定
-            if (!Main.gameMenu) {//避免在主菜单生成时发送网络
-                NetAISend();
-            }
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -141,6 +138,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool AI() {
+            if (ai[3] == 0) {
+                NetAISend();
+                ai[3]++;
+            }
+
             if (!Sleep) {
                 return true;
             }
@@ -155,7 +157,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 npc.velocity.X = 0;
             }
 
-            VaultUtils.ClockFrame(ref frame, 20, 1);
+            if (VaultUtils.isServer) {
+                VaultUtils.ClockFrame(ref frame, 20, 1);
+            }
             return false;
         }
 
@@ -203,19 +207,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     };
                     index++;
                 }
-                if (Main.LocalPlayer.inventory.Any(item => item.type == ItemID.SlimySaddle)) {
-                    items[index] = new Item(ModContent.ItemType<MushroomSaddle>()) {
-                        value = 170000
-                    };
-                    index++;
-                }
+                items[index] = new Item(ModContent.ItemType<MushroomSaddle>()) {
+                    value = 170000
+                };
+                index++;
             }
 
             if (!Main.hardMode) {
                 items[index] = new Item(ItemID.MushroomDye) {
                     value = 10000
                 };
-                index++;
                 return;//在肉后才把原生物品添加回去
             }
 
@@ -227,7 +228,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             items[index] = new Item(ItemID.MushroomDye) {
                 value = 10000
             };
-            index++;
         }
 
         public override bool? CanBeHitByNPC(NPC attacker) {

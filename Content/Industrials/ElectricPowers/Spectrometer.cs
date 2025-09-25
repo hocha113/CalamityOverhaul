@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.UIs;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.UIs;
 using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +36,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Item.createTile = ModContent.TileType<SpectrometerTile>();
             Item.CWR().StorageUE = true;
             Item.CWR().ConsumeUseUE = 800;
+        }
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient(ItemID.DyeVat).
+                AddIngredient<DubiousPlating>(15).
+                AddIngredient<MysteriousCircuitry>(15).
+                AddTile(TileID.Anvils).
+                Register();
         }
     }
 

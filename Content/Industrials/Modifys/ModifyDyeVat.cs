@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,6 +8,19 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
+    internal class ModiyDyeValtItem : ItemOverride
+    {
+        public override int TargetID => ItemID.DyeVat;
+        public override bool DrawingInfo => false;
+        public override bool CanLoadLocalization => false;
+        public override void AddRecipe() {
+            CreateRecipe().
+                AddIngredient(ItemID.Wood, 50).
+                AddTile(TileID.Sawmill).
+                Register();
+        }
+    }
+
     internal class ModifyDyeVat : TileOverride
     {
         public override int TargetID => TileID.DyeVat;

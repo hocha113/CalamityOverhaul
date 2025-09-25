@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public bool MountACrabulon;
         public int DontMount;
         public bool hoverNPC;
+        private bool rightPressed;
         private Player mountPlayerByDraw;
+        internal static int mountPlayerHeldProj;
+        internal static Vector2 mountPlayerHeldPosOffset;
         private float jumpHeightUpdate;
         private float jumpHeightSetFrame;
         private float dontTurnTo;
@@ -257,7 +261,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             FeedValue = 0f;
             CrabulonPlayer.MountCrabulonIndex = -1;
             CrabulonPlayer.IsMount = false;
-            CrabulonPlayer.MountDraw = false;
 
             if (VaultUtils.isClient || FeedValue > 0f) {
                 return null;
@@ -352,6 +355,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 //返回false以阻止原版AI运行
                 return false;
             }
+
+            rightPressed = Main.mouseRight && Main.mouseRightRelease;
 
             if (ai[7] > 0) {
                 ai[7]--;
@@ -544,6 +549,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.IsMount = true;
 
                 Owner.Center = GetMountPos();
+                
 
                 if (ai[9] > 0) {
                     ai[9]--;
@@ -606,7 +612,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     npc.ai[0] = 1f;
                 }
 
-                if (Owner.whoAmI == Main.myPlayer && hoverNPC && Main.mouseRight && !Main.mouseRightRelease) {
+                if (Owner.whoAmI == Main.myPlayer && hoverNPC && rightPressed) {
                     Mount = false;
                     DontMount = 30;
                     MountACrabulon = false;
@@ -627,8 +633,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.MountCrabulonIndex = -1;
                 CrabulonPlayer.IsMount = false;
                 //按下交互键骑乘
-                if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0
-                    && hoverNPC && Main.mouseRight && !Main.mouseRightRelease) {
+                if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
                     MountACrabulon = true;
                     SendNetWork();
                 }
@@ -790,18 +795,26 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                 , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
-            CrabulonPlayer.MountDraw = true;
+
             mountPlayerByDraw = (Player)Owner.Clone();//此处使用克隆玩家，防止Draw的逻辑影响原玩家
             float originalRotation = mountPlayerByDraw.fullRotation;
             mountPlayerByDraw.fullRotation = npc.rotation + MathHelper.PiOver2;
             Vector2 oldRotOrigin = mountPlayerByDraw.fullRotationOrigin;
             mountPlayerByDraw.fullRotationOrigin = mountPlayerByDraw.Size / 2f;
             mountPlayerByDraw.Center = GetMountPos();
+            mountPlayerByDraw.headFrame.Y = 0;
+            mountPlayerByDraw.bodyFrame.Y = 0;
+
+            mountPlayerHeldProj = mountPlayerByDraw.heldProj;//邪道，在绘制函数里面获取手持弹幕索引
+            if (mountPlayerHeldProj.TryGetProjectile(out var heldProj)) {
+                Vector2 gfxOffYByPlayer = new(0, -mountPlayerByDraw.gfxOffY);//玩家自身也有一个Y轴矫正，这里取反以中合位置
+                heldProj.Center = mountPlayerByDraw.Center + mountPlayerHeldPosOffset + gfxOffYByPlayer;
+            }
             Main.PlayerRenderer.DrawPlayer(Main.Camera, mountPlayerByDraw, mountPlayerByDraw.position
                 , mountPlayerByDraw.bodyRotation, mountPlayerByDraw.fullRotationOrigin);
             mountPlayerByDraw.fullRotation = originalRotation;
             mountPlayerByDraw.fullRotationOrigin = oldRotOrigin;
-            CrabulonPlayer.MountDraw = false;
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                 , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
@@ -865,15 +878,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             modPlayer.CustomCooldownCounter = 90;
         }
         public override void PostUpdate() {
-            if (MountCrabulonIndex == -1) {
-                IsMount = false;
-                MountDraw = false;
-                if (oldMountCrabulonIndex != -1) {
-                    CloseDuringDash(Player);
-                }
-            }
-            else {
-                MountCrabulon = Main.npc[MountCrabulonIndex].GetOverride<ModifyCrabulon>();
+            if (!IsMount) {
+                ModifyCrabulon.mountPlayerHeldProj = -1;
             }
 
             ModifyCrabulons.Clear();
