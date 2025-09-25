@@ -1206,7 +1206,11 @@ Items: {
 
 	SporeburstPouch: {
 		DisplayName: Sporeburst Pouch
-		Tooltip: ""
+		Tooltip:
+			'''
+			Throws a volatile pouch of fungal spores that explodes on impact
+			Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
+			'''
 	}
 }
 
@@ -1532,6 +1536,7 @@ Projectiles: {
 	Glomushroom.DisplayName: Glomushroom
 	SporeBurst.DisplayName: Spore Burst
 	SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
+	SporeBoboRogue.DisplayName: Spore Bobo Rogue
 }
 
 Configs: {

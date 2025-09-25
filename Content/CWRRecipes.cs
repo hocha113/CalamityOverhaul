@@ -295,7 +295,13 @@ namespace CalamityOverhaul.Content
             //        .AddTile(TileID.Furnaces)
             //        .Register();
             //}
-
+            //添加染缸的合成
+            {
+                Recipe.Create(ItemID.DyeVat)
+                .AddIngredient(ItemID.Wood, 50)
+                    .AddTile(TileID.Sawmill)
+                    .Register();
+            }
             //添加地狱熔炉的合成
             {
                 Recipe.Create(ItemID.Hellforge)

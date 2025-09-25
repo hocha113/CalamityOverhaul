@@ -1194,7 +1194,11 @@ Items: {
 
 	SporeburstPouch: {
 		// DisplayName: Sporeburst Pouch
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Throws a volatile pouch of fungal spores that explodes on impact
+			Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
+			''' */
 	}
 }
 
@@ -1520,6 +1524,7 @@ Projectiles: {
 	// Glomushroom.DisplayName: Glomushroom
 	// SporeBurst.DisplayName: Spore Burst
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
+	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
 }
 
 Configs: {
@@ -5533,9 +5538,9 @@ NPCModifys: {
 	ModifyCrabulon: {
 		// CrouchText: Await
 		// CrouchAltText: Follow
-		// MountHoverText: Right-Click To Mount Saddle
+		// MountHoverText: Left-Click To Mount Saddle
 		// RideHoverText: Right-Click To Ride
-		// ChangeSaddleText: Right-Click To Change Saddle
+		// ChangeSaddleText: Left-Click To Change Saddle
 		// DismountText: Right-Click To Dismount
 	}
 

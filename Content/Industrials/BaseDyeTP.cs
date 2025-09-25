@@ -89,15 +89,25 @@ namespace CalamityOverhaul.Content.Industrials
             }
         }
 
-        public override void UpdateMachine() {
-            if (DyeMachineUI.CanOpen && Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
+        public void CloseDyeMachineUI() {
+            if (DyeMachineUI.CanOpen && DyeMachineUI.DyeTP.WhoAmI == WhoAmI) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
                 DyeMachineUI.CanOpen = false;
+            }
+        }
+
+        public override void UpdateMachine() {
+            if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
+                CloseDyeMachineUI();
             }
             DyeMachineUI.DyeSlot.UpdateSlot();
             UpdateDyeMachine();
         }
 
         public virtual void UpdateDyeMachine() { }
+
+        public override void MachineKill() {
+            CloseDyeMachineUI();
+        }
     }
 }

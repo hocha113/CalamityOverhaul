@@ -3,6 +3,7 @@ using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -198,12 +199,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 };
                 index++;
                 items[index] = new Item(ModContent.ItemType<SporeboundRoller>()) {
-                    value = 70000
+                    value = 72000
+                };
+                index++;
+                items[index] = new Item(ModContent.ItemType<SporeburstPouch>()) {
+                    value = 80000
                 };
                 index++;
                 if (NPC.downedBoss3) {
                     items[index] = new Item(ModContent.ItemType<FungalRevolver>()) {
-                        value = 120000
+                        value = 160000
                     };
                     index++;
                 }

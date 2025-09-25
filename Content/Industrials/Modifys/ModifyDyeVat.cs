@@ -8,19 +8,6 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
-    internal class ModiyDyeValtItem : ItemOverride
-    {
-        public override int TargetID => ItemID.DyeVat;
-        public override bool DrawingInfo => false;
-        public override bool CanLoadLocalization => false;
-        public override void AddRecipe() {
-            CreateRecipe().
-                AddIngredient(ItemID.Wood, 50).
-                AddTile(TileID.Sawmill).
-                Register();
-        }
-    }
-
     internal class ModifyDyeVat : TileOverride
     {
         public override int TargetID => TileID.DyeVat;
@@ -41,10 +28,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 0;
         public override BaseDyeMachineUI DyeMachineUI => DyeVatUI.Instance;
-        public override void UpdateDyeMachine() {
-
-        }
-
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             Item item = null;
             if (BeDyedItem.type > ItemID.None) {

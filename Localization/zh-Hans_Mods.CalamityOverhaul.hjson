@@ -1187,8 +1187,12 @@ Items: {
 	}
 
 	SporeburstPouch: {
-		// DisplayName: Sporeburst Pouch
-		// Tooltip: ""
+		DisplayName: 菌泡囊
+		Tooltip:
+			'''
+			投出一个脆弱的菌泡囊，撞击时会猛烈爆裂
+			发动潜行攻击将触发一场巨大的真菌引爆，并释放出一大群追踪敌人的孢子精魄
+			'''
 	}
 }
 
@@ -1514,6 +1518,7 @@ Projectiles: {
 	// Glomushroom.DisplayName: Glomushroom
 	// SporeBurst.DisplayName: Spore Burst
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
+	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
 }
 
 Configs: {
