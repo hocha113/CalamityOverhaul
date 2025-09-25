@@ -10,9 +10,7 @@ using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
-using InnoVault;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using System.Linq;
@@ -22,7 +20,6 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -106,6 +103,7 @@ namespace CalamityOverhaul.Content
         private float npcRotUpdateSengs;
         private int halibutAmmoTime;
         internal int DyeItemID;
+        internal bool SendDyeItemID;
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
 
@@ -145,14 +143,6 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (projectile.IsOwnedByLocalPlayer() && DyeItemID > ItemID.None && !VaultUtils.isSinglePlayer) {
-                ModPacket modPacket = CWRMod.Instance.GetPacket();
-                modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
-                modPacket.Write(projectile.identity);
-                modPacket.Write(DyeItemID);
-                modPacket.Send();
-            }
-
             if (projectile.IsOwnedByLocalPlayer() && !projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
                 if (modPlayer.LoadMuzzleBrakeLevel == 4
@@ -166,11 +156,33 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public void SendProjectileDyeItemID(Projectile projectile) {
+            if (VaultUtils.isSinglePlayer) {
+                return;//单人模式不需要发包
+            }
+            if (DyeItemID <= ItemID.None) {
+                return;//没有染色的也不需要发包
+            }
+            if (!projectile.IsOwnedByLocalPlayer()) {
+                return;//只让主人端发包
+            }
+            if (SendDyeItemID) {
+                return;//已经发过包的不要再发包
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
+            modPacket.Write(projectile.identity);
+            modPacket.Write(DyeItemID);
+            modPacket.Send();
+            SendDyeItemID = true;
+        }
+
         public static void HandleProjectileDyeItemID(BinaryReader reader, int whoAmI) {
             int identity = reader.ReadInt32();
             int dyeItemID = reader.ReadInt32();
             Projectile projectile = Main.projectile.FirstOrDefault(p => p.identity == identity);
-            if (!projectile.Alives()) {
+            if (projectile == null || projectile.type <= ProjectileID.None) {
                 return;
             }
             projectile.CWR().DyeItemID = dyeItemID;
@@ -185,6 +197,8 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(Projectile projectile) {
+            SendProjectileDyeItemID(projectile);//在AI中发送一次染色数据，在这里identity等数据已经分配好了
+
             if (CWRWorld.CanTimeFrozen() && !projectile.hide && !projectile.friendly
                 && !Main.projPet[projectile.type] && !projectile.minion && !Main.projHook[projectile.type]
                 && !CWRLoad.ProjValue.ImmuneFrozen[projectile.type]) {
@@ -206,6 +220,7 @@ namespace CalamityOverhaul.Content
                 projectile.Center = hitNPC.Center + offsetHitPos;
                 return false;
             }
+
             return base.PreAI(projectile);
         }
 
