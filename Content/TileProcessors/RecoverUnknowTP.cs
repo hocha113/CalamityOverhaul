@@ -33,17 +33,29 @@ namespace CalamityOverhaul.Content.TileProcessors
             }
 
             unknow.UnModName = "UEPipeline";
+
             WorldGen.KillTile(unknow.Position.X, unknow.Position.Y, false, false, true);
             unknow.Kill();
 
             int tileID = ModContent.TileType<UEPipelineTile>();
             WorldGen.PlaceTile(unknow.Position.X, unknow.Position.Y, tileID, true, true);
             var tp = TileProcessorLoader.AddInWorld(tileID, unknow.Position, null);
-            if (tp != null && !VaultUtils.isSinglePlayer) {
-                TileProcessorNetWork.SendTPDeathByServer(unknow);
-                TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, tileID, unknow.Position);
-                NetMessage.SendTileSquare(Main.myPlayer, unknow.Position.X, unknow.Position.Y);
+            if (tp == null) {
+                return;
             }
+
+            if (tp is UEPipelineTP pipelineTP && unknow.Data?.Count > 0) {
+                pipelineTP.LoadData(unknow.Data);
+            }
+
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+
+            NetMessage.SendTileSquare(Main.myPlayer, unknow.Position.X, unknow.Position.Y);
+            TileProcessorNetWork.SendTPDeathByServer(unknow);
+            TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, tileID, unknow.Position);
+            tp.SendData();
         }
     }
 }
