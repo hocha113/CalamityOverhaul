@@ -300,6 +300,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             ModifyTruffle.GlobalSleepState = true;
             NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, NPCID.Truffle);
             truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
+            truffle.netUpdate = true;
+            if (truffle.TryGetOverride<ModifyTruffle>(out var modifyTruffle)) {
+                modifyTruffle.NetAISend();
+            }
 
             return null;
         }
@@ -582,7 +586,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 Owner.Center = GetMountPos();
-                
 
                 if (ai[9] > 0) {
                     ai[9]--;
@@ -597,10 +600,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 Vector2 input = Vector2.Zero;
 
                 //横向输入
-                if (Owner.velocity.X > 0) { //→ 右
+                if (Owner.controlRight) { //→ 右
                     input.X += 1f;
                 }
-                if (Owner.velocity.X < 0) { //← 左
+                if (Owner.controlLeft) { //← 左
                     input.X -= 1f;
                 }
 
@@ -632,9 +635,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     }
                 }
 
-                if (VaultUtils.isSinglePlayer) {
-                    AutoStepClimbing();
-                }
+                AutoStepClimbing();
 
                 npc.ai[0] = (Math.Abs(npc.velocity.X) > 0.1f) ? 1f : 0f;
                 if (Math.Abs(npc.velocity.Y) > 1f) {
@@ -691,8 +692,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         
                         if (Owner.whoAmI == Main.myPlayer) {
                             SendNetWork();
-                            NetAISend();
                         }
+                        NetAISend();
                     }
                 }
             }
@@ -734,6 +735,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (ai[3] > ai[4] && npc.velocity.Y > 0) {
                     ai[4] = ai[3]; //记录最大下落强度
                 }
+                NetAISend();
             }
             else {
                 if (npc.oldVelocity.Y > 2f && ai[4] > checkDis) {//落地瞬间检测：上一帧在下落，这一帧接触地面
@@ -764,7 +766,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 //落地后清空
                 ai[3] = 0;
                 ai[4] = 0;
-                npc.netUpdate = true;
+                NetAISend();
             }
         }
 

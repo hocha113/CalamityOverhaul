@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -34,14 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override int TargetID => NPCID.Truffle;
         public string LocalizationCategory => "NPCModifys";
         private int frame;
-        public bool Sleep {//用AI槽位进行数据表达，这样就省去了额外的网络发送
-            get => ai[0] != 0;
-            set => ai[0] = value ? 1 : 0;
-        }
-        public bool FirstChat {//用AI槽位进行数据表达，这样就省去了额外的网络发送
-            get => ai[1] != 0;
-            set => ai[1] = value ? 1 : 0;
-        }
+        public bool Sleep;
+        public bool FirstChat;
         public override void SetStaticDefaults() {
             ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
             for (int i = 0; i < MaxChatSlot; i++) {
@@ -136,14 +130,20 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             Sleep = false;
             SetNPCDefault();
+            SendNetworkData();
+        }
+
+        public override void OtherNetWorkSend(ModPacket netMessage) {
+            netMessage.Write(Sleep);
+            netMessage.Write(FirstChat);
+        }
+
+        public override void OtherNetWorkReceive(BinaryReader reader) {
+            Sleep = reader.ReadBoolean();
+            FirstChat = reader.ReadBoolean();
         }
 
         public override bool AI() {
-            if (ai[3] == 0) {
-                NetAISend();
-                ai[3]++;
-            }
-
             if (!Sleep) {
                 return true;
             }
