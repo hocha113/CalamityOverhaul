@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public CrabulonPlayer CrabulonPlayer => Owner.GetOverride<CrabulonPlayer>();
         public static LocalizedText CrouchText { get; set; }
         public static LocalizedText CrouchAltText { get; set; }
+        public static LocalizedText MountHoverText { get; set; }
+        public static LocalizedText RideHoverText { get; set; }
+        public static LocalizedText ChangeSaddleText { get; set; }
+        public static LocalizedText DismountText { get; set; }
         public string LocalizationCategory => "NPCModifys";
         public float FeedValue = 0;
         public NPC TargetNPC;
@@ -50,6 +54,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override void SetStaticDefaults() {
             CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
             CrouchAltText = this.GetLocalization(nameof(CrouchAltText), () => "Follow");
+            MountHoverText = this.GetLocalization(nameof(MountHoverText), () => "Right-Click To Mount Saddle");
+            RideHoverText = this.GetLocalization(nameof(RideHoverText), () => "Right-Click To Ride");
+            ChangeSaddleText = this.GetLocalization(nameof(ChangeSaddleText), () => "Right-Click To Change Saddle");
+            DismountText = this.GetLocalization(nameof(DismountText), () => "Right-Click To Dismount");
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) {
@@ -259,7 +267,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
             FeedValue = 0f;
-            CrabulonPlayer.MountCrabulonIndex = -1;
             CrabulonPlayer.IsMount = false;
 
             if (VaultUtils.isClient || FeedValue > 0f) {
@@ -545,7 +552,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
-                CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
+                CrabulonPlayer.MountCrabulon = this;
                 CrabulonPlayer.IsMount = true;
 
                 Owner.Center = GetMountPos();
@@ -630,7 +637,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false; //阻止默认AI
             }
             else {
-                CrabulonPlayer.MountCrabulonIndex = -1;
+                CrabulonPlayer.MountCrabulon = null;
                 CrabulonPlayer.IsMount = false;
                 //按下交互键骑乘
                 if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
@@ -648,7 +655,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         ai[5] = 0f;
                         Mount = true;
                         MountACrabulon = false;
-                        CrabulonPlayer.MountCrabulonIndex = npc.whoAmI;
+                        CrabulonPlayer.MountCrabulon = this;
                         SendNetWork();
                         NetAISend();
                     }
@@ -774,7 +781,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) {
-            if (!Mount) {
+            if (!Mount && !SaddleItem.Alives()) {
                 return;
             }
             boundingBox = Vector2.Zero.GetRectangle(1);//修改为一个在世界零点位置的非常小的矩形，这样基本不可能摸到
@@ -788,7 +795,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public void MountDrawPlayer() {
-            if (!CrabulonPlayer.IsMount) {
+            if (CrabulonPlayer == null || !CrabulonPlayer.IsMount) {
                 return;
             }
 
@@ -855,19 +862,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         /// 存在的菌生蟹索引，如果为-1则表示没有
         /// </summary>
         public static int CrabulonIndex;
-        ///<summary>
-        ///骑乘的菌生蟹索引
-        ///</summary>
-        public int MountCrabulonIndex;
-        public ModifyCrabulon MountCrabulon;
-        private int oldMountCrabulonIndex;
+        /// <summary>
+        /// 骑乘的菌生蟹实例，如果没有骑乘，则为null
+        /// </summary>
+        public static ModifyCrabulon MountCrabulon;
         public bool IsMount;
         public bool MountDraw;
         public List<ModifyCrabulon> ModifyCrabulons = [];
-        public override void ResetEffects() {
-            CrabulonIndex = -1;
-            MountCrabulonIndex = -1;
-        }
+        public override void ResetEffects() => CrabulonIndex = -1;
         public static void CloseDuringDash(Player player) {
             CWRPlayer modPlayer = player.CWR();
             player.fullRotation = 0;
@@ -880,6 +882,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override void PostUpdate() {
             if (!IsMount) {
                 ModifyCrabulon.mountPlayerHeldProj = -1;
+                MountCrabulon = null;
             }
 
             ModifyCrabulons.Clear();
@@ -889,8 +892,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
                 ModifyCrabulons.Add((npc.GetOverride<ModifyCrabulon>()));
             }
-
-            oldMountCrabulonIndex = MountCrabulonIndex;
         }
         public override bool PreDrawPlayers(Camera camera, ref IEnumerable<Player> players) {
             players = players.Where(player => !player.GetOverride<CrabulonPlayer>().IsMount);//删掉关于骑乘玩家的绘制

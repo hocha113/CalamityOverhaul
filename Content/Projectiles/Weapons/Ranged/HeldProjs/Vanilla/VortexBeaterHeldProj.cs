@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void SetShootAttribute() {
             if (onFireR) {
-                EjectCasingProjSize = 2;
+                EjectCasingProjSize = 1.2f;
                 FireTime = 2;
                 if (++fireIndex2 >= 4) {
                     randomShootRotset = Main.rand.NextFloat(-0.3f, 0.3f);
