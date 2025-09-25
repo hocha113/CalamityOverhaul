@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public override int TargetID => ModContent.NPCType<Crabulon>();
         public CrabulonPlayer CrabulonPlayer {
             get {
+                if (!Owner.Alives()) {
+                    return null;
+                }
                 if (Owner.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
                     return crabulonPlayer;
                 }
@@ -54,10 +57,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private Player mountPlayerByDraw;
         internal static int mountPlayerHeldProj;
         internal static Vector2 mountPlayerHeldPosOffset;
-        private float jumpHeightUpdate;
-        private float jumpHeightSetFrame;
+        private float JumpHeightUpdate;
+        private float JumpHeightSetFrame;
+        private float GroundClearance;
         private float dontTurnTo;
-        private int groundClearance;
         internal int DyeItemID;
         public override void SetStaticDefaults() {
             CrouchText = this.GetLocalization(nameof(CrouchText), () => "Await");
@@ -85,6 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             //每次喂食增加500点驯服值
             FeedValue += 500;
             ai[8] = 120;
+            npc.ai[0] = npc.ai[1] = npc.ai[2] = 0f;
         }
 
         #region NetWork
@@ -193,6 +197,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             netMessage.Write(MountACrabulon);
             netMessage.Write(DontMount);
             netMessage.Write(DyeItemID);
+            netMessage.Write(JumpHeightUpdate);
+            netMessage.Write(JumpHeightSetFrame);
+            netMessage.Write(GroundClearance);
             SaddleItem ??= new Item();
             ItemIO.Send(SaddleItem, netMessage);
         }
@@ -205,6 +212,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             MountACrabulon = reader.ReadBoolean();
             DontMount = reader.ReadInt32();
             DyeItemID = reader.ReadInt32();
+            JumpHeightUpdate = reader.ReadSingle();
+            JumpHeightSetFrame = reader.ReadSingle();
+            GroundClearance = reader.ReadSingle();
             SaddleItem = ItemIO.Receive(reader);
             if (!SaddleItem.Alives()) {
                 SaddleItem = new Item();
@@ -301,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             //空中：跳跃 / 下落帧
             if (!npc.collideY) {
-                if (npc.velocity.Y < 0 || groundClearance > 100) {
+                if (npc.velocity.Y < 0 || GroundClearance > 100) {
                     ai[11] = MathHelper.Lerp(ai[11], 1, 0.1f);
                 }
                 else {
@@ -355,11 +365,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public override bool AI() {
-            CrabulonPlayer.CrabulonIndex = npc.whoAmI;
             //当FeedValue大于0时，进入驯服状态
             if (FeedValue <= 0f) {
                 //如果不在驯服状态，则执行原版AI
                 return true;
+            }
+
+            if (CrabulonPlayer != null) {
+                CrabulonPlayer.CrabulonIndex = npc.whoAmI;
             }
 
             SetFeedState();
@@ -403,15 +416,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             npc.noGravity = false;
             npc.noTileCollide = false;
 
-            if (jumpHeightUpdate > 0) {
-                jumpHeightSetFrame = 60;
-                jumpHeightUpdate -= 14;
+            if (JumpHeightUpdate > 0) {
+                JumpHeightSetFrame = 60;
+                JumpHeightUpdate -= 14;
                 npc.position.Y -= 14;
                 npc.noGravity = true;
             }
 
-            if (jumpHeightSetFrame > 0) {
-                jumpHeightSetFrame--;
+            if (JumpHeightSetFrame > 0) {
+                JumpHeightSetFrame--;
             }
 
             if (CrabulonPlayer != null) {
@@ -473,7 +486,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
                         Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(DyeItemID);
                     }
-                    NetAISend();
                     return false;
                 }
             }
@@ -548,7 +560,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             else {
                 if (npc.collideY) {//很奇妙的一个判断时机，加了后就正常很多了
                     ai[10] = 10;
-                    NetAISend();
                 }
             }
 
@@ -564,8 +575,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
-                CrabulonPlayer.MountCrabulon = this;
+                
                 if (CrabulonPlayer != null) {
+                    CrabulonPlayer.MountCrabulon = this;
                     CrabulonPlayer.IsMount = true;
                 }
 
@@ -595,7 +607,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 Owner.velocity = Vector2.Zero; //禁用玩家自身移动
 
                 if (Owner.controlDown && !Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {//下平台
-                    npc.netUpdate = true;
                     npc.velocity.Y += 0.2f;
                     if (npc.velocity.Y < 12) {
                         npc.velocity.Y = 12;
@@ -605,7 +616,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 //跳跃（只在接触地面时生效，防止无限连跳）
                 if (Owner.justJumped && npc.collideY) {
                     npc.velocity.Y = -maxSpeed * 4f;
-                    npc.netUpdate = true;
                 }
 
                 JumpFloorEffect();
@@ -622,14 +632,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     }
                 }
 
-                AutoStepClimbing();
+                if (VaultUtils.isSinglePlayer) {
+                    AutoStepClimbing();
+                }
 
                 npc.ai[0] = (Math.Abs(npc.velocity.X) > 0.1f) ? 1f : 0f;
                 if (Math.Abs(npc.velocity.Y) > 1f) {
                     npc.ai[0] = 3f;
                 }
 
-                if (jumpHeightSetFrame > 0) {
+                if (JumpHeightSetFrame > 0) {
                     npc.ai[0] = 1f;
                 }
 
@@ -651,10 +663,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false; //阻止默认AI
             }
             else {
-                CrabulonPlayer.MountCrabulon = null;
                 if (CrabulonPlayer != null) {
+                    CrabulonPlayer.MountCrabulon = null;
                     CrabulonPlayer.IsMount = false;
                 }
+
                 //按下交互键骑乘
                 if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
                     MountACrabulon = true;
@@ -671,9 +684,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         ai[5] = 0f;
                         Mount = true;
                         MountACrabulon = false;
-                        CrabulonPlayer.MountCrabulon = this;
-                        SendNetWork();
-                        NetAISend();
+
+                        if (CrabulonPlayer != null) {
+                            CrabulonPlayer.MountCrabulon = this;
+                        }
+                        
+                        if (Owner.whoAmI == Main.myPlayer) {
+                            SendNetWork();
+                            NetAISend();
+                        }
                     }
                 }
             }
@@ -682,10 +701,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public void GetDistanceToGround() {
-            groundClearance = 0;
+            GroundClearance = 0;
             Vector2 startPos = npc.Bottom;
             while (true) {
-                Vector2 pos = startPos + new Vector2(0, groundClearance);
+                Vector2 pos = startPos + new Vector2(0, GroundClearance);
                 Tile tile = Framing.GetTileSafely(pos.ToTileCoordinates16());
                 bool hitTile;
                 if (CanFallThroughPlatforms() == true) {
@@ -697,10 +716,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (hitTile) {
                     break;
                 }
-                if (groundClearance > 1000) {
+                if (GroundClearance > 1000) {
                     break;
                 }
-                groundClearance += 16;
+                GroundClearance += 16;
             }
         }
 
@@ -717,8 +736,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
             }
             else {
-                //落地瞬间检测：上一帧在下落，这一帧接触地面
-                if (npc.oldVelocity.Y > 2f && ai[4] > checkDis) {
+                if (npc.oldVelocity.Y > 2f && ai[4] > checkDis) {//落地瞬间检测：上一帧在下落，这一帧接触地面
                     float impactStrength = ai[4] * slp;
 
                     //播放音效：强度越高，音效音量/音调可变
@@ -743,10 +761,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                             , baseDmg, 2, Owner.whoAmI, npc.whoAmI);
                     }
                 }
-
                 //落地后清空
                 ai[3] = 0;
                 ai[4] = 0;
+                npc.netUpdate = true;
             }
         }
 
@@ -773,7 +791,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             if (jumpCount > 0) {
-                jumpHeightUpdate = jumpCount;
+                JumpHeightUpdate = jumpCount;
                 canStepUp = true;
             }
 
@@ -880,13 +898,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         /// <summary>
         /// 存在的菌生蟹索引，如果为-1则表示没有
         /// </summary>
-        public static int CrabulonIndex;
+        public int CrabulonIndex;
         /// <summary>
         /// 骑乘的菌生蟹实例，如果没有骑乘，则为null
         /// </summary>
-        public static ModifyCrabulon MountCrabulon;
+        public ModifyCrabulon MountCrabulon;
         public bool IsMount;
-        public bool MountDraw;
         public List<ModifyCrabulon> ModifyCrabulons = [];
         public override void ResetEffects() => CrabulonIndex = -1;
         public static void CloseDuringDash(Player player) {

@@ -14,12 +14,15 @@ using InnoVault;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -142,6 +145,14 @@ namespace CalamityOverhaul.Content
                 }
             }
 
+            if (projectile.IsOwnedByLocalPlayer() && DyeItemID > ItemID.None && !VaultUtils.isSinglePlayer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
+                modPacket.Write(projectile.identity);
+                modPacket.Write(DyeItemID);
+                modPacket.Send();
+            }
+
             if (projectile.IsOwnedByLocalPlayer() && !projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
                 if (modPlayer.LoadMuzzleBrakeLevel == 4
@@ -153,6 +164,24 @@ namespace CalamityOverhaul.Content
                     projectile.netUpdate = true;
                 }
             }
+        }
+
+        public static void HandleProjectileDyeItemID(BinaryReader reader, int whoAmI) {
+            int identity = reader.ReadInt32();
+            int dyeItemID = reader.ReadInt32();
+            Projectile projectile = Main.projectile.FirstOrDefault(p => p.identity == identity);
+            if (!projectile.Alives()) {
+                return;
+            }
+            projectile.CWR().DyeItemID = dyeItemID;
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
+            modPacket.Write(identity);
+            modPacket.Write(dyeItemID);
+            modPacket.Send(-1, whoAmI);
         }
 
         public override bool PreAI(Projectile projectile) {

@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Rogue;
+using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;

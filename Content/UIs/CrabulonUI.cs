@@ -18,9 +18,12 @@ namespace CalamityOverhaul.Content.UIs
     {
         public bool Open {
             get {
+                if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
+                    return false;
+                }
                 npc = null;
-                if (CrabulonPlayer.MountCrabulon != null) {
-                    npc = CrabulonPlayer.MountCrabulon.npc;
+                if (crabulonPlayer.MountCrabulon != null) {
+                    npc = crabulonPlayer.MountCrabulon.npc;
                     return true;
                 }
                 return false;
@@ -332,7 +335,7 @@ namespace CalamityOverhaul.Content.UIs
             //平滑更新悬浮动画
             hoverSengs = MathHelper.Lerp(hoverSengs, isHovering && _shouldBeOpen ? 1f : 0f, 0.15f);
 
-            if (isHovering && _shouldBeOpen) {
+            if (isHovering && _shouldBeOpen && !modify.Mount) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero);

@@ -14,6 +14,7 @@ namespace CalamityOverhaul
         ModifiIntercept_InGame,
         ModifiIntercept_EnterWorld_Request,
         ModifiIntercept_EnterWorld_ToClient,
+        ProjectileDyeItemID,
         KillTileEntity,
         CrabulonFeed,
         CrabulonModifyNetWork,
@@ -38,6 +39,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ModifiIntercept_EnterWorld_ToClient) {
                 HandlerCanOverride.NetModifiInterceptEnterWorld_Client(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.ProjectileDyeItemID) {
+                CWRProjectile.HandleProjectileDyeItemID(reader, whoAmI);
             }
             else if (type == CWRMessageType.KillTileEntity) {
                 ModifyTurretLoader.HandlerNetKillTE(reader, whoAmI);
