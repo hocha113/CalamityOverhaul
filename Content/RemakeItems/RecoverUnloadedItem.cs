@@ -40,8 +40,10 @@ namespace CalamityOverhaul.Content.RemakeItems
             }
             UnloadedItem unloadedItem = item.ModItem as UnloadedItem;
             string key = unloadedItem.ModName + "/" + unloadedItem.ItemName;
+            int origStack = item.stack;
             if (RecoverUnloadedItemDic.TryGetValue(key, out int targetItemID)) {
                 item.ChangeItemType(targetItemID);
+                item.stack = origStack;
             }
         }
     }

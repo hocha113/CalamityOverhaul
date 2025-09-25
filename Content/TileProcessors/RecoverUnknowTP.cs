@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.TileProcessors
             if (tileProcessor is not UnknowTP unknow) {
                 return true;
             }
-            if (tileProcessor.CenterInWorld.To(Main.LocalPlayer.Center).LengthSquared() >= 360000) {
+            if (tileProcessor.CenterInWorld.To(Main.LocalPlayer.Center).LengthSquared() >= 90000) {
                 return true;
             }
             RecoverUEPipelineInputTP(unknow);
@@ -33,9 +33,16 @@ namespace CalamityOverhaul.Content.TileProcessors
             if (unknow.HoverString != "CalamityOverhaul/UEPipelineInputTP") {
                 return;
             }
+            unknow.UnModName = "UEPipeline";
             WorldGen.KillTile(unknow.Position.X, unknow.Position.Y, false, false, true);
-            WorldGen.PlaceTile(unknow.Position.X, unknow.Position.Y, ModContent.TileType<UEPipelineTile>(), true, true);
-            NetMessage.SendTileSquare(Main.myPlayer, unknow.Position.X, unknow.Position.Y);
+            unknow.Active = false;
+            int tileID = ModContent.TileType<UEPipelineTile>();
+            WorldGen.PlaceTile(unknow.Position.X, unknow.Position.Y, tileID, true, true);
+            var tp = TileProcessorLoader.AddInWorld(tileID, unknow.Position, null);
+            if (tp != null && !VaultUtils.isSinglePlayer) {
+                TileProcessorNetWork.PlaceInWorldNetSend(VaultMod.Instance, tileID, unknow.Position);
+                NetMessage.SendTileSquare(Main.myPlayer, unknow.Position.X, unknow.Position.Y);
+            }
         }
     }
 }
