@@ -43,6 +43,12 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return false;
             }
 
+            if (ModifyCrabulon.SaddleItem.Alives()) {
+                VaultUtils.SpwanItem(ModifyCrabulon.npc.FromObjectGetParent()
+                    , ModifyCrabulon.npc.Top, new Vector2(32), ModifyCrabulon.SaddleItem);
+                ModifyCrabulon.SaddleItem.TurnToAir();
+            }
+            
             ModifyCrabulon.SaddleItem = Item.Clone();
             ModifyCrabulon.SendNetWork();
             return true;

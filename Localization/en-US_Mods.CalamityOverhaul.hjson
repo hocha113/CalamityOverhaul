@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1203,6 +1203,11 @@ Items: {
 			Requires power to operate
 			'''
 	}
+
+	SporeburstPouch: {
+		DisplayName: Sporeburst Pouch
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1526,6 +1531,7 @@ Projectiles: {
 	CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 	Glomushroom.DisplayName: Glomushroom
 	SporeBurst.DisplayName: Spore Burst
+	SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 }
 
 Configs: {
@@ -5612,9 +5618,9 @@ NPCModifys: {
 	ModifyCrabulon: {
 		CrouchText: Await
 		CrouchAltText: Follow
-		MountHoverText: Right-Click To Mount Saddle
+		MountHoverText: Left-Click To Mount Saddle
 		RideHoverText: Right-Click To Ride
-		ChangeSaddleText: Right-Click To Change Saddle
+		ChangeSaddleText: Left-Click To Change Saddle
 		DismountText: Right-Click To Dismount
 	}
 

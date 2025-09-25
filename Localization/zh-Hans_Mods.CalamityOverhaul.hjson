@@ -1185,6 +1185,11 @@ Items: {
 			需要消耗电力才能运行
 			'''
 	}
+
+	SporeburstPouch: {
+		// DisplayName: Sporeburst Pouch
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1508,6 +1513,7 @@ Projectiles: {
 	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 	// Glomushroom.DisplayName: Glomushroom
 	// SporeBurst.DisplayName: Spore Burst
+	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 }
 
 Configs: {
@@ -6227,9 +6233,9 @@ NPCModifys: {
 	ModifyCrabulon: {
 		CrouchText: 等待
 		CrouchAltText: 跟随
-		MountHoverText: 右键装备鞍具
+		MountHoverText: 左键装备鞍具
 		RideHoverText: 右键骑乘
-		ChangeSaddleText: 右键更换鞍具
+		ChangeSaddleText: 左键更换鞍具
 		DismountText: 右键取消骑乘
 	}
 

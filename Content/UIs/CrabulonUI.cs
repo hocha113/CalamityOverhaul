@@ -10,9 +10,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -264,70 +262,77 @@ namespace CalamityOverhaul.Content.UIs
 
     internal class CrouchBotton : UIHandle
     {
-        private bool isCrouch;
-        private float sengs;
-        private List<ModifyCrabulon> modifys;
+        //私有字段，用于管理UI状态
         private ModifyCrabulon modify;
+        private bool _shouldBeOpen;
+        private float sengs;
         private float hoverSengs;
-        internal bool Open {
+
+        //Active属性现在依赖于内部状态，而不是每次都重新计算
+        //这能让UI在关闭后平滑消失
+        public override bool Active {
             get {
-                if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
-                    return false;
-                }
-
-                modifys = crabulonPlayer.ModifyCrabulons;
-                modify = null;
-                float maxDistSq = 90000;//用平方避免开方运算
-                foreach (var hover in modifys) {
-                    if (!hover.npc.Alives()) {
-                        continue;
-                    }
-
-                    //计算到玩家的距离平方
-                    float distSq = hover.npc.To(player.Center).LengthSquared();
-
-                    //如果超出范围，直接跳过
-                    if (distSq > maxDistSq) {
-                        continue;
-                    }
-
-                    if (hover.Owner.whoAmI != player.whoAmI) {
-                        continue;//必须是自己的螃蟹
-                    }
-
-                    maxDistSq = distSq;
-                    modify = hover;
-                }
-
-                return modify != null;
+                _shouldBeOpen = FindClosestCrabulon();
+                return _shouldBeOpen || sengs > 0.01f;
             }
         }
-        public override bool Active => Open || sengs > 0f;
+
+        /// <summary>
+        /// 每帧寻找并设置最近的有效Crabulon NPC
+        /// </summary>
+        /// <returns>如果找到了有效目标则返回true，否则返回false</returns>
+        private bool FindClosestCrabulon() {
+            //尝试获取玩家组件，如果失败则直接返回
+            if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
+                modify = null;
+                return false;
+            }
+
+            List<ModifyCrabulon> modifys = crabulonPlayer.ModifyCrabulons;
+            ModifyCrabulon closestModify = null;
+            float minDistSq = 90000f;//用平方避免开方运算
+
+            foreach (var hover in modifys) {
+                //跳过无效或不属于当前玩家的NPC
+                if (!hover.npc.Alives() || hover.Owner.whoAmI != player.whoAmI) {
+                    continue;
+                }
+
+                float distSq = hover.npc.DistanceSQ(player.Center);
+
+                //寻找最近的目标
+                if (distSq < minDistSq) {
+                    minDistSq = distSq;
+                    closestModify = hover;
+                }
+            }
+
+            modify = closestModify;
+            return modify != null;
+        }
+
         public override void Update() {
-            Vector2 size = new Vector2(100, 40);
+            //使用Lerp平滑更新UI的出现/消失动画
+            sengs = MathHelper.Lerp(sengs, _shouldBeOpen ? 1f : 0f, 0.15f);
+            if (sengs < 0.01f) {
+                sengs = 0f;//当值足够小时，直接归零以停止活动
+                return;//完全透明时，不需要处理后续逻辑
+            }
+
+            //动态计算UI尺寸和位置
+            Vector2 baseSize = new Vector2(100, 40);
+            float dynamicScale = 1f + hoverSengs * 0.1f;//悬浮时放大10%
+            Vector2 size = baseSize * dynamicScale;
             DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 12 * 11) - size / 2;
             UIHitBox = DrawPosition.GetRectangle(size);
 
-            if (!Open) {
-                if (sengs > 0f) {
-                    sengs -= 0.1f;
-                }
-                return;
-            }
-            else {
-                if (sengs < 1f) {
-                    sengs += 0.1f;
-                }
-            }
+            //检测鼠标悬浮
+            bool isHovering = UIHitBox.Intersects(MouseHitBox);
 
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            //平滑更新悬浮动画
+            hoverSengs = MathHelper.Lerp(hoverSengs, isHovering && _shouldBeOpen ? 1f : 0f, 0.15f);
 
-            isCrouch = modify.Crouch;
-
-            if (modify != null && hoverInMainPage) {
-                if (hoverSengs < 1f) {
-                    hoverSengs += 0.1f;
-                }
+            if (isHovering && _shouldBeOpen) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero);
@@ -335,85 +340,90 @@ namespace CalamityOverhaul.Content.UIs
                     modify.SendNetWork();
                 }
             }
-            else {
-                if (hoverSengs > 0f) {
-                    hoverSengs -= 0.1f;
-                }
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (modify == null) {
+            //如果UI完全透明或没有目标，则不绘制
+            if (sengs <= 0f || modify == null) {
                 return;
             }
 
             float textScale = 1f;
-            //主状态文字（居中显示）
-            string content = isCrouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content);
-            Vector2 centerPos = DrawPosition + UIHitBox.Size() / 2;
+            float overallAlpha = sengs;//所有绘制都基于这个透明度
+            float dynamicScale = 1f + hoverSengs * 0.1f;
 
+            //主UI绘制
             if (!modify.Mount) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, Color.AliceBlue * sengs, Color.Wheat * sengs);
+                //根据悬浮状态在两种颜色间平滑过渡
+                Color bgColor = Color.Lerp(Color.AliceBlue, Color.CadetBlue, hoverSengs);
+                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 10, UIHitBox, bgColor * overallAlpha, Color.CadetBlue * overallAlpha);
+
+                string content = modify.Crouch ? ModifyCrabulon.CrouchAltText.Value : ModifyCrabulon.CrouchText.Value;
+                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(content) * textScale;
+                Vector2 centerPos = UIHitBox.Center.ToVector2();
+
                 Utils.DrawBorderStringFourWay(
                     spriteBatch, FontAssets.MouseText.Value,
                     content, centerPos.X, centerPos.Y,
-                    Color.White * sengs, Color.Black * sengs,
-                    textSize / 2, textScale
+                    Color.White * overallAlpha, Color.Black * overallAlpha,
+                    textSize / 2, textScale * dynamicScale
                 );
             }
 
-            //悬浮时的物品/提示
+            //绘制鼠标悬浮时的提示信息和物品图标
+            DrawHoverInfo(spriteBatch, overallAlpha, textScale);
+        }
+
+        /// <summary>
+        /// 统一绘制鼠标悬浮时的提示信息
+        /// </summary>
+        private void DrawHoverInfo(SpriteBatch spriteBatch, float alpha, float baseScale) {
+            //如果目标NPC未悬浮或玩家手上没有相关物品，则不绘制
             if (!modify.hoverNPC) {
                 return;
             }
 
-            //绘制物品图标在鼠标下方
-            Vector2 itemPos = MousePosition + new Vector2(0, 32);
-            Item saddle = player.GetItem();
+            Item currentItem = player.GetItem();
+            Item saddleToDraw = null;
+            string hoverContent = "";
+            bool canDraw = false;
 
-            Color drawColor = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.02f)), Color.CadetBlue, Color.SkyBlue);
-
-            if (saddle.type == ModContent.ItemType<MushroomSaddle>()) {
-                content = ModifyCrabulon.MountHoverText.Value;
-                if (modify.SaddleItem.Alives()) {
-                    saddle = modify.SaddleItem;
-                    content = ModifyCrabulon.ChangeSaddleText.Value;
-                }
-
-                saddle.BeginDyeEffectForUI(saddle.CWR().DyeItemID);
-                VaultUtils.SimpleDrawItem(spriteBatch, saddle.type, itemPos, 32, 1f, 0, Color.White);
-                saddle.EndDyeEffectForUI();
-
-                Vector2 hoverSize = FontAssets.MouseText.Value.MeasureString(content);
-                Vector2 hoverPos = itemPos + new Vector2(0, 36); //在图标下方
-                Utils.DrawBorderStringFourWay(
-                    spriteBatch, FontAssets.MouseText.Value,
-                    content, hoverPos.X, hoverPos.Y,
-                    drawColor * sengs, Color.Black * sengs,
-                    hoverSize / 2, textScale * 0.9f //略小，次要信息
-                );
+            if (currentItem.type == ModContent.ItemType<MushroomSaddle>()) {
+                canDraw = true;
+                saddleToDraw = currentItem;
+                hoverContent = modify.SaddleItem.Alives() ? ModifyCrabulon.ChangeSaddleText.Value : ModifyCrabulon.MountHoverText.Value;
             }
             else if (modify.SaddleItem.Alives()) {
-                modify.SaddleItem.BeginDyeEffectForUI(modify.SaddleItem.CWR().DyeItemID);
-                VaultUtils.SimpleDrawItem(spriteBatch, modify.SaddleItem.type, itemPos, 32, 1f, 0, Color.White);
-                modify.SaddleItem.EndDyeEffectForUI();
-
-                //提示文字固定在物品下方一点
-                content = modify.Mount ? ModifyCrabulon.DismountText.Value : ModifyCrabulon.RideHoverText.Value;
-                Vector2 hoverSize = FontAssets.MouseText.Value.MeasureString(content);
-                Vector2 hoverPos = itemPos + new Vector2(0, 36); //在图标下方
-                Utils.DrawBorderStringFourWay(
-                    spriteBatch, FontAssets.MouseText.Value,
-                    content, hoverPos.X, hoverPos.Y,
-                    drawColor * sengs, Color.Black * sengs,
-                    hoverSize / 2, textScale * 0.9f //略小，次要信息
-                );
+                canDraw = true;
+                saddleToDraw = modify.SaddleItem;
+                hoverContent = modify.Mount ? ModifyCrabulon.DismountText.Value : ModifyCrabulon.RideHoverText.Value;
             }
+
+            if (!canDraw) {
+                return;
+            }
+
+            //在鼠标下方绘制物品图标
+            Vector2 itemPos = MousePosition + new Vector2(0, 32);
+            saddleToDraw.BeginDyeEffectForUI(saddleToDraw.CWR().DyeItemID);
+            VaultUtils.SimpleDrawItem(spriteBatch, saddleToDraw.type, itemPos, 32, 1f, 0, Color.White * alpha);
+            saddleToDraw.EndDyeEffectForUI();
+
+            //在图标下方绘制提示文字
+            Color textColor = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.02f)), Color.CadetBlue, Color.SkyBlue);
+            Vector2 hoverSize = FontAssets.MouseText.Value.MeasureString(hoverContent) * baseScale * 0.9f;
+            Vector2 hoverPos = itemPos + new Vector2(0, 36);
+
+            Utils.DrawBorderStringFourWay(
+                spriteBatch, FontAssets.MouseText.Value,
+                hoverContent, hoverPos.X, hoverPos.Y,
+                textColor * alpha, Color.Black * alpha,
+                hoverSize / 2, baseScale
+            );
         }
     }
 
-    internal class CrabulonFriendBar : ModBossBar
+    internal class CrabulonFriendBossBar : ModBossBar//友好状态下隐藏Boss血条
     {
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
             if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {

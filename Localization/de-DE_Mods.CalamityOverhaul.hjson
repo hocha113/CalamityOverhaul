@@ -1190,6 +1190,11 @@ Items: {
 			Requires power to operate
 			''' */
 	}
+
+	SporeburstPouch: {
+		// DisplayName: Sporeburst Pouch
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1513,6 +1518,7 @@ Projectiles: {
 	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
 	// Glomushroom.DisplayName: Glomushroom
 	// SporeBurst.DisplayName: Spore Burst
+	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 }
 
 Configs: {

@@ -331,7 +331,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public void SetFeedState() {
             npc.timeLeft = 1800;
             npc.ModNPC.Music = -1;
-            npc.BossBar = ModContent.GetInstance<CrabulonFriendBar>();
+            npc.BossBar = ModContent.GetInstance<CrabulonFriendBossBar>();
             //取消Boss状态，设置为对玩家友好
             npc.boss = false;
             npc.friendly = true;
@@ -809,8 +809,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             Vector2 oldRotOrigin = mountPlayerByDraw.fullRotationOrigin;
             mountPlayerByDraw.fullRotationOrigin = mountPlayerByDraw.Size / 2f;
             mountPlayerByDraw.Center = GetMountPos();
-            mountPlayerByDraw.headFrame.Y = 0;
-            mountPlayerByDraw.bodyFrame.Y = 0;
+
+            if (mountPlayerByDraw.itemAnimation <= 0) {//判断itemAnimation是为了避免覆盖掉物品使用动画
+                mountPlayerByDraw.headFrame.Y = 0;
+                mountPlayerByDraw.bodyFrame.Y = 0;
+            }
 
             mountPlayerHeldProj = mountPlayerByDraw.heldProj;//邪道，在绘制函数里面获取手持弹幕索引
             if (mountPlayerHeldProj.TryGetProjectile(out var heldProj)) {
@@ -893,7 +896,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 ModifyCrabulons.Add((npc.GetOverride<ModifyCrabulon>()));
             }
         }
-        public override bool PreDrawPlayers(Camera camera, ref IEnumerable<Player> players) {
+        public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             players = players.Where(player => !player.GetOverride<CrabulonPlayer>().IsMount);//删掉关于骑乘玩家的绘制
             return true;
         }
