@@ -5,6 +5,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -236,9 +237,21 @@ namespace CalamityOverhaul.Content
             SpanTypesPostAI(projectile);
         }
 
+        public override bool PreKill(Projectile projectile, int timeLeft) {
+            DyeEffectHandle.IsDyeDustEffectActive = true;
+            int dyeItemID = projectile.CWR().DyeItemID;
+            if (DyeItemID > 0) {
+                DyeEffectHandle.DyeShaderData = GameShaders.Armor.GetShaderFromItemId(dyeItemID);
+            }
+            return true;
+        }
+
         public override void OnKill(Projectile projectile, int timeLeft) {
             cwrItem = null;
             hitNPC = null;
+
+            DyeEffectHandle.IsDyeDustEffectActive = false;
+            DyeEffectHandle.DyeShaderData = null;
 
             if (!projectile.IsOwnedByLocalPlayer()) {
                 return;

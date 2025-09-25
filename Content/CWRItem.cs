@@ -650,6 +650,16 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override bool CanUseItem(Item item, Player player) {
+            if (IsShootCountCorlUse) {
+                return player.ownedProjectileCounts[item.shoot] <= 0;
+            }
+            if (heldProjType > 0 && hasHeldNoCanUseBool) {
+                return false;
+            }
+            return true;
+        }
+
         public override void UpdateInventory(Item item, Player player) {
             LegendData?.DoUpdate();
             RecoverUnloadedItem.UpdateInventory(item, player);
@@ -744,25 +754,17 @@ namespace CalamityOverhaul.Content
                 , Color.White, line.Rotation, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
                 return false;
             }
+
+            if (line.Name == "ItemName" && line.Mod == "Terraria" && DyeItemID > ItemID.None) {
+                item.BeginDyeEffectForUI(DyeItemID);
+            }
             return base.PreDrawTooltipLine(item, line, ref yOffset);
         }
 
-        public override bool CanUseItem(Item item, Player player) {
-            if (IsShootCountCorlUse) {
-                return player.ownedProjectileCounts[item.shoot] <= 0;
+        public override void PostDrawTooltipLine(Item item, DrawableTooltipLine line) {
+            if (line.Name == "ItemName" && line.Mod == "Terraria" && DyeItemID > ItemID.None) {
+                item.EndDyeEffectForUI();
             }
-            if (heldProjType > 0 && hasHeldNoCanUseBool) {
-                return false;
-            }
-            return true;
-        }
-
-        public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
-            //if (Main.GameUpdateCount % 160 > 100) {//多么酷的效果，但可惜为了玩家的视觉体验不能启用
-            //    item.BeginDyeEffectForUI(DyeItemID);
-            //}
-            
-            return true;
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
@@ -779,10 +781,6 @@ namespace CalamityOverhaul.Content
                 Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
                 , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
             }
-
-            //if (Main.GameUpdateCount % 160 > 100) {//多么酷的效果，但可惜为了玩家的视觉体验不能启用
-            //    item.EndDyeEffectForUI();
-            //}
         }
 
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position

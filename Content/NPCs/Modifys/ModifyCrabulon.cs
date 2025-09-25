@@ -3,6 +3,7 @@ using CalamityMod.Systems;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs;
+using InnoVault;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
 using InnoVault.UIHandles;
@@ -25,7 +26,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
     internal class ModifyCrabulon : NPCOverride, ILocalizedModType//驯养菌生蟹，不依赖生物大修
     {
         public override int TargetID => ModContent.NPCType<Crabulon>();
-        public CrabulonPlayer CrabulonPlayer => Owner.GetOverride<CrabulonPlayer>();
+        public CrabulonPlayer CrabulonPlayer {
+            get {
+                if (Owner.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
+                    return crabulonPlayer;
+                }
+                return null;
+            }
+        }
         public static LocalizedText CrouchText { get; set; }
         public static LocalizedText CrouchAltText { get; set; }
         public static LocalizedText MountHoverText { get; set; }
@@ -267,7 +275,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
             FeedValue = 0f;
-            CrabulonPlayer.IsMount = false;
+            if (CrabulonPlayer != null) {
+                CrabulonPlayer.IsMount = false;
+            }
 
             if (VaultUtils.isClient || FeedValue > 0f) {
                 return null;
@@ -404,7 +414,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 jumpHeightSetFrame--;
             }
 
-            CrabulonPlayer.IsMount = false;
+            if (CrabulonPlayer != null) {
+                CrabulonPlayer.IsMount = false;
+            }
             if (!MountAI()) {
                 return false;
             }
@@ -553,7 +565,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
                 CrabulonPlayer.MountCrabulon = this;
-                CrabulonPlayer.IsMount = true;
+                if (CrabulonPlayer != null) {
+                    CrabulonPlayer.IsMount = true;
+                }
 
                 Owner.Center = GetMountPos();
                 
@@ -638,7 +652,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
             else {
                 CrabulonPlayer.MountCrabulon = null;
-                CrabulonPlayer.IsMount = false;
+                if (CrabulonPlayer != null) {
+                    CrabulonPlayer.IsMount = false;
+                }
                 //按下交互键骑乘
                 if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
                     MountACrabulon = true;

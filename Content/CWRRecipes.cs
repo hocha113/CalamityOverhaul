@@ -696,7 +696,7 @@ namespace CalamityOverhaul.Content
                 ItemType<CosmicDischarge>(),
                 ItemType<Norfleet>(),
             ]);
-            RecipeGroup.RegisterGroup("CWRMod:AdamantiteBarGroup", GodDWGroup);
+            RecipeGroup.RegisterGroup("CWRMod:GodDWGroup", GodDWGroup);
 
             FishGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_FishGroup")}",
             [

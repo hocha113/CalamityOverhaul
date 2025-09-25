@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     {
         public override int TargetTileID => ModContent.TileType<SpectrometerTile>();
         public override int TargetItem => ModContent.ItemType<Spectrometer>();
-        public override bool CanDrop => false;
+        public override bool CanDrop => true;
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 800;
         public override BaseDyeMachineUI DyeMachineUI => SpectrometerUI.Instance;
