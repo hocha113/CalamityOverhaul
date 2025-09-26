@@ -7,9 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.HiveMindOverride
     internal class HiveMindAI : CWRNPCOverride
     {
         public override int TargetID => ModContent.NPCType<HiveMind>();
-        public override bool CanLoad() {
-            return false;
-        }
+        public override bool CanLoad() => false;//没做完禁用掉
         public override void SetProperty() {
             base.SetProperty();
         }

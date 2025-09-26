@@ -53,6 +53,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
         public static readonly SoundStyle HitSound = new("CalamityMod/Sounds/NPCHit/PerfHiveHit", 3);
         public static readonly SoundStyle DeathSound = new("CalamityMod/Sounds/NPCKilled/PerfHiveDeath");
 
+        public override bool CanLoad() => false;//没做完禁用掉
+
         public override void SetProperty() {
             NPCID.Sets.TrailingMode[npc.type] = 2;
             NPCID.Sets.TrailCacheLength[npc.type] = 8;

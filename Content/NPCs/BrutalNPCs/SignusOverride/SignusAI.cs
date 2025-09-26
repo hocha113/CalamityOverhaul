@@ -66,6 +66,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
         public static Asset<Texture2D> AltTexture_Glow => Signus.AltTexture_Glow;
         public static Asset<Texture2D> AltTexture2_Glow => Signus.AltTexture2_Glow;
 
+        public override bool CanLoad() => false;//没做完禁用掉
+
         public override bool AI() {
             CalamityGlobalNPC.signus = npc.whoAmI;
 
