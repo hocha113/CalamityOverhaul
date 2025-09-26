@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     if (fireIndex % 10 == 0) {
                         SoundEngine.PlaySound(SoundID.Item23 with { MaxInstances = 3, Volume = 0.2f + fireIndex * 0.006f }, Projectile.Center);
                     }
-                    
+
                     FiringDefaultSound = EnableRecoilRetroEffect = false;
                     ShootCoolingValue = 2;
                 }

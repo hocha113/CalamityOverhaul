@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (CrabulonPlayer != null) {
                 CrabulonPlayer.IsMount = false;
             }
-            
+
             return null;
         }
 
@@ -574,7 +574,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             if (Mount) {
                 CrabulonPlayer.CloseDuringDash(Owner);
-                
+
                 if (CrabulonPlayer != null) {
                     CrabulonPlayer.MountCrabulon = this;
                     CrabulonPlayer.IsMount = true;
@@ -675,7 +675,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
                     Owner.CWR().PendingDashRotSpeedMode = 0.06f;
                     Owner.CWR().PendingDashVelocity = Owner.velocity;
-                    
+
                     if (++ai[5] > 60f || Owner.Center.To(GetMountPos()).Length() < Owner.width) {//ai[5]防止某些极端情况下超时
                         ai[5] = 0f;
                         Mount = true;
@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                         if (CrabulonPlayer != null) {
                             CrabulonPlayer.MountCrabulon = this;
                         }
-                        
+
                         if (Owner.whoAmI == Main.myPlayer) {
                             SendNetWork();
                         }

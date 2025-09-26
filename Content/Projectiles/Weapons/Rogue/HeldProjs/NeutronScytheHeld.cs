@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             if (!VaultUtils.isServer) {
                 orig = VaultUtils.GetOrig(TextureValue, 13);
             }
-            
+
             return base.PreThrowOut();
         }
 

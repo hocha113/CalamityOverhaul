@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                     , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                     , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
-            
+
             return true;
         }
     }

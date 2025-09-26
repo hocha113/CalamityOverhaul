@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
             iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
         }
-        
+
         public override void SetProperty() {
             if (CWRWorld.MachineRebellion) {
                 npc.life = npc.lifeMax *= 32;

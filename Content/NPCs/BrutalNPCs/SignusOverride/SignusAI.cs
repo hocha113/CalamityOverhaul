@@ -463,7 +463,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
                             PRT_Light particle = new(dustPos + VaultUtils.RandVr(20), chargeDir.UnitVector() * Main.rand.NextFloat(2f, 15f), Main.rand.NextFloat(0.2f, 1f), Color.Purple, 12);
                             particle.ShouldKillWhenOffScreen = false;
                             PRTLoader.AddParticle(particle);
-                        }                       
+                        }
                     }
                 }
                 else if (timerInDash == 51f) //执行冲刺
@@ -496,7 +496,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.SignusOverride
             {
                 npc.damage = 0;
                 npc.velocity *= 0.95f; //缓慢停下
-                
+
                 if (timerInDash > 30) //停稳后返回待机
                 {
                     CurrentState = AIState.Idle;

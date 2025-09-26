@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedByRandom(0.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
-            
+
             fireIndex++;
             if (fireIndex > 3) {
                 Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy(-0.2f)
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
             if (!VaultUtils.isServer) {
                 CWRUtils.BlastingSputteringDust(Projectile, DustID.Smoke, DustID.GoldCoin, DustID.GoldCoin, DustID.GoldCoin, DustID.GoldCoin);
-                
+
                 Vector2 goreSource = Projectile.Center;
                 int goreAmt = 5;
                 Vector2 source = new Vector2(goreSource.X - 12f, goreSource.Y - 12f);

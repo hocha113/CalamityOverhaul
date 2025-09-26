@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             //获取相邻的物块和TileProcessor
             externalTile = Framing.GetTileSafely(Position + Offset);
-            if (!externalTile.HasTile || !VaultUtils.SafeGetTopLeft(Position + Offset, out var point) 
+            if (!externalTile.HasTile || !VaultUtils.SafeGetTopLeft(Position + Offset, out var point)
                 || !TileProcessorLoader.ByPositionGetTP(point, out externalTP)) {
                 canDraw = false;
                 return;

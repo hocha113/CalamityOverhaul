@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             if (Lifetime == 0f) {
                 Lifetime = Main.rand.Next(60, 90);
             }
-            
+
             if (Scale == 0f) {
                 Scale = 1f;
             }

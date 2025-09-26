@@ -757,8 +757,8 @@ End:;
                     player.BeginDyeEffectForUI(dyeItemID);
                 }
 
-                Rectangle rectangle = Main.itemAnimations[item.type] != null 
-                    ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) 
+                Rectangle rectangle = Main.itemAnimations[item.type] != null
+                    ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
                     : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
                 Vector2 vector = rectangle.Size();
                 if (offset == default) {

@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content
             if (MeleeCharge != 0f) {
                 tag.Add("_MeleeCharge", MeleeCharge);
             }
-            
+
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
                     Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转

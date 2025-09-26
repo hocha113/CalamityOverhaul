@@ -3,10 +3,10 @@ using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.UIs;
 using InnoVault.UIHandles;
 using System.IO;
-using Terraria.Audio;
-using Terraria.ModLoader.IO;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials
 {

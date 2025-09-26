@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         public ModifyCrabulon ModifyCrabulon;
         public static LocalizedText UseCombat;
         public override string Texture => CWRConstant.Item + "Tools/MushroomSaddle";
-        public override void SetStaticDefaults() => 
+        public override void SetStaticDefaults() =>
             UseCombat = this.GetLocalization(nameof(UseCombat), () => "Can only be used for Crabulon");
         public override void SetDefaults() {
             Item.width = Item.height = 32;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     , ModifyCrabulon.npc.Top, new Vector2(32), ModifyCrabulon.SaddleItem);
                 ModifyCrabulon.SaddleItem.TurnToAir();
             }
-            
+
             ModifyCrabulon.SaddleItem = Item.Clone();
             ModifyCrabulon.SendNetWork();
             return true;
