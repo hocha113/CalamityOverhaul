@@ -297,12 +297,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return null;
             }
 
-            ModifyTruffle.GlobalSleepState = true;
             NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, NPCID.Truffle);
             truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
             truffle.netUpdate = true;
             if (truffle.TryGetOverride<ModifyTruffle>(out var modifyTruffle)) {
-                modifyTruffle.NetAISend();
+                modifyTruffle.Sleep = true;
+                modifyTruffle.SetNPCDefault();
             }
 
             return null;

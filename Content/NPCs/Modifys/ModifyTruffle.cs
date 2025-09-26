@@ -27,10 +27,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         public const int MaxChatSlot = 12;
         public static LocalizedText ButtonText { get; set; }
         public readonly static List<LocalizedText> Chats = [];
-        /// <summary>
-        /// 全局睡眠设置，在蘑菇人生成时会采用这个的值，用于在生成NPC时临时设置进行赋值，一次生成后自动恢复为false
-        /// </summary>
-        public static bool GlobalSleepState = false;
         public override int TargetID => NPCID.Truffle;
         public string LocalizationCategory => "NPCModifys";
         private int frame;
@@ -80,13 +76,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
 
-        public override void SetProperty() {
-            Sleep = GlobalSleepState;
-            SetNPCDefault();
-            GlobalSleepState = false;
-            FirstChat = true;//设置为第一次对话的待定
-        }
-
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!Sleep) {
                 return null;
@@ -130,17 +119,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             Sleep = false;
             SetNPCDefault();
-            SendNetworkData();
         }
 
         public override void OtherNetWorkSend(ModPacket netMessage) {
             netMessage.Write(Sleep);
-            netMessage.Write(FirstChat);
         }
 
         public override void OtherNetWorkReceive(BinaryReader reader) {
             Sleep = reader.ReadBoolean();
-            FirstChat = reader.ReadBoolean();
+            SetNPCDefault();
         }
 
         public override bool AI() {
@@ -158,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 npc.velocity.X = 0;
             }
 
-            if (VaultUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 VaultUtils.ClockFrame(ref frame, 20, 1);
             }
             return false;
@@ -268,8 +255,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return;//下面的对话在肉后有50%概率生效
             }
 
-            if (FirstChat) {
-                FirstChat = false;//完成了第一次对话
+            if (!FirstChat) {
+                FirstChat = true;//完成了第一次对话
 
                 if (npc.homeless) {//只在没有住房的情况下加第一次对话情况下必定触发这个台词
                     chat = Chats[0].Value;
