@@ -440,6 +440,7 @@ namespace CalamityOverhaul.Content
             writer.Write(item.stack);
             writer.Write(item.prefix);
             writer.Write(item.CWR().DyeItemID);
+            writer.Write(item.CWR().AmmoProjectileReturn);
         }
 
         public static Item AmmoReceive(BinaryReader reader) {
@@ -447,6 +448,7 @@ namespace CalamityOverhaul.Content
             item.stack = reader.ReadInt32();
             item.prefix = reader.ReadInt32();
             item.CWR().DyeItemID = reader.ReadInt32();
+            item.CWR().AmmoProjectileReturn = reader.ReadBoolean();
             return item;
         }
 
@@ -456,8 +458,19 @@ namespace CalamityOverhaul.Content
             tag["stack"] = item.stack;
             tag["prefix"] = item.prefix;
             tag["dye"] = (int)ItemID.None;
-            if (item.Alives() && item.TryGetGlobalItem<CWRItem>(out var cwr)) {
-                tag["dye"] = cwr.DyeItemID;
+            try {
+                if (item.Alives() && item.TryGetGlobalItem<CWRItem>(out var cwr)) {
+                    tag["dye"] = cwr.DyeItemID;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[AmmoSave:DyeItemID] an error has occurred:{ex.Message}");
+            }
+            try {
+                if (item.Alives() && item.TryGetGlobalItem<CWRItem>(out var cwr)) {
+                    tag["ammoIsReturn"] = cwr.AmmoProjectileReturn;
+                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[AmmoSave:AmmoProjectileReturn] an error has occurred:{ex.Message}");
             }
             return tag;
         }
@@ -475,6 +488,9 @@ namespace CalamityOverhaul.Content
             }
             if (item.Alives() && tag.TryGet("dye", out int dyeItemID)) {
                 item.CWR().DyeItemID = dyeItemID;
+            }
+            if (item.Alives() && tag.TryGet("ammoIsReturn", out bool ammoIsReturn)) {
+                item.CWR().AmmoProjectileReturn = ammoIsReturn;
             }
             return item;
         }
@@ -606,11 +622,6 @@ namespace CalamityOverhaul.Content
                         for (int i = 0; i < safe_MagazineContent.Length; i++) {
                             if (safe_MagazineContent[i] == null) {
                                 safe_MagazineContent[i] = new Item(ItemID.None);
-                            }
-                            if (safe_MagazineContent[i].type != ItemID.None) {
-                                if (!safe_MagazineContent[i].CWR().AmmoProjectileReturn) {
-                                    safe_MagazineContent[i] = new Item(ItemID.None);
-                                }
                             }
                         }
 

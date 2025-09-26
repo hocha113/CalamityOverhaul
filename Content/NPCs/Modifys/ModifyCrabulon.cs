@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs.Crabulon;
+﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
