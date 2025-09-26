@@ -318,6 +318,9 @@ namespace CalamityOverhaul.Content
             Item newAmmo;
             if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(addAmmo.shoot, out int trueAmmoType)) {
                 newAmmo = new Item(trueAmmoType);
+                if (newAmmo.type > ItemID.None && addAmmo.type > ItemID.None) {
+                    newAmmo.CWR().DyeItemID = addAmmo.CWR().DyeItemID;//传播染色
+                }
             }
             else {
                 newAmmo = addAmmo.Clone();

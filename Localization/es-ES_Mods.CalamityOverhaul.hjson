@@ -5245,6 +5245,11 @@ RemakeItems: {
 		// DisplayName: DyeGlobalItem
 		// Tooltip: ""
 	}
+
+	DyeVatItem: {
+		// DisplayName: 染缸
+		// Tooltip: 用于制作燃料
+	}
 }
 
 ModifyLores: {

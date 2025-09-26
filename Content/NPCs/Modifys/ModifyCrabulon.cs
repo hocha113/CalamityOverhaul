@@ -281,12 +281,23 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override bool NeedSaving() => SaddleItem.Alives() || DyeItemID > ItemID.None || FeedValue > 0f;
 
-        public override bool? On_PreKill() {//死亡后生成沉睡蘑菇人
+        public override bool? On_PreKill() {
+            if (FeedValue > 0f) {//未驯服状态下
+                for (int i = 0; i < ItemLoader.ItemCount; i++) {
+                    NPCLoader.blockLoot.Add(i);//ban掉所有原来的物品掉落
+                }
+                ModifyTruffle.Spawn(npc);//死亡后生成沉睡蘑菇人
+            }
+
+            if (SaddleItem.Alives()) {//如果有鞍具
+                VaultUtils.SpwanItem(SaddleItem, npc.FromObjectGetParent(), npc.Hitbox);//掉落鞍具
+            }
+
             FeedValue = 0f;
             if (CrabulonPlayer != null) {
                 CrabulonPlayer.IsMount = false;
             }
-            ModifyTruffle.Spawn(npc);
+            
             return null;
         }
 

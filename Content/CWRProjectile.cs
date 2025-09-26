@@ -134,10 +134,16 @@ namespace CalamityOverhaul.Content
                     if (shootSource.Item.type > ItemID.None) {
                         DyeItemID = shootSource.Item.CWR().DyeItemID;
                     }
-                    else if (shootSource.Player != null) {
+                    if (DyeItemID == ItemID.None && shootSource.Player != null) {
                         Item heldItem = shootSource.Player.GetItem();
                         if (heldItem.type > ItemID.None) {
                             DyeItemID = heldItem.CWR().DyeItemID;
+                        }
+                        if (DyeItemID == ItemID.None) {
+                            Item ammo = shootSource.Player.ChooseAmmo(shootSource.Player.GetItem());
+                            if (ammo.type > ItemID.None && ammo.type == shootSource.AmmoItemIdUsed) {
+                                DyeItemID = ammo.CWR().DyeItemID;
+                            }
                         }
                     }
                 }

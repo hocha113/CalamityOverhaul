@@ -752,11 +752,19 @@ End:;
         /// <param name="drawpos">绘制位置</param>
         public static void DrawItemIcons(SpriteBatch spriteBatch, Item item, Vector2 drawpos, Vector2 offset = default, Color drawColor = default, float alp = 1, float overSlp = 1) {
             if (item != null && item.type != ItemID.None) {
-                Rectangle rectangle = Main.itemAnimations[item.type] != null ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
+                int dyeItemID = item.CWR().DyeItemID;
+                if (dyeItemID > ItemID.None) {
+                    player.BeginDyeEffectForUI(dyeItemID);
+                }
+
+                Rectangle rectangle = Main.itemAnimations[item.type] != null 
+                    ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) 
+                    : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
                 Vector2 vector = rectangle.Size();
                 if (offset == default) {
                     offset = new Vector2(cellWid, cellHig) / 2;
                 }
+
                 float slp = item.GetDrawItemSize(36) * overSlp;
                 if (item.type == DarkMatterBall.ID) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
@@ -767,8 +775,13 @@ End:;
                     spriteBatch.Draw(itemValue, drawpos + offset, new Rectangle?(rectangle), doDrawColor, 0f, vector / 2, slp, 0, 0f);
                 }
 
+                if (dyeItemID > ItemID.None) {
+                    player.EndDyeEffectForUI();
+                }
+
                 if (item.stack > 1) {
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), overSlp);
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString()
+                        , drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), overSlp);
                 }
             }
         }
@@ -777,9 +790,11 @@ End:;
             RecipeSidebarListView.Draw(spriteBatch);
 
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
+            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon")
+                , DrawPosition, null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
             if (onCloseP && _sengs >= 1) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1"), DrawPosition.X, DrawPosition.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1")
+                    , DrawPosition.X, DrawPosition.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
             }
 
             if (previewItems != null) {

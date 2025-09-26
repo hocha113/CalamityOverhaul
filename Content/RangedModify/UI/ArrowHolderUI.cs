@@ -16,6 +16,9 @@ namespace CalamityOverhaul.Content.RangedModify.UI
         private static Item ChooseAmmo;
         private int Weith;
         private int Height;
+        public static Item GetChooseAmmo() {
+            return ChooseAmmo;
+        }
         public override void Update() {
             bool weaponIsHand = false;
             if (GlobalBow.IsBow) {//如果拿着的是弓，就赋值
@@ -99,6 +102,8 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                 return;
             }
 
+            int dyeItemID = ItemID.None;
+
             int arrowDrawStackCount = ChooseAmmo.stack;
             if (arrowDrawStackCount > 6) {
                 arrowDrawStackCount = 6;
@@ -108,13 +113,22 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             spriteBatch.Draw(CWRAsset.Quiver_back_Asset.Value, DrawPosition, rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (GlobalBow.IsArrow) {
                 Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + arrowDrawStackCount * Weith / 4, Height);
-                //drawPos += TextureAssets.Item[HeldWeapon.type].Value.Size() / 2;
+
                 float rotOffset = MathHelper.PiOver2;
                 if (CWRLoad.ItemIsCrossBow[HeldWeapon.type]) {
                     rotOffset = 0;
                     drawPos += new Vector2(-16, 16);
                 }
+
+                dyeItemID = HeldWeapon.CWR().DyeItemID;
+                if (dyeItemID > ItemID.None) {
+                    player.BeginDyeEffectForUI(dyeItemID);
+                }
                 VaultUtils.SimpleDrawItem(spriteBatch, HeldWeapon.type, drawPos, 40, rotation: rotOffset, orig: new Vector2(0.001f, 0.001f));
+                if (dyeItemID > ItemID.None) {
+                    player.EndDyeEffectForUI();
+                }
+
                 if (hoverInMainPage) {
                     Texture2D aim = CWRAsset.AimTarget.Value;
                     spriteBatch.Draw(aim, MousePosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
@@ -126,6 +140,10 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             Item targetLockAmmo = HeldWeapon.CWR().TargetLockAmmo;
 
             if (ChooseAmmo.type > ItemID.None) {
+                dyeItemID = ChooseAmmo.CWR().DyeItemID;
+                if (dyeItemID > ItemID.None) {
+                    player.BeginDyeEffectForUI(dyeItemID);
+                }
                 for (int i = 0; i < arrowDrawStackCount; i++) {
                     Vector2 drawPos = DrawPosition + new Vector2(CWRAsset.Quiver_back_Asset.Width() + i * Weith / 2, 0);
                     VaultUtils.SimpleDrawItem(spriteBatch, ChooseAmmo.type, drawPos, 40, orig: new Vector2(0.001f, 0.001f));
@@ -133,6 +151,9 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                         Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ChooseAmmo.stack.ToString()
                         , drawPos.X - Weith, drawPos.Y + Height, Color.White, Color.Black, new Vector2(0.2f), 0.8f);
                     }
+                }
+                if (dyeItemID > ItemID.None) {
+                    player.EndDyeEffectForUI();
                 }
 
                 if (hoverInMainPage) {
@@ -148,8 +169,15 @@ namespace CalamityOverhaul.Content.RangedModify.UI
 
             if (targetLockAmmo != null && targetLockAmmo.type > ItemID.None) {
                 Texture2D aim = CWRAsset.AimTarget.Value;
+                dyeItemID = targetLockAmmo.CWR().DyeItemID;
+                if (dyeItemID > ItemID.None) {
+                    player.BeginDyeEffectForUI(dyeItemID);
+                }
                 spriteBatch.Draw(aim, DrawPosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
                 VaultUtils.SimpleDrawItem(spriteBatch, targetLockAmmo.type, DrawPosition, 32);
+                if (dyeItemID > ItemID.None) {
+                    player.EndDyeEffectForUI();
+                }
             }
         }
     }

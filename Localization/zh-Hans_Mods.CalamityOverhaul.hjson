@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5250,6 +5250,11 @@ RemakeItems: {
 	DyeGlobalItem: {
 		// DisplayName: DyeGlobalItem
 		// Tooltip: ""
+	}
+
+	DyeVatItem: {
+		// DisplayName: 染缸
+		// Tooltip: 用于制作燃料
 	}
 }
 

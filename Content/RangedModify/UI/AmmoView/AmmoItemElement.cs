@@ -88,10 +88,17 @@ namespace CalamityOverhaul.Content.RangedModify.UI.AmmoView
             float drawSize = VaultUtils.GetDrawItemSize(Ammo, Weith) * 1;
             Vector2 drawPos = DrawPosition + new Vector2(Weith, Height) / 2;
             Main.instance.LoadItem(Ammo.type);
-            VaultUtils.SimpleDrawItem(spriteBatch, Ammo.type, drawPos, drawSize, 0, Color.White);
 
+            int dyeItemID = Ammo.CWR().DyeItemID;
+            if (dyeItemID > ItemID.None) {
+                Ammo.BeginDyeEffectForUI(dyeItemID);
+            }
+            VaultUtils.SimpleDrawItem(spriteBatch, Ammo.type, drawPos, drawSize, 0, Color.White);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawPos.X + 18, drawPos.Y - 8
                 , Ammo.CWR().AmmoProjectileReturn ? Color.White : Color.Goldenrod, Color.Black, new Vector2(0.2f), 0.8f);
+            if (dyeItemID > ItemID.None) {
+                Ammo.EndDyeEffectForUI();
+            }
         }
     }
 }

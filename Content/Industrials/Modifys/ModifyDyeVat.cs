@@ -8,6 +8,15 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.Modifys
 {
+    internal class DyeVatItem : ItemOverride
+    {
+        public override int TargetID => ItemID.DyeVat;
+        public override bool DrawingInfo => false;
+        public override void SetDefaults(Item item) {
+            item.rare = ItemRarityID.Green;
+        }
+    }
+
     internal class ModifyDyeVat : TileOverride
     {
         public override int TargetID => TileID.DyeVat;

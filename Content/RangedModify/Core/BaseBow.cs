@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.UI;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -350,6 +351,8 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {
+            int dyeItemID = Projectile.CWR().DyeItemID;
+
             Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
             if (OnHandheldDisplayBool) {
                 if (BowstringData.CanDraw) {
@@ -360,12 +363,30 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     DeductBowDraw(drawPos, ref lightColor);
                 }
                 else {
+                    if (dyeItemID > ItemID.None) {
+                        Projectile.BeginDyeEffectForWorld(dyeItemID);
+                    }
                     BowDraw(drawPos, ref lightColor);
+                    if (dyeItemID > ItemID.None) {
+                        Projectile.EndDyeEffectForWorld();
+                    }
                 }
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
+                if (dyeItemID == ItemID.None) {
+                    Item arrowItem = ArrowHolderUI.GetChooseAmmo();
+                    if (arrowItem.type > ItemID.None) {
+                        dyeItemID = arrowItem.CWR().DyeItemID;
+                    }
+                }
+                if (dyeItemID > ItemID.None) {
+                    Projectile.BeginDyeEffectForWorld(dyeItemID);
+                }
                 ArrowDraw(drawPos, lightColor);
+                if (dyeItemID > ItemID.None) {
+                    Projectile.EndDyeEffectForWorld();
+                }
             }
 
             return false;

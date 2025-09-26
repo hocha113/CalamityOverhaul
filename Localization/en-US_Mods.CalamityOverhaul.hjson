@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5290,6 +5290,11 @@ RemakeItems: {
 	DyeGlobalItem: {
 		DisplayName: DyeGlobalItem
 		Tooltip: ""
+	}
+
+	DyeVatItem: {
+		DisplayName: 染缸
+		Tooltip: 用于制作燃料
 	}
 }
 
