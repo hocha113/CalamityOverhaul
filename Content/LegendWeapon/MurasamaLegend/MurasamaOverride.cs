@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 return true;
             }
 
-            if (item.CWR().DyeItemID > 0) {
+            if (item.Alives() && item.CWR().DyeItemID > 0) {
                 item.BeginDyeEffectForUI(item.CWR().DyeItemID);
             }
 

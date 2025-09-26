@@ -408,9 +408,11 @@ namespace CalamityOverhaul.Content.UIs
 
             //在鼠标下方绘制物品图标
             Vector2 itemPos = MousePosition + new Vector2(0, 32);
-            saddleToDraw.BeginDyeEffectForUI(saddleToDraw.CWR().DyeItemID);
-            VaultUtils.SimpleDrawItem(spriteBatch, saddleToDraw.type, itemPos, 32, 1f, 0, Color.White * alpha);
-            saddleToDraw.EndDyeEffectForUI();
+            if (saddleToDraw.Alives()) {
+                saddleToDraw.BeginDyeEffectForUI(saddleToDraw.CWR().DyeItemID);
+                VaultUtils.SimpleDrawItem(spriteBatch, saddleToDraw.type, itemPos, 32, 1f, 0, Color.White * alpha);
+                saddleToDraw.EndDyeEffectForUI();
+            }
 
             //在图标下方绘制提示文字
             Color textColor = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.02f)), Color.CadetBlue, Color.SkyBlue);

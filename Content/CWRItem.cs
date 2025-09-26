@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content
             Item newAmmo;
             if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(addAmmo.shoot, out int trueAmmoType)) {
                 newAmmo = new Item(trueAmmoType);
-                if (newAmmo.type > ItemID.None && addAmmo.type > ItemID.None) {
+                if (newAmmo.Alives() && addAmmo.Alives()) {
                     newAmmo.CWR().DyeItemID = addAmmo.CWR().DyeItemID;//传播染色
                 }
             }

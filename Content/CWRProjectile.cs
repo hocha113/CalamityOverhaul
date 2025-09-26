@@ -116,12 +116,12 @@ namespace CalamityOverhaul.Content
                 }
 
                 if (source is EntitySource_Parent parent) {
-                    if (parent.Entity is Item item && item.type > ItemID.None) {
+                    if (parent.Entity is Item item && item.Alives()) {
                         DyeItemID = item.CWR().DyeItemID;
                     }
                     else if (parent.Entity is Player player) {
                         Item heldItem = player.GetItem();
-                        if (heldItem.type > ItemID.None) {
+                        if (heldItem.Alives()) {
                             DyeItemID = heldItem.CWR().DyeItemID;
                         }
                     }
@@ -131,17 +131,17 @@ namespace CalamityOverhaul.Content
                 }
 
                 if (source is EntitySource_ItemUse_WithAmmo shootSource) {
-                    if (shootSource.Item.type > ItemID.None) {
+                    if (shootSource.Item.Alives()) {
                         DyeItemID = shootSource.Item.CWR().DyeItemID;
                     }
                     if (DyeItemID == ItemID.None && shootSource.Player != null) {
                         Item heldItem = shootSource.Player.GetItem();
-                        if (heldItem.type > ItemID.None) {
+                        if (heldItem.Alives()) {
                             DyeItemID = heldItem.CWR().DyeItemID;
                         }
                         if (DyeItemID == ItemID.None) {
                             Item ammo = shootSource.Player.ChooseAmmo(shootSource.Player.GetItem());
-                            if (ammo.type > ItemID.None && ammo.type == shootSource.AmmoItemIdUsed) {
+                            if (ammo.Alives() && ammo.type == shootSource.AmmoItemIdUsed) {
                                 DyeItemID = ammo.CWR().DyeItemID;
                             }
                         }

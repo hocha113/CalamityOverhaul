@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         protected virtual void DrawItemWithEffect(SpriteBatch spriteBatch, Color color) {
-            if (Item.type > ItemID.None) {
+            if (Item.Alives()) {
                 Item.BeginDyeEffectForUI(Item.CWR().DyeItemID);
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + Size / 2, 64, (1.2f + hoverSengs * 0.2f) * sengs, 0f, color);
                 Item.EndDyeEffectForUI();

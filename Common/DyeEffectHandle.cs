@@ -82,6 +82,9 @@ namespace CalamityOverhaul.Common
         public override bool DrawingInfo => false;
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (item.type == ItemID.None) {
+                return null;
+            }
             IsDyeDustEffectActive = IsShootUpdate = true;
             int dyeItemID = item.CWR().DyeItemID;
             if (dyeItemID > 0) {
@@ -101,6 +104,9 @@ namespace CalamityOverhaul.Common
         public static bool IsMeleeEffectUpdate { get; private set; } = false;
         public override int TargetItemID => ItemID.None;//设置为None，这样让这个修改节点运行在所有物品之上
         public override bool On_PreEmitUseVisuals(Item item, ref Rectangle itemRectangle) {
+            if (item.type == ItemID.None) {
+                return true;
+            }
             IsDyeDustEffectActive = IsMeleeEffectUpdate = true;
             int dyeItemID = item.CWR().DyeItemID;
             if (dyeItemID > 0) {
