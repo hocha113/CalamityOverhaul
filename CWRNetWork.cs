@@ -16,6 +16,8 @@ namespace CalamityOverhaul
         ModifiIntercept_EnterWorld_ToClient,
         ProjectileDyeItemID,
         KillTileEntity,
+        TruffleSleep,
+        GlobalSleep,
         CrabulonFeed,
         CrabulonModifyNetWork,
     }
@@ -45,6 +47,12 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.KillTileEntity) {
                 ModifyTurretLoader.HandlerNetKillTE(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.TruffleSleep) {
+                ModifyTruffle.HandleNetwork(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.GlobalSleep) {
+                ModifyTruffle.HandleGlobalSleep(reader);
             }
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
         }

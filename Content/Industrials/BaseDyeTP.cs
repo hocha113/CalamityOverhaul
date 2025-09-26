@@ -62,6 +62,10 @@ namespace CalamityOverhaul.Content.Industrials
             DyeSlotItem = ItemIO.Receive(reader, true, true);
             BeDyedItem = ItemIO.Receive(reader, true, true);
             ResultDyedItem = ItemIO.Receive(reader, true, true);
+            //接收后更新一次UI里面显示的物品
+            DyeMachineUI.DyeSlot.Item = DyeSlotItem;
+            DyeMachineUI.BeDyedItem.Item = BeDyedItem;
+            DyeMachineUI.ResultDyedItem.Item = ResultDyedItem;
         }
 
         public void RightClick(Player player) {

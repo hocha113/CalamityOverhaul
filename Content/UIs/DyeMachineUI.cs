@@ -289,7 +289,10 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.BeDyedItem = Item;//操作结果关联TP实体物品槽
+        public sealed override void PostHandleItemSlotting() {
+            ParentUI.DyeTP.BeDyedItem = Item;//操作结果关联TP实体物品槽
+            ParentUI.DyeTP.SendData();
+        }
     }
 
     /// <summary>
@@ -302,7 +305,10 @@ namespace CalamityOverhaul.Content.UIs
 
         public override bool PreCheckLeft(Item heldItem) => heldItem.type == ItemID.None;
 
-        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.ResultDyedItem = Item;//操作结果关联TP实体物品槽
+        public sealed override void PostHandleItemSlotting() {
+            ParentUI.DyeTP.ResultDyedItem = Item;//操作结果关联TP实体物品槽
+            ParentUI.DyeTP.SendData();
+        }
     }
 
     /// <summary>
@@ -332,7 +338,10 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        public sealed override void PostHandleItemSlotting() => ParentUI.DyeTP.DyeSlotItem = Item;//操作结果关联TP实体物品槽
+        public sealed override void PostHandleItemSlotting() {
+            ParentUI.DyeTP.DyeSlotItem = Item;//操作结果关联TP实体物品槽
+            ParentUI.DyeTP.SendData();
+        }
 
         public virtual bool CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot) {
             dyedItemSlot = ParentUI.BeDyedItem as BeDyedItemSlot;
@@ -362,6 +371,7 @@ namespace CalamityOverhaul.Content.UIs
             ParentUI.DyeTP.DyeSlotItem = Item;
             ParentUI.DyeTP.BeDyedItem = dyedItemSlot.Item;
             ParentUI.DyeTP.ResultDyedItem = resultSlot.Item;
+            ParentUI.DyeTP.SendData();
         }
 
         //子类必须实现的差异化步骤

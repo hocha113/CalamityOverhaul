@@ -1,4 +1,5 @@
 ﻿using CalamityMod.NPCs.Crabulon;
+using CalamityMod.Prefixes;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -16,6 +17,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
@@ -32,6 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private int frame;
         public bool Sleep;
         public bool FirstChat;
+        public static bool GlobalSleep;
         public override void SetStaticDefaults() {
             ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
             for (int i = 0; i < MaxChatSlot; i++) {
@@ -119,14 +122,72 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
             Sleep = false;
             SetNPCDefault();
+            SendNetwork();
         }
 
         public override void OtherNetWorkSend(ModPacket netMessage) {
             netMessage.Write(Sleep);
+            npc.netUpdate = true;
         }
 
         public override void OtherNetWorkReceive(BinaryReader reader) {
             Sleep = reader.ReadBoolean();
+            SetNPCDefault();
+            npc.netUpdate = true;
+        }
+
+        public void SendNetwork() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.TruffleSleep);
+            modPacket.Write(npc.whoAmI);
+            OtherNetWorkSend(modPacket);
+            modPacket.Send();
+        }
+
+        public static void HandleNetwork(BinaryReader reader, int whoAmI) {
+            int npcIndex = reader.ReadInt32();
+            Main.npc[npcIndex].GetOverride<ModifyTruffle>().OtherNetWorkReceive(reader);
+            if (VaultUtils.isServer) {
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.TruffleSleep);
+                modPacket.Write(npcIndex);
+                Main.npc[npcIndex].GetOverride<ModifyTruffle>().OtherNetWorkSend(modPacket);
+                modPacket.Send(-1, whoAmI);
+            }
+        }
+
+        public static void SendGlobalSleep() {
+            if (VaultUtils.isSinglePlayer) {
+                return;
+            }
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.GlobalSleep);
+            modPacket.Write(GlobalSleep);
+            modPacket.Send();
+        }
+
+        public static void HandleGlobalSleep(BinaryReader reader) {
+            GlobalSleep = reader.ReadBoolean();
+        }
+
+        public static void Spawn(NPC npc) {
+            if (NPC.AnyNPCs(NPCID.Truffle)) {
+                return;
+            }
+
+            GlobalSleep = true;
+            SendGlobalSleep();
+
+            NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, NPCID.Truffle);
+            truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
+            truffle.netUpdate = true;
+        }
+
+        public override void SetProperty() {
+            Sleep = GlobalSleep;
             SetNPCDefault();
         }
 
@@ -148,6 +209,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (!VaultUtils.isServer) {
                 VaultUtils.ClockFrame(ref frame, 20, 1);
             }
+
+            GlobalSleep = false;
             return false;
         }
 
@@ -172,7 +235,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             };
             index++;
             items[index] = new(ModContent.ItemType<FungalFeed>()) {
-                value = 150000
+                value = 250000
             };
             index++;
 
@@ -200,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     index++;
                 }
                 items[index] = new Item(ModContent.ItemType<MushroomSaddle>()) {
-                    value = 170000
+                    value = 275000
                 };
                 index++;
             }

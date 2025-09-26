@@ -3,10 +3,8 @@ using CalamityMod.Systems;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs;
-using InnoVault;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -288,23 +286,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (CrabulonPlayer != null) {
                 CrabulonPlayer.IsMount = false;
             }
-
-            if (VaultUtils.isClient || FeedValue > 0f) {
-                return null;
-            }
-
-            if (NPC.AnyNPCs(NPCID.Truffle)) {
-                return null;
-            }
-
-            NPC truffle = NPC.NewNPCDirect(npc.FromObjectGetParent(), npc.Center, NPCID.Truffle);
-            truffle.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -4);
-            truffle.netUpdate = true;
-            if (truffle.TryGetOverride<ModifyTruffle>(out var modifyTruffle)) {
-                modifyTruffle.Sleep = true;
-                modifyTruffle.SetNPCDefault();
-            }
-
+            ModifyTruffle.Spawn(npc);
             return null;
         }
 
@@ -905,6 +887,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         /// 骑乘的菌生蟹实例，如果没有骑乘，则为null
         /// </summary>
         public ModifyCrabulon MountCrabulon;
+        private bool oldIsMount;
         public bool IsMount;
         public List<ModifyCrabulon> ModifyCrabulons = [];
         public override void ResetEffects() => CrabulonIndex = -1;
@@ -921,7 +904,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (!IsMount) {
                 ModifyCrabulon.mountPlayerHeldProj = -1;
                 MountCrabulon = null;
+                if (oldIsMount) {
+                    CloseDuringDash(Player);
+                }
             }
+            oldIsMount = IsMount;
 
             ModifyCrabulons.Clear();
             foreach (var npc in Main.ActiveNPCs) {
