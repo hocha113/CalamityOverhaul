@@ -939,7 +939,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return false;
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
-            players = players.Where(PlayerIsMount);//删掉关于骑乘玩家的绘制
+            players = players.Where(p => !PlayerIsMount(p));//删掉关于骑乘玩家的绘制
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
