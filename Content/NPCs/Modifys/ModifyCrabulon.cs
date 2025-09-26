@@ -932,13 +932,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 ModifyCrabulons.Add((npc.GetOverride<ModifyCrabulon>()));
             }
         }
-        public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
-            players = players.Where(player => {//过滤掉骑乘状态的玩家，首先得找到CrabulonPlayer，然后判断是否在骑乘
-                if (player.Alives() && player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) && crabulonPlayer.IsMount) {
-                    return false;
-                }
+        private static bool PlayerIsMount(Player player) {
+            if (player.Alives() && player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) && crabulonPlayer.IsMount) {
                 return true;
-            });//删掉关于骑乘玩家的绘制
+            }
+            return false;
+        }
+        public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
+            players = players.Where(PlayerIsMount);//删掉关于骑乘玩家的绘制
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
