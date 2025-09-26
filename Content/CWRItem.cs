@@ -556,34 +556,39 @@ namespace CalamityOverhaul.Content
                 tag.Add("_MeleeCharge", MeleeCharge);
             }
 
-            if (HasCartridgeHolder) {
-                if (MagazineContents != null && MagazineContents.Length > 0) {
-                    Item[] safe_MagazineContent = [.. MagazineContents];//这里需要一次安全的保存中转
+            try {
+                if (HasCartridgeHolder) {
+                    if (MagazineContents != null && MagazineContents.Length > 0) {
+                        Item[] safe_MagazineContent = [.. MagazineContents];//这里需要一次安全的保存中转
 
-                    for (int i = 0; i < safe_MagazineContent.Length; i++) {
-                        if (safe_MagazineContent[i] == null) {
-                            safe_MagazineContent[i] = new Item(ItemID.None);
-                        }
-                        if (safe_MagazineContent[i].type != ItemID.None) {
-                            if (!safe_MagazineContent[i].CWR().AmmoProjectileReturn) {
+                        for (int i = 0; i < safe_MagazineContent.Length; i++) {
+                            if (safe_MagazineContent[i] == null) {
                                 safe_MagazineContent[i] = new Item(ItemID.None);
                             }
+                            if (safe_MagazineContent[i].type != ItemID.None) {
+                                if (!safe_MagazineContent[i].CWR().AmmoProjectileReturn) {
+                                    safe_MagazineContent[i] = new Item(ItemID.None);
+                                }
+                            }
                         }
-                    }
 
-                    IList<TagCompound> itemTags = [];
-                    for (int i = 0; i < safe_MagazineContent.Length; i++) {
-                        Item ammo = safe_MagazineContent[i];
-                        if (ammo.Alives()) {
-                            ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
+                        IList<TagCompound> itemTags = [];
+                        for (int i = 0; i < safe_MagazineContent.Length; i++) {
+                            Item ammo = safe_MagazineContent[i];
+                            if (ammo.Alives()) {
+                                ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
+                            }
+                            itemTags.Add(ItemIO.Save(ammo));
                         }
-                        itemTags.Add(ItemIO.Save(ammo));
-                    }
 
-                    tag.Add("MagazineContentItems", itemTags);
+                        tag.Add("MagazineContentItems", itemTags);
+                    }
+                    tag.Add("_IsKreload", IsKreload);
                 }
-                tag.Add("_IsKreload", IsKreload);
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[ItemSave:HasCartridgeHolder] an error has occurred:{ex.Message}");
             }
+
 
             try {
                 LegendData?.DoUpdate();
@@ -606,26 +611,40 @@ namespace CalamityOverhaul.Content
                 MeleeCharge = 0;
             }
 
-            if (HasCartridgeHolder) {
-                if (tag.ContainsKey("MagazineContentItems")) {
-                    List<Item> items = [];
-                    foreach (var itemTag in tag.GetList<TagCompound>("MagazineContentItems")) {
-                        Item ammo = ItemIO.Load(itemTag);
-                        items.Add(ammo);
+            try {
+                if (HasCartridgeHolder) {
+                    if (tag.ContainsKey("_MagazineContents")) {//适配旧版本存档的加载
+                        Item[] magazineContents = tag.Get<Item[]>("_MagazineContents");
+                        for (int i = 0; i < magazineContents.Length; i++) {
+                            if (magazineContents[i] == null) {
+                                magazineContents[i] = new Item(ItemID.None);
+                            }
+                        }
+                        MagazineContents = magazineContents;
                     }
-                    MagazineContents = [.. items];
-                }
 
-                int ammoValue = 0;
-                foreach (Item i in MagazineContents) {
-                    if (i.type != ItemID.None) {
-                        ammoValue += i.stack;
+                    if (tag.ContainsKey("MagazineContentItems")) {
+                        List<Item> items = [];
+                        foreach (var itemTag in tag.GetList<TagCompound>("MagazineContentItems")) {
+                            Item ammo = ItemIO.Load(itemTag);
+                            items.Add(ammo);
+                        }
+                        MagazineContents = [.. items];
+                    }
+
+                    int ammoValue = 0;
+                    foreach (Item i in MagazineContents) {
+                        if (i.type != ItemID.None) {
+                            ammoValue += i.stack;
+                        }
+                    }
+                    NumberBullets = ammoValue;
+                    if (tag.ContainsKey("_IsKreload")) {
+                        IsKreload = tag.GetBool("_IsKreload");
                     }
                 }
-                NumberBullets = ammoValue;
-                if (tag.ContainsKey("_IsKreload")) {
-                    IsKreload = tag.GetBool("_IsKreload");
-                }
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error($"[ItemSave:HasCartridgeHolder] an error has occurred:{ex.Message}");
             }
 
             try {
