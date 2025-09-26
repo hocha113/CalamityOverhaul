@@ -1,4 +1,5 @@
 ﻿using CalamityMod.NPCs.Crabulon;
+using CalamityMod.Projectiles.Boss;
 using CalamityMod.Systems;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
@@ -12,6 +13,7 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -300,6 +302,19 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 CrabulonPlayer.IsMount = false;
             }
 
+            return null;
+        }
+
+        public override bool? CanBeHitByProjectile(Projectile projectile) {
+            //不要被自己的弹幕打中
+            if (projectile.TryGetGlobalProjectile<CWRProjectile>(out var gProj)
+                && gProj.Source != null
+                && gProj.Source is EntitySource_Parent entitySource
+                && entitySource.Entity is NPC boss
+                && boss.type == ModContent.NPCType<Crabulon>()
+                && boss.whoAmI == npc.whoAmI) {
+                return false;
+            }
             return null;
         }
 
@@ -932,10 +947,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
         private static bool PlayerIsMount(Player player) {
-            if (player.Alives() && player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) && crabulonPlayer.IsMount) {
-                return true;
+            if (!VaultLoad.LoadenContent) {
+                return false;//没加载好内容，直接返回
             }
-            return false;
+            if (!player.Alives()) {
+                return false;//玩家无效，直接返回
+            }
+            if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) || crabulonPlayer == null) {
+                return false;//找不到实例，直接返回
+            }
+            return crabulonPlayer.IsMount;
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             players = players.Where(p => !PlayerIsMount(p));//删掉关于骑乘玩家的绘制
