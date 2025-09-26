@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
                 if (dyeItemID == ItemID.None) {
                     Item arrowItem = ArrowHolderUI.GetChooseAmmo();
-                    if (arrowItem.type > ItemID.None) {
+                    if (arrowItem?.type > ItemID.None) {
                         dyeItemID = arrowItem.CWR().DyeItemID;
                     }
                 }

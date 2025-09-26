@@ -5244,19 +5244,14 @@ RemakeItems: {
 			''' */
 	}
 
-	CWRItemOverride: {
-		// DisplayName: CWRItemOverride
-		// Tooltip: ""
-	}
-
-	DyeGlobalItem: {
-		// DisplayName: DyeGlobalItem
-		// Tooltip: ""
-	}
-
 	DyeVatItem: {
-		// DisplayName: 染缸
-		// Tooltip: 用于制作燃料
+		// DisplayName: "{$ItemName.DyeVat}"
+		/* Tooltip:
+			'''
+			Used for crafting dyes
+			Right-click after placing to open the control panel, allowing you to dye items
+			Place a Water Bucket into the dye slot to wash dyes off items
+			''' */
 	}
 }
 

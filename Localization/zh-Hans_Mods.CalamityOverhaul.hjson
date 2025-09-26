@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5242,19 +5242,14 @@ RemakeItems: {
 			'''
 	}
 
-	CWRItemOverride: {
-		// DisplayName: CWRItemOverride
-		// Tooltip: ""
-	}
-
-	DyeGlobalItem: {
-		// DisplayName: DyeGlobalItem
-		// Tooltip: ""
-	}
-
 	DyeVatItem: {
-		// DisplayName: 染缸
-		// Tooltip: 用于制作燃料
+		DisplayName: "{$ItemName.DyeVat}"
+		Tooltip:
+			'''
+			用于制作染料
+			放置后右键打开操作面板，允许给物品染色
+			将水桶放置到染料槽中可以洗掉物品的染色
+			'''
 	}
 }
 

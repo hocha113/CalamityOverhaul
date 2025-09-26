@@ -78,6 +78,8 @@ namespace CalamityOverhaul.Common
     {
         public static bool IsShootUpdate { get; private set; } = false;
         public override int TargetID => -1;//设置为-1，这样让这个修改节点运行在所有物品之上
+        public override bool CanLoadLocalization => false;
+        public override bool DrawingInfo => false;
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             IsDyeDustEffectActive = IsShootUpdate = true;
