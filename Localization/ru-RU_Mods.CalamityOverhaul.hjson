@@ -5733,6 +5733,7 @@ NPCModifys: {
 	}
 
 	ModifyTruffle: {
+		// SleepName: ???
 		// ButtonText: Awaken
 		/* Chat0:
 			'''

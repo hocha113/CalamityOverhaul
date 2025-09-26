@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Crabulon;
-using CalamityMod.Prefixes;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
@@ -17,7 +16,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys
@@ -27,6 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         [VaultLoaden(CWRConstant.NPC + "SleepTruffle")]
         public static Asset<Texture2D> SleepTruffle = null;
         public const int MaxChatSlot = 12;
+        public static LocalizedText SleepName { get; set; }
         public static LocalizedText ButtonText { get; set; }
         public readonly static List<LocalizedText> Chats = [];
         public override int TargetID => NPCID.Truffle;
@@ -34,8 +33,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         private int frame;
         public bool Sleep;
         public bool FirstChat;
+        public string OrigName;
         public static bool GlobalSleep;
         public override void SetStaticDefaults() {
+            SleepName = this.GetLocalization(nameof(SleepName), () => "Sleeping Truffle");
             ButtonText = this.GetLocalization(nameof(ButtonText), () => "Awaken");
             for (int i = 0; i < MaxChatSlot; i++) {
                 Chats.Add(this.GetLocalization($"Chat{i}", () => ""));
@@ -186,15 +187,32 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             truffle.netUpdate = true;
         }
 
+        public static void ModifySleepName(NPC npc, ref string name) {
+            if (npc.type != NPCID.Truffle) {
+                return;
+            }
+            if (npc.TryGetOverride<ModifyTruffle>(out var modify) && modify.Sleep) {
+                name = SleepName.Value;
+            }
+        }
+
         public override void SetProperty() {
             Sleep = GlobalSleep;
             SetNPCDefault();
         }
 
         public override bool AI() {
+            if (npc.GivenName != SleepName.Value) {
+                OrigName = npc.GivenName;
+            }
+
+            npc.GivenName = OrigName;
+
             if (!Sleep) {
                 return true;
             }
+
+            npc.GivenName = SleepName.Value;
 
             npc.velocity.Y += 0.12f;
             npc.velocity.X *= 0.98f;

@@ -20,6 +20,7 @@ using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;

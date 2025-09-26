@@ -6245,6 +6245,7 @@ NPCModifys: {
 	}
 
 	ModifyTruffle: {
+		SleepName: ???
 		ButtonText: 叫醒
 		Chat0:
 			'''
