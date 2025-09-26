@@ -470,10 +470,8 @@ namespace CalamityOverhaul.Content
                     if (ammo.type == ItemID.None || ammo.stack <= 0) {
                         continue;
                     }
-
-                    writer.Write(ammo.type);
-                    writer.Write(ammo.stack);
-                    writer.Write(ammo.CWR().AmmoProjectileReturn);
+                    ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
+                    ItemIO.Send(ammo, writer, true);
                 }
             }
 
@@ -501,9 +499,7 @@ namespace CalamityOverhaul.Content
                 List<Item> list = new List<Item>();
                 int count = reader.ReadInt32();
                 for (int i = 0; i < count; i++) {
-                    Item ammo = new Item(reader.ReadInt32(), reader.ReadInt32());
-                    ammo.CWR().AmmoProjectileReturn = reader.ReadBoolean();
-                    list.Add(ammo);
+                    list.Add(ItemIO.Receive(reader, true));
                 }
                 MagazineContents = list.ToArray();
             }
@@ -562,7 +558,8 @@ namespace CalamityOverhaul.Content
 
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
-                    Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转
+                    Item[] safe_MagazineContent = [.. MagazineContents];//这里需要一次安全的保存中转
+
                     for (int i = 0; i < safe_MagazineContent.Length; i++) {
                         if (safe_MagazineContent[i] == null) {
                             safe_MagazineContent[i] = new Item(ItemID.None);
@@ -573,7 +570,17 @@ namespace CalamityOverhaul.Content
                             }
                         }
                     }
-                    tag.Add("_MagazineContents", safe_MagazineContent);
+
+                    IList<TagCompound> itemTags = [];
+                    for (int i = 0; i < safe_MagazineContent.Length; i++) {
+                        Item ammo = safe_MagazineContent[i];
+                        if (ammo.Alives()) {
+                            ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
+                        }
+                        itemTags.Add(ItemIO.Save(ammo));
+                    }
+
+                    tag.Add("MagazineContentItems", itemTags);
                 }
                 tag.Add("_IsKreload", IsKreload);
             }
@@ -600,15 +607,15 @@ namespace CalamityOverhaul.Content
             }
 
             if (HasCartridgeHolder) {
-                if (tag.ContainsKey("_MagazineContents")) {
-                    Item[] magazineContents = tag.Get<Item[]>("_MagazineContents");
-                    for (int i = 0; i < magazineContents.Length; i++) {
-                        if (magazineContents[i] == null) {
-                            magazineContents[i] = new Item(ItemID.None);
-                        }
+                if (tag.ContainsKey("MagazineContentItems")) {
+                    List<Item> items = [];
+                    foreach (var itemTag in tag.GetList<TagCompound>("MagazineContentItems")) {
+                        Item ammo = ItemIO.Load(itemTag);
+                        items.Add(ammo);
                     }
-                    MagazineContents = tag.Get<Item[]>("_MagazineContents");
+                    MagazineContents = [.. items];
                 }
+
                 int ammoValue = 0;
                 foreach (Item i in MagazineContents) {
                     if (i.type != ItemID.None) {
