@@ -932,7 +932,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
-            players = players.Where(player => !player.GetOverride<CrabulonPlayer>().IsMount);//删掉关于骑乘玩家的绘制
+            players = players.Where(player => 
+            player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) 
+            && crabulonPlayer.IsMount);//删掉关于骑乘玩家的绘制
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
