@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Terraria;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -436,6 +435,50 @@ namespace CalamityOverhaul.Content
         }
         #endregion
 
+        public static void AmmoSend(Item item, BinaryWriter writer) {
+            writer.Write(item.type);
+            writer.Write(item.stack);
+            writer.Write(item.prefix);
+            writer.Write(item.CWR().DyeItemID);
+        }
+
+        public static Item AmmoReceive(BinaryReader reader) {
+            Item item = new(reader.ReadInt32());
+            item.stack = reader.ReadInt32();
+            item.prefix = reader.ReadInt32();
+            item.CWR().DyeItemID = reader.ReadInt32();
+            return item;
+        }
+
+        public static TagCompound AmmoSave(Item item) {
+            TagCompound tag = [];
+            tag["type"] = item.type;
+            tag["stack"] = item.stack;
+            tag["prefix"] = item.prefix;
+            tag["dye"] = (int)ItemID.None;
+            if (item.Alives() && item.TryGetGlobalItem<CWRItem>(out var cwr)) {
+                tag["dye"] = cwr.DyeItemID;
+            }
+            return tag;
+        }
+
+        public static Item AmmoLoad(TagCompound tag) {
+            if (!tag.TryGet("type", out int itemID)) {
+                return new Item();
+            }
+            Item item = new(itemID);
+            if (!tag.TryGet("stack", out item.stack)) {
+                item.stack = 1;
+            }
+            if (!tag.TryGet("prefix", out item.prefix)) {
+                item.prefix = 0;
+            }
+            if (item.Alives() && tag.TryGet("dye", out int dyeItemID)) {
+                item.CWR().DyeItemID = dyeItemID;
+            }
+            return item;
+        }
+
         #region NetWork
         public override void NetSend(Item item, BinaryWriter writer) {
             LegendData?.NetSend(item, writer);
@@ -470,8 +513,7 @@ namespace CalamityOverhaul.Content
                     if (ammo.type == ItemID.None || ammo.stack <= 0) {
                         continue;
                     }
-                    ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
-                    ItemIO.Send(ammo, writer, true);
+                    AmmoSend(ammo, writer);
                 }
             }
 
@@ -499,7 +541,7 @@ namespace CalamityOverhaul.Content
                 List<Item> list = new List<Item>();
                 int count = reader.ReadInt32();
                 for (int i = 0; i < count; i++) {
-                    list.Add(ItemIO.Receive(reader, true));
+                    list.Add(AmmoReceive(reader));
                 }
                 MagazineContents = list.ToArray();
             }
@@ -575,13 +617,10 @@ namespace CalamityOverhaul.Content
                         IList<TagCompound> itemTags = [];
                         for (int i = 0; i < safe_MagazineContent.Length; i++) {
                             Item ammo = safe_MagazineContent[i];
-                            if (ammo.Alives()) {
-                                ammo.CWR().HasCartridgeHolder = false;//无论如何关闭弹匣设置，防止无限迭代
-                            }
-                            itemTags.Add(ItemIO.Save(ammo));
+                            itemTags.Add(AmmoSave(ammo));
                         }
 
-                        tag.Add("MagazineContentItems", itemTags);
+                        tag.Add("MagazineContentAmmos", itemTags);
                     }
                     tag.Add("_IsKreload", IsKreload);
                 }
@@ -623,10 +662,10 @@ namespace CalamityOverhaul.Content
                         MagazineContents = magazineContents;
                     }
 
-                    if (tag.ContainsKey("MagazineContentItems")) {
+                    if (tag.ContainsKey("MagazineContentAmmos")) {
                         List<Item> items = [];
-                        foreach (var itemTag in tag.GetList<TagCompound>("MagazineContentItems")) {
-                            Item ammo = ItemIO.Load(itemTag);
+                        foreach (var itemTag in tag.GetList<TagCompound>("MagazineContentAmmos")) {
+                            Item ammo = AmmoLoad(itemTag);
                             items.Add(ammo);
                         }
                         MagazineContents = [.. items];

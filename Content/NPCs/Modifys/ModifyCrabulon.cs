@@ -1,4 +1,5 @@
-﻿using CalamityMod.NPCs.Crabulon;
+﻿using CalamityMod;
+using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
@@ -588,8 +589,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     return false;
                 }
 
-                float accel = 0.5f;     //加速度
-                float maxSpeed = 6f;   //最大速度
+                float accel = 0.4f + Owner.runAcceleration;//加速度
+                float maxSpeed = 6f * Owner.moveSpeed / 1.5f;//最大速度
                 float friction = 0.85f; //摩擦系数
 
                 Vector2 input = Vector2.Zero;
@@ -613,7 +614,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                 //跳跃（只在接触地面时生效，防止无限连跳）
                 if (Owner.justJumped && npc.collideY) {
-                    npc.velocity.Y = -maxSpeed * 4f;
+                    npc.velocity.Y = maxSpeed * Owner.jumpSpeedBoost * -3.6f;
                 }
 
                 JumpFloorEffect();
@@ -932,9 +933,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
-            players = players.Where(player => 
-            player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) 
-            && crabulonPlayer.IsMount);//删掉关于骑乘玩家的绘制
+            players = players.Where(player => {//过滤掉骑乘状态的玩家，首先得找到CrabulonPlayer，然后判断是否在骑乘
+                if (player.Alives() && player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer) && crabulonPlayer.IsMount) {
+                    return false;
+                }
+                return true;
+            });//删掉关于骑乘玩家的绘制
             return true;
         }
         public override IEnumerable<string> GetActiveSceneEffectFullNames() {
