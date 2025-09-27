@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     public class SupertableUI : UIHandle, ICWRLoader
     {
-        #region 常量&静态数据
+        #region Data
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
         public static SupertableUI Instance => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
         private static RecipeSidebarListViewUI RecipeSidebarListView;
@@ -36,9 +36,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private const int RecipeDataLength = 82; //材料81+结果1
         public static int AllRecipesVanillaContentCount { get; private set; }//基础配方数量
         public static TramModuleTP TramTP { get; set; }
-        #endregion
-
-        #region 实例字段
         public string[] StaticFullItemNames;//最近一次匹配成功的材料及结果名字缓存
         public int[] StaticFullItemTypes;//最近一次匹配成功的材料及结果类型缓存
         private int[] fullItemTypesTemp;//临时复用缓冲(可能被移除但先保留兼容)
@@ -55,9 +52,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool hoverInPutItemCellPage;//鼠标是否在材料区域
         public bool onInputP;//鼠标是否在输出格
         public bool onCloseP;//鼠标是否在关闭按钮
-        #endregion
-
-        #region 属性
         public Vector2 TopLeft => DrawPosition + new Vector2(16, 30);
         public override bool Active {
             get {
@@ -170,7 +164,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         #endregion
 
-        #region 初始化&状态更新
+        public override void Update() {
+            EnsureInitialized();
+            UpdateUIElementPos();
+            int museS = (int)keyLeftPressState;
+            int museSR = (int)keyRightPressState;
+            TryClose(museS);
+            ProcessSlotsInteraction(museS, museSR);
+            TryTakeResult(museS);
+            RecipeSidebarListView.Update();
+        }
+
+        #region 状态更新
         private void EnsureInitialized() {
             if (items == null) {
                 items = new Item[SlotCount];
@@ -308,7 +313,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         #endregion
 
-        #region 内部逻辑-配方匹配与结果
+        #region 配方匹配与结果
         private void ResetInputItem() {
             if (inputItem == null || inputItem.type != ItemID.None) {
                 inputItem = new Item();
@@ -381,7 +386,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         #endregion
 
-        #region 内部逻辑-与TramModule同步
+        #region TramModule同步
         internal void SyncTramModuleItemsIfNeed() {
             if (TramTP != null && TramTP.Active) {
                 if (TramTP.items == null) {
@@ -635,19 +640,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         #endregion
 
-        #region Update入口
-        public override void Update() {
-            EnsureInitialized();
-            UpdateUIElementPos();
-            int museS = (int)keyLeftPressState;
-            int museSR = (int)keyRightPressState;
-            TryClose(museS);
-            ProcessSlotsInteraction(museS, museSR);
-            TryTakeResult(museS);
-            RecipeSidebarListView.Update();
-        }
-        #endregion
-
         #region 绘制
         public static void DrawItemIcons(SpriteBatch spriteBatch, Item item, Vector2 drawpos, Vector2 offset = default, Color drawColor = default, float alp = 1, float overSlp = 1) {
             if (item != null && item.type != ItemID.None) {
@@ -730,8 +722,4 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         #endregion
     }
-
-
-
-
 }

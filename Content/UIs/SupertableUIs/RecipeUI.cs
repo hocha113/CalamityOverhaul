@@ -10,9 +10,13 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     //配方翻页UI
+    [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/")]
     internal class RecipeUI : UIHandle, ICWRLoader
     {
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/RecPBook");
+        private static Texture2D BlueArrow;
+        private static Texture2D BlueArrow2;
+        private static Texture2D RecPBook;
+        public override Texture2D Texture => RecPBook;
         public override float RenderPriority => 2;
         public override bool Active {
             get {
@@ -144,8 +148,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
-            Texture2D arow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow");
-            Texture2D arow2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow2");
+            Texture2D arow = BlueArrow;
+            Texture2D arow2 = BlueArrow2;
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(62, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(onL ? arow : arow2, DrawPosition + new Vector2(-30, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
