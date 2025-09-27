@@ -179,16 +179,19 @@ namespace CalamityOverhaul.Content
             SendDyeItemID = true;
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
-            modPacket.Write(projectile.identity);
-            modPacket.Write(DyeItemID);
+            //这几个数都不太可能超过60000，所以转化成ushort发送节省性能
+            modPacket.Write((ushort)projectile.identity);
+            modPacket.Write((ushort)projectile.type);
+            modPacket.Write((ushort)DyeItemID);
             modPacket.Send();
         }
 
         public static void HandleProjectileDyeItemID(BinaryReader reader, int whoAmI) {
-            int identity = reader.ReadInt32();
-            int dyeItemID = reader.ReadInt32();
+            ushort identity = reader.ReadUInt16();
+            ushort projID = reader.ReadUInt16();
+            ushort dyeItemID = reader.ReadUInt16();
             Projectile projectile = Main.projectile.FirstOrDefault(p => p.identity == identity);
-            if (projectile == null || projectile.type <= ProjectileID.None) {
+            if (projectile == null || projectile.type <= ProjectileID.None || projectile.type != projID) {
                 return;
             }
             projectile.CWR().DyeItemID = dyeItemID;
@@ -198,6 +201,7 @@ namespace CalamityOverhaul.Content
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
             modPacket.Write(identity);
+            modPacket.Write(projID);
             modPacket.Write(dyeItemID);
             modPacket.Send(-1, whoAmI);
         }
