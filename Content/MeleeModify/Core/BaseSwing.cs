@@ -9,7 +9,9 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -328,6 +330,37 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             public float overSpeedUpSengs = 1;
             public SwingDataStruct() { }
         }
+
+        //===== Cinematic Fields Start =====
+        //是否启用演出强化
+        protected bool EnableCinematics = true;
+        //是否启用残影
+        protected bool EnableAfterImages = true;
+        //残影缓存长度
+        protected int AfterImageCacheLength = 7;
+        //残影位置
+        protected Vector2[] afterImagePos;
+        //残影旋转
+        protected float[] afterImageRot;
+        //残影缩放
+        protected float[] afterImageScale;
+        //命中停顿计时
+        protected int hitPauseTimer;
+        //命中停顿持续帧数
+        protected int hitPauseDurationOnHit = 4;
+        //释放帧脉冲
+        protected float cinematicPowerPulse;
+        //脉冲衰减速度
+        protected float cinematicPulseFade = 0.12f;
+        //基础缩放帧缓存
+        private float baseFrameScale;
+        //全局屏幕震动时间
+        protected static float globalShakeTime;
+        //全局屏幕震动强度
+        protected static float globalShakePower;
+        //震动衰减
+        protected static float globalShakeFade = 0.9f;
+        //===== Cinematic Fields End =====
         #endregion
         public sealed override void SetDefaults() {
             if (!Main.dedServ) {
@@ -348,6 +381,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             PostSwingProperty();
             LoadTrailCountData();
             OrigLength = Length;
+            InitializeCinematicData();
         }
 
         #region Utils
@@ -600,37 +634,160 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             }
         }
 
+        //===== Cinematic Methods Start =====
+        //初始化演出相关
+        protected virtual void InitializeCinematicData() {
+            if (!EnableAfterImages) {
+                return;
+            }
+            afterImagePos = new Vector2[AfterImageCacheLength];
+            afterImageRot = new float[AfterImageCacheLength];
+            afterImageScale = new float[AfterImageCacheLength];
+            for (int i = 0; i < AfterImageCacheLength; i++) {
+                afterImagePos[i] = Vector2.Zero;
+                afterImageRot[i] = 0f;
+                afterImageScale[i] = 1f;
+            }
+        }
+        //更新残影
+        protected virtual void UpdateAfterImages() {
+            if (!EnableAfterImages) {
+                return;
+            }
+            for (int i = AfterImageCacheLength - 1; i > 0; i--) {
+                afterImagePos[i] = afterImagePos[i - 1];
+                afterImageRot[i] = afterImageRot[i - 1];
+                afterImageScale[i] = afterImageScale[i - 1];
+            }
+            afterImagePos[0] = Projectile.Center;
+            afterImageRot[0] = Projectile.rotation;
+            afterImageScale[0] = Projectile.scale * MeleeSize;
+        }
+        //动力曲线，返回0-1
+        protected float EaseOutBack(float t) {
+            float c1 = 1.70158f;
+            float c3 = c1 + 1f;
+            return 1 + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
+        }
+        //更新演出曲线
+        protected virtual void ApplyCinematicCurves() {
+            if (!EnableCinematics) {
+                return;
+            }
+            float total = maxSwingTime * UpdateRate * SwingMultiplication;
+            if (total <= 0) {
+                return;
+            }
+            float norm = MathHelper.Clamp(Time / total, 0f, 1f);
+            float accel = norm < 0.5f ? 4f * norm * norm * norm : 1f - (float)Math.Pow(-2f * norm + 2f, 3f) / 2f;
+            float back = EaseOutBack(MathHelper.Clamp(norm * 1.15f, 0f, 1f));
+            float pulse = cinematicPowerPulse;
+            cinematicPowerPulse *= (1f - cinematicPulseFade * 0.5f);
+            if (cinematicPowerPulse < 0.01f) {
+                cinematicPowerPulse = 0f;
+            }
+            float scalePulse = 1f + 0.002f * back + 0.008f * pulse;
+            Projectile.scale = baseFrameScale * scalePulse;
+            oldLengthOffsetSizeValue = 1f + 0.25f * accel + 0.35f * pulse;
+            drawTrailTopWidth = 50f * (1f + 0.35f * accel + 0.4f * pulse);
+            drawTrailBtommWidth = 70f * (1f + 0.15f * accel);
+            if (pulse > 0.05f) {
+                drawTrailHighlight = true;
+            }
+            else {
+                drawTrailHighlight = false;
+            }
+        }
+        //触发释放脉冲
+        protected void TriggerReleasePulse(float power = 1f) {
+            cinematicPowerPulse = MathF.Max(cinematicPowerPulse, power);
+            TriggerShake(5f * power, 8f * power);
+        }
+        //命中停顿
+        protected void TriggerHitPause() {
+            if (hitPauseTimer < hitPauseDurationOnHit) {
+                hitPauseTimer = hitPauseDurationOnHit;
+            }
+        }
+        //屏幕震动
+        protected void TriggerShake(float power, float time) {
+            if (power <= 0 || time <= 0) {
+                return;
+            }
+            globalShakePower = Math.Max(globalShakePower, power);
+            globalShakeTime = Math.Max(globalShakeTime, time);
+        }
+        //在预绘制之前应用震动(仅本地玩家)
+        protected void ApplyCameraShake() {
+            if (globalShakeTime > 0f && Main.myPlayer == Owner.whoAmI) {
+                float progress = globalShakeTime / Math.Max(globalShakePower, 0.0001f);
+                float intensity = globalShakePower * progress;
+                Vector2 shake = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f));
+                if (shake.LengthSquared() > 1f) {
+                    shake.Normalize();
+                }
+                Main.screenPosition += shake * intensity;
+            }
+        }
+        //在更新末端衰减震动
+        protected void UpdateShakeDecay() {
+            if (globalShakeTime > 0f) {
+                globalShakeTime *= globalShakeFade;
+                if (globalShakeTime < 0.2f) {
+                    globalShakeTime = 0f;
+                    globalShakePower = 0f;
+                }
+            }
+        }
+        //===== Cinematic Methods End =====
+
         /// <summary>
         /// 几乎所有的逻辑更新都在这里进行
         /// </summary>
         /// <returns></returns>
         public sealed override bool PreUpdate() {
+            bool freeze = false;
+            if (hitPauseTimer > 0) {
+                hitPauseTimer--;
+                freeze = true;
+            }
             SwingMultiplication = SetSwingSpeed(1f);
             canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * UpdateRate);
-            if (PreInOwner()) {
-                InOwner();
-                SwingAI();
-                if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
-                    Shoot();
-                    if (GlobalItemBehavior) {
-                        foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(Item)) {
-                            g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootID), ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack);
+            baseFrameScale = Projectile.scale;//记录供演出缩放
+            if (!freeze) {
+                if (PreInOwner()) {
+                    InOwner();
+                    SwingAI();
+                    if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
+                        Shoot();
+                        if (GlobalItemBehavior) {
+                            foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(Item)) {
+                                g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, ShootID), ShootSpanPos, ShootVelocity, ShootID, Projectile.damage, Projectile.knockBack);
+                            }
                         }
+                        TriggerReleasePulse(1f);//释放瞬间脉冲
+                    }
+                    if (canDrawSlashTrail) {
+                        UpdateCaches();
                     }
                 }
-                if (canDrawSlashTrail) {
-                    UpdateCaches();
+                PostInOwner();
+                UpdateFrame();
+                if (!VaultUtils.isServer) {
+                    NoServUpdate();
                 }
+                UpdateAfterImages();
+                Time++;//正常推进时间
             }
-            PostInOwner();
-            UpdateFrame();
-            if (!VaultUtils.isServer) {
-                NoServUpdate();
+            else {
+                //命中停顿时仍需保持在玩家手中位置
+                InOwner();
             }
+            ApplyCinematicCurves();
             rotSpeed = Rotation - oldRot;
             oldRot = Rotation;
             canShoot = false;
-            Time++;
+            UpdateShakeDecay();
             return false;
         }
         /// <summary>
@@ -795,7 +952,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         }
 
         public virtual float ControlTrailBottomWidth(float factor) {
-            return drawTrailBtommWidth * Projectile.scale;
+            return drawTrailBtommWidth * Projectile.scale * (0.4f + 0.6f * (float)Math.Sin(MathHelper.Pi * factor));
         }
 
         public virtual void DrawSlashTrail() {
@@ -803,16 +960,23 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             GetCurrentTrailCount(out float count);
 
             for (int i = 0; i < count; i++) {
-                if (oldRotate[i] == 100f)
+                if (oldRotate[i] == 100f) {
                     continue;
+                }
 
                 float factor = 1f - i / count;
                 Vector2 Center = GetInOwnerDrawOrigPosition();
                 Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
                 Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]) * meleeSizeAsymptotic;
 
-                var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
-                var bottomColor = Color.Lerp(new Color(109, 73, 86, 200), new Color(83, 16, 85, 0), 1 - factor);
+                float pulse = cinematicPowerPulse;
+                Color topA = new Color(238, 218, 130);
+                Color topB = new Color(167, 127, 95);
+                Color bottomA = new Color(109, 73, 86);
+                Color bottomB = new Color(83, 16, 85);
+                float glowLerp = 0.35f + 0.65f * factor + 0.5f * pulse;
+                Color topColor = Color.Lerp(topA, topB, 1 - factor) * glowLerp;
+                Color bottomColor = Color.Lerp(bottomA, bottomB, 1 - factor) * glowLerp;
                 bars.Add(new VertexPositionColorTexture(Top.ToVector3(), topColor, new Vector2(factor, 0)));
                 bars.Add(new VertexPositionColorTexture(Bottom.ToVector3(), bottomColor, new Vector2(factor, 1)));
             }
@@ -822,6 +986,54 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+
+        //绘制残影
+        protected virtual void DrawAfterImages(SpriteBatch spriteBatch, Color lightColor) {
+            if (!EnableAfterImages || afterImagePos == null) {
+                return;
+            }
+
+            float total = maxSwingTime * UpdateRate * SwingMultiplication;
+            float norm = MathHelper.Clamp(Time / total, 0f, 1f);
+            if (norm < 0.1f || norm > 0.9f) {
+                return;
+            }
+
+            Texture2D texture = TextureValue;
+            Rectangle rect = texture.GetRectangle(Projectile.frame, AnimationMaxFrme);
+            Vector2 drawOrigin = rect.Size() / 2;
+            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+
+            for (int i = 1; i < AfterImageCacheLength; i++) {
+                if (afterImageScale[i] <= 0f) {
+                    continue;
+                }
+
+                Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection * MeleeSize;
+                float drawRoting = afterImageRot[i];
+
+                float otherRoting = SwingDrawRotingOffset;
+                if (Projectile.spriteDirection == -1) {
+                    drawRoting += MathHelper.Pi;
+                    otherRoting *= -1;
+                }
+                //烦人的对角线翻转代码，我凑出来了这个效果，它很稳靠，但我仍旧不想细究这其中的数学逻辑
+                if (inDrawFlipdiagonally) {
+                    effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    drawRoting += MathHelper.PiOver2;
+                    otherRoting *= -1;
+                    offsetOwnerPos *= -1;
+                }
+
+                float fade = 1f - i / (float)AfterImageCacheLength;
+                Color clr = new Color(255, 230, 180, 0) * fade * 0.55f;
+
+                Vector2 drawPosValue = afterImagePos[i] - RodingToVer(toProjCoreMode, (Projectile.Center - GetOwnerCenter()).ToRotation()) + offsetOwnerPos;
+                Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
+
+                spriteBatch.Draw(texture, trueDrawPos, rect, clr, drawRoting + otherRoting, drawOrigin, afterImageScale[i], effects, 0f);
             }
         }
 
@@ -845,30 +1057,33 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 otherRoting *= -1;
                 offsetOwnerPos *= -1;
             }
-
-            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - GetOwnerCenter()).ToRotation()) + offsetOwnerPos;
             Color color = Projectile.GetAlpha(lightColor);
             if (Incandescence) {
                 color = Color.White;
             }
+            float shine = 1f + cinematicPowerPulse * 0.6f;
+            color = color * shine;
 
+            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - GetOwnerCenter()).ToRotation()) + offsetOwnerPos;
             Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
             Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
                 , color, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             if (canDrawGlow) {
                 Main.EntitySpriteDraw(glowTexValue.Value, trueDrawPos, new Rectangle?(rect)
-                    , Color.White, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
+                    , Color.White * shine, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             }
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {
+            ApplyCameraShake();
             if (canDrawSlashTrail) {
                 DrawSlashTrail();
             }
             if (Item.Alives()) {
                 Projectile.BeginDyeEffectForWorld(Item.CWR().DyeItemID);
             }
+            DrawAfterImages(Main.spriteBatch, lightColor);
             DrawSwing(Main.spriteBatch, lightColor);
             if (Item.Alives()) {
                 Projectile.EndDyeEffectForWorld();
@@ -876,5 +1091,230 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             return false;
         }
         #endregion
+    }
+
+    internal abstract class BaseKnife : BaseSwing
+    {
+        public override string Texture => CWRConstant.Placeholder3;
+        public override Texture2D TextureValue => TargetID == ItemID.None ? TextureAssets.Projectile[Type].Value : TextureAssets.Item[TargetID].Value;
+        public SwingDataStruct SwingData = new SwingDataStruct();
+        public SwingAITypeEnum SwingAIType;
+        protected bool autoSetShoot;
+        protected bool onSound;
+        protected Dictionary<int, NPC> onHitNPCs = [];
+        public enum SwingAITypeEnum
+        {
+            None = 0,
+            UpAndDown,
+            Down,
+            Sceptre,
+        }
+        public sealed override void SetSwingProperty() {
+            Projectile.extraUpdates = 4;
+            ownerOrientationLock = true;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 14 * UpdateRate;
+            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            SetKnifeProperty();
+            VaultUtils.SafeLoadItem(TargetID);
+        }
+
+        protected void updaTrailTexture() => SwingSystem.trailTextures[Type] = CWRUtils.GetT2DAsset(trailTexturePath);
+        protected void updaGradientTexture() => SwingSystem.gradientTextures[Type] = CWRUtils.GetT2DAsset(gradientTexturePath);
+
+        public virtual void SetKnifeProperty() { }
+
+        public sealed override void Initialize() {
+            base.Initialize();
+            Projectile.DamageType = Item.DamageType;
+            maxSwingTime = Item.useTime;
+            SwingData.maxSwingTime = maxSwingTime;
+            toProjCoreMode = (IgnoreImpactBoxSize ? 22 : Projectile.width) / 2f;
+            if (autoSetShoot) {
+                ShootSpeed = Item.shootSpeed;
+            }
+            if (++SwingIndex > 1) {
+                SwingIndex = 0;
+            }
+            KnifeInitialize();
+        }
+
+        public virtual void KnifeInitialize() {
+
+        }
+
+        public virtual void WaveUADBehavior() {
+
+        }
+
+        public virtual void SceptreBehavior() {
+
+        }
+
+        public virtual void MeleeEffect() {
+
+        }
+
+        public virtual bool PreSwingAI() {
+            return true;
+        }
+
+        public sealed override void SwingAI() {
+            if (!PreSwingAI()) {
+                return;
+            }
+            switch (SwingAIType) {
+                case SwingAITypeEnum.None:
+                    SwingBehavior(SwingData);
+                    break;
+                case SwingAITypeEnum.UpAndDown:
+                    SwingDataStruct swingData = SwingData;
+                    if (SwingIndex == 1) {
+                        inDrawFlipdiagonally = true;
+                        swingData.starArg += 120;
+                        swingData.baseSwingSpeed *= -1;
+                    }
+                    WaveUADBehavior();
+                    SwingBehavior(swingData);
+                    break;
+                case SwingAITypeEnum.Down:
+                    inDrawFlipdiagonally = true;
+                    SwingData.starArg += 120;
+                    SwingData.baseSwingSpeed *= -1;
+                    SwingBehavior(SwingData);
+                    break;
+                case SwingAITypeEnum.Sceptre:
+                    shootSengs = 0.95f;
+                    maxSwingTime = 70;
+                    canDrawSlashTrail = false;
+                    SwingData.starArg = 13;
+                    SwingData.baseSwingSpeed = 2;
+                    SwingData.ler1_UpLengthSengs = 0.1f;
+                    SwingData.ler1_UpSpeedSengs = 0.1f;
+                    SwingData.ler1_UpSizeSengs = 0.062f;
+                    SwingData.ler2_DownLengthSengs = 0.01f;
+                    SwingData.ler2_DownSpeedSengs = 0.14f;
+                    SwingData.ler2_DownSizeSengs = 0;
+                    SwingData.minClampLength = 160;
+                    SwingData.maxClampLength = 200;
+                    SwingData.ler1Time = 8;
+                    SwingData.maxSwingTime = 60;
+                    SceptreBehavior();
+                    SwingBehavior(SwingData);
+                    break;
+            }
+        }
+
+        public sealed override void NoServUpdate() {
+            if (Time % UpdateRate == 0) {
+                MeleeEffect();
+            }
+        }
+
+        public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (onHitNPCs.TryAdd(target.whoAmI, target)) {
+                TriggerHitPause();
+                TriggerShake(3f, 6f);
+                KnifeHitNPC(target, hit, damageDone);
+            }
+        }
+        /// <summary>
+        /// 在刀刃击中NPC时运行
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="hit"></param>
+        /// <param name="damageDone"></param>
+        public virtual void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        }
+
+        /// <summary>
+        /// 执行适配的大幅度挥击动作，控制挥击速度、尺寸变化及音效播放
+        /// </summary>
+        /// <param name="initialMeleeSize">初始的近战武器大小倍率</param>
+        /// <param name="phase1Ratio">第一阶段持续时间占总挥击时间的比例</param>
+        /// <param name="phase2Ratio">第二阶段持续时间占总挥击时间的比例</param>
+        /// <param name="phase0SwingSpeed">第一阶段的基础挥击速度（负值表示回收动作）</param>
+        /// <param name="phase1SwingSpeed">第二阶段的基础挥击速度</param>
+        /// <param name="phase2SwingSpeed">第三阶段的基础挥击速度</param>
+        /// <param name="phase0MeleeSizeIncrement">第一阶段每帧增加的武器尺寸倍率</param>
+        /// <param name="phase2MeleeSizeIncrement">第三阶段每帧减少的武器尺寸倍率</param>
+        /// <param name="swingSound">挥击音效的样式，默认为<see cref="SoundID.item1"/></param>
+        public void ExecuteAdaptiveSwing(
+            float initialMeleeSize = 0.84f,
+            float phase1Ratio = 0.5f,
+            float phase2Ratio = 0.6f,
+            float phase0SwingSpeed = -0.3f,
+            float phase1SwingSpeed = 4.2f,
+            float phase2SwingSpeed = 9f,
+            float phase0MeleeSizeIncrement = 0.002f,
+            float phase2MeleeSizeIncrement = -0.002f,
+            SoundStyle swingSound = default,
+            bool drawSlash = true) {
+            // 初始化时间为0时设置初始武器大小
+            if (Time == 0) {
+                OtherMeleeSize = initialMeleeSize;
+            }
+
+            if (SwingAIType == SwingAITypeEnum.UpAndDown && SwingIndex == 1) {
+                phase0SwingSpeed *= -1;
+                phase1SwingSpeed *= -1;
+                phase2SwingSpeed *= -1;
+            }
+
+            // 计算当前挥击速度比例
+            float swingSpeedMultiplier = SwingMultiplication;
+
+            // 计算各阶段的结束时间
+            int phase1EndTime = (int)(maxSwingTime * phase1Ratio * UpdateRate * swingSpeedMultiplier);
+            int phase2EndTime = (int)(maxSwingTime * phase2Ratio * UpdateRate * swingSpeedMultiplier);
+
+            // 第二阶段逻辑：主挥击阶段
+            if (Time > phase1EndTime) {
+                if (!onSound) {
+                    // 播放挥击音效
+                    SoundEngine.PlaySound(swingSound == default ? SoundID.Item1 : swingSound, Owner.Center);
+                    onSound = true;
+                }
+
+                // 启用挥击轨迹绘制
+                canDrawSlashTrail = drawSlash;
+
+                // 设置第二阶段的挥击速度
+                SwingData.baseSwingSpeed = phase1SwingSpeed;
+
+                // 在进入第二阶段的第一帧计算具体挥击速度
+                if (Time == phase1EndTime + 1) {
+                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
+                }
+            }
+            // 第一阶段逻辑：准备挥击阶段
+            else {
+                // 增大武器尺寸
+                OtherMeleeSize += phase0MeleeSizeIncrement;
+
+                // 设置第一阶段的挥击速度
+                SwingData.baseSwingSpeed = phase0SwingSpeed;
+
+                // 计算挥击速度
+                speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
+
+                // 禁用挥击轨迹绘制
+                canDrawSlashTrail = false;
+            }
+
+            // 第三阶段逻辑：挥击结束阶段
+            if (Time > phase2EndTime) {
+                // 缩小武器尺寸
+                OtherMeleeSize += phase2MeleeSizeIncrement;
+
+                // 设置第三阶段的挥击速度
+                SwingData.baseSwingSpeed = phase2SwingSpeed;
+
+                // 在进入第三阶段的第一帧计算具体挥击速度
+                if (Time == phase2EndTime + 1) {
+                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
+                }
+            }
+        }
     }
 }
