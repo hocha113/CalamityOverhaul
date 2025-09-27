@@ -264,5 +264,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             SendData();
         }
+
+        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }
 }

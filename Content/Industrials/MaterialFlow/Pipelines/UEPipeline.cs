@@ -194,8 +194,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         //处理与电池的连接
         private void HandleBatteryConnection(BaseBattery battery) {
             //电池交互逻辑
-            if (coreTP.IsNetworkPowered) {
-                //如果管道网络由发电机供能，则无视电池的设置，强制为其充电
+            //如果管道网络由发电机供能，则无视电池的设置，强制为其充电
+            //如果管道网络是独立的(没有发电机)，则尊重电池的设置
+            if (coreTP.IsNetworkPowered || battery.ReceivedEnergy) {
                 float transferAmount = Math.Min(efficiency, Math.Min(coreTP.MachineData.UEvalue, battery.MaxUEValue - battery.MachineData.UEvalue));
                 if (transferAmount > 0) {
                     battery.MachineData.UEvalue += transferAmount;
@@ -203,17 +204,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
             else {
-                //如果管道网络是独立的(没有发电机)，则尊重电池的设置
-                if (battery.ReceivedEnergy) {
-                    //电池想要被充电，但独立网络无法提供电力，所以什么都不做
-                }
-                else {
-                    //电池想要放电，管道从中取电为其他设备供能
-                    float transferAmount = Math.Min(efficiency, Math.Min(battery.MachineData.UEvalue, coreTP.MaxUEValue - coreTP.MachineData.UEvalue));
-                    if (transferAmount > 0) {
-                        battery.MachineData.UEvalue -= transferAmount;
-                        coreTP.MachineData.UEvalue += transferAmount;
-                    }
+                //电池想要放电，管道从中取电为其他设备供能
+                float transferAmount = Math.Min(efficiency, Math.Min(battery.MachineData.UEvalue, coreTP.MaxUEValue - coreTP.MachineData.UEvalue));
+                if (transferAmount > 0) {
+                    battery.MachineData.UEvalue -= transferAmount;
+                    coreTP.MachineData.UEvalue += transferAmount;
                 }
             }
 
