@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
-using CalamityOverhaul.Content.Industrials.Modifys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;

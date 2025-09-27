@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;

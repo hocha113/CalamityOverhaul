@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content;
 using InnoVault.GameSystem;
 using System;
 using Terraria;

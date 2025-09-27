@@ -3,7 +3,6 @@ using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Boss;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

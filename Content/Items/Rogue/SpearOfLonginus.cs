@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameSystem;

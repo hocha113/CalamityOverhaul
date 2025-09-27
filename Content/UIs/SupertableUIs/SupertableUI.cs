@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
