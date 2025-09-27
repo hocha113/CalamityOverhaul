@@ -627,8 +627,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 float accel = 0.4f + Owner.runAcceleration;//加速度
-                float maxSpeed = 6f * Owner.moveSpeed / 1.5f;//最大速度
-                float friction = 0.85f; //摩擦系数
+                const float baseSpeed = 6f;//基础速度
+                float maxSpeed = baseSpeed * Owner.moveSpeed / 1.5f;//最大速度
+                float friction = 0.85f;//摩擦系数
 
                 Vector2 input = Vector2.Zero;
 
@@ -651,7 +652,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
                 //跳跃（只在接触地面时生效，防止无限连跳）
                 if (Owner.justJumped && npc.collideY) {
-                    npc.velocity.Y = maxSpeed * Owner.jumpSpeedBoost * -3.6f;
+                    npc.velocity.Y = baseSpeed * Owner.jumpSpeedBoost * -3.6f;
                 }
 
                 JumpFloorEffect();
