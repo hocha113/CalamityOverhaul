@@ -1,5 +1,6 @@
 ﻿using CalamityMod.NPCs.Crabulon;
 using CalamityMod.Systems;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs;
@@ -705,6 +706,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (Owner.whoAmI == Main.myPlayer && SaddleItem.Alives() && !MountACrabulon && DontMount <= 0 && hoverNPC && rightPressed) {
                     MountACrabulon = true;
                     SendNetWork();
+
+                    if (!VaultUtils.isServer) {//播放一下上鞍声音
+                        SoundEngine.PlaySound(CWRSound.ToMount with { PitchRange = (-0.1f, 0.1f) }, Owner.Center);
+                    }
                 }
                 if (MountACrabulon) {
                     //卸载掉玩家的所有钩爪

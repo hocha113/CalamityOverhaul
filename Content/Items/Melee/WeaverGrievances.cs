@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             if (Projectile.ai[0] == 0 && Projectile.ai[1] >= 0) {
-                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.position);
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 0.5f }, Projectile.position);
                 Projectile.spriteDirection = Projectile.direction;
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
                 Projectile.ai[0] = 1;

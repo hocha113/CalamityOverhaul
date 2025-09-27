@@ -386,6 +386,10 @@ namespace CalamityOverhaul.Content.UIs
                 return;
             }
 
+            if (player.Alives() && player.CWR().IsRotatingDuringDash) {
+                return;
+            }
+
             Item currentItem = player.GetItem();
             Item saddleToDraw = null;
             string hoverContent = "";
