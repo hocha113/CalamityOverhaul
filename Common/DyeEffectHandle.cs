@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Particles;
-using CalamityOverhaul.Content.Projectiles.Others;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -138,7 +136,7 @@ namespace CalamityOverhaul.Common
             var method = typeof(CombinedHooks).GetMethod("OnHitNPCWithProj", BindingFlags.Public | BindingFlags.Static);
             VaultHook.Add(method, OnHitNPCWithProjHook);
         }
-        
+
         private static void OnHitNPCWithProjHook(On_OnHitNPCWithProj_Delegate orig, Projectile proj, NPC target, in NPC.HitInfo hit, int damageDone) {
             IsDyeDustEffectActive = IsHitEffectUpdate = true;
             int dyeItemID = 0;

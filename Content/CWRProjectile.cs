@@ -176,12 +176,12 @@ namespace CalamityOverhaul.Content
                 return;//已经发过包的不要再发包
             }
 
+            SendDyeItemID = true;
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
             modPacket.Write(projectile.identity);
             modPacket.Write(DyeItemID);
             modPacket.Send();
-            SendDyeItemID = true;
         }
 
         public static void HandleProjectileDyeItemID(BinaryReader reader, int whoAmI) {
