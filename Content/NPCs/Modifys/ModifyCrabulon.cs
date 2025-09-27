@@ -613,6 +613,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     CrabulonPlayer.IsMount = true;
                 }
 
+                //卸载掉玩家的所有钩爪
+                Owner.RemoveAllGrapplingHooks();
+                //卸载掉玩家的所有坐骑
+                Owner.mount.Dismount(Owner);
+
                 Owner.Center = GetMountPos();
 
                 if (ai[9] > 0) {
@@ -703,6 +708,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     SendNetWork();
                 }
                 if (MountACrabulon) {
+                    //卸载掉玩家的所有钩爪
+                    Owner.RemoveAllGrapplingHooks();
+                    //卸载掉玩家的所有坐骑
+                    Owner.mount.Dismount(Owner);
                     Owner.velocity = Owner.Center.To(GetMountPos()).UnitVector() * 8;
                     Owner.CWR().IsRotatingDuringDash = true;
                     Owner.CWR().RotationDirection = Math.Sign(Owner.velocity.X);
