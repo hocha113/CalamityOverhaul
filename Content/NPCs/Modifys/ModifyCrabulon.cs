@@ -305,6 +305,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return null;
         }
 
+        public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) {
+            if (FeedValue > 0f && Crouch) {
+                modifiers.FinalDamage /= 2;//蹲下的时候有弹幕伤害减免
+            }
+        }
+
         public override bool? CanBeHitByProjectile(Projectile projectile) {
             //不要被自己的弹幕打中
             if (projectile.TryGetGlobalProjectile<CWRProjectile>(out var gProj)
@@ -475,6 +481,18 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 if (ai[9] < 60) {
                     ai[9] += 2;
                 }
+                else if (Main.GameUpdateCount % 60 == 0 && npc.life < npc.lifeMax) {
+                    if (!VaultUtils.isClient) {
+                        npc.life += 10;
+                        npc.life = (int)MathHelper.Clamp(npc.life, 0, npc.lifeMax);
+                        npc.netUpdate = true;
+                    }
+                    for (int i = 0; i < 6; i++) {
+                        Vector2 spawnPos = npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
+                        PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
+                    }
+                }
+
                 npc.velocity.X /= 2;
                 if (npc.collideY) {
                     npc.velocity.Y /= 2;
@@ -828,6 +846,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
 
         public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) {
             if (!Mount && !SaddleItem.Alives()) {
+                return;
+            }
+            if (Main.keyState.PressingShift()) {
                 return;
             }
             boundingBox = Vector2.Zero.GetRectangle(1);//修改为一个在世界零点位置的非常小的矩形，这样基本不可能摸到

@@ -182,16 +182,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (skeletronPrime.Alives()) {
                     ai[AccompanySpawnStage] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
+                npc.life = npc.lifeMax = (int)(npc.lifeMax * 0.8f);//降低一点血量
             }
 
             if (CWRWorld.MachineRebellion) {
                 npc.life = npc.lifeMax *= 32;
                 npc.defDefense = npc.defense = 40;
                 npc.defDamage = npc.damage *= 2;
-            }
-
-            if (CWRMod.Instance.fargowiltasSouls != null) {
-                npc.life = npc.lifeMax = (int)(npc.lifeMax * 0.6f);
             }
         }
         #endregion
@@ -204,17 +201,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             eye.Center = Vector2.Lerp(eye.Center, toPoint, 0.1f); //平滑移动到目标点
             eye.velocity = toTarget.UnitVector() * 0.01f; //给予一个微弱的朝向玩家的速度
             eye.EntityToRot(targetRotation, 0.2f); //平滑转向
-        }
-
-        public static void SetEyeRealLife(NPC eye) {
-            if (CWRMod.Instance.fargowiltasSouls != null) return; //法狗模组存在时不设置共享血条
-            if (eye.realLife > 0) return;
-            if (eye.type != NPCID.Retinazer) return; //只让激光眼挂靠咒火眼
-
-            NPC spazmatism = CWRUtils.FindNPCFromeType(NPCID.Spazmatism);
-            if (spazmatism.Alives()) {
-                eye.realLife = spazmatism.whoAmI;
-            }
         }
 
         private void FindPlayer() {
@@ -518,7 +504,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             npc.VanillaAI();
-            SetEyeRealLife(npc);
             return false;
         }
 
@@ -583,7 +568,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         private bool ProtogenesisAI() {
             npc.dontTakeDamage = false;
             npc.damage = npc.defDamage;
-            SetEyeRealLife(npc);
 
             //当血量低于阈值时，强制切换到二阶段战斗
             float lifeRatio = npc.life / (float)npc.lifeMax;
@@ -601,7 +585,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 //阶段转换演出
                 npc.dontTakeDamage = true;
                 SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-                //在这里可以添加生成粒子效果，屏幕震动等
                 NetAISend();
                 return false;
             }
