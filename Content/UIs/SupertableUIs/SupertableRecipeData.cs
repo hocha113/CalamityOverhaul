@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    public class SupertableRecipeDate
+    public class SupertableRecipeData
     {
         public readonly static string[] FullItems_Null = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",

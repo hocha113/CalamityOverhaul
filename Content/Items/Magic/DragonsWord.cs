@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DragonsWord;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DragonsWord;
         }
 
         public override bool AltFunctionUse(Player player) => true;

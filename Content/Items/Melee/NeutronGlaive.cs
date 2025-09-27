@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Item.shootSpeed = 18f;
             Item.SetKnifeHeld<NeutronGlaiveHeld>(true);
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronGlaive;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGlaive;
         }
 
         public override bool CanUseItem(Player player) {

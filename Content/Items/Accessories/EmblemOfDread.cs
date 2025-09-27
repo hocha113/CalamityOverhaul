@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = ModContent.RarityType<Turquoise>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_EmblemOfDread;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_EmblemOfDread;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

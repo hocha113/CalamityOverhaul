@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_AnnihilatingUniverse;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_AnnihilatingUniverse;
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 32;

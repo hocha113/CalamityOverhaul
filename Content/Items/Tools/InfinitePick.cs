@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.autoReuse = true;
             Item.pick = 9999;
             Item.tileBoost = 64;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_InfinitePick;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_InfinitePick;
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.GetPlayerStabilityCenter();

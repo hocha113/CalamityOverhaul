@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = Item.buyPrice(13, 83, 5, 0);
             Item.crit = 2;
             Item.SetCartridgeGun<NeutronGunHeldProj>(120);
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronGun;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGun;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = Item.buyPrice(13, 33, 75, 0);
             Item.crit = 20;
             Item.SetHeldProj<NeutronBowHeldProj>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronBow;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronBow;
         }
     }
 }

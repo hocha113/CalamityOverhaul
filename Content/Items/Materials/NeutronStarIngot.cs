@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.createTile = ModContent.TileType<NeutronStarIngotTile>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronStarIngot;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronStarIngot;
         }
     }
 }

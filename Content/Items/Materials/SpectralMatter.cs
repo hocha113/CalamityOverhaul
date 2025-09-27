@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.value = Item.sellPrice(gold: 153);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_SpectralMatter;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_SpectralMatter;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void SetDefaults() {
             base.SetDefaults();
             Item.rare = ItemRarityID.Red;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_CreativePipeline;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_CreativePipeline;
         }
     }
 

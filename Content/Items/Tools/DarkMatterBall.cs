@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.width = 24;
             Item.height = 24;
             Item.rare = ItemRarityID.Purple;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DarkMatterBall;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DarkMatterBall;
         }
 
         public static void DrawItemIcon(SpriteBatch spriteBatch, Vector2 position, int Type, float alp = 1) {

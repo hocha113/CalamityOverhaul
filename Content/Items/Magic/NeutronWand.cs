@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.crit = 6;
             Item.UseSound = SoundID.NPCDeath56;
             Item.SetHeldProj<NeutronWandHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronWand;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronWand;
         }
     }
 }

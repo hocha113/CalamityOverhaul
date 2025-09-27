@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
             Item.DamageType = CWRLoad.RogueDamageClass;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_SpearOfLonginus;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_SpearOfLonginus;
             Item.CWR().isHeldItem = true;
             ItemOverride.ItemMeleePrefixDic[Type] = true;
             ItemOverride.ItemRangedPrefixDic[Type] = false;
