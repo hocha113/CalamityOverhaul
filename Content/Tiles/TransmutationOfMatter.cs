@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileProcessors;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.Tiles
                 return true;
             }
 
-            SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.3f });
 
             if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                 return true;

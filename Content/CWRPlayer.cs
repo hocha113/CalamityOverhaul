@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content
 
             if (RecipeUI.Instance != null) {
                 RecipeUI.Instance.index = 0;
-                RecipeUI.Instance.LoadPsreviewItems();
+                RecipeUI.Instance.LoadPreviewItems();
             }
 
             if (OverhaulTheBibleUI.Instance != null) {
