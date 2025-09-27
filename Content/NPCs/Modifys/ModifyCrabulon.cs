@@ -708,7 +708,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                     SendNetWork();
 
                     if (!VaultUtils.isServer) {//播放一下上鞍声音
-                        SoundEngine.PlaySound(CWRSound.ToMount with { PitchRange = (-0.1f, 0.1f) }, Owner.Center);
+                        SoundEngine.PlaySound(CWRSound.ToMount with { PitchRange = (-0.1f, 0.1f), Volume = Main.rand.NextFloat(0.6f, 0.8f) }, Owner.Center);
                     }
                 }
                 if (MountACrabulon) {
