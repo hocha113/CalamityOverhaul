@@ -13,9 +13,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/")]
     internal class RecipeUI : UIHandle, ICWRLoader
     {
-        private static Texture2D BlueArrow;
-        private static Texture2D BlueArrow2;
-        private static Texture2D RecPBook;
+        private static Texture2D BlueArrow = null;
+        private static Texture2D BlueArrow2 = null;
+        private static Texture2D RecPBook = null;
         public override Texture2D Texture => RecPBook;
         public override float RenderPriority => 2;
         public override bool Active {

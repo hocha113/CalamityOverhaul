@@ -126,16 +126,34 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            tag["Item"] = Item;
-            tag["Empty"] = Empty;
+            Item ??= new();
+            tag["_Item"] = ItemIO.Save(Item);
+            Empty ??= new();
+            tag["_Empty"] = ItemIO.Save(Empty);
         }
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (!tag.TryGet("Item", out Item)) {
+            try {//兼容旧存档
+                if (!tag.TryGet("Item", out Item)) {
+                    Item = new Item();
+                }
+                if (!tag.TryGet("Empty", out Empty)) {
+                    Empty = new Item();
+                }
+            } catch { }
+
+            if (tag.TryGet<TagCompound>("_Item", out var itemTag)) {
+                Item = ItemIO.Load(itemTag);
+            }
+            else {
                 Item = new Item();
             }
-            if (!tag.TryGet("Empty", out Empty)) {
+
+            if (tag.TryGet<TagCompound>("_Empty", out var emptyTag)) {
+                Empty = ItemIO.Load(emptyTag);
+            }
+            else {
                 Empty = new Item();
             }
         }
