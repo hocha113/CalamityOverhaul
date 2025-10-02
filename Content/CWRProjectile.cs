@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content
         }
 
         internal void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
-            if (projectile.type <= 0 || !HitAttribute.SuperAttack) {
+            if (projectile.type <= ProjectileID.None || !HitAttribute.SuperAttack) {
                 return;
             }
 
@@ -767,7 +767,7 @@ namespace CalamityOverhaul.Content
                 if (projectile.numHits == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<BMGFIRE>()] < 33) {
                     float newdamage = projectile.damage;
                     int projCount = 1;
-                    if (projectile.type > 0 && projectile.type < player.ownedProjectileCounts.Length) {
+                    if (projectile.type > ProjectileID.None && projectile.type < player.ownedProjectileCounts.Length) {
                         projCount = player.ownedProjectileCounts[projectile.type];
                     }
                     if (newdamage > 1000) {
