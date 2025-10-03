@@ -2,7 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.OtherMods.Coralite
+namespace CalamityOverhaul.OtherMods.Coralite
 {
     public struct MagikeContainerData
     {

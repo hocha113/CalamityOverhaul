@@ -1,6 +1,7 @@
 ﻿displayName = Calamity Overhaul
 modReferences = CalamityMod@2.0.5, InnoVault@1.9.66
 sortAfter = CalamityMod, InnoVault
+weakReferences = ThoriumMod
 homepage = https://calamity-overhaul.cc
 author = HoCha113
 version = 0.7015

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.OtherMods.Coralite;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,7 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.OtherMods.Coralite.Arcanes
+namespace CalamityOverhaul.OtherMods.Coralite.Arcanes
 {
     internal class ArcaneTransformer : ModItem, ILocalizedModType
     {

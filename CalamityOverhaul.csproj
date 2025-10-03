@@ -64,7 +64,7 @@
     <None Remove="Assets\Sky\PGBolt.png" />
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
-    <None Remove="content\othermods\improvegame\Thank you Cyrilly.txt" />
+    <None Remove="OtherMods\improvegame\Thank you Cyrilly.txt" />
     <None Remove="Localization\es-ES_Mods.CalamityOverhaul.hjson" />
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +74,6 @@
     <Folder Include="Assets\Painting\" />
     <Folder Include="Assets\Turrets\" />
     <Folder Include="Assets\Arcanes\" />
-    <Folder Include="Content\OtherMods\Entropys\" />
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
@@ -88,6 +87,9 @@
     </Reference>
     <Reference Include="InnoVault">
       <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
+    </Reference>
+    <Reference Include="ThoriumMod">
+      <HintPath>..\..\ModReader\ThoriumMod\ThoriumMod.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

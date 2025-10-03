@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Common
             }
         }
         #endregion
-        public static Type[] GetModType(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
+        public static Type[] GetModTypes(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
 
         public static Type GetTargetTypeInStringKey(Type[] types, string key) {
             Type reset = null;
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Common
 
             #region luiafk
             if (CWRMod.Instance.luiafk != null) {
-                Type luiAFKConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.luiafk), "LuiAFKConfig");
+                Type luiAFKConfigType = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.luiafk), "LuiAFKConfig");
                 LuiAFKConfig_RangerAmmoInfo = luiAFKConfigType.GetField("rangerAmmo", BindingFlags.Public | BindingFlags.Instance);
                 if (LuiAFKConfig_RangerAmmoInfo == null) {
                     LogFailedLoad("LuiAFKConfig_RangerAmmoInfo", "miningcracks_take_on_luiafk.Config.LuiAFKConfig.rangerAmmo");
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Common
             if (CWRMod.Instance.improveGame != null) {
                 Suitableversion_improveGame = CWRMod.Instance.improveGame.Version >= new Version(1, 7, 1, 7);
 
-                Type improveGameConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.improveGame), "ImproveConfigs");
+                Type improveGameConfigType = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.improveGame), "ImproveConfigs");
                 ImproveGameConfig_NoConsume_Ammo = improveGameConfigType.GetField("NoConsume_Ammo", BindingFlags.Public | BindingFlags.Instance);
                 if (ImproveGameConfig_NoConsume_Ammo == null) {
                     LogFailedLoad("ImproveGameConfig_NoConsume_Ammo", "ImproveGame.Common.Configs.ImproveConfigs.NoConsume_Ammo");
@@ -371,7 +371,7 @@ namespace CalamityOverhaul.Common
             #region fargowiltasSouls
 
             if (CWRMod.Instance.fargowiltasSouls != null) {
-                fargowiltasSoulsTypes = GetModType(CWRMod.Instance.fargowiltasSouls);
+                fargowiltasSoulsTypes = GetModTypes(CWRMod.Instance.fargowiltasSouls);
                 FGS_FGSGlobalProj_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsGlobalProjectile");
                 FGS_Utils_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsUtil");
 
@@ -432,7 +432,7 @@ namespace CalamityOverhaul.Common
             #region MagicStorage
 
             if (CWRMod.Instance.magicStorage != null) {
-                MS_Config_Type = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.magicStorage), "MagicStorageConfig");
+                MS_Config_Type = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.magicStorage), "MagicStorageConfig");
                 if (MS_Config_Type != null) {
                     MS_Config_recursionCraftingDepth_FieldInfo = MS_Config_Type
                         .GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Common
             #region InfernumMode
             {
                 if (CWRMod.Instance.infernum != null) {
-                    Type type = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.infernum), "TooltipChangeGlobalItem");
+                    Type type = GetTargetTypeInStringKey(GetModTypes(CWRMod.Instance.infernum), "TooltipChangeGlobalItem");
                     if (type != null) {
                         MethodInfo dditEnrageTooltipsMethod = type.GetMethod("EditEnrageTooltips", BindingFlags.Public | BindingFlags.Static);
                         //这个问题并不一定发生，并且不是模组自己的问题，因此不必要进行挂载

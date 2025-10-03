@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.OtherMods.ImproveGame;
+namespace CalamityOverhaul.OtherMods.ImproveGame;
 
 public static class QotUtils
 {
@@ -57,7 +57,7 @@ public static class QotUtils
 
         #region Step 1: 预处理
 
-        var bigBagItems = GetBigBagItems(player);
+        var bigBagItems = player.GetBigBagItems();
         var allItems = player.inventory[54..58]
             .Concat(player.inventory[..54])
             .Concat(bigBagItems)
