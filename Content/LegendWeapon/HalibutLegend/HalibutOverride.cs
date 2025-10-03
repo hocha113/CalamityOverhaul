@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using System;
 using System.Collections.Generic;
@@ -161,6 +162,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplaceTooltip("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
+        }
+    }
+
+    internal class HalibutHeld : BaseHeldRanged
+    {
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
+        public override int TargetID => ModContent.ItemType<HalibutCannon>();
+        public int Level => HalibutOverride.GetLevel(Item);
+
+        public override void AI() {
+            
         }
     }
 }
