@@ -13,7 +13,7 @@ using static CalamityOverhaul.Content.InWorldBossPhase;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutCannonOverride : CWRItemOverride
+    internal class HalibutOverride : CWRItemOverride
     {
         #region Data
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<HalibutCannonHeld>();
+            Item.SetHeldProj<HalibutHeld>();
             Item.CWR().LegendData = new HalibutData();
         }
 

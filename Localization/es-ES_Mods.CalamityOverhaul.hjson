@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -2218,7 +2218,7 @@ Legend: {
 # So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
-	HalibutCannonOverride: {
+	HalibutOverride: {
 		DisplayName: Cañón de Halibut
 		Tooltip:
 			'''

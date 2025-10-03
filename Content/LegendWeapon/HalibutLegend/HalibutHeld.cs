@@ -4,10 +4,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutCannonHeld : BaseHeldRanged
+    internal class HalibutHeld : BaseHeldRanged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
-        public int Level => HalibutCannonOverride.GetLevel(Item);
+        public int Level => HalibutOverride.GetLevel(Item);
     }
 }

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 Tools.RecipesLoseText: Vous ne pouvez pas faire cet objet directement
 
 Items: {
@@ -2196,7 +2196,7 @@ Legend: {
 # So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
-	HalibutCannonOverride: {
+	HalibutOverride: {
 		DisplayName: Canon Hippoglosse
 		Tooltip:
 			'''

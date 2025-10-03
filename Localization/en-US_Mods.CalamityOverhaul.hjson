@@ -2206,7 +2206,7 @@ Legend: {
 # So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
-	HalibutCannonOverride: {
+	HalibutOverride: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
