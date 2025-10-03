@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content
                 }
             }
             if (projectile.CWR().SpanTypes == (byte)SpanTypesEnum.HalibutCannon) {
-                HalibutCannonHeld.ModifyHalibutAmmoHitNPC(projectile, target, ref modifiers);
+                
             }
 
             if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {
