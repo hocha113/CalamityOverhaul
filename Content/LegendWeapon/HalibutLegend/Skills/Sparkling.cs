@@ -1,5 +1,4 @@
-﻿using CalamityMod.Enums;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
@@ -40,17 +40,127 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float arc = MathHelper.ToRadians(RoingArc); // 扇形总角度
             float radius = 90f;
             ShootState shootState = player.GetShootState();
+
+            // 中心涟漪出现特效（ai0 = -1 表示中央扩散光环）
+            Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero
+                , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, -1, hp.SparklingVolleyId);
+
             for (int i = 0; i < hp.SparklingFishCount; i++) {
                 float t = (hp.SparklingFishCount == 1) ? 0.5f : i / (float)(hp.SparklingFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
                 Vector2 offsetDir = behind.RotatedBy(angOff);
                 Vector2 spawnPos = player.Center + offsetDir * radius + new Vector2(0, (float)Math.Sin(Main.GameUpdateCount * 0.05f + i) * 6f);
+
                 int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero,
                     ModContent.ProjectileType<SparklingFishHolder>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI,
                     ai0: hp.SparklingVolleyId, ai1: i);
                 if (Main.projectile[proj].ModProjectile is SparklingFishHolder holder) holder.Owner = player;
+
+                // 鱼体出现定位点爆闪（ai0 = 索引, ai1 = volleyId）
+                Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero
+                    , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, Main.projectile[proj].identity, hp.SparklingVolleyId);
             }
             SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.4f }, player.Center); // 预热音
+        }
+    }
+
+    internal class SparklingSpawnEffect : ModProjectile
+    {
+        public override string Texture => CWRConstant.Masking + "SoftGlow";//一个圆点光效灰度图，可以考虑用来丰富特效
+
+        private ref float Index => ref Projectile.ai[0]; // -1 = 中心光环 其他=鱼索引
+        private const int LifeTime = 42; // 存活时间
+        private float seed;
+        private float startScale;
+        private float endScale;
+        private Color colA;
+        private Color colB;
+
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 10;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.timeLeft = LifeTime;
+            Projectile.alpha = 0;
+        }
+
+        public override void OnSpawn(IEntitySource source) {
+            seed = Main.rand.NextFloat(10000f);
+            if (Index < 0) { // 中心扩散
+                startScale = 0.4f;
+                endScale = 4.2f;
+            }
+            else {
+                startScale = 0.2f;
+                endScale = 1.8f + Main.rand.NextFloat(0.4f);
+            }
+            float hue = (Index < 0 ? 0.15f : (Index % 7) / 7f);
+            // 粉蓝宝石色系插值
+            colA = Color.Lerp(new Color(120, 180, 255), new Color(255, 170, 230), 0.35f + 0.4f * hue);
+            colB = Color.Lerp(new Color(80, 120, 210), new Color(255, 120, 210), 0.55f * (1 - hue) + 0.2f);
+
+            // 初生碎光
+            int dustAmt = Index < 0 ? 36 : 12;
+            for (int i = 0; i < dustAmt; i++) {
+                float rot = MathHelper.TwoPi * i / dustAmt;
+                Vector2 dVel = rot.ToRotationVector2() * (Index < 0 ? 6f : 3.2f) * Main.rand.NextFloat(0.4f, 1.15f);
+                var d = Dust.NewDustPerfect(Projectile.Center, Main.rand.NextBool() ? DustID.GemSapphire : DustID.GemAmethyst, dVel, 150,
+                    Color.Lerp(colA, colB, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.4f));
+                d.noGravity = true;
+            }
+        }
+
+        public override void AI() {
+            float t = 1f - Projectile.timeLeft / (float)LifeTime; // 0->1
+            float ease = MathF.Pow(t, 0.6f);
+            Projectile.scale = MathHelper.Lerp(startScale, endScale, ease);
+
+            // 轻微脉动旋转
+            Projectile.rotation += 0.04f + (Index < 0 ? 0.02f : 0.06f) * MathF.Sin(seed + Main.GlobalTimeWrappedHourly * 6f);
+
+            // 中心光环：持续生成少量向外渐隐宝石尘
+            if (Index < 0 && Main.rand.NextBool(4)) {
+                Vector2 ringPos = Projectile.Center + Main.rand.NextVector2CircularEdge(Projectile.scale * 18f, Projectile.scale * 18f);
+                var d = Dust.NewDustPerfect(ringPos, DustID.GemDiamond, Vector2.Zero, 160, Color.White, Main.rand.NextFloat(0.5f, 0.9f));
+                d.noGravity = true;
+            }
+
+            // 鱼单点闪烁：前半段放射 outward 亮点
+            if (Index >= 0 && t < 0.45f && Main.rand.NextBool(5)) {
+                Vector2 dir = Main.rand.NextVector2Unit();
+                var d2 = Dust.NewDustPerfect(Projectile.Center + dir * Projectile.scale * 12f, DustID.GemDiamond, dir * 2f, 120,
+                    Color.Lerp(colA, colB, Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1.1f));
+                d2.noGravity = true;
+            }
+
+            // 末段淡出
+            if (t > 0.75f) {
+                Projectile.alpha = (int)MathHelper.Lerp(0, 255, (t - 0.75f) / 0.25f);
+            }
+
+            if (Index.TryGetProjectile(out var fash)) {
+                Projectile.Center = fash.Center + fash.rotation.ToRotationVector2() * 32;
+            }
+            else if (Index.TryGetPlayer(out var owner)){
+                Projectile.Center = owner.Center;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = ModContent.Request<Texture2D>(Texture, AssetRequestMode.ImmediateLoad).Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+            float fade = 1f - Projectile.alpha / 255f;
+            // 双层叠加：外层柔光 + 内层核心
+            Color outer = Color.Lerp(colA, colB, 0.5f) * 0.55f * fade;
+            outer.A = 0;
+            Color inner = Color.White * 0.9f * fade;
+            inner.A = 0;
+            float scaleOuter = Projectile.scale * (Index < 0 ? 1.4f : 1.1f);
+            Main.spriteBatch.Draw(tex, drawPos, null, outer, Projectile.rotation, origin, scaleOuter, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, drawPos, null, inner, -Projectile.rotation * 0.6f, origin, Projectile.scale * 0.6f, SpriteEffects.None, 0f);
+            return false;
         }
     }
 

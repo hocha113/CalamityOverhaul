@@ -1525,6 +1525,7 @@ Projectiles: {
 	// SparklingFishHolder.DisplayName: Sparkling Fish Holder
 	// SparklingRay.DisplayName: Sparkling Ray
 	// SparklingRayFriendly.DisplayName: Sparkling Ray Friendly
+	// SparklingSpawnEffect.DisplayName: Sparkling Spawn Effect
 }
 
 Configs: {
