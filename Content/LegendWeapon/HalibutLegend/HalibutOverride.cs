@@ -649,9 +649,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 冲刺阶段AI - 螺旋式聚拢并紧跟玩家
         /// </summary>
         private void DashPhaseAI() {
-            Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
-            float distanceToPlayer = toPlayer.Length();
-            
             // 冲刺进度（0-1）
             float dashProgress = lifeTimer / (float)DashPhase;
             
@@ -670,7 +667,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             
             // 螺旋半径：由内向外扩展，形成螺旋线
             // 冲刺初期半径小且快速收缩，后期稳定在目标半径
-            float targetRadius = 30f + layerIndex * 20f; // 5层：30, 50, 70, 90, 110
+            float targetRadius = 30f + layerIndex * 20f; // 5层
             float currentRadius = MathHelper.Lerp(
                 150f, // 初始半径（较大，模拟聚拢过程）
                 targetRadius, // 目标半径
