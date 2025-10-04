@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             // 播放音效
             SoundEngine.PlaySound(SoundID.Splash, player.Center);
-            SoundEngine.PlaySound(SoundID.Item71, player.Center); //冲刺音效
+            SoundEngine.PlaySound(CWRSound.Dash, player.Center); //冲刺音效
         }
     }
 
