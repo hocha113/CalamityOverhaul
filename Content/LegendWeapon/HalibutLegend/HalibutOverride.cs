@@ -384,12 +384,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 
                 Owner.velocity = adjustedDirection * (currentDashSpeed + NormalSpeed * dashProgress);
                 
-                // 冲刺特效
+                // === 螺旋冲刺特效增强 ===
+                // 水花粒子（更密集）
                 if (Main.rand.NextBool(2)) {
                     Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(120f, 120f);
                     Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water, 
                         -Owner.velocity * 0.3f, Scale: Main.rand.NextFloat(1f, 1.5f));
                     dust.noGravity = true;
+                }
+                
+                // 螺旋涡流粒子（围绕玩家旋转）
+                if (Main.rand.NextBool(3)) {
+                    float spiralAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float spiralRadius = Main.rand.NextFloat(60f, 100f);
+                    Vector2 spiralOffset = new Vector2(
+                        (float)Math.Cos(spiralAngle) * spiralRadius,
+                        (float)Math.Sin(spiralAngle) * spiralRadius
+                    );
+                    
+                    Vector2 tangentialVel = new Vector2(
+                        -(float)Math.Sin(spiralAngle),
+                        (float)Math.Cos(spiralAngle)
+                    ) * 5f;
+                    
+                    Dust spiralDust = Dust.NewDustPerfect(
+                        Owner.Center + spiralOffset, 
+                        DustID.Water,
+                        tangentialVel + Owner.velocity * 0.2f,
+                        Scale: Main.rand.NextFloat(1.2f, 2f)
+                    );
+                    spiralDust.noGravity = true;
+                    spiralDust.alpha = 80;
+                    spiralDust.color = Color.Lerp(Color.White, Color.Cyan, 0.5f);
+                }
+                
+                // 冲击波效果（关键时刻）
+                if (DashTimer == 1 || DashTimer == 10) {
+                    for (int i = 0; i < 20; i++) {
+                        float angle = MathHelper.TwoPi * i / 20f;
+                        Vector2 shockwaveVel = new Vector2(
+                            (float)Math.Cos(angle),
+                            (float)Math.Sin(angle)
+                        ) * 8f;
+                        
+                        Dust shockDust = Dust.NewDustPerfect(
+                            Owner.Center,
+                            DustID.Water,
+                            shockwaveVel,
+                            Scale: Main.rand.NextFloat(1.5f, 2.5f)
+                        );
+                        shockDust.noGravity = true;
+                        shockDust.alpha = 50;
+                    }
                 }
             }
             // === 持续移动阶段 ===
@@ -600,58 +646,119 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
         
         /// <summary>
-        /// 冲刺阶段AI - 快速聚拯并紧跟玩家
+        /// 冲刺阶段AI - 螺旋式聚拢并紧跟玩家
         /// </summary>
         private void DashPhaseAI() {
             Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
             float distanceToPlayer = toPlayer.Length();
             
-            // 冲刺阶段的目标位置：在玩家周围形成紧密的簇拥圈
-            // 使用极坐标计算理想位置，让鱼群形成环绕效果
-            float targetAngle = MathHelper.TwoPi * FishID / 140f; // 140是大致的鱼群总数
-            float targetDistance = 40f + (FishID % 3) * 25f; // 三层环形：40, 65, 90
+            // 冲刺进度（0-1）
+            float dashProgress = lifeTimer / (float)DashPhase;
             
-            Vector2 idealOffset = new Vector2(
-                (float)Math.Cos(targetAngle) * targetDistance,
-                (float)Math.Sin(targetAngle) * targetDistance
+            // === 螺旋式跟进设计 ===
+            // 基础参数
+            float baseAngle = MathHelper.TwoPi * FishID / 140f; // 基础角度分布
+            
+            // 螺旋层次设计：根据FishID分配到不同的螺旋臂
+            int spiralArm = FishID % 5; // 5条螺旋臂
+            int layerIndex = FishID / 28; // 每条螺旋臂约28条鱼，共5层
+            
+            // 动态螺旋角度：随时间旋转，不同螺旋臂旋转速度不同
+            float spiralRotationSpeed = 0.15f + spiralArm * 0.05f; // 每条臂旋转速度略有差异
+            float spiralAngle = baseAngle + spiralArm * MathHelper.TwoPi / 5f; // 5条臂均匀分布
+            spiralAngle += lifeTimer * spiralRotationSpeed; // 持续旋转
+            
+            // 螺旋半径：由内向外扩展，形成螺旋线
+            // 冲刺初期半径小且快速收缩，后期稳定在目标半径
+            float targetRadius = 30f + layerIndex * 20f; // 5层：30, 50, 70, 90, 110
+            float currentRadius = MathHelper.Lerp(
+                150f, // 初始半径（较大，模拟聚拢过程）
+                targetRadius, // 目标半径
+                MathHelper.Clamp(dashProgress * 2f, 0f, 1f) // 前半段快速收缩
             );
             
-            // 考虑玩家速度，预判位置
-            Vector2 playerVelocityPredict = OwnerPlayer.velocity * 0.5f;
-            Vector2 targetPosition = OwnerPlayer.Center + idealOffset + playerVelocityPredict;
+            // 螺旋高度波动：沿螺旋臂方向产生上下波动，增强3D感
+            float spiralHeightWave = (float)Math.Sin(spiralAngle * 3f + lifeTimer * 0.2f) * 15f;
             
+            // 速度感波动：越靠近玩家运动方向的鱼，半径越小（形成尖端效果）
+            Vector2 playerDir = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
+            Vector2 fishDir = new Vector2((float)Math.Cos(spiralAngle), (float)Math.Sin(spiralAngle));
+            float alignmentFactor = Vector2.Dot(fishDir, playerDir);
+            float radiusModifier = 1f - alignmentFactor * 0.3f; // 前方的鱼半径减小30%
+            currentRadius *= radiusModifier;
+            
+            // 计算螺旋位置
+            Vector2 spiralOffset = new Vector2(
+                (float)Math.Cos(spiralAngle) * currentRadius,
+                (float)Math.Sin(spiralAngle) * currentRadius + spiralHeightWave
+            );
+            
+            // === 预判玩家位置 ===
+            // 根据玩家速度预判未来位置，确保鱼群不会落后
+            float predictionStrength = MathHelper.Lerp(0.8f, 0.3f, dashProgress); // 初期预判更强
+            Vector2 playerVelocityPredict = OwnerPlayer.velocity * predictionStrength;
+            
+            // 考虑玩家移动方向，让螺旋向前倾斜
+            Vector2 forwardBias = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero) * currentRadius * 0.4f;
+            
+            Vector2 targetPosition = OwnerPlayer.Center + spiralOffset + playerVelocityPredict + forwardBias;
+            
+            // === 计算运动力 ===
             Vector2 toTarget = targetPosition - Projectile.Center;
             float distanceToTarget = toTarget.Length();
             
-            // 强力吸引向目标位置
             Vector2 totalForce = Vector2.Zero;
             
-            // 1. 主要力：冲向目标位置（非常强的吸引力）
-            if (distanceToTarget > 10f) {
-                float urgency = MathHelper.Clamp(distanceToTarget / 100f, 0.5f, 2f);
-                totalForce += toTarget.SafeNormalize(Vector2.Zero) * 8f * urgency;
+            // 1. 主要吸引力：向目标螺旋位置移动（根据距离动态调整）
+            if (distanceToTarget > 5f) {
+                // 距离越远，吸引力越强
+                float urgency = MathHelper.Clamp(distanceToTarget / 80f, 0.8f, 3f);
+                totalForce += toTarget.SafeNormalize(Vector2.Zero) * 10f * urgency;
             }
             
-            // 2. 匹配玩家速度（让鱼群与玩家同步移动）
+            // 2. 切向速度：让鱼沿着螺旋切线方向移动（产生螺旋流动感）
+            Vector2 tangentialDirection = new Vector2(
+                -(float)Math.Sin(spiralAngle),
+                (float)Math.Cos(spiralAngle)
+            );
+            // 切向速度随半径减小而增强（内圈转得更快）
+            float tangentialSpeed = (150f - currentRadius) / 150f * 12f + 5f;
+            totalForce += tangentialDirection * tangentialSpeed;
+            
+            // 3. 速度同步：匹配玩家速度
             Vector2 velocityDiff = OwnerPlayer.velocity - Projectile.velocity;
-            totalForce += velocityDiff * 0.8f;
+            float syncStrength = MathHelper.Lerp(1.2f, 0.6f, dashProgress); // 初期同步更强
+            totalForce += velocityDiff * syncStrength;
             
-            // 3. 轻微的分离力（避免鱼重叠，但权重很低）
+            // 4. 向心力：让鱼持续指向玩家中心（防止螺旋飞散）
+            Vector2 centripetalForce = (OwnerPlayer.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+            float centripetalStrength = MathHelper.Lerp(2f, 4f, dashProgress); // 后期向心力增强
+            totalForce += centripetalForce * centripetalStrength;
+            
+            // 5. 轻微分离力（避免螺旋臂内部重叠）
             CalculateFlockingBehavior();
-            totalForce += separationForce * 0.8f;
+            totalForce += separationForce * 0.5f; // 权重很低，优先保持螺旋形态
             
-            // 4. 朝向玩家前进方向的推力
+            // 6. 沿玩家运动方向的推力（整体向前）
             if (OwnerPlayer.velocity.LengthSquared() > 1f) {
-                Vector2 playerDirection = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
-                totalForce += playerDirection * 3f;
+                Vector2 forwardPush = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
+                totalForce += forwardPush * 4f;
             }
             
-            // 应用力，冲刺阶段使用更大的加速度
-            Projectile.velocity += totalForce * 0.35f;
+            // 7. 螺旋脉冲：周期性的径向收缩/扩张，增强动感
+            float pulseFactor = (float)Math.Sin(lifeTimer * 0.3f + spiralArm * MathHelper.PiOver2) * 0.5f;
+            Vector2 pulseForce = spiralOffset.SafeNormalize(Vector2.Zero) * pulseFactor;
+            totalForce += pulseForce;
             
-            // 冲刺阶段的速度限制更高
-            float dashMaxSpeed = 35f * behaviorRandomness; // 比正常阶段快得多
-            float dashMinSpeed = 15f; // 保持高速移动
+            // === 应用力和速度限制 ===
+            Projectile.velocity += totalForce * 0.4f; // 更高的加速度，响应更快
+            
+            // 速度限制：根据在螺旋中的位置动态调整
+            float baseMaxSpeed = 40f * behaviorRandomness;
+            // 内圈鱼速度更快（产生螺旋紧致感）
+            float speedMultiplier = MathHelper.Lerp(1.3f, 0.9f, currentRadius / 110f);
+            float dashMaxSpeed = baseMaxSpeed * speedMultiplier;
+            float dashMinSpeed = 18f; // 保持高速
             
             float currentSpeed = Projectile.velocity.Length();
             if (currentSpeed > dashMaxSpeed) {
@@ -661,11 +768,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * dashMinSpeed;
             }
             
-            // 额外：直接调整位置，确保鱼群紧跟（混合物理和强制定位）
-            // 这在冲刺阶段很重要，确保视觉效果
-            if (distanceToTarget > 150f) {
-                // 如果太远，直接拉近一些
-                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.15f);
+            // === 强制位置修正（确保螺旋形态） ===
+            // 如果鱼偏离螺旋轨迹太远，强制拉回
+            if (distanceToTarget > 180f) {
+                // 严重偏离，直接插值拉回
+                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.25f);
+            }
+            else if (distanceToTarget > 100f) {
+                // 中度偏离，轻微拉回
+                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.1f);
+            }
+            
+            // === 视觉效果增强 ===
+            // 螺旋轨迹粒子（只在螺旋臂上的关键位置生成）
+            if (FishID % 7 == 0 && Main.rand.NextBool(3)) { // 减少粒子密度，但更有目的性
+                Vector2 particleVel = tangentialDirection * 3f + Main.rand.NextVector2Circular(1f, 1f);
+                Dust spiralDust = Dust.NewDustPerfect(
+                    Projectile.Center, 
+                    DustID.Water,
+                    particleVel, 
+                    Scale: Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                spiralDust.noGravity = true;
+                spiralDust.alpha = 100;
+                spiralDust.color = Color.Lerp(Color.White, Color.Cyan, Main.rand.NextFloat());
             }
         }
         
@@ -830,21 +956,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             bool isDashing = lifeTimer <= DashPhase;
             int trailLength = isDashing ? Projectile.oldPos.Length : (Projectile.oldPos.Length * 2 / 3);
             
-            // 绘制更明显的拖尾
+            // 冲刺阶段螺旋颜色效果
+            Color spiralColor = lightColor;
+            if (isDashing) {
+                // 根据螺旋臂添加不同的颜色调制
+                int spiralArm = FishID % 5;
+                float colorPhase = (lifeTimer * 0.1f + spiralArm * MathHelper.TwoPi / 5f) % MathHelper.TwoPi;
+                Color accentColor = Color.Lerp(
+                    Color.Cyan,
+                    Color.LightBlue,
+                    (float)Math.Sin(colorPhase) * 0.5f + 0.5f
+                );
+                spiralColor = Color.Lerp(lightColor, accentColor, 0.3f);
+            }
+            
+            // 绘制更明显的拖尾（冲刺时形成螺旋轨迹）
             for (int i = 0; i < trailLength; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
                 
-                // 冲刺阶段拖尾更明显
-                float baseTrailAlpha = isDashing ? 0.75f : 0.6f;
+                // 冲刺阶段拖尾更明显且带有颜色渐变
+                float baseTrailAlpha = isDashing ? 0.8f : 0.6f;
                 float trailAlpha = fishAlpha * (1f - i / (float)Projectile.oldPos.Length) * baseTrailAlpha;
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float trailScale = fishScale * (1f - i / (float)Projectile.oldPos.Length * 0.3f);
+                
+                // 螺旋拖尾颜色渐变
+                Color trailColor = isDashing ? 
+                    Color.Lerp(spiralColor, lightColor, i / (float)trailLength) : 
+                    lightColor;
                 
                 Main.EntitySpriteDraw(
                     value,
                     trailPos,
                     sourceRect,
-                    lightColor * trailAlpha,
+                    trailColor * trailAlpha,
                     drawRotation,
                     origin,
                     trailScale * 0.85f,
@@ -853,12 +998,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 );
             }
             
-            // 绘制主体（增加一点发光效果）
+            // 绘制主体
             Main.EntitySpriteDraw(
                 value,
                 drawPosition,
                 sourceRect,
-                lightColor * fishAlpha,
+                spiralColor * fishAlpha,
                 drawRotation,
                 origin,
                 fishScale,
@@ -869,17 +1014,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 额外的发光层（速度快时更明显，冲刺阶段更强）
             float glowThreshold = isDashing ? 15f : 12f;
             if (Projectile.velocity.Length() > glowThreshold) {
-                float glowAlpha = (Projectile.velocity.Length() - glowThreshold) / 10f * 0.4f * fishAlpha;
-                if (isDashing) glowAlpha *= 1.5f; // 冲刺阶段发光更强
+                float glowAlpha = (Projectile.velocity.Length() - glowThreshold) / 10f * 0.5f * fishAlpha;
+                if (isDashing) {
+                    glowAlpha *= 1.8f; // 冲刺阶段发光更强
+                    
+                    // 螺旋发光效果：根据在螺旋中的位置产生不同强度的发光
+                    int spiralArm = FishID % 5;
+                    float glowPulse = (float)Math.Sin(lifeTimer * 0.2f + spiralArm * MathHelper.TwoPi / 5f);
+                    glowAlpha *= 1f + glowPulse * 0.3f;
+                }
+                
+                Color glowColor = isDashing ? Color.Lerp(Color.White, Color.Cyan, 0.4f) : Color.White;
                 
                 Main.EntitySpriteDraw(
                     value,
                     drawPosition,
                     sourceRect,
-                    Color.White * glowAlpha,
+                    glowColor * glowAlpha,
                     drawRotation,
                     origin,
-                    fishScale * 1.15f,
+                    fishScale * 1.2f,
+                    effects,
+                    0
+                );
+            }
+            
+            // 超高速螺旋涡流特效（仅在冲刺阶段且速度极快时）
+            if (isDashing && Projectile.velocity.Length() > 30f) {
+                int spiralArm = FishID % 5;
+                float vortexAlpha = fishAlpha * 0.2f;
+                
+                Main.EntitySpriteDraw(
+                    value,
+                    drawPosition,
+                    sourceRect,
+                    Color.Cyan * vortexAlpha,
+                    drawRotation,
+                    origin,
+                    fishScale * 1.4f,
                     effects,
                     0
                 );
