@@ -144,6 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
+            SkillID = Sparkling.ID;
             if (SkillID == FishSwarm.ID) {
                 HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -183,7 +184,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     FishSwarm.AltUse(item, player);
                     return false;
                 }
-                
             }
             return null;
         }
