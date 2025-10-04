@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override bool PreDraw(ref Color lightColor) {
             //因为没有纹理，我们自己绘制一个发光的孢子效果
-            Texture2D flareTexture = TextureAssets.Extra[98].Value;//使用一个游戏内的光斑素材
+            Texture2D flareTexture = TextureAssets.Extra[ExtrasID.SharpTears].Value;//使用一个游戏内的光斑素材
             Vector2 origin = flareTexture.Size() / 2;
             float scale = Projectile.scale * 0.5f;
 

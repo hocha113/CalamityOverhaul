@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwner() {
             if (onFireR) {
                 for (int i = 0; i < 2; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos + Main.rand.NextVector2Circular(20f, 20f), 267);
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos + Main.rand.NextVector2Circular(20f, 20f), DustID.RainbowMk2);
                     chargeMagic.velocity = (ShootPos - chargeMagic.position) * 0.1f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Projectile.GetAlpha(Color.White);
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundStyle sound = new("CalamityMod/Sounds/Custom/AbilitySounds/BrimflameRecharge");
                 SoundEngine.PlaySound(sound with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) });
                 for (int i = 0; i < 36; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, 267);
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, DustID.RainbowMk2);
                     chargeMagic.velocity = (MathHelper.TwoPi * i / 36f).ToRotationVector2() * 5f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Color.Violet;
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 start = angle.ToRotationVector2();
                     Vector2 end = nextAngle.ToRotationVector2();
                     for (int j = 0; j < 40; j++) {
-                        Dust starDust = Dust.NewDustPerfect(ShootPos, 267);
+                        Dust starDust = Dust.NewDustPerfect(ShootPos, DustID.RainbowMk2);
                         starDust.scale = 2.5f;
                         starDust.velocity = Vector2.Lerp(start, end, j / 40f) * 16f;
                         starDust.color = Color.Crimson;
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (!canFireR) {
                 for (int i = 0; i < 36; i++) {
-                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, 267);
+                    Dust chargeMagic = Dust.NewDustPerfect(ShootPos, DustID.RainbowMk2);
                     chargeMagic.velocity = (MathHelper.TwoPi * i / 36f).ToRotationVector2() * 5f + Owner.velocity;
                     chargeMagic.scale = Main.rand.NextFloat(1f, 1.5f);
                     chargeMagic.color = Color.Violet;

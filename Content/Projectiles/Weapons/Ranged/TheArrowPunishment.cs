@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 30; i++) {
-                Dust fire = Dust.NewDustPerfect(Projectile.Center, 130);
+                Dust fire = Dust.NewDustPerfect(Projectile.Center, DustID.Firework_Red);
                 fire.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY).RotatedByRandom(0.8f) * new Vector2(4f, 1.25f) * Main.rand.NextFloat(0.9f, 1f);
                 fire.velocity = fire.velocity.RotatedBy(Projectile.rotation - MathHelper.PiOver2);
                 fire.velocity += Projectile.velocity * 0.7f;

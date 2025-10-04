@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                             tile.HasTile = false;
                         }
                         tile.LiquidAmount = 0;
-                        tile.WallType = 0;
+                        tile.WallType = WallID.None;
                     }
                 }
             }

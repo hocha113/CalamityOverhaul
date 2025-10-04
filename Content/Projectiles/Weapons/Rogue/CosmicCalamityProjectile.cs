@@ -190,10 +190,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             for (int j = 0; j < 4; j++) {
                 Vector2 dustVel = new Vector2(6, 6).RotatedByRandom(100) * Main.rand.NextFloat(0.5f, 1.2f);
 
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 272, dustVel, 0, default, 1f);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, DustID.WitherLightning, dustVel, 0, default, 1f);
                 dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
 
-                Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 226, dustVel, 0, default, 1f);
+                Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, DustID.Electric, dustVel, 0, default, 1f);
                 dust2.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
             }
             if (Projectile.numHits > 6) {
@@ -206,10 +206,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             for (int j = 0; j < 14; j++) {
                 Vector2 dustVel = new Vector2(6, 6).RotatedByRandom(100) * Main.rand.NextFloat(0.5f, 1.2f);
 
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 272, dustVel, 0, default, 1f);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, DustID.WitherLightning, dustVel, 0, default, 1f);
                 dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
 
-                Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 226, dustVel, 0, default, 1f);
+                Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, DustID.Electric, dustVel, 0, default, 1f);
                 dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
             }
         }

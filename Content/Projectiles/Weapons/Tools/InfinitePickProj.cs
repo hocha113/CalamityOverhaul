@@ -8,6 +8,7 @@ using InnoVault.PRT;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
@@ -116,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
                     dropTypes.Add(wallValue);
                 }
-                tile.WallType = 0;
+                tile.WallType = WallID.None;
             }
         }
 

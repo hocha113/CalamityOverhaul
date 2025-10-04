@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             SoundEngine.PlaySound(SoundID.Item66, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
             for (int i = 0; i < 12; i++) {
-                Dust blood = Dust.NewDustPerfect(Projectile.Center, 5);
+                Dust blood = Dust.NewDustPerfect(Projectile.Center, DustID.Blood);
                 blood.velocity = Main.rand.NextVector2Circular(6f, 6f);
                 blood.scale *= Main.rand.NextFloat(0.7f, 1.3f);
                 blood.noGravity = true;

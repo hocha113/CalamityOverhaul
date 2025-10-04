@@ -38,10 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             if (!VaultUtils.isServer) {
                 Vector2 dustVel = Projectile.velocity * 0.1f;
                 for (int i = 0; i < 3; i++) {
-                    Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel, 265, dustVel, 0, default, 0.7f);
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel, DustID.LunarOre, dustVel, 0, default, 0.7f);
                     dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
                     dust.noGravity = true;
-                    Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 226, dustVel, 0, default, 0.5f);
+                    Dust dust2 = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, DustID.Electric, dustVel, 0, default, 0.5f);
                     dust2.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
                     dust2.noGravity = true;
                 }

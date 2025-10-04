@@ -74,10 +74,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             SoundStyle sound = new("CalamityMod/Sounds/Item/PhantomSpirit");
             SoundEngine.PlaySound(sound with { Volume = 0.65f, PitchVariance = 0.3f, Pitch = -0.5f }, target.Center);
             for (int i = 0; i <= 30; i++) {
-                Dust dust = Dust.NewDustPerfect(target.Center, 66, new Vector2(0, -18).RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(0.1f, 1.9f));
+                Dust dust = Dust.NewDustPerfect(target.Center, DustID.RainbowTorch, new Vector2(0, -18).RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(0.1f, 1.9f));
                 dust.noGravity = true;
                 dust.scale = Main.rand.NextFloat(0.7f, 1.6f);
-                Dust dust2 = Dust.NewDustPerfect(target.Center, 66, new Vector2(0, -7).RotatedByRandom(MathHelper.ToRadians(35f)) * Main.rand.NextFloat(0.1f, 1.9f));
+                Dust dust2 = Dust.NewDustPerfect(target.Center, DustID.RainbowTorch, new Vector2(0, -7).RotatedByRandom(MathHelper.ToRadians(35f)) * Main.rand.NextFloat(0.1f, 1.9f));
                 dust2.noGravity = true;
                 dust2.scale = Main.rand.NextFloat(0.7f, 1.6f);
             }
