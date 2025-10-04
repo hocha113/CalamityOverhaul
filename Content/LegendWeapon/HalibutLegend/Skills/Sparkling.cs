@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
     internal static class Sparkling
     {
-        public static int ID = 1;
+        public static int ID = 2;
 
         private static int _sparklingVolleyIdSeed = 0;
 

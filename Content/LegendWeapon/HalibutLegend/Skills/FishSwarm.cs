@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
     internal static class FishSwarm
     {
-        public static int ID = 0;
+        public static int ID = 1;
 
         public static void AltUse(Item item, Player player) {//额外的的独立封装，玩家右键使用时调用，用于触发技能
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
