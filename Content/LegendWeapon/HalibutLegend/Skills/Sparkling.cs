@@ -24,10 +24,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
             if (hp.SparklingVolleyActive) return;
             if (hp.SparklingVolleyCooldown > 0) return;
-            if (hp.SparklingUseCounter < 6) {
-                return; // 至少连续普通攻击6次后触发
-            }
-            hp.SparklingUseCounter = 0;
 
             hp.SparklingDeparturePhase = false;
             hp.SparklingDepartureTimer = 0;
@@ -111,11 +107,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     FireLaser(hp);
                     fired = true;
                     hp.SparklingNextFireIndex++;
-                    if (hp.SparklingNextFireIndex == hp.SparklingFishCount) {
-                        // 所有鱼已开火，进入离场延迟等待
-                        hp.SparklingDeparturePhase = true;
-                        hp.SparklingDepartureTimer = 0;
-                    }
+                }
+                if (hp.SparklingNextFireIndex == hp.SparklingFishCount
+                        && Owner.ownedProjectileCounts[ModContent.ProjectileType<SparklingRay>()] == 0) {
+                    // 所有鱼已开火，进入离场延迟等待
+                    hp.SparklingDeparturePhase = true;
+                    hp.SparklingDepartureTimer = 0;
                 }
             }
             else {
@@ -127,16 +124,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
                 else {
                     int flyTime = hp.SparklingDepartureTimer - Sparkling.DepartureDelay;
-                    float progress = flyTime / (float)Sparkling.DepartureDuration;
-                    progress = MathHelper.Clamp(progress, 0, 1);
-                    Vector2 outward = (Projectile.Center - Owner.Center).SafeNormalize(Vector2.UnitY);
-                    Projectile.Center += outward * (10f + 40f * progress);
-                    fadeOut = progress;
-                    if (progress >= 1f) {
+                    // 平滑加速 0-1
+                    float accelProgress = MathHelper.Clamp(flyTime / (float)Sparkling.DepartureDuration, 0f, 1f);
+                    accelProgress = MathF.Pow(accelProgress, 0.65f);
+
+                    // 计算目标离开距离：使用屏幕对角尺寸放大，确保真正飞出屏幕再消失
+                    float diag = MathF.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight);
+                    float exitDistance = diag * 1.4f; // 1.4 倍对角线
+
+                    // 计算外向方向（保持原相对朝向），若与玩家重合则使用玩家朝向
+                    Vector2 outward = (Projectile.Center - Owner.Center);
+                    if (outward.LengthSquared() < 4f)
+                        outward = (Projectile.Center - Main.MouseWorld);
+                    outward = outward.SafeNormalize(Vector2.UnitY);
+
+                    // 当前帧速度（前期更慢，后期加速），再叠加一点随机脉动
+                    float baseSpeed = MathHelper.Lerp(6f, 32f, accelProgress);
+                    baseSpeed *= 1f + 0.15f * (float)Math.Sin(flyTime * 0.18f + FishIndex);
+
+                    Vector2 move = outward * baseSpeed;
+                    Projectile.Center += move;
+
+                    // 使用 localAI[0] 记录累计位移
+                    Projectile.localAI[0] += move.Length();
+
+                    // 基于行进距离淡出（后半段才开始明显淡出）
+                    float distProgress = MathHelper.Clamp(Projectile.localAI[0] / exitDistance, 0f, 1f);
+                    fadeOut = MathHelper.Clamp((distProgress - 0.55f) / 0.45f, 0f, 1f); // 55% 距离后开始淡
+
+                    // 判定是否离开屏幕区域（加 margin 做缓冲）
+                    Rectangle safeBounds = new((int)Main.screenPosition.X - 180, (int)Main.screenPosition.Y - 180,
+                        Main.screenWidth + 360, Main.screenHeight + 360);
+                    if (!safeBounds.Contains(Projectile.Center.ToPoint()) && (fadeOut > 0.6f || distProgress >= 0.98f)) {
                         Projectile.Kill();
                     }
                 }
             }
+            Projectile.spriteDirection = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
         }
 
         private void FireLaser(HalibutPlayer hp) {
@@ -165,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = value.Frame();
             Vector2 origin = sourceRect.Size() / 2f;
-            float drawRotation = Projectile.rotation + (Projectile.spriteDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+            float drawRotation = Projectile.rotation + MathHelper.PiOver4;
             float pulseScale = 1f + glowPulse * 0.15f;
             float opacity = 1f - fadeOut;
             Color baseCol = Color.Lerp(Color.DeepSkyBlue, Color.HotPink, 0.4f + 0.3f * glowPulse);
