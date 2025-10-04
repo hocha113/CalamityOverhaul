@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     // 技能结束
                     FishSwarmActive = false;
                     FishSwarmTimer = 0;
-                    FishSwarmCooldown = FishSwarmMaxCooldown;
+                    FishSwarmCooldown = 60;
                 }
             }
             
@@ -213,6 +213,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
+            item.UseSound = SoundID.Item38;
+            if (player.altFunctionUse == 2) {
+                item.UseSound = null;
+            }
             return true;
         }
 
@@ -223,7 +227,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool? UseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
                 AltUse(item, player);
-                return true;
+                return false;
             }
             return null;
         }
@@ -236,14 +240,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return null;
         }
 
-        public void AltUse(Item item, Player player) {//额外的的独立封装，玩家右键使用时调用，用于触发技能
+        public static void AltUse(Item item, Player player) {//额外的的独立封装，玩家右键使用时调用，用于触发技能
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             
             // 检查技能是否在冷却中
-            if (halibutPlayer.FishSwarmCooldown > 0) {
-                //return;
+            if (halibutPlayer.FishSwarmCooldown > 0 || halibutPlayer.FishSwarmActive) {
+                return;
             }
-            
+
             // 激活技能
             halibutPlayer.FishSwarmActive = true;
             halibutPlayer.FishSwarmTimer = 0;
@@ -251,30 +255,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 计算冲刺方向（朝向光标）
             Vector2 dashDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
             
-            // 冲刺加速
-            float dashSpeed = 25f;
-            player.velocity = dashDirection * dashSpeed;
+            // 生成控制器弹幕（管理玩家移动和技能状态）
+            int controller = Projectile.NewProjectile(
+                player.GetSource_ItemUse(item),
+                player.Center,
+                dashDirection, // 存储初始冲刺方向
+                ModContent.ProjectileType<FishSwarmController>(),
+                0,
+                0f,
+                player.whoAmI
+            );
             
-            // 生成鱼群（15-20条鱼）
-            int fishCount = Main.rand.Next(15, 21);
+            // 生成鱼群130-140条鱼，增加数量以提高视觉效果）
+            int fishCount = Main.rand.Next(130, 141);
             for (int i = 0; i < fishCount; i++) {
                 // 在玩家周围随机位置生成鱼
-                float angle = MathHelper.TwoPi * i / fishCount + Main.rand.NextFloat(-0.3f, 0.3f);
-                float distance = Main.rand.NextFloat(40f, 100f);
+                float angle = MathHelper.TwoPi * i / fishCount + Main.rand.NextFloat(-0.5f, 0.5f);
+                float distance = Main.rand.NextFloat(30f, 120f);
                 Vector2 spawnOffset = new Vector2(
                     (float)Math.Cos(angle) * distance,
                     (float)Math.Sin(angle) * distance
                 );
                 
                 Vector2 spawnPos = player.Center + spawnOffset;
-                Vector2 initialVelocity = dashDirection * Main.rand.NextFloat(8f, 15f);
+                Vector2 initialVelocity = dashDirection * Main.rand.NextFloat(10f, 20f);
                 
                 int proj = Projectile.NewProjectile(
                     player.GetSource_ItemUse(item),
                     spawnPos,
                     initialVelocity,
                     ModContent.ProjectileType<FishingFly>(),
-                    0, // 不造成伤害
+                    0,
                     0f,
                     player.whoAmI,
                     ai0: i // 用于区分不同的鱼
@@ -284,9 +295,139 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     fish.OwnerPlayer = player;
                 }
             }
-            
+
             // 播放音效
             SoundEngine.PlaySound(SoundID.Splash, player.Center);
+            SoundEngine.PlaySound(SoundID.Item71, player.Center); //冲刺音效
+        }
+    }
+
+    /// <summary>
+    /// 鱼群控制器 - 管理玩家移动和技能状态
+    /// </summary>
+    internal class FishSwarmController : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        
+        private Player Owner => Main.player[Projectile.owner];
+        
+        /// <summary>
+        /// 初始冲刺方向
+        /// </summary>
+        private Vector2 DashDirection => Projectile.velocity;
+        
+        /// <summary>
+        /// 冲刺阶段计时器
+        /// </summary>
+        private ref float DashTimer => ref Projectile.ai[0];
+        
+        /// <summary>
+        /// 冲刺持续时间（帧数）
+        /// </summary>
+        private const int DashDuration = 20;
+        
+        /// <summary>
+        /// 冲刺速度
+        /// </summary>
+        private const float DashSpeed = 60f;
+        
+        /// <summary>
+        /// 正常移动速度
+        /// </summary>
+        private const float NormalSpeed = 14f;
+
+        public override void SetDefaults() {
+            Projectile.width = 10;
+            Projectile.height = 10;
+            Projectile.friendly = false;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = HalibutPlayer.FishSwarmDuration;
+            Projectile.alpha = 255; // 完全透明
+        }
+
+        public override void AI() {
+            if (!Owner.active || Owner.dead) {
+                Projectile.Kill();
+                return;
+            }
+            
+            HalibutPlayer halibutPlayer = Owner.GetOverride<HalibutPlayer>();
+            
+            // 检查技能是否结束
+            if (!halibutPlayer.FishSwarmActive) {
+                Projectile.Kill();
+                return;
+            }
+            
+            // 弹幕位置跟随玩家
+            Projectile.Center = Owner.Center;
+
+            Owner.noFallDmg = true;//别冲一下给自己摔死了
+
+            DashTimer++;
+            
+            // === 冲刺阶段 ===
+            if (DashTimer <= DashDuration) {
+                // 冲刺阶段：强力加速
+                float dashProgress = DashTimer / DashDuration;
+                
+                // 使用缓动函数实现更有冲击力的加速
+                float speedMultiplier = 1f - (float)Math.Pow(dashProgress, 2); // 平方衰减
+                float currentDashSpeed = DashSpeed * speedMultiplier;
+                
+                // 在冲刺阶段允许轻微调整方向
+                Vector2 toMouse = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
+                Vector2 adjustedDirection = Vector2.Lerp(DashDirection, toMouse, 0.05f).SafeNormalize(Vector2.Zero);
+                
+                Owner.velocity = adjustedDirection * (currentDashSpeed + NormalSpeed * dashProgress);
+                
+                // 冲刺特效
+                if (Main.rand.NextBool(2)) {
+                    Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(120f, 120f);
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water, 
+                        -Owner.velocity * 0.3f, Scale: Main.rand.NextFloat(1f, 1.5f));
+                    dust.noGravity = true;
+                }
+            }
+            // === 持续移动阶段 ===
+            else {
+                // 计算目标速度（朝向光标）
+                Vector2 targetDirection = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
+                Vector2 targetVelocity = targetDirection * NormalSpeed;
+                
+                // 使用更快的插值速度，让移动更灵敏
+                float lerpSpeed = 0.15f;
+                
+                // 增加一些周期性的速度波动，模拟鱼群游动的节奏感
+                float rhythmBoost = 1f + (float)Math.Sin(DashTimer * 0.15f) * 0.2f;
+                targetVelocity *= rhythmBoost;
+                
+                Owner.velocity = Vector2.Lerp(Owner.velocity, targetVelocity, lerpSpeed);
+                Owner.direction = Math.Sign(Owner.velocity.X);
+                
+                // 持续移动的水花特效（频率较低）
+                if (Main.rand.NextBool(5)) {
+                    Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(15f, 15f);
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water, 
+                        -Owner.velocity * 0.2f, Scale: Main.rand.NextFloat(0.8f, 1.2f));
+                    dust.noGravity = true;
+                    dust.alpha = 100;
+                }
+            }
+            
+            // 防止玩家受到其他速度影响
+            Owner.maxFallSpeed = 100f;
+            Owner.gravity = 0f;
+        }
+
+        public override void OnKill(int timeLeft) {
+            // 技能结束时恢复玩家重力
+            if (Owner != null && Owner.active) {
+                Owner.gravity = Player.defaultGravity;
+            }
         }
     }
 
@@ -348,9 +489,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 鱼的旋转角度
         /// </summary>
         private float fishRotation = 0f;
+        
+        /// <summary>
+        /// 个体的随机行为偏好（用于增加多样性）
+        /// </summary>
+        private float behaviorRandomness = 1f;
+        
+        /// <summary>
+        /// 跃动周期偏移
+        /// </summary>
+        private float jumpPhaseOffset = 0f;
+        
+        /// <summary>
+        /// 生命计时器（用于判断冲刺阶段）
+        /// </summary>
+        private int lifeTimer = 0;
+        
+        /// <summary>
+        /// 冲刺阶段持续时间（与控制器同步）
+        /// </summary>
+        private const int DashPhase = 20;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8; // 冲刺时需要更长的拖尾
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -384,89 +545,214 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
             else {
-                // 淡入效果
+                // 淡入效果（冲刺阶段快速淡入）
                 if (fishAlpha < 1f) {
-                    fishAlpha += 0.1f;
+                    float fadeSpeed = lifeTimer < DashPhase ? 0.25f : 0.15f; // 冲刺阶段更快淡入
+                    fishAlpha += fadeSpeed;
+                    if (fishAlpha > 1f) fishAlpha = 1f;
                 }
             }
             
-            // 初始化鱼的缩放（只在第一帧）
-            if (Projectile.timeLeft == HalibutPlayer.FishSwarmDuration + 60) {
-                fishScale = Main.rand.NextFloat(0.7f, 1.2f);
+            // 初始化鱼的参数（只在第一帧）
+            if (lifeTimer == 0) {
+                fishScale = Main.rand.NextFloat(0.6f, 1.3f);
+                behaviorRandomness = Main.rand.NextFloat(0.8f, 1.3f);
+                jumpPhaseOffset = Main.rand.NextFloat(0f, MathHelper.TwoPi);
             }
             
-            // 玩家跟随技能时的移动
-            if (halibutPlayer.FishSwarmActive) {
-                Vector2 targetVelocity = (Main.MouseWorld - OwnerPlayer.Center).SafeNormalize(Vector2.Zero) * 12f;
-                OwnerPlayer.velocity = Vector2.Lerp(OwnerPlayer.velocity, targetVelocity, 0.1f);
+            lifeTimer++;
+            
+            // 判断是否在冲刺阶段
+            bool isDashing = lifeTimer <= DashPhase;
+            
+            // === 冲刺阶段特殊行为 ===
+            if (isDashing) {
+                DashPhaseAI();
+            }
+            // === 正常阶段行为 ===
+            else {
+                NormalPhaseAI();
             }
             
+            // 更新朝向和旋转
+            if (Math.Abs(Projectile.velocity.X) > 0.5f) {
+                fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
+            }
+            
+            // 根据速度方向计算旋转角度（更灵敏的旋转）
+            if (Projectile.velocity.LengthSquared() > 0.1f) {
+                fishRotation = Projectile.velocity.ToRotation();
+            }
+            
+            // 模拟游动的波动效果（冲刺阶段减弱波动）
+            float swimWaveIntensity = isDashing ? 0.1f : 0.25f;
+            float swimWave = (float)Math.Sin(Main.GameUpdateCount * 0.15f + FishID) * swimWaveIntensity;
+            Projectile.rotation = fishRotation + swimWave;
+            
+            // 生成水花特效（冲刺阶段更频繁）
+            int dustChance = isDashing ? 10 : 30;
+            if (Main.rand.NextBool(dustChance) && fishAlpha > 0.5f) {
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Water, 
+                    Projectile.velocity * 0.3f, Scale: Main.rand.NextFloat(0.5f, 1f));
+                dust.noGravity = true;
+                dust.alpha = 150;
+            }
+        }
+        
+        /// <summary>
+        /// 冲刺阶段AI - 快速聚拯并紧跟玩家
+        /// </summary>
+        private void DashPhaseAI() {
+            Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
+            float distanceToPlayer = toPlayer.Length();
+            
+            // 冲刺阶段的目标位置：在玩家周围形成紧密的簇拥圈
+            // 使用极坐标计算理想位置，让鱼群形成环绕效果
+            float targetAngle = MathHelper.TwoPi * FishID / 140f; // 140是大致的鱼群总数
+            float targetDistance = 40f + (FishID % 3) * 25f; // 三层环形：40, 65, 90
+            
+            Vector2 idealOffset = new Vector2(
+                (float)Math.Cos(targetAngle) * targetDistance,
+                (float)Math.Sin(targetAngle) * targetDistance
+            );
+            
+            // 考虑玩家速度，预判位置
+            Vector2 playerVelocityPredict = OwnerPlayer.velocity * 0.5f;
+            Vector2 targetPosition = OwnerPlayer.Center + idealOffset + playerVelocityPredict;
+            
+            Vector2 toTarget = targetPosition - Projectile.Center;
+            float distanceToTarget = toTarget.Length();
+            
+            // 强力吸引向目标位置
+            Vector2 totalForce = Vector2.Zero;
+            
+            // 1. 主要力：冲向目标位置（非常强的吸引力）
+            if (distanceToTarget > 10f) {
+                float urgency = MathHelper.Clamp(distanceToTarget / 100f, 0.5f, 2f);
+                totalForce += toTarget.SafeNormalize(Vector2.Zero) * 8f * urgency;
+            }
+            
+            // 2. 匹配玩家速度（让鱼群与玩家同步移动）
+            Vector2 velocityDiff = OwnerPlayer.velocity - Projectile.velocity;
+            totalForce += velocityDiff * 0.8f;
+            
+            // 3. 轻微的分离力（避免鱼重叠，但权重很低）
+            CalculateFlockingBehavior();
+            totalForce += separationForce * 0.8f;
+            
+            // 4. 朝向玩家前进方向的推力
+            if (OwnerPlayer.velocity.LengthSquared() > 1f) {
+                Vector2 playerDirection = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
+                totalForce += playerDirection * 3f;
+            }
+            
+            // 应用力，冲刺阶段使用更大的加速度
+            Projectile.velocity += totalForce * 0.35f;
+            
+            // 冲刺阶段的速度限制更高
+            float dashMaxSpeed = 35f * behaviorRandomness; // 比正常阶段快得多
+            float dashMinSpeed = 15f; // 保持高速移动
+            
+            float currentSpeed = Projectile.velocity.Length();
+            if (currentSpeed > dashMaxSpeed) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * dashMaxSpeed;
+            }
+            else if (currentSpeed < dashMinSpeed && currentSpeed > 0.1f) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * dashMinSpeed;
+            }
+            
+            // 额外：直接调整位置，确保鱼群紧跟（混合物理和强制定位）
+            // 这在冲刺阶段很重要，确保视觉效果
+            if (distanceToTarget > 150f) {
+                // 如果太远，直接拉近一些
+                Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.15f);
+            }
+        }
+        
+        /// <summary>
+        /// 正常阶段AI - 自然的鱼群行为
+        /// </summary>
+        private void NormalPhaseAI() {
             // === 鱼群算法实现 ===
             CalculateFlockingBehavior();
             
             // 应用鱼群行为力
             Vector2 totalForce = Vector2.Zero;
             
-            // 1. 跟随玩家的吸引力（最强）
+            // 1. 跟随玩家的吸引力
             Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
             float distanceToPlayer = toPlayer.Length();
             
-            if (distanceToPlayer > 150f) {
-                // 如果离玩家太远，强制拉回
-                totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 2.5f;
+            if (distanceToPlayer > 200f) {
+                // 如果离玩家很远，强力拉回
+                totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 3.5f;
             }
-            else if (distanceToPlayer > 50f) {
-                // 保持在合理范围内
-                totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 0.8f;
+            else if (distanceToPlayer > 100f) {
+                // 中等距离，保持跟随
+                totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 1.5f;
+            }
+            else if (distanceToPlayer < 30f) {
+                // 太近了，稍微远离
+                totalForce -= toPlayer.SafeNormalize(Vector2.Zero) * 0.5f;
+            }
+            else {
+                // 合适距离，轻微吸引
+                totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 0.5f;
             }
             
-            // 2. 鱼群行为力（权重调整）
-            totalForce += separationForce * 2.0f;  // 分离最重要，避免重叠
-            totalForce += alignmentForce * 0.8f;   // 对齐次之
-            totalForce += cohesionForce * 0.6f;    // 聚合最弱
+            // 2. 鱼群行为力（提高权重以增加活跃度）
+            totalForce += separationForce * 3.0f * behaviorRandomness;  // 分离力增强
+            totalForce += alignmentForce * 1.5f;                         // 对齐力增强
+            totalForce += cohesionForce * 1.2f;                          // 聚合力增强
             
-            // 3. 随机游动（增加自然感）
+            // 3. 随机游动（更频繁的方向改变）
             wanderTimer++;
-            if (wanderTimer > 30) {
+            if (wanderTimer > Main.rand.Next(15, 30)) { // 更频繁地改变方向
                 wanderTimer = 0;
                 randomWander = new Vector2(
-                    Main.rand.NextFloat(-1f, 1f),
-                    Main.rand.NextFloat(-1f, 1f)
-                );
+                    Main.rand.NextFloat(-1.5f, 1.5f),
+                    Main.rand.NextFloat(-1.5f, 1.5f)
+                ) * behaviorRandomness;
             }
-            totalForce += randomWander * 0.3f;
+            totalForce += randomWander * 0.6f;
             
-            // 4. 朝向光标的整体方向
-            if (halibutPlayer.FishSwarmActive) {
-                Vector2 toMouse = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
-                totalForce += toMouse * 0.5f;
+            // 4. 朝向光标的整体方向（更强的引导力）
+            Vector2 toMouse = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
+            totalForce += toMouse * 1.0f;
+            
+            // 5. 跃动效果（周期性的上下波动）
+            float jumpTime = (Main.GameUpdateCount + jumpPhaseOffset) * 0.08f;
+            float jumpStrength = (float)Math.Sin(jumpTime) * 0.8f * behaviorRandomness;
+            Vector2 jumpForce = new Vector2(0, jumpStrength);
+            
+            // 在跃动的高峰期增加额外的横向速度
+            if (Math.Abs(Math.Sin(jumpTime)) > 0.7f) {
+                float horizontalBoost = (float)Math.Cos(jumpTime * 2f) * 0.5f;
+                jumpForce.X = horizontalBoost * behaviorRandomness;
             }
             
-            // 应用力并限制速度
-            Projectile.velocity += totalForce * 0.15f;
+            totalForce += jumpForce;
             
-            float maxSpeed = 15f;
-            if (Projectile.velocity.Length() > maxSpeed) {
+            // 应用力并限制速度（提高最大速度以增加动感）
+            Projectile.velocity += totalForce * 0.2f; // 提高力的应用系数
+            
+            // 正常阶段跟随玩家的部分速度（保持相对位置）
+            Projectile.position += OwnerPlayer.velocity * 0.3f;
+            
+            float maxSpeed = 18f * behaviorRandomness; // 提高最大速度
+            float minSpeed = 3f; // 设置最小速度，防止鱼停滞
+            
+            float currentSpeed = Projectile.velocity.Length();
+            if (currentSpeed > maxSpeed) {
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
             }
-            
-            // 更新朝向和旋转
-            if (Projectile.velocity.X != 0) {
-                fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
+            else if (currentSpeed < minSpeed && currentSpeed > 0.1f) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * minSpeed;
             }
-            
-            // 根据速度方向计算旋转角度
-            if (Projectile.velocity.LengthSquared() > 0.1f) {
-                float targetRotation = Projectile.velocity.ToRotation();
-                fishRotation = MathHelper.Lerp(fishRotation, targetRotation, 0.2f);
-            }
-            
-            // 模拟游动的波动效果
-            Projectile.rotation = fishRotation + (float)Math.Sin(Main.GameUpdateCount * 0.1f + FishID) * 0.15f;
         }
         
         /// <summary>
-        /// 计算鱼群算法的三个基本力
+        /// 计算鱼群算法的三个基本力（增强版）
         /// </summary>
         private void CalculateFlockingBehavior() {
             separationForce = Vector2.Zero;
@@ -477,8 +763,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Vector2 avgVelocity = Vector2.Zero;
             int neighborCount = 0;
             
-            float perceptionRadius = 120f; // 感知半径
-            float separationRadius = 60f;  // 分离半径
+            float perceptionRadius = 150f; // 增加感知半径
+            float separationRadius = 70f;  // 增加分离半径
             
             // 遍历所有同类弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -499,12 +785,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     
                     neighborCount++;
                     
-                    // 分离：避免过近
+                    // 分离：避免过近（增强分离力）
                     if (distance < separationRadius && distance > 0) {
                         Vector2 away = Projectile.Center - other.Center;
                         away = away.SafeNormalize(Vector2.Zero);
-                        // 距离越近，分离力越强
-                        away /= distance;
+                        // 使用平方反比，距离越近，分离力指数增长
+                        float separationStrength = 1f / (distance * distance * 0.01f);
+                        away *= separationStrength;
                         separationForce += away;
                     }
                 }
@@ -518,12 +805,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 // 计算对齐力：匹配群体速度
                 avgVelocity /= neighborCount;
                 alignmentForce = (avgVelocity - Projectile.velocity).SafeNormalize(Vector2.Zero);
+                
+                // 如果邻居太多，增加分离力
+                if (neighborCount > 5) {
+                    separationForce *= 1.5f;
+                }
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadItem(ItemID.Fish);//加载关于鱼的纹理
-            Texture2D value = TextureAssets.Item[ItemID.Fish].Value;//获取鱼的纹理
+            Main.instance.LoadItem(ItemID.SpecularFish);//加载关于鱼的纹理
+            Texture2D value = TextureAssets.Item[ItemID.SpecularFish].Value;//获取鱼的纹理
             
             // 计算绘制参数
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
@@ -534,12 +826,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 根据朝向决定翻转
             SpriteEffects effects = fishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             
-            // 绘制半透明拖尾
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+            // 判断是否在冲刺阶段（用于增强拖尾效果）
+            bool isDashing = lifeTimer <= DashPhase;
+            int trailLength = isDashing ? Projectile.oldPos.Length : (Projectile.oldPos.Length * 2 / 3);
+            
+            // 绘制更明显的拖尾
+            for (int i = 0; i < trailLength; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
                 
-                float trailAlpha = fishAlpha * (1f - i / (float)Projectile.oldPos.Length) * 0.4f;
+                // 冲刺阶段拖尾更明显
+                float baseTrailAlpha = isDashing ? 0.75f : 0.6f;
+                float trailAlpha = fishAlpha * (1f - i / (float)Projectile.oldPos.Length) * baseTrailAlpha;
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float trailScale = fishScale * (1f - i / (float)Projectile.oldPos.Length * 0.3f);
                 
                 Main.EntitySpriteDraw(
                     value,
@@ -548,13 +847,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     lightColor * trailAlpha,
                     drawRotation,
                     origin,
-                    fishScale * 0.8f,
+                    trailScale * 0.85f,
                     effects,
                     0
                 );
             }
             
-            // 绘制主体
+            // 绘制主体（增加一点发光效果）
             Main.EntitySpriteDraw(
                 value,
                 drawPosition,
@@ -566,6 +865,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 effects,
                 0
             );
+            
+            // 额外的发光层（速度快时更明显，冲刺阶段更强）
+            float glowThreshold = isDashing ? 15f : 12f;
+            if (Projectile.velocity.Length() > glowThreshold) {
+                float glowAlpha = (Projectile.velocity.Length() - glowThreshold) / 10f * 0.4f * fishAlpha;
+                if (isDashing) glowAlpha *= 1.5f; // 冲刺阶段发光更强
+                
+                Main.EntitySpriteDraw(
+                    value,
+                    drawPosition,
+                    sourceRect,
+                    Color.White * glowAlpha,
+                    drawRotation,
+                    origin,
+                    fishScale * 1.15f,
+                    effects,
+                    0
+                );
+            }
             
             return false;
         }

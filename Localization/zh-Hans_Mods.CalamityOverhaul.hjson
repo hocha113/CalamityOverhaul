@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1520,6 +1520,7 @@ Projectiles: {
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
 	// FishingFly.DisplayName: Fishing Fly
+	// FishSwarmController.DisplayName: Fish Swarm Controller
 }
 
 Configs: {

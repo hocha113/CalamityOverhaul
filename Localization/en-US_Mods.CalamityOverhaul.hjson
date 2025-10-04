@@ -1538,6 +1538,7 @@ Projectiles: {
 	SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 	SporeBoboRogue.DisplayName: Spore Bobo Rogue
 	FishingFly.DisplayName: Fishing Fly
+	FishSwarmController.DisplayName: Fish Swarm Controller
 }
 
 Configs: {
