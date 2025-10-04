@@ -1519,6 +1519,7 @@ Projectiles: {
 	// SporeBurst.DisplayName: Spore Burst
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
+	// FishingFly.DisplayName: Fishing Fly
 }
 
 Configs: {
@@ -2168,14 +2169,11 @@ Legend: {
 # So if you need to migrate your language pack to the new version, simply copy and paste the entries here and update the class names accordingly.
 
 RemakeItems: {
-	HalibutCannonOverride: {
+	HalibutOverride: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
 			'''
-			将火枪子弹转化为海洋弹
-			"瞧瞧这只鱼，端着单片眼镜，头上戴着一顶高礼帽。你信不信它上过大学？"
-			"事实如此，先生，我可是海洋学与深渊植物学科的博士，曾在硫磺海大学钓鱼比赛中称霸两届。
-			这里的比目鱼，不但懂得海底奥秘，还能拿下海洋界的桂冠。"大比目鱼如是说道
+			将火枪弹转化为源源不断的海弹流
 			legend_Text
 			[Lang4]
 			[Text]

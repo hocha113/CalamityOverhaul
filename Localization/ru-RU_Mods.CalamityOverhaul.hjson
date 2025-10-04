@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: ед. неиссекаемого урона
 Tools.RecipesLoseText: Вы не можете создать этот предмет просто так
 
 Items: {
@@ -1546,6 +1546,7 @@ Projectiles: {
 	// SporeBurst.DisplayName: Spore Burst
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
+	// FishingFly.DisplayName: Fishing Fly
 }
 
 Configs: {

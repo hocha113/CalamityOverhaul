@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -1539,6 +1539,7 @@ Projectiles: {
 	// SporeBurst.DisplayName: Spore Burst
 	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
 	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
+	// FishingFly.DisplayName: Fishing Fly
 }
 
 Configs: {
