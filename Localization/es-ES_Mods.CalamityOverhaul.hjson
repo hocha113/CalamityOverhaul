@@ -1541,6 +1541,10 @@ Projectiles: {
 	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
 	// FishingFly.DisplayName: Fishing Fly
 	// FishSwarmController.DisplayName: Fish Swarm Controller
+	// SparklingFashion.DisplayName: Sparkling Fashion
+	// SparklingFishHolder.DisplayName: Sparkling Fish Holder
+	// SparklingRay.DisplayName: Sparkling Ray
+	// SparklingRayFriendly.DisplayName: Sparkling Ray Friendly
 }
 
 Configs: {
