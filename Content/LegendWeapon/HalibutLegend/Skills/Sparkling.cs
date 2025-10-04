@@ -20,10 +20,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         internal const float RoingArc = 160f;
         internal const int DepartureDelay = 90;//全部发射后延迟进入离场
         internal const int DepartureDuration = 90;//离场动画时长
+        internal static int shootDir;
 
         internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
             if (hp.SparklingVolleyActive) return;
             if (hp.SparklingVolleyCooldown > 0) return;
+
+            shootDir = player.direction;
 
             hp.SparklingDeparturePhase = false;
             hp.SparklingDepartureTimer = 0;
@@ -60,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero
                     , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, Main.projectile[proj].identity, hp.SparklingVolleyId);
             }
-            SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.4f }, player.Center); // 预热音
+            SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.4f }, player.Center); //预热音
         }
     }
 
@@ -141,8 +144,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             if (Index.TryGetProjectile(out var fash)) {
                 Projectile.Center = fash.Center + fash.rotation.ToRotationVector2() * 32;
+                if (fash.ai[2] == 0 && Projectile.timeLeft < LifeTime / 2) {
+                    Projectile.timeLeft = LifeTime / 2;
+                }
             }
-            else if (Index.TryGetPlayer(out var owner)){
+            else if (Projectile.owner.TryGetPlayer(out var owner)){
                 Projectile.Center = owner.Center;
             }
         }
@@ -204,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 float radius = 190f;
                 float t = (hp.SparklingFishCount <= 1) ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
-                Vector2 offsetDir = behind.RotatedBy(angOff);
+                Vector2 offsetDir = behind.RotatedBy(angOff * Sparkling.shootDir * -1);
                 Vector2 basePos = Owner.Center + offsetDir * radius;
                 float bob = (float)Math.Sin(Main.GameUpdateCount * 0.08f + FishIndex) * 6f;
                 Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
@@ -216,6 +222,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (!fired && hp.SparklingVolleyTimer >= startFireTime) {
                     FireLaser();
                     fired = true;
+                    Projectile.ai[2] = 1f;
+                    Projectile.netUpdate = true;
                     hp.SparklingNextFireIndex++;
                 }
                 if (hp.SparklingNextFireIndex == hp.SparklingFishCount
@@ -340,6 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (Projectile.ai[0].TryGetProjectile(out var projectile)) {
                 Projectile.Center = projectile.Center;
+                Projectile.rotation = projectile.rotation;
             }
             float fishIndex = Projectile.localAI[1];
             float hueOffset = (fishIndex % 7) / 7f; // 简单的层次调色

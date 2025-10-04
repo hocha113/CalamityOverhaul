@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            SkillID = Sparkling.ID;
+            SkillID = FishSwarm.ID;
             if (SkillID == FishSwarm.ID) {
                 HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Sparkling.TryTriggerSparklingVolley(item, player, hp);
             }
 
-            int bulletAmt = Main.rand.Next(25, 36);
+            int bulletAmt = Main.rand.Next(5, 9);
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;

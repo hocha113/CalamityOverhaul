@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 player.whoAmI
             );
 
-            // 生成鱼群130-140条鱼，增加数量以提高视觉效果())
+            // 生成鱼群130-140条鱼，增加数量以提高视觉效果
             int fishCount = Main.rand.Next(130, 141);
             for (int i = 0; i < fishCount; i++) {
                 // 在玩家周围随机位置生成鱼
@@ -82,10 +82,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 标记突袭激活
             halibutPlayer.FishConeSurgeActive = true;
-
-            // 提前结束移形换影
-            halibutPlayer.FishSwarmActive = false;
-            halibutPlayer.FishSwarmTimer = 0;
 
             // 设置攻击后摇
             halibutPlayer.AttackRecoveryTimer = HalibutPlayer.AttackRecoveryDuration;
@@ -295,6 +291,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
             }
+            Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
+            Owner.GetOverride<HalibutPlayer>().FishSwarmTimer = 0;
         }
     }
 
