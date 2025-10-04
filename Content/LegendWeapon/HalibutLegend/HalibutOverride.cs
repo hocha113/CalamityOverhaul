@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>闪光技能：武器普通攻击使用计数</summary>
         public int SparklingUseCounter { get; set; }
         /// <summary>闪光技能：基础冷却（帧）</summary>
-        public const int SparklingBaseCooldown = 360; // 6秒
+        public const int SparklingBaseCooldown = 120; // 2秒
         /// <summary>闪光技能：鱼数量</summary>
         public int SparklingFishCount { get; set; }
         /// <summary>闪光技能：下一条鱼开火索引</summary>
@@ -81,9 +81,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
-            // 闪光技能冷却与齐射推进
-            if (SparklingVolleyCooldown > 0) SparklingVolleyCooldown--;
+            if (Player.ownedProjectileCounts[ModContent.ProjectileType<SparklingFishHolder>()] == 0) {
+                if (SparklingVolleyCooldown > 0) {
+                    SparklingVolleyCooldown--;
+                }
+            }
+
             if (SparklingVolleyActive) {
+                if (SparklingVolleyTimer > 0 && Player.ownedProjectileCounts[ModContent.ProjectileType<SparklingFishHolder>()] == 0) {
+                    SparklingVolleyActive = false;
+                }
                 SparklingVolleyTimer++;
             }
 
@@ -257,6 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
+            SkillID = Sparkling.ID;
             if (SkillID == FishSwarm.ID) {
                 HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -284,7 +292,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
-            return true;
+            if (SkillID == FishSwarm.ID) {
+                return true;
+            }
+            return false;
         }
 
         public override bool? UseItem(Item item, Player player) {
@@ -309,43 +320,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (SkillID == Sparkling.ID) {
                 var hp = player.GetOverride<HalibutPlayer>();
                 hp.SparklingUseCounter++;
-                TryTriggerSparklingVolley(item, player, hp);
+                Sparkling.TryTriggerSparklingVolley(item, player, hp);
             }
 
-            return null;
-        }
-
-        private static int _sparklingVolleyIdSeed = 0;
-        private static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
-            if (hp.SparklingVolleyActive) return;
-            if (hp.SparklingVolleyCooldown > 0) return;
-            // 需求：周期性触发，可依据使用计数，也可随机微调
-            if (hp.SparklingUseCounter < 6) return; // 至少连续普通攻击6次后触发（可调）
-            hp.SparklingUseCounter = 0;
-
-            // 激活齐射
-            hp.SparklingVolleyActive = true;
-            hp.SparklingVolleyTimer = 0;
-            hp.SparklingFishCount = Main.rand.Next(6, 9); // 6~8条鱼
-            hp.SparklingNextFireIndex = 0;
-            hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
-            hp.SparklingVolleyCooldown = HalibutPlayer.SparklingBaseCooldown; // 设置基础冷却
-
-            Vector2 aimDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
-            Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
-            float arc = MathHelper.ToRadians(70f); // 扇形总角度
-            float radius = 90f;
-            for (int i = 0; i < hp.SparklingFishCount; i++) {
-                float t = (hp.SparklingFishCount == 1) ? 0.5f : i / (float)(hp.SparklingFishCount - 1);
-                float angOff = (t - 0.5f) * arc;
-                Vector2 offsetDir = behind.RotatedBy(angOff);
-                Vector2 spawnPos = player.Center + offsetDir * radius + new Vector2(0, (float)Math.Sin(Main.GameUpdateCount * 0.05f + i) * 6f);
-                int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero,
-                    ModContent.ProjectileType<SparklingFishHolder>(), 0, 0f, player.whoAmI,
-                    ai0: hp.SparklingVolleyId, ai1: i);
-                if (Main.projectile[proj].ModProjectile is SparklingFishHolder holder) holder.Owner = player;
+            int bulletAmt = Main.rand.Next(25, 36);
+            for (int index = 0; index < bulletAmt; ++index) {
+                float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
+                float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
+                int shot = Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
+                Main.projectile[shot].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
             }
-            SoundEngine.PlaySound(SoundID.Item92 with { Pitch = -0.4f }, player.Center); // 预热音
+
+            return false;
         }
     }
 }

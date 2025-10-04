@@ -116,7 +116,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             // 播放突袭音效
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.5f }, player.Center); // 更低沉的冲刺音
             SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, player.Center); // 俯冲音效
 
             // 玩家重新显现
