@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 int fireInterval = 14; // 两条鱼间隔
                 int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
                 if (!fired && hp.SparklingVolleyTimer >= startFireTime) {
-                    FireLaser(hp);
+                    FireLaser();
                     fired = true;
                     hp.SparklingNextFireIndex++;
                 }
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.spriteDirection = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
         }
 
-        private void FireLaser(HalibutPlayer hp) {
+        private void FireLaser() {
             SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 0.8f }, Projectile.Center);
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
             int beam = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 10f, dir * 0.1f,
