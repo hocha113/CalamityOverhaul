@@ -18,17 +18,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private static int _sparklingVolleyIdSeed = 0;
 
         internal const float RoingArc = 160f;
+        internal const int DepartureDelay = 90;//全部发射后延迟进入离场
+        internal const int DepartureDuration = 90;//离场动画时长
 
         internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
             if (hp.SparklingVolleyActive) return;
             if (hp.SparklingVolleyCooldown > 0) return;
-            //周期性触发，可依据使用计数，也可随机微调
             if (hp.SparklingUseCounter < 6) {
                 return; // 至少连续普通攻击6次后触发
             }
             hp.SparklingUseCounter = 0;
 
-            // 激活齐射
+            hp.SparklingDeparturePhase = false;
+            hp.SparklingDepartureTimer = 0;
+
             hp.SparklingVolleyActive = true;
             hp.SparklingVolleyTimer = 0;
             hp.SparklingFishCount = 13; // 13条鱼
@@ -68,12 +71,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private ref float VolleyId => ref Projectile.ai[0]; // 齐射id
         private ref float FishIndex => ref Projectile.ai[1]; // 在该齐射中的序号
 
+        private float glowPulse;
+        private float fadeOut;
+
         public override void SetDefaults() {
             Projectile.width = 40; Projectile.height = 40;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 120; // 容错
+            Projectile.timeLeft = 600; // 容错
             Projectile.friendly = false;
             Projectile.hostile = false;
         }
@@ -81,47 +87,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (Owner == null || !Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
-            if (hp.SparklingVolleyId != (int)VolleyId) {
-                Projectile.Kill();
-                return;
-            }
-            // 动态重新定位到玩家后方弧线上（保持结构稳定）
-            Vector2 aimDir = Projectile.To(Main.MouseWorld).UnitVector();
-            Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
-            float arc = MathHelper.ToRadians(Sparkling.RoingArc);
-            float radius = 190f;
-            float t = (hp.SparklingFishCount <= 1) ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
-            float angOff = (t - 0.5f) * arc;
-            Vector2 offsetDir = behind.RotatedBy(angOff);
-            Vector2 basePos = Owner.Center + offsetDir * radius;
-            float bob = (float)Math.Sin(Main.GameUpdateCount * 0.08f + FishIndex) * 6f;
-            Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
-            Projectile.rotation = aimDir.ToRotation();
+            if (hp.SparklingVolleyId != (int)VolleyId) { Projectile.Kill(); return; }
 
-            // 逐条依次发射：依据玩家的SparklingVolleyTimer和索引
-            int fireInterval = 14; // 两条鱼间隔
-            int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
-            if (!fired && hp.SparklingVolleyTimer >= startFireTime) {
-                FireLaser(hp);
-                fired = true;
-            }
+            glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.25f + FishIndex) * 0.5f + 0.5f;
 
-            if (!fired) {
-                Projectile.timeLeft = 120;
-                if (++Projectile.localAI[1] > 220) {
-                    Projectile.Kill();
+            if (!hp.SparklingDeparturePhase) {
+                Vector2 aimDir = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
+                Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
+                float arc = MathHelper.ToRadians(Sparkling.RoingArc);
+                float radius = 190f;
+                float t = (hp.SparklingFishCount <= 1) ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
+                float angOff = (t - 0.5f) * arc;
+                Vector2 offsetDir = behind.RotatedBy(angOff);
+                Vector2 basePos = Owner.Center + offsetDir * radius;
+                float bob = (float)Math.Sin(Main.GameUpdateCount * 0.08f + FishIndex) * 6f;
+                Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
+                Projectile.rotation = Projectile.To(Main.MouseWorld).ToRotation();
+
+                // 逐条依次发射：依据玩家的SparklingVolleyTimer和索引
+                int fireInterval = 14; // 两条鱼间隔
+                int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
+                if (!fired && hp.SparklingVolleyTimer >= startFireTime) {
+                    FireLaser(hp);
+                    fired = true;
+                    hp.SparklingNextFireIndex++;
+                    if (hp.SparklingNextFireIndex == hp.SparklingFishCount) {
+                        // 所有鱼已开火，进入离场延迟等待
+                        hp.SparklingDeparturePhase = true;
+                        hp.SparklingDepartureTimer = 0;
+                    }
+                }
+            }
+            else {
+                // 离场阶段：先等待，再整体向屏幕外飞行并淡出
+                hp.SparklingDepartureTimer++;
+                if (hp.SparklingDepartureTimer < Sparkling.DepartureDelay) {
+                    // 原地轻微旋转漂浮
+                    Projectile.rotation += 0.02f * (FishIndex % 2 == 0 ? 1 : -1);
+                }
+                else {
+                    int flyTime = hp.SparklingDepartureTimer - Sparkling.DepartureDelay;
+                    float progress = flyTime / (float)Sparkling.DepartureDuration;
+                    progress = MathHelper.Clamp(progress, 0, 1);
+                    Vector2 outward = (Projectile.Center - Owner.Center).SafeNormalize(Vector2.UnitY);
+                    Projectile.Center += outward * (10f + 40f * progress);
+                    fadeOut = progress;
+                    if (progress >= 1f) {
+                        Projectile.Kill();
+                    }
                 }
             }
         }
 
         private void FireLaser(HalibutPlayer hp) {
-            SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.2f, Volume = 0.7f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 0.8f }, Projectile.Center);
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
             int beam = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 10f, dir * 0.1f,
                 ModContent.ProjectileType<SparklingRay>(), Projectile.damage, 1f, Projectile.owner, Projectile.identity);
             if (Main.projectile.IndexInRange(beam)) {
                 Main.projectile[beam].rotation = dir.ToRotation();
                 Main.projectile[beam].localAI[0] = 0;
+                Main.projectile[beam].localAI[1] = FishIndex; // 传递颜色层次
+            }
+            // 发射光尘
+            for (int i = 0; i < 12; i++) {
+                Vector2 v = dir.RotatedByRandom(0.35f) * Main.rand.NextFloat(4f, 9f);
+                var d = Dust.NewDustPerfect(Projectile.Center + dir * 16f, DustID.GemAmethyst, v, 150, default, Main.rand.NextFloat(1f, 1.4f));
+                d.noGravity = true;
+                d.color = Color.Lerp(Color.DeepSkyBlue, Color.HotPink, Main.rand.NextFloat());
             }
         }
 
@@ -130,14 +163,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 计算绘制参数
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Rectangle sourceRect = value.Frame(1, 1, 0, 0);
+            Rectangle sourceRect = value.Frame();
             Vector2 origin = sourceRect.Size() / 2f;
             float drawRotation = Projectile.rotation + (Projectile.spriteDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-
-            // 根据朝向决定翻转
-            SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-
-            Main.spriteBatch.Draw(value, drawPosition, sourceRect, Color.White, drawRotation, origin, Projectile.scale, effects, 0f);
+            float pulseScale = 1f + glowPulse * 0.15f;
+            float opacity = 1f - fadeOut;
+            Color baseCol = Color.Lerp(Color.DeepSkyBlue, Color.HotPink, 0.4f + 0.3f * glowPulse);
+            baseCol *= opacity;
+            Main.spriteBatch.Draw(value, drawPosition, sourceRect, baseCol * 0.6f, drawRotation, origin, pulseScale * 1.25f, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(value, drawPosition, sourceRect, Color.White * opacity, drawRotation, origin, pulseScale, SpriteEffects.None, 0f);
             return false;
         }
     }
@@ -153,6 +187,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private readonly Vector2[] top = new Vector2[70];
         private readonly Vector2[] bot = new Vector2[70];
         private Vector2 topEnd, botEnd;
+        private Color gradientStart = new(255, 170, 230);
+        private Color gradientMid = new(160, 200, 255);
+        private Color gradientEnd = new(90, 140, 255);
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 10;
             Projectile.timeLeft = 40;
@@ -164,37 +201,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float p = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * 2400, 120, ref p);
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * 2400, 120, ref p);
         }
         public override void AI() {
             if (Projectile.ai[0].TryGetProjectile(out var projectile)) {
                 Projectile.Center = projectile.Center;
             }
+            float fishIndex = Projectile.localAI[1];
+            float hueOffset = (fishIndex % 7) / 7f; // 简单的层次调色
+            gradientStart = Color.Lerp(new Color(255, 180, 240), new Color(240, 120, 210), hueOffset);
+            gradientMid = Color.Lerp(new Color(180, 210, 255), new Color(120, 170, 255), hueOffset);
+            gradientEnd = Color.Lerp(new Color(100, 160, 255), new Color(70, 110, 200), hueOffset);
 
             for (int i = 0; i < 70; i++) {
                 float x = i * 15f;
-                float y = 6f * (0.08f * Projectile.localAI[0]) * (float)Math.Pow(0.1f * x, 0.45);
+                float y = 8f * (0.08f * Projectile.localAI[0]) * (float)Math.Pow(0.1f * x, 0.45);
                 top[i] = new Vector2(x, y);
                 bot[i] = new Vector2(x, -y);
             }
             float endX = 300 * 15f;
-            float endY = 6f * (0.08f * Projectile.localAI[0]) * (float)Math.Pow(0.1f * 70 * 15, 0.45);
+            float endY = 8f * (0.08f * Projectile.localAI[0]) * (float)Math.Pow(0.1f * 70 * 15, 0.45);
             topEnd = new Vector2(endX, endY);
             botEnd = new Vector2(endX, -endY);
             if (Projectile.localAI[0] <= 5 && Projectile.timeLeft > 10)
-                Projectile.localAI[0] += 24f;
-            if (Projectile.timeLeft <= 20 && Projectile.localAI[0] > 0) Projectile.localAI[0] -= 18f;
+                Projectile.localAI[0] += 30f; // 更快展开
+            if (Projectile.timeLeft <= 20 && Projectile.localAI[0] > 0) Projectile.localAI[0] -= 20f;
             if (Projectile.localAI[0] < 0) Projectile.localAI[0] = 0;
+
+            // 核心光粒
+            if (Main.rand.NextBool(3)) {
+                Vector2 corePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(40f, 400f);
+                var d = Dust.NewDustPerfect(corePos, DustID.GemDiamond, Vector2.Zero, 100, Color.White, Main.rand.NextFloat(0.6f, 1.1f));
+                d.noGravity = true;
+            }
+            if (Main.rand.NextBool(2)) {
+                Vector2 edgePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(20f, 800f) + Main.rand.NextVector2Circular(60f, 30f);
+                var d2 = Dust.NewDustPerfect(edgePos, DustID.GemSapphire, Vector2.Zero, 150, Color.Lerp(Color.DeepSkyBlue, Color.HotPink, 0.5f), Main.rand.NextFloat(0.5f, 0.9f));
+                d2.noGravity = true;
+            }
         }
         public override bool PreDraw(ref Color lightColor) {
             List<ColoredVertex> vertices = new();
             for (int i = 0; i < 70; i++) {
-                vertices.Add(new ColoredVertex(top[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, Color.White, new Vector3(i / 70f, 0, 1 - (i / 70f))));
-                vertices.Add(new ColoredVertex(bot[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, Color.White, new Vector3(i / 70f, 1, 1 - (i / 70f))));
+                float u = i / 70f;
+                Color colA = Color.Lerp(gradientStart, gradientMid, u);
+                Color colB = Color.Lerp(gradientMid, gradientEnd, u);
+                vertices.Add(new ColoredVertex(top[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, colA, new Vector3(u, 0, 1 - u)));
+                vertices.Add(new ColoredVertex(bot[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, colB, new Vector3(u, 1, 1 - u)));
             }
-            vertices.Add(new ColoredVertex(topEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, Color.White, new Vector3(1, 0, 1)));
-            vertices.Add(new ColoredVertex(botEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, Color.White, new Vector3(1, 1, 1)));
+            vertices.Add(new ColoredVertex(topEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, gradientEnd, new Vector3(1, 0, 1)));
+            vertices.Add(new ColoredVertex(botEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, gradientEnd, new Vector3(1, 1, 1)));
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             Main.graphics.GraphicsDevice.Textures[0] = MaskLaserLine.Value;

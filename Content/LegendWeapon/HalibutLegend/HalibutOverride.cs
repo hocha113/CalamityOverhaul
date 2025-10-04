@@ -35,6 +35,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int SparklingFishCount { get; set; }
         /// <summary>闪光技能：下一条鱼开火索引</summary>
         public int SparklingNextFireIndex { get; set; }
+        /// <summary>闪光技能：全部激光发射完成后的离场阶段</summary>
+        public bool SparklingDeparturePhase { get; set; }
+        /// <summary>闪光技能：离场阶段计时</summary>
+        public int SparklingDepartureTimer { get; set; }
         
         /// <summary>
         /// 移形换影技能激活状态
