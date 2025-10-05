@@ -1557,6 +1557,7 @@ Projectiles: {
 	// SeaDomainProj.DisplayName: Sea Domain Proj
 	// RestartEffectProj.DisplayName: Restart Effect Proj
 	// SuperpositionProj.DisplayName: Superposition Proj
+	// SuperpositionFishProj.DisplayName: Superposition Fish Proj
 }
 
 Configs: {
