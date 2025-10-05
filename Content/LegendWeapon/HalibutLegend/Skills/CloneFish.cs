@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
@@ -15,8 +13,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         // 右键调用：开启/关闭克隆
         public static void AltUse(Item item, Player player) {
-            var hp = player.GetOverride<HalibutPlayer>();
-            hp.CloneFishActive = false;
             Activate(player);
         }
 
