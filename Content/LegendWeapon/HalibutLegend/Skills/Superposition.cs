@@ -577,8 +577,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     0f,
                     ghost.fullRotationOrigin
                 );
-            }
-            catch {
+            } catch {
                 // 忽略渲染异常
             }
         }

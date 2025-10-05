@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private const int MaxSnapshots = 60 * 10; // 最多记录10秒（支持更长延迟）
         /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
         public int CloneFishToggleCD { get; set; }
-        
+
         /// <summary>克隆体数量（1-5）</summary>
         public int CloneCount { get; set; } = 1;//调试，先保持1个
         /// <summary>最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）</summary>

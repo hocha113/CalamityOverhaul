@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         public DomainLayer(int layerIndex, int totalLayers) {
             LayerIndex = layerIndex;
-            
+
             // 优化半径计算：前3层密集，后续层逐渐扩大
             float baseRadius = 220f;
             float radiusStep;
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
     #region 领域鱼群系统
     internal enum FishSize { Small, Medium, Large }
-    
+
     internal class DomainFishBoid
     {
         public Vector2 Position;
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public DomainFishBoid(Vector2 center, float baseRadius, float angle) {
             var rand = Main.rand;
             OrbitAngle = angle;
-            
+
             float sizeRoll = rand.NextFloat();
             if (sizeRoll < 0.5f) {
                 Size = FishSize.Small;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 OrbitSpeed = 0.008f + rand.NextFloat() * 0.01f;
                 VerticalWave = rand.NextFloat(25f, 45f);
             }
-            
+
             FishType = rand.Next(3);
             RadiusOffset = rand.NextFloat(-40f, 40f);
             Frame = rand.NextFloat(10f);
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Position = center + OrbitAngle.ToRotationVector2() * (baseRadius + RadiusOffset);
             Velocity = Vector2.Zero;
             DashCooldown = rand.NextFloat(180f, 360f);
-            
+
             TintColor = Size switch {
                 FishSize.Small => new Color(120, 220, 255, 255),
                 FishSize.Medium => new Color(100, 200, 240, 255),
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float time = Main.GameUpdateCount * 0.05f + NoiseSeed;
             float wobble = (float)Math.Sin(time * 1.2f) * 8f;
             float verticalOffset = (float)Math.Sin(time * 0.8f + VerticalPhase) * VerticalWave * domainAlpha;
-            
+
             float targetRadius = baseRadius + RadiusOffset + wobble;
             Vector2 targetPos = center + OrbitAngle.ToRotationVector2() * targetRadius;
             targetPos.Y += verticalOffset;
@@ -248,20 +248,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public void DrawTrail(float alpha) {
             if (TrailPositions.Count < 2) return;
             Texture2D tex = TextureAssets.MagicPixel.Value;
-            
+
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
                 float progress = i / (float)TrailPositions.Count;
                 float trailAlpha = (1f - progress) * alpha * 0.5f;
                 float width = Scale * (3f - progress * 2f);
-                
+
                 Vector2 start = TrailPositions[i];
                 Vector2 end = TrailPositions[i + 1];
                 Vector2 diff = end - start;
                 float rot = diff.ToRotation();
                 float len = diff.Length();
-                
+
                 Color c = TintColor * trailAlpha * 0.6f;
-                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1), 
+                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1),
                     c, rot, Vector2.Zero, new Vector2(len, width), SpriteEffects.None, 0f);
             }
         }
@@ -339,9 +339,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 diff = endPos - StartPos;
             float rot = diff.ToRotation();
             float len = diff.Length();
-            
+
             Color c = new Color(100, 200, 255, 0) * Alpha * domainAlpha * 0.25f;
-            Main.spriteBatch.Draw(tex, StartPos - Main.screenPosition, null, 
+            Main.spriteBatch.Draw(tex, StartPos - Main.screenPosition, null,
                 c, rot, new Vector2(0, 0.5f), new Vector2(len, 1), SpriteEffects.None, 0f);
         }
     }
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public void Update(Vector2 npcCenter, float npcRadius) {
             Life++;
             particleSpawnTimer++;
-            
+
             if (particleSpawnTimer % 3 == 0) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = npcCenter + angle.ToRotationVector2() * npcRadius * Main.rand.NextFloat(0.8f, 1.2f);
@@ -401,10 +401,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             MaxLife = Main.rand.NextFloat(20f, 40f);
             Scale = Main.rand.NextFloat(0.8f, 1.5f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            
+
             Vector2 toCenter = (npcCenter - pos).SafeNormalize(Vector2.Zero);
             Velocity = toCenter * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1f, 1f);
-            
+
             color = Main.rand.NextBool() ? new Color(100, 200, 255) : new Color(80, 180, 255);
         }
 
@@ -422,7 +422,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float alpha = (1f - progress) * 0.8f;
             Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
             Color c = color * alpha;
-            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation, 
+            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation,
                 tex.Size() / 2f, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
         }
     }
@@ -538,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void UpdateDomainEffects() {
             effectUpdateTimer++;
-            
+
             var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
             foreach (var key in toRemove) {
                 enemyEffects.Remove(key);
@@ -556,7 +556,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     if (!enemyEffects.ContainsKey(i)) {
                         enemyEffects[i] = new WaterPressureEffect(i);
                     }
-                    
+
                     float npcRadius = (npc.width + npc.height) * 0.25f;
                     enemyEffects[i].Update(npc.Center, npcRadius);
 
@@ -564,13 +564,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                         if (!boundNPCs.Contains(i)) {
                             boundNPCs.Add(i);
                         }
-                        
+
                         float dragStrength = 0.25f;
                         Vector2 desiredPos = Owner.Center + (npc.Center - Owner.Center).SafeNormalize(Vector2.Zero) * Math.Min(dist, maxDomainRadius * 0.8f);
                         Vector2 dragForce = (desiredPos - npc.Center) * dragStrength;
                         npc.velocity += dragForce;
                         Lighting.AddLight(npc.Center, TorchID.Blue);
-                        
+
                         if (dist > maxDomainRadius * 0.9f) {
                             Vector2 pullBack = (Owner.Center - npc.Center).SafeNormalize(Vector2.Zero) * 5f;
                             npc.velocity += pullBack;
@@ -829,13 +829,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Texture2D tex = TextureAssets.MagicPixel.Value;
             int segments = 120; // 固定高精度分段
             float angleStep = MathHelper.TwoPi / segments;
-            
+
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep;
                 float angle2 = (i + 1) * angleStep;
                 Vector2 p1 = Owner.Center + angle1.ToRotationVector2() * layer.Radius;
                 Vector2 p2 = Owner.Center + angle2.ToRotationVector2() * layer.Radius;
-                
+
                 float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f * layer.RotationSpeed + angle1 * 2f) * layer.WaveAmplitude;
                 p1 += angle1.ToRotationVector2() * wave;
                 p2 += angle2.ToRotationVector2() * wave;
@@ -843,17 +843,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Vector2 diff = p2 - p1;
                 float rotation = diff.ToRotation();
                 float length = diff.Length();
-                
+
                 float brightness = 0.65f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + angle1 * 3f) * 0.3f;
                 Color color = layer.BorderColor * brightness * domainAlpha * 0.9f;
-                
+
                 Main.spriteBatch.Draw(tex, p1 - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, rotation, Vector2.Zero, new Vector2(length, 4f), SpriteEffects.None, 0f);
             }
         }
 
         private void DrawBoundIndicators() {
             if (boundNPCs.Count == 0) return;
-            
+
             Texture2D chainTex = TextureAssets.Chain12.Value;
             foreach (int npcIndex in boundNPCs) {
                 NPC npc = Main.npc[npcIndex];
@@ -871,9 +871,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Vector2 pos = Vector2.Lerp(start, end, progress);
                     float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + progress * MathHelper.TwoPi) * 3f;
                     pos += diff.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * wave;
-                    
+
                     Color c = new Color(100, 200, 255, 0) * 0.4f * domainAlpha;
-                    Main.spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, c, rotation, 
+                    Main.spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, c, rotation,
                         chainTex.Size() / 2f, 0.6f, SpriteEffects.None, 0f);
                 }
             }
@@ -886,7 +886,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 2 => ItemID.Trout,
                 _ => ItemID.Tuna
             };
-            
+
             Main.instance.LoadItem(itemType);
             Texture2D fishTex = TextureAssets.Item[itemType].Value;
             Rectangle rect = fishTex.Bounds;
@@ -899,11 +899,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 for (int i = 0; i < 4; i++) {
                     Vector2 offset = (i * MathHelper.PiOver2).ToRotationVector2() * 2f;
                     Color glowColor = fish.TintColor * 0.4f * fade * alpha;
-                    Main.spriteBatch.Draw(fishTex, fish.Position + offset - Main.screenPosition, rect, 
+                    Main.spriteBatch.Draw(fishTex, fish.Position + offset - Main.screenPosition, rect,
                         glowColor, rot, origin, fish.Scale * 0.72f, spriteEffects, 0f);
                 }
             }
-            
+
             Color c = fish.TintColor * fade * alpha;
             Main.spriteBatch.Draw(fishTex, fish.Position - Main.screenPosition, rect, c, rot, origin, fish.Scale * 0.7f, spriteEffects, 0f);
         }

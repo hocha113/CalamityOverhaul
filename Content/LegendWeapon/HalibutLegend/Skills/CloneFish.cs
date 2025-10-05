@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         internal static void SpawnCloneProjectiles(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             var source = player.GetSource_Misc("CloneFishSkill");
-            
+
             // 生成多个克隆体，每个有不同的延迟
             int count = Math.Clamp(hp.CloneCount, 1, 5);
             for (int i = 0; i < count; i++) {
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int SpawnDuration = 45;
         private const int DissolveDuration = 50;
         private float cloneAlpha = 0f;
-        
+
         // 延迟配置（通过 ai[0] 传递）
         private int replayDelay;
 
@@ -230,14 +230,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
-            
+
             // 第一帧初始化延迟
             if (Projectile.localAI[0] == 0f) {
                 replayDelay = (int)Projectile.ai[0];
                 if (replayDelay <= 0) replayDelay = 30; // 默认最小延迟
                 Projectile.localAI[0] = 1f;
             }
-            
+
             // 检测外部关闭信号
             if (hp == null || !hp.CloneFishActive) {
                 if (currentState != AnimState.Dissolving) {
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void UpdateActive(HalibutPlayer hp) {
             // 检查是否有足够的快照
             if (hp.CloneSnapshots.Count < replayDelay) return;
-            
+
             int index = hp.CloneSnapshots.Count - replayDelay;
             var snap = hp.CloneSnapshots[index];
             Projectile.Center = snap.Position + Owner.Size * 0.5f;
