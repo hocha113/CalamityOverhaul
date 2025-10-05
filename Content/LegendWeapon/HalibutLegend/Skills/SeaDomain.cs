@@ -68,7 +68,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float Radius;
         public float TargetRadius;
         public List<DomainFishBoid> Fish;
-        public List<VolumetricRay> Rays;
         public int FishCount;
         public Color BorderColor;
         public float RotationSpeed;
@@ -124,7 +123,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             WaveAmplitude = MathHelper.Lerp(6f, 14f, colorProgress);
 
             Fish = new List<DomainFishBoid>();
-            Rays = new List<VolumetricRay>();
         }
 
         public void InitializeFish(Vector2 center) {
@@ -132,15 +130,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             for (int i = 0; i < FishCount; i++) {
                 float angle = (i / (float)FishCount) * MathHelper.TwoPi;
                 Fish.Add(new DomainFishBoid(center, Radius, angle));
-            }
-        }
-
-        public void InitializeRays(Vector2 center) {
-            Rays.Clear();
-            // 光束数量：内层少，外层多
-            int rayCount = 4 + Math.Min(12, (int)(Radius / 80f));
-            for (int i = 0; i < rayCount; i++) {
-                Rays.Add(new VolumetricRay(center, Radius));
             }
         }
     }
@@ -306,47 +295,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     }
     #endregion
 
-    #region 光束效果
-    internal class VolumetricRay
-    {
-        public Vector2 StartPos;
-        public float Angle;
-        public float Length;
-        public float Width;
-        public float Rotation;
-        public float Alpha;
-        private float phaseOffset;
-
-        public VolumetricRay(Vector2 center, float radius) {
-            var rand = Main.rand;
-            Angle = rand.NextFloat(MathHelper.TwoPi);
-            StartPos = center + Angle.ToRotationVector2() * radius * rand.NextFloat(0.2f, 0.6f);
-            Length = rand.NextFloat(80f, 180f);
-            Width = rand.NextFloat(15f, 35f);
-            Rotation = Angle + rand.NextFloat(-0.3f, 0.3f);
-            phaseOffset = rand.NextFloat(10f);
-        }
-
-        public void Update(Vector2 center) {
-            float time = Main.GameUpdateCount * 0.02f + phaseOffset;
-            Alpha = 0.3f + (float)Math.Sin(time) * 0.2f;
-            Rotation += 0.003f;
-        }
-
-        public void Draw(Vector2 center, float domainAlpha) {
-            Texture2D tex = CWRAsset.StarTexture.Value;
-            Vector2 endPos = StartPos + Rotation.ToRotationVector2() * Length;
-            Vector2 diff = endPos - StartPos;
-            float rot = diff.ToRotation();
-            float len = diff.Length();
-
-            Color c = new Color(100, 200, 255, 0) * Alpha * domainAlpha * 0.25f;
-            Main.spriteBatch.Draw(tex, StartPos - Main.screenPosition, null,
-                c, rot, new Vector2(0, 0.5f), new Vector2(len, 1), SpriteEffects.None, 0f);
-        }
-    }
-    #endregion
-
     #region 水压侵蚀效果
     internal class WaterPressureEffect
     {
@@ -453,6 +401,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private readonly HashSet<int> boundNPCs = new();
         private int effectUpdateTimer;
 
+        // 领域中心平滑跟随
+        private Vector2 domainCenter;
+        private Vector2 targetCenter;
+        private float smoothLerpSpeed = 0.1f; // 缓动速度
+
         /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
         public float GetMaxRadius() {
             return maxDomainRadius;
@@ -479,6 +432,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (layerCount <= 0) layerCount = 1;
                 layerCount = Math.Clamp(layerCount, 1, 10); // 支持10层
                 InitializeLayers();
+                domainCenter = Owner.Center;
+                targetCenter = Owner.Center;
                 Projectile.localAI[0] = 1f;
             }
 
@@ -489,7 +444,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             Projectile.timeLeft = 2;
-            Projectile.Center = Owner.Center;
+            Projectile.Center = domainCenter; // 使用缓动后的中心
+
+            // 平滑跟随玩家
+            targetCenter = Owner.Center;
+            float distance = Vector2.Distance(domainCenter, targetCenter);
+            
+            // 距离越远，缓动速度越快（避免玩家瞬移后领域跟不上）
+            float dynamicSpeed = smoothLerpSpeed;
+            if (distance > 500f) {
+                dynamicSpeed = 0.2f; // 远距离加速
+            }
+            else if (distance > 200f) {
+                dynamicSpeed = 0.15f; // 中距离
+            }
+            
+            domainCenter = Vector2.Lerp(domainCenter, targetCenter, dynamicSpeed / 2f);
 
             switch (currentState) {
                 case DomainState.Expanding:
@@ -503,14 +473,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     break;
             }
 
-            // 全帧更新所有层的鱼群和光束
+            // 全帧更新所有层的鱼群
             if (layers != null) {
                 foreach (var layer in layers) {
                     foreach (var fish in layer.Fish) {
-                        fish.Update(Owner.Center, layer.Radius, domainAlpha);
-                    }
-                    foreach (var ray in layer.Rays) {
-                        ray.Update(Owner.Center);
+                        fish.Update(domainCenter, layer.Radius, domainAlpha);
                     }
                 }
             }
@@ -543,7 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void UpdateDomainEffects() {
             effectUpdateTimer++;
-
+            
             var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
             foreach (var key in toRemove) {
                 enemyEffects.Remove(key);
@@ -554,14 +521,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 NPC npc = Main.npc[i];
                 if (!npc.active || npc.friendly) continue;
 
-                float dist = Vector2.Distance(npc.Center, Owner.Center);
+                float dist = Vector2.Distance(npc.Center, domainCenter); // 使用领域中心
                 bool inDomain = dist < maxDomainRadius;
 
                 if (inDomain) {
                     if (!enemyEffects.ContainsKey(i)) {
                         enemyEffects[i] = new WaterPressureEffect(i);
                     }
-
+                    
                     float npcRadius = (npc.width + npc.height) * 0.25f;
                     enemyEffects[i].Update(npc.Center, npcRadius);
 
@@ -569,15 +536,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                         if (!boundNPCs.Contains(i)) {
                             boundNPCs.Add(i);
                         }
-
+                        
                         float dragStrength = 0.25f;
-                        Vector2 desiredPos = Owner.Center + (npc.Center - Owner.Center).SafeNormalize(Vector2.Zero) * Math.Min(dist, maxDomainRadius * 0.8f);
+                        Vector2 desiredPos = domainCenter + (npc.Center - domainCenter).SafeNormalize(Vector2.Zero) * Math.Min(dist, maxDomainRadius * 0.8f);
                         Vector2 dragForce = (desiredPos - npc.Center) * dragStrength;
                         npc.velocity += dragForce;
                         Lighting.AddLight(npc.Center, TorchID.Blue);
-
+                        
                         if (dist > maxDomainRadius * 0.9f) {
-                            Vector2 pullBack = (Owner.Center - npc.Center).SafeNormalize(Vector2.Zero) * 5f;
+                            Vector2 pullBack = (domainCenter - npc.Center).SafeNormalize(Vector2.Zero) * 5f;
                             npc.velocity += pullBack;
                         }
                     }
@@ -599,7 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (!proj.active || !proj.friendly || proj.hostile) continue;
                 if (proj.owner != Owner.whoAmI) continue;
 
-                float distToCenter = Vector2.Distance(proj.Center, Owner.Center);
+                float distToCenter = Vector2.Distance(proj.Center, domainCenter); // 使用领域中心
                 if (distToCenter > maxDomainRadius) continue;
 
                 NPC target = FindNearestEnemy(proj.Center, maxDomainRadius);
@@ -620,7 +587,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
 
                 float dist = Vector2.Distance(npc.Center, position);
-                if (dist < closestDist && Vector2.Distance(npc.Center, Owner.Center) < maxDomainRadius) {
+                if (dist < closestDist && Vector2.Distance(npc.Center, domainCenter) < maxDomainRadius) {
                     closest = npc;
                     closestDist = dist;
                 }
@@ -646,7 +613,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             if (stateTimer % 12 == 0 && layers != null) {
                 float randomRadius = layers[Main.rand.Next(layers.Count)].Radius * Main.rand.NextFloat(0.6f, 1f);
-                ripples.Add(new WaterRipple(Owner.Center, randomRadius));
+                ripples.Add(new WaterRipple(domainCenter, randomRadius));
             }
 
             if (stateTimer >= ExpandDuration) {
@@ -656,8 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (layers != null) {
                     foreach (var layer in layers) {
                         layer.Radius = layer.TargetRadius;
-                        layer.InitializeFish(Owner.Center);
-                        layer.InitializeRays(Owner.Center);
+                        layer.InitializeFish(domainCenter);
                     }
                 }
             }
@@ -693,7 +659,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 var randomLayer = layers[Main.rand.Next(layers.Count)];
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float dist = Main.rand.NextFloat(randomLayer.Radius * 0.4f, randomLayer.Radius * 0.9f);
-                Vector2 pos = Owner.Center + angle.ToRotationVector2() * dist;
+                Vector2 pos = domainCenter + angle.ToRotationVector2() * dist;
                 bubbles.Add(new BubbleChain(pos));
             }
 
@@ -703,7 +669,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 int rippleCount = Math.Min(3, (layerCount + 2) / 3);
                 for (int i = 0; i < rippleCount; i++) {
                     var randomLayer = layers[Main.rand.Next(layers.Count)];
-                    ripples.Add(new WaterRipple(Owner.Center, randomLayer.Radius * Main.rand.NextFloat(0.5f, 0.9f)));
+                    ripples.Add(new WaterRipple(domainCenter, randomLayer.Radius * Main.rand.NextFloat(0.5f, 0.9f)));
                 }
             }
         }
@@ -739,10 +705,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (layers == null || layers.Count == 0) return;
             var randomLayer = layers[Main.rand.Next(layers.Count)];
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            Vector2 pos = Owner.Center + angle.ToRotationVector2() * randomLayer.Radius * Main.rand.NextFloat(0.6f, 1f);
+            Vector2 pos = domainCenter + angle.ToRotationVector2() * randomLayer.Radius * Main.rand.NextFloat(0.6f, 1f);
             int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, new Color(100, 200, 255), 1.5f);
             Main.dust[dust].noGravity = true;
-            Main.dust[dust].velocity = (pos - Owner.Center).SafeNormalize(Vector2.Zero) * 2.5f;
+            Main.dust[dust].velocity = (pos - domainCenter).SafeNormalize(Vector2.Zero) * 2.5f;
         }
 
         private void SpawnDomainParticle() {
@@ -750,7 +716,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             var randomLayer = layers[Main.rand.Next(layers.Count)];
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float dist = Main.rand.NextFloat(randomLayer.Radius * 0.3f, randomLayer.Radius);
-            Vector2 pos = Owner.Center + angle.ToRotationVector2() * dist;
+            Vector2 pos = domainCenter + angle.ToRotationVector2() * dist;
             int dust = Dust.NewDust(pos, 1, 1, DustID.DungeonSpirit, 0, 0, 120, new Color(80, 180, 255), 1.1f);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = Main.rand.NextVector2Circular(1.2f, 1.2f);
@@ -767,10 +733,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (layers == null || layers.Count == 0) return;
             var randomLayer = layers[Main.rand.Next(layers.Count)];
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            Vector2 pos = Owner.Center + angle.ToRotationVector2() * randomLayer.Radius;
+            Vector2 pos = domainCenter + angle.ToRotationVector2() * randomLayer.Radius;
             int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, new Color(100, 200, 255), 1.3f);
             Main.dust[dust].noGravity = true;
-            Main.dust[dust].velocity = (Owner.Center - pos).SafeNormalize(Vector2.Zero) * 3.5f;
+            Main.dust[dust].velocity = (domainCenter - pos).SafeNormalize(Vector2.Zero) * 3.5f;
         }
 
         private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
@@ -781,13 +747,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 从内到外绘制各层
             foreach (var layer in layers) {
-                // 绘制所有层的光束
-                if (domainAlpha > 0.3f) {
-                    foreach (var ray in layer.Rays) {
-                        ray.Draw(Owner.Center, domainAlpha * 0.7f);
-                    }
-                }
-
                 // 边界
                 if (domainAlpha > 0.01f) {
                     DrawLayerBorder(layer);
@@ -796,7 +755,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 水纹
             foreach (var ripple in ripples) {
-                ripple.Draw(Owner.Center, domainAlpha);
+                ripple.Draw(domainCenter, domainAlpha);
             }
 
             // 气泡
@@ -838,8 +797,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep;
                 float angle2 = (i + 1) * angleStep;
-                Vector2 p1 = Owner.Center + angle1.ToRotationVector2() * layer.Radius;
-                Vector2 p2 = Owner.Center + angle2.ToRotationVector2() * layer.Radius;
+                Vector2 p1 = domainCenter + angle1.ToRotationVector2() * layer.Radius;
+                Vector2 p2 = domainCenter + angle2.ToRotationVector2() * layer.Radius;
 
                 float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f * layer.RotationSpeed + angle1 * 2f) * layer.WaveAmplitude;
                 p1 += angle1.ToRotationVector2() * wave;
@@ -864,7 +823,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 NPC npc = Main.npc[npcIndex];
                 if (!npc.active) continue;
 
-                Vector2 start = Owner.Center;
+                Vector2 start = domainCenter;
                 Vector2 end = npc.Center;
                 Vector2 diff = end - start;
                 float length = diff.Length();
