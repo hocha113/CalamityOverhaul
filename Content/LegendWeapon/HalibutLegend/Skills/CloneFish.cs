@@ -15,13 +15,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         // 右键调用：开启/关闭克隆
         public static void AltUse(Item item, Player player) {
-            var hp = player.GetOverride<HalibutLegend.HalibutPlayer>();
+            var hp = player.GetOverride<HalibutPlayer>();
             hp.CloneFishActive = false;
             Activate(player);
         }
 
         public static void Activate(Player player) {
-            var hp = player.GetOverride<HalibutLegend.HalibutPlayer>();
+            var hp = player.GetOverride<HalibutPlayer>();
             if (hp.CloneFishActive)
                 return;
             hp.CloneFishActive = true;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         public static void Deactivate(Player player) {
-            var hp = player.GetOverride<HalibutLegend.HalibutPlayer>();
+            var hp = player.GetOverride<HalibutPlayer>();
             hp.CloneFishActive = false;
             // 投射物会在自身 AI 中检测到并自杀
         }
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Projectile.Kill();
                 return;
             }
-            var hp = owner.GetOverride<HalibutLegend.HalibutPlayer>();
+            var hp = owner.GetOverride<HalibutPlayer>();
             if (hp == null || !hp.CloneFishActive) {
                 Projectile.Kill();
                 return;
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         public override bool PreDraw(ref Color lightColor) {
             Player owner = Main.player[Projectile.owner];
-            var hp = owner.GetOverride<HalibutLegend.HalibutPlayer>();
+            var hp = owner.GetOverride<HalibutPlayer>();
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
