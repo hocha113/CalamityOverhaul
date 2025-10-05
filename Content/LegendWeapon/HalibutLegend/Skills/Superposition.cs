@@ -325,6 +325,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 offset = backDir.RotatedBy(angleOffset) * 20f + perp * (float)Math.Sin(angleOffset) * 40f;
             Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + offset, 0.15f);
 
+            Owner.direction = Math.Sign(dir.X);
+
             switch (state) {
                 case CannonState.Deploy:
                     pulse = timer / (float)DeployTime;
@@ -355,12 +357,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             var source = Projectile.GetSource_FromThis();
             int fishPerVolley = 10;
             float spread = MathHelper.ToRadians(18f);
+            ShootState shootState = Owner.GetShootState();
             for (int i = 0; i < fishPerVolley; i++) {
                 float lerp = (i + 0.5f) / fishPerVolley;
                 float angle = spread * (lerp - 0.5f);
                 Vector2 vel = forward.RotatedBy(angle) * Main.rand.NextFloat(14f, 18f);
                 int id = Projectile.NewProjectile(source, Projectile.Center + forward * 30f, vel
-                    , ModContent.ProjectileType<CannonFishShot>(), Owner.HeldItem.damage, 2f, Owner.whoAmI, Main.rand.Next(9999));
+                    , ModContent.ProjectileType<CannonFishShot>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, Main.rand.Next(9999));
                 if (id >= 0) Main.projectile[id].friendly = true;
             }
             // 环形符咒粒子
@@ -399,83 +402,126 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private float seed;
         private bool init;
         private float alpha;
-        private List<MiniOrbitFish> orbiters;
+        private int fishType; // 主鱼类型
+        private float fishScale;
+        private float fishRotation;
+        private int fishDirection;
 
         public override void SetDefaults() {
-            Projectile.width = 18;
-            Projectile.height = 18;
+            Projectile.width = 24;
+            Projectile.height = 24;
             Projectile.friendly = true;
             Projectile.penetrate = 3;
             Projectile.timeLeft = 120;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override void AI() {
-            if (!init) { init = true; seed = Projectile.ai[0]; alpha = 0f; orbiters = MiniOrbitFish.CreateSet(Projectile.Center, 6); }
-            alpha = Math.Min(1f, alpha + 0.08f);
-            // 轻微引导：保持直线微抖动
-            Projectile.velocity *= 0.998f;
-            Projectile.velocity += new Vector2(0, (float)Math.Sin((Projectile.timeLeft + seed) * 0.2f)) * 0.04f;
-            // 轨迹粒子
-            if (Main.rand.NextBool(3)) {
-                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Water, 0, 0, 150, new Color(150, 210, 255), 1.1f);
-                Main.dust[d].noGravity = true; Main.dust[d].velocity *= 0.3f;
+            if (!init) {
+                init = true;
+                seed = Projectile.ai[0];
+                alpha = 0f;
+                fishType = Main.rand.Next(3); // 0=Tuna, 1=Bass, 2=Trout
+                fishScale = 0.6f + Main.rand.NextFloat() * 0.3f;
+                fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
             }
-            // 更新环绕小鱼
-            foreach (var f in orbiters) f.Update(Projectile.Center);
+            alpha = Math.Min(1f, alpha + 0.1f);
+
+            // 轻微波动+群聚趋向
+            Projectile.velocity *= 0.998f;
+            Vector2 waveOffset = new Vector2(0, (float)Math.Sin((Projectile.timeLeft + seed) * 0.2f)) * 0.06f;
+            Projectile.velocity += waveOffset;
+
+            // 简化群聚：向最近的同类射弹靠拢
+            Vector2 cohesion = Vector2.Zero;
+            int nearCount = 0;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                if (i == Projectile.whoAmI) continue;
+                Projectile other = Main.projectile[i];
+                if (!other.active || other.type != Projectile.type || other.owner != Projectile.owner) continue;
+                float dist = Vector2.Distance(Projectile.Center, other.Center);
+                if (dist < 100f && dist > 0.1f) {
+                    cohesion += (other.Center - Projectile.Center).SafeNormalize(Vector2.Zero) / dist;
+                    nearCount++;
+                }
+            }
+            if (nearCount > 0) {
+                cohesion /= nearCount;
+                Projectile.velocity += cohesion * 0.15f;
+            }
+
+            // 更新朝向
+            if (Math.Abs(Projectile.velocity.X) > 0.5f) {
+                fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
+            }
+            if (Projectile.velocity.LengthSquared() > 0.1f) {
+                fishRotation = Projectile.velocity.ToRotation();
+            }
+
+            // 轨迹粒子
+            if (Main.rand.NextBool(4)) {
+                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Water, 0, 0, 150, new Color(150, 210, 255), 1.0f);
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity = -Projectile.velocity * 0.3f;
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) => true;
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            // 击中粒子
+            for (int i = 0; i < 3; i++) {
+                int d = Dust.NewDust(target.position, target.width, target.height, DustID.Water, 0, 0, 150, new Color(140, 210, 255), 1.2f);
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity *= 0.4f;
+            }
+        }
+
         public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 6; i++) {
-                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Water, 0, 0, 120, new Color(160, 220, 255), 1.3f);
-                Main.dust[d].noGravity = true; Main.dust[d].velocity = Main.rand.NextVector2Circular(3f, 3f);
+            // 死亡爆散
+            for (int i = 0; i < 8; i++) {
+                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Water, 0, 0, 120, new Color(160, 220, 255), 1.4f);
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity = Main.rand.NextVector2Circular(3f, 3f);
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            // 中心小光点
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float r = 6f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + seed) * 2f;
-            Color core = new Color(190, 230, 255, 0) * alpha;
-            Main.spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 1, 1), core, 0f, Vector2.Zero, new Vector2(r, r), SpriteEffects.None, 0f);
-            // 绘制环绕鱼
-            foreach (var f in orbiters) f.Draw(alpha);
+            int itemType = fishType switch { 0 => ItemID.Tuna, 1 => ItemID.Bass, 2 => ItemID.Trout, _ => ItemID.Tuna };
+            Main.instance.LoadItem(itemType);
+            Texture2D fishTex = TextureAssets.Item[itemType].Value;
+
+            // 拖尾
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) continue;
+                float trailProgress = i / (float)Projectile.oldPos.Length;
+                float trailAlpha = alpha * (1f - trailProgress) * 0.5f;
+                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+
+                Rectangle rect = fishTex.Bounds;
+                Vector2 origin = rect.Size() * 0.5f;
+                SpriteEffects effects = fishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                float rot = fishRotation + (fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+
+                Main.spriteBatch.Draw(fishTex, trailPos, rect, new Color(140, 200, 255) * trailAlpha, rot, origin, fishScale * 0.8f * (1f - trailProgress * 0.3f), effects, 0f);
+            }
+
+            // 主体鱼
+            {
+                Rectangle rect = fishTex.Bounds;
+                Vector2 origin = rect.Size() * 0.5f;
+                SpriteEffects effects = fishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                float rot = fishRotation + (fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+                Vector2 drawPos = Projectile.Center - Main.screenPosition;
+                Main.spriteBatch.Draw(fishTex, drawPos, rect, Color.White * alpha, rot, origin, fishScale, effects, 0f);
+            }
             return false;
         }
-
-        private class MiniOrbitFish
-        {
-            public Vector2 Offset;
-            public float Angle;
-            public float Radius;
-            public float Speed;
-            public Color Color;
-            public static List<MiniOrbitFish> CreateSet(Vector2 center, int count) {
-                var l = new List<MiniOrbitFish>();
-                for (int i = 0; i < count; i++) {
-                    l.Add(new MiniOrbitFish { Angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(0.3f), Radius = 14f + Main.rand.NextFloat(6f), Speed = 0.15f + Main.rand.NextFloat(0.08f), Color = new Color(120 + Main.rand.Next(80), 200, 255) });
-                }
-                return l;
-            }
-            public void Update(Vector2 c) { Angle += Speed; Offset = Angle.ToRotationVector2() * Radius; }
-            public void Draw(float alpha) {
-                Texture2D p = TextureAssets.MagicPixel.Value;
-                Vector2 pos = Main.screenPosition + Vector2.Zero + (CannonFishShotDrawHelper.tempCenter + Offset - Main.screenPosition); // will adjust center externally
-            }
-        }
     }
-
-    // 帮助类：在 PreDraw 前设置临时中心
-    internal static class CannonFishShotDrawHelper
-    {
-        public static Vector2 tempCenter;
-    }
-
     #endregion
 
     #region 时空裂隙 (精简视觉占比)
