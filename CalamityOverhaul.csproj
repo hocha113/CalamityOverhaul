@@ -74,6 +74,7 @@
     <Folder Include="Assets\Painting\" />
     <Folder Include="Assets\Turrets\" />
     <Folder Include="Assets\Arcanes\" />
+    <Folder Include="Assets\UIs\Halibut\" />
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />

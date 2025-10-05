@@ -16,7 +16,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     internal class HalibutOverride : CWRItemOverride
     {
         #region Data
-        public override int TargetID => ModContent.ItemType<HalibutCannon>();
+        /// <summary>
+        /// 目标ID
+        /// </summary>
+        public static int ID => ModContent.ItemType<HalibutCannon>();
+        /// <summary>
+        /// 目标ID
+        /// </summary>
+        public override int TargetID => ID;
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
