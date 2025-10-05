@@ -96,20 +96,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private readonly float CohesionRadius;
         public float Scale;
         public float Frame;
+        private float DesiredRadiusBase;
+        private float OrbitAngle;
+        private float OrbitSpeed;
+        private float NoiseSeed;
 
         public AbyssFishBoid(Vector2 startPos) {
             var rand = Main.rand;
             Position = startPos;
             Velocity = (rand.NextVector2Unit() * 2f);
             Speed = 2f + rand.NextFloat();
-            MaxSpeed = 4.2f;
-            SeparationRadius = 36f;
-            CohesionRadius = 140f;
+            MaxSpeed = 6.0f; // 再提升一点上限，适应高速跟随
+            SeparationRadius = 40f;
+            CohesionRadius = 150f;
             Scale = 0.6f + rand.NextFloat() * 0.5f;
             Frame = rand.NextFloat(6f);
+            DesiredRadiusBase = 40f + rand.NextFloat() * 50f; // 基础半径
+            OrbitAngle = rand.NextFloat(MathHelper.TwoPi);
+            OrbitSpeed = 0.03f + rand.NextFloat() * 0.04f;
+            NoiseSeed = rand.NextFloat(1000f);
         }
 
-        public void Update(List<AbyssFishBoid> boids, Vector2 targetCenter) {
+        public void Update(List<AbyssFishBoid> boids, Vector2 targetCenter, Vector2 targetVelocity) {
+            // 根据目标速度动态调整环绕半径：速度快 -> 缩紧，慢 -> 放开
+            float speedMag = targetVelocity.Length();
+            // 速度映射 (0 -> 1) (0 ~ 18 假设)
+            float speedNorm = MathHelper.Clamp(speedMag / 18f, 0f, 1f);
+            float radiusScale = MathHelper.Lerp(1.35f, 0.55f, speedNorm); // 高速时半径变小
+            float desiredRadius = DesiredRadiusBase * radiusScale;
+
+            OrbitAngle += OrbitSpeed * (1.0f + speedNorm * 0.8f); // 高速时旋转更快
+            float wobble = (float)Math.Sin(OrbitAngle * 2f + NoiseSeed) * (6f * radiusScale);
+            float dynamicRadius = desiredRadius + wobble;
+            Vector2 orbitPos = targetCenter + OrbitAngle.ToRotationVector2() * dynamicRadius;
+
             Vector2 separation = Vector2.Zero;
             Vector2 alignment = Vector2.Zero;
             Vector2 cohesion = Vector2.Zero;
@@ -118,9 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (other == this) continue;
                 float dist = Vector2.Distance(Position, other.Position);
                 if (dist < 0.001f) continue;
-                if (dist < SeparationRadius) {
-                    separation += (Position - other.Position) / dist;
-                }
+                if (dist < SeparationRadius) separation += (Position - other.Position) / dist;
                 if (dist < CohesionRadius) {
                     alignment += other.Velocity;
                     cohesion += other.Position;
@@ -130,23 +148,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (alignCount > 0) alignment /= alignCount;
             if (cohesionCount > 0) {
                 cohesion /= cohesionCount;
-                cohesion = (cohesion - Position) * 0.01f;
+                cohesion = (cohesion - Position) * 0.02f;
             }
-            separation *= 0.6f;
-            alignment *= 0.05f;
+            separation *= 0.8f;
+            alignment *= 0.07f;
 
-            Vector2 toTarget = (targetCenter - Position);
-            float distTarget = toTarget.Length();
-            if (distTarget > 8f)
-                toTarget = toTarget.SafeNormalize(Vector2.Zero) * 0.3f;
-            else
-                toTarget = Vector2.Zero;
+            // 轨道吸引跟随
+            Vector2 toOrbit = (orbitPos - Position) * 0.22f;
 
-            Velocity += separation + alignment + cohesion + toTarget;
-            if (Velocity.Length() > MaxSpeed) Velocity = Velocity.SafeNormalize(Vector2.UnitX) * MaxSpeed;
+            
+
+            // 超距强回拉
+            float centerDist = Vector2.Distance(Position, targetCenter);
+            if (centerDist > dynamicRadius * 3f) {
+                toOrbit += (targetCenter - Position).SafeNormalize(Vector2.Zero) * 3.2f;
+            }
+
+            // 随机噪声（随速度增强紧张感）
+            float time = (float)Main.GameUpdateCount * 0.07f + NoiseSeed;
+            Vector2 jitter = new Vector2((float)Math.Sin(time * 1.5f), (float)Math.Cos(time * 1.9f)) * (0.9f + speedNorm * 0.6f);
+
+            Velocity += separation + alignment + cohesion + toOrbit + jitter * 0.5f;
+
+            // 末端再直接加一点速度锚定（保证不会拖尾偏离）
+            Velocity = (Velocity * 0.85f);
+
+            Position += targetVelocity * 0.75f;
+
+            // 限速
+            float len = Velocity.Length();
+            float dynMax = MathHelper.Lerp(MaxSpeed * 0.55f, MaxSpeed, speedNorm * 0.8f); // 高速移动时允许更高跟随速度
+            if (len > dynMax) Velocity = Velocity * (dynMax / len);
+
             Position += Velocity;
-            Speed = MathHelper.Lerp(Speed, Velocity.Length(), 0.1f);
-            Frame += 0.2f + Speed * 0.03f;
+            Speed = MathHelper.Lerp(Speed, Velocity.Length(), 0.2f);
+            Frame += 0.30f + Speed * 0.04f;
         }
     }
 
@@ -159,6 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int AfterImageCache = 12;
         private List<AbyssFishBoid> boids;
         private int particleTimer;
+        private Vector2 lastCenter;
 
         public override void SetDefaults() {
             Projectile.width = 20;
@@ -181,11 +218,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.Center = snap.Position + Owner.Size * 0.5f;
             Projectile.velocity = snap.Velocity;
 
-            // AfterImage 记录
             afterImages.Add(snap);
             if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
-            // 处理延迟射击事件
             int replayFrame = hp.CloneFrameCounter - CloneFish.ReplayDelay;
             if (hp.CloneShootEvents.Count > 0) {
                 for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
@@ -198,28 +233,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
-            // 初始化鱼群
             boids ??= CreateBoids(Owner.Center);
-            foreach (var b in boids) b.Update(boids, Projectile.Center + new Vector2(0, -20));
+            Vector2 clusterTarget = Projectile.Center + new Vector2(0, -16);
+            Vector2 targetVel = (Projectile.Center - lastCenter);
+            lastCenter = Projectile.Center;
+            foreach (var b in boids) b.Update(boids, clusterTarget, targetVel);
 
-            // 粒子效果（深渊气泡/暗光）
             particleTimer++;
-            if (particleTimer % 6 == 0) {
-                SpawnAbyssParticle(Projectile.Center + Main.rand.NextVector2Circular(40, 40));
+            if (particleTimer % 5 == 0) {
+                SpawnAbyssParticle(Projectile.Center + Main.rand.NextVector2Circular(46, 46));
             }
         }
 
         private List<AbyssFishBoid> CreateBoids(Vector2 center) {
             var list = new List<AbyssFishBoid>();
-            int count = 8;
-            for (int i = 0; i < count; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(60, 60)));
+            int count = 10;
+            for (int i = 0; i < count; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(40, 40)));
             return list;
         }
 
         private void SpawnAbyssParticle(Vector2 pos) {
-            int dust = Dust.NewDust(pos, 1, 1, DustID.DungeonSpirit, 0, 0, 150, default, 0.7f);
+            int dust = Dust.NewDust(pos, 1, 1, DustID.DungeonSpirit, 0, 0, 150, default, 0.75f);
             Main.dust[dust].noGravity = true;
-            Main.dust[dust].velocity *= 0.1f;
+            Main.dust[dust].velocity *= 0.15f;
+            Main.dust[dust].velocity += Main.rand.NextVector2Circular(0.4f, 0.4f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -245,8 +282,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             cp.whoAmI = Owner.whoAmI;
 
             Color drawColor = Color.BlueViolet;
-
-            cp.hair = Owner.hair;
             cp.skinVariant = Owner.skinVariant;
             cp.skinColor = drawColor;
             cp.shirtColor = drawColor;
@@ -259,26 +294,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
-            // 主体
             cp.position = snap.Position;
             cp.bodyFrame = snap.BodyFrame;
-            try {
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin);
-            }
-            catch { }
+            try { Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin); } catch { }
 
-            // 鱼群绘制
             if (boids != null) {
                 Main.instance.LoadItem(ItemID.FrostMinnow);
                 Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
                 foreach (var b in boids) {
                     Rectangle rect = fishTex.Bounds;
-                    SpriteEffects spriteEffects = b.Velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                    float rot = b.Velocity.ToRotation() + b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
+                    SpriteEffects spriteEffects = b.Velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                    float rot = b.Velocity.ToRotation() + (b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
                     Vector2 origin = rect.Size() * 0.5f;
-                    float fade = 0.6f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f + b.Frame) * 0.2f;
+                    float fade = 0.65f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + b.Frame) * 0.25f;
                     Color c = new Color(70, 200, 255, 255) * fade;
-                    Main.spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.6f, spriteEffects, 0f);
+                    Main.spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
                 }
             }
 
