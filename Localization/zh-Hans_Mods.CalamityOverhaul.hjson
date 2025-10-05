@@ -1528,6 +1528,7 @@ Projectiles: {
 	// SparklingSpawnEffect.DisplayName: Sparkling Spawn Effect
 	// ClonePlayer.DisplayName: Clone Player
 	// SeaDomainProj.DisplayName: Sea Domain Proj
+	// RestartEffectProj.DisplayName: Restart Effect Proj
 }
 
 Configs: {

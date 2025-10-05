@@ -10,6 +10,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
+    //十层鬼域，开，无限叠加，无限重启，封锁过去，截断未来，
+    //你的层次太低，永远无法理解我现在的状态
     internal static class SeaDomain
     {
         internal static int ID = 4;

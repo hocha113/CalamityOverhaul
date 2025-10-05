@@ -98,7 +98,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>海域领域最大冷却（8秒）</summary>
         public const int SeaDomainMaxCooldown = 480;
         /// <summary>海域领域层数（1-10）</summary>
-        public int SeaDomainLayers { get; set; } = 10;
+        public int SeaDomainLayers { get; set; } = 3;
+        #endregion
+
+        #region 重启技能数据
+        /// <summary>重启技能触发冷却</summary>
+        public int RestartFishToggleCD { get; set; }
+        /// <summary>重启技能冷却时间</summary>
+        public int RestartFishCooldown { get; set; }
         #endregion
 
         public override void ResetEffects() {//用于每帧恢复数据
@@ -162,6 +169,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 海域领域冷却
             if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
             if (SeaDomainCooldown > 0) SeaDomainCooldown--;
+
+            // 重启技能冷却
+            if (RestartFishToggleCD > 0) RestartFishToggleCD--;
+            if (RestartFishCooldown > 0) RestartFishCooldown--;
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
