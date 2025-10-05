@@ -97,6 +97,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int SeaDomainCooldown { get; set; }
         /// <summary>海域领域最大冷却（8秒）</summary>
         public const int SeaDomainMaxCooldown = 480;
+        /// <summary>海域领域层数（1-3）</summary>
+        public int SeaDomainLayers { get; set; } = 3;
         #endregion
 
         public override void ResetEffects() {//用于每帧恢复数据
