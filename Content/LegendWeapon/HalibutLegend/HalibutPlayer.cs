@@ -108,6 +108,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int RestartFishCooldown { get; set; }
         #endregion
 
+        #region 叠加攻击技能数据
+        /// <summary>叠加攻击触发冷却</summary>
+        public int SuperpositionToggleCD { get; set; }
+        /// <summary>叠加攻击冷却时间</summary>
+        public int SuperpositionCooldown { get; set; }
+        #endregion
+
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
@@ -173,6 +180,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 重启技能冷却
             if (RestartFishToggleCD > 0) RestartFishToggleCD--;
             if (RestartFishCooldown > 0) RestartFishCooldown--;
+
+            // 叠加攻击冷却
+            if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
+            if (SuperpositionCooldown > 0) SuperpositionCooldown--;
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {

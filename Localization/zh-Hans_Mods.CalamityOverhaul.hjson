@@ -1529,6 +1529,7 @@ Projectiles: {
 	// ClonePlayer.DisplayName: Clone Player
 	// SeaDomainProj.DisplayName: Sea Domain Proj
 	// RestartEffectProj.DisplayName: Restart Effect Proj
+	// SuperpositionProj.DisplayName: Superposition Proj
 }
 
 Configs: {

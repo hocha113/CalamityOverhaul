@@ -146,8 +146,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            halibutPlayer.SeaDomainLayers = 5;
-            SkillID = RestartFish.ID; // 原有逻辑
+            halibutPlayer.SeaDomainLayers = 9;
+            SkillID = Superposition.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 // 检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {
@@ -184,6 +184,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (SkillID == RestartFish.ID) {
                 return true;
             }
+            if (SkillID == Superposition.ID) {
+                return true;
+            }
             return false;
         }
 
@@ -203,6 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 if (SkillID == RestartFish.ID) {
                     RestartFish.AltUse(item, player);
+                    return true;
+                }
+                if (SkillID == Superposition.ID) {
+                    Superposition.AltUse(item, player);
                     return true;
                 }
             }
