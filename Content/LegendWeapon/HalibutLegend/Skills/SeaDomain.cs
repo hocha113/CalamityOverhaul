@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public DomainLayer(int layerIndex, int totalLayers) {
             LayerIndex = layerIndex;
             
-            // 优化半径计算：前3层密集，后续层逐渐扩大间距
+            // 优化半径计算：前3层密集，后续层逐渐扩大
             float baseRadius = 180f;
             float radiusStep;
             if (layerIndex < 3) {
@@ -496,14 +496,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     break;
             }
 
-            // 性能优化：分帧更新鱼群
+            // 全帧更新所有层的鱼群和光束
             if (layers != null) {
-                int updateBatch = Math.Max(1, layers.Count / 3); // 每帧更新1/3
-                int startLayer = (int)(Projectile.localAI[1] % layers.Count);
-                for (int i = 0; i < updateBatch && i < layers.Count; i++) {
-                    int layerIndex = (startLayer + i) % layers.Count;
-                    var layer = layers[layerIndex];
-                    
+                foreach (var layer in layers) {
                     foreach (var fish in layer.Fish) {
                         fish.Update(Owner.Center, layer.Radius, domainAlpha);
                     }
@@ -511,7 +506,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                         ray.Update(Owner.Center);
                     }
                 }
-                Projectile.localAI[1]++;
             }
 
             bubbles ??= new List<BubbleChain>();
@@ -670,9 +664,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 SpawnDomainParticle();
             }
 
-            // 粒子生成频率优化：层数多时降低频率
-            int fishGlowInterval = Math.Max(4, 8 - (layerCount / 3));
-            if (particleTimer % fishGlowInterval == 0 && layers != null) {
+            // 鱼发光粒子：保持固定频率
+            if (particleTimer % 4 == 0 && layers != null) {
                 // 随机选择2-3层生成粒子
                 int layerSamples = Math.Min(3, layers.Count);
                 for (int s = 0; s < layerSamples; s++) {
@@ -687,8 +680,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             bubbleTimer++;
-            // 气泡频率：基于层数动态调整
-            int bubbleInterval = Math.Max(5, 20 - layerCount);
+            // 气泡频率：根据层数适当调整但不过度降低
+            int bubbleInterval = Math.Max(10, 25 - layerCount * 2);
             if (bubbleTimer % bubbleInterval == 0 && layers != null) {
                 var randomLayer = layers[Main.rand.Next(layers.Count)];
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -779,14 +772,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override bool PreDraw(ref Color lightColor) {
             if (layers == null) return false;
 
-            // 性能优化：层数过多时降低绘制精度
-            bool highDetail = layerCount <= 5;
-            int segmentDivisor = highDetail ? 1 : 2; // 高层数时减少边界分段
-
             // 从内到外绘制各层
             foreach (var layer in layers) {
-                // 光束（只绘制部分层以优化性能）
-                if (domainAlpha > 0.3f && (layer.LayerIndex % 2 == 0 || layerCount <= 5)) {
+                // 绘制所有层的光束
+                if (domainAlpha > 0.3f) {
                     foreach (var ray in layer.Rays) {
                         ray.Draw(Owner.Center, domainAlpha * 0.7f);
                     }
@@ -794,7 +783,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
                 // 边界
                 if (domainAlpha > 0.01f) {
-                    DrawLayerBorder(layer, segmentDivisor);
+                    DrawLayerBorder(layer);
                 }
             }
 
@@ -815,18 +804,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 effect.Draw();
             }
 
-            // 各层鱼拖尾（高层数时跳帧绘制）
-            int fishDrawInterval = highDetail ? 1 : 2;
+            // 绘制所有鱼拖尾
             foreach (var layer in layers) {
-                for (int i = 0; i < layer.Fish.Count; i += fishDrawInterval) {
-                    layer.Fish[i].DrawTrail(domainAlpha);
+                foreach (var fish in layer.Fish) {
+                    fish.DrawTrail(domainAlpha);
                 }
             }
 
-            // 各层鱼主体
+            // 绘制所有鱼主体
             foreach (var layer in layers) {
-                for (int i = 0; i < layer.Fish.Count; i += fishDrawInterval) {
-                    DrawFish(layer.Fish[i], domainAlpha);
+                foreach (var fish in layer.Fish) {
+                    DrawFish(fish, domainAlpha);
                 }
             }
 
@@ -835,9 +823,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             return false;
         }
 
-        private void DrawLayerBorder(DomainLayer layer, int segmentDivisor) {
+        private void DrawLayerBorder(DomainLayer layer) {
             Texture2D tex = TextureAssets.MagicPixel.Value;
-            int segments = 120 / segmentDivisor; // 动态调整分段数
+            int segments = 120; // 固定高精度分段
             float angleStep = MathHelper.TwoPi / segments;
             
             for (int i = 0; i < segments; i++) {
