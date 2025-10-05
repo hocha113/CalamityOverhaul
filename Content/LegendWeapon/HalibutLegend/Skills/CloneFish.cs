@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -102,32 +103,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private float OrbitAngle;
         private float OrbitSpeed;
         private float NoiseSeed;
+        // 散去动画用
+        public Vector2 ScatterVelocity;
+        public float ScatterProgress;
 
         public AbyssFishBoid(Vector2 startPos) {
             var rand = Main.rand;
             Position = startPos;
             Velocity = (rand.NextVector2Unit() * 2f);
             Speed = 2f + rand.NextFloat();
-            MaxSpeed = 6.0f; // 再提升一点上限，适应高速跟随
+            MaxSpeed = 6.0f;
             SeparationRadius = 40f;
             CohesionRadius = 150f;
             Scale = 0.6f + rand.NextFloat() * 0.5f;
             Frame = rand.NextFloat(6f);
-            DesiredRadiusBase = 40f + rand.NextFloat() * 50f; // 基础半径
+            DesiredRadiusBase = 40f + rand.NextFloat() * 50f;
             OrbitAngle = rand.NextFloat(MathHelper.TwoPi);
             OrbitSpeed = 0.03f + rand.NextFloat() * 0.04f;
             NoiseSeed = rand.NextFloat(1000f);
+            ScatterVelocity = rand.NextVector2Unit() * (3f + rand.NextFloat() * 4f);
+            ScatterProgress = 0f;
         }
 
         public void Update(List<AbyssFishBoid> boids, Vector2 targetCenter, Vector2 targetVelocity) {
-            // 根据目标速度动态调整环绕半径：速度快 -> 缩紧，慢 -> 放开
             float speedMag = targetVelocity.Length();
-            // 速度映射 (0 -> 1) (0 ~ 18 假设)
             float speedNorm = MathHelper.Clamp(speedMag / 18f, 0f, 1f);
-            float radiusScale = MathHelper.Lerp(1.35f, 0.55f, speedNorm); // 高速时半径变小
+            float radiusScale = MathHelper.Lerp(1.35f, 0.55f, speedNorm);
             float desiredRadius = DesiredRadiusBase * radiusScale;
 
-            OrbitAngle += OrbitSpeed * (1.0f + speedNorm * 0.8f); // 高速时旋转更快
+            OrbitAngle += OrbitSpeed * (1.0f + speedNorm * 0.8f);
             float wobble = (float)Math.Sin(OrbitAngle * 2f + NoiseSeed) * (6f * radiusScale);
             float dynamicRadius = desiredRadius + wobble;
             Vector2 orbitPos = targetCenter + OrbitAngle.ToRotationVector2() * dynamicRadius;
@@ -155,34 +159,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             separation *= 0.8f;
             alignment *= 0.07f;
 
-            // 轨道吸引跟随
             Vector2 toOrbit = (orbitPos - Position) * 0.22f;
 
-            // 超距强回拉
             float centerDist = Vector2.Distance(Position, targetCenter);
             if (centerDist > dynamicRadius * 3f) {
                 toOrbit += (targetCenter - Position).SafeNormalize(Vector2.Zero) * 3.2f;
             }
 
-            // 随机噪声（随速度增强紧张感）
             float time = Main.GameUpdateCount * 0.07f + NoiseSeed;
             Vector2 jitter = new Vector2((float)Math.Sin(time * 1.5f), (float)Math.Cos(time * 1.9f)) * (0.9f + speedNorm * 0.6f);
 
             Velocity += separation + alignment + cohesion + toOrbit + jitter * 0.5f;
-
-            // 末端再直接加一点速度锚定（保证不会拖尾偏离）
             Velocity = (Velocity * 0.85f);
-
             Position += targetVelocity * 0.75f;
 
-            // 限速
             float len = Velocity.Length();
-            float dynMax = MathHelper.Lerp(MaxSpeed * 0.55f, MaxSpeed, speedNorm * 0.8f); // 高速移动时允许更高跟随速度
+            float dynMax = MathHelper.Lerp(MaxSpeed * 0.55f, MaxSpeed, speedNorm * 0.8f);
             if (len > dynMax) Velocity = Velocity * (dynMax / len);
 
             Position += Velocity;
             Speed = MathHelper.Lerp(Speed, Velocity.Length(), 0.2f);
             Frame += 0.30f + Speed * 0.04f;
+        }
+
+        // 散去更新
+        public void UpdateScatter() {
+            ScatterProgress += 0.02f;
+            Position += ScatterVelocity;
+            ScatterVelocity *= 0.96f; // 减速
+            Scale *= 0.97f; // 缩小
+            Frame += 0.4f;
         }
     }
 
@@ -197,6 +203,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private int particleTimer;
         private Vector2 lastCenter;
 
+        // 动画状态
+        private enum AnimState { Spawning, Active, Dissolving }
+        private AnimState currentState = AnimState.Spawning;
+        private int animTimer = 0;
+        private const int SpawnDuration = 45; // 0.75秒出现
+        private const int DissolveDuration = 50; // ~0.83秒消失
+        private float cloneAlpha = 0f;
+
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 40;
@@ -209,9 +223,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
-            if (hp == null || !hp.CloneFishActive) { Projectile.Kill(); return; }
+            
+            // 检测外部关闭信号
+            if (hp == null || !hp.CloneFishActive) {
+                if (currentState != AnimState.Dissolving) {
+                    StartDissolve();
+                }
+            }
+
             Projectile.timeLeft = 2;
 
+            // 状态机
+            switch (currentState) {
+                case AnimState.Spawning:
+                    UpdateSpawning(hp);
+                    break;
+                case AnimState.Active:
+                    UpdateActive(hp);
+                    break;
+                case AnimState.Dissolving:
+                    UpdateDissolving();
+                    break;
+            }
+        }
+
+        private void UpdateSpawning(HalibutPlayer hp) {
+            animTimer++;
+            cloneAlpha = MathHelper.Clamp(animTimer / (float)SpawnDuration, 0f, 1f);
+
+            // 鱼群从远处聚拢
+            boids ??= CreateBoidsForSpawn(Projectile.Center);
+            Vector2 gatherTarget = Projectile.Center;
+            foreach (var b in boids) {
+                Vector2 toCenter = (gatherTarget - b.Position) * 0.15f;
+                b.Velocity += toCenter;
+                if (b.Velocity.Length() > 5f) b.Velocity = b.Velocity.SafeNormalize(Vector2.Zero) * 5f;
+                b.Position += b.Velocity;
+                b.Frame += 0.3f;
+            }
+
+            // 粒子涌现
+            if (animTimer % 3 == 0) {
+                SpawnSpawnParticle(Projectile.Center + Main.rand.NextVector2Circular(60, 60));
+            }
+
+            if (animTimer >= SpawnDuration) {
+                currentState = AnimState.Active;
+                animTimer = 0;
+                cloneAlpha = 1f;
+                // 重新创建鱼群用于正常环绕
+                boids = CreateBoids(Projectile.Center);
+                lastCenter = Projectile.Center;
+            }
+        }
+
+        private void UpdateActive(HalibutPlayer hp) {
             if (hp.CloneSnapshots.Count < CloneFish.ReplayDelay) return;
             int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
             var snap = hp.CloneSnapshots[index];
@@ -245,10 +311,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
         }
 
+        private void UpdateDissolving() {
+            animTimer++;
+            cloneAlpha = 1f - MathHelper.Clamp(animTimer / (float)DissolveDuration, 0f, 1f);
+
+            // 鱼群散去
+            if (boids != null) {
+                foreach (var b in boids) {
+                    b.UpdateScatter();
+                    // 每条鱼化作水粒子
+                    if (animTimer % 4 == 0 && b.ScatterProgress < 0.6f) {
+                        SpawnDissolveParticle(b.Position);
+                    }
+                }
+            }
+
+            // 克隆体粒子化
+            if (animTimer % 2 == 0) {
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(30, 50);
+                SpawnDissolveParticle(pos);
+            }
+
+            if (animTimer >= DissolveDuration) {
+                Projectile.Kill();
+            }
+        }
+
+        private void StartDissolve() {
+            currentState = AnimState.Dissolving;
+            animTimer = 0;
+        }
+
         private static List<AbyssFishBoid> CreateBoids(Vector2 center) {
             var list = new List<AbyssFishBoid>();
             int count = 10;
             for (int i = 0; i < count; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(40, 40)));
+            return list;
+        }
+
+        private static List<AbyssFishBoid> CreateBoidsForSpawn(Vector2 center) {
+            var list = new List<AbyssFishBoid>();
+            int count = 10;
+            // 从更远的距离开始
+            for (int i = 0; i < count; i++) {
+                var boid = new AbyssFishBoid(center + Main.rand.NextVector2Circular(180, 180));
+                boid.Velocity = (center - boid.Position).SafeNormalize(Vector2.Zero) * 3f;
+                list.Add(boid);
+            }
             return list;
         }
 
@@ -259,45 +368,82 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Main.dust[dust].velocity += Main.rand.NextVector2Circular(0.4f, 0.4f);
         }
 
+        private static void SpawnSpawnParticle(Vector2 pos) {
+            // 聚拢效果：粒子向中心收缩
+            int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, new Color(100, 180, 255), 1.2f);
+            Main.dust[dust].noGravity = true;
+            Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
+        }
+
+        private static void SpawnDissolveParticle(Vector2 pos) {
+            // 消散效果：水珠向外扩散
+            int dustType = Main.rand.NextBool() ? DustID.Water : DustID.WaterCandle;
+            int dust = Dust.NewDust(pos, 1, 1, dustType, 0, 0, 120, new Color(80, 150, 255), 1.0f);
+            Main.dust[dust].noGravity = true;
+            Main.dust[dust].velocity = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
+            Main.dust[dust].fadeIn = 1.2f;
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             var hp = Owner.GetOverride<HalibutPlayer>();
-            if (hp == null || hp.CloneSnapshots.Count < CloneFish.ReplayDelay) return false;
 
-            int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
-            var snap = hp.CloneSnapshots[index];
+            // 只在 Active 状态且有足够快照时绘制完整玩家
+            PlayerSnapshot snap = default;
+            bool drawPlayer = false;
+            if (currentState == AnimState.Active && hp != null && hp.CloneSnapshots.Count >= CloneFish.ReplayDelay) {
+                int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
+                snap = hp.CloneSnapshots[index];
+                drawPlayer = true;
+            }
+            else if (currentState == AnimState.Spawning || currentState == AnimState.Dissolving) {
+                // 出现/消失阶段用当前投射物位置
+                snap = new PlayerSnapshot {
+                    Position = Projectile.position,
+                    Velocity = Projectile.velocity,
+                    Direction = Owner.direction,
+                    BodyFrame = Owner.bodyFrame,
+                    LegFrame = Owner.legFrame
+                };
+                drawPlayer = true;
+            }
 
-            cloneRenderPlayer ??= new Player();
-            var cp = cloneRenderPlayer;
-            cp.ResetEffects();
-            cp.CopyVisuals(Owner);
-            cp.position = snap.Position;
-            cp.velocity = snap.Velocity;
-            cp.direction = snap.Direction;
-            cp.selectedItem = snap.SelectedItem;
-            cp.itemAnimation = snap.ItemAnimation;
-            cp.itemTime = snap.ItemTime;
-            cp.itemRotation = snap.ItemRotation;
-            cp.bodyFrame = snap.BodyFrame;
-            cp.legFrame = snap.LegFrame;
-            cp.whoAmI = Owner.whoAmI;
+            if (drawPlayer && cloneAlpha > 0.01f) {
+                cloneRenderPlayer ??= new Player();
+                var cp = cloneRenderPlayer;
+                cp.ResetEffects();
+                cp.CopyVisuals(Owner);
+                cp.position = snap.Position;
+                cp.velocity = snap.Velocity;
+                cp.direction = snap.Direction;
+                cp.bodyFrame = snap.BodyFrame;
+                cp.legFrame = snap.LegFrame;
+                cp.itemAnimation = snap.ItemAnimation;
+                cp.itemRotation = snap.ItemRotation;
+                cp.whoAmI = Owner.whoAmI;
 
-            Color drawColor = Color.BlueViolet;
-            cp.skinVariant = Owner.skinVariant;
-            cp.skinColor = drawColor;
-            cp.shirtColor = drawColor;
-            cp.underShirtColor = drawColor;
-            cp.pantsColor = drawColor;
-            cp.shoeColor = drawColor;
-            cp.hairColor = drawColor;
-            cp.eyeColor = drawColor;
+                Color drawColor = Color.BlueViolet * cloneAlpha;
+                cp.skinVariant = Owner.skinVariant;
+                cp.skinColor = drawColor;
+                cp.shirtColor = drawColor;
+                cp.underShirtColor = drawColor;
+                cp.pantsColor = drawColor;
+                cp.shoeColor = drawColor;
+                cp.hairColor = drawColor;
+                cp.eyeColor = drawColor;
+
+                if (cp.itemAnimation > 0) {
+                    Texture2D gun = TextureAssets.Item[ModContent.ItemType<HalibutCannon>()].Value;
+                    Main.spriteBatch.Draw(gun, cp.Center - Main.screenPosition + cp.itemRotation.ToRotationVector2() * 42 * cp.direction, null, Color.BlueViolet * 0.75f
+                        , cp.itemRotation, gun.Size() / 2, 1f, cp.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                }
+
+                try { Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin); } catch { }
+            }
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
-            cp.position = snap.Position;
-            cp.bodyFrame = snap.BodyFrame;
-            try { Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin); } catch { }
-
+            // 绘制鱼群
             if (boids != null) {
                 Main.instance.LoadItem(ItemID.FrostMinnow);
                 Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
@@ -307,7 +453,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     float rot = b.Velocity.ToRotation() + (b.Velocity.X > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
                     Vector2 origin = rect.Size() * 0.5f;
                     float fade = 0.65f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + b.Frame) * 0.25f;
-                    Color c = new Color(70, 200, 255, 255) * fade;
+                    float alphaMod = currentState == AnimState.Dissolving ? (1f - b.ScatterProgress) : cloneAlpha;
+                    Color c = new Color(70, 200, 255, 255) * fade * alphaMod;
                     Main.spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
                 }
             }
