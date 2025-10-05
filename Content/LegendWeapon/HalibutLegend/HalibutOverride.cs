@@ -144,16 +144,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
+            item.UseSound = SoundID.Item38;
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            halibutPlayer.SeaDomainLayers = 3;
-            SkillID = SeaDomain.ID; // 原有逻辑
+            halibutPlayer.SeaDomainLayers = 7;
+            SkillID = FishTeleport.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 // 检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {
                     return false; // 禁止攻击
                 }
 
-                item.UseSound = SoundID.Item38;
                 if (player.altFunctionUse == 2) {
                     item.UseSound = null;
                 }
@@ -165,6 +165,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                         player.velocity += velocity * 6;
                         return false; //不发射普通弹幕
                     }
+                }
+            }
+            if (SkillID == RestartFish.ID) {
+                if (player.altFunctionUse == 2) {
+                    item.UseSound = null;
+                }
+            }
+            if (SkillID == FishTeleport.ID) {
+                if (player.altFunctionUse == 2) {
+                    item.UseSound = null;
                 }
             }
             return true;
@@ -184,6 +194,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return true;
             }
             if (SkillID == Superposition.ID) {
+                return true;
+            }
+            if (SkillID == FishTeleport.ID) {
                 return true;
             }
             return false;
@@ -209,6 +222,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 if (SkillID == Superposition.ID) {
                     Superposition.AltUse(item, player);
+                    return true;
+                }
+                if (SkillID == FishTeleport.ID) {
+                    FishTeleport.AltUse(item, player);
                     return true;
                 }
             }

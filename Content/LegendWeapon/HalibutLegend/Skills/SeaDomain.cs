@@ -453,6 +453,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private readonly HashSet<int> boundNPCs = new();
         private int effectUpdateTimer;
 
+        /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
+        public float GetMaxRadius() {
+            return maxDomainRadius;
+        }
+
         public override void SetDefaults() {
             Projectile.width = 2400; // 扩大碰撞箱以支持10层
             Projectile.height = 2400;

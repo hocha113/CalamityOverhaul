@@ -107,6 +107,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int RestartFishCooldown { get; set; }
         #endregion
 
+        #region 瞬移技能数据
+        /// <summary>瞬移技能触发冷却</summary>
+        public int FishTeleportToggleCD { get; set; }
+        /// <summary>瞬移技能冷却时间</summary>
+        public int FishTeleportCooldown { get; set; }
+        #endregion
+
         #region 叠加攻击技能数据
         /// <summary>叠加攻击触发冷却</summary>
         public int SuperpositionToggleCD { get; set; }
@@ -180,9 +187,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (RestartFishToggleCD > 0) RestartFishToggleCD--;
             if (RestartFishCooldown > 0) RestartFishCooldown--;
 
-            // 叠加攻击冷却
-            if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
-            if (SuperpositionCooldown > 0) SuperpositionCooldown--;
+            // 瞬移技能冷却
+            if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
+            if (FishTeleportCooldown > 0) FishTeleportCooldown--;
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
