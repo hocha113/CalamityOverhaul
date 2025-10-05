@@ -1,12 +1,11 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
@@ -51,7 +50,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     }
 
     #region 数据结构
-    internal struct PlayerSnapshot {
+    internal struct PlayerSnapshot
+    {
         public Vector2 Position;
         public Vector2 Velocity;
         public int Direction;
@@ -75,7 +75,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
     }
 
-    internal struct CloneShootEvent {
+    internal struct CloneShootEvent
+    {
         public int FrameIndex;
         public Vector2 Position;
         public Vector2 Velocity;
@@ -87,7 +88,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     }
     #endregion
 
-    internal class AbyssFishBoid {
+    internal class AbyssFishBoid
+    {
         public Vector2 Position;
         public Vector2 Velocity;
         private float Speed;
@@ -156,8 +158,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             // 轨道吸引跟随
             Vector2 toOrbit = (orbitPos - Position) * 0.22f;
 
-            
-
             // 超距强回拉
             float centerDist = Vector2.Distance(Position, targetCenter);
             if (centerDist > dynamicRadius * 3f) {
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             // 随机噪声（随速度增强紧张感）
-            float time = (float)Main.GameUpdateCount * 0.07f + NoiseSeed;
+            float time = Main.GameUpdateCount * 0.07f + NoiseSeed;
             Vector2 jitter = new Vector2((float)Math.Sin(time * 1.5f), (float)Math.Cos(time * 1.9f)) * (0.9f + speedNorm * 0.6f);
 
             Velocity += separation + alignment + cohesion + toOrbit + jitter * 0.5f;
@@ -245,14 +245,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
         }
 
-        private List<AbyssFishBoid> CreateBoids(Vector2 center) {
+        private static List<AbyssFishBoid> CreateBoids(Vector2 center) {
             var list = new List<AbyssFishBoid>();
             int count = 10;
             for (int i = 0; i < count; i++) list.Add(new AbyssFishBoid(center + Main.rand.NextVector2Circular(40, 40)));
             return list;
         }
 
-        private void SpawnAbyssParticle(Vector2 pos) {
+        private static void SpawnAbyssParticle(Vector2 pos) {
             int dust = Dust.NewDust(pos, 1, 1, DustID.DungeonSpirit, 0, 0, 150, default, 0.75f);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity *= 0.15f;
@@ -315,32 +315,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             return false;
-        }
-    }
-
-    internal static class PlayerCloneExtensions {
-        public static void CopyVisuals(this Player dst, Player src) {
-            dst.skinVariant = src.skinVariant;
-            dst.hair = src.hair;
-            dst.hairColor = src.hairColor;
-            dst.skinColor = src.skinColor;
-            dst.eyeColor = src.eyeColor;
-            dst.shirtColor = src.shirtColor;
-            dst.underShirtColor = src.underShirtColor;
-            dst.pantsColor = src.pantsColor;
-            dst.shoeColor = src.shoeColor;
-            for (int i = 0; i < dst.armor.Length && i < src.armor.Length; i++) {
-                dst.armor[i] = src.armor[i].Clone();
-            }
-            for (int i = 0; i < dst.dye.Length && i < src.dye.Length; i++) {
-                dst.dye[i] = src.dye[i].Clone();
-            }
-            dst.Male = src.Male;
-            dst.bodyFrame = src.bodyFrame;
-            dst.legFrame = src.legFrame;
-            dst.headRotation = src.headRotation;
-            dst.bodyRotation = src.bodyRotation;
-            dst.legRotation = src.legRotation;
         }
     }
 }
