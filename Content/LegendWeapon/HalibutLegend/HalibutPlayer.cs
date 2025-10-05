@@ -77,6 +77,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
         public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
         private const int MaxSnapshots = 60 * 6; // 最多记录6秒
+        /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
+        public int CloneFishToggleCD { get; set; }
         #endregion
 
         public override void ResetEffects() {//用于每帧恢复数据
@@ -134,6 +136,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (CloneShootEvents.Count > 0) CloneShootEvents.Clear();
                 CloneFrameCounter = 0;
             }
+
+            if (CloneFishToggleCD > 0) CloneFishToggleCD--;
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
