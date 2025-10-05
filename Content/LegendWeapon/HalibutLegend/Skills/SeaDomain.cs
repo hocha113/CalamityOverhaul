@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -45,6 +46,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<SeaDomainProj>(), 0, 0, player.whoAmI);
         }
+
+        /// <summary>判断是否为弱小可束缚生物</summary>
+        public static bool IsWeakEntity(NPC npc) {
+            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500)
+                return false;
+            if (npc.knockBackResist <= 0.3f)
+                return false;
+            return npc.friendly == false && npc.damage > 0;
+        }
     }
 
     #region 领域鱼群系统
@@ -57,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float Scale;
         public float Frame;
         public FishSize Size;
-        public int FishType; // 不同鱼类型
+        public int FishType;
         public Color TintColor;
         private float OrbitAngle;
         private float OrbitSpeed;
@@ -253,6 +263,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     }
     #endregion
 
+    #region 水压侵蚀效果
+    internal class WaterPressureEffect
+    {
+        public int NPCIndex;
+        public int Life;
+        public readonly List<WaterPressureParticle> Particles = new();
+        private int particleSpawnTimer;
+
+        public WaterPressureEffect(int npcIndex) {
+            NPCIndex = npcIndex;
+            Life = 0;
+        }
+
+        public void Update(Vector2 npcCenter, float npcRadius) {
+            Life++;
+            particleSpawnTimer++;
+            
+            if (particleSpawnTimer % 3 == 0) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = npcCenter + angle.ToRotationVector2() * npcRadius * Main.rand.NextFloat(0.8f, 1.2f);
+                Particles.Add(new WaterPressureParticle(pos, npcCenter));
+            }
+
+            for (int i = Particles.Count - 1; i >= 0; i--) {
+                Particles[i].Update();
+                if (Particles[i].ShouldRemove()) {
+                    Particles.RemoveAt(i);
+                }
+            }
+        }
+
+        public void Draw() {
+            foreach (var p in Particles) {
+                p.Draw();
+            }
+        }
+    }
+
+    internal class WaterPressureParticle
+    {
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Life;
+        public float MaxLife;
+        public float Scale;
+        public float Rotation;
+        private Color color;
+
+        public WaterPressureParticle(Vector2 pos, Vector2 npcCenter) {
+            Position = pos;
+            Life = 0f;
+            MaxLife = Main.rand.NextFloat(20f, 40f);
+            Scale = Main.rand.NextFloat(0.8f, 1.5f);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            
+            // 向NPC中心汇聚
+            Vector2 toCenter = (npcCenter - pos).SafeNormalize(Vector2.Zero);
+            Velocity = toCenter * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1f, 1f);
+            
+            color = Main.rand.NextBool() ? new Color(100, 200, 255) : new Color(80, 180, 255);
+        }
+
+        public void Update() {
+            Life++;
+            Position += Velocity;
+            Velocity *= 0.95f;
+            Rotation += 0.1f;
+        }
+
+        public bool ShouldRemove() => Life >= MaxLife;
+
+        public void Draw() {
+            float progress = Life / MaxLife;
+            float alpha = (1f - progress) * 0.8f;
+            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
+            Color c = color * alpha;
+            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation, 
+                tex.Size() / 2f, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
+        }
+    }
+    #endregion
+
     internal class SeaDomainProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -275,6 +367,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private readonly List<WaterRipple> ripples = new();
         private int rippleTimer;
+
+        // 敌人追踪与水压效果
+        private readonly Dictionary<int, WaterPressureEffect> enemyEffects = new();
+        private readonly HashSet<int> boundNPCs = new(); // 被束缚的弱小生物
+        private int effectUpdateTimer;
 
         public override void SetDefaults() {
             Projectile.width = (int)MaxRadius * 2;
@@ -338,6 +435,107 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     ripples.RemoveAt(i);
                 }
             }
+
+            // 更新领域功能性效果
+            if (currentState == DomainState.Active) {
+                UpdateDomainEffects();
+            }
+        }
+
+        private void UpdateDomainEffects() {
+            effectUpdateTimer++;
+            
+            // 清理无效效果
+            var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
+            foreach (var key in toRemove) {
+                enemyEffects.Remove(key);
+                boundNPCs.Remove(key);
+            }
+
+            // 扫描领域内敌人
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly) continue;
+
+                float dist = Vector2.Distance(npc.Center, Owner.Center);
+                bool inDomain = dist < domainRadius;
+
+                if (inDomain) {
+                    // 添加水压效果
+                    if (!enemyEffects.ContainsKey(i)) {
+                        enemyEffects[i] = new WaterPressureEffect(i);
+                    }
+                    
+                    float npcRadius = (npc.width + npc.height) * 0.25f;
+                    enemyEffects[i].Update(npc.Center, npcRadius);
+
+                    // 束缚弱小生物
+                    if (SeaDomain.IsWeakEntity(npc)) {
+                        if (!boundNPCs.Contains(i)) {
+                            boundNPCs.Add(i);
+                        }
+                        
+                        // 计算拖行力
+                        float dragStrength = 0.25f;
+                        Vector2 desiredPos = Owner.Center + (npc.Center - Owner.Center).SafeNormalize(Vector2.Zero) * Math.Min(dist, domainRadius * 0.8f);
+                        Vector2 dragForce = (desiredPos - npc.Center) * dragStrength;
+                        npc.velocity += dragForce;
+                        Lighting.AddLight(npc.Center, TorchID.Blue);
+                        
+                        // 防止逃离
+                        if (dist > domainRadius * 0.9f) {
+                            Vector2 pullBack = (Owner.Center - npc.Center).SafeNormalize(Vector2.Zero) * 5f;
+                            npc.velocity += pullBack;
+                        }
+                    }
+                }
+                else {
+                    // 移除效果
+                    if (enemyEffects.ContainsKey(i)) {
+                        enemyEffects.Remove(i);
+                    }
+                    boundNPCs.Remove(i);
+                }
+            }
+
+            // 弹幕追踪
+            ApplyProjectileHoming();
+        }
+
+        private void ApplyProjectileHoming() {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (!proj.active || !proj.friendly || proj.hostile) continue;
+                if (proj.owner != Owner.whoAmI) continue;
+
+                float distToCenter = Vector2.Distance(proj.Center, Owner.Center);
+                if (distToCenter > domainRadius) continue;
+
+                // 寻找领域内最近的敌人
+                NPC target = FindNearestEnemy(proj.Center, domainRadius);
+                if (target != null) {
+                    float homingStrength = 0.25f;
+                    Vector2 toTarget = (target.Center - proj.Center).SafeNormalize(Vector2.Zero);
+                    proj.velocity = Vector2.Lerp(proj.velocity, toTarget * proj.velocity.Length(), homingStrength);
+                }
+            }
+        }
+
+        private NPC FindNearestEnemy(Vector2 position, float maxRange) {
+            NPC closest = null;
+            float closestDist = maxRange;
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
+
+                float dist = Vector2.Distance(npc.Center, position);
+                if (dist < closestDist && Vector2.Distance(npc.Center, Owner.Center) < domainRadius) {
+                    closest = npc;
+                    closestDist = dist;
+                }
+            }
+            return closest;
         }
 
         private void UpdateExpanding() {
@@ -413,13 +611,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void StartCollapse() {
             currentState = DomainState.Collapsing;
             stateTimer = 0;
+            enemyEffects.Clear();
+            boundNPCs.Clear();
         }
 
         private List<DomainFishBoid> CreateBorderFish(Vector2 center, float radius) {
             var list = new List<DomainFishBoid>();
             int count = 36; // 增加到36条
             for (int i = 0; i < count; i++) {
-                float angle = (i / (float)count) * MathHelper.TwoPi;
+                float angle = i / (float)count * MathHelper.TwoPi;
                 list.Add(new DomainFishBoid(center, radius, angle));
             }
             return list;
@@ -493,6 +693,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
+            // 绘制水压侵蚀效果
+            foreach (var effect in enemyEffects.Values) {
+                effect.Draw();
+            }
+
             // 绘制鱼的拖尾
             if (borderFish != null) {
                 foreach (var fish in borderFish) {
@@ -506,7 +711,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     DrawFish(fish, domainAlpha);
                 }
             }
+
+            // 绘制束缚指示器
+            DrawBoundIndicators();
+
             return false;
+        }
+
+        private void DrawBoundIndicators() {
+            if (boundNPCs.Count == 0) return;
+            
+            Texture2D chainTex = TextureAssets.Chain12.Value;
+            foreach (int npcIndex in boundNPCs) {
+                NPC npc = Main.npc[npcIndex];
+                if (!npc.active) continue;
+
+                Vector2 start = Owner.Center;
+                Vector2 end = npc.Center;
+                Vector2 diff = end - start;
+                float length = diff.Length();
+                float rotation = diff.ToRotation() - MathHelper.PiOver2;
+                int segments = (int)(length / 16f);
+
+                for (int i = 0; i < segments; i++) {
+                    float progress = i / (float)segments;
+                    Vector2 pos = Vector2.Lerp(start, end, progress);
+                    float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + progress * MathHelper.TwoPi) * 3f;
+                    pos += diff.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * wave;
+                    
+                    Color c = new Color(100, 200, 255, 0) * 0.4f * domainAlpha;
+                    Main.spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, c, rotation, 
+                        chainTex.Size() / 2f, 0.6f, SpriteEffects.None, 0f);
+                }
+            }
         }
 
         private void DrawFish(DomainFishBoid fish, float alpha) {
