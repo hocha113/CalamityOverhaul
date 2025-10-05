@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -87,6 +88,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int CloneInterval { get; set; } = 30;
         #endregion
 
+        #region 海域领域技能数据
+        /// <summary>海域领域是否激活</summary>
+        public bool SeaDomainActive { get; set; }
+        /// <summary>海域领域触发冷却</summary>
+        public int SeaDomainToggleCD { get; set; }
+        /// <summary>海域领域冷却时间</summary>
+        public int SeaDomainCooldown { get; set; }
+        /// <summary>海域领域最大冷却（8秒）</summary>
+        public const int SeaDomainMaxCooldown = 480;
+        #endregion
+
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
@@ -144,6 +156,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             if (CloneFishToggleCD > 0) CloneFishToggleCD--;
+
+            // 海域领域冷却
+            if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
+            if (SeaDomainCooldown > 0) SeaDomainCooldown--;
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {

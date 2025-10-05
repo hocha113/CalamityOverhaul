@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            SkillID = CloneFish.ID; // 原有逻辑
+            SkillID = SeaDomain.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -178,6 +178,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (SkillID == CloneFish.ID) {
                 return true;
             }
+            if (SkillID == SeaDomain.ID) {
+                return true;
+            }
             return false;
         }
 
@@ -189,6 +192,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 if (SkillID == CloneFish.ID) {
                     CloneFish.AltUse(item, player);
+                    return true;
+                }
+                if (SkillID == SeaDomain.ID) {
+                    SeaDomain.AltUse(item, player);
                     return true;
                 }
             }
