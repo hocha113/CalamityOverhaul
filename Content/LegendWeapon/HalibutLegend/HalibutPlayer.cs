@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -76,9 +75,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int CloneFrameCounter { get; set; }
         public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
         public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
-        private const int MaxSnapshots = 60 * 6; // 最多记录6秒
+        private const int MaxSnapshots = 60 * 10; // 最多记录10秒（支持更长延迟）
         /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
         public int CloneFishToggleCD { get; set; }
+        
+        /// <summary>克隆体数量（1-5）</summary>
+        public int CloneCount { get; set; } = 1;//调试，先保持1个
+        /// <summary>最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）</summary>
+        public int CloneMinDelay { get; set; } = 60;
+        /// <summary>克隆体间隔帧数（每个克隆体之间的时间差，20帧=0.33秒）</summary>
+        public int CloneInterval { get; set; } = 30;
         #endregion
 
         public override void ResetEffects() {//用于每帧恢复数据
@@ -168,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Position = Player.Center,
                 ItemType = itemType
             });
-            if (CloneShootEvents.Count > 500) {
+            if (CloneShootEvents.Count > 1000) { // 增加事件缓存
                 CloneShootEvents.RemoveAt(0);
             }
         }

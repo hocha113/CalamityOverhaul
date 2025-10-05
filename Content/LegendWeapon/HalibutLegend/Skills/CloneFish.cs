@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     internal static class CloneFish
     {
         public static int ID = 3;
-        public const int ReplayDelay = 60;
         private const int ToggleCD = 12; // 0.2 秒左右的触发后摇
 
         public static void AltUse(Item item, Player player) {
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 return;
             hp.CloneFishActive = true;
             if (Main.myPlayer == player.whoAmI) {
-                SpawnCloneProjectile(player);
+                SpawnCloneProjectiles(player);
             }
         }
 
@@ -43,10 +42,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             hp.CloneFishActive = false;
         }
 
-        internal static void SpawnCloneProjectile(Player player) {
+        internal static void SpawnCloneProjectiles(Player player) {
+            var hp = player.GetOverride<HalibutPlayer>();
             var source = player.GetSource_Misc("CloneFishSkill");
-            Projectile.NewProjectile(source, player.Center, Vector2.Zero
-                , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI);
+            
+            // 生成多个克隆体，每个有不同的延迟
+            int count = Math.Clamp(hp.CloneCount, 1, 5);
+            for (int i = 0; i < count; i++) {
+                int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
+                int proj = Projectile.NewProjectile(source, player.Center, Vector2.Zero
+                    , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI, delay);
+            }
         }
     }
 
@@ -103,7 +109,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private float OrbitAngle;
         private float OrbitSpeed;
         private float NoiseSeed;
-        // 散去动画用
         public Vector2 ScatterVelocity;
         public float ScatterProgress;
 
@@ -182,12 +187,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Frame += 0.30f + Speed * 0.04f;
         }
 
-        // 散去更新
         public void UpdateScatter() {
             ScatterProgress += 0.02f;
             Position += ScatterVelocity;
-            ScatterVelocity *= 0.96f; // 减速
-            Scale *= 0.97f; // 缩小
+            ScatterVelocity *= 0.96f;
+            Scale *= 0.97f;
             Frame += 0.4f;
         }
     }
@@ -207,9 +211,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private enum AnimState { Spawning, Active, Dissolving }
         private AnimState currentState = AnimState.Spawning;
         private int animTimer = 0;
-        private const int SpawnDuration = 45; // 0.75秒出现
-        private const int DissolveDuration = 50; // ~0.83秒消失
+        private const int SpawnDuration = 45;
+        private const int DissolveDuration = 50;
         private float cloneAlpha = 0f;
+        
+        // 延迟配置（通过 ai[0] 传递）
+        private int replayDelay;
 
         public override void SetDefaults() {
             Projectile.width = 20;
@@ -223,6 +230,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
+            
+            // 第一帧初始化延迟
+            if (Projectile.localAI[0] == 0f) {
+                replayDelay = (int)Projectile.ai[0];
+                if (replayDelay <= 0) replayDelay = 30; // 默认最小延迟
+                Projectile.localAI[0] = 1f;
+            }
             
             // 检测外部关闭信号
             if (hp == null || !hp.CloneFishActive) {
@@ -251,7 +265,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             animTimer++;
             cloneAlpha = MathHelper.Clamp(animTimer / (float)SpawnDuration, 0f, 1f);
 
-            // 鱼群从远处聚拢
             boids ??= CreateBoidsForSpawn(Projectile.Center);
             Vector2 gatherTarget = Projectile.Center;
             foreach (var b in boids) {
@@ -262,7 +275,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 b.Frame += 0.3f;
             }
 
-            // 粒子涌现
             if (animTimer % 3 == 0) {
                 SpawnSpawnParticle(Projectile.Center + Main.rand.NextVector2Circular(60, 60));
             }
@@ -271,15 +283,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 currentState = AnimState.Active;
                 animTimer = 0;
                 cloneAlpha = 1f;
-                // 重新创建鱼群用于正常环绕
                 boids = CreateBoids(Projectile.Center);
                 lastCenter = Projectile.Center;
             }
         }
 
         private void UpdateActive(HalibutPlayer hp) {
-            if (hp.CloneSnapshots.Count < CloneFish.ReplayDelay) return;
-            int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
+            // 检查是否有足够的快照
+            if (hp.CloneSnapshots.Count < replayDelay) return;
+            
+            int index = hp.CloneSnapshots.Count - replayDelay;
             var snap = hp.CloneSnapshots[index];
             Projectile.Center = snap.Position + Owner.Size * 0.5f;
             Projectile.velocity = snap.Velocity;
@@ -287,7 +300,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             afterImages.Add(snap);
             if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
-            int replayFrame = hp.CloneFrameCounter - CloneFish.ReplayDelay;
+            // 重放射击事件
+            int replayFrame = hp.CloneFrameCounter - replayDelay;
             if (hp.CloneShootEvents.Count > 0) {
                 for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
                     var ev = hp.CloneShootEvents[i];
@@ -315,18 +329,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             animTimer++;
             cloneAlpha = 1f - MathHelper.Clamp(animTimer / (float)DissolveDuration, 0f, 1f);
 
-            // 鱼群散去
             if (boids != null) {
                 foreach (var b in boids) {
                     b.UpdateScatter();
-                    // 每条鱼化作水粒子
                     if (animTimer % 4 == 0 && b.ScatterProgress < 0.6f) {
                         SpawnDissolveParticle(b.Position);
                     }
                 }
             }
 
-            // 克隆体粒子化
             if (animTimer % 2 == 0) {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(30, 50);
                 SpawnDissolveParticle(pos);
@@ -352,7 +363,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private static List<AbyssFishBoid> CreateBoidsForSpawn(Vector2 center) {
             var list = new List<AbyssFishBoid>();
             int count = 10;
-            // 从更远的距离开始
             for (int i = 0; i < count; i++) {
                 var boid = new AbyssFishBoid(center + Main.rand.NextVector2Circular(180, 180));
                 boid.Velocity = (center - boid.Position).SafeNormalize(Vector2.Zero) * 3f;
@@ -369,14 +379,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private static void SpawnSpawnParticle(Vector2 pos) {
-            // 聚拢效果：粒子向中心收缩
             int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 100, new Color(100, 180, 255), 1.2f);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = Main.rand.NextVector2Circular(2f, 2f);
         }
 
         private static void SpawnDissolveParticle(Vector2 pos) {
-            // 消散效果：水珠向外扩散
             int dustType = Main.rand.NextBool() ? DustID.Water : DustID.WaterCandle;
             int dust = Dust.NewDust(pos, 1, 1, dustType, 0, 0, 120, new Color(80, 150, 255), 1.0f);
             Main.dust[dust].noGravity = true;
@@ -387,16 +395,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override bool PreDraw(ref Color lightColor) {
             var hp = Owner.GetOverride<HalibutPlayer>();
 
-            // 只在 Active 状态且有足够快照时绘制完整玩家
             PlayerSnapshot snap = default;
             bool drawPlayer = false;
-            if (currentState == AnimState.Active && hp != null && hp.CloneSnapshots.Count >= CloneFish.ReplayDelay) {
-                int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
+            if (currentState == AnimState.Active && hp != null && hp.CloneSnapshots.Count >= replayDelay) {
+                int index = hp.CloneSnapshots.Count - replayDelay;
                 snap = hp.CloneSnapshots[index];
                 drawPlayer = true;
             }
             else if (currentState == AnimState.Spawning || currentState == AnimState.Dissolving) {
-                // 出现/消失阶段用当前投射物位置
                 snap = new PlayerSnapshot {
                     Position = Projectile.position,
                     Velocity = Projectile.velocity,
@@ -406,6 +412,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 };
                 drawPlayer = true;
             }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
             if (drawPlayer && cloneAlpha > 0.01f) {
                 cloneRenderPlayer ??= new Player();
@@ -441,9 +450,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+
+            Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
-            // 绘制鱼群
             if (boids != null) {
                 Main.instance.LoadItem(ItemID.FrostMinnow);
                 Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
