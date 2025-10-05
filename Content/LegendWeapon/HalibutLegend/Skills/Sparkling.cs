@@ -177,7 +177,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public override string Texture => CWRConstant.Cay_Item + "Fishing/SunkenSeaCatches/SparklingEmpress";
         public Player Owner;
-        private bool fired;
+        internal bool Fired {
+            get => Projectile.ai[2] == 1f;
+            set => Projectile.ai[2] = value ? 1f : 0f;
+        }
         private const int PreFireDelay = 16; // 鱼出现后到可能开火的最小延迟
 
         private ref float VolleyId => ref Projectile.ai[0]; // 齐射id
@@ -219,10 +222,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 // 逐条依次发射：依据玩家的SparklingVolleyTimer和索引
                 int fireInterval = 14; // 两条鱼间隔
                 int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
-                if (!fired && hp.SparklingVolleyTimer >= startFireTime) {
+                if (!Fired && hp.SparklingVolleyTimer >= startFireTime) {
                     FireLaser();
-                    fired = true;
-                    Projectile.ai[2] = 1f;
+                    Fired = true;
                     Projectile.netUpdate = true;
                     hp.SparklingNextFireIndex++;
                 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -70,6 +71,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public const int AttackRecoveryDuration = 60;
 
+        #region 克隆技能数据
+        public bool CloneFishActive { get; set; }
+        public int CloneFrameCounter { get; set; }
+        public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
+        public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
+        private const int MaxSnapshots = 60 * 6; // 最多记录6秒
+        #endregion
+
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
@@ -109,6 +118,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (AttackRecoveryTimer > 0) {
                 AttackRecoveryTimer--;
             }
+
+            // 克隆技能记录
+            if (CloneFishActive) {
+                CloneFrameCounter++;
+                // 记录快照
+                CloneSnapshots.Add(new PlayerSnapshot(Player));
+                if (CloneSnapshots.Count > MaxSnapshots) {
+                    CloneSnapshots.RemoveAt(0);
+                }
+            }
+            else {
+                // 不活动时清理历史
+                if (CloneSnapshots.Count > 0) CloneSnapshots.Clear();
+                if (CloneShootEvents.Count > 0) CloneShootEvents.Clear();
+                CloneFrameCounter = 0;
+            }
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
@@ -125,5 +150,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
             return true;
         }
+
+        #region 事件登记接口
+        public void RegisterShoot(int projType, Vector2 velocity, int damage, float knockback, int itemType) {
+            if (!CloneFishActive) return;
+            CloneShootEvents.Add(new CloneShootEvent {
+                FrameIndex = CloneFrameCounter,
+                Velocity = velocity,
+                Type = projType,
+                Damage = damage,
+                KnockBack = knockback,
+                Owner = Player.whoAmI,
+                Position = Player.Center,
+                ItemType = itemType
+            });
+            if (CloneShootEvents.Count > 500) {
+                CloneShootEvents.RemoveAt(0);
+            }
+        }
+        #endregion
     }
 }

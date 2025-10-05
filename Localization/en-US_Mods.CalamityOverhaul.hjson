@@ -1544,6 +1544,7 @@ Projectiles: {
 	SparklingRay.DisplayName: Sparkling Ray
 	SparklingRayFriendly.DisplayName: Sparkling Ray Friendly
 	SparklingSpawnEffect.DisplayName: Sparkling Spawn Effect
+	ClonePlayer.DisplayName: Clone Player
 }
 
 Configs: {

@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -144,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            SkillID = FishSwarm.ID;
+            SkillID = CloneFish.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -167,12 +168,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
             }
-
             return true;
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
             if (SkillID == FishSwarm.ID) {
+                return true;
+            }
+            if (SkillID == CloneFish.ID) {
                 return true;
             }
             return false;
@@ -182,7 +185,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (player.altFunctionUse == 2) {
                 if (SkillID == FishSwarm.ID) {
                     FishSwarm.AltUse(item, player);
-                    return false;
+                    return true;
+                }
+                if (SkillID == CloneFish.ID) {
+                    CloneFish.AltUse(item, player);
+                    return true;
                 }
             }
             return null;
@@ -191,13 +198,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 
+            var hp = player.GetOverride<HalibutPlayer>();
+
             if (player.altFunctionUse == 2) {
                 return false;//右键不触发普通攻击
             }
 
             // 普攻时尝试触发闪光技能
             if (SkillID == Sparkling.ID) {
-                var hp = player.GetOverride<HalibutPlayer>();
                 hp.SparklingUseCounter++;
                 Sparkling.TryTriggerSparklingVolley(item, player, hp);
             }
@@ -208,6 +216,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
                 int shot = Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
                 Main.projectile[shot].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
+            }
+
+            // 记录克隆需要的射击事件
+            if (hp.CloneFishActive) {
+                hp.RegisterShoot(type, velocity, damage, knockback, item.type);
             }
 
             return false;
