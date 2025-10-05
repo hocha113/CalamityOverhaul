@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
-using CalamityOverhaul.OtherMods.Coralite;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

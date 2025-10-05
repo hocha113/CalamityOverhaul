@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
             }
-            
+
             return true;
         }
 

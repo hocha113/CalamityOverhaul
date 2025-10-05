@@ -7,7 +7,6 @@ using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Accessories;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -365,7 +364,7 @@ namespace CalamityOverhaul.Content
                 }
             }
             if (projectile.CWR().SpanTypes == (byte)SpanTypesEnum.HalibutCannon) {
-                
+
             }
 
             if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {

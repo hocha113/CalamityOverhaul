@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 {
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Projectile.timeLeft = LifeTime / 2;
                 }
             }
-            else if (Projectile.owner.TryGetPlayer(out var owner)){
+            else if (Projectile.owner.TryGetPlayer(out var owner)) {
                 Projectile.Center = owner.Center;
             }
         }
