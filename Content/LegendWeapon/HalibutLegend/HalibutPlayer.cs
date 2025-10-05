@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -190,6 +191,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 瞬移技能冷却
             if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
             if (FishTeleportCooldown > 0) FishTeleportCooldown--;
+
+            if (CWRKeySystem.Halibut_Domain.JustPressed) {
+                SeaDomain.AltUse(Player.GetItem(), Player);
+            }
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {

@@ -1750,6 +1750,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
 	ADS_Key.DisplayName: Zielfernrohr öffnen
 	KreLoad_Key.DisplayName: Nachladen
+	// Halibut_Domain.DisplayName: Halibut: Sea Domain
 }
 
 TextContent: {

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1746,6 +1746,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
+	Halibut_Domain.DisplayName: 大比目鱼:海洋领域
 }
 
 TextContent: {

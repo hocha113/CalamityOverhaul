@@ -1765,6 +1765,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: Murasama: Golpe descendente
 	ADS_Key.DisplayName: Abrir miras
 	KreLoad_Key.DisplayName: Recargar
+	// Halibut_Domain.DisplayName: Halibut: Sea Domain
 }
 
 TextContent: {

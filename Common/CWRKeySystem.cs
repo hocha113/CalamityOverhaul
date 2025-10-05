@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Murasama_DownKey { get; private set; }
         public static ModKeybind KreLoad_Key { get; private set; }
         public static ModKeybind ADS_Key { get; private set; }
+        public static ModKeybind Halibut_Domain { get; private set; }
 
         void ICWRLoader.LoadData() {
             Mod mod = CWRMod.Instance;
@@ -21,6 +22,7 @@ namespace CalamityOverhaul.Common
             Murasama_DownKey = KeybindLoader.RegisterKeybind(mod, "Murasama_DownKey", "X");
             KreLoad_Key = KeybindLoader.RegisterKeybind(mod, "KreLoad_Key", "R");
             ADS_Key = KeybindLoader.RegisterKeybind(mod, "ADS_Key", "Z");
+            Halibut_Domain = KeybindLoader.RegisterKeybind(mod, "Halibut_Domain", "Q");
         }
 
         void ICWRLoader.UnLoadData() {
@@ -31,6 +33,7 @@ namespace CalamityOverhaul.Common
             Murasama_DownKey = null;
             KreLoad_Key = null;
             ADS_Key = null;
+            Halibut_Domain = null;
         }
     }
 }

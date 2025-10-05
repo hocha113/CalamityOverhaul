@@ -1751,6 +1751,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: Murasama : Frappe vers le bas
 	ADS_Key.DisplayName: Activer la visée
 	KreLoad_Key.DisplayName: Recharger
+	// Halibut_Domain.DisplayName: Halibut: Sea Domain
 }
 
 TextContent: {

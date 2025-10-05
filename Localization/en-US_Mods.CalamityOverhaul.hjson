@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1765,6 +1765,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: Murasama:Down Key
 	ADS_Key.DisplayName: Firearms:Open the scope
 	KreLoad_Key.DisplayName: Firearms:Change the ammunition
+	Halibut_Domain.DisplayName: Halibut: Sea Domain
 }
 
 TextContent: {

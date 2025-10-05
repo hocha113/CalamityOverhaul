@@ -1787,6 +1787,7 @@ Keybinds: {
 	Murasama_DownKey.DisplayName: Мурасама: Удар в падении
 	ADS_Key.DisplayName: Открыть Прицел
 	KreLoad_Key.DisplayName: Перезарядка
+	// Halibut_Domain.DisplayName: Halibut: Sea Domain
 }
 
 TextContent: {
