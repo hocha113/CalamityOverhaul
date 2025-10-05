@@ -79,16 +79,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             LayerIndex = layerIndex;
             
             // 优化半径计算：前3层密集，后续层逐渐扩大
-            float baseRadius = 180f;
+            float baseRadius = 220f;
             float radiusStep;
             if (layerIndex < 3) {
                 // 前3层：紧密布局
-                radiusStep = 120f;
+                radiusStep = 130f;
                 TargetRadius = baseRadius + (layerIndex * radiusStep);
             }
             else {
                 // 3层之后：渐进扩大
-                float base3LayerRadius = baseRadius + (2 * 120f); // 第3层的半径
+                float base3LayerRadius = baseRadius + (2 * 130f); // 第3层的半径
                 radiusStep = 100f + ((layerIndex - 2) * 15f); // 逐渐增大间距
                 TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
             }
