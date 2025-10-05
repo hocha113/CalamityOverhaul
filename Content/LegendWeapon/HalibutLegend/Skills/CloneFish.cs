@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -29,12 +30,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public static void Deactivate(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             hp.CloneFishActive = false;
-            // 投射物会在自身 AI 中检测到并自杀
         }
 
         internal static void SpawnCloneProjectile(Player player) {
             var source = player.GetSource_Misc("CloneFishSkill");
-            Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI);
+            Projectile.NewProjectile(source, player.Center, Vector2.Zero
+                , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI);
         }
     }
 
@@ -73,9 +74,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     }
     #endregion
 
-    internal class ClonePlayer : ModProjectile
+    internal class ClonePlayer : BaseHeldProj
     {
-        public override string Texture => "Terraria/Images/Extra_189"; // 占位，不实际绘制
+        public override string Texture => CWRConstant.Placeholder;
 
         private static Player cloneRenderPlayer;
 
@@ -89,12 +90,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-            if (!owner.active) {
+            if (!Owner.active) {
                 Projectile.Kill();
                 return;
             }
-            var hp = owner.GetOverride<HalibutPlayer>();
+            var hp = Owner.GetOverride<HalibutPlayer>();
             if (hp == null || !hp.CloneFishActive) {
                 Projectile.Kill();
                 return;
@@ -103,32 +103,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.timeLeft = 2;
 
             // 取得延迟数据
-            if (hp.CloneSnapshots.Count >= CloneFish.ReplayDelay) {
-                int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
-                var snap = hp.CloneSnapshots[index];
-                Projectile.Center = snap.Position + owner.Size * 0.5f;
-                Projectile.velocity = snap.Velocity;
+            if (hp.CloneSnapshots.Count < CloneFish.ReplayDelay) {
+                return;
+            }
+            int index = hp.CloneSnapshots.Count - CloneFish.ReplayDelay;
+            var snap = hp.CloneSnapshots[index];
+            Projectile.Center = snap.Position + Owner.Size * 0.5f;
+            Projectile.velocity = snap.Velocity;
 
-                // 处理延迟射击事件
-                int replayFrame = hp.CloneFrameCounter - CloneFish.ReplayDelay;
-                if (hp.CloneShootEvents.Count > 0) {
-                    for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
-                        var ev = hp.CloneShootEvents[i];
-                        if (ev.FrameIndex == replayFrame) {
-                            // 复制发射
-                            if (Main.myPlayer == owner.whoAmI) {
-                                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), snap.Position + owner.Size * 0.5f, ev.Velocity, ev.Type, ev.Damage, ev.KnockBack, owner.whoAmI);
-                                Main.projectile[proj].friendly = true;
-                            }
-                        }
-                    }
+            // 处理延迟射击事件
+            int replayFrame = hp.CloneFrameCounter - CloneFish.ReplayDelay;
+            if (hp.CloneShootEvents.Count <= 0) {
+                return;
+            }
+            for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
+                var ev = hp.CloneShootEvents[i];
+                if (ev.FrameIndex != replayFrame) {
+                    continue;
+                }
+                // 复制发射
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
+                        , snap.Position + Owner.Size * 0.5f, ev.Velocity, ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
+                    Main.projectile[proj].friendly = true;
                 }
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Player owner = Main.player[Projectile.owner];
-            var hp = owner.GetOverride<HalibutPlayer>();
+            var hp = Owner.GetOverride<HalibutPlayer>();
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
@@ -141,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             // 基于原玩家拷贝关键外观状态
             var cp = cloneRenderPlayer;
             cp.ResetEffects();
-            cp.CopyVisuals(owner);
+            cp.CopyVisuals(Owner);
             cp.position = snap.Position;
             cp.velocity = snap.Velocity;
             cp.direction = snap.Direction;
@@ -151,45 +154,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             cp.itemRotation = snap.ItemRotation;
             cp.bodyFrame = snap.BodyFrame;
             // 让克隆不影响实际逻辑
-            cp.whoAmI = owner.whoAmI;
+            cp.whoAmI = Owner.whoAmI;
 
-            // 绘制
-            try {
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin);
-            }
-            catch { }
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
                 , null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
             return false; // 我们已自绘
-        }
-    }
-
-    internal static class PlayerCloneExtensions {
-        // 拷贝外观相关（不复制装备全套逻辑，只复制可见内容）
-        public static void CopyVisuals(this Player dst, Player src) {
-            dst.skinVariant = src.skinVariant;
-            dst.hair = src.hair;
-            dst.hairColor = src.hairColor;
-            dst.skinColor = src.skinColor;
-            dst.eyeColor = src.eyeColor;
-            dst.shirtColor = src.shirtColor;
-            dst.underShirtColor = src.underShirtColor;
-            dst.pantsColor = src.pantsColor;
-            dst.shoeColor = src.shoeColor;
-            for (int i = 0; i < dst.armor.Length && i < src.armor.Length; i++) {
-                dst.armor[i] = src.armor[i].Clone();
-            }
-            for (int i = 0; i < dst.dye.Length && i < src.dye.Length; i++) {
-                dst.dye[i] = src.dye[i].Clone();
-            }
-            dst.Male = src.Male;
-            dst.bodyFrame = src.bodyFrame;
-            dst.legFrame = src.legFrame;
-            dst.headRotation = src.headRotation;
-            dst.bodyRotation = src.bodyRotation;
-            dst.legRotation = src.legRotation;
         }
     }
 }
