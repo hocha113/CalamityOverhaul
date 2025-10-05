@@ -1549,6 +1549,8 @@ Projectiles: {
 	RestartEffectProj.DisplayName: Restart Effect Proj
 	SuperpositionProj.DisplayName: Superposition Proj
 	SuperpositionFishProj.DisplayName: Superposition Fish Proj
+	CannonFishShot.DisplayName: Cannon Fish Shot
+	SuperpositionCannon.DisplayName: Superposition Cannon
 }
 
 Configs: {
