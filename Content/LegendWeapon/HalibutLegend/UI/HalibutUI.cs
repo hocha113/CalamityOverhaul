@@ -143,6 +143,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutUIStudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
             HalibutUIStudySlot.Instance.Update();
 
+            if (halibutUISkillSlots.Count == 0) {
+                for (int i = 0; i < 5; i++) {
+                    halibutUISkillSlots.Add(new HalibutUISkillSlot() {
+                        SkillID = i
+                    });
+                }
+            }
+
             int index = 0;
             foreach (var slot in halibutUISkillSlots.ToList()) {
                 slot.DrawPosition = DrawPosition + new Vector2(12, 30);

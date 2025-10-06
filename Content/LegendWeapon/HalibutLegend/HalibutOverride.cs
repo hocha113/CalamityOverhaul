@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             item.UseSound = SoundID.Item38;
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             halibutPlayer.SeaDomainLayers = 7;
-            SkillID = FishTeleport.ID; // 原有逻辑
+            SkillID = YourLevelIsTooLow.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 // 检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {
@@ -206,6 +206,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (SkillID == FishTeleport.ID) {
                 return true;
             }
+            if (SkillID == YourLevelIsTooLow.ID) {
+                return true;
+            }
             return false;
         }
 
@@ -233,6 +236,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
                 if (SkillID == FishTeleport.ID) {
                     FishTeleport.AltUse(item, player);
+                    return true;
+                }
+                if (SkillID == YourLevelIsTooLow.ID) {
+                    YourLevelIsTooLow.AltUse(item, player);
                     return true;
                 }
             }

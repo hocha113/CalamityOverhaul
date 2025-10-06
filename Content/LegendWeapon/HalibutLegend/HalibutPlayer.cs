@@ -122,6 +122,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int SuperpositionCooldown { get; set; }
         #endregion
 
+        #region 终极技能数据
+        /// <summary>终极技能触发冷却</summary>
+        public int YourLevelIsTooLowToggleCD { get; set; }
+        /// <summary>终极技能冷却时间</summary>
+        public int YourLevelIsTooLowCooldown { get; set; }
+        #endregion
+
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
@@ -191,6 +198,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 瞬移技能冷却
             if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
             if (FishTeleportCooldown > 0) FishTeleportCooldown--;
+
+            // 叠加攻击冷却
+            if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
+            if (SuperpositionCooldown > 0) SuperpositionCooldown--;
+
+            // 终极技能冷却
+            if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
+            if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
                 SeaDomain.AltUse(Player.GetItem(), Player);

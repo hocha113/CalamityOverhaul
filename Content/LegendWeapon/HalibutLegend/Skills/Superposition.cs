@@ -772,7 +772,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Projectile.Center + forward * 30f,
                     velocity,
                     ModContent.ProjectileType<CannonFishShot>(),
-                    shootState.WeaponDamage,
+                    shootState.WeaponDamage * 10,
                     shootState.WeaponKnockback,
                     Owner.whoAmI,
                     Main.rand.Next(9999)
@@ -875,13 +875,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.width = 24;
             Projectile.height = 24;
             Projectile.friendly = true;
-            Projectile.penetrate = 3;
-            Projectile.timeLeft = 120;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 90;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 1;
         }
 
         public override void AI() {

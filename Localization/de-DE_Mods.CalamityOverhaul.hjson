@@ -1539,6 +1539,7 @@ Projectiles: {
 	// CannonFishShot.DisplayName: Cannon Fish Shot
 	// SuperpositionCannon.DisplayName: Superposition Cannon
 	// FishTeleportProj.DisplayName: Fish Teleport Proj
+	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
 }
 
 Configs: {

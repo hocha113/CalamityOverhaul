@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1534,6 +1534,7 @@ Projectiles: {
 	// CannonFishShot.DisplayName: Cannon Fish Shot
 	// SuperpositionCannon.DisplayName: Superposition Cannon
 	// FishTeleportProj.DisplayName: Fish Teleport Proj
+	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
 }
 
 Configs: {
