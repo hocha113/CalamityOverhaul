@@ -427,7 +427,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.friendly = true;
             Projectile.damage = shootState.WeaponDamage;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override void AI() {

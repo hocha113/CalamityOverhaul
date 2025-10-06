@@ -206,7 +206,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         Main.mouseItem.TurnToAir();
                         isResearching = true;
                         researchTimer = 0;
-                        SoundEngine.PlaySound(CWRSound.ButtonZero);
                     }
                     // 如果槽位有物品但鼠标没有，则取出
                     else if (Item.Alives() && Item.type > ItemID.None) {

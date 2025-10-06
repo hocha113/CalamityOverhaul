@@ -153,8 +153,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool? CanUseItem(Item item, Player player) {
             item.UseSound = SoundID.Item38;
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            halibutPlayer.SeaDomainLayers = 7;
-            SkillID = FishSwarm.ID; // 原有逻辑
+            halibutPlayer.SeaDomainLayers = 1;
+            SkillID = Sparkling.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 // 检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {

@@ -208,6 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
+                SeaDomainLayers = 1;
                 SeaDomain.AltUse(Player.GetItem(), Player);
             }
         }
