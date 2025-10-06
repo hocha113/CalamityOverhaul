@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             item.UseSound = SoundID.Item38;
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             halibutPlayer.SeaDomainLayers = 7;
-            SkillID = YourLevelIsTooLow.ID; // 原有逻辑
+            SkillID = FishSwarm.ID; // 原有逻辑
             if (SkillID == FishSwarm.ID) {
                 // 检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Sparkling.TryTriggerSparklingVolley(item, player, hp);
             }
 
-            int bulletAmt = Main.rand.Next(5, 9);
+            int bulletAmt = Main.rand.Next(5, 8);
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;

@@ -420,11 +420,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         /// 激活突袭模式（由HalibutOverride调用）
         /// </summary>
         public void ActivateSurgeMode(Vector2 direction) {
+            ShootState shootState = OwnerPlayer.GetShootState();
             surgeModeActive = true;
             surgeDirection = direction;
             surgeTimer = 0;
             Projectile.friendly = true;
-            Projectile.damage = 20;
+            Projectile.damage = shootState.WeaponDamage;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
