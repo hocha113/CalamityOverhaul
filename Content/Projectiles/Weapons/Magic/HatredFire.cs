@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.localNPCHitCooldown = -1;
             Projectile.Damage();
 
-            // 生成爆炸粒子，从各种意义上讲，这段代码是不讨喜的
+            //生成爆炸粒子，从各种意义上讲，这段代码是不讨喜的
             int maxFore;
             for (int i = 0; i < 3; i = maxFore + 1) {
                 int dust0 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);

@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private Item balefulHarvester => Owner.GetItem();
         private Item IndsItem;
         private int Dir;
-        private const float gravity = 0.22f;  // 重力加速度
-        private const float airResistance = 0.015f;  // 空气阻力
+        private const float gravity = 0.22f;  //重力加速度
+        private const float airResistance = 0.015f;  //空气阻力
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -56,13 +56,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Projectile.ai[1] == 0) {
                     Projectile.velocity = Owner.Center.To(Main.MouseWorld).UnitVector() * 16;
                 }
-                // 模拟重力
+                //模拟重力
                 Projectile.velocity.Y += gravity;
-                // 模拟空气阻力
+                //模拟空气阻力
                 Projectile.velocity *= 1 - airResistance;
-                // 更新位置
+                //更新位置
                 Projectile.position += Projectile.velocity;
-                // 根据速度调整旋转角度
+                //根据速度调整旋转角度
                 Projectile.rotation += Math.Sign(Projectile.velocity.X) * 0.25f;
 
                 Projectile.ai[1]++;

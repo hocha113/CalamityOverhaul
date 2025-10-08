@@ -178,10 +178,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public Item Item = new Item();
         
-        // 研究相关字段
-        private int researchTimer = 0; // 当前研究时间（帧数）
-        private const int ResearchDuration = 7200; // 研究总时长（2分钟 = 7200帧，60fps * 120秒）
-        private bool isResearching = false; // 是否正在研究
+        //研究相关字段
+        private int researchTimer = 0; //当前研究时间（帧数）
+        private const int ResearchDuration = 7200; //研究总时长（2分钟 = 7200帧，60fps * 120秒）
+        private bool isResearching = false; //是否正在研究
         
         public override void Update() {
             Item ??= new Item();
@@ -193,21 +193,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
                     
-                    // 如果正在研究中，则取出物品并停止研究
+                    //如果正在研究中，则取出物品并停止研究
                     if (isResearching && Item.Alives() && Item.type > ItemID.None) {
                         Main.mouseItem = Item.Clone();
                         Item.TurnToAir();
                         isResearching = false;
                         researchTimer = 0;
                     }
-                    // 否则放入新物品并开始研究
+                    //否则放入新物品并开始研究
                     else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {
                         Item = Main.mouseItem.Clone();
                         Main.mouseItem.TurnToAir();
                         isResearching = true;
                         researchTimer = 0;
                     }
-                    // 如果槽位有物品但鼠标没有，则取出
+                    //如果槽位有物品但鼠标没有，则取出
                     else if (Item.Alives() && Item.type > ItemID.None) {
                         Main.mouseItem = Item.Clone();
                         Item.TurnToAir();
@@ -217,11 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
             
-            // 更新研究进度
+            //更新研究进度
             if (isResearching && Item.Alives() && Item.type > ItemID.None) {
                 researchTimer++;
                 
-                // 研究完成
+                //研究完成
                 if (researchTimer >= ResearchDuration) {
                     SoundEngine.PlaySound(SoundID.ResearchComplete);
                     isResearching = false;
@@ -234,38 +234,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(PictureSlot, UIHitBox, Color.White);
 
-            // 计算研究进度
+            //计算研究进度
             float pct = isResearching && researchTimer > 0 ? researchTimer / (float)ResearchDuration : 0f;
             
-            // 底部进度条
+            //底部进度条
             int barW = 80;
             int barH = 6;
             Vector2 barTopLeft = DrawPosition + new Vector2(-10, 56);
             
-            // 背景
+            //背景
             DrawRect(spriteBatch, barTopLeft, barW, barH, new Color(30, 20, 10, 200));
             
             //使用颜色渐变表示进度
             Color fillColor = Color.Lerp(Color.Peru, Color.Gold, pct);
             if (isResearching) {
-                // 添加脉动效果
+                //添加脉动效果
                 float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f + 0.9f;
                 fillColor *= pulse;
             }
             DrawRect(spriteBatch, barTopLeft, (int)(barW * pct), barH, fillColor);
 
-            // 绘制研究的物品
+            //绘制研究的物品
             if (Item.Alives() && Item.type > ItemID.None) {
                 Color itemColor = Color.White;
                 if (isResearching) {
-                    // 研究中的物品添加发光效果
+                    //研究中的物品添加发光效果
                     float glow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.2f + 0.8f;
                     itemColor = Color.White * glow;
                 }
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + new Vector2(26, 26), 40, 1f, 0, itemColor);
             }
             
-            // 绘制研究剩余时间文本
+            //绘制研究剩余时间文本
             if (isResearching && hoverInMainPage) {
                 int remainingSeconds = (ResearchDuration - researchTimer) / 60;
                 int minutes = remainingSeconds / 60;
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(spriteBatch, timeText, textPos - textSize / 2, Color.Gold, 0.8f);
             }
             
-            // 绘制进度百分比
+            //绘制进度百分比
             if (isResearching && pct > 0) {
                 string percentText = $"{(int)(pct * 100)}%";
                 Vector2 percentPos = DrawPosition + new Vector2(30, 65);

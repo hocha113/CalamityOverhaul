@@ -467,7 +467,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 //=== 初始化 NPCGhostItem ===
                 if (npcGhostItem.Count < 1) {
                     Texture2D tex = TextureAssets.Npc[NPCID.Spazmatism].Value;
-                    Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; // 示例替代图
+                    Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; //示例替代图
                     Vector2 npcStartPosition;
                     Vector2 npcVelocity;
                     if (Main.rand.NextBool()) {

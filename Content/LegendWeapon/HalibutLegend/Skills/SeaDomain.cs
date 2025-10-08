@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             var hp = player.GetOverride<HalibutPlayer>();
             int layers = Math.Clamp(hp.SeaDomainLayers, 1, 10);
             var source = player.GetSource_Misc("SeaDomainSkill");
-            // 通过 ai[0] 传递层数信息
+            //通过 ai[0] 传递层数信息
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<SeaDomainProj>(), 0, 0, player.whoAmI, layers);
         }
@@ -77,23 +77,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public DomainLayer(int layerIndex, int totalLayers) {
             LayerIndex = layerIndex;
 
-            // 优化半径计算：前3层密集，后续层逐渐扩大
+            //优化半径计算：前3层密集，后续层逐渐扩大
             float baseRadius = 220f;
             float radiusStep;
             if (layerIndex < 3) {
-                // 前3层：紧密布局
+                //前3层：紧密布局
                 radiusStep = 130f;
                 TargetRadius = baseRadius + (layerIndex * radiusStep);
             }
             else {
-                // 3层之后：渐进扩大
-                float base3LayerRadius = baseRadius + (2 * 130f); // 第3层的半径
-                radiusStep = 100f + ((layerIndex - 2) * 15f); // 逐渐增大间距
+                //3层之后：渐进扩大
+                float base3LayerRadius = baseRadius + (2 * 130f); //第3层的半径
+                radiusStep = 100f + ((layerIndex - 2) * 15f); //逐渐增大间距
                 TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
             }
             Radius = TargetRadius;
 
-            // 鱼数量：前5层线性增长，后续层增长放缓
+            //鱼数量：前5层线性增长，后续层增长放缓
             if (layerIndex < 5) {
                 FishCount = 20 + (layerIndex * 10);
             }
@@ -101,25 +101,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 FishCount = 60 + ((layerIndex - 4) * 6);
             }
 
-            // 颜色渐变：多层时使用更丰富的色谱
+            //颜色渐变：多层时使用更丰富的色谱
             float colorProgress = layerIndex / (float)Math.Max(1, totalLayers - 1);
             if (totalLayers <= 3) {
-                // 1-3层：深蓝到浅蓝
+                //1-3层：深蓝到浅蓝
                 BorderColor = Color.Lerp(new Color(60, 160, 255), new Color(120, 220, 255), colorProgress);
             }
             else if (totalLayers <= 7) {
-                // 4-7层：深蓝到青绿
+                //4-7层：深蓝到青绿
                 BorderColor = Color.Lerp(new Color(50, 140, 255), new Color(100, 230, 240), colorProgress);
             }
             else {
-                // 8-10层：深蓝到亮青
+                //8-10层：深蓝到亮青
                 BorderColor = Color.Lerp(new Color(40, 120, 255), new Color(120, 255, 255), colorProgress);
             }
 
-            // 旋转速度：外层更慢
+            //旋转速度：外层更慢
             RotationSpeed = MathHelper.Lerp(1f, 0.3f, colorProgress);
 
-            // 波动幅度：外层更大
+            //波动幅度：外层更大
             WaveAmplitude = MathHelper.Lerp(6f, 14f, colorProgress);
 
             Fish = new List<DomainFishBoid>();
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public void Draw(float domainAlpha) {
             float progress = Life / MaxLife;
             float alpha = (1f - progress) * domainAlpha * 0.7f;
-            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value; // 气泡贴图
+            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value; //气泡贴图
             Color c = new Color(150, 220, 255, 0) * alpha;
             Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, 0f, tex.Size() / 2f, Scale, SpriteEffects.None, 0f);
         }
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private List<BubbleChain> bubbles;
         private int particleTimer;
         private int bubbleTimer;
-        private float maxDomainRadius; // 最外层半径
+        private float maxDomainRadius; //最外层半径
 
         private enum DomainState { Expanding, Active, Collapsing }
         private DomainState currentState = DomainState.Expanding;
@@ -401,10 +401,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private readonly HashSet<int> boundNPCs = new();
         private int effectUpdateTimer;
 
-        // 领域中心平滑跟随
+        //领域中心平滑跟随
         private Vector2 domainCenter;
         private Vector2 targetCenter;
-        private float smoothLerpSpeed = 0.1f; // 缓动速度
+        private float smoothLerpSpeed = 0.1f; //缓动速度
 
         /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
         public float GetMaxRadius() {
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         public override void SetDefaults() {
-            Projectile.width = 2400; // 扩大碰撞箱以支持10层
+            Projectile.width = 2400; //扩大碰撞箱以支持10层
             Projectile.height = 2400;
             Projectile.timeLeft = 2;
             Projectile.penetrate = -1;
@@ -426,11 +426,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
 
-            // 首帧初始化
+            //首帧初始化
             if (Projectile.localAI[0] == 0f) {
                 layerCount = (int)Projectile.ai[0];
                 if (layerCount <= 0) layerCount = 1;
-                layerCount = Math.Clamp(layerCount, 1, 10); // 支持10层
+                layerCount = Math.Clamp(layerCount, 1, 10); //支持10层
                 InitializeLayers();
                 domainCenter = Owner.Center;
                 targetCenter = Owner.Center;
@@ -444,19 +444,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             Projectile.timeLeft = 2;
-            Projectile.Center = domainCenter; // 使用缓动后的中心
+            Projectile.Center = domainCenter; //使用缓动后的中心
 
-            // 平滑跟随玩家
+            //平滑跟随玩家
             targetCenter = Owner.Center;
             float distance = Vector2.Distance(domainCenter, targetCenter);
             
-            // 距离越远，缓动速度越快（避免玩家瞬移后领域跟不上）
+            //距离越远，缓动速度越快（避免玩家瞬移后领域跟不上）
             float dynamicSpeed = smoothLerpSpeed;
             if (distance > 500f) {
-                dynamicSpeed = 0.2f; // 远距离加速
+                dynamicSpeed = 0.2f; //远距离加速
             }
             else if (distance > 200f) {
-                dynamicSpeed = 0.15f; // 中距离
+                dynamicSpeed = 0.15f; //中距离
             }
             
             domainCenter = Vector2.Lerp(domainCenter, targetCenter, dynamicSpeed / 2f);
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     break;
             }
 
-            // 全帧更新所有层的鱼群
+            //全帧更新所有层的鱼群
             if (layers != null) {
                 foreach (var layer in layers) {
                     foreach (var fish in layer.Fish) {
@@ -521,7 +521,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 NPC npc = Main.npc[i];
                 if (!npc.active || npc.friendly) continue;
 
-                float dist = Vector2.Distance(npc.Center, domainCenter); // 使用领域中心
+                float dist = Vector2.Distance(npc.Center, domainCenter); //使用领域中心
                 bool inDomain = dist < maxDomainRadius;
 
                 if (inDomain) {
@@ -566,7 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 if (!proj.active || !proj.friendly || proj.hostile) continue;
                 if (proj.owner != Owner.whoAmI) continue;
 
-                float distToCenter = Vector2.Distance(proj.Center, domainCenter); // 使用领域中心
+                float distToCenter = Vector2.Distance(proj.Center, domainCenter); //使用领域中心
                 if (distToCenter > maxDomainRadius) continue;
 
                 NPC target = FindNearestEnemy(proj.Center, maxDomainRadius);
@@ -637,9 +637,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 SpawnDomainParticle();
             }
 
-            // 鱼发光粒子：保持固定频率
+            //鱼发光粒子：保持固定频率
             if (particleTimer % 4 == 0 && layers != null) {
-                // 随机选择2-3层生成粒子
+                //随机选择2-3层生成粒子
                 int layerSamples = Math.Min(3, layers.Count);
                 for (int s = 0; s < layerSamples; s++) {
                     var randomLayer = layers[Main.rand.Next(layers.Count)];
@@ -653,7 +653,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
 
             bubbleTimer++;
-            // 气泡频率：根据层数适当调整但不过度降低
+            //气泡频率：根据层数适当调整但不过度降低
             int bubbleInterval = Math.Max(10, 25 - layerCount * 2);
             if (bubbleTimer % bubbleInterval == 0 && layers != null) {
                 var randomLayer = layers[Main.rand.Next(layers.Count)];
@@ -665,7 +665,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             rippleTimer++;
             if (rippleTimer % 35 == 0 && layers != null) {
-                // 多层时生成多圈水纹
+                //多层时生成多圈水纹
                 int rippleCount = Math.Min(3, (layerCount + 2) / 3);
                 for (int i = 0; i < rippleCount; i++) {
                     var randomLayer = layers[Main.rand.Next(layers.Count)];
@@ -745,39 +745,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override bool PreDraw(ref Color lightColor) {
             if (layers == null) return false;
 
-            // 从内到外绘制各层
+            //从内到外绘制各层
             foreach (var layer in layers) {
-                // 边界
+                //边界
                 if (domainAlpha > 0.01f) {
                     DrawLayerBorder(layer);
                 }
             }
 
-            // 水纹
+            //水纹
             foreach (var ripple in ripples) {
                 ripple.Draw(domainCenter, domainAlpha);
             }
 
-            // 气泡
+            //气泡
             if (bubbles != null) {
                 foreach (var bubble in bubbles) {
                     bubble.Draw(domainAlpha);
                 }
             }
 
-            // 水压效果
+            //水压效果
             foreach (var effect in enemyEffects.Values) {
                 effect.Draw();
             }
 
-            // 绘制所有鱼拖尾
+            //绘制所有鱼拖尾
             foreach (var layer in layers) {
                 foreach (var fish in layer.Fish) {
                     fish.DrawTrail(domainAlpha);
                 }
             }
 
-            // 绘制所有鱼主体
+            //绘制所有鱼主体
             foreach (var layer in layers) {
                 foreach (var fish in layer.Fish) {
                     DrawFish(fish, domainAlpha);
@@ -791,7 +791,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void DrawLayerBorder(DomainLayer layer) {
             Texture2D tex = TextureAssets.MagicPixel.Value;
-            int segments = 120; // 固定高精度分段
+            int segments = 120; //固定高精度分段
             float angleStep = MathHelper.TwoPi / segments;
 
             for (int i = 0; i < segments; i++) {

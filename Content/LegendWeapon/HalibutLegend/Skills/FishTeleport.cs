@@ -14,13 +14,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 7;
         private const int ToggleCD = 15;
-        private const int TeleportCooldown = 180; // 3秒冷却
+        private const int TeleportCooldown = 180; //3秒冷却
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.FishTeleportToggleCD > 0 || hp.FishTeleportCooldown > 0) return;
 
-            // 计算目标位置（可能被领域限制）
+            //计算目标位置（可能被领域限制）
             Vector2 targetPos = CalculateTeleportTarget(player);
             
             Activate(player, targetPos);
@@ -33,13 +33,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 toMouse = mouseWorld - player.Center;
             float distance = toMouse.Length();
 
-            // 检查是否在海域领域内
+            //检查是否在海域领域内
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SeaDomainActive) {
-                // 查找领域弹幕
+                //查找领域弹幕
                 float maxDomainRadius = GetActiveDomainRadius(player);
                 if (maxDomainRadius > 0 && distance > maxDomainRadius) {
-                    // 限制在领域范围内
+                    //限制在领域范围内
                     return player.Center + toMouse.SafeNormalize(Vector2.Zero) * maxDomainRadius;
                 }
             }
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 return player.Center;
             }
 
-            // 无领域或在范围内，直接传送到鼠标位置
+            //无领域或在范围内，直接传送到鼠标位置
             return mouseWorld;
         }
 
@@ -125,10 +125,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float GetAlpha() {
             float progress = Life / MaxLife;
             if (progress < 0.3f) {
-                return progress / 0.3f; // 淡入
+                return progress / 0.3f; //淡入
             }
             else if (progress > 0.7f) {
-                return 1f - ((progress - 0.7f) / 0.3f); // 淡出
+                return 1f - ((progress - 0.7f) / 0.3f); //淡出
             }
             return 1f;
         }
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float particleAlpha = GetAlpha() * globalAlpha;
             Color c = TintColor * particleAlpha;
             
-            // 发光效果
+            //发光效果
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = (i * MathHelper.TwoPi / 3f).ToRotationVector2() * 2.5f;
                 Main.spriteBatch.Draw(fishTex, Position + offset - Main.screenPosition, rect, 
@@ -187,8 +187,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private List<TeleportFishParticle> dissipatingFish; // 消散鱼群
-        private List<TeleportFishParticle> gatheringFish; // 聚拢鱼群
+        private List<TeleportFishParticle> dissipatingFish; //消散鱼群
+        private List<TeleportFishParticle> gatheringFish; //聚拢鱼群
         private Vector2 targetPosition;
         
         private enum TeleportState { Dissipating, Teleporting, Gathering, Complete }
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int GatherDuration = 20;
         private float effectAlpha = 1f;
         
-        // 特效元素
+        //特效元素
         private float dissipateFlashIntensity = 0f;
         private float gatherFlashIntensity = 0f;
         private readonly List<TeleportRing> teleportRings = new();
@@ -219,16 +219,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
 
-            // 首帧初始化
+            //首帧初始化
             if (Projectile.localAI[0] == 0f) {
                 targetPosition = new Vector2(Projectile.ai[0], Projectile.ai[1]);
                 dissipateCenter = Owner.Center;
                 InitializeDissipatingFish();
                 Projectile.localAI[0] = 1f;
                 
-                // 播放消散音效
+                //播放消散音效
                 SoundEngine.PlaySound(SoundID.Item8, Owner.Center);
-                SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.5f }, Owner.Center); // 水波音效
+                SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.5f }, Owner.Center); //水波音效
             }
 
             stateTimer++;
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     break;
             }
 
-            // 更新消散鱼群
+            //更新消散鱼群
             if (dissipatingFish != null) {
                 for (int i = dissipatingFish.Count - 1; i >= 0; i--) {
                     dissipatingFish[i].Update();
@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
-            // 更新聚拢鱼群
+            //更新聚拢鱼群
             if (gatheringFish != null) {
                 for (int i = gatheringFish.Count - 1; i >= 0; i--) {
                     gatheringFish[i].Update();
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
-            // 更新传送环
+            //更新传送环
             for (int i = teleportRings.Count - 1; i >= 0; i--) {
                 teleportRings[i].Update();
                 if (teleportRings[i].ShouldRemove()) {
@@ -281,15 +281,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float progress = stateTimer / (float)DissipateDuration;
             dissipateFlashIntensity = (float)Math.Sin(progress * MathHelper.Pi) * 1.5f;
             
-            // 玩家渐隐
+            //玩家渐隐
             Owner.opacityForAnimation = 1f - progress;
             
-            // 生成消散粒子
+            //生成消散粒子
             if (stateTimer % 2 == 0) {
                 SpawnDissipateParticle();
             }
 
-            // 生成传送环（起点）
+            //生成传送环（起点）
             if (stateTimer % 6 == 0) {
                 teleportRings.Add(new TeleportRing(dissipateCenter, false));
             }
@@ -299,18 +299,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 stateTimer = 0;
                 Owner.opacityForAnimation = 0f;
                 
-                // 播放传送音效
+                //播放传送音效
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.5f }, Owner.Center);
             }
         }
 
         private void UpdateTeleporting() {
             if (!hasTeleported) {
-                // 执行传送
+                //执行传送
                 Owner.Teleport(targetPosition, 999);
                 Owner.velocity = Vector2.Zero;
                 
-                // 生成传送特效
+                //生成传送特效
                 for (int i = 0; i < 30; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 pos = targetPosition + angle.ToRotationVector2() * Main.rand.NextFloat(80f);
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 InitializeGatheringFish();
                 hasTeleported = true;
                 
-                // 播放出现音效
+                //播放出现音效
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.3f }, targetPosition);
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, targetPosition);
             }
@@ -337,15 +337,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float progress = stateTimer / (float)GatherDuration;
             gatherFlashIntensity = (float)Math.Sin(progress * MathHelper.Pi) * 2f;
             
-            // 玩家渐现
+            //玩家渐现
             Owner.opacityForAnimation = progress;
             
-            // 生成聚拢粒子
+            //生成聚拢粒子
             if (stateTimer % 2 == 0) {
                 SpawnGatherParticle();
             }
 
-            // 生成传送环（终点）
+            //生成传送环（终点）
             if (stateTimer % 5 == 0) {
                 teleportRings.Add(new TeleportRing(targetPosition, true));
             }
@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 currentState = TeleportState.Complete;
                 Owner.opacityForAnimation = 1f;
                 
-                // 最终爆发效果
+                //最终爆发效果
                 for (int i = 0; i < 20; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 pos = targetPosition + Main.rand.NextVector2Circular(30, 30);
@@ -408,43 +408,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            // 绘制消散闪光
+            //绘制消散闪光
             if (dissipateFlashIntensity > 0f) {
                 DrawTeleportFlash(dissipateCenter, dissipateFlashIntensity);
             }
 
-            // 绘制聚拢闪光
+            //绘制聚拢闪光
             if (gatherFlashIntensity > 0f) {
                 DrawTeleportFlash(targetPosition, gatherFlashIntensity);
             }
 
-            // 绘制传送环
+            //绘制传送环
             foreach (var ring in teleportRings) {
                 ring.Draw(effectAlpha);
             }
 
-            // 绘制消散鱼群拖尾
+            //绘制消散鱼群拖尾
             if (dissipatingFish != null) {
                 foreach (var fish in dissipatingFish) {
                     fish.DrawTrail(effectAlpha);
                 }
             }
 
-            // 绘制聚拢鱼群拖尾
+            //绘制聚拢鱼群拖尾
             if (gatheringFish != null) {
                 foreach (var fish in gatheringFish) {
                     fish.DrawTrail(effectAlpha);
                 }
             }
 
-            // 绘制消散鱼群主体
+            //绘制消散鱼群主体
             if (dissipatingFish != null) {
                 foreach (var fish in dissipatingFish) {
                     fish.Draw(effectAlpha);
                 }
             }
 
-            // 绘制聚拢鱼群主体
+            //绘制聚拢鱼群主体
             if (gatheringFish != null) {
                 foreach (var fish in gatheringFish) {
                     fish.Draw(effectAlpha);
@@ -477,7 +477,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float Life;
         public float MaxLife;
         public float RotationSpeed;
-        public bool IsGathering; // true=聚拢环，false=消散环
+        public bool IsGathering; //true=聚拢环，false=消散环
         private float rotation;
         private float initialRadius;
 
@@ -497,11 +497,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float progress = Life / MaxLife;
             
             if (IsGathering) {
-                // 聚拢环：从大到小
+                //聚拢环：从大到小
                 Radius = initialRadius * (1f - progress * 0.8f);
             }
             else {
-                // 消散环：从小到大
+                //消散环：从小到大
                 Radius = initialRadius + progress * 100f;
             }
             
@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     tex.Size() / 2f, scale * 0.4f, SpriteEffects.None, 0f);
             }
             
-            // 绘制连接线
+            //绘制连接线
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep + rotation;
                 float angle2 = (i + 1) * angleStep + rotation;

@@ -61,7 +61,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     {
         color2 = tex2D(gradientTex, float2(input.TexCoords.x, input.TexCoords.y)).xyzw; //读取颜色图
     }
-    // 如果刀光灰度图上的r大于0.8f，也就是它颜色比较白的话那么就给它加地更加亮
+    //如果刀光灰度图上的r大于0.8f，也就是它颜色比较白的话那么就给它加地更加亮
     float3 color3 = float3(0, 0, 0);
     if (drawTrailHighlight)
     {

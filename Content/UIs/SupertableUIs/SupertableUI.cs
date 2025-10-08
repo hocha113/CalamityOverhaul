@@ -512,18 +512,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         public void HandleItemClick(ref Item onitem, ref Item holdItem) {
-            // 如果输入格和鼠标上的物品都为空，无需处理
+            //如果输入格和鼠标上的物品都为空，无需处理
             if (onitem.type == ItemID.None && holdItem.type == ItemID.None) {
                 return;
             }
-            // 捡起物品逻辑
+            //捡起物品逻辑
             if (onitem.type != ItemID.None && holdItem.type == ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 holdItem = onitem;
                 onitem = new Item();
                 return;
             }
-            // 同种物品堆叠逻辑
+            //同种物品堆叠逻辑
             if (onitem.type == holdItem.type && holdItem.type != ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 //也需要注意物品的最大堆叠上限
@@ -538,7 +538,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
                 return;
             }
-            // 不同种物品交换逻辑
+            //不同种物品交换逻辑
             if (onitem.type == ItemID.None && holdItem.type != ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 Utils.Swap(ref holdItem, ref onitem);
@@ -552,7 +552,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (onitem == null) {
                 onitem = new Item();
             }
-            // 如果目标格和鼠标上的物品都为空，无需处理
+            //如果目标格和鼠标上的物品都为空，无需处理
             if (onitem.type == ItemID.None && holdItem.type == ItemID.None) {
                 return;
             }
@@ -568,28 +568,28 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 holdItem = item;
                 return;
             }
-            // 同种物品右键增加逻辑
+            //同种物品右键增加逻辑
             if (onitem.type == holdItem.type && holdItem.type != ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
-                // 如果物品堆叠上限为1，则不进行右键增加操作
+                //如果物品堆叠上限为1，则不进行右键增加操作
                 if (onitem.maxStack == 1) {
                     return;
                 }
                 onitem.stack += 1;
                 holdItem.stack -= 1;
-                // 如果鼠标上的物品数量为0，则清空鼠标上的物品
+                //如果鼠标上的物品数量为0，则清空鼠标上的物品
                 if (holdItem.stack == 0) {
                     holdItem = new Item();
                 }
                 return;
             }
-            // 不同种物品交换逻辑
+            //不同种物品交换逻辑
             if (onitem.type != holdItem.type && onitem.type != ItemID.None && holdItem.type != ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 Utils.Swap(ref holdItem, ref onitem);
                 return;
             }
-            // 鼠标上有物品且目标格为空物品，进行右键放置逻辑
+            //鼠标上有物品且目标格为空物品，进行右键放置逻辑
             if (onitem.type == ItemID.None && holdItem.type != ItemID.None) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 PlaceItemOnGrid(ref onitem, ref holdItem);

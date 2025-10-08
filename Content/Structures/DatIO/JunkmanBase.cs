@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         }
 
         private static void LoadChest(RegionSaveData regionSaveData, Point16 orig) {
-            // 定义物品池
+            //定义物品池
             int[] mineralItems = [
                 ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre,
                 ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre,
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
             int[] junkItems = [
                 ItemID.OldShoe, ItemID.TinCan, ItemID.LesserHealingPotion, ItemID.EmptyBucket,
-                ItemID.Rope, ItemID.Wood, ItemID.Bottle // 添加更多垃圾物品
+                ItemID.Rope, ItemID.Wood, ItemID.Bottle //添加更多垃圾物品
             ];
 
             int[] miscItems = [
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     for (int i = 0; i < itemCount; i++) {
                         int itemType;
                         int stackSize;
-                        // 60% 垃圾，30% 杂物，10% 矿物
+                        //60% 垃圾，30% 杂物，10% 矿物
                         int rand = WorldGen.genRand.Next(100);
                         if (rand < 60) {
                             itemType = junkItems[WorldGen.genRand.Next(junkItems.Length)];

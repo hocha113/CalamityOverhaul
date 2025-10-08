@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Common
     {
         private static CalamityMod.CalamityMod CalamityMod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
 
-        // 获取当前前缀在指定前缀层级中的层级索引
+        //获取当前前缀在指定前缀层级中的层级索引
         private static int GetPrefixTier(int[][] tiers, int currentPrefix) {
             for (int checkingTier = 0; checkingTier < tiers.Length; checkingTier++) {
                 if (Array.Exists(tiers[checkingTier], prefix => prefix == currentPrefix))
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Common
             return -1;
         }
 
-        // 根据当前前缀的层级迭代新的前缀
+        //根据当前前缀的层级迭代新的前缀
         private static int IteratePrefix(UnifiedRandom rand, int[][] reforgeTiers, int currentPrefix) {
             int currentTier = GetPrefixTier(reforgeTiers, currentPrefix);
             int newTier = Math.Min(currentTier + 1, reforgeTiers.Length - 1);
@@ -48,13 +48,13 @@ namespace CalamityOverhaul.Common
             return false;
         }
 
-        // 根据物品类型和当前前缀获取重铸后的前缀
+        //根据物品类型和当前前缀获取重铸后的前缀
         internal static int HandleCalamityReforgeModificationDueToMissingItemLoader(Item item, UnifiedRandom rand, int currentPrefix) {
-            int prefix = -1; // 默认前缀，如果不匹配任何条件则返回此值
+            int prefix = -1; //默认前缀，如果不匹配任何条件则返回此值
 
-            // 判断物品类型并为其分配不同的重铸前缀逻辑
+            //判断物品类型并为其分配不同的重铸前缀逻辑
 
-            if (item.accessory) // 配件
+            if (item.accessory) //配件
             {
                 int[][] accessoryReforgeTiers =
                 [
@@ -66,11 +66,11 @@ namespace CalamityOverhaul.Common
                 prefix = IteratePrefix(rand, accessoryReforgeTiers, currentPrefix);
             }
             else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>()
-                || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) // 近战
+                || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) //近战
             {
                 int[][] meleeReforgeTiers;
 
-                if (PrefixLegacy.ItemSets.ItemsThatCanHaveLegendary2[item.type]) // 特定武器的特殊前缀
+                if (PrefixLegacy.ItemSets.ItemsThatCanHaveLegendary2[item.type]) //特定武器的特殊前缀
                 {
                     meleeReforgeTiers =
                     [
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Common
                     ];
                 }
                 else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type]
-                    || (item.ModItem != null && OverWeaponFixMeleePerg(item))) // 剑、锤子、斧头、镐子等
+                    || (item.ModItem != null && OverWeaponFixMeleePerg(item))) //剑、锤子、斧头、镐子等
                 {
                     meleeReforgeTiers =
                     [
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Common
                         ];
                     }
                 }
-                else // 其他近战武器
+                else //其他近战武器
                 {
                     meleeReforgeTiers =
                     [
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Common
                 }
                 prefix = IteratePrefix(rand, meleeReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<RangedDamageClass>()) // 远程
+            else if (item.CountsAsClass<RangedDamageClass>()) //远程
             {
                 int[][] rangedReforgeTiers =
                 [
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, rangedReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<MagicDamageClass>() || item.CountsAsClass<MagicSummonHybridDamageClass>()) // 魔法
+            else if (item.CountsAsClass<MagicDamageClass>() || item.CountsAsClass<MagicSummonHybridDamageClass>()) //魔法
             {
                 int[][] magicReforgeTiers =
                 [
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, magicReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<SummonDamageClass>()) // 召唤
+            else if (item.CountsAsClass<SummonDamageClass>()) //召唤
             {
                 int[][] summonReforgeTiers =
                 [
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, summonReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<ThrowingDamageClass>()) // 投掷/盗贼
+            else if (item.CountsAsClass<ThrowingDamageClass>()) //投掷/盗贼
             {
                 int[][] rogueReforgeTiers =
                 [

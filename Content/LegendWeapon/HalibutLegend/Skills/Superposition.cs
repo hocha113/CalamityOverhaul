@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 6;
         private const int ToggleCD = 30;
-        private const int SuperpositionCooldown = 1800; // 30秒终极技能冷却
+        private const int SuperpositionCooldown = 1800; //30秒终极技能冷却
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public void Update(Vector2 center, float gatherProgress, float convergeProgress) {
             Life++;
 
-            // 计算目标半径
+            //计算目标半径
             float targetRadius = converging
                 ? MathHelper.Lerp(orbitRadius, 0f, MathHelper.SmoothStep(0f, 1f, convergeProgress))
                 : MathHelper.Lerp(
@@ -103,16 +103,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             orbitRadius = MathHelper.Lerp(orbitRadius, targetRadius, converging ? 0.18f : 0.05f);
 
-            // 螺旋角度更新
+            //螺旋角度更新
             spiralAngle += 0.07f * timeWarpFactor + (converging ? 0.12f : 0f);
 
-            // 计算目标位置并应用速度
+            //计算目标位置并应用速度
             Vector2 targetPos = center + spiralAngle.ToRotationVector2() * orbitRadius;
             Vector2 toTarget = targetPos - Position;
             Velocity = Vector2.Lerp(Velocity, toTarget * (converging ? 0.25f : 0.18f), 0.4f);
             Position += Velocity;
 
-            // 更新透明度
+            //更新透明度
             if (!converging) {
                 Alpha = MathHelper.Clamp(gatherProgress * 1.6f, 0f, 1f);
             }
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Alpha = (float)Math.Pow(1f - convergeProgress, 0.6f);
             }
 
-            // 记录拖尾位置
+            //记录拖尾位置
             TrailPositions.Insert(0, Position);
             if (TrailPositions.Count > MaxTrailLength) {
                 TrailPositions.RemoveAt(TrailPositions.Count - 1);
@@ -276,17 +276,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private enum SuperpositionState
         {
-            Gathering,  // 时空克隆体聚集
-            Converging, // 克隆体收拢
-            Charging,   // 炮阵充能
-            Launching,  // 齐射发射
-            Exploding   // 爆炸收尾
+            Gathering,  //时空克隆体聚集
+            Converging, //克隆体收拢
+            Charging,   //炮阵充能
+            Launching,  //齐射发射
+            Exploding   //爆炸收尾
         }
 
         private SuperpositionState currentState = SuperpositionState.Gathering;
         private int stateTimer = 0;
 
-        // 阶段时长常量
+        //阶段时长常量
         private const int GatherDuration = 60;
         private const int ConvergeDuration = 45;
         private const int ChargeDuration = 36;
@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.Center = Owner.Center;
             stateTimer++;
 
-            // 状态机更新
+            //状态机更新
             switch (currentState) {
                 case SuperpositionState.Gathering:
                     UpdateGathering();
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateLists() {
-            // 更新时空克隆体
+            //更新时空克隆体
             if (timeClones != null) {
                 float gatherProgress = currentState == SuperpositionState.Gathering
                     ? stateTimer / (float)GatherDuration
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 timeClones.RemoveAll(c => c.ShouldRemove());
             }
 
-            // 更新符环
+            //更新符环
             foreach (var rune in runeCircles) {
                 rune.Update();
             }
@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen, Owner.Center);
             }
 
-            // 生成符环
+            //生成符环
             if (stateTimer % 12 == 0) {
                 runeCircles.Add(new RuneCircle(
                     260, 300, 50, false,
@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 SoundEngine.PlaySound(SoundID.Item72 with { Volume = 1.1f }, Owner.Center);
             }
 
-            // 生成充能符环
+            //生成充能符环
             if (stateTimer % 6 == 0) {
                 runeCircles.Add(new RuneCircle(
                     140, 210, 32, false,
@@ -435,12 +435,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full
                 , (MathHelper.PiOver2 * SafeGravDir - ToMouseA) * -SafeGravDir);
 
-            // 安全检查：确保炮阵已生成
+            //安全检查：确保炮阵已生成
             if (!cannonsSpawned) {
                 SpawnCannons();
             }
 
-            // 监控炮阵完成状态
+            //监控炮阵完成状态
             bool allCompleted = true;
             for (int i = cannonProjIds.Count - 1; i >= 0; i--) {
                 int id = cannonProjIds[i];
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
-            // 所有炮完成或超时进入爆炸阶段
+            //所有炮完成或超时进入爆炸阶段
             if (allCompleted || stateTimer >= LaunchDuration) {
                 currentState = SuperpositionState.Exploding;
                 stateTimer = 0;
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 float edge = Main.rand.NextFloat(4f);
                 Vector2 spawn;
 
-                // 从四个方向随机生成
+                //从四个方向随机生成
                 if (edge < 1f) {
                     spawn = Owner.Center + new Vector2(Main.rand.NextFloat(-600, 600), -800);
                 }
@@ -578,24 +578,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     ghost.fullRotationOrigin
                 );
             } catch {
-                // 忽略渲染异常
+                //忽略渲染异常
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            // 绘制符环
+            //绘制符环
             foreach (var rune in runeCircles) {
                 rune.Draw(Owner.Center, effectAlpha);
             }
 
-            // 绘制克隆体拖尾
+            //绘制克隆体拖尾
             if (timeClones != null) {
                 foreach (var clone in timeClones) {
                     clone.DrawTrail(effectAlpha);
                 }
             }
 
-            // 绘制克隆体
+            //绘制克隆体
             if (timeClones != null) {
                 foreach (var clone in timeClones) {
                     DrawTimeClone(clone);
@@ -618,10 +618,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private enum CannonState
         {
-            Deploy,  // 部署展开
-            Charge,  // 充能准备
-            Volley,  // 齐射发射
-            Finish   // 完成淡出
+            Deploy,  //部署展开
+            Charge,  //充能准备
+            Volley,  //齐射发射
+            Finish   //完成淡出
         }
 
         private CannonState state = CannonState.Deploy;
@@ -660,21 +660,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             timer++;
 
-            // 计算位置和方向
+            //计算位置和方向
             Vector2 direction = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 backDir = -direction;
             Vector2 perpendicular = direction.RotatedBy(MathHelper.PiOver2);
 
-            // 位置跟随玩家（保持相对队形）
+            //位置跟随玩家（保持相对队形）
             Vector2 basePosition = Owner.Center + backDir * -80f;
             Vector2 offset = backDir.RotatedBy(angleOffset) * 20f +
                             perpendicular * (float)Math.Sin(angleOffset) * 40f;
             Projectile.Center = Vector2.Lerp(Projectile.Center, basePosition + offset, 0.15f);
 
-            // 更新玩家朝向
+            //更新玩家朝向
             Owner.direction = Math.Sign(direction.X);
 
-            // 状态机
+            //状态机
             switch (state) {
                 case CannonState.Deploy:
                     UpdateDeploy();
@@ -707,7 +707,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void UpdateCharge() {
             pulse = (float)Math.Sin(timer / (float)ChargeTime * MathHelper.Pi);
 
-            // 充能粒子
+            //充能粒子
             if (timer % 6 == 0) {
                 int dust = Dust.NewDust(
                     Projectile.Center - new Vector2(8, 8),
@@ -761,7 +761,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float spread = MathHelper.ToRadians(18f);
             ShootState shootState = Owner.GetShootState();
 
-            // 发射鱼群弹幕
+            //发射鱼群弹幕
             for (int i = 0; i < fishPerVolley; i++) {
                 float lerpFactor = (i + 0.5f) / fishPerVolley;
                 float angle = spread * (lerpFactor - 0.5f);
@@ -783,7 +783,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
             }
 
-            // 环形粒子特效
+            //环形粒子特效
             for (int k = 0; k < 14; k++) {
                 float angle = MathHelper.TwoPi * k / 14f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f) + forward * 6f;
@@ -816,13 +816,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 : SpriteEffects.FlipHorizontally;
             float rotation = direction.ToRotation() + (direction.X > 0 ? 0 : MathHelper.Pi);
 
-            // 后坐力效果
+            //后坐力效果
             float recoil = (state == CannonState.Volley && timer < 4) ? -6f : 0f;
             drawPosition += direction * recoil;
 
             float scale = 0.8f + pulse * 0.25f;
 
-            // 发光层
+            //发光层
             Color glowColor = new Color(180, 200, 255, 0) * pulse * 0.6f;
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = (i * MathHelper.TwoPi / 3f).ToRotationVector2() * pulse * 4f;
@@ -839,7 +839,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 );
             }
 
-            // 主体绘制
+            //主体绘制
             Main.spriteBatch.Draw(
                 texture,
                 drawPosition,
@@ -891,18 +891,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             alpha = Math.Min(1f, alpha + 0.1f);
 
-            // 波动运动
+            //波动运动
             Projectile.velocity *= 0.998f;
             Vector2 waveOffset = new Vector2(0, (float)Math.Sin((Projectile.timeLeft + seed) * 0.2f)) * 0.06f;
             Projectile.velocity += waveOffset;
 
-            // 群聚行为
+            //群聚行为
             ApplyCohesion();
 
-            // 更新朝向和旋转
+            //更新朝向和旋转
             UpdateRotation();
 
-            // 生成轨迹粒子
+            //生成轨迹粒子
             SpawnTrailParticles();
         }
 
@@ -910,7 +910,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             initialized = true;
             seed = Projectile.ai[0];
             alpha = 0f;
-            fishType = Main.rand.Next(3); // 0=Tuna, 1=Bass, 2=Trout
+            fishType = Main.rand.Next(3); //0=Tuna, 1=Bass, 2=Trout
             fishScale = 0.6f + Main.rand.NextFloat() * 0.3f;
             fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
         }
@@ -1013,10 +1013,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Main.instance.LoadItem(itemType);
             Texture2D fishTexture = TextureAssets.Item[itemType].Value;
 
-            // 绘制拖尾
+            //绘制拖尾
             DrawTrail(fishTexture);
 
-            // 绘制主体
+            //绘制主体
             DrawMainFish(fishTexture);
 
             return false;

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.PrimeVice;
         public override bool CanLoad() => true;
 
-        // 计算加速度的函数
+        //计算加速度的函数
         private float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
             float baseAcceleration = bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f);
             if (!cannonAlive) baseAcceleration += 0.025f;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return baseAcceleration;
         }
 
-        // 计算加速度倍率的函数
+        //计算加速度倍率的函数
         private float CalculateAccelerationMult(bool cannonAlive, bool laserAlive) {
             float mult = 1f;
             if (!cannonAlive) {
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return mult;
         }
 
-        // 调整Y轴速度的函数
+        //调整Y轴速度的函数
         private void AdjustVelocityY(float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound) {
             if (npc.position.Y > upperBound) {
                 if (npc.velocity.Y > 0f) {
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        // 调整X轴速度的函数
+        //调整X轴速度的函数
         private void AdjustVelocityX(float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound, float factor = 1f) {
             if (npc.Center.X > upperBound) {
                 if (npc.velocity.X > 0f) {
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        // 处理充能阶段的函数
+        //处理充能阶段的函数
         private void HandleChargePhase(bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
             float deceleration = masterMode ? 0.75f : 0.8f;
             if (death) {
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        // 处理不同类型充能的函数
+        //处理不同类型充能的函数
         private void HandleDifferentCharge(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive) {
             Vector2 viceArmOtherChargePosition = npc.Center;
             float viceArmOtherChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmOtherChargePosition.X;
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        // 计算充能速度的函数
+        //计算充能速度的函数
         private float CalculateChargeVelocity(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive, float bossRushVelocity, float defaultVelocity) {
             float chargeVelocity = bossRush ? bossRushVelocity : defaultVelocity;
             if (!cannonAlive)
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return chargeVelocity;
         }
 
-        // 计算充能次数的函数
+        //计算充能次数的函数
         private float CalculateChargeAmt(bool cannonAlive, bool laserAlive, bool sawAlive, float baseAmt) {
             if (!cannonAlive)
                 baseAmt += 1f;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return baseAmt;
         }
 
-        // 计算充能速率的函数
+        //计算充能速率的函数
         private float CalculateChargeRate(bool cannonAlive, bool laserAlive, bool sawAlive, float baseRate) {
             float chargeRate = baseRate;
             if (!cannonAlive)
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (npc.ai[2] == 99f) {
-                // 计算加速度
+                //计算加速度
                 float acceleration = CalculateAcceleration(bossRush, death, masterMode, cannonAlive, laserAlive, sawAlive);
                 float accelerationMult = CalculateAccelerationMult(cannonAlive, laserAlive);
                 if (masterMode) acceleration *= accelerationMult;
@@ -203,19 +203,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float topVelocity = acceleration * 100f;
                 float deceleration = masterMode ? 0.6f : 0.8f;
 
-                // 调整Y轴速度
+                //调整Y轴速度
                 AdjustVelocityY(topVelocity, deceleration, acceleration, head.position.Y + 20f, head.position.Y - 20f);
 
-                // 调整X轴速度
+                //调整X轴速度
                 AdjustVelocityX(topVelocity, deceleration, acceleration, head.Center.X + 20f, head.Center.X - 20f, 2f);
             }
             else {
-                // 保持在头部附近
+                //保持在头部附近
                 if (npc.ai[2] == 0f || npc.ai[2] == 3f) {
                     if (head.ai[1] == 3f && npc.timeLeft > 10)
                         npc.timeLeft = 10;
 
-                    // 每死亡一个部件，加速充能
+                    //每死亡一个部件，加速充能
                     npc.ai[3] += CalculateChargeRate(cannonAlive, laserAlive, sawAlive, masterMode ? 150f : 600f);
                     if (npc.ai[3] >= (masterMode ? 150f : 600f)) {
                         npc.ai[2] += 1f;
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.netUpdate = true;
                     }
 
-                    // 计算加速度
+                    //计算加速度
                     float acceleration = CalculateAcceleration(bossRush, death, masterMode, cannonAlive, laserAlive, sawAlive);
                     float accelerationMult = CalculateAccelerationMult(cannonAlive, laserAlive);
                     if (masterMode) acceleration *= accelerationMult;
@@ -232,13 +232,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     float topVelocity = acceleration * 100f;
                     float deceleration = masterMode ? 0.6f : 0.8f;
 
-                    // 调整Y轴速度
+                    //调整Y轴速度
                     AdjustVelocityY(topVelocity, deceleration, acceleration, head.position.Y + 290f, head.position.Y + 240f);
 
-                    // 调整X轴速度
+                    //调整X轴速度
                     AdjustVelocityX(topVelocity, deceleration, acceleration, head.Center.X + 150f, head.Center.X + 100f);
 
-                    // 计算旋转角度
+                    //计算旋转角度
                     Vector2 viceArmReelbackCurrentPos = npc.Center;
                     float viceArmReelbackXDest = head.Center.X - 200f * npc.ai[0] - viceArmReelbackCurrentPos.X;
                     float viceArmReelbackYDest = head.position.Y + 230f - viceArmReelbackCurrentPos.Y;
@@ -246,12 +246,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     return false;
                 }
 
-                // 向玩家冲锋
+                //向玩家冲锋
                 if (npc.ai[2] == 1f) {
                     HandleChargePhase(masterMode, cannonAlive, laserAlive, sawAlive);
                 }
 
-                // 冲锋次数根据部件死亡情况调整
+                //冲锋次数根据部件死亡情况调整
                 else if (npc.ai[2] == 2f) {
                     npc.damage = npc.defDamage;
                     if (npc.position.Y > player.position.Y || npc.velocity.Y < 0f) {
@@ -267,12 +267,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                 }
 
-                // 不同类型的冲锋
+                //不同类型的冲锋
                 else if (npc.ai[2] == 4f) {
                     HandleDifferentCharge(bossRush, cannonAlive, laserAlive, sawAlive);
                 }
 
-                // 冲锋次数根据部件死亡情况调整
+                //冲锋次数根据部件死亡情况调整
                 else if (npc.ai[2] == 5f && npc.Center.X < player.Center.X - 100f) {
                     npc.damage = npc.defDamage;
                     float chargeAmt = CalculateChargeAmt(cannonAlive, laserAlive, sawAlive, 4f);

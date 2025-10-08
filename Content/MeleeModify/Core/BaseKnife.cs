@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
             float phase2MeleeSizeIncrement = -0.002f,
             SoundStyle swingSound = default,
             bool drawSlash = true) {
-            // 初始化时间为0时设置初始武器大小
+            //初始化时间为0时设置初始武器大小
             if (Time == 0) {
                 OtherMeleeSize = initialMeleeSize;
             }
@@ -175,56 +175,56 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 phase2SwingSpeed *= -1;
             }
 
-            // 计算当前挥击速度比例
+            //计算当前挥击速度比例
             float swingSpeedMultiplier = SwingMultiplication;
 
-            // 计算各阶段的结束时间
+            //计算各阶段的结束时间
             int phase1EndTime = (int)(maxSwingTime * phase1Ratio * UpdateRate * swingSpeedMultiplier);
             int phase2EndTime = (int)(maxSwingTime * phase2Ratio * UpdateRate * swingSpeedMultiplier);
 
-            // 第二阶段逻辑：主挥击阶段
+            //第二阶段逻辑：主挥击阶段
             if (Time > phase1EndTime) {
                 if (!onSound) {
-                    // 播放挥击音效
+                    //播放挥击音效
                     SoundEngine.PlaySound(swingSound == default ? SoundID.Item1 : swingSound, Owner.Center);
                     onSound = true;
                 }
 
-                // 启用挥击轨迹绘制
+                //启用挥击轨迹绘制
                 canDrawSlashTrail = drawSlash;
 
-                // 设置第二阶段的挥击速度
+                //设置第二阶段的挥击速度
                 SwingData.baseSwingSpeed = phase1SwingSpeed;
 
-                // 在进入第二阶段的第一帧计算具体挥击速度
+                //在进入第二阶段的第一帧计算具体挥击速度
                 if (Time == phase1EndTime + 1) {
                     speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
                 }
             }
-            // 第一阶段逻辑：准备挥击阶段
+            //第一阶段逻辑：准备挥击阶段
             else {
-                // 增大武器尺寸
+                //增大武器尺寸
                 OtherMeleeSize += phase0MeleeSizeIncrement;
 
-                // 设置第一阶段的挥击速度
+                //设置第一阶段的挥击速度
                 SwingData.baseSwingSpeed = phase0SwingSpeed;
 
-                // 计算挥击速度
+                //计算挥击速度
                 speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
 
-                // 禁用挥击轨迹绘制
+                //禁用挥击轨迹绘制
                 canDrawSlashTrail = false;
             }
 
-            // 第三阶段逻辑：挥击结束阶段
+            //第三阶段逻辑：挥击结束阶段
             if (Time > phase2EndTime) {
-                // 缩小武器尺寸
+                //缩小武器尺寸
                 OtherMeleeSize += phase2MeleeSizeIncrement;
 
-                // 设置第三阶段的挥击速度
+                //设置第三阶段的挥击速度
                 SwingData.baseSwingSpeed = phase2SwingSpeed;
 
-                // 在进入第三阶段的第一帧计算具体挥击速度
+                //在进入第三阶段的第一帧计算具体挥击速度
                 if (Time == phase2EndTime + 1) {
                     speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingSpeedMultiplier;
                 }

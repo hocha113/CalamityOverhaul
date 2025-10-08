@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         /// 一个挥舞周期的最大时间，默认为22
         /// </summary>
         protected int maxSwingTime = 22;
-        /// /// <summary>
+        /// <summary>
         /// 总时间，记录更新，在每帧的最后更新中自行加1
         /// </summary>
         protected int Time;
@@ -450,19 +450,19 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
                 lifetime = maxSwingTime;
             }
 
-            // 刺击行为的初始化逻辑
+            //刺击行为的初始化逻辑
             if (Time == 0) {
                 this.canDrawSlashTrail = canDrawSlashTrail;
                 if (initialLength != float.MaxValue) {
                     Length = initialLength;
                 }
-                startVector = Projectile.velocity.UnitVector(); // 初始化方向向量
-                speed = 1 + initialSpeedFactor / UpdateRate / SwingMultiplication; // 初始化速度因子
+                startVector = Projectile.velocity.UnitVector(); //初始化方向向量
+                speed = 1 + initialSpeedFactor / UpdateRate / SwingMultiplication; //初始化速度因子
             }
 
             Length *= speed;
-            vector = startVector * Length * SwingMultiplication; // 更新当前刺击的方向向量
-            speed -= speedDecayRate / UpdateRate; // 减小速度因子，模拟速度衰减效果
+            vector = startVector * Length * SwingMultiplication; //更新当前刺击的方向向量
+            speed -= speedDecayRate / UpdateRate; //减小速度因子，模拟速度衰减效果
 
             if (Time >= lifetime * UpdateRate * SwingMultiplication) {
                 Projectile.Kill();

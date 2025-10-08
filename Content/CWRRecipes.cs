@@ -201,12 +201,12 @@ namespace CalamityOverhaul.Content
                     recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
                 }
             }
-            ////修改天底的合成
+            /// /修改天底的合成
             //{
-            //    if (recipe.HasResult(ItemType<Nadir>())) {
-            //        recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-            //        recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
-            //    }
+            //   if (recipe.HasResult(ItemType<Nadir>())) {
+            //       recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+            //       recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+            //   }
             //}
             //修改天顶剑的合成
             {
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content
                         recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                     }
                     //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                    //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                    //   recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
                     //}
                 }
                 if (CWRLoad.MetanovaBar > ItemID.None) {
@@ -290,10 +290,10 @@ namespace CalamityOverhaul.Content
         private static void AddResultContent() {
             //添加煤炭的合成
             //{//添加这个不是个好主意，因为这个“煤”应该不是木炭
-            //    Recipe.Create(ItemID.Coal)
-            //        .AddRecipeGroup(RecipeGroupID.Wood, 2)
-            //        .AddTile(TileID.Furnaces)
-            //        .Register();
+            //   Recipe.Create(ItemID.Coal)
+            //       .AddRecipeGroup(RecipeGroupID.Wood, 2)
+            //       .AddTile(TileID.Furnaces)
+            //       .Register();
             //}
             //添加染缸的合成
             {
@@ -576,12 +576,12 @@ namespace CalamityOverhaul.Content
             }
 
             //for (int i = 0; i < Recipe.numRecipes; i++) {
-            //    Recipe recipe = Main.recipe[i];
-            //    foreach (int key in omigaSnyRecipeDic.Keys) {
-            //        if (recipe.HasResult(key)) {//先移除可能的已经添加了终焉配方的物品，保险起见防止冲突
-            //            recipe.DisableRecipe();
-            //        }
-            //    }
+            //   Recipe recipe = Main.recipe[i];
+            //   foreach (int key in omigaSnyRecipeDic.Keys) {
+            //       if (recipe.HasResult(key)) {//先移除可能的已经添加了终焉配方的物品，保险起见防止冲突
+            //           recipe.DisableRecipe();
+            //       }
+            //   }
             //}
 
             //key代表材料，value代表这个材料需要的数量

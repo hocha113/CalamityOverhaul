@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public override bool OnTileCollide(Vector2 oldVelocity) {
             SavedOldVelocity = oldVelocity;
             Projectile.tileCollide = false;
-            if (!InitialTileHit) // Enter ground
+            if (!InitialTileHit) //Enter ground
             {
                 for (int i = 0; i <= 25; i++) {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity * 3, Main.rand.NextBool() ? 207 : 216, -Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(30f)) * Main.rand.NextFloat(0.3f, 0.9f), 0, default, Main.rand.NextFloat(1.3f, 1.8f));

@@ -123,11 +123,11 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void OnKill(int timeLeft) {
             int dustType = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), // 春季：绿色系尘埃
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  // 夏季：黄色系尘埃
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     // 秋季：橙色系尘埃
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  // 冬季：蓝色系尘埃
-                _ => 0                                                         // 默认值：无效尘埃类型
+                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
+                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
+                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
+                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
+                _ => 0                                                         //默认值：无效尘埃类型
             };
 
             SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
@@ -137,9 +137,9 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Vector2 offset = Projectile.oldVelocity * factor;
                 Vector2 position = Projectile.oldPosition - offset;
 
-                // 创建两种不同缩放和速度的尘埃效果
-                CreateDust(position, dustType, 1.8f, 0.5f);  // 较大缩放，较低速度
-                CreateDust(position, dustType, 1.4f, 0.05f); // 较小缩放，非常低速度
+                //创建两种不同缩放和速度的尘埃效果
+                CreateDust(position, dustType, 1.8f, 0.5f);  //较大缩放，较低速度
+                CreateDust(position, dustType, 1.4f, 0.05f); //较小缩放，非常低速度
             }
 
             if (Projectile.ai[0] > 0) {

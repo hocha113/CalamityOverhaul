@@ -54,9 +54,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.minLifeTime = 22;
                 lavaFire.maxLifeTime = 30;
                 lavaFire.colors = new Color[3];
-                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
 
@@ -90,9 +90,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.minLifeTime = 22;
                 lavaFire.maxLifeTime = 30;
                 lavaFire.colors = new Color[3];
-                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
         }
@@ -134,9 +134,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     };
                     lavaFire.ai[1] = 2;
                     lavaFire.colors = new Color[3];
-                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                    lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                    lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                    lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                     PRTLoader.AddParticle(lavaFire);
                 }
                 for (int i = 0; i < 20; i++) {
@@ -151,9 +151,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     lavaFire.minLifeTime = 60;
                     lavaFire.maxLifeTime = 90;
                     lavaFire.colors = new Color[3];
-                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                    lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                    lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                    lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                     PRTLoader.AddParticle(lavaFire);
                 }
                 return;
@@ -175,9 +175,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 };
                 lavaFire.ai[1] = 2;
                 lavaFire.colors = new Color[3];
-                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
             for (int i = 0; i < 20; i++) {
@@ -192,9 +192,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.minLifeTime = 30;
                 lavaFire.maxLifeTime = 60;
                 lavaFire.colors = new Color[3];
-                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);//明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);//红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);//深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
         }

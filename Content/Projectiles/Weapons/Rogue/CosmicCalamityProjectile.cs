@@ -78,16 +78,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         private void UpdateUndergroundBehavior() {
             TimeUnderground++;
 
-            // 添加光照效果
+            //添加光照效果
             Vector3 DustLight = new Vector3(0.171f, 0.124f, 0.086f);
             Lighting.AddLight(Projectile.Center + Projectile.velocity, DustLight * 14);
 
-            // 播放地下声音
+            //播放地下声音
             if (Time % 15 == 0 && TimeUnderground < 120) {
                 SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
             }
 
-            // 处理弹幕速度调整
+            //处理弹幕速度调整
             AdjustProjectileVelocity();
         }
 
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             float returnSpeed = 10;
             float acceleration = 0.2f;
 
-            // 计算NPC的距离和方向
+            //计算NPC的距离和方向
             float xDist = NPCDestination.X - Projectile.Center.X;
             float yDist = NPCDestination.Y - Projectile.Center.Y;
             float dist = (float)Math.Sqrt(xDist * xDist + yDist * yDist);
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             xDist *= dist;
             yDist *= dist;
 
-            // 如果NPC在距离内且弹幕在地下停留了一段时间
+            //如果NPC在距离内且弹幕在地下停留了一段时间
             if (Vector2.Distance(NPCDestination, Projectile.Center) < 1800 && TimeUnderground > 25) {
                 AdjustVelocityTowardsTarget(xDist, yDist, acceleration);
             }

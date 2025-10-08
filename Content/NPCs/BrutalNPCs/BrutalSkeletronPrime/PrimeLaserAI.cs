@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void Attack() {
-            // 如果头部正在冲刺
+            //如果头部正在冲刺
             if (head.ai[1] == 3f && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
             }

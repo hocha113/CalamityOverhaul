@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void UpdateMachine() {
             if (MachineData.UEvalue <= consumeUE) {
                 offsetPos = Vector2.Zero;
-                return; // 如果没有能量，无法运行
+                return; //如果没有能量，无法运行
             }
 
             VaultUtils.ClockFrame(ref frame, 5, 3);
@@ -192,10 +192,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     }
 
                     if (!VaultUtils.isClient && Main.rand.NextBool(6)) {
-                        DropOre(); // 生成矿物掉落
+                        DropOre(); //生成矿物掉落
                     }
 
-                    MachineData.UEvalue -= consumeUE; // 挖掘消耗能量
+                    MachineData.UEvalue -= consumeUE; //挖掘消耗能量
                     time2 = 0;
                 }
                 return;

@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.Items.Tools
 {
     //internal class MachineRebellionSceneEffect : ModSceneEffect
     //{
-    //    public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
-    //    public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-    //    public override bool IsSceneEffectActive(Player player) => CWRWorld.MachineRebellion;
+    //   public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+    //   public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
+    //   public override bool IsSceneEffectActive(Player player) => CWRWorld.MachineRebellion;
     //}
 
     internal class DraedonsRemote : ModItem

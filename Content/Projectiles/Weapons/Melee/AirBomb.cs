@@ -13,15 +13,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Cyclone";
         private bool span;
-        const float MaxAttractionRange = 600f; // 最大吸引距离
-        const float DustRotationStep = 60f; // 每个 Dust 的角度增量
-        const float SmokeDustScale = 1.3f; // 烟尘的比例
-        const int MaxSmokeDusts = 6; // 最大烟尘数量
-        const float HomingSpeed = 1f; // 追踪速度
-        const float HomingFactor = 0.1f; // 追踪平滑因子
-        const float MinVelocityForKill = 2f; // 最小速度阈值
-        const float DecelerationFactor = 0.99f; // 减速因子
-        const int LightDecayRate = 30; // 光照消减速率
+        const float MaxAttractionRange = 600f; //最大吸引距离
+        const float DustRotationStep = 60f; //每个 Dust 的角度增量
+        const float SmokeDustScale = 1.3f; //烟尘的比例
+        const int MaxSmokeDusts = 6; //最大烟尘数量
+        const float HomingSpeed = 1f; //追踪速度
+        const float HomingFactor = 0.1f; //追踪平滑因子
+        const float MinVelocityForKill = 2f; //最小速度阈值
+        const float DecelerationFactor = 0.99f; //减速因子
+        const int LightDecayRate = 30; //光照消减速率
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 16;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

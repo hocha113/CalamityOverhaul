@@ -40,7 +40,7 @@ public static class QotUtils
         return !QotLoaded ? null : (List<Item>)QotInstance.Call("GetBigBagItems", player);
     }
 
-    // HoCha113: 这个函数是新整的
+    //HoCha113: 这个函数是新整的
     /// <summary>
     /// 返回应该装填的弹药物品集合
     /// </summary>
@@ -70,7 +70,7 @@ public static class QotUtils
 
         while (totalExtracted < loadenAmmoQuantity) {
             if (++safetyCheckIterations > maxExtracted) {
-                break; // 避免无限循环
+                break; //避免无限循环
             }
 
             var ammoQueue = new Queue<Item>(allItems);
@@ -89,7 +89,7 @@ public static class QotUtils
             }
 
             if (!extractedThisRound) {
-                break; // 若本轮未提取任何弹药，说明没有足够弹药，终止
+                break; //若本轮未提取任何弹药，说明没有足够弹药，终止
             }
         }
 

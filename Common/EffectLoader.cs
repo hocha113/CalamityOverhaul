@@ -77,14 +77,14 @@ namespace CalamityOverhaul.Common
                 return;
             }
 
-            // 绘制屏幕到临时目标
+            //绘制屏幕到临时目标
             graphicsDevice.SetRenderTarget(screen);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend);
             Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
 
-            // 绘制需要绘制的内容
+            //绘制需要绘制的内容
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Common
             }
             Main.spriteBatch.End();
 
-            // 应用扭曲效果
+            //应用扭曲效果
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Common
             Main.spriteBatch.Draw(screen, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
 
-            // 绘制自定义内容
+            //绘制自定义内容
             Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             foreach (IWarpDrawable p in warpSets) {
                 if (p.CanDrawCustom()) {
@@ -117,20 +117,20 @@ namespace CalamityOverhaul.Common
         }
 
         private static void DrawPwoerEffect(GraphicsDevice graphicsDevice, RenderTarget2D screen, SpriteBatch sb) {
-            // 设置初始渲染目标和清除
+            //设置初始渲染目标和清除
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
 
-            // 设置绘制目标和渲染模式
+            //设置绘制目标和渲染模式
             graphicsDevice.SetRenderTarget(screen);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap
                 , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.Transform);
 
-            // 缓存项目符号类型和纹理以减少多次调用
+            //缓存项目符号类型和纹理以减少多次调用
             int targetProjType = ModContent.ProjectileType<MuraExecutionCutOnSpan>();
             Texture2D texture = CWRAsset.Placeholder_White.Value;
             float screenDiagonalLength = (float)Math.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight) * 4f;
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Common
                     .RotatedBy(proj.rotation)) * screenDiagonalLength / 2 - Main.screenPosition + offsetRotV;
                 float correctedRotation = VaultUtils.GetCorrectRadian(proj.rotation);
 
-                // 主体绘制，减少重复绘制代码
+                //主体绘制，减少重复绘制代码
                 sb.Draw(texture, basePosition, new Rectangle(0, 0, 1, 1),
                     new Color(correctedRotation, proj.ai[0], 0f, 0.2f),
                     proj.rotation, Vector2.Zero, screenDiagonalLength, SpriteEffects.None, 0);

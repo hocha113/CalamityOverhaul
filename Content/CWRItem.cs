@@ -785,8 +785,8 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     newTooltips.AddRange(tooltip);
-                    tooltips.Clear(); // 清空原 tooltips 集合
-                    tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+                    tooltips.Clear(); //清空原 tooltips 集合
+                    tooltips.AddRange(newTooltips); //添加修改后的 newTooltips 集合
                     tooltips.AddRange(prefixTooltips);
                 }
             }

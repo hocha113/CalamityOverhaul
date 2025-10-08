@@ -256,12 +256,12 @@ namespace CalamityOverhaul.Content
 
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == CWRLoad.AstrumDeusHead) {
-                // 经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
-                // 怎么这么多年过去了，原灾厄那个bug竟然还没修复
-                // 写这个Boss的脑袋肯定有问题
-                // 一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
-                // DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
-                // n³复杂度，天才级别的优化
+                //经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
+                //怎么这么多年过去了，原灾厄那个bug竟然还没修复
+                //写这个Boss的脑袋肯定有问题
+                //一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
+                //DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
+                //n³复杂度，天才级别的优化
                 return false;
             }
             return base.SpecialOnKill(npc);

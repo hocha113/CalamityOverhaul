@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             //如果玩家正在按住攻击键，则进度条向 1 (开火姿势) 推进
             //否则，进度条向 0 (闲置姿势) 回退
             fireAnimationProgress += CanFire ? AimingAnimationSpeed : -AimingAnimationSpeed;
-            fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f); // 确保进度在 0 和 1 之间
+            fireAnimationProgress = MathHelper.Clamp(fireAnimationProgress, 0f, 1f); //确保进度在 0 和 1 之间
 
             if (!CanFire && LazyRotationUpdate) {
                 oldSetRoting = ToMouseA;
@@ -432,21 +432,21 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         public virtual void HanderBowstringTexturePoss(float t, out Vector2 leftTexCoord, out Vector2 rightTexCoord) {
-            // 获取 DeductRectangle 的相关信息
+            //获取 DeductRectangle 的相关信息
             Rectangle deductRec = BowstringData.DeductRectangle;
 
-            // 计算矩形的起始点和范围在纹理上的比例
-            float minU = (float)deductRec.X / TextureValue.Width;  // 左边界的纹理坐标
-            float maxU = (float)(deductRec.X + deductRec.Width) / TextureValue.Width; // 右边界的纹理坐标
-            float minV = (float)deductRec.Y / TextureValue.Height; // 上边界的纹理坐标
-            float maxV = (float)(deductRec.Y + deductRec.Height) / TextureValue.Height; // 下边界的纹理坐标
+            //计算矩形的起始点和范围在纹理上的比例
+            float minU = (float)deductRec.X / TextureValue.Width;  //左边界的纹理坐标
+            float maxU = (float)(deductRec.X + deductRec.Width) / TextureValue.Width; //右边界的纹理坐标
+            float minV = (float)deductRec.Y / TextureValue.Height; //上边界的纹理坐标
+            float maxV = (float)(deductRec.Y + deductRec.Height) / TextureValue.Height; //下边界的纹理坐标
 
-            // 确保 t 在 [0, 1] 范围内并均匀映射到 DeductRectangle 的 Y 轴范围
-            float v = minV + (maxV - minV) * t; // 均匀映射到纵向范围
+            //确保 t 在 [0, 1] 范围内并均匀映射到 DeductRectangle 的 Y 轴范围
+            float v = minV + (maxV - minV) * t; //均匀映射到纵向范围
 
-            // 生成左、右 TexCoord
-            leftTexCoord = new Vector2(minU, v);  // 左侧为矩形的左边界
-            rightTexCoord = new Vector2(maxU, v); // 右侧为矩形的右边界
+            //生成左、右 TexCoord
+            leftTexCoord = new Vector2(minU, v);  //左侧为矩形的左边界
+            rightTexCoord = new Vector2(maxU, v); //右侧为矩形的右边界
         }
 
         public virtual void DrawBowstring(Vector2 drawPos) {

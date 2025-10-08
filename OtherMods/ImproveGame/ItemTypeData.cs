@@ -8,7 +8,7 @@ namespace CalamityOverhaul.OtherMods.ImproveGame;
 
 public class ItemTypeData(Item item) : TagSerializable
 {
-    // tML反射获取叫这个的Field，获取不到就报错，不能删啊
+    //tML反射获取叫这个的Field，获取不到就报错，不能删啊
     public static readonly Func<TagCompound, ItemTypeData> DESERIALIZER = Load;
 
     internal readonly Item Item = item;

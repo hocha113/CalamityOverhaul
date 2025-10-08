@@ -72,22 +72,22 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            // 绘制主UI背景
+            //绘制主UI背景
             Main.spriteBatch.Draw(Texture, UIHitBox, Color.White);
 
-            // 获取纹理和计算需要绘制的矩形区域
+            //获取纹理和计算需要绘制的矩形区域
             Texture2D texture2 = CWRUtils.GetT2DValue(CWRConstant.UI + "Generator/ThermalheatFull");
-            float temperatureRatio = ThermalData.Temperature / ThermalData.MaxTemperature;  // 计算温度的比率
+            float temperatureRatio = ThermalData.Temperature / ThermalData.MaxTemperature;  //计算温度的比率
             float sengs = 1 - temperatureRatio;
 
-            // 计算绘制区域的Y值和高度，避免重复计算
+            //计算绘制区域的Y值和高度，避免重复计算
             Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * temperatureRatio));
 
-            // 绘制温度相关的图像
+            //绘制温度相关的图像
             Vector2 position = DrawPosition + new Vector2(8, 40 + full.Y);
             Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-            // 如果鼠标在主页面中，显示温度信息
+            //如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
                 string temperatureText = $"{((int)ThermalData.Temperature)}/{((int)ThermalData.MaxTemperature)}°C";
                 Vector2 textPosition = new Vector2(MousePosition.X, MousePosition.Y + 40);
@@ -114,14 +114,14 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             float ueRatio = ThermalData.UEvalue / ThermalData.MaxUEValue;
             float sengs = 1 - ueRatio;
 
-            // 计算绘制区域的Y值和高度，避免重复计算
+            //计算绘制区域的Y值和高度，避免重复计算
             Rectangle full = new Rectangle(0, (int)(texture2.Height * sengs), texture2.Width, (int)(texture2.Height * ueRatio));
 
-            // 绘制温度相关的图像
+            //绘制温度相关的图像
             Vector2 position = DrawPosition + new Vector2(12, 12 + full.Y);
             Main.spriteBatch.Draw(texture2, position, full, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-            // 如果鼠标在主页面中，显示温度信息
+            //如果鼠标在主页面中，显示温度信息
             if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, (ThermalData.UEvalue + "/" + ThermalData.MaxUEValue + "UE").ToString()
                     , MousePosition.X, MousePosition.Y + 40, Color.White, Color.Black, new Vector2(0.3f), 1f);

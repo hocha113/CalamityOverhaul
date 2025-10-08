@@ -101,13 +101,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             InitializeElement();
 
             int itemVidousListCount = itemVidousList.Count > 0 ? itemVidousList.Count : 1;
-            elementsPerRow = boxWeith / ItemVidous.Width; // 每行最多元素数
+            elementsPerRow = boxWeith / ItemVidous.Width; //每行最多元素数
             if (elementsPerRow <= 0) {
-                elementsPerRow = 1; // 确保至少有一列
+                elementsPerRow = 1; //确保至少有一列
             }
             elementsPerColumn = itemVidousListCount / elementsPerRow;
             if (elementsPerColumn <= 0) {
-                elementsPerColumn = 1; // 确保至少有一行
+                elementsPerColumn = 1; //确保至少有一行
             }
 
             if (hoverInMainPage) {
@@ -164,11 +164,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 int width = ItemVidous.Width;
                 int height = ItemVidous.Height;
 
-                // 计算当前元素的行列位置
+                //计算当前元素的行列位置
                 int row = i / elementsPerRow;
                 int column = i % elementsPerRow;
                 Vector2 offset = new Vector2(column * width, row * height - rollerValue);
-                // 根据行列位置计算 DrawPosition
+                //根据行列位置计算 DrawPosition
                 itemV.DrawPosition = DrawPosition + offset + ItemVidous.handerOffsetTopL;
                 itemV.Update();
             }

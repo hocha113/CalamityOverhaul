@@ -187,14 +187,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             CWRPlayer modPlayer = Owner.CWR();
             modPlayer.IsRotatingDuringDash = true;
 
-            // 初始化冲刺效果
+            //初始化冲刺效果
             if (Time == 0) {
                 modPlayer.PendingDashVelocity = Projectile.velocity.UnitVector() * 23;
 
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Bottom
                     , Vector2.Zero, ModContent.ProjectileType<WeaverExplode>(), 100, 2);
 
-                // 生成烟雾和火焰粒子
+                //生成烟雾和火焰粒子
                 for (int k = 0; k < 7; k++) {
                     Vector2 randomVelocity = Owner.velocity.RotatedByRandom(MathHelper.ToRadians(7)) * (1f - Main.rand.NextFloat(0.3f));
                     Dust.NewDust(Owner.Bottom, 0, 0, DustID.Smoke, randomVelocity.X * 0.5f, randomVelocity.Y * 0.5f);
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(sound, Projectile.position);
             }
 
-            // 周期性粒子效果
+            //周期性粒子效果
             if (Time % 12 == 0 || Time % 6 == 0) {
                 Vector2 particlePosition = Time % 12 == 0
                     ? Projectile.Center
@@ -415,18 +415,18 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.damage /= 2;//再度减少伤害
                 Vector2 velocityDirection = Projectile.velocity.SafeNormalize(Vector2.Zero);
                 float angle = (float)Math.Atan2(velocityDirection.Y, velocityDirection.X);
-                float ellipseFactorX = 1.2f;  // X轴的缩放，控制椭圆的宽度
-                float ellipseFactorY = 0.8f;  // Y轴的缩放，控制椭圆的高度
+                float ellipseFactorX = 1.2f;  //X轴的缩放，控制椭圆的宽度
+                float ellipseFactorY = 0.8f;  //Y轴的缩放，控制椭圆的高度
                 for (int i = 0; i <= 360; i += 3) {
-                    // 计算粒子在椭圆轨迹上的位置
+                    //计算粒子在椭圆轨迹上的位置
                     float radian = MathHelper.ToRadians(i);
                     Vector2 vr = new Vector2(MathF.Cos(radian) * ellipseFactorX, MathF.Sin(radian) * ellipseFactorY) * 3;
                     vr = vr.RotatedBy(angle - MathHelper.PiOver2);
-                    // 新建粒子，并设置其位置、速度
+                    //新建粒子，并设置其位置、速度
                     int num = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.RedTorch, vr.X, vr.Y, 0, Color.White, 2f);
-                    Main.dust[num].noGravity = true;  // 不受重力影响
-                    Main.dust[num].position = Projectile.Center + vr;  // 设置粒子在轨迹上的位置
-                    Main.dust[num].velocity = vr;  // 设置粒子的速度方向
+                    Main.dust[num].noGravity = true;  //不受重力影响
+                    Main.dust[num].position = Projectile.Center + vr;  //设置粒子在轨迹上的位置
+                    Main.dust[num].velocity = vr;  //设置粒子的速度方向
                 }
             }
 
@@ -435,15 +435,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void CartePRTEffect() {
-            int particleCount = 6; // 粒子数量
-            float arcAngle = MathHelper.Pi; // 圆弧的角度范围，MathHelper.Pi 表示半圆
-            Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX); // 基准方向
+            int particleCount = 6; //粒子数量
+            float arcAngle = MathHelper.Pi; //圆弧的角度范围，MathHelper.Pi 表示半圆
+            Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX); //基准方向
 
             for (int i = 0; i < particleCount; i++) {
-                // 根据粒子索引计算角度
+                //根据粒子索引计算角度
                 float angleOffset = -arcAngle / 2 + arcAngle * (i / (float)(particleCount - 1));
-                Vector2 direction = baseDirection.RotatedBy(angleOffset); // 基准方向旋转到新角度
-                float distance = Main.rand.Next(20, 30) * Projectile.scale; // 粒子的随机距离
+                Vector2 direction = baseDirection.RotatedBy(angleOffset); //基准方向旋转到新角度
+                float distance = Main.rand.Next(20, 30) * Projectile.scale; //粒子的随机距离
                 Vector2 spawnPos = Projectile.Center;
                 Vector2 ver = -direction * Main.rand.NextFloat(0.6f, 0.9f);
                 float slp = Main.rand.NextFloat(1f, 1.2f);

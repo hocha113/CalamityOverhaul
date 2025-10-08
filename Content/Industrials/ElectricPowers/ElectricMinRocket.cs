@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool PreDraw(ref Color lightColor) {
             Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -60) - Main.screenPosition;
             int uiBarByWidthSengs = (int)(ChargingStationTP.BarFull.Value.Width * (UEValue / 600f));
-            // 绘制温度相关的图像
+            //绘制温度相关的图像
             Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, ChargingStationTP.BarFull.Value.Height);
             Main.spriteBatch.Draw(ChargingStationTP.BarTop.Value, drawPos, null, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
             Main.spriteBatch.Draw(ChargingStationTP.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, ChargingStationTP.BarTop.Size() / 2, 1, SpriteEffects.None, 0);

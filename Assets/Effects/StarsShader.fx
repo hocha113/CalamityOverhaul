@@ -13,11 +13,11 @@ float3 mod(float3 x, float y)
     return x - y * floor(x / y);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Star Nest by Pablo Roman Andrioli                                        //
-// License: MIT                                                             //
-// 我改了一些，如果想学习的人最好去原网站找:https://www.shadertoy.com/view/XlfGRj //
-//////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//Star Nest by Pablo Roman Andrioli                                        //
+//License: MIT                                                             //
+//我改了一些，如果想学习的人最好去原网站找:https://www.shadertoy.com/view/XlfGRj //
+/////////////////////////////////////////////////////////////////////////////
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {

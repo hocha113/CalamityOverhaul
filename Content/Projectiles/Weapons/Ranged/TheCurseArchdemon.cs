@@ -31,10 +31,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             //for (int i = 0; i < 10; i++)//生成这种粒子不是好主意
             //{
-            //    Vector2 particleSpeed = Projectile.rotation.ToRotationVector2() * 38 * (i / 20f);
-            //    Particle energyLeak = new SquishyLightParticle(Projectile.Center, particleSpeed
-            //        , Main.rand.NextFloat(1.6f, 1.8f), Color.Blue, 60, 1, 1.5f, hueShift: 0.01f);
-            //    GeneralParticleHandler.SpawnParticle(energyLeak);
+            //   Vector2 particleSpeed = Projectile.rotation.ToRotationVector2() * 38 * (i / 20f);
+            //   Particle energyLeak = new SquishyLightParticle(Projectile.Center, particleSpeed
+            //       , Main.rand.NextFloat(1.6f, 1.8f), Color.Blue, 60, 1, 1.5f, hueShift: 0.01f);
+            //   GeneralParticleHandler.SpawnParticle(energyLeak);
             //}
         }
 
@@ -43,10 +43,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             //for (int i = 0; i < 30; i++)
             //{
-            //    Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(3, 7);
-            //    Particle energyLeak = new SquishyLightParticle(Projectile.Center, particleSpeed
-            //        , Main.rand.NextFloat(0.6f, 1.3f), Color.DarkRed, 60, 1, 1.5f, hueShift: 0.0f);
-            //    GeneralParticleHandler.SpawnParticle(energyLeak);
+            //   Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(3, 7);
+            //   Particle energyLeak = new SquishyLightParticle(Projectile.Center, particleSpeed
+            //       , Main.rand.NextFloat(0.6f, 1.3f), Color.DarkRed, 60, 1, 1.5f, hueShift: 0.0f);
+            //   GeneralParticleHandler.SpawnParticle(energyLeak);
             //}
 
             for (int k = 0; k < 32; k++) {
@@ -74,15 +74,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool PreDraw(ref Color lightColor) {
             //Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             //Main.EntitySpriteDraw(
-            //    mainValue,
-            //    Projectile.Center - Main.screenPosition,
-            //    mainValue.GetRectangle(Projectile.frameCounter, 5),
-            //    lightColor * (Projectile.alpha / 255f),
-            //    Projectile.rotation,
-            //    VaultUtils.GetOrig(mainValue, 4),
-            //    Projectile.scale,
-            //    Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
-            //    );
+            //   mainValue,
+            //   Projectile.Center - Main.screenPosition,
+            //   mainValue.GetRectangle(Projectile.frameCounter, 5),
+            //   lightColor * (Projectile.alpha / 255f),
+            //   Projectile.rotation,
+            //   VaultUtils.GetOrig(mainValue, 4),
+            //   Projectile.scale,
+            //   Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
+            //   );
             return false;
         }
     }

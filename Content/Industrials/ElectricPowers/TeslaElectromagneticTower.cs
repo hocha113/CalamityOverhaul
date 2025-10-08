@@ -515,7 +515,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                             length2 = 100;
                         dir2 = dir2.SafeNormalize(Vector2.Zero);
                         Vector2 center2 = Projectile.Center + dir2 * length2;
-                        Vector2 pos = center2 + dir2.RotatedBy(Main.rand.NextFromList(1.57f, -1.57f)) * length2;// Main.rand.NextVector2Circular(length2,length2);
+                        Vector2 pos = center2 + dir2.RotatedBy(Main.rand.NextFromList(1.57f, -1.57f)) * length2;//Main.rand.NextVector2Circular(length2,length2);
 
                         targetCenter = pos;
                         TargetCenter = pos;

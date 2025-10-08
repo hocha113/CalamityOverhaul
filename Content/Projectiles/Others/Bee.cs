@@ -34,23 +34,23 @@ namespace CalamityOverhaul.Content.Projectiles.Others
 
         public void Update() {
             if (Active) {
-                // 根据OwnerProj的位置调整速度
+                //根据OwnerProj的位置调整速度
                 Vector2 directionToOwner = OwnerProj.Center - Center;
                 directionToOwner.Normalize();
 
-                // 随机改变速度和旋转角度
+                //随机改变速度和旋转角度
                 Velocity = directionToOwner.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-35, 35))) * 3f;
                 Rotiton = directionToOwner.ToRotation() + MathHelper.ToRadians(Main.rand.Next(-35, 35));
 
-                // 更新位置
+                //更新位置
                 Center += Velocity;
 
-                // 减少生命周期
+                //减少生命周期
                 TimeLife--;
 
                 Alpha -= 0.01f;
 
-                // 如果生命周期小于等于0，标记为不活跃
+                //如果生命周期小于等于0，标记为不活跃
                 if (TimeLife <= 0) {
                     Active = false;
                 }

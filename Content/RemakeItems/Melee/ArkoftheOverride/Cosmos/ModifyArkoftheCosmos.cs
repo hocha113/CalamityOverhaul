@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             Vector2 drawOriginBack = new Vector2(44f, 86);
             Vector2 drawPosition = OwnerConter + Projectile.velocity * 15 + Projectile.velocity * ThrustDisplaceRatio() * 50f;
 
-            // 绘制刀片和光晕
+            //绘制刀片和光晕
             ModifyElementsSwungHeld.DrawScissorBlade(backBlade, backBladeGlow, drawPosition, drawOriginBack, drawRotationBack, lightColor, Projectile.scale);
             ModifyElementsSwungHeld.DrawScissorBlade(frontBlade, frontBladeGlow, drawPosition, drawOrigin, drawRotation, lightColor, Projectile.scale);
         }
@@ -202,33 +202,33 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         public override void AI() {
-            // 初始化粒子列表
+            //初始化粒子列表
             Particles ??= [];
 
-            // 更新弹幕位置
+            //更新弹幕位置
             Projectile.Center = AnchorStart;
 
-            // 本地玩家控制逻辑
+            //本地玩家控制逻辑
             HandleLocalPlayerInput();
 
-            // 检查玩家存活状态
+            //检查玩家存活状态
             if (!Owner.Alives()) {
                 Projectile.Kill();
                 return;
             }
 
-            // 定时生成星座效果
+            //定时生成星座效果
             if (ShouldGenerateConstellation()) {
                 GenerateConstellation();
             }
 
-            // 计算移动方向
+            //计算移动方向
             Vector2 moveDirection = CalculateMoveDirection();
 
-            // 更新所有粒子状态
+            //更新所有粒子状态
             UpdateParticles(moveDirection);
 
-            // 清理过期粒子
+            //清理过期粒子
             Particles.RemoveAll(particle => particle?.Time >= particle.Lifetime && particle.SetLifetime);
         }
 
@@ -249,10 +249,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             float hue = Main.rand.NextFloat();
             Vector2 previousStar = AnchorStart;
 
-            // 生成起始星
+            //生成起始星
             CreateStar(previousStar, Color.White, Color.Plum);
 
-            // 生成星座主体
+            //生成星座主体
             for (float i = Main.rand.NextFloat(0.2f, 0.5f); i < 1; i += Main.rand.NextFloat(0.2f, 0.5f)) {
                 hue = (hue + 0.16f) % 1;
                 Color starColor = Main.hslToRgb(hue, 1, 0.8f);
@@ -260,10 +260,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 Vector2 offset = GetRandomOffset();
                 Vector2 starPosition = AnchorStart + SizeVector * i + offset;
 
-                // 创建星星和连线
+                //创建星星和连线
                 CreateStarAndLine(starPosition, starColor, ref previousStar);
 
-                // 随机生成额外星星
+                //随机生成额外星星
                 if (Main.rand.NextBool(3)) {
                     hue = (hue + 0.16f) % 1;
                     starColor = Main.hslToRgb(hue, 1, 0.8f);
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 }
             }
 
-            // 生成结束星
+            //生成结束星
             hue = (hue + 0.16f) % 1;
             CreateStarAndLine(AnchorStart + SizeVector, Main.hslToRgb(hue, 1, 0.8f), ref previousStar);
         }
@@ -329,7 +329,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 particle.Position += particle.Velocity + moveDirection;
                 particle.Time++;
 
-                // 更新粒子颜色
+                //更新粒子颜色
                 Vector3 color = Main.rgbToHsl(particle.Color);
                 particle.Color = Main.hslToRgb(color.X + 0.02f, color.Y, color.Z);
 
@@ -417,23 +417,23 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         public override void AI() {
-            HandleOwnerVisuals(); // 让主人看起来像个正经拿剑的人
+            HandleOwnerVisuals(); //让主人看起来像个正经拿剑的人
 
             if (!Thrown) {
-                HandleMeleeBehavior(); // 近战模式：开始表演光剑杂技
+                HandleMeleeBehavior(); //近战模式：开始表演光剑杂技
             }
             else {
-                HandleThrownBehavior(); // 投掷模式：星际飞镖导航系统v1.0
+                HandleThrownBehavior(); //投掷模式：星际飞镖导航系统v1.0
             }
         }
 
         private void HandleOwnerVisuals() {
-            // 以下代码让主人正确持剑
+            //以下代码让主人正确持剑
             SetHeld();
             SetDirection();
             Owner.itemRotation = Projectile.rotation;
 
-            // 向左转向时的π魔法（不要问为什么，问就是数学之美）
+            //向左转向时的π魔法（不要问为什么，问就是数学之美）
             if (Owner.direction != 1) {
                 Owner.itemRotation -= MathHelper.Pi;
             }
@@ -441,10 +441,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         private void HandleMeleeBehavior() {
-            Projectile.Center = OwnerConter + DistanceFromPlayer; // 剑不离身是基本礼仪
+            Projectile.Center = OwnerConter + DistanceFromPlayer; //剑不离身是基本礼仪
 
             if (!SwirlSwing) {
-                // 普通挥动：老年太极剑法
+                //普通挥动：老年太极剑法
                 Projectile.rotation = Projectile.velocity.ToRotation() +
                     MathHelper.Lerp(
                         SwingWidth / 2 * SwingDirection,
@@ -453,7 +453,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                     );
             }
             else {
-                HandleSwirlAttack(); // 死亡龙卷风模式启动
+                HandleSwirlAttack(); //死亡龙卷风模式启动
             }
 
             Projectile.scale = 1.2f +
@@ -462,20 +462,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         private void HandleSwirlAttack() {
-            // 旋转参数会让实习生怀疑人生
+            //旋转参数会让实习生怀疑人生
             float startRot = (MathHelper.Pi - MathHelper.PiOver4) * SwingDirection;
             float endRot = -(MathHelper.TwoPi + MathHelper.PiOver4 * 1.5f) * SwingDirection;
             Projectile.rotation = Projectile.velocity.ToRotation() +
                 MathHelper.Lerp(startRot, endRot, SwirlRatio());
 
-            DoParticleEffects(true); // GPU：你不要过来啊！
+            DoParticleEffects(true); //GPU：你不要过来啊！
 
-            // 生成能量弹的玄学条件（原始注释说要-1，那就当祖宗规矩供着）
+            //生成能量弹的玄学条件（原始注释说要-1，那就当祖宗规矩供着）
             bool shouldSpawnBolt = Owner.whoAmI == Main.myPlayer &&
                 (Projectile.timeLeft - 1) % Math.Ceiling(MaxSwingTime / ArkoftheCosmos.SwirlBoltAmount) == 0f;
 
             if (shouldSpawnBolt) {
-                // 微调角度防止射到脚趾（产品经理的奇怪需求）
+                //微调角度防止射到脚趾（产品经理的奇怪需求）
                 float adjustedBlastRotation = Projectile.rotation -
                     MathHelper.PiOver4 * 1.15f * Owner.direction;
 
@@ -491,12 +491,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                     0.55f,
                     MathHelper.Pi * 0.05f
                 );
-                blast.timeLeft = 100; // 写在代码块里显得很专业
+                blast.timeLeft = 100; //写在代码块里显得很专业
             }
         }
 
         private void HandleThrownBehavior() {
-            // 生成星座链的精确时刻（误差0.005以内）
+            //生成星座链的精确时刻（误差0.005以内）
             if (ShouldSpawnConstellationChain()) {
                 Particle pulse = new PulseRing(
                     Projectile.Center,
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                     8
                 );
                 GeneralParticleHandler.SpawnParticle(pulse);
-                SoundEngine.PlaySound(SoundID.Item4); // 经典音效不能少
+                SoundEngine.PlaySound(SoundID.Item4); //经典音效不能少
 
                 Projectile chain = Projectile.NewProjectileDirect(
                     Projectile.GetSource_FromThis(),
@@ -519,28 +519,28 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                     Owner.whoAmI,
                     (int)(Projectile.timeLeft / 2f)
                 );
-                chain.timeLeft = (int)(Projectile.timeLeft / 2f); // 时间对半砍
+                chain.timeLeft = (int)(Projectile.timeLeft / 2f); //时间对半砍
                 chain.netUpdate = true;
             }
 
-            UpdateProjectilePosition(); // 飞镖的玄学移动公式
-            Projectile.rotation -= MathHelper.PiOver4 * 0.3f; // 旋转起来才专业
+            UpdateProjectilePosition(); //飞镖的玄学移动公式
+            Projectile.rotation -= MathHelper.PiOver4 * 0.3f; //旋转起来才专业
             Projectile.scale = 1f + ThrowScaleRatio() * 0.5f;
 
-            // 抓取窗口期的精确判断（误差0.005是祖传参数）
+            //抓取窗口期的精确判断（误差0.005是祖传参数）
             if (Math.Abs(ThrowCompletion - SnapWindowEnd) <= 0.005f) {
                 direction = Projectile.Center - OwnerConter;
             }
 
-            // 进入抓取后的运动逻辑
+            //进入抓取后的运动逻辑
             if (ThrowCompletion > SnapWindowEnd) {
                 Projectile.Center = OwnerConter + direction * ThrowRatio();
             }
 
-            HandleSnapMechanics(); // 处理抓取时的酷炫特效
+            HandleSnapMechanics(); //处理抓取时的酷炫特效
             DoParticleEffects(false);
 
-            // 回归时的好莱坞级动画
+            //回归时的好莱坞级动画
             if (Combo == 3f) {
                 HandleReturnAnimation();
             }
@@ -551,7 +551,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
         }
 
         private void UpdateProjectilePosition() {
-            // 25% Lerp + 75% MoveTowards = 100% 魔法
+            //25% Lerp + 75% MoveTowards = 100% 魔法
             Projectile.Center = Vector2.Lerp(
                 Projectile.Center,
                 Owner.Calamity().mouseWorld,
@@ -562,7 +562,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 20f * ThrowRatio()
             );
 
-            // 防止飞出银河系（虽然理论上应该可以）
+            //防止飞出银河系（虽然理论上应该可以）
             if ((Projectile.Center - OwnerConter).Length() > ArkoftheCosmos.MaxThrowReach) {
                 Projectile.Center = OwnerConter +
                     Owner.DirectionTo(Projectile.Center) * ArkoftheCosmos.MaxThrowReach;
@@ -577,7 +577,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                                     ChanceMissed == 0f;
 
             if (shouldTriggerSnap) {
-                // 生成粒子
+                //生成粒子
                 Particle snapSpark = new GenericSparkle(
                     Projectile.Center,
                     Owner.velocity - Utils.SafeNormalize(Projectile.velocity, Vector2.Zero),
@@ -590,13 +590,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 );
                 GeneralParticleHandler.SpawnParticle(snapSpark);
 
-                // 屏幕震动
+                //屏幕震动
                 if (Main.LocalPlayer.Calamity().GeneralScreenShakePower < 3) {
                     Main.LocalPlayer.Calamity().GeneralScreenShakePower = 3;
                 }
 
                 if (Owner.whoAmI == Main.myPlayer) {
-                    // 生成三连发能量弹（因为三是个神圣的数字）
+                    //生成三连发能量弹（因为三是个神圣的数字）
                     float rotationOffset = MathHelper.TwoPi * Main.rand.NextFloat();
                     for (int i = 0; i < 3; i++) {
                         var source = Projectile.GetSource_FromThis();
@@ -614,11 +614,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                         blast.timeLeft = 100;
                     }
 
-                    // 清除免疫
+                    //清除免疫
                     Array.Clear(Projectile.localNPCImmunity, 0, Main.maxNPCs);
                 }
 
-                // 状态更新（这段是给三个月后的自己看的）
+                //状态更新（这段是给三个月后的自己看的）
                 Combo = 3f;
                 direction = Projectile.Center - OwnerConter;
                 Projectile.velocity = Projectile.rotation.ToRotationVector2();
@@ -626,12 +626,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
                 Projectile.localNPCHitCooldown = (int)SnapEndTime;
             }
             else if (!OwnerCanShoot && Combo == 2 && ChanceMissed == 0f) {
-                ChanceMissed = 1f; // 标记抓取失败（程序员：这是特性不是bug）
+                ChanceMissed = 1f; //标记抓取失败（程序员：这是特性不是bug）
             }
         }
 
         private void HandleReturnAnimation() {
-            // 缓动曲线：看起来贵就对了
+            //缓动曲线：看起来贵就对了
             float curveDownGently = MathHelper.Lerp(
                 1f,
                 0.8f,
@@ -640,7 +640,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             Projectile.Center = OwnerConter + direction * curveDownGently;
             Projectile.scale = 1.5f;
 
-            // 旋转逻辑应该刻在Sistine Chapel天花板上
+            //旋转逻辑应该刻在Sistine Chapel天花板上
             float orientateProperly = MathF.Sqrt(1f -
                 MathF.Pow(MathHelper.Clamp(SnapEndCompletion + 0.2f, 0f, 1f) - 1f, 2f));
             float extraRotations = (direction.ToRotation() + MathHelper.PiOver4 >
@@ -844,7 +844,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             }
         }
 
-        // 辅助方法：绘制残影
+        //辅助方法：绘制残影
         private void DrawAfterimages(Texture2D afterimage, Vector2 position, float rotation, Vector2 origin, float scale, SpriteEffects flip, int trailLength, float charge) {
             for (int i = 1; i < trailLength; ++i) {
                 Color color = Main.hslToRgb((i / (float)trailLength) * 0.1f, 1, 0.6f + (charge > 0 ? 0.3f : 0f));
@@ -853,7 +853,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             }
         }
 
-        // 辅助方法：绘制拖尾效果
+        //辅助方法：绘制拖尾效果
         private void DrawSmearEffect(Texture2D smear, Vector2 position, float swingCompletion, float swingDirection, float swingTimer, float maxSwingTime, float combo, float scale) {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
@@ -868,7 +868,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Cosmos
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        // 辅助方法：绘制剪刀刀片
+        //辅助方法：绘制剪刀刀片
         private static void DrawScissorBlade(Texture2D blade, Texture2D glowmask, Vector2 position
             , float rotation, Vector2 origin, Color lightColor, SpriteEffects flip, float scale) {
             Main.EntitySpriteDraw(blade, position, null, lightColor, rotation, origin, scale, flip, 0);

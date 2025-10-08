@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void AI() {
-            // 为弹幕位置添加光照
+            //为弹幕位置添加光照
             Lighting.AddLight(Projectile.Center, GetColorBySeason(Projectile).ToVector3());
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.ai[1] == 0f) {
@@ -74,36 +74,36 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        // 根据当前季节返回对应的尘埃类型
+        //根据当前季节返回对应的尘埃类型
         internal static int GetDustTypeBySeason(Season season) {
             return season switch {
                 Season.Spring => Utils.SelectRandom(Main.rand, new[] { 74, 157, 107 }),
                 Season.Summer => Utils.SelectRandom(Main.rand, new[] { 247, 228, 57 }),
                 Season.Fall => Utils.SelectRandom(Main.rand, new[] { 6, 259, 158 }),
                 Season.Winter => Utils.SelectRandom(Main.rand, new[] { 67, 229, 185 }),
-                _ => 0 // 默认尘埃类型
+                _ => 0 //默认尘埃类型
             };
         }
 
         internal static Color GetColorBySeason(Projectile projectile) {
-            // 根据当前季节定义弹幕颜色
+            //根据当前季节定义弹幕颜色
             var color = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => new Color(0, 250, 0, projectile.alpha),         // 春季：绿色
-                Season.Summer => new Color(250, 250, 0, projectile.alpha),       // 夏季：黄色
-                Season.Fall => new Color(250, 150, 50, projectile.alpha),        // 秋季：橙色
-                Season.Winter => new Color(100, 150, 250, projectile.alpha),     // 冬季：淡蓝色
-                _ => new Color(255, 255, 255, projectile.alpha)                  // 默认颜色：白色
+                Season.Spring => new Color(0, 250, 0, projectile.alpha),         //春季：绿色
+                Season.Summer => new Color(250, 250, 0, projectile.alpha),       //夏季：黄色
+                Season.Fall => new Color(250, 150, 50, projectile.alpha),        //秋季：橙色
+                Season.Winter => new Color(100, 150, 250, projectile.alpha),     //冬季：淡蓝色
+                _ => new Color(255, 255, 255, projectile.alpha)                  //默认颜色：白色
             };
             return color;
         }
 
         public override void OnKill(int timeLeft) {
             int dustType = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), // 春季：绿色系尘埃
-                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  // 夏季：黄色系尘埃
-                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     // 秋季：橙色系尘埃
-                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  // 冬季：蓝色系尘埃
-                _ => 0                                                         // 默认值：无效尘埃类型
+                Season.Spring => Utils.SelectRandom(Main.rand, 245, 157, 107), //春季：绿色系尘埃
+                Season.Summer => Utils.SelectRandom(Main.rand, 247, 228, 57),  //夏季：黄色系尘埃
+                Season.Fall => Utils.SelectRandom(Main.rand, 6, 259, 158),     //秋季：橙色系尘埃
+                Season.Winter => Utils.SelectRandom(Main.rand, 67, 229, 185),  //冬季：蓝色系尘埃
+                _ => 0                                                         //默认值：无效尘埃类型
             };
 
             SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
@@ -113,9 +113,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Vector2 offset = Projectile.oldVelocity * factor;
                 Vector2 position = Projectile.oldPosition - offset;
 
-                // 创建两种不同缩放和速度的尘埃效果
-                CreateDust(position, dustType, 1.8f, 0.5f);  // 较大缩放，较低速度
-                CreateDust(position, dustType, 1.4f, 0.05f); // 较小缩放，非常低速度
+                //创建两种不同缩放和速度的尘埃效果
+                CreateDust(position, dustType, 1.8f, 0.5f);  //较大缩放，较低速度
+                CreateDust(position, dustType, 1.4f, 0.05f); //较小缩放，非常低速度
             }
         }
 

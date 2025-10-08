@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Structures
 
             int wggCollectorTile = ModContent.TileType<WGGCollectorTile>();
 
-            // 支撑地块类型（用于判断底部是否稳定）
+            //支撑地块类型（用于判断底部是否稳定）
             int[] validGroundTiles = [
                 TileID.Stone, TileID.Mud, TileID.JungleGrass,
                 TileID.ClayBlock, TileID.Silt, TileID.Sandstone
@@ -55,12 +55,12 @@ namespace CalamityOverhaul.Content.Structures
 
             List<Point16> candidateSpots = new();
 
-            // === 第一步：收集所有可能放置的平地点 ===
+            //=== 第一步：收集所有可能放置的平地点 ===
             for (int x = minX; x < maxX - 2; x++) {
                 for (int y = minY; y < maxY - 4; y++) {
                     bool valid = true;
 
-                    // 检查底部 3 个支撑块是否稳定
+                    //检查底部 3 个支撑块是否稳定
                     for (int i = 0; i < 3; i++) {
                         Point16 bottom = new(x + i, y + 1);
                         if (!WorldGen.InWorld(bottom.X, bottom.Y)) {
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Structures
                         continue;
                     }
 
-                    // 检查 3x5 区域是否为空（用于建筑空间）
+                    //检查 3x5 区域是否为空（用于建筑空间）
                     for (int i = 0; i < 3; i++) {
                         for (int j = -4; j <= 0; j++) {
                             Point16 check = new(x + i, y + j);
@@ -106,11 +106,11 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            // === 第二步：稀疏性筛选，过滤靠得太近的点位 ===
+            //=== 第二步：稀疏性筛选，过滤靠得太近的点位 ===
             List<Point16> sparseFiltered = new();
-            int minDistance = 60; // 曼哈顿距离最小值
+            int minDistance = 60; //曼哈顿距离最小值
 
-            Shuffle(candidateSpots); // 打乱点位以避免集中排序偏差
+            Shuffle(candidateSpots); //打乱点位以避免集中排序偏差
 
             foreach (var pos in candidateSpots) {
                 bool tooClose = false;
@@ -128,19 +128,19 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            // === 第三步：根据深度与地形做进一步筛选（丛林/深度优先） ===
+            //=== 第三步：根据深度与地形做进一步筛选（丛林/深度优先） ===
             List<Point16> finalSpots = new();
 
             foreach (var pos in sparseFiltered) {
                 Tile below = Framing.GetTileSafely(pos.X + 1, pos.Y + 1);
                 bool isJungle = below.TileType == TileID.Mud || below.TileType == TileID.JungleGrass;
 
-                // 深度因子（越深越容易留下）
+                //深度因子（越深越容易留下）
                 float depth = (float)(pos.Y - minY) / (maxY - minY);
-                float keepChance = 0.1f + depth * 0.9f; // 0.1 ~ 1.0
+                float keepChance = 0.1f + depth * 0.9f; //0.1 ~ 1.0
 
                 if (isJungle) {
-                    keepChance += 0.2f; // 丛林额外提升概率
+                    keepChance += 0.2f; //丛林额外提升概率
                 }
 
                 if (Main.rand.NextFloat() < keepChance) {
@@ -148,15 +148,15 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            // 最多保留300个（世界级限制）
+            //最多保留300个（世界级限制）
             if (finalSpots.Count > 300) {
                 Shuffle(finalSpots);
                 finalSpots = finalSpots.Take(300).ToList();
             }
 
-            // === 最后正式放置 ===
+            //=== 最后正式放置 ===
             foreach (var pos in finalSpots) {
-                // 清理区域
+                //清理区域
                 for (int i = 0; i < 3; i++) {
                     for (int j = -4; j <= 0; j++) {
                         Point16 clear = new(pos.X + i, pos.Y + j);
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Structures
                     }
                 }
 
-                // 放置拾荒者（偏移：原点(1,3)）
+                //放置拾荒者（偏移：原点(1,3)）
                 WorldGen.PlaceTile(pos.X + 1, pos.Y - 1, wggCollectorTile, mute: true);
             }
         }
@@ -220,11 +220,11 @@ namespace CalamityOverhaul.Content.Structures
                 dontFindByY = false;
             }
 
-            Point16 mainPos = scheduledPosList.Count == 0 ? default : scheduledPosList[0]; // 初始化为第一个点
+            Point16 mainPos = scheduledPosList.Count == 0 ? default : scheduledPosList[0]; //初始化为第一个点
 
             foreach (var point in scheduledPosList) {
                 if (Math.Abs(point.X - asteroidCoreTopPoint2.X) < Math.Abs(mainPos.X - asteroidCoreTopPoint2.X)) {
-                    mainPos = point; // 选择 X 轴距离更小的点
+                    mainPos = point; //选择 X 轴距离更小的点
                 }
             }
 

@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 idleTime -= 120;
             }
 
-            // 收集体节
+            //收集体节
             if (++AttackAIs[0] > idleTime) {
                 Bodys.Clear();
                 foreach (var body in Main.ActiveNPCs) {
@@ -217,23 +217,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     Bodys.Add(body);
                 }
-                AttackAIs[1] = Bodys.Count - 1; // 体节索引
-                AttackAIs[0] = 0; // 重置计时器
-                AttackAIs[4] = 0; // 初始化模式计数器
-                AttackAIs[5] = 0; // 初始化波次计数器
+                AttackAIs[1] = Bodys.Count - 1; //体节索引
+                AttackAIs[0] = 0; //重置计时器
+                AttackAIs[4] = 0; //初始化模式计数器
+                AttackAIs[5] = 0; //初始化波次计数器
             }
 
-            // 控制节奏的延迟
+            //控制节奏的延迟
             if (AttackAIs[3] == 0) {
-                AttackAIs[3] = 4; // 默认发射间隔
+                AttackAIs[3] = 4; //默认发射间隔
             }
 
-            // 节奏模式逻辑
+            //节奏模式逻辑
             if (AttackAIs[1] > 0 && ++AttackAIs[2] > AttackAIs[3]) {
-                // 模式选择（每完成一个完整周期切换模式）
+                //模式选择（每完成一个完整周期切换模式）
                 if (AttackAIs[4] == 0) {
-                    AttackAIs[4] = Main.rand.Next(1, 4); // 随机选择模式（1-3）
-                    AttackAIs[5] = 0; // 重置波次计数器
+                    AttackAIs[4] = Main.rand.Next(1, 4); //随机选择模式（1-3）
+                    AttackAIs[5] = 0; //重置波次计数器
                 }
 
                 int pattern = (int)AttackAIs[4];
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 Vector2 shootVelocity;
 
                 if (pattern == 1) {
-                    // 模式1：波浪式发射（从两端向中间）
+                    //模式1：波浪式发射（从两端向中间）
                     int halfCount = Bodys.Count / 2;
                     int index = (int)(AttackAIs[5] < halfCount ? AttackAIs[5] : Bodys.Count - 1 - AttackAIs[5]);
                     if (index >= 0 && index < Bodys.Count) {
@@ -253,12 +253,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     AttackAIs[5]++;
                     if (AttackAIs[5] >= Bodys.Count) {
-                        AttackAIs[4] = 0; // 模式结束，重置
+                        AttackAIs[4] = 0; //模式结束，重置
                         AttackAIs[1] = Bodys.Count - 1;
                     }
                 }
                 else if (pattern == 2) {
-                    // 模式2：分组发射（每3个体节同时发射）
+                    //模式2：分组发射（每3个体节同时发射）
                     int groupSize = 3;
                     int startIndex = (int)AttackAIs[5] * groupSize;
                     for (int i = startIndex; i < startIndex + groupSize && i < Bodys.Count; i++) {
@@ -270,16 +270,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                     }
                     AttackAIs[5]++;
                     if (startIndex + groupSize >= Bodys.Count) {
-                        AttackAIs[4] = 0; // 模式结束，重置
+                        AttackAIs[4] = 0; //模式结束，重置
                         AttackAIs[1] = Bodys.Count - 1;
                     }
                 }
                 else if (pattern == 3) {
-                    // 模式3：随机双发射（随机选择两个体节同时发射）
+                    //模式3：随机双发射（随机选择两个体节同时发射）
                     int index1 = Main.rand.Next(Bodys.Count);
                     int index2 = Main.rand.Next(Bodys.Count);
                     while (index2 == index1 && Bodys.Count > 1) {
-                        index2 = Main.rand.Next(Bodys.Count); // 确保两个索引不同
+                        index2 = Main.rand.Next(Bodys.Count); //确保两个索引不同
                     }
                     thisBody = Bodys[index1];
                     shootVelocity = thisBody.Center.To(player.Center).UnitVector();
@@ -294,15 +294,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                             0, 0f, Main.myPlayer, index2 % 3, thisBody.whoAmI, player.whoAmI);
                     }
                     AttackAIs[5]++;
-                    if (AttackAIs[5] >= 3) { // 限制波次
-                        AttackAIs[4] = 0; // 模式结束，重置
+                    if (AttackAIs[5] >= 3) { //限制波次
+                        AttackAIs[4] = 0; //模式结束，重置
                         AttackAIs[1] = Bodys.Count - 1;
                     }
                 }
 
-                AttackAIs[2] = 0; // 重置发射计时器
-                AttackAIs[3] = Main.rand.Next(3, 6); // 动态调整发射间隔，增加节奏感
-                AttackAIs[1]--; // 减少体节计数
+                AttackAIs[2] = 0; //重置发射计时器
+                AttackAIs[3] = Main.rand.Next(3, 6); //动态调整发射间隔，增加节奏感
+                AttackAIs[1]--; //减少体节计数
             }
         }
 
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
 
-            // 初始化
+            //初始化
             if (ByMasterStageIndex == 0) {
                 ByMasterStageIndex = 1;
                 npc.ai[0] = 1;//将这个设置为否则他妈的其他地方就会再生成一次身体
@@ -427,7 +427,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         private void SpawnBody() {
-            // 生成毁灭者身体的多个部分
+            //生成毁灭者身体的多个部分
             if (VaultUtils.isClient) {
                 return;
             }

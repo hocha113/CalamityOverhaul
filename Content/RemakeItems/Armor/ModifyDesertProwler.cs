@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
-    // 荒漠迅游者
+    //荒漠迅游者
     internal class ModifyDesertProwler : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<DesertProwlerHat>();

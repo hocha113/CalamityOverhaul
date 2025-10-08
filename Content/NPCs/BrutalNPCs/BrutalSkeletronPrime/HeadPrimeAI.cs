@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void CheakDead(NPC npc, NPC head) {
-            // 所以，如果头部死亡，那么手臂也立马死亡
+            //所以，如果头部死亡，那么手臂也立马死亡
             if (head.active) {
                 return;
             }
@@ -1212,24 +1212,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void EnrageNPC() {
-            // 增加 NPC 的伤害和防御
+            //增加 NPC 的伤害和防御
             npc.damage = 1000;
             npc.defense = 9999;
-            // 标记当前正在愤怒状态和增加防御力或伤害减免
+            //标记当前正在愤怒状态和增加防御力或伤害减免
             calNPC.CurrentlyEnraged = true;
             calNPC.CurrentlyIncreasingDefenseOrDR = true;
         }
 
         private void MoveTowardsPlayer(float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {
-            // 计算玩家与 NPC 之间的向量和距离
+            //计算玩家与 NPC 之间的向量和距离
             Vector2 npcCenter = npc.Center;
             Vector2 playerCenter = Main.player[npc.target].Center;
             Vector2 directionToPlayer = playerCenter - npcCenter;
             float distanceToPlayer = directionToPlayer.Length();
-            // 计算速度
+            //计算速度
             float adjustedSpeed = baseSpeed + distanceToPlayer / speedDivisor;
             adjustedSpeed = Math.Clamp(adjustedSpeed, minSpeed, maxSpeed);
-            // 根据计算出的向量调整速度
+            //根据计算出的向量调整速度
             directionToPlayer.Normalize();
             npc.velocity = directionToPlayer * adjustedSpeed;
         }
@@ -1238,7 +1238,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (NPC.IsMechQueenUp) {
                 DespawnNPC(NPCID.Retinazer);
                 DespawnNPC(NPCID.Spazmatism);
-                // 如果 Retinazer 和 Spazmatism 都不在，则变形并消失
+                //如果 Retinazer 和 Spazmatism 都不在，则变形并消失
                 if (!NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism)) {
                     TransformOrDespawnNPC(NPCID.TheDestroyer, NPCID.TheDestroyerTail);
                 }

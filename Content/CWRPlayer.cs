@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content
             }
 
             //if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
-            //    SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
+            //   SpwanTextProj.New(Player, () => VaultUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             //}
 
             CraftingSlotHighlighter.Instance.eyEBool = true;
@@ -607,9 +607,9 @@ namespace CalamityOverhaul.Content
         internal bool TryGetHeldProjInds<T>(out T result) where T : class {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
-                // 检查投射物是否处于激活状态，是否属于玩家所有，并且是否隐藏
+                //检查投射物是否处于激活状态，是否属于玩家所有，并且是否隐藏
                 if (!p.active || p.owner != Player.whoAmI || !p.hide) {
-                    continue; // 如果当前投射物不符合条件，则跳过并检查下一个投射物
+                    continue; //如果当前投射物不符合条件，则跳过并检查下一个投射物
                 }
                 if (p.ModProjectile as T != null) {
                     Player.heldProj = p.whoAmI;

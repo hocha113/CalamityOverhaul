@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems
             }
 
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
-                return false;// 若全局配置未启用，则直接返回false
+                return false;//若全局配置未启用，则直接返回false
             }
 
             if (HandlerCanOverride.CanLoad) {//若启用了兜底加载器，则尝试获取兜底判断

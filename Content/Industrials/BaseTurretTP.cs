@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.Industrials
                         IdleWait = 0;
                         NextTurnTirt = Main.rand.Next(110, 180);
                         float currentAngle = (TargetCenter - Center).ToRotation();
-                        float randomOffset = Main.rand.NextFloat(-1.8f, 1.8f); // 增加随机微调
+                        float randomOffset = Main.rand.NextFloat(-1.8f, 1.8f); //增加随机微调
                         float newAngle = MathHelper.WrapAngle(currentAngle + randomOffset);
                         Vector2 offsetVer = newAngle.ToRotationVector2() * 122;
                         TargetCenter = Center + offsetVer;

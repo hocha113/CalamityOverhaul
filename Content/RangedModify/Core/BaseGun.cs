@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public override void FiringIncident() {
             if (DownLeft && CanUseGun()) {
                 SetGunBodyInFire();
-                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                if (HaveAmmo) {//&& Projectile.IsOwnedByLocalPlayer()
                     if (!onFire) {
                         oldSetRoting = ToMouseA;
                     }
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
             if (DownRight && CanUseGun() && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 SetGunBodyInFire();
-                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                if (HaveAmmo) {//&& Projectile.IsOwnedByLocalPlayer()
                     if (!onFireR) {
                         oldSetRoting = ToMouseA;
                     }

@@ -567,7 +567,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
                     TargetLargeSlashInstance.Time = 0;
                     TargetLargeSlashInstance.Position = Projectile.Center;
 
-                    float hue = Main.rand.NextFloat(0.06f, 0.10f); // 金橘色火花
+                    float hue = Main.rand.NextFloat(0.06f, 0.10f); //金橘色火花
                     TargetLargeSlashInstance.Color = Main.hslToRgb(hue, 1f, 0.6f) * 0.8f;
                 }
             }

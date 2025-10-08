@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (collectorTP.byHitSyncopeTime > 0) {
-                DoSyncopeMotion(); // 受到攻击后的晕厥
+                DoSyncopeMotion(); //受到攻击后的晕厥
                 return;
             }
 
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
                     BatteryPrompt = true;
                 }
-                DoIdleMotion(); // 能量不够时的摆动待机状态
+                DoIdleMotion(); //能量不够时的摆动待机状态
                 return;
             }
             else {
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 player = startPos.FindClosestPlayer(600);
                 if (player == null) {
                     Projectile.damage = 0;
-                    DoIdleMotion(); // 无目标时的摆动待机状态
+                    DoIdleMotion(); //无目标时的摆动待机状态
                     return;
                 }
                 else if (currentState != ArmState.ApproachingTarget) {
@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             attackTimer++;
 
             if (attackTimer == 1) {
-                // 发起冲刺
+                //发起冲刺
                 Vector2 dashDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.velocity = dashDir * 18f;
                 if (collectorTP.MachineData.UEvalue > 10) {
@@ -371,21 +371,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         private void DoSyncopeMotion() {
-            // 每帧递增计时器
+            //每帧递增计时器
             idleWiggleTime++;
 
-            // 抖动半径 + 衰减效果
-            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - collectorTP.byHitSyncopeTime / 60f); // 随时间减弱
+            //抖动半径 + 衰减效果
+            float shakeRadius = MathHelper.Lerp(24f, 6f, 1f - collectorTP.byHitSyncopeTime / 60f); //随时间减弱
             float angle = idleWiggleTime * 0.3f;
             Vector2 offset = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle * 1.3f)) * shakeRadius;
 
-            // 设置旋转角度偏移（模拟旋转晕头感）
+            //设置旋转角度偏移（模拟旋转晕头感）
             syncopeRotAngle += (float)Math.Sin(idleWiggleTime / 5f) * 0.05f;
             Projectile.rotation = syncopeRotAngle;
 
-            // 目标点偏移
+            //目标点偏移
             Vector2 syncopeTarget = startPos + offset + new Vector2(0, -60f);
-            Projectile.ChasingBehavior(syncopeTarget, 2.5f); // 晕厥时移动缓慢
+            Projectile.ChasingBehavior(syncopeTarget, 2.5f); //晕厥时移动缓慢
         }
 
         private void DoIdleMotion() {
@@ -411,12 +411,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
 
-            // 动态控制点偏移
+            //动态控制点偏移
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            // 估算真实曲线长度
+            //估算真实曲线长度
             int sampleCount = 50;
             float curveLength = 0f;
             Vector2 prev = start;
@@ -433,7 +433,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             Vector2[] points = new Vector2[segmentCount + 1];
 
-            // 构建点位
+            //构建点位
             for (int i = 0; i <= segmentCount; i++) {
                 float t = i / (float)segmentCount;
                 Vector2 pos = Vector2.Lerp(

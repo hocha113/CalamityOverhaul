@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        // 生成气泡效果
+        //生成气泡效果
         private void GenerateBubbles() {
             for (int i = 0; i < 10; i++) {
                 Gore bubble = Gore.NewGorePerfect(
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        // 生成水滴粒子效果
+        //生成水滴粒子效果
         private void GenerateWaterDust() {
             for (int i = 0; i < 3; i++) {
                 int particleCount = 36 + i * 10;

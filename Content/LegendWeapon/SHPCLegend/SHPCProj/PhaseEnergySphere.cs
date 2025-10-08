@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
 
             Projectile.velocity *= 0.985f;
 
-            // 检测附近的NPC
+            //检测附近的NPC
             bool canExplode = false;
 
             foreach (var n in Main.ActiveNPCs) {
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj
                 }
             }
 
-            // 倒计时爆炸
+            //倒计时爆炸
             if (canExplode && --explodeTime <= 0) {
                 Projectile.Kill();
             }

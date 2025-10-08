@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
         }
 
         public override void AI() {
-            // 1. 计算方向向量
+            //1. 计算方向向量
             Vector2 direction = Projectile.velocity;
 
             NPC target = VaultUtils.FindClosestNPC(Projectile.Center, 600, false, false, onHitNPCs);
@@ -58,13 +58,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
                 direction = Projectile.Center.To(target.Center);
             }
 
-            // 电弧球的速度向量
+            //电弧球的速度向量
             Vector2 velocity = Projectile.velocity;
 
-            // 2. 加入随机扰动（制造不规则性）
+            //2. 加入随机扰动（制造不规则性）
             if (Projectile.IsOwnedByLocalPlayer()) {//只在主人端运行随机值，然后广播给其他客户端
-                Projectile.localAI[0] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // X方向随机扰动
-                Projectile.localAI[1] = Main.rand.NextFloat(-1f, 1f) * 111.1f; // Y方向随机扰动
+                Projectile.localAI[0] = Main.rand.NextFloat(-1f, 1f) * 111.1f; //X方向随机扰动
+                Projectile.localAI[1] = Main.rand.NextFloat(-1f, 1f) * 111.1f; //Y方向随机扰动
                 Projectile.netUpdate = true;
             }
 
@@ -72,8 +72,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             direction.Y += Projectile.localAI[1];
 
             direction.Normalize();
-            float speed = 2.5f; // 电弧球的基础速度
-            velocity += direction * speed * 0.1f; // 逐步调整速度
+            float speed = 2.5f; //电弧球的基础速度
+            velocity += direction * speed * 0.1f; //逐步调整速度
 
             velocity *= 0.98f;
 

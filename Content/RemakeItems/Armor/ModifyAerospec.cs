@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
-    // 天蓝
+    //天蓝
     internal class ModifyAerospec : BaseRangedArmor
     {
         public override int TargetID => ModContent.ItemType<AerospecHood>();

@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             float deltaX = destination.X - Projectile.Center.X;
             float deltaY = destination.Y - Projectile.Center.Y;
 
-            // 调整水平速度
+            //调整水平速度
             if (Projectile.Center.X < destination.X && Projectile.velocity.X < maxSpeed) {
                 Projectile.velocity.X = Math.Min(Projectile.velocity.X + increment, deltaX);
             }
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Projectile.velocity.X = Math.Max(Projectile.velocity.X - increment, deltaX);
             }
 
-            // 调整垂直速度
+            //调整垂直速度
             if (Projectile.Center.Y < destination.Y && Projectile.velocity.Y < maxSpeed) {
                 Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + increment, deltaY);
             }

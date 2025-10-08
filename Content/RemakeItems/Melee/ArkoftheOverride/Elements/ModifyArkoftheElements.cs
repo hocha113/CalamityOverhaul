@@ -187,32 +187,32 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         }
 
         public override void AI() {
-            // 更新投射物位置和缩放
+            //更新投射物位置和缩放
             Projectile.Center = OwnerConter + DistanceFromPlayer;
             Projectile.scale = 1.4f + ThrustDisplaceRatio() * 0.2f;
 
-            // 如果已经过了反击时间，直接返回
+            //如果已经过了反击时间，直接返回
             if (Timer > ParryTime) {
                 return;
             }
 
-            // 检查与敌方投射物的碰撞
+            //检查与敌方投射物的碰撞
             CheckProjectileCollision();
 
-            // 设置持有状态
+            //设置持有状态
             SetHeld();
 
-            // 控制玩家方向与旋转
+            //控制玩家方向与旋转
             UpdateOwnerDirectionAndRotation();
 
-            // 如果已经进行过反击，增加反击计数
+            //如果已经进行过反击，增加反击计数
             if (AlreadyParried > 0) {
                 AlreadyParried++;
                 NetUpdate();
             }
         }
 
-        // 检查与敌方投射物的碰撞
+        //检查与敌方投射物的碰撞
         private void CheckProjectileCollision() {
             float collisionPoint = 0f;
             float bladeLength = 142f * Projectile.scale;
@@ -220,24 +220,24 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             for (int k = 0; k < Main.maxProjectiles; k++) {
                 Projectile proj = Main.projectile[k];
 
-                // 如果投射物不满足条件，跳过
+                //如果投射物不满足条件，跳过
                 if (!proj.active || !proj.hostile || proj.damage <= 1 || proj.velocity.Length() * (proj.extraUpdates + 1) <= 1f ||
                     proj.Size.Length() >= 300) {
                     continue;
                 }
 
-                // 检查碰撞
+                //检查碰撞
                 if (Collision.CheckAABBvLineCollision(proj.Hitbox.TopLeft(), proj.Hitbox.Size(),
                     OwnerConter + DistanceFromPlayer, OwnerConter + DistanceFromPlayer + (Projectile.velocity * bladeLength),
                     24, ref collisionPoint)) {
 
-                    // 触发反击效果
+                    //触发反击效果
                     if (AlreadyParried == 0) {
                         GeneralParryEffects();
                         ApplyKnockback(proj);
                     }
 
-                    // 设置投射物的伤害减免
+                    //设置投射物的伤害减免
                     ApplyDamageReduction(proj);
 
                     break;
@@ -245,14 +245,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 反击时，应用击退效果
+        //反击时，应用击退效果
         private void ApplyKnockback(Projectile proj) {
             if (Owner.velocity.Y != 0) {
                 Owner.velocity += Utils.SafeNormalize(OwnerConter - proj.Center, Vector2.Zero) * 2;
             }
         }
 
-        // 应用伤害减免
+        //应用伤害减免
         private void ApplyDamageReduction(Projectile proj) {
             var calamity = proj.Calamity();
             if (calamity.flatDR < 100) {
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 更新玩家的方向和旋转
+        //更新玩家的方向和旋转
         private void UpdateOwnerDirectionAndRotation() {
             Owner.ChangeDir(Math.Sign(Projectile.velocity.X));
             Owner.itemRotation = Projectile.rotation;
@@ -279,19 +279,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         internal float RotationRatio() => PiecewiseAnimation(ParryProgress, [openMore, close, stayClosed]);
 
         public override bool PreDraw(ref Color lightColor) {
-            // 绘制生命条背景和前景
+            //绘制生命条背景和前景
             if (Timer > ParryTime) {
                 DrawParryBar(lightColor);
                 return false;
             }
 
-            // 绘制剪刀刀片
+            //绘制剪刀刀片
             DrawScissorBlades(lightColor);
 
             return false;
         }
 
-        // 绘制生命条背景和前景
+        //绘制生命条背景和前景
         protected void DrawParryBar(Color lightColor) {
             var barBG = CWRAsset.GenericBarBack.Value;
             var barFG = CWRAsset.GenericBarFront.Value;
@@ -304,28 +304,28 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             Main.spriteBatch.Draw(barFG, drawPos, frame, color * opacity * 0.8f);
         }
 
-        // 绘制剪刀刀片
+        //绘制剪刀刀片
         protected virtual void DrawScissorBlades(Color lightColor) {
             Texture2D frontBlade = ArkoftheAsset.RendingScissorsRight.Value;
             Texture2D frontBladeGlow = ArkoftheAsset.RendingScissorsRightGlow.Value;
             Texture2D backBlade = ArkoftheAsset.RendingScissorsLeft.Value;
             Texture2D backBladeGlow = ArkoftheAsset.RendingScissorsLeftGlow.Value;
 
-            // 计算旋转角度
+            //计算旋转角度
             float snippingRotation = Projectile.rotation + MathHelper.PiOver4;
             float snippingRotationBack = Projectile.rotation + MathHelper.PiOver4 * 1.75f;
 
             float drawRotation = MathHelper.Lerp(snippingRotation + MathHelper.PiOver4, snippingRotation, RotationRatio());
             float drawRotationBack = MathHelper.Lerp(snippingRotationBack - MathHelper.PiOver4, snippingRotationBack, RotationRatio());
 
-            // 计算绘制原点
+            //计算绘制原点
             Vector2 drawOrigin = new Vector2(51, 86);
             Vector2 drawOriginBack = new Vector2(22, 109);
 
-            // 计算绘制位置
+            //计算绘制位置
             Vector2 drawPosition = OwnerConter + Projectile.velocity * 15 + Projectile.velocity * ThrustDisplaceRatio() * 50f;
 
-            // 绘制刀片和光晕
+            //绘制刀片和光晕
             ModifyElementsSwungHeld.DrawScissorBlade(backBlade, backBladeGlow, drawPosition, drawOriginBack, drawRotationBack, lightColor, Projectile.scale);
             ModifyElementsSwungHeld.DrawScissorBlade(frontBlade, frontBladeGlow, drawPosition, drawOrigin, drawRotation, lightColor, Projectile.scale);
         }
@@ -448,35 +448,35 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         }
 
         public override void AI() {
-            // 如果当前没有投掷
+            //如果当前没有投掷
             if (!Thrown) {
-                // 设置Projectile的中心位置为玩家中心加上偏移量
+                //设置Projectile的中心位置为玩家中心加上偏移量
                 SetProjectilePosition();
 
-                // 计算Projectile的旋转角度
+                //计算Projectile的旋转角度
                 UpdateProjectileRotation();
 
-                // 计算Projectile的缩放
+                //计算Projectile的缩放
                 UpdateProjectileScale();
             }
             else {
-                // 计算并生成火花特效
+                //计算并生成火花特效
                 CreateSparkleEffect();
 
-                // 在特定条件下生成脉冲特效并播放音效
+                //在特定条件下生成脉冲特效并播放音效
                 HandlePulseEffect();
 
-                // 设置投掷物的位置和旋转
+                //设置投掷物的位置和旋转
                 UpdateProjectileThrow();
 
-                // 处理Combo为2时的miss机会
+                //处理Combo为2时的miss机会
                 HandleMissedChance();
 
-                // 如果Combo为3，进行投掷物轨迹的平滑过渡
+                //如果Combo为3，进行投掷物轨迹的平滑过渡
                 HandleCombo3();
             }
 
-            // 设置玩家的朝向和旋转
+            //设置玩家的朝向和旋转
             UpdatePlayerRotation();
         }
 
@@ -494,7 +494,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             Projectile.scale = 1.2f + ((float)Math.Sin(SwingRatio() * MathHelper.Pi) * 0.6f) + (Charge / 10f) * 0.2f;
         }
 
-        // 创建火花特效
+        //创建火花特效
         private void CreateSparkleEffect() {
             Vector2 sparklePosition = Projectile.Center + Projectile.rotation.ToRotationVector2() * 90 * Projectile.scale +
                                       (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 20 * Projectile.scale;
@@ -503,7 +503,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             GeneralParticleHandler.SpawnParticle(sparkle);
         }
 
-        // 处理脉冲特效
+        //处理脉冲特效
         private void HandlePulseEffect() {
             if (Math.Abs(ThrowCompletion - SnapWindowStart + 0.1f) <= 0.005f && ChanceMissed == 0f && Main.myPlayer == Owner.whoAmI) {
                 Particle pulse = new PulseRing(Projectile.Center, Vector2.Zero, Color.OrangeRed, 0.05f, 1.8f, 8);
@@ -512,14 +512,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 更新投掷物的位置和旋转
+        //更新投掷物的位置和旋转
         private void UpdateProjectileThrow() {
             Projectile.Center = OwnerConter + direction * ThrowRatio() * ThrowReach;
             Projectile.rotation -= MathHelper.PiOver4 * 0.3f;
             Projectile.scale = 1f + ThrowScaleRatio() * 0.5f;
         }
 
-        // 处理Combo为2时的miss机会
+        //处理Combo为2时的miss机会
         private void HandleMissedChance() {
             if (!OwnerCanShoot && Combo == 2 && ThrowCompletion >= (SnapWindowStart - 0.1f) && ThrowCompletion < SnapWindowEnd && ChanceMissed == 0f) {
                 Particle snapSpark = new GenericSparkle(Projectile.Center, Owner.velocity
@@ -527,17 +527,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
                     Main.rand.NextFloat(1f, 2f), 10 + Main.rand.Next(10), 0.1f, 3f);
                 GeneralParticleHandler.SpawnParticle(snapSpark);
 
-                // 增加屏幕震动效果
+                //增加屏幕震动效果
                 if (Main.LocalPlayer.Calamity().GeneralScreenShakePower < 3) {
                     Main.LocalPlayer.Calamity().GeneralScreenShakePower = 3;
                 }
 
-                // 清除对NPC的免疫
+                //清除对NPC的免疫
                 for (int i = 0; i < Main.maxNPCs; ++i) {
                     Projectile.localNPCImmunity[i] = 0;
                 }
 
-                // 设置Combo为3并更新投掷物的属性
+                //设置Combo为3并更新投掷物的属性
                 Combo = 3f;
                 Projectile.velocity = Projectile.rotation.ToRotationVector2();
                 Projectile.timeLeft = (int)SnapEndTime;
@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 处理Combo为3时的投掷物轨迹过渡
+        //处理Combo为3时的投掷物轨迹过渡
         private void HandleCombo3() {
             if (Combo == 3f) {
                 float curveDownGently = MathHelper.Lerp(1f, 0.8f, 1f - (float)Math.Sqrt(1f - (float)Math.Pow(SnapEndCompletion, 2f)));
@@ -563,7 +563,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 更新玩家的朝向和旋转
+        //更新玩家的朝向和旋转
         private void UpdatePlayerRotation() {
             SetHeld();
             Owner.ChangeDir(Math.Sign(Projectile.velocity.X));
@@ -629,7 +629,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             Main.EntitySpriteDraw(glow, position, null, Color.Lerp(lightColor, Color.White, 0.75f), rotation, origin, scale, flip, 0);
         }
 
-        // 处理绘制单个投掷剪刀的通用方法
+        //处理绘制单个投掷剪刀的通用方法
         internal static void DrawScissorBlade(Texture2D bladeTexture, Texture2D glowMask, Vector2 position, Vector2 origin, float rotation, Color lightColor, float scale, SpriteEffects flip = SpriteEffects.None) {
             Main.EntitySpriteDraw(bladeTexture, position - Main.screenPosition, null, lightColor, rotation, origin, scale, flip, 0);
             Main.EntitySpriteDraw(glowMask, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, 0.75f), rotation, origin, scale, flip, 0);
@@ -647,10 +647,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         }
 
         private void DrawSingleScissorBlade(Color lightColor, Texture2D sword, Texture2D glowmask, Vector2 drawOrigin, Vector2 drawOffset, float drawRotation, float angleShift, float extraAngle, SpriteEffects flip) {
-            // 绘制 afterimages（如果有的话）
+            //绘制 afterimages（如果有的话）
             DrawAfterimages(glowmask, drawOffset, drawOrigin, angleShift, extraAngle, flip, lightColor, Projectile.scale);
 
-            // 绘制刀刃本身和光晕效果
+            //绘制刀刃本身和光晕效果
             DrawBladeWithGlow(sword, glowmask, drawOffset, drawOrigin, drawRotation, flip, lightColor, Projectile.scale);
         }
 
@@ -670,11 +670,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
         }
 
         public virtual void DrawSingleSwungScissorBlade(Color lightColor) {
-            // 确定刀刃纹理和光效纹理
+            //确定刀刃纹理和光效纹理
             Texture2D sword = Combo == 0 ? ArkoftheAsset.RendingScissorsRight.Value : ArkoftheAsset.RendingScissorsLeft.Value;
             Texture2D glowmask = Combo == 0 ? ArkoftheAsset.RendingScissorsRightGlow.Value : ArkoftheAsset.RendingScissorsLeftGlow.Value;
 
-            // 计算翻转和角度
+            //计算翻转和角度
             bool flipped = Owner.direction < 0;
             SpriteEffects flip = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             float extraAngle = flipped ? MathHelper.PiOver2 : 0f;
@@ -682,14 +682,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             float angleShift = Combo == 0 ? MathHelper.PiOver4 : MathHelper.PiOver2;
             float drawRotation = Projectile.rotation + angleShift + extraAngle;
 
-            // 计算原点和偏移
+            //计算原点和偏移
             Vector2 drawOrigin = new Vector2(Combo == 1 ? sword.Width / 2f : flipped ? sword.Width : 0f, sword.Height);
             Vector2 drawOffset = OwnerConter + drawAngle.ToRotationVector2() * 10f - Main.screenPosition;
 
-            // 绘制单个刀刃
+            //绘制单个刀刃
             DrawSingleScissorBlade(lightColor, sword, glowmask, drawOrigin, drawOffset, drawRotation, angleShift, extraAngle, flip);
 
-            // 如果摆动完成度超过50%，绘制smear效果
+            //如果摆动完成度超过50%，绘制smear效果
             if (SwingCompletion > 0.5f) {
                 float opacity = (float)Math.Sin(SwingCompletion * MathHelper.Pi);
                 DrawSmearEffect(opacity);
@@ -698,7 +698,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
 
         public virtual void DrawSwungScissors(Color lightColor) {
 
-            // 确定前后刀刃纹理
+            //确定前后刀刃纹理
             Texture2D frontBlade = ArkoftheAsset.RendingScissorsRight.Value;
             Texture2D frontBladeGlow = ArkoftheAsset.RendingScissorsRightGlow.Value;
             Texture2D backBlade = ArkoftheAsset.RendingScissorsLeft.Value;
@@ -718,20 +718,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
                 + functionalDrawAngle.ToRotationVector2() * 70f * Projectile.scale - Main.screenPosition;
             float backScissorRotation = drawRotation + (Combo == 1 ? (!flipped ? MathHelper.PiOver4 * 0.75f : MathHelper.PiOver4 * -0.75f) : 0f);
 
-            // 绘制前后刀刃（带光效）
+            //绘制前后刀刃（带光效）
             DrawBladeWithGlow(backBlade, backBladeGlow, backScissorDrawPosition, backScissorOrigin, backScissorRotation, flip, lightColor, Projectile.scale);
             DrawBladeWithGlow(frontBlade, frontBladeGlow, drawOffset, drawOrigin, drawRotation, flip, lightColor, Projectile.scale);
 
-            // 如果摆动完成度超过50%，绘制smear效果
+            //如果摆动完成度超过50%，绘制smear效果
             if (SwingCompletion > 0.5f) {
                 float opacity = (float)Math.Sin(SwingCompletion * MathHelper.Pi);
                 DrawSmearEffect(opacity);
             }
         }
 
-        // 绘制单个投掷剪刀刀片
+        //绘制单个投掷剪刀刀片
         public virtual void DrawSingleThrownScissorBlade(Color lightColor) {
-            // 判断是否有不同的刀片样式
+            //判断是否有不同的刀片样式
             Texture2D sword = ArkoftheAsset.RendingScissorsRight.Value;
             Texture2D glowmask = ArkoftheAsset.RendingScissorsRightGlow.Value;
             if (Combo == 3f) {
@@ -739,15 +739,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
                 glowmask = ArkoftheAsset.RendingScissorsLeftGlow.Value;
             }
 
-            // 计算绘制位置和角度
+            //计算绘制位置和角度
             Vector2 drawPos = Combo == 3f ? Vector2.SmoothStep(OwnerConter, Projectile.Center, MathHelper.Clamp(SnapEndCompletion + 0.25f, 0f, 1f)) : Projectile.Center;
             Vector2 drawOrigin = Combo == 3f ? new Vector2(22, 109) : new Vector2(51, 86);
             float drawRotation = Combo == 3f ? direction.ToRotation() + MathHelper.PiOver2 : Projectile.rotation + MathHelper.PiOver4;
 
-            // 绘制刀片和光晕
+            //绘制刀片和光晕
             DrawScissorBlade(sword, glowmask, drawPos, drawOrigin, drawRotation, lightColor, Projectile.scale);
 
-            // 绘制拖尾效果
+            //绘制拖尾效果
             if (Combo == 3f || ThrowCompletion > 0.5f) {
                 Texture2D smear = ArkoftheAsset.TrientCircularSmear.Value;
                 Main.spriteBatch.End();
@@ -764,14 +764,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
             }
         }
 
-        // 绘制投掷剪刀的通用方法
+        //绘制投掷剪刀的通用方法
         public virtual void DrawThrownScissors(Color lightColor) {
             Texture2D frontBlade = ArkoftheAsset.RendingScissorsRight.Value;
             Texture2D frontBladeGlow = ArkoftheAsset.RendingScissorsRightGlow.Value;
             Texture2D backBlade = ArkoftheAsset.RendingScissorsLeft.Value;
             Texture2D backBladeGlow = ArkoftheAsset.RendingScissorsLeftGlow.Value;
 
-            // 计算前后刀片绘制的位置和角度
+            //计算前后刀片绘制的位置和角度
             Vector2 drawPos = Projectile.Center;
             Vector2 frontOrigin = new Vector2(51, 86);
             float frontRotation = Projectile.rotation + MathHelper.PiOver4;
@@ -783,11 +783,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee.ArkoftheOverride.Elements
                 backRotation = Projectile.rotation + MathHelper.Lerp(-MathHelper.PiOver4 * 0.33f, MathHelper.PiOver2 * 0.85f, MathHelper.Clamp(SnapEndCompletion + 0.5f, 0f, 1f));
             }
 
-            // 绘制前后刀片及光晕
+            //绘制前后刀片及光晕
             DrawScissorBlade(backBlade, backBladeGlow, drawPos, backOrigin, backRotation, lightColor, Projectile.scale);
             DrawScissorBlade(frontBlade, frontBladeGlow, drawPos, frontOrigin, frontRotation, lightColor, Projectile.scale);
 
-            // 绘制拖尾效果
+            //绘制拖尾效果
             if (Combo == 3f || ThrowCompletion > 0.5f) {
                 Texture2D smear = ArkoftheAsset.TrientCircularSmear.Value;
                 Main.spriteBatch.End();

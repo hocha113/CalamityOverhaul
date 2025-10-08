@@ -13,11 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     internal static class CloneFish
     {
         public static int ID = 3;
-        private const int ToggleCD = 12; // 0.2 秒左右的触发后摇
+        private const int ToggleCD = 12; //0.2 秒左右的触发后摇
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
-            if (hp.CloneFishToggleCD > 0) return; // 后摇中禁止
+            if (hp.CloneFishToggleCD > 0) return; //后摇中禁止
             if (!hp.CloneFishActive) {
                 Activate(player);
             }
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             var hp = player.GetOverride<HalibutPlayer>();
             var source = player.GetSource_Misc("CloneFishSkill");
 
-            // 生成多个克隆体，每个有不同的延迟
+            //生成多个克隆体，每个有不同的延迟
             int count = Math.Clamp(hp.CloneCount, 1, 5);
             for (int i = 0; i < count; i++) {
                 int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private int particleTimer;
         private Vector2 lastCenter;
 
-        // 动画状态
+        //动画状态
         private enum AnimState { Spawning, Active, Dissolving }
         private AnimState currentState = AnimState.Spawning;
         private int animTimer = 0;
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int DissolveDuration = 50;
         private float cloneAlpha = 0f;
 
-        // 延迟配置（通过 ai[0] 传递）
+        //延迟配置（通过 ai[0] 传递）
         private int replayDelay;
 
         public override void SetDefaults() {
@@ -231,14 +231,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
 
-            // 第一帧初始化延迟
+            //第一帧初始化延迟
             if (Projectile.localAI[0] == 0f) {
                 replayDelay = (int)Projectile.ai[0];
-                if (replayDelay <= 0) replayDelay = 30; // 默认最小延迟
+                if (replayDelay <= 0) replayDelay = 30; //默认最小延迟
                 Projectile.localAI[0] = 1f;
             }
 
-            // 检测外部关闭信号
+            //检测外部关闭信号
             if (hp == null || !hp.CloneFishActive) {
                 if (currentState != AnimState.Dissolving) {
                     StartDissolve();
@@ -247,7 +247,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Projectile.timeLeft = 2;
 
-            // 状态机
+            //状态机
             switch (currentState) {
                 case AnimState.Spawning:
                     UpdateSpawning(hp);
@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateActive(HalibutPlayer hp) {
-            // 检查是否有足够的快照
+            //检查是否有足够的快照
             if (hp.CloneSnapshots.Count < replayDelay) return;
 
             int index = hp.CloneSnapshots.Count - replayDelay;
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             afterImages.Add(snap);
             if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
-            // 重放射击事件
+            //重放射击事件
             int replayFrame = hp.CloneFrameCounter - replayDelay;
             if (hp.CloneShootEvents.Count > 0) {
                 for (int i = 0; i < hp.CloneShootEvents.Count; i++) {

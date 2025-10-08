@@ -183,10 +183,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.localAI[1] = 1f;
             }
 
-            // 调用光照逻辑
+            //调用光照逻辑
             HandleLighting(spitLaserSpreads);
 
-            // 调用消失行为逻辑
+            //调用消失行为逻辑
             HandleDespawnBehavior(ref shouldFly, ref segmentVelocity);
 
             //冲刺！冲刺！冲刺！冲！冲！冲！
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
 
-        // 提取方法，避免重复遍历
+        //提取方法，避免重复遍历
         public static int FindHeadIndex(int possibleIndex) {
             if (possibleIndex >= 0f && possibleIndex < Main.maxNPCs) {
                 if (Main.npc[possibleIndex].active && Main.npc[possibleIndex].type == NPCID.TheDestroyer) {
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
 
-            return -1; // 找不到有效头部
+            return -1; //找不到有效头部
         }
 
         private void SetMechQueenUp() {
@@ -558,12 +558,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 dampingInertia += 0.1f;
             }
 
-            // 计算段比例缩放
+            //计算段比例缩放
             int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
 
             Vector2 segmentTarget = SegmentNPC.Center - npc.Center;
 
-            // 如果当前为曲线段，调整目标点的Y坐标
+            //如果当前为曲线段，调整目标点的Y坐标
             if (mechdusaCurvedSpineSegmentIndex > 0) {
                 float absoluteTileOffset = mechdusaSegmentScale - mechdusaSegmentScale * ((mechdusaCurvedSpineSegmentIndex - 1f) * 0.1f);
                 absoluteTileOffset = MathHelper.Clamp(absoluteTileOffset, 0f, mechdusaSegmentScale);
@@ -580,12 +580,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.rotation = segmentTarget.ToRotation() + MathHelper.PiOver2;
             npc.Center = SegmentNPC.Center - segmentTarget.SafeNormalize(Vector2.Zero) * mechdusaSegmentScale;
 
-            // 计算最小接触速度和伤害速度
+            //计算最小接触速度和伤害速度
             float minimalContactDamageVelocity = segmentVelocity * 0.25f;
             float minimalDamageVelocity = segmentVelocity * 0.5f;
             float bodyAndTailVelocity = (npc.position - npc.oldPosition).Length();
 
-            // 根据速度设置伤害
+            //根据速度设置伤害
             if (bodyAndTailVelocity <= minimalContactDamageVelocity) {
                 npc.damage = 0;
             }

@@ -202,12 +202,12 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             set {
                 if (Item.TryGetGlobalItem<DarMatterGlobal>(out var gItem)) {
-                    value ??= []; // 避免 null 赋值
-                    List<Item> itemList = new(); // 用于存储合并后的物品
+                    value ??= []; //避免 null 赋值
+                    List<Item> itemList = new(); //用于存储合并后的物品
                     foreach (var item in value) {
                         VaultUtils.MergeItemStacks(itemList, item);
                     }
-                    gItem.dorpItems = itemList; // 更新物品列表
+                    gItem.dorpItems = itemList; //更新物品列表
                 }
             }
         }

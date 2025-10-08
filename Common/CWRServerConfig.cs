@@ -214,23 +214,23 @@ namespace CalamityOverhaul.Common
         }
 
         //private void ChangedPlayerItem() {
-        //    if (Main.LocalPlayer == null || Main.LocalPlayer.inventory == null) {
-        //        return;
-        //    }
+        //   if (Main.LocalPlayer == null || Main.LocalPlayer.inventory == null) {
+        //       return;
+        //   }
 
-        //    bool canSet = Data.OldWeaponHandheldDisplay != WeaponHandheldDisplay;
-        //    Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
+        //   bool canSet = Data.OldWeaponHandheldDisplay != WeaponHandheldDisplay;
+        //   Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
 
-        //    if (!canSet) {
-        //        return;
-        //    }
+        //   if (!canSet) {
+        //       return;
+        //   }
 
-        //    foreach (var item in Main.LocalPlayer.inventory) {
-        //        if (item == null || item.IsAir || !ItemOverride.ByID.ContainsKey(item.type)) {
-        //            continue;
-        //        }
-        //        item.SetDefaults(item.type);
-        //    }
+        //   foreach (var item in Main.LocalPlayer.inventory) {
+        //       if (item == null || item.IsAir || !ItemOverride.ByID.ContainsKey(item.type)) {
+        //           continue;
+        //       }
+        //       item.SetDefaults(item.type);
+        //   }
         //}
 
         private void ChangedRangedProperty() {

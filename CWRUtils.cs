@@ -53,40 +53,40 @@ namespace CalamityOverhaul
             }
         }
 
-        ///// <summary>
-        ///// 将 Item 数组的信息写入指定路径的文件中
-        ///// </summary>
-        ///// <param name="items">要导出的 Item 数组</param>
-        ///// <param name="path">写入文件的路径，默认为 "D:\\Mod_Resource\\input.cs"</param>
+        /// //<summary>
+        /// //将 Item 数组的信息写入指定路径的文件中
+        /// //</summary>
+        /// //<param name="items">要导出的 Item 数组</param>
+        /// //<param name="path">写入文件的路径，默认为 "D:\\Mod_Resource\\input.cs"</param>
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
-        //    try {
-        //        int columnIndex = 0;
-        //        using System.IO.StreamWriter sw = new(path);
-        //        sw.Write("string[] fullItems = new string[] {");
-        //        foreach (Item item in items) {
-        //            columnIndex++;
-        //            // 根据是否有 ModItem 决定写入的内容
-        //            string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
-        //            sw.Write(itemInfo);
-        //            sw.Write(", ");
-        //            // 每行最多写入9个元素，然后换行
-        //            if (columnIndex >= 9) {
-        //                sw.WriteLine();
-        //                columnIndex = 0;
-        //            }
-        //        }
-        //        sw.Write("};");
-        //    } catch (UnauthorizedAccessException) {
-        //        CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
-        //    } catch (System.IO.DirectoryNotFoundException) {
-        //        CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
-        //    } catch (System.IO.PathTooLongException) {
-        //        CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
-        //    } catch (System.IO.IOException) {
-        //        CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
-        //    } catch (Exception e) {
-        //        CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
-        //    }
+        //   try {
+        //       int columnIndex = 0;
+        //       using System.IO.StreamWriter sw = new(path);
+        //       sw.Write("string[] fullItems = new string[] {");
+        //       foreach (Item item in items) {
+        //           columnIndex++;
+        //           //根据是否有 ModItem 决定写入的内容
+        //           string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
+        //           sw.Write(itemInfo);
+        //           sw.Write(", ");
+        //           //每行最多写入9个元素，然后换行
+        //           if (columnIndex >= 9) {
+        //               sw.WriteLine();
+        //               columnIndex = 0;
+        //           }
+        //       }
+        //       sw.Write("};");
+        //   } catch (UnauthorizedAccessException) {
+        //       CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
+        //   } catch (System.IO.DirectoryNotFoundException) {
+        //       CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
+        //   } catch (System.IO.PathTooLongException) {
+        //       CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
+        //   } catch (System.IO.IOException) {
+        //       CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
+        //   } catch (Exception e) {
+        //       CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
+        //   }
         //}
         #endregion
 
@@ -477,8 +477,8 @@ namespace CalamityOverhaul
             TooltipLine newLine = new(mod, "CWRText", value.Value);
             newTooltips.Add(newLine);
             newTooltips.AddRange(overTooltips);
-            tooltips.Clear(); // 清空原 tooltips 集合
-            tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+            tooltips.Clear(); //清空原 tooltips 集合
+            tooltips.AddRange(newTooltips); //添加修改后的 newTooltips 集合
             tooltips.AddRange(prefixTooltips);
         }
 
@@ -510,7 +510,7 @@ namespace CalamityOverhaul
                 string message = "ERROR: An Empty Transfer Occurred! The Value of Item.type is Zero!";
                 VaultUtils.Text(message, Color.Red);
                 CWRMod.Instance.Logger.Error(message);
-                //throw new InvalidOperationException(message); // 明确终止执行，抛出异常              
+                //throw new InvalidOperationException(message); //明确终止执行，抛出异常              
                 return null;
             }
             return item.GetGlobalItem<CWRItem>();
@@ -739,7 +739,7 @@ namespace CalamityOverhaul
                 segments[0].StartX = 0;
             }
 
-            progress = MathHelper.Clamp(progress, 0f, 1f); // 限定进度在0到1之间
+            progress = MathHelper.Clamp(progress, 0f, 1f); //限定进度在0到1之间
             float height = 0f;
 
             for (int i = 0; i < segments.Length; i++) {
@@ -756,7 +756,7 @@ namespace CalamityOverhaul
                     continue;
                 }
 
-                float segmentProgress = (progress - startX) / (endX - startX); // 计算段内进度
+                float segmentProgress = (progress - startX) / (endX - startX); //计算段内进度
                 height = segment.StartHeight + segment.CurveEasingFunction(segmentProgress, segment.PolynomialDegree) * segment.HeightShift;
                 break;
             }

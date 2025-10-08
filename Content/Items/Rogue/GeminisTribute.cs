@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                     const float acceleration = 5f;
 
                     Vector2 playerVec = Owner.Center - Projectile.Center;
-                    if (playerVec.LengthSquared() > 16000000f) { // 4000^2, 避免调用 Length()
+                    if (playerVec.LengthSquared() > 16000000f) { //4000^2, 避免调用 Length()
                         Projectile.Kill();
                         break;
                     }

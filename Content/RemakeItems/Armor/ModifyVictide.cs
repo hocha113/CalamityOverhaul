@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Armor
 {
-    // 潮胜
+    //潮胜
     internal class ModifyVictide : CWRItemOverride
     {
         public override int TargetID => ModContent.ItemType<VictideHeadRanged>();

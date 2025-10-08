@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 8;
         private const int ToggleCD = 30;
-        private const int UltimateCooldown = 3600; // 60秒终极冷却
+        private const int UltimateCooldown = 3600; //60秒终极冷却
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Activate(player);
             hp.YourLevelIsTooLowToggleCD = ToggleCD;
-            hp.YourLevelIsTooLowCooldown = 600; // 调试用10秒
+            hp.YourLevelIsTooLowCooldown = 600; //调试用10秒
         }
 
         public static void Activate(Player player) {
@@ -58,40 +58,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        // 时空克隆体系统
+        //时空克隆体系统
         private List<InfiniteTimeClone> timeClones;
         private int cloneSpawnTimer;
-        private const int CloneSpawnInterval = 8; // 更快的克隆体生成速度
+        private const int CloneSpawnInterval = 8; //更快的克隆体生成速度
 
-        // 重启特效系统
+        //重启特效系统
         private List<RestartFlashEffect> restartFlashes;
         private int restartFlashTimer;
-        private const int RestartFlashInterval = 15; // 重启闪光间隔
+        private const int RestartFlashInterval = 15; //重启闪光间隔
 
-        // 鱼群系统
+        //鱼群系统
         private List<InfiniteFishBoid> fishSwarms;
         private int fishSpawnTimer;
-        private const int FishSpawnInterval = 3; // 持续不断的鱼群
+        private const int FishSpawnInterval = 3; //持续不断的鱼群
 
-        // 法阵符环系统
+        //法阵符环系统
         private List<InfiniteRuneCircle> runeCircles = new();
         private int runeSpawnTimer;
 
-        // 能量环系统
+        //能量环系统
         private List<EnergyRing> energyRings = new();
 
-        // 炮阵系统
+        //炮阵系统
         private List<int> activeCannons = new();
         private int cannonSpawnTimer;
-        private const int CannonInterval = 45; // 每隔45帧生成一轮炮阵
+        private const int CannonInterval = 45; //每隔45帧生成一轮炮阵
 
-        // 特效强度
+        //特效强度
         private float globalIntensity = 0f;
         private float pulsePhase = 0f;
         private float restartGlowIntensity = 0f;
 
-        // 技能持续时间
-        private const int TotalDuration = 600; // 10秒的绝对统治时间
+        //技能持续时间
+        private const int TotalDuration = 600; //10秒的绝对统治时间
         private int skillTimer = 0;
 
         public override void SetDefaults() {
@@ -113,15 +113,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.Center = Owner.Center;
             skillTimer++;
 
-            // 初始化
+            //初始化
             if (skillTimer == 1) {
                 Initialize();
             }
 
-            // 更新全局强度
+            //更新全局强度
             UpdateGlobalIntensity();
 
-            // 更新各个系统
+            //更新各个系统
             UpdateTimeClones();
             UpdateRestartFlashes();
             UpdateFishSwarms();
@@ -129,28 +129,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             UpdateEnergyRings();
             UpdateCannons();
 
-            // 生成新元素
+            //生成新元素
             SpawnNewElements();
 
-            // 持续治疗和状态恢复
+            //持续治疗和状态恢复
             ContinuousHeal();
 
-            // 结束阶段
+            //结束阶段
             if (skillTimer >= TotalDuration) {
                 HandleEnding();
             }
         }
 
-        private void Initialize() {
+        private new void Initialize() {
             timeClones = new List<InfiniteTimeClone>();
             restartFlashes = new List<RestartFlashEffect>();
             fishSwarms = new List<InfiniteFishBoid>();
             
-            // 播放开场音效
+            //播放开场音效
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 1.2f, Pitch = -0.3f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.0f }, Owner.Center);
 
-            // 初始爆发效果
+            //初始爆发效果
             for (int i = 0; i < 100; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = Owner.Center + angle.ToRotationVector2() * Main.rand.NextFloat(150f);
@@ -162,12 +162,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateGlobalIntensity() {
-            // 强度快速上升后保持
+            //强度快速上升后保持
             if (skillTimer < 30) {
                 globalIntensity = MathHelper.Lerp(globalIntensity, 1f, 0.15f);
             }
             else if (skillTimer > TotalDuration - 60) {
-                // 结束阶段逐渐减弱
+                //结束阶段逐渐减弱
                 float endProgress = (skillTimer - (TotalDuration - 60)) / 60f;
                 globalIntensity = 1f - endProgress;
             }
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateTimeClones() {
-            // 更新所有克隆体
+            //更新所有克隆体
             for (int i = timeClones.Count - 1; i >= 0; i--) {
                 timeClones[i].Update(Owner.Center);
                 if (timeClones[i].ShouldRemove()) {
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateRestartFlashes() {
-            // 更新重启闪光
+            //更新重启闪光
             for (int i = restartFlashes.Count - 1; i >= 0; i--) {
                 restartFlashes[i].Update();
                 if (restartFlashes[i].ShouldRemove()) {
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateFishSwarms() {
-            // 更新鱼群
+            //更新鱼群
             for (int i = fishSwarms.Count - 1; i >= 0; i--) {
                 fishSwarms[i].Update(Owner.Center);
                 if (fishSwarms[i].ShouldRemove()) {
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateRuneCircles() {
-            // 更新符环
+            //更新符环
             foreach (var rune in runeCircles) {
                 rune.Update();
             }
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateEnergyRings() {
-            // 更新能量环
+            //更新能量环
             for (int i = energyRings.Count - 1; i >= 0; i--) {
                 energyRings[i].Update();
                 if (energyRings[i].ShouldRemove()) {
@@ -229,45 +229,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateCannons() {
-            // 更新并清理失效的炮
+            //更新并清理失效的炮
             activeCannons.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
         }
 
         private void SpawnNewElements() {
-            // 持续生成时空克隆体
+            //持续生成时空克隆体
             cloneSpawnTimer++;
             if (cloneSpawnTimer >= CloneSpawnInterval && timeClones.Count < 50) {
                 SpawnTimeClone();
                 cloneSpawnTimer = 0;
             }
 
-            // 持续生成重启闪光
+            //持续生成重启闪光
             restartFlashTimer++;
             if (restartFlashTimer >= RestartFlashInterval && restartFlashes.Count < 5) {
                 SpawnRestartFlash();
                 restartFlashTimer = 0;
             }
 
-            // 持续生成鱼群
+            //持续生成鱼群
             fishSpawnTimer++;
             if (fishSpawnTimer >= FishSpawnInterval && fishSwarms.Count < 200) {
                 SpawnFish();
                 fishSpawnTimer = 0;
             }
 
-            // 持续生成符环
+            //持续生成符环
             runeSpawnTimer++;
             if (runeSpawnTimer >= 8 && runeCircles.Count < 12) {
                 SpawnRuneCircle();
                 runeSpawnTimer = 0;
             }
 
-            // 定期生成能量环
+            //定期生成能量环
             if (skillTimer % 12 == 0 && energyRings.Count < 15) {
                 energyRings.Add(new EnergyRing(Owner.Center));
             }
 
-            // 定期生成炮阵
+            //定期生成炮阵
             cannonSpawnTimer++;
             if (cannonSpawnTimer >= CannonInterval && activeCannons.Count < 14) {
                 SpawnCannonWave();
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float edge = Main.rand.NextFloat(4f);
             Vector2 spawn;
 
-            // 从屏幕四周随机生成
+            //从屏幕四周随机生成
             if (edge < 1f) {
                 spawn = Owner.Center + new Vector2(Main.rand.NextFloat(-700, 700), -900);
             }
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void SpawnRestartFlash() {
             restartFlashes.Add(new RestartFlashEffect(Owner.Center));
             
-            // 播放重启音效
+            //播放重启音效
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.4f, Pitch = 0.3f }, Owner.Center);
         }
 
@@ -379,14 +379,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void ContinuousHeal() {
-            // 每30帧恢复一次生命
+            //每30帧恢复一次生命
             if (skillTimer % 30 == 0) {
-                int healAmount = (int)(Owner.statLifeMax2 * 0.05f); // 每次恢复5%最大生命
+                int healAmount = (int)(Owner.statLifeMax2 * 0.05f); //每次恢复5%最大生命
                 Owner.statLife = Math.Min(Owner.statLife + healAmount, Owner.statLifeMax2);
                 Owner.HealEffect(healAmount);
             }
 
-            // 持续清除debuff
+            //持续清除debuff
             if (skillTimer % 10 == 0) {
                 for (int i = 0; i < Player.MaxBuffs; i++) {
                     int buffType = Owner.buffType[i];
@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void HandleEnding() {
             if (skillTimer == TotalDuration) {
-                // 最终爆发
+                //最终爆发
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f }, Owner.Center);
                 
                 for (int i = 0; i < 150; i++) {
@@ -448,45 +448,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     ghost.fullRotationOrigin
                 );
             } catch {
-                // 忽略渲染异常
+                //忽略渲染异常
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            // 绘制全局重启闪光背景
+            //绘制全局重启闪光背景
             DrawGlobalRestartGlow();
 
-            // 绘制符环
+            //绘制符环
             foreach (var rune in runeCircles) {
                 rune.Draw(Owner.Center, globalIntensity);
             }
 
-            // 绘制能量环
+            //绘制能量环
             foreach (var ring in energyRings) {
                 ring.Draw(globalIntensity);
             }
 
-            // 绘制重启闪光
+            //绘制重启闪光
             foreach (var flash in restartFlashes) {
                 flash.Draw(globalIntensity);
             }
 
-            // 绘制鱼群拖尾
+            //绘制鱼群拖尾
             foreach (var fish in fishSwarms) {
                 fish.DrawTrail(globalIntensity);
             }
 
-            // 绘制鱼群主体
+            //绘制鱼群主体
             foreach (var fish in fishSwarms) {
                 fish.Draw(globalIntensity);
             }
 
-            // 绘制克隆体拖尾
+            //绘制克隆体拖尾
             foreach (var clone in timeClones) {
                 clone.DrawTrail(globalIntensity);
             }
 
-            // 绘制克隆体
+            //绘制克隆体
             foreach (var clone in timeClones) {
                 DrawTimeClone(clone);
             }
@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             float scale = 8f + restartGlowIntensity * 4f;
             Color glowColor = new Color(150, 230, 255, 0) * restartGlowIntensity * 0.3f;
 
-            // 多层光晕
+            //多层光晕
             for (int i = 0; i < 3; i++) {
                 float layerScale = scale * (1f + i * 0.3f);
                 float layerAlpha = restartGlowIntensity * (1f - i * 0.3f);
@@ -548,16 +548,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             
             float progress = Life / MaxLife;
 
-            // 三阶段运动
+            //三阶段运动
             if (progress < 0.4f) {
-                // 阶段1：螺旋接近
+                //阶段1：螺旋接近
                 float approachProgress = progress / 0.4f;
                 orbitRadius = MathHelper.Lerp(450f, 280f, approachProgress);
                 spiralAngle += 0.09f * timeWarpFactor;
                 Alpha = MathHelper.Clamp(approachProgress * 2f, 0f, 1f);
             }
             else if (progress < 0.8f) {
-                // 阶段2：快速收拢
+                //阶段2：快速收拢
                 convergePhase = 1;
                 float convergeProgress = (progress - 0.4f) / 0.4f;
                 orbitRadius = MathHelper.Lerp(280f, 50f, MathHelper.SmoothStep(0f, 1f, convergeProgress));
@@ -565,7 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Alpha = 1f;
             }
             else {
-                // 阶段3：融合消失
+                //阶段3：融合消失
                 convergePhase = 2;
                 float fadeProgress = (progress - 0.8f) / 0.2f;
                 orbitRadius = MathHelper.Lerp(50f, 0f, fadeProgress);
@@ -573,13 +573,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Alpha = 1f - fadeProgress;
             }
 
-            // 计算位置
+            //计算位置
             Vector2 targetPos = center + spiralAngle.ToRotationVector2() * orbitRadius;
             Vector2 toTarget = targetPos - Position;
             Velocity = Vector2.Lerp(Velocity, toTarget * 0.25f, 0.35f);
             Position += Velocity;
 
-            // 记录拖尾
+            //记录拖尾
             TrailPositions.Insert(0, Position);
             if (TrailPositions.Count > MaxTrailLength) {
                 TrailPositions.RemoveAt(TrailPositions.Count - 1);
@@ -644,7 +644,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Life++;
             float progress = Life / MaxLife;
 
-            // 快速上升再缓慢下降
+            //快速上升再缓慢下降
             if (progress < 0.3f) {
                 Intensity = progress / 0.3f;
                 Scale = Intensity * 6f;
@@ -663,7 +663,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Texture2D bloomTex = CWRAsset.StarTexture.Value;
             Color flashColor = new Color(150, 230, 255, 0) * Intensity * globalAlpha * 0.7f;
 
-            // 十字光芒
+            //十字光芒
             for (int i = 0; i < 4; i++) {
                 float rot = i * MathHelper.PiOver2;
                 Main.spriteBatch.Draw(bloomTex, Center - Main.screenPosition, null, flashColor,
@@ -703,7 +703,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Life++;
             float progress = Life / MaxLife;
 
-            // 螺旋运动
+            //螺旋运动
             spiralAngle += 0.1f;
             Vector2 spiralOffset = spiralAngle.ToRotationVector2() * (float)Math.Sin(progress * MathHelper.Pi) * 40f;
 

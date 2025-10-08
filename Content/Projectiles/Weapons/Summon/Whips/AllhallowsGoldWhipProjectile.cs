@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 Vector2 diff = whipPoints[i + 1] - element;
 
                 scale *= 0.7f;
-                float rotation = diff.ToRotation() - MathHelper.PiOver2; // 此投射物的精灵图朝下，因此使用PiOver2进行旋转修正
+                float rotation = diff.ToRotation() - MathHelper.PiOver2; //此投射物的精灵图朝下，因此使用PiOver2进行旋转修正
                 Color color = Lighting.GetColor(element.ToTileCoordinates());
 
                 Main.EntitySpriteDraw(texture, pos - Main.screenPosition, frame, Color.White, rotation + offsetRots, origin, scale, flip, 0);

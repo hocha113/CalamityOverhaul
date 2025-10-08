@@ -154,18 +154,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             item.UseSound = SoundID.Item38;
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             halibutPlayer.SeaDomainLayers = 1;
-            SkillID = Sparkling.ID; // 原有逻辑
+            SkillID = Sparkling.ID; //原有逻辑
             if (SkillID == FishSwarm.ID) {
-                // 检查是否在攻击后摇中
+                //检查是否在攻击后摇中
                 if (halibutPlayer.AttackRecoveryTimer > 0) {
-                    return false; // 禁止攻击
+                    return false; //禁止攻击
                 }
 
                 if (player.altFunctionUse == 2) {
                     item.UseSound = null;
                 }
                 else {
-                    // === 移形换影中左键触发螺旋尖锥突袭 ===
+                    //=== 移形换影中左键触发螺旋尖锥突袭 ===
                     if (halibutPlayer.FishSwarmActive) {
                         Vector2 velocity = player.To(Main.MouseWorld).UnitVector();
                         FishSwarm.ActivateFishConeSurge(item, player, velocity * 6);
@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return false;//右键不触发普通攻击
             }
 
-            // 普攻时尝试触发闪光技能
+            //普攻时尝试触发闪光技能
             if (SkillID == Sparkling.ID) {
                 hp.SparklingUseCounter++;
                 Sparkling.TryTriggerSparklingVolley(item, player, hp);
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Main.projectile[shot].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
             }
 
-            // 记录克隆需要的射击事件
+            //记录克隆需要的射击事件
             if (hp.CloneFishActive) {
                 hp.RegisterShoot(type, velocity, damage, knockback, item.type);
             }

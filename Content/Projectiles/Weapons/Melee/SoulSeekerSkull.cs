@@ -29,14 +29,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             SetProjectileDirectionAndRotation();
 
             if (Projectile.timeLeft < 570) {
-                // 尝试获取最近的 NPC
+                //尝试获取最近的 NPC
                 NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null && target.active) {
-                    // 如果找到目标 NPC，则调整弹幕的速度以追踪目标
+                    //如果找到目标 NPC，则调整弹幕的速度以追踪目标
                     AdjustVelocityTowardsTarget(target);
                 }
                 else {
-                    // 如果没有有效目标，寻找新的目标
+                    //如果没有有效目标，寻找新的目标
                     FindNewTarget();
                 }
                 SetProjectileDirectionAndRotation();
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 int bloodyDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 2f);
                 Main.dust[bloodyDust].velocity *= 3f;
 
-                // 随机调整某些尘埃的大小和淡入效果
+                //随机调整某些尘埃的大小和淡入效果
                 if (Main.rand.NextBool()) {
                     Main.dust[bloodyDust].scale = 0.5f;
                     Main.dust[bloodyDust].fadeIn = 1f + Main.rand.Next(10) * 0.1f;
@@ -119,11 +119,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             for (int j = 0; j < 10; j++) {
-                // 高速火焰尘埃
+                //高速火焰尘埃
                 int fieryDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 3f);
                 Main.dust[fieryDust].noGravity = true;
                 Main.dust[fieryDust].velocity *= 5f;
-                // 较慢的火焰尘埃
+                //较慢的火焰尘埃
                 fieryDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 2f);
                 Main.dust[fieryDust].velocity *= 2f;
             }

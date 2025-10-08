@@ -151,9 +151,9 @@ namespace CalamityOverhaul.Content.Industrials
 
         }
 
-        ///<summary>
-        ///不会自动调用，需要在子类中手动调用
-        ///</summary>
+        /// <summary>
+        /// 不会自动调用，需要在子类中手动调用
+        /// </summary>
         public virtual void DrawChargeBar() {
             if (!HoverTP) {
                 return;

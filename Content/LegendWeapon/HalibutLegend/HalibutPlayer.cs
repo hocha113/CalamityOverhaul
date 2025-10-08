@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>闪光技能：武器普通攻击使用计数</summary>
         public int SparklingUseCounter { get; set; }
         /// <summary>闪光技能：基础冷却（帧）</summary>
-        public const int SparklingBaseCooldown = 120; // 2秒
+        public const int SparklingBaseCooldown = 120; //2秒
         /// <summary>闪光技能：鱼数量</summary>
         public int SparklingFishCount { get; set; }
         /// <summary>闪光技能：下一条鱼开火索引</summary>
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int CloneFrameCounter { get; set; }
         public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
         public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
-        private const int MaxSnapshots = 60 * 10; // 最多记录10秒（支持更长延迟）
+        private const int MaxSnapshots = 60 * 10; //最多记录10秒（支持更长延迟）
         /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
         public int CloneFishToggleCD { get; set; }
 
@@ -147,39 +147,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 SparklingVolleyTimer++;
             }
 
-            // 更新技能状态
+            //更新技能状态
             if (FishSwarmActive) {
                 FishSwarmTimer++;
 
                 if (FishSwarmTimer >= FishSwarmDuration) {
-                    // 技能结束
+                    //技能结束
                     FishSwarmActive = false;
                     FishSwarmTimer = 0;
                     FishSwarmCooldown = 60;
                 }
             }
 
-            // 更新冷却
+            //更新冷却
             if (FishSwarmCooldown > 0) {
                 FishSwarmCooldown--;
             }
 
-            // 更新攻击后摇
+            //更新攻击后摇
             if (AttackRecoveryTimer > 0) {
                 AttackRecoveryTimer--;
             }
 
-            // 克隆技能记录
+            //克隆技能记录
             if (CloneFishActive) {
                 CloneFrameCounter++;
-                // 记录快照
+                //记录快照
                 CloneSnapshots.Add(new PlayerSnapshot(Player));
                 if (CloneSnapshots.Count > MaxSnapshots) {
                     CloneSnapshots.RemoveAt(0);
                 }
             }
             else {
-                // 不活动时清理历史
+                //不活动时清理历史
                 if (CloneSnapshots.Count > 0) CloneSnapshots.Clear();
                 if (CloneShootEvents.Count > 0) CloneShootEvents.Clear();
                 CloneFrameCounter = 0;
@@ -187,27 +187,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             if (CloneFishToggleCD > 0) CloneFishToggleCD--;
 
-            // 海域领域冷却
+            //海域领域冷却
             if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
             if (SeaDomainCooldown > 0) SeaDomainCooldown--;
 
-            // 重启技能冷却
+            //重启技能冷却
             if (RestartFishToggleCD > 0) RestartFishToggleCD--;
             if (RestartFishCooldown > 0) RestartFishCooldown--;
 
-            // 瞬移技能冷却
+            //瞬移技能冷却
             if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
             if (FishTeleportCooldown > 0) FishTeleportCooldown--;
 
-            // 叠加攻击冷却
+            //叠加攻击冷却
             if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
             if (SuperpositionCooldown > 0) SuperpositionCooldown--;
 
-            // 终极技能冷却
+            //终极技能冷却
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
-            // 海域领域激活检测，不要在服务器上访问按键
+            //海域领域激活检测，不要在服务器上访问按键
             if (!VaultUtils.isServer && CWRKeySystem.Halibut_Domain.JustPressed) {
                 SeaDomainLayers = 1;
                 SeaDomain.AltUse(Player.GetItem(), Player);
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             //这里可以操纵players移除不需要绘制的玩家达到隐藏玩家的目的
             if (FishSwarmActive) {
-                // 移除正在使用技能的玩家，使其隐藏
+                //移除正在使用技能的玩家，使其隐藏
                 List<Player> visiblePlayers = new List<Player>();
                 foreach (Player player in players) {
                     if (player.whoAmI != Player.whoAmI) {
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Position = Player.Center,
                 ItemType = itemType
             });
-            if (CloneShootEvents.Count > 1000) { // 增加事件缓存
+            if (CloneShootEvents.Count > 1000) { //增加事件缓存
                 CloneShootEvents.RemoveAt(0);
             }
         }

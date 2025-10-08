@@ -13,7 +13,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "Null/Null"
         ];
-        // <summary>
+        //<summary>
         /// 虚粒子
         /// </summary>
         public readonly static string[] FullItems_DecayParticles = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
@@ -41,7 +41,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/DecaySubstance"
         ];
-        // <summary>
+        //<summary>
         /// 消减物质
         /// </summary>
         public readonly static string[] FullItems_DissipationSubstance = ["0", "0", "0", "0", "0", "0", "0", "0", "0",
@@ -69,7 +69,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/SpectralMatter"
         ];
-        // <summary>
+        //<summary>
         /// 暗物质团，物质合成
         /// </summary>
         public readonly static string[] FullItems_DarkMatterBall = ["0", "0", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "0", "0",
@@ -111,7 +111,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/NeutronStarIngot"
         ];
-        // <summary>
+        //<summary>
         /// 无尽锭
         /// </summary>
         public readonly static string[] FullItems_InfiniteIngot = ["CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/BloodOrange", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/NeutronStarIngot", "0",
@@ -125,7 +125,7 @@
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot"
         ];
-        // <summary>
+        //<summary>
         /// 苍穹破晓
         /// </summary>
         public readonly static string[] FullItems_DawnshatterAzure = ["0", "0", "0", "0", "0", "0", "0", "3458", "CalamityMod/Rock",
@@ -307,7 +307,7 @@
             "0", "0", "0", "0", "CalamityOverhaul/NeutronStarIngot", "0", "0", "0", "0",
             "CalamityOverhaul/InfinitePick"
         ];
-        // <summary>
+        //<summary>
         /// 上帝管道
         /// </summary>
         public readonly static string[] FullItems_CreativePipeline = ["0", "0", "0", "0", "0", "0", "0", "0", "0",

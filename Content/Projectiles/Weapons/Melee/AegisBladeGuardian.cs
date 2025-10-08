@@ -46,11 +46,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 HandleStateTwo();
             }
 
-            // 全局计时器递增
+            //全局计时器递增
             Projectile.ai[0]++;
         }
 
-        // 处理状态 0：加速、缩放、跟随玩家
+        //处理状态 0：加速、缩放、跟随玩家
         private void HandleStateZero() {
             Projectile.scale += 0.01f;
             Projectile.velocity *= 0.97f;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        // 处理状态 1：扩展规模、粒子效果、触发逻辑
+        //处理状态 1：扩展规模、粒子效果、触发逻辑
         private void HandleStateOne() {
             if (Projectile.scale < 2.5f) {
                 Projectile.scale += 0.02f;
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        // 处理状态 2：追踪目标或自爆
+        //处理状态 2：追踪目标或自爆
         private void HandleStateTwo() {
             NPC npc = Projectile.Center.FindClosestNPC(6000, true, true);
 
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
         }
 
-        // 生成粒子效果
+        //生成粒子效果
         private void GenerateParticles(int count, int minRadius, int maxRadius, float speed, Color color, int size, float alpha, float hueShift) {
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < count; i++) {
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        // 状态转换逻辑
+        //状态转换逻辑
         private void TransitionToState(int newState, bool resetVelocity) {
             Projectile.ai[1] = newState;
             if (resetVelocity) {

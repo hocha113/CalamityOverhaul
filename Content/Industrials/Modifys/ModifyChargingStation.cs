@@ -436,7 +436,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             drawPos += (new Vector2(-30, 30) * sengs);
             int uiBarByWidthSengs = (int)(BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-            // 绘制温度相关的图像
+            //绘制温度相关的图像
             Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, BarFull.Value.Height);
             Main.spriteBatch.Draw(BarTop.Value, drawPos, null, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
             Main.spriteBatch.Draw(BarFull.Value, drawPos + new Vector2(10, 0) * sengs, fullRec, Color.White * sengs, 0, Vector2.Zero, sengs, SpriteEffects.None, 0);
@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
                 if (ItemIsCharge(Item, out float ueValue, out float maxValue)) {
                     DrawChargeBar(spriteBatch, origDrawPos, ueValue / maxValue);
-                    // 如果鼠标在主页面中，显示信息
+                    //如果鼠标在主页面中，显示信息
                     if (hoverChargeBar) {
                         textContent = (((int)ueValue) + "/" + ((int)maxValue) + "UE").ToString();
                         textScale = 0.8f;

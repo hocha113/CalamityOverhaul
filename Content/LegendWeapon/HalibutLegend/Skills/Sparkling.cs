@@ -33,18 +33,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             hp.SparklingVolleyActive = true;
             hp.SparklingVolleyTimer = 0;
-            hp.SparklingFishCount = 13; // 13条鱼
+            hp.SparklingFishCount = 13; //13条鱼
             hp.SparklingNextFireIndex = 0;
             hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
-            hp.SparklingVolleyCooldown = HalibutPlayer.SparklingBaseCooldown; // 设置基础冷却
+            hp.SparklingVolleyCooldown = HalibutPlayer.SparklingBaseCooldown; //设置基础冷却
 
             Vector2 aimDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
-            float arc = MathHelper.ToRadians(RoingArc); // 扇形总角度
+            float arc = MathHelper.ToRadians(RoingArc); //扇形总角度
             float radius = 90f;
             ShootState shootState = player.GetShootState();
 
-            // 中心涟漪出现特效（ai0 = -1 表示中央扩散光环）
+            //中心涟漪出现特效（ai0 = -1 表示中央扩散光环）
             Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero
                 , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, -1, hp.SparklingVolleyId);
 
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     ai0: hp.SparklingVolleyId, ai1: i);
                 if (Main.projectile[proj].ModProjectile is SparklingFishHolder holder) holder.Owner = player;
 
-                // 鱼体出现定位点爆闪（ai0 = 索引, ai1 = volleyId）
+                //鱼体出现定位点爆闪（ai0 = 索引, ai1 = volleyId）
                 Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, Vector2.Zero
                     , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, Main.projectile[proj].identity, hp.SparklingVolleyId);
             }
@@ -71,8 +71,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";//一个圆点光效灰度图，可以考虑用来丰富特效
 
-        private ref float Index => ref Projectile.ai[0]; // -1 = 中心光环 其他=鱼索引
-        private const int LifeTime = 42; // 存活时间
+        private ref float Index => ref Projectile.ai[0]; //-1 = 中心光环 其他=鱼索引
+        private const int LifeTime = 42; //存活时间
         private float seed;
         private float startScale;
         private float endScale;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         public override void OnSpawn(IEntitySource source) {
             seed = Main.rand.NextFloat(10000f);
-            if (Index < 0) { // 中心扩散
+            if (Index < 0) { //中心扩散
                 startScale = 0.4f;
                 endScale = 4.2f;
             }
@@ -99,11 +99,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 endScale = 1.8f + Main.rand.NextFloat(0.4f);
             }
             float hue = (Index < 0 ? 0.15f : (Index % 7) / 7f);
-            // 粉蓝宝石色系插值
+            //粉蓝宝石色系插值
             colA = Color.Lerp(new Color(120, 180, 255), new Color(255, 170, 230), 0.35f + 0.4f * hue);
             colB = Color.Lerp(new Color(80, 120, 210), new Color(255, 120, 210), 0.55f * (1 - hue) + 0.2f);
 
-            // 初生碎光
+            //初生碎光
             int dustAmt = Index < 0 ? 36 : 12;
             for (int i = 0; i < dustAmt; i++) {
                 float rot = MathHelper.TwoPi * i / dustAmt;
@@ -115,21 +115,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         public override void AI() {
-            float t = 1f - Projectile.timeLeft / (float)LifeTime; // 0->1
+            float t = 1f - Projectile.timeLeft / (float)LifeTime; //0->1
             float ease = MathF.Pow(t, 0.6f);
             Projectile.scale = MathHelper.Lerp(startScale, endScale, ease);
 
-            // 轻微脉动旋转
+            //轻微脉动旋转
             Projectile.rotation += 0.04f + (Index < 0 ? 0.02f : 0.06f) * MathF.Sin(seed + Main.GlobalTimeWrappedHourly * 6f);
 
-            // 中心光环：持续生成少量向外渐隐宝石尘
+            //中心光环：持续生成少量向外渐隐宝石尘
             if (Index < 0 && Main.rand.NextBool(4)) {
                 Vector2 ringPos = Projectile.Center + Main.rand.NextVector2CircularEdge(Projectile.scale * 18f, Projectile.scale * 18f);
                 var d = Dust.NewDustPerfect(ringPos, DustID.GemDiamond, Vector2.Zero, 160, Color.White, Main.rand.NextFloat(0.5f, 0.9f));
                 d.noGravity = true;
             }
 
-            // 鱼单点闪烁：前半段放射 outward 亮点
+            //鱼单点闪烁：前半段放射 outward 亮点
             if (Index >= 0 && t < 0.45f && Main.rand.NextBool(5)) {
                 Vector2 dir = Main.rand.NextVector2Unit();
                 var d2 = Dust.NewDustPerfect(Projectile.Center + dir * Projectile.scale * 12f, DustID.GemDiamond, dir * 2f, 120,
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 d2.noGravity = true;
             }
 
-            // 末段淡出
+            //末段淡出
             if (t > 0.75f) {
                 Projectile.alpha = (int)MathHelper.Lerp(0, 255, (t - 0.75f) / 0.25f);
             }
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
             float fade = 1f - Projectile.alpha / 255f;
-            // 双层叠加：外层柔光 + 内层核心
+            //双层叠加：外层柔光 + 内层核心
             Color outer = Color.Lerp(colA, colB, 0.5f) * 0.55f * fade;
             outer.A = 0;
             Color inner = Color.White * 0.9f * fade;
@@ -181,10 +181,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             get => Projectile.ai[2] == 1f;
             set => Projectile.ai[2] = value ? 1f : 0f;
         }
-        private const int PreFireDelay = 16; // 鱼出现后到可能开火的最小延迟
+        private const int PreFireDelay = 16; //鱼出现后到可能开火的最小延迟
 
-        private ref float VolleyId => ref Projectile.ai[0]; // 齐射id
-        private ref float FishIndex => ref Projectile.ai[1]; // 在该齐射中的序号
+        private ref float VolleyId => ref Projectile.ai[0]; //齐射id
+        private ref float FishIndex => ref Projectile.ai[1]; //在该齐射中的序号
 
         private float glowPulse;
         private float fadeOut;
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 600; // 容错
+            Projectile.timeLeft = 600; //容错
             Projectile.friendly = false;
             Projectile.hostile = false;
         }
@@ -219,8 +219,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
                 Projectile.rotation = Projectile.To(Main.MouseWorld).ToRotation();
 
-                // 逐条依次发射：依据玩家的SparklingVolleyTimer和索引
-                int fireInterval = 14; // 两条鱼间隔
+                //逐条依次发射：依据玩家的SparklingVolleyTimer和索引
+                int fireInterval = 14; //两条鱼间隔
                 int startFireTime = PreFireDelay + (int)FishIndex * fireInterval;
                 if (!Fired && hp.SparklingVolleyTimer >= startFireTime) {
                     FireLaser();
@@ -230,49 +230,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 }
                 if (hp.SparklingNextFireIndex == hp.SparklingFishCount
                         && Owner.ownedProjectileCounts[ModContent.ProjectileType<SparklingRay>()] == 0) {
-                    // 所有鱼已开火，进入离场延迟等待
+                    //所有鱼已开火，进入离场延迟等待
                     hp.SparklingDeparturePhase = true;
                     hp.SparklingDepartureTimer = 0;
                 }
             }
             else {
-                // 离场阶段：先等待，再整体向屏幕外飞行并淡出
+                //离场阶段：先等待，再整体向屏幕外飞行并淡出
                 hp.SparklingDepartureTimer++;
                 if (hp.SparklingDepartureTimer < Sparkling.DepartureDelay) {
-                    // 原地轻微旋转漂浮
+                    //原地轻微旋转漂浮
                     Projectile.rotation += 0.02f * (FishIndex % 2 == 0 ? 1 : -1);
                 }
                 else {
                     int flyTime = hp.SparklingDepartureTimer - Sparkling.DepartureDelay;
-                    // 平滑加速 0-1
+                    //平滑加速 0-1
                     float accelProgress = MathHelper.Clamp(flyTime / (float)Sparkling.DepartureDuration, 0f, 1f);
                     accelProgress = MathF.Pow(accelProgress, 0.65f);
 
-                    // 计算目标离开距离：使用屏幕对角尺寸放大，确保真正飞出屏幕再消失
+                    //计算目标离开距离：使用屏幕对角尺寸放大，确保真正飞出屏幕再消失
                     float diag = MathF.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight);
-                    float exitDistance = diag * 1.4f; // 1.4 倍对角线
+                    float exitDistance = diag * 1.4f; //1.4 倍对角线
 
-                    // 计算外向方向（保持原相对朝向），若与玩家重合则使用玩家朝向
+                    //计算外向方向（保持原相对朝向），若与玩家重合则使用玩家朝向
                     Vector2 outward = (Projectile.Center - Owner.Center);
                     if (outward.LengthSquared() < 4f)
                         outward = (Projectile.Center - Main.MouseWorld);
                     outward = outward.SafeNormalize(Vector2.UnitY);
 
-                    // 当前帧速度（前期更慢，后期加速），再叠加一点随机脉动
+                    //当前帧速度（前期更慢，后期加速），再叠加一点随机脉动
                     float baseSpeed = MathHelper.Lerp(6f, 32f, accelProgress);
                     baseSpeed *= 1f + 0.15f * (float)Math.Sin(flyTime * 0.18f + FishIndex);
 
                     Vector2 move = outward * baseSpeed;
                     Projectile.Center += move;
 
-                    // 使用 localAI[0] 记录累计位移
+                    //使用 localAI[0] 记录累计位移
                     Projectile.localAI[0] += move.Length();
 
-                    // 基于行进距离淡出（后半段才开始明显淡出）
+                    //基于行进距离淡出（后半段才开始明显淡出）
                     float distProgress = MathHelper.Clamp(Projectile.localAI[0] / exitDistance, 0f, 1f);
-                    fadeOut = MathHelper.Clamp((distProgress - 0.55f) / 0.45f, 0f, 1f); // 55% 距离后开始淡
+                    fadeOut = MathHelper.Clamp((distProgress - 0.55f) / 0.45f, 0f, 1f); //55% 距离后开始淡
 
-                    // 判定是否离开屏幕区域（加 margin 做缓冲）
+                    //判定是否离开屏幕区域（加 margin 做缓冲）
                     Rectangle safeBounds = new((int)Main.screenPosition.X - 180, (int)Main.screenPosition.Y - 180,
                         Main.screenWidth + 360, Main.screenHeight + 360);
                     if (!safeBounds.Contains(Projectile.Center.ToPoint()) && (fadeOut > 0.6f || distProgress >= 0.98f)) {
@@ -291,9 +291,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (Main.projectile.IndexInRange(beam)) {
                 Main.projectile[beam].rotation = dir.ToRotation();
                 Main.projectile[beam].localAI[0] = 0;
-                Main.projectile[beam].localAI[1] = FishIndex; // 传递颜色层次
+                Main.projectile[beam].localAI[1] = FishIndex; //传递颜色层次
             }
-            // 发射光尘
+            //发射光尘
             for (int i = 0; i < 12; i++) {
                 Vector2 v = dir.RotatedByRandom(0.35f) * Main.rand.NextFloat(4f, 9f);
                 var d = Dust.NewDustPerfect(Projectile.Center + dir * 16f, DustID.GemAmethyst, v, 150, default, Main.rand.NextFloat(1f, 1.4f));
@@ -305,7 +305,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;//获取鱼的纹理
 
-            // 计算绘制参数
+            //计算绘制参数
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = value.Frame();
             Vector2 origin = sourceRect.Size() / 2f;
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Projectile.rotation = projectile.rotation;
             }
             float fishIndex = Projectile.localAI[1];
-            float hueOffset = (fishIndex % 7) / 7f; // 简单的层次调色
+            float hueOffset = (fishIndex % 7) / 7f; //简单的层次调色
             gradientStart = Color.Lerp(new Color(255, 180, 240), new Color(240, 120, 210), hueOffset);
             gradientMid = Color.Lerp(new Color(180, 210, 255), new Color(120, 170, 255), hueOffset);
             gradientEnd = Color.Lerp(new Color(100, 160, 255), new Color(70, 110, 200), hueOffset);
@@ -369,11 +369,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             topEnd = new Vector2(endX, endY);
             botEnd = new Vector2(endX, -endY);
             if (Projectile.localAI[0] <= 5 && Projectile.timeLeft > 10)
-                Projectile.localAI[0] += 30f; // 更快展开
+                Projectile.localAI[0] += 30f; //更快展开
             if (Projectile.timeLeft <= 20 && Projectile.localAI[0] > 0) Projectile.localAI[0] -= 20f;
             if (Projectile.localAI[0] < 0) Projectile.localAI[0] = 0;
 
-            // 核心光粒
+            //核心光粒
             if (Main.rand.NextBool(3)) {
                 Vector2 corePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(40f, 400f);
                 var d = Dust.NewDustPerfect(corePos, DustID.GemDiamond, Vector2.Zero, 100, Color.White, Main.rand.NextFloat(0.6f, 1.1f));

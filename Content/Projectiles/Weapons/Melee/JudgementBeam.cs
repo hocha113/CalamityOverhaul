@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             CalamityUtils.HomeInOnNPC(Projectile, true, 350f, 15f, 10f);
         }
 
-        // 生成宝石光尘
+        //生成宝石光尘
         public void SpawnGemDust(int count, float velocityMultiplier) {
             var dye = GameShaders.Armor.GetShaderFromItemId(Projectile.CWR().DyeItemID);
             for (int i = 0; i < count; i++) {

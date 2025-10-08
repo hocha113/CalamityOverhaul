@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     SoundSlot = SoundEngine.PlaySound(CWRSound.BlackHole with { MaxInstances = 5 }, Projectile.Center);
                 }
                 else {
-                    // 如果声音正在播放，则更新声音的位置以匹配弹丸的当前位置。
+                    //如果声音正在播放，则更新声音的位置以匹配弹丸的当前位置。
                     activeSoundTwister.Position = Projectile.position;
                 }
             }

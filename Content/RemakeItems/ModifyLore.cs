@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems
         public override void AfterLoadenContent() => Legend = this.GetLocalization(nameof(Legend));
         //只修改中文区，因为其他语言的文本暂时没有制作完成
         //暂时全部禁用，在写手把那些故事重写完成之前不要进行修改
-        public override bool? CanCWROverride() => false;// id == TargetID && Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese;
+        public override bool? CanCWROverride() => false;//id == TargetID && Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese;
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRItem.OverModifyTooltip(item, tooltips);
             KeyboardState state = Keyboard.GetState();

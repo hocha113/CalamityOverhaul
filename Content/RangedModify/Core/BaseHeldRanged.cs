@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// <summary>
         /// 鼠标是否处在空闲实际
         /// </summary>
-        public bool SafeMousetStart => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == ItemID.None || SafeMousetStart2;// && !Main.mouseText
+        public bool SafeMousetStart => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == ItemID.None || SafeMousetStart2;//&& !Main.mouseText
         /// <summary>
         /// 如果设置了随时转向，那么实时同步鼠标状态让其在队友眼里面正常些
         /// </summary>
