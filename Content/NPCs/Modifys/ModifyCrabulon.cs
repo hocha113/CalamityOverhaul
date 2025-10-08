@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (VaultUtils.isServer) {//如果是服务器则进行广播
                 ModPacket netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.CrabulonModifyNetWork);
-                netMessage.Write(npc.whoAmI);
+                netMessage.Write(npcIndex);
                 modifyCrabulon.OtherNetWorkSend(netMessage);//手动发送网络数据
                 netMessage.Send(-1, whoAmI);
             }
@@ -441,6 +441,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 JumpHeightUpdate -= 14;
                 npc.position.Y -= 14;
                 npc.noGravity = true;
+                npc.netUpdate = true;
             }
 
             if (JumpHeightSetFrame > 0) {
@@ -651,7 +652,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 }
 
                 //跳跃（只在接触地面时生效，防止无限连跳）
-                if (Owner.justJumped && npc.collideY) {
+                if (Owner.controlJump && npc.collideY) {
                     npc.velocity.Y = baseSpeed * Owner.jumpSpeedBoost * -3.6f;
                 }
 
@@ -813,6 +814,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
         }
 
         public void AutoStepClimbing() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+
             if (npc.noTileCollide) {
                 return;
             }
@@ -842,6 +847,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             if (canStepUp) {
                 //避免卡进方块
                 npc.velocity.Y /= 2;
+                npc.netUpdate = true;
             }
         }
 

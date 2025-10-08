@@ -207,7 +207,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
-            if (CWRKeySystem.Halibut_Domain.JustPressed) {
+            // 海域领域激活检测，不要在服务器上访问按键
+            if (!VaultUtils.isServer && CWRKeySystem.Halibut_Domain.JustPressed) {
                 SeaDomainLayers = 1;
                 SeaDomain.AltUse(Player.GetItem(), Player);
             }
