@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false;
             }
 
-            rightPressed = Main.mouseRight && Main.mouseRightRelease;
+            rightPressed = Owner.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease;
 
             if (ai[7] > 0) {
                 ai[7]--;
