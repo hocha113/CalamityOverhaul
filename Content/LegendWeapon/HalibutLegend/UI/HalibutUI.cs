@@ -320,6 +320,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                     , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
 
+            // 先绘制介绍面板（在主面板后面）
+            SkillTooltipPanel.Instance.Draw(spriteBatch);
+            
+            // 绘制主面板
             spriteBatch.Draw(Panel, UIHitBox, Color.White);
 
             leftButton.Draw(spriteBatch);
@@ -369,9 +373,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);
             }
-            
-            // 绘制介绍面板（在所有UI元素之上）
-            SkillTooltipPanel.Instance.Draw(spriteBatch);
 
             rasterizer.ScissorTestEnable = false;
             Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了

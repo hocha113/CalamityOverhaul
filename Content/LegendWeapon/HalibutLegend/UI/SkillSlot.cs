@@ -52,8 +52,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 
                 // 悬停足够时间后显示介绍面板
                 if (hoverTimer >= HoverDelay && FishSkill != null) {
-                    Vector2 tooltipPosition = DrawPosition + Size / 2;
-                    SkillTooltipPanel.Instance.Show(FishSkill, tooltipPosition);
+                    // 获取主面板的位置和尺寸
+                    Vector2 mainPanelPos = HalibutUIPanel.Instance.DrawPosition;
+                    Vector2 mainPanelSize = HalibutUIPanel.Instance.Size;
+                    SkillTooltipPanel.Instance.Show(FishSkill, mainPanelPos, mainPanelSize);
                 }
                 
                 if (keyLeftPressState == KeyPressState.Pressed) {
