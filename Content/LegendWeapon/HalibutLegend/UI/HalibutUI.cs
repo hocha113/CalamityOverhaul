@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
@@ -28,7 +27,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static Texture2D PictureSlot;
         //技能图标，大小170*34，共五帧，对应五种技能的图标
         public static Texture2D Skillcon;
+        //左侧方向按钮
         public static Texture2D LeftButton;
+        //右侧方向按钮
         public static Texture2D RightButton;
     }
 
