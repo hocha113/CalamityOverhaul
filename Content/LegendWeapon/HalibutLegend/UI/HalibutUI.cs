@@ -115,8 +115,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public LeftButtonUI leftButton = new LeftButtonUI();
         public RightButtonUI rightButton = new RightButtonUI();
         public float Sengs;
+        
+        // 滚动相关字段
+        public int scrollOffset = 0; // 当前滚动偏移量
+        public const int maxVisibleSlots = 3; // 最多同时显示3个技能槽位
+        
         public override void Update() {
             halibutUISkillSlots ??= [];
+            
+            // 确保滚动偏移量在有效范围内
+            int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
+            scrollOffset = Math.Clamp(scrollOffset, 0, maxOffset);
+            
             if (HalibutUILeftSidebar.Instance.Sengs >= 1f && HalibutUIHead.Instance.Open) {//侧边栏完全打开后才开始打开面板
                 if (Sengs < 1f) {
                     Sengs += 0.1f;
@@ -152,9 +162,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             StudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
             StudySlot.Instance.Update();
 
-            int index = 0;//这里应该只能展示出来三个技能，多的会被隐藏
-            foreach (var slot in halibutUISkillSlots.ToList()) {
-                slot.DrawPosition = DrawPosition + new Vector2(46, 30);
+            // 只更新当前可见范围内的技能槽位
+            int index = 0;
+            for (int i = scrollOffset; i < Math.Min(scrollOffset + maxVisibleSlots, halibutUISkillSlots.Count); i++) {
+                var slot = halibutUISkillSlots[i];
+                slot.DrawPosition = DrawPosition + new Vector2(52, 30);
                 slot.DrawPosition.X += index * (Skillcon.Width + 4);
                 slot.Update();
                 index++;
@@ -168,8 +180,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             StudySlot.Instance.Draw(spriteBatch);
 
-            foreach (var slot in halibutUISkillSlots.ToList()) {
-                slot.Draw(spriteBatch);
+            // 只绘制当前可见范围内的技能槽位
+            for (int i = scrollOffset; i < Math.Min(scrollOffset + maxVisibleSlots, halibutUISkillSlots.Count); i++) {
+                halibutUISkillSlots[i].Draw(spriteBatch);
             }
         }
     }
@@ -343,7 +356,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero);
-                    
+                    // 向左滚动（减少偏移量）
+                    if (HalibutUIPanel.Instance.scrollOffset > 0) {
+                        HalibutUIPanel.Instance.scrollOffset--;
+                    }
                 }
             }
             else {
@@ -354,8 +370,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            // 根据是否能继续向左滚动来调整颜色
+            Color buttonColor = HalibutUIPanel.Instance.scrollOffset > 0 ? Color.White : Color.White;
             spriteBatch.Draw(LeftButton, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
-            spriteBatch.Draw(LeftButton, DrawPosition, null, Color.White);
+            spriteBatch.Draw(LeftButton, DrawPosition, null, buttonColor);
         }
     }
 
@@ -374,7 +392,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero);
-
+                    // 向右滚动（增加偏移量）
+                    int maxOffset = Math.Max(0, HalibutUIPanel.Instance.halibutUISkillSlots.Count - HalibutUIPanel.maxVisibleSlots);
+                    if (HalibutUIPanel.Instance.scrollOffset < maxOffset) {
+                        HalibutUIPanel.Instance.scrollOffset++;
+                    }
                 }
             }
             else {
@@ -385,8 +407,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            // 根据是否能继续向右滚动来调整颜色
+            int maxOffset = Math.Max(0, HalibutUIPanel.Instance.halibutUISkillSlots.Count - HalibutUIPanel.maxVisibleSlots);
+            Color buttonColor = HalibutUIPanel.Instance.scrollOffset < maxOffset ? Color.White : Color.White;
             spriteBatch.Draw(RightButton, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
-            spriteBatch.Draw(RightButton, DrawPosition, null, Color.White);
+            spriteBatch.Draw(RightButton, DrawPosition, null, buttonColor);
         }
     }
 }

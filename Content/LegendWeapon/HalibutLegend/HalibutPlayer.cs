@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 using InnoVault.GameSystem;
 using System.Collections.Generic;

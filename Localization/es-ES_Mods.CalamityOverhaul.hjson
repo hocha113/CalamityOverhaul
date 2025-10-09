@@ -5660,4 +5660,9 @@ FishSkill: {
 		// DisplayName: ""
 		// Tooltip: ""
 	}
+
+	Sparkling: {
+		// DisplayName: ""
+		// Tooltip: ""
+	}
 }

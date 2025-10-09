@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
 using Terraria;
@@ -173,10 +172,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             //普攻时尝试触发闪光技能
-            if (SkillID == Sparkling.ID) {
-                hp.SparklingUseCounter++;
-                Sparkling.TryTriggerSparklingVolley(item, player, hp);
-            }
+            //if (SkillID == Sparkling.ID) {
+            //    hp.SparklingUseCounter++;
+            //    Sparkling.TryTriggerSparklingVolley(item, player, hp);
+            //}
 
             int bulletAmt = Main.rand.Next(5, 8);
             for (int index = 0; index < bulletAmt; ++index) {

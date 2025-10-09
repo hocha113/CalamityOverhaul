@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -6317,5 +6317,10 @@ FishSkill: {
 	FishSwarm: {
 		DisplayName: 鱼形换影
 		Tooltip: ""
+	}
+
+	Sparkling: {
+		// DisplayName: ""
+		// Tooltip: ""
 	}
 }

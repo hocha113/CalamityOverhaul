@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod.Items.Fishing.SunkenSeaCatches;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,18 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    internal static class Sparkling
+    internal class Sparkling : FishSkill
     {
-        public static int ID = 2;
-
         private static int _sparklingVolleyIdSeed = 0;
 
         internal const float RoingArc = 160f;
         internal const int DepartureDelay = 90;//全部发射后延迟进入离场
         internal const int DepartureDuration = 90;//离场动画时长
         internal static int shootDir;
-
+        public override int UnlockFishID => ModContent.ItemType<SparklingEmpress>();
+        public override void Use(Item item, Player player) => TryTriggerSparklingVolley(item, player, player.GetOverride<HalibutPlayer>());
         internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
             if (hp.SparklingVolleyActive) return;
             if (hp.SparklingVolleyCooldown > 0) return;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 , ModContent.ProjectileType<SparklingSpawnEffect>(), 0, 0f, player.whoAmI, -1, hp.SparklingVolleyId);
 
             for (int i = 0; i < hp.SparklingFishCount; i++) {
-                float t = (hp.SparklingFishCount == 1) ? 0.5f : i / (float)(hp.SparklingFishCount - 1);
+                float t = hp.SparklingFishCount == 1 ? 0.5f : i / (float)(hp.SparklingFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
                 Vector2 offsetDir = behind.RotatedBy(angOff);
                 Vector2 spawnPos = player.Center + offsetDir * radius + new Vector2(0, (float)Math.Sin(Main.GameUpdateCount * 0.05f + i) * 6f);
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 startScale = 0.2f;
                 endScale = 1.8f + Main.rand.NextFloat(0.4f);
             }
-            float hue = (Index < 0 ? 0.15f : (Index % 7) / 7f);
+            float hue = Index < 0 ? 0.15f : Index % 7 / 7f;
             //粉蓝宝石色系插值
             colA = Color.Lerp(new Color(120, 180, 255), new Color(255, 170, 230), 0.35f + 0.4f * hue);
             colB = Color.Lerp(new Color(80, 120, 210), new Color(255, 120, 210), 0.55f * (1 - hue) + 0.2f);
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
                 float arc = MathHelper.ToRadians(Sparkling.RoingArc);
                 float radius = 190f;
-                float t = (hp.SparklingFishCount <= 1) ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
+                float t = hp.SparklingFishCount <= 1 ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
                 Vector2 offsetDir = behind.RotatedBy(angOff * Sparkling.shootDir * -1);
                 Vector2 basePos = Owner.Center + offsetDir * radius;
@@ -253,9 +253,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     float exitDistance = diag * 1.4f; //1.4 倍对角线
 
                     //计算外向方向（保持原相对朝向），若与玩家重合则使用玩家朝向
-                    Vector2 outward = (Projectile.Center - Owner.Center);
+                    Vector2 outward = Projectile.Center - Owner.Center;
                     if (outward.LengthSquared() < 4f)
-                        outward = (Projectile.Center - Main.MouseWorld);
+                        outward = Projectile.Center - Main.MouseWorld;
                     outward = outward.SafeNormalize(Vector2.UnitY);
 
                     //当前帧速度（前期更慢，后期加速），再叠加一点随机脉动
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 Projectile.rotation = projectile.rotation;
             }
             float fishIndex = Projectile.localAI[1];
-            float hueOffset = (fishIndex % 7) / 7f; //简单的层次调色
+            float hueOffset = fishIndex % 7 / 7f; //简单的层次调色
             gradientStart = Color.Lerp(new Color(255, 180, 240), new Color(240, 120, 210), hueOffset);
             gradientMid = Color.Lerp(new Color(180, 210, 255), new Color(120, 170, 255), hueOffset);
             gradientEnd = Color.Lerp(new Color(100, 160, 255), new Color(70, 110, 200), hueOffset);
