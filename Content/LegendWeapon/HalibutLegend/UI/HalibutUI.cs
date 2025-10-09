@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static Texture2D LeftButton;
         //右侧方向按钮
         public static Texture2D RightButton;
+        //下划线花边纹理
+        public static Texture2D TooltiplineBorder;
     }
 
     internal class HalibutUIHead : UIHandle
@@ -180,7 +182,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 弹簧阻尼平滑函数
         /// </summary>
-        private float SmoothDamp(float current, float target, ref float velocity, float deltaTime) {
+        private static float SmoothDamp(float current, float target, ref float velocity, float deltaTime) {
             float delta = target - current;
 
             // 弹簧力
