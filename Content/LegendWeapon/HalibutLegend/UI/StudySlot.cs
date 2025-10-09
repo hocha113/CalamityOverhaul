@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //更新研究进度
             if (isResearching && Item.Alives() && Item.type > ItemID.None) {
-                researchTimer++;
+                researchTimer+=100;
 
                 //研究完成
                 if (researchTimer >= ResearchDuration) {

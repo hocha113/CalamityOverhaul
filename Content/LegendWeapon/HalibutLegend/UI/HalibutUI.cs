@@ -118,142 +118,131 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public LeftButtonUI leftButton = new LeftButtonUI();
         public RightButtonUI rightButton = new RightButtonUI();
         public float Sengs;
-        
+
         // 滚动相关字段
         public int scrollOffset = 0; // 目标滚动偏移量
         private float currentScrollOffset = 0f; // 当前实际滚动偏移量（用于平滑动画）
         private float scrollVelocity = 0f; // 滚动速度（用于弹簧效果）
         public const int maxVisibleSlots = 3; // 最多同时显示3个技能槽位
-        
+
         // 动画参数
         private const float ScrollStiffness = 0.3f; // 弹簧刚度
         private const float ScrollDamping = 0.7f; // 阻尼系数
         private const float ScrollThreshold = 0.01f; // 停止阈值
-        
+
         // 粒子系统
         public List<SkillIconEntity> flyingParticles = [];
-        
+
         // 待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = []; // 槽位 -> 对应的粒子索引
-        
+
         /// <summary>
         /// 添加新技能并触发飞行动画
         /// </summary>
-        public void AddSkillWithAnimation(FishSkill fishSkill, Vector2 startPosition)
-        {
+        public void AddSkillWithAnimation(FishSkill fishSkill, Vector2 startPosition) {
             // 计算目标位置（列表中的位置）
             int futureIndex = halibutUISkillSlots.Count;
             int visibleIndex = futureIndex - scrollOffset;
-            
+
             // 如果新技能会在可见范围内，计算其目标位置
             Vector2 targetPos;
-            if (visibleIndex >= 0 && visibleIndex < maxVisibleSlots)
-            {
+            if (visibleIndex >= 0 && visibleIndex < maxVisibleSlots) {
                 targetPos = DrawPosition + new Vector2(52, 30);
                 targetPos.X += visibleIndex * (Skillcon.Width + 4);
                 targetPos += new Vector2(Skillcon.Width / 2, Skillcon.Height / 10); // 图标中心
             }
-            else
-            {
+            else {
                 // 如果不在可见范围，就飞向面板右侧（暗示有更多内容）
                 targetPos = DrawPosition + new Vector2(Size.X - 30, 30 + Skillcon.Height / 10);
             }
-            
+
             // 创建粒子
             SkillIconEntity particle = new SkillIconEntity(fishSkill, startPosition, targetPos);
             flyingParticles.Add(particle);
-            
+
             // 创建技能槽位，但标记为未激活状态
-            SkillSlot newSlot = new SkillSlot() 
-            { 
+            SkillSlot newSlot = new SkillSlot() {
                 FishSkill = fishSkill,
                 appearProgress = 0f,
                 isAppearing = false // 等待粒子到达后再开始出现动画
             };
-            
+
             halibutUISkillSlots.Add(newSlot);
-            
+
             // 记录这个槽位需要等待对应的粒子
             int particleIndex = flyingParticles.Count - 1;
             pendingSlots[newSlot] = particleIndex;
-            
+
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item4); // 魔法音效
         }
-        
+
         /// <summary>
         /// 弹簧阻尼平滑函数
         /// </summary>
-        private float SmoothDamp(float current, float target, ref float velocity, float deltaTime)
-        {
+        private float SmoothDamp(float current, float target, ref float velocity, float deltaTime) {
             float delta = target - current;
-            
+
             // 弹簧力
             float springForce = delta * ScrollStiffness;
-            
+
             // 阻尼力
             float dampingForce = velocity * ScrollDamping;
-            
+
             // 更新速度
             velocity += (springForce - dampingForce) * deltaTime;
-            
+
             // 更新位置
             float newValue = current + velocity;
-            
+
             // 如果非常接近目标，直接设置为目标
-            if (Math.Abs(delta) < ScrollThreshold && Math.Abs(velocity) < ScrollThreshold)
-            {
+            if (Math.Abs(delta) < ScrollThreshold && Math.Abs(velocity) < ScrollThreshold) {
                 velocity = 0;
                 return target;
             }
-            
+
             return newValue;
         }
-        
+
         public override void Update() {
             halibutUISkillSlots ??= [];
             pendingSlots ??= [];
-            
+
             // 确保滚动偏移量在有效范围内
             int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
             scrollOffset = Math.Clamp(scrollOffset, 0, maxOffset);
-            
+
             // 平滑滚动动画（弹簧阻尼效果）
             currentScrollOffset = SmoothDamp(currentScrollOffset, scrollOffset, ref scrollVelocity, 1f);
-            
+
             // 更新飞行粒子，并检查是否有槽位需要激活
-            for (int i = flyingParticles.Count - 1; i >= 0; i--)
-            {
-                if (flyingParticles[i].Update())
-                {
+            for (int i = flyingParticles.Count - 1; i >= 0; i--) {
+                if (flyingParticles[i].Update()) {
                     // 粒子生命结束，播放到达音效
                     SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.5f, Volume = 0.5f });
-                    
+
                     // 激活对应的槽位
-                    foreach (var kvp in pendingSlots)
-                    {
-                        if (kvp.Value == i)
-                        {
+                    foreach (var kvp in pendingSlots) {
+                        if (kvp.Value == i) {
                             kvp.Key.isAppearing = true; // 开始播放出现动画
                             kvp.Key.appearProgress = 0f;
                             pendingSlots.Remove(kvp.Key);
                             break;
                         }
                     }
-                    
+
                     flyingParticles.RemoveAt(i);
-                    
+
                     // 更新剩余粒子的索引映射
                     Dictionary<SkillSlot, int> updatedPending = [];
-                    foreach (var kvp in pendingSlots)
-                    {
+                    foreach (var kvp in pendingSlots) {
                         int newIndex = kvp.Value > i ? kvp.Value - 1 : kvp.Value;
                         updatedPending[kvp.Key] = newIndex;
                     }
                     pendingSlots = updatedPending;
                 }
             }
-            
+
             if (HalibutUILeftSidebar.Instance.Sengs >= 1f && HalibutUIHead.Instance.Open) {//侧边栏完全打开后才开始打开面板
                 if (Sengs < 1f) {
                     Sengs += 0.1f;
@@ -293,20 +282,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float slotWidth = Skillcon.Width + 4;
             float baseX = 52;
             
-            for (int i = 0; i < halibutUISkillSlots.Count; i++)
-            {
+            // 检查是否有任何技能槽位被悬停
+            bool anySlotHovered = false;
+
+            for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                 var slot = halibutUISkillSlots[i];
-                
+
                 // 计算每个槽位的目标位置（基于平滑的滚动偏移）
                 float relativePosition = i - currentScrollOffset;
                 float targetX = baseX + relativePosition * slotWidth;
-                
+
                 slot.DrawPosition = DrawPosition + new Vector2(targetX, 30);
                 slot.RelativeIndex = relativePosition; // 用于判断是否在可见范围内
                 slot.Update();
+                
+                if (slot.hoverInMainPage) {
+                    anySlotHovered = true;
+                }
             }
+            
+            // 如果没有槽位被悬停，隐藏介绍面板
+            if (!anySlotHovered) {
+                SkillTooltipPanel.Instance.Hide();
+            }
+            
+            // 更新介绍面板
+            SkillTooltipPanel.Instance.Update();
         }
-        
+
         public override void Draw(SpriteBatch spriteBatch) {
             var rasterizer = Main.Rasterizer;
             rasterizer.ScissorTestEnable = true;
@@ -332,29 +335,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 (int)(Size.X - 80), // 宽度（减去两侧按钮）
                 (int)(Size.Y - 40) // 高度
             );
-            
+
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                              DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
             spriteBatch.GraphicsDevice.ScissorRectangle = scissorRect;
 
             // 绘制所有技能槽位（带透明度渐变）
-            for (int i = 0; i < halibutUISkillSlots.Count; i++)
-            {
+            for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                 var slot = halibutUISkillSlots[i];
-                
+
                 // 计算透明度：边缘的图标逐渐淡出
                 float alpha = 1f;
-                if (slot.RelativeIndex < 0)
-                {
+                if (slot.RelativeIndex < 0) {
                     alpha = Math.Max(0, 1f + slot.RelativeIndex); // 左侧淡出
                 }
-                else if (slot.RelativeIndex > maxVisibleSlots - 1)
-                {
+                else if (slot.RelativeIndex > maxVisibleSlots - 1) {
                     alpha = Math.Max(0, maxVisibleSlots - slot.RelativeIndex); // 右侧淡出
                 }
-                
+
                 slot.DrawAlpha = Math.Clamp(alpha, 0f, 1f);
                 slot.Draw(spriteBatch);
             }
@@ -364,12 +364,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            
+
             // 绘制飞行粒子（在最上层）
-            foreach (var particle in flyingParticles)
-            {
+            foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);
             }
+            
+            // 绘制介绍面板（在所有UI元素之上）
+            SkillTooltipPanel.Instance.Draw(spriteBatch);
 
             rasterizer.ScissorTestEnable = false;
             Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了

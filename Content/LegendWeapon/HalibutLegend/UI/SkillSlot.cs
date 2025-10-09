@@ -1,4 +1,5 @@
 ﻿using InnoVault.UIHandles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.Audio;
@@ -20,6 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public float appearProgress = 0f; // 出现进度（0到1）
         public bool isAppearing = false; // 是否正在播放出现动画
         private const float AppearDuration = 20f; // 出现动画持续帧数
+        
+        // 悬停计时器（延迟显示介绍面板）
+        private int hoverTimer = 0;
+        private const int HoverDelay = 20; // 悬停20帧（约0.33秒）后显示介绍
 
         public override void Update() {
             Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
@@ -41,6 +46,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (hoverSengs < 1f) {
                     hoverSengs += 0.1f;
                 }
+                
+                // 悬停计时器
+                hoverTimer++;
+                
+                // 悬停足够时间后显示介绍面板
+                if (hoverTimer >= HoverDelay && FishSkill != null) {
+                    Vector2 tooltipPosition = DrawPosition + Size / 2;
+                    SkillTooltipPanel.Instance.Show(FishSkill, tooltipPosition);
+                }
+                
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
                     HalibutUIHead.Instance.FishSkill = FishSkill;
@@ -50,6 +65,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (hoverSengs > 0f) {
                     hoverSengs -= 0.1f;
                 }
+                
+                // 重置悬停计时器
+                hoverTimer = 0;
             }
 
             hoverSengs = Math.Clamp(hoverSengs, 0f, 1f);
