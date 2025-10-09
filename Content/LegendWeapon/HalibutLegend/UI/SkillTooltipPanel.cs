@@ -1,5 +1,4 @@
 ﻿using InnoVault.UIHandles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -41,8 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private Vector2 anchorPosition; // 锚点位置（主面板右侧）
         
         // 内容布局
-        private const int Padding = 12; // 内边距（从16减少到12）
-        private const int LineSpacing = 6; // 行间距（从8减少到6）
+        private const int Padding = 12; // 内边距
+        private const int LineSpacing = 6; // 行间距
         private const int IconSize = 48; // 图标大小
         
         /// <summary>
@@ -182,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 计算当前宽度（使用缓动函数）
             float easedProgress = shouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
-            
+
             // 更新位置和尺寸
             float panelHeight = TooltipPanel.Height;
             DrawPosition = anchorPosition + new Vector2(-4, -panelHeight / 2); // -4是为了与主面板稍微重叠
@@ -415,7 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             int textMaxWidth = Math.Max(100, (int)availableWidth - 8);
             
             // 使用WordwrapString进行换行
-            string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth, 20, out int lineCount);
+            string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth + 40, 20, out int lineCount);
             
             // 绘制每一行文本
             for (int i = 0; i < Math.Min(lines.Length, 7); i++) // 最多显示7行
