@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static Texture2D PictureSlot;
         //技能图标，大小170*34，共五帧，对应五种技能的图标
         public static Texture2D Skillcon;
+        public static Texture2D LeftButton;
+        public static Texture2D RightButton;
     }
 
     internal class HalibutUIHead : UIHandle
@@ -110,6 +112,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static HalibutUIPanel Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIPanel>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public List<SkillSlot> halibutUISkillSlots = [];
+        public LeftButtonUI leftButton = new LeftButtonUI();
+        public RightButtonUI rightButton = new RightButtonUI();
         public float Sengs;
         public override void Update() {
             halibutUISkillSlots ??= [];
@@ -140,20 +144,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 player.mouseInterface = true;
             }
 
+            leftButton.DrawPosition = DrawPosition + new Vector2(16, 36);//硬编码调的位置偏移，别问为什么是这个值，问就是刚刚好
+            leftButton.Update();
+            rightButton.DrawPosition = DrawPosition + new Vector2(Size.X - 40, 36);//硬编码调的位置偏移，别问为什么是这个值，问就是刚刚好
+            rightButton.Update();
+
             StudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
             StudySlot.Instance.Update();
 
-            int index = 0;
+            int index = 0;//这里应该只能展示出来三个技能，多的会被隐藏
             foreach (var slot in halibutUISkillSlots.ToList()) {
-                slot.DrawPosition = DrawPosition + new Vector2(12, 30);
-                slot.DrawPosition.X += index % 5 * (Skillcon.Width + 4);
-                slot.DrawPosition.Y += index / 5 * (Skillcon.Height / 5 + 4);
+                slot.DrawPosition = DrawPosition + new Vector2(46, 30);
+                slot.DrawPosition.X += index * (Skillcon.Width + 4);
                 slot.Update();
                 index++;
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Panel, UIHitBox, Color.White);
+
+            leftButton.Draw(spriteBatch);
+            rightButton.Draw(spriteBatch);
 
             StudySlot.Instance.Draw(spriteBatch);
 
@@ -210,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //更新研究进度
             if (isResearching && Item.Alives() && Item.type > ItemID.None) {
-                researchTimer++;
+                researchTimer+=100;
 
                 //研究完成
                 if (researchTimer >= ResearchDuration) {
@@ -314,6 +325,68 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             spriteBatch.Draw(FishSkill.Icon, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
             spriteBatch.Draw(FishSkill.Icon, DrawPosition, null, Color.White);
+        }
+    }
+
+    internal class LeftButtonUI : UIHandle
+    {
+        public static LeftButtonUI Instance => UIHandleLoader.GetUIHandleOfType<LeftButtonUI>();
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
+        public float hoverSengs;
+        public override void Update() {
+            Size = LeftButton.Size();
+            UIHitBox = DrawPosition.GetRectangle(Size);
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                if (hoverSengs < 1f) {
+                    hoverSengs += 0.1f;
+                }
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+                    
+                }
+            }
+            else {
+                if (hoverSengs > 0f) {
+                    hoverSengs -= 0.1f;
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(LeftButton, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
+            spriteBatch.Draw(LeftButton, DrawPosition, null, Color.White);
+        }
+    }
+
+    internal class RightButtonUI : UIHandle
+    {
+        public static RightButtonUI Instance => UIHandleLoader.GetUIHandleOfType<RightButtonUI>();
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
+        public float hoverSengs;
+        public override void Update() {
+            Size = RightButton.Size();
+            UIHitBox = DrawPosition.GetRectangle(Size);
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                if (hoverSengs < 1f) {
+                    hoverSengs += 0.1f;
+                }
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+
+                }
+            }
+            else {
+                if (hoverSengs > 0f) {
+                    hoverSengs -= 0.1f;
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(RightButton, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
+            spriteBatch.Draw(RightButton, DrawPosition, null, Color.White);
         }
     }
 }
