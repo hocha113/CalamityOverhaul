@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             // 更新位置和尺寸
             float panelHeight = TooltipPanel.Height;
-            DrawPosition = anchorPosition + new Vector2(-4, -panelHeight / 2); // -4是为了与主面板稍微重叠
+            DrawPosition = anchorPosition + new Vector2(-6, -panelHeight / 2 - 18); // -4是为了与主面板稍微重叠
             Size = new Vector2(currentWidth, panelHeight);
         }
         

@@ -343,7 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             rightButton.Draw(spriteBatch);
 
             //绘制下划线花边，效果一般，考虑删
-            spriteBatch.Draw(TooltiplineBorder, DrawPosition + new Vector2(0, 60), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            //spriteBatch.Draw(TooltiplineBorder, DrawPosition + new Vector2(20, 58), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
             StudySlot.Instance.Draw(spriteBatch);
 
