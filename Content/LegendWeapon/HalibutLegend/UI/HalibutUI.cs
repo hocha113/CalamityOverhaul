@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             UIHitBox = DrawPosition.GetRectangle(Size);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 
-            
+
         }
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(LeftSidebar, UIHitBox, Color.White);
@@ -143,14 +143,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutUIStudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
             HalibutUIStudySlot.Instance.Update();
 
-            if (halibutUISkillSlots.Count == 0) {
-                for (int i = 0; i < 5; i++) {
-                    halibutUISkillSlots.Add(new HalibutUISkillSlot() {
-                        SkillID = i
-                    });
-                }
-            }
-
             int index = 0;
             foreach (var slot in halibutUISkillSlots.ToList()) {
                 slot.DrawPosition = DrawPosition + new Vector2(12, 30);
@@ -177,12 +169,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static HalibutUIStudySlot Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIStudySlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public Item Item = new Item();
-        
+
         //研究相关字段
         private int researchTimer = 0; //当前研究时间（帧数）
         private const int ResearchDuration = 7200; //研究总时长（2分钟 = 7200帧，60fps * 120秒）
         private bool isResearching = false; //是否正在研究
-        
+
         public override void Update() {
             Item ??= new Item();
             Size = PictureSlot.Size();
@@ -192,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    
+
                     //如果正在研究中，则取出物品并停止研究
                     if (isResearching && Item.Alives() && Item.type > ItemID.None) {
                         Main.mouseItem = Item.Clone();
@@ -216,11 +208,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     }
                 }
             }
-            
+
             //更新研究进度
             if (isResearching && Item.Alives() && Item.type > ItemID.None) {
                 researchTimer++;
-                
+
                 //研究完成
                 if (researchTimer >= ResearchDuration) {
                     SoundEngine.PlaySound(SoundID.ResearchComplete);
@@ -231,28 +223,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
+        [VaultLoaden(CWRConstant.UI + "Halibut/")]
+        private static Texture2D PictureSlotMask = null;
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(PictureSlot, UIHitBox, Color.White);
 
             //计算研究进度
             float pct = isResearching && researchTimer > 0 ? researchTimer / (float)ResearchDuration : 0f;
-            
-            //底部进度条
-            int barW = 80;
-            int barH = 6;
-            Vector2 barTopLeft = DrawPosition + new Vector2(-10, 56);
-            
-            //背景
-            DrawRect(spriteBatch, barTopLeft, barW, barH, new Color(30, 20, 10, 200));
-            
-            //使用颜色渐变表示进度
-            Color fillColor = Color.Lerp(Color.Peru, Color.Gold, pct);
-            if (isResearching) {
-                //添加脉动效果
-                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f + 0.9f;
-                fillColor *= pulse;
-            }
-            DrawRect(spriteBatch, barTopLeft, (int)(barW * pct), barH, fillColor);
+
+            Vector2 barTopLeft = DrawPosition + new Vector2(8, 10);
 
             //绘制研究的物品
             if (Item.Alives() && Item.type > ItemID.None) {
@@ -263,20 +242,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     itemColor = Color.White * glow;
                 }
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + new Vector2(26, 26), 40, 1f, 0, itemColor);
+
+                //使用颜色渐变表示进度
+                Color fillColor = Color.Lerp(Color.Peru, Color.Gold, pct);
+                if (isResearching) {
+                    //添加脉动效果
+                    float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f + 0.9f;
+                    fillColor *= pulse;
+                }
+
+                int recOffsetY = (int)(PictureSlotMask.Height * (1f - pct));
+                Rectangle rectangle = new Rectangle(0, recOffsetY, PictureSlotMask.Width, PictureSlotMask.Height - recOffsetY);
+                spriteBatch.Draw(PictureSlotMask, barTopLeft + new Vector2(0, recOffsetY), rectangle, fillColor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             }
-            
+
             //绘制研究剩余时间文本
             if (isResearching && hoverInMainPage) {
                 int remainingSeconds = (ResearchDuration - researchTimer) / 60;
                 int minutes = remainingSeconds / 60;
                 int seconds = remainingSeconds % 60;
                 string timeText = $"{minutes:D2}:{seconds:D2}";
-                
+
                 Vector2 textPos = DrawPosition + new Vector2(30, -0);
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(timeText);
                 Utils.DrawBorderString(spriteBatch, timeText, textPos - textSize / 2, Color.Gold, 0.8f);
             }
-            
+
             //绘制进度百分比
             if (isResearching && pct > 0) {
                 string percentText = $"{(int)(pct * 100)}%";
@@ -284,10 +275,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Vector2 percentSize = FontAssets.MouseText.Value.MeasureString(percentText);
                 Utils.DrawBorderString(spriteBatch, percentText, percentPos - percentSize / 2, Color.White, 0.7f);
             }
-        }
-
-        private static void DrawRect(SpriteBatch sb, Vector2 pos, int w, int h, Color c) {
-            sb.Draw(VaultAsset.placeholder2.Value, new Rectangle((int)pos.X, (int)pos.Y, w, h), c);
         }
     }
 
@@ -298,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public int SkillID;//对应的技能ID，也觉得其绘制帧
         public float hoverSengs;
         public override void Update() {
-            Size = new Vector2((int)Skillcon.Width, (int)(Skillcon.Height / 5));
+            Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
             UIHitBox = DrawPosition.GetRectangle((int)Size.X, (int)(Size.Y));
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 

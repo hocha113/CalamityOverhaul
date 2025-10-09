@@ -7,13 +7,11 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    internal static class FishSwarm
+    internal class FishSwarm : FishSkill
     {
-        public static int ID = 1;
-
-        public static void AltUse(Item item, Player player) {//额外的的独立封装，玩家右键使用时调用，用于触发技能
+        public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             //检查技能是否在冷却中
@@ -77,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         /// <summary>
         /// 激活螺旋尖锥突袭
         /// </summary>
-        public static void ActivateFishConeSurge(Item item, Player player, Vector2 attackDirection) {
+        public static void ActivateFishConeSurge(Player player, Vector2 attackDirection) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             //标记突袭激活

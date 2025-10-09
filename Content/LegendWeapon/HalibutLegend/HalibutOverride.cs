@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
@@ -151,98 +152,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            item.UseSound = SoundID.Item38;
-            HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            halibutPlayer.SeaDomainLayers = 1;
-            SkillID = Sparkling.ID; //原有逻辑
-            if (SkillID == FishSwarm.ID) {
-                //检查是否在攻击后摇中
-                if (halibutPlayer.AttackRecoveryTimer > 0) {
-                    return false; //禁止攻击
-                }
-
-                if (player.altFunctionUse == 2) {
-                    item.UseSound = null;
-                }
-                else {
-                    //=== 移形换影中左键触发螺旋尖锥突袭 ===
-                    if (halibutPlayer.FishSwarmActive) {
-                        Vector2 velocity = player.To(Main.MouseWorld).UnitVector();
-                        FishSwarm.ActivateFishConeSurge(item, player, velocity * 6);
-                        player.velocity += velocity * 6;
-                        return false; //不发射普通弹幕
-                    }
-                }
-            }
-            if (SkillID == RestartFish.ID) {
-                if (player.altFunctionUse == 2) {
-                    item.UseSound = null;
-                }
-            }
-            if (SkillID == FishTeleport.ID) {
-                if (player.altFunctionUse == 2) {
-                    item.UseSound = null;
-                }
-            }
             return true;
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
-            if (SkillID == FishSwarm.ID) {
-                return true;
-            }
-            if (SkillID == CloneFish.ID) {
-                return true;
-            }
-            if (SkillID == SeaDomain.ID) {
-                return true;
-            }
-            if (SkillID == RestartFish.ID) {
-                return true;
-            }
-            if (SkillID == Superposition.ID) {
-                return true;
-            }
-            if (SkillID == FishTeleport.ID) {
-                return true;
-            }
-            if (SkillID == YourLevelIsTooLow.ID) {
-                return true;
-            }
             return false;
         }
 
         public override bool? UseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2) {
-                if (SkillID == FishSwarm.ID) {
-                    FishSwarm.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == CloneFish.ID) {
-                    CloneFish.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == SeaDomain.ID) {
-                    SeaDomain.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == RestartFish.ID) {
-                    RestartFish.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == Superposition.ID) {
-                    Superposition.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == FishTeleport.ID) {
-                    FishTeleport.AltUse(item, player);
-                    return true;
-                }
-                if (SkillID == YourLevelIsTooLow.ID) {
-                    YourLevelIsTooLow.AltUse(item, player);
-                    return true;
-                }
-            }
             return null;
         }
 

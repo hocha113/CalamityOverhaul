@@ -5662,3 +5662,10 @@ Arcanes: {
 		}
 	}
 }
+
+FishSkill: {
+	FishSwarm: {
+		// DisplayName: ""
+		// Tooltip: ""
+	}
+}
