@@ -41,9 +41,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private Vector2 anchorPosition; // 锚点位置（主面板右侧）
         
         // 内容布局
-        private const int Padding = 16; // 内边距
-        private const int LineSpacing = 8; // 行间距
-        private const int MaxTextWidth = 180; // 最大文本宽度
+        private const int Padding = 12; // 内边距（从16减少到12）
+        private const int LineSpacing = 6; // 行间距（从8减少到6）
         private const int IconSize = 48; // 图标大小
         
         /// <summary>
@@ -414,25 +413,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             
             // 计算实际可用文本宽度
             int textMaxWidth = Math.Max(100, (int)availableWidth - 8);
-            string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth, 10, out _);
+            
+            // 使用WordwrapString进行换行
+            string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth, 20, out int lineCount);
             
             // 绘制每一行文本
-            for (int i = 0; i < Math.Min(lines.Length, 6); i++) // 最多显示6行
+            for (int i = 0; i < Math.Min(lines.Length, 7); i++) // 最多显示7行
             {
                 if (string.IsNullOrEmpty(lines[i])) continue;
                 
-                Vector2 linePos = tooltipPos + new Vector2(4, i * (LineSpacing + 16));
+                // 移除末尾的连字符和空格（Terraria的WordwrapString会在某些情况下添加连字符）
+                string line = lines[i].TrimEnd('-', ' ');
+                if (string.IsNullOrEmpty(line)) continue;
+                
+                Vector2 linePos = tooltipPos + new Vector2(4, i * (LineSpacing + 14)); // 行高调整为14
                 
                 // 检查是否超出面板底部
-                if (linePos.Y + 16 > DrawPosition.Y + Size.Y - Padding) break;
+                if (linePos.Y + 14 > DrawPosition.Y + Size.Y - Padding) break;
                 
                 // 文字阴影
-                Utils.DrawBorderString(spriteBatch, lines[i], linePos + new Vector2(1, 1), 
+                Utils.DrawBorderString(spriteBatch, line, linePos + new Vector2(1, 1), 
                     Color.Black * contentAlpha * 0.5f, 0.75f);
                 
                 // 文字主体
                 Color textColor = Color.White * contentAlpha;
-                Utils.DrawBorderString(spriteBatch, lines[i], linePos, textColor, 0.75f);
+                Utils.DrawBorderString(spriteBatch, line, linePos, textColor, 0.75f);
             }
             
             // 5. 绘制装饰星星（在角落轻微闪烁）
@@ -481,7 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         
         /// <summary>
-        /// 绘制星星装饰
+        /// 绉绘制星星装饰
         /// </summary>
         private void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color)
         {
