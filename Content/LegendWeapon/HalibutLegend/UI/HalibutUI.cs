@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
         public bool Open;
-        public int HeldSkillID = -1;
+        public FishSkill FishSkill;
         public override void Update() {
             Size = Head.Size();
             DrawPosition = new Vector2(-4, Main.screenHeight - Size.Y);
@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             spriteBatch.Draw(Head, UIHitBox, Color.White);
 
-            if (HeldSkillID >= 0) {//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
-                spriteBatch.Draw(Skillcon, DrawPosition + new Vector2(14), Skillcon.GetRectangle(HeldSkillID, 5), Color.White);
+            if (FishSkill != null) {//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
+                spriteBatch.Draw(FishSkill.Icon, DrawPosition + new Vector2(14), null, Color.White);
             }
         }
     }
@@ -110,7 +110,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static HalibutUIPanel Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIPanel>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public List<SkillSlot> halibutUISkillSlots = [];
-        public List<FishSkill> fishSkills = [];
         public float Sengs;
         public override void Update() {
             halibutUISkillSlots ??= [];
@@ -149,7 +148,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 slot.DrawPosition = DrawPosition + new Vector2(12, 30);
                 slot.DrawPosition.X += index % 5 * (Skillcon.Width + 4);
                 slot.DrawPosition.Y += index / 5 * (Skillcon.Height / 5 + 4);
-                slot.SkillID = index;
                 slot.Update();
                 index++;
             }
@@ -219,6 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     SoundEngine.PlaySound(SoundID.ResearchComplete);
                     isResearching = false;
                     researchTimer = 0;
+
+                    if (FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
+                        HalibutUIPanel.Instance.halibutUISkillSlots.Add(new SkillSlot() { FishSkill = fishSkill });
+                    }
+
                     Item.TurnToAir();
                 }
             }
@@ -283,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     {
         public static SkillSlot Instance => UIHandleLoader.GetUIHandleOfType<SkillSlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
-        public int SkillID;//对应的技能ID，也觉得其绘制帧
+        public FishSkill FishSkill;
         public float hoverSengs;
         public override void Update() {
             Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
@@ -296,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    HalibutUIHead.Instance.HeldSkillID = SkillID;
+                    HalibutUIHead.Instance.FishSkill = FishSkill;
                 }
             }
             else {
@@ -306,8 +309,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(Skillcon, DrawPosition + Size / 2, Skillcon.GetRectangle(SkillID, 5), Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
-            spriteBatch.Draw(Skillcon, DrawPosition, Skillcon.GetRectangle(SkillID, 5), Color.White);
+            if (FishSkill == null) {
+                return;
+            }
+            spriteBatch.Draw(FishSkill.Icon, DrawPosition + Size / 2, null, Color.Gold with { A = 0 } * hoverSengs, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
+            spriteBatch.Draw(FishSkill.Icon, DrawPosition, null, Color.White);
         }
     }
 }

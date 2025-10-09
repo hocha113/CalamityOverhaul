@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     internal class FishSwarm : FishSkill
     {
+        public override int UnlockFishID => ItemID.Bass;
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 

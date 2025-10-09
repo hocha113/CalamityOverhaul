@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 研究什么鱼才能得到这个技能？
         /// </summary>
-        public int UnlockFishID => ItemID.None;
+        public virtual int UnlockFishID => ItemID.None;
         protected override void VaultRegister() {
             TypeToID[GetType()] = Instances.Count;
             Instances.Add(this);
