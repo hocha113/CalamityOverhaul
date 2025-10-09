@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     }
 
     /// <summary>
-    /// 技能图标飞行粒子 - 用于新技能解锁时的视觉效果
+    /// 技能图标飞行实体，用于新技能解锁时的视觉效果
     /// </summary>
-    internal class SkillIconParticle
+    internal class SkillIconEntity
     {
         public FishSkill FishSkill;
         public Vector2 Position;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private Vector2 controlPoint1;
         private Vector2 controlPoint2;
         
-        public SkillIconParticle(FishSkill fishSkill, Vector2 start, Vector2 end)
+        public SkillIconEntity(FishSkill fishSkill, Vector2 start, Vector2 end)
         {
             FishSkill = fishSkill;
             startPos = start;
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 三次贝塞尔曲线插值
         /// </summary>
-        private Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+        private static Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
         {
             float u = 1 - t;
             float tt = t * t;
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 缓动函数：EaseOutCubic - 快速开始，缓慢结束
         /// </summary>
-        private float EaseOutCubic(float t)
+        private static float EaseOutCubic(float t)
         {
             return 1 - (float)Math.Pow(1 - t, 3);
         }
@@ -239,6 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         }
         public override void Draw(SpriteBatch spriteBatch) {
+            //他妈的我不知道为什么这里裁剪画布不生效，那么就这么将就着画吧，反正插穿鱼头也没人在意，就像他妈的澳大利亚人要打多少只袋鼠一样无聊
             spriteBatch.Draw(LeftSidebar, UIHitBox, Color.White);
         }
     }
@@ -264,7 +265,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const float ScrollThreshold = 0.01f; // 停止阈值
         
         // 粒子系统
-        public List<SkillIconParticle> flyingParticles = [];
+        public List<SkillIconEntity> flyingParticles = [];
+        
+        // 待激活的技能槽位（粒子到达后才激活）
+        private Dictionary<SkillSlot, int> pendingSlots = []; // 槽位 -> 对应的粒子索引
         
         /// <summary>
         /// 添加新技能并触发飞行动画
@@ -290,11 +294,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             
             // 创建粒子
-            SkillIconParticle particle = new SkillIconParticle(fishSkill, startPosition, targetPos);
+            SkillIconEntity particle = new SkillIconEntity(fishSkill, startPosition, targetPos);
             flyingParticles.Add(particle);
             
-            // 添加技能到列表
-            halibutUISkillSlots.Add(new SkillSlot() { FishSkill = fishSkill });
+            // 创建技能槽位，但标记为未激活状态
+            SkillSlot newSlot = new SkillSlot() 
+            { 
+                FishSkill = fishSkill,
+                appearProgress = 0f,
+                isAppearing = false // 等待粒子到达后再开始出现动画
+            };
+            
+            halibutUISkillSlots.Add(newSlot);
+            
+            // 记录这个槽位需要等待对应的粒子
+            int particleIndex = flyingParticles.Count - 1;
+            pendingSlots[newSlot] = particleIndex;
             
             // 播放音效
             SoundEngine.PlaySound(SoundID.Item4); // 魔法音效
@@ -331,6 +346,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         public override void Update() {
             halibutUISkillSlots ??= [];
+            pendingSlots ??= [];
             
             // 确保滚动偏移量在有效范围内
             int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
@@ -339,14 +355,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 平滑滚动动画（弹簧阻尼效果）
             currentScrollOffset = SmoothDamp(currentScrollOffset, scrollOffset, ref scrollVelocity, 1f);
             
-            // 更新飞行粒子
+            // 更新飞行粒子，并检查是否有槽位需要激活
             for (int i = flyingParticles.Count - 1; i >= 0; i--)
             {
                 if (flyingParticles[i].Update())
                 {
                     // 粒子生命结束，播放到达音效
                     SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.5f, Volume = 0.5f });
+                    
+                    // 激活对应的槽位
+                    foreach (var kvp in pendingSlots)
+                    {
+                        if (kvp.Value == i)
+                        {
+                            kvp.Key.isAppearing = true; // 开始播放出现动画
+                            kvp.Key.appearProgress = 0f;
+                            pendingSlots.Remove(kvp.Key);
+                            break;
+                        }
+                    }
+                    
                     flyingParticles.RemoveAt(i);
+                    
+                    // 更新剩余粒子的索引映射
+                    Dictionary<SkillSlot, int> updatedPending = [];
+                    foreach (var kvp in pendingSlots)
+                    {
+                        int newIndex = kvp.Value > i ? kvp.Value - 1 : kvp.Value;
+                        updatedPending[kvp.Key] = newIndex;
+                    }
+                    pendingSlots = updatedPending;
                 }
             }
             
@@ -404,6 +442,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         
         public override void Draw(SpriteBatch spriteBatch) {
+            var rasterizer = Main.Rasterizer;
+            rasterizer.ScissorTestEnable = true;
+            Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
+            Rectangle clipping = new(20, 0, Main.screenWidth, Main.screenHeight);//别问我这个X=20是干什么的，问就是手调的，问就是刚刚好
+            Main.instance.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipping);//这里进行必要的裁剪画布设置，避免绘制出不适合出现的部分
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
+
             spriteBatch.Draw(Panel, UIHitBox, Color.White);
 
             leftButton.Draw(spriteBatch);
@@ -449,14 +496,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 恢复正常绘制
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, 
-                             DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
             
             // 绘制飞行粒子（在最上层）
             foreach (var particle in flyingParticles)
             {
                 particle.Draw(spriteBatch);
             }
+
+            rasterizer.ScissorTestEnable = false;
+            Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
         }
     }
 
@@ -590,10 +643,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public float RelativeIndex; // 相对于可见范围的位置
         public float DrawAlpha = 1f; // 绘制透明度
         
+        // 出现动画相关
+        public float appearProgress = 0f; // 出现进度（0到1）
+        public bool isAppearing = false; // 是否正在播放出现动画
+        private const float AppearDuration = 20f; // 出现动画持续帧数
+        
         public override void Update() {
             Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
             UIHitBox = DrawPosition.GetRectangle((int)Size.X, (int)(Size.Y));
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && DrawAlpha > 0.5f; // 透明度低时不响应交互
+            
+            // 更新出现动画
+            if (isAppearing)
+            {
+                appearProgress += 1f / AppearDuration;
+                if (appearProgress >= 1f)
+                {
+                    appearProgress = 1f;
+                    isAppearing = false;
+                }
+            }
+            
+            // 只有完全出现后才响应交互
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && DrawAlpha > 0.5f && appearProgress >= 1f;
 
             if (hoverInMainPage) {
                 if (hoverSengs < 1f) {
@@ -613,19 +684,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             hoverSengs = Math.Clamp(hoverSengs, 0f, 1f);
         }
         
+        /// <summary>
+        /// 缓动函数：EaseOutBack - 带有回弹效果的缓出
+        /// </summary>
+        private float EaseOutBack(float t)
+        {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
+        }
+        
         public override void Draw(SpriteBatch spriteBatch) {
             if (FishSkill == null) {
                 return;
             }
+
+            // 如果正在出现动画中，应用特殊效果
+            float finalAlpha = DrawAlpha;
+            float scale = 1f;
+            float rotation = 0f;
             
-            Color baseColor = Color.White * DrawAlpha;
-            Color glowColor = Color.Gold with { A = 0 } * hoverSengs * DrawAlpha;
+            if (appearProgress < 1f)
+            {
+                // 使用EaseOutBack缓动，产生弹性效果
+                float easedProgress = EaseOutBack(appearProgress);
+                
+                // 缩放从0.3开始，带有超调效果（可能超过1.0）
+                scale = 0.3f + easedProgress * 0.7f;
+                
+                // 透明度渐入
+                finalAlpha *= appearProgress;
+                
+                // 轻微的旋转效果
+                rotation = (1f - appearProgress) * 0.5f;
+            }
+            
+            Color baseColor = Color.White * finalAlpha;
+            Color glowColor = Color.Gold with { A = 0 } * hoverSengs * finalAlpha;
+            
+            Vector2 center = DrawPosition + Size / 2;
+            Vector2 origin = Size / 2;
             
             // 绘制悬停发光效果
-            spriteBatch.Draw(FishSkill.Icon, DrawPosition + Size / 2, null, glowColor, 0, Size / 2, 1.2f, SpriteEffects.None, 0);
+            spriteBatch.Draw(FishSkill.Icon, center, null, glowColor, rotation, origin, scale * 1.2f, SpriteEffects.None, 0);
             
             // 绘制主图标
-            spriteBatch.Draw(FishSkill.Icon, DrawPosition, null, baseColor);
+            spriteBatch.Draw(FishSkill.Icon, center, null, baseColor, rotation, origin, scale, SpriteEffects.None, 0);
+            
+            // 如果正在出现，绘制额外的光圈效果
+            if (appearProgress < 1f && appearProgress > 0.2f)
+            {
+                float ringProgress = (appearProgress - 0.2f) / 0.8f;
+                float ringScale = 0.5f + ringProgress * 1.5f;
+                float ringAlpha = (1f - ringProgress) * 0.6f;
+                Color ringColor = Color.Gold with { A = 0 } * ringAlpha * finalAlpha;
+                
+                spriteBatch.Draw(FishSkill.Icon, center, null, ringColor, rotation, origin, scale * ringScale, SpriteEffects.None, 0);
+            }
         }
     }
 
