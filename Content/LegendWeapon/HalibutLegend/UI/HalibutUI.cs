@@ -243,14 +243,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            if (HalibutUILeftSidebar.Instance.Sengs >= 1f && HalibutUIHead.Instance.Open) {//侧边栏完全打开后才开始打开面板
+            // 面板展开/收起逻辑（协调介绍面板）
+            if (HalibutUILeftSidebar.Instance.Sengs >= 1f && HalibutUIHead.Instance.Open) {
+                // 侧边栏完全打开后才开始打开面板
                 if (Sengs < 1f) {
                     Sengs += 0.1f;
                 }
             }
             else {
+                // 准备收起面板
                 if (Sengs > 0f) {
-                    Sengs -= 0.1f;
+                    // 如果介绍面板正在显示，先强制隐藏它
+                    if (SkillTooltipPanel.Instance.IsShowing) {
+                        SkillTooltipPanel.Instance.ForceHide();
+                    }
+                    
+                    // 等待介绍面板完全收起后，主面板才开始收起
+                    if (SkillTooltipPanel.Instance.IsFullyClosed) {
+                        Sengs -= 0.1f;
+                    }
                 }
             }
 
@@ -301,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
             
-            // 如果没有槽位被悬停，隐藏介绍面板
+            // 如果没有槽位被悬停，隐藏介绍面板（带延迟）
             if (!anySlotHovered) {
                 SkillTooltipPanel.Instance.Hide();
             }

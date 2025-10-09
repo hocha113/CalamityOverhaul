@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -6316,7 +6316,11 @@ Arcanes: {
 FishSkill: {
 	FishSwarm: {
 		DisplayName: 鱼形换影
-		Tooltip: ""
+		Tooltip:
+			'''
+			可以化形为鱼群进行穿梭
+			左键点击让鱼群射向光标方向
+			'''
 	}
 
 	Sparkling: {

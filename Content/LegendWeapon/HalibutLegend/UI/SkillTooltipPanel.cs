@@ -19,7 +19,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         // 显示控制
         public FishSkill CurrentSkill; // 当前要显示的技能
         private FishSkill lastSkill; // 上一次显示的技能（用于检测切换）
-        public bool ShouldShow; // 是否应该显示
+        private bool shouldShow = false; // 内部状态：是否应该显示
+        
+        // 收回延迟
+        private int hideDelayTimer = 0; // 收回延迟计时器
+        private const int HideDelay = 15; // 收回延迟（15帧 = 0.25秒）
+        private bool pendingHide = false; // 是否等待收回
         
         // 动画相关
         private float expandProgress = 0f; // 展开进度（0-1）
@@ -42,6 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int IconSize = 48; // 图标大小
         
         /// <summary>
+        /// 是否正在显示或展开中
+        /// </summary>
+        public bool IsShowing => shouldShow || expandProgress > 0.01f;
+        
+        /// <summary>
+        /// 是否完全收起
+        /// </summary>
+        public bool IsFullyClosed => expandProgress <= 0.01f;
+        
+        /// <summary>
         /// 显示指定技能的介绍面板
         /// </summary>
         public void Show(FishSkill skill, Vector2 mainPanelPosition, Vector2 mainPanelSize)
@@ -55,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 CurrentSkill = skill;
                 
                 // 如果之前没有显示，从头开始动画
-                if (!ShouldShow)
+                if (!shouldShow)
                 {
                     expandProgress = 0f;
                     contentFadeProgress = 0f;
@@ -67,7 +82,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
             
-            ShouldShow = true;
+            shouldShow = true;
+            pendingHide = false; // 取消待收回状态
+            hideDelayTimer = 0; // 重置延迟计时器
             
             // 计算锚点位置（主面板右侧中心）
             anchorPosition = mainPanelPosition + new Vector2(mainPanelSize.X, mainPanelSize.Y / 2);
@@ -77,25 +94,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         
         /// <summary>
-        /// 隐藏介绍面板
+        /// 隐藏介绍面板（带延迟）
         /// </summary>
         public void Hide()
         {
-            ShouldShow = false;
+            if (!pendingHide && shouldShow)
+            {
+                pendingHide = true;
+                hideDelayTimer = 0;
+            }
         }
         
         /// <summary>
-        /// EaseOutCubic缓动 - 快速展开，缓慢结束
+        /// 强制立即隐藏（无延迟）
         /// </summary>
-        private float EaseOutCubic(float t)
+        public void ForceHide()
         {
-            return 1 - (float)Math.Pow(1 - t, 3);
+            shouldShow = false;
+            pendingHide = false;
+            hideDelayTimer = 0;
         }
-        
+
         /// <summary>
         /// EaseOutBack缓动 - 带回弹效果
         /// </summary>
-        private float EaseOutBack(float t)
+        private static float EaseOutBack(float t)
         {
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
@@ -105,14 +128,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// EaseInCubic缓动 - 快速收起
         /// </summary>
-        private float EaseInCubic(float t)
+        private static float EaseInCubic(float t)
         {
             return t * t * t;
         }
         
         public override void Update()
         {
-            if (ShouldShow && CurrentSkill != null)
+            // 处理延迟收回逻辑
+            if (pendingHide)
+            {
+                hideDelayTimer++;
+                if (hideDelayTimer >= HideDelay)
+                {
+                    shouldShow = false;
+                    pendingHide = false;
+                    hideDelayTimer = 0;
+                }
+            }
+            
+            if (shouldShow && CurrentSkill != null)
             {
                 // 展开动画
                 if (expandProgress < 1f)
@@ -146,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             
             // 计算当前宽度（使用缓动函数）
-            float easedProgress = ShouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
+            float easedProgress = shouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
             
             // 更新位置和尺寸
@@ -174,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Rectangle sourceRect = new Rectangle(
                 0,
                 0,
-                (int)(TooltipPanel.Width * (currentWidth / targetWidth)),
+                (int)(TooltipPanel.Width * MathHelper.Clamp((currentWidth / targetWidth), 0, 1f)),
                 TooltipPanel.Height
             );
             
@@ -207,11 +242,86 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 spriteBatch.Draw(TooltipPanel, glowRect, sourceRect, glowColor);
             }
             
+            // 绘制舞动的星星粒子（在面板上方）
+            if (expandProgress > 0.5f)
+            {
+                DrawFloatingStars(spriteBatch, alpha);
+            }
+            
             // 绘制内容（只在展开足够时）
             if (expandProgress > ContentFadeDelay && currentWidth > targetWidth * 0.5f)
             {
                 DrawContent(spriteBatch, alpha);
             }
+        }
+        
+        /// <summary>
+        /// 绘制舞动的星星粒子
+        /// </summary>
+        private void DrawFloatingStars(SpriteBatch spriteBatch, float panelAlpha)
+        {
+            float starTime = Main.GlobalTimeWrappedHourly * 4f;
+            Vector2 panelCenter = DrawPosition + Size / 2;
+
+            const float starCount = 3;
+            // 绘制3个围绕面板舞动的星星
+            for (int i = 0; i < starCount; i++)
+            {
+                float starPhase = starTime + i * MathHelper.TwoPi / starCount;
+                
+                // 计算椭圆轨迹位置
+                float radiusX = currentWidth * 0.4f;
+                float radiusY = Size.Y * 0.35f;
+                Vector2 starPos = panelCenter + new Vector2(
+                    (float)Math.Cos(starPhase) * radiusX,
+                    (float)Math.Sin(starPhase) * radiusY
+                );
+                
+                // 星星透明度：根据位置动态变化
+                float starAlpha = ((float)Math.Sin(starPhase) * 0.5f + 0.5f) * panelAlpha * 0.6f;
+                
+                // 星星大小：远近效果
+                float starSize = 3f + (float)Math.Sin(starPhase * 2f) * 1f;
+                
+                // 星星颜色：金色到白色渐变
+                Color starColor = Color.Lerp(Color.Gold, Color.White, (float)Math.Sin(starPhase * 2f) * 0.5f + 0.5f);
+                starColor *= starAlpha;
+                
+                // 绘制星星（带轻微的拖尾效果）
+                DrawStarWithTrail(spriteBatch, starPos, starSize, starColor, starPhase);
+            }
+        }
+        
+        /// <summary>
+        /// 绘制带拖尾效果的星星
+        /// </summary>
+        private void DrawStarWithTrail(SpriteBatch spriteBatch, Vector2 position, float size, Color color, float rotation)
+        {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            
+            // 绘制拖尾（3个渐弱的残影）
+            for (int i = 1; i <= 3; i++)
+            {
+                float trailPhase = rotation - i * 0.2f;
+                Vector2 panelCenter = DrawPosition + Size / 2;
+                float radiusX = currentWidth * 0.4f;
+                float radiusY = Size.Y * 0.35f;
+                Vector2 trailPos = panelCenter + new Vector2(
+                    (float)Math.Cos(trailPhase) * radiusX,
+                    (float)Math.Sin(trailPhase) * radiusY
+                );
+                
+                float trailAlpha = (4 - i) / 4f * 0.4f;
+                float trailSize = size * (1f - i * 0.15f);
+                DrawStar(spriteBatch, trailPos, trailSize, color * trailAlpha);
+            }
+            
+            // 绘制主星星（更亮）
+            DrawStar(spriteBatch, position, size, color);
+            
+            // 绘制中心高光
+            spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.8f, 
+                0f, new Vector2(0.5f, 0.5f), new Vector2(size * 0.5f, size * 0.5f), SpriteEffects.None, 0);
         }
         
         /// <summary>
@@ -377,7 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             
-            // 绘制四芒星（两条交叉的线）
+            // 绘制八芒星
             // 横线
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, 
                 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
