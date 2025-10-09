@@ -109,7 +109,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     {
         public static HalibutUIPanel Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIPanel>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
-        public List<HalibutUISkillSlot> halibutUISkillSlots = [];
+        public List<SkillSlot> halibutUISkillSlots = [];
+        public List<FishSkill> fishSkills = [];
         public float Sengs;
         public override void Update() {
             halibutUISkillSlots ??= [];
@@ -140,8 +141,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 player.mouseInterface = true;
             }
 
-            HalibutUIStudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
-            HalibutUIStudySlot.Instance.Update();
+            StudySlot.Instance.DrawPosition = DrawPosition + new Vector2(80, Size.Y / 2);
+            StudySlot.Instance.Update();
 
             int index = 0;
             foreach (var slot in halibutUISkillSlots.ToList()) {
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Panel, UIHitBox, Color.White);
 
-            HalibutUIStudySlot.Instance.Draw(spriteBatch);
+            StudySlot.Instance.Draw(spriteBatch);
 
             foreach (var slot in halibutUISkillSlots.ToList()) {
                 slot.Draw(spriteBatch);
@@ -164,9 +165,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
     }
 
-    internal class HalibutUIStudySlot : UIHandle
+    internal class StudySlot : UIHandle
     {
-        public static HalibutUIStudySlot Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIStudySlot>();
+        public static StudySlot Instance => UIHandleLoader.GetUIHandleOfType<StudySlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public Item Item = new Item();
 
@@ -278,9 +279,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
     }
 
-    internal class HalibutUISkillSlot : UIHandle
+    internal class SkillSlot : UIHandle
     {
-        public static HalibutUISkillSlot Instance => UIHandleLoader.GetUIHandleOfType<HalibutUISkillSlot>();
+        public static SkillSlot Instance => UIHandleLoader.GetUIHandleOfType<SkillSlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
         public int SkillID;//对应的技能ID，也觉得其绘制帧
         public float hoverSengs;
