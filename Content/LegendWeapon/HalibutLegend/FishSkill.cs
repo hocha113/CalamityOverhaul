@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public virtual int UnlockFishID => ItemID.None;
         protected override void VaultRegister() {
-            TypeToID[GetType()] = Instances.Count;
-            IDToInstance[Instances.Count] = this;
             Instances.Add(this);
+            TypeToID[GetType()] = Instances.Count;
+            IDToInstance[Instances.Count] = this;//技能ID从1开始，0什么都不是
             if (!VaultUtils.isServer) {
                 TypeToTex[GetType()] = ModContent.Request<Texture2D>(IconTexture, AssetRequestMode.ImmediateLoad).Value;
             }

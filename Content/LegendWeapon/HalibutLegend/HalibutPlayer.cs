@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>海域领域最大冷却（8秒）</summary>
         public const int SeaDomainMaxCooldown = 480;
         /// <summary>海域领域层数（1-10）</summary>
-        public int SeaDomainLayers { get; set; } = 3;
+        public int SeaDomainLayers { get; set; } = 1;
         #endregion
 
         #region 重启技能数据
@@ -210,7 +210,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //海域领域激活检测，不要在服务器上访问按键
             if (!VaultUtils.isServer && CWRKeySystem.Halibut_Domain.JustPressed) {
-                SeaDomainLayers = 10;
                 SeaDomain.AltUse(Player.GetItem(), Player);
             }
         }

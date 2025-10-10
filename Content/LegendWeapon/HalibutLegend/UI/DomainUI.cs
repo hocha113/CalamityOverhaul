@@ -177,6 +177,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
                     HandleEyeToggle(eye);
+                    player.GetOverride<HalibutPlayer>().SeaDomainLayers = activationSequence.Count;
                 }
             }
 
@@ -235,6 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     activationSequence.Add(eye);
                     eye.LayerNumber = activationSequence.Count;
                 }
+                
                 activationAnimations.Add(new EyeActivationAnimation(eye.Position));
                 SpawnEyeToggleParticles(eye, true);
             }

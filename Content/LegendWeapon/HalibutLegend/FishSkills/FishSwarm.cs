@@ -13,18 +13,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Bass;
         public override bool? CanUseItem(Item item, Player player) {
+            HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             if (player.altFunctionUse == 2) {
                 item.UseSound = null;
                 Use(item, player);
+                halibutPlayer.FishConeSurgeActive = true;
                 return false;
             }
-            else {
-                ActivateFishConeSurge(player, player.To(Main.MouseWorld).UnitVector());
-                if (player.GetOverride<HalibutPlayer>().FishConeSurgeActive) {
-                    return false;
-                }
+            else if (halibutPlayer.FishConeSurgeActive) {
+                item.UseSound = null;
+                ActivateFishConeSurge(player, halibutPlayer);
+                halibutPlayer.FishConeSurgeActive = false;
             }
-            return null;
+            return halibutPlayer.AttackRecoveryTimer <= 0;
         }
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
@@ -93,14 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 激活螺旋尖锥突袭
         /// </summary>
-        public static void ActivateFishConeSurge(Player player, Vector2 attackDirection) {
-            HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            if (halibutPlayer.FishConeSurgeActive) {
-                return;
-            }
-            //标记突袭激活
-            halibutPlayer.FishConeSurgeActive = true;
-
+        public static void ActivateFishConeSurge(Player player, HalibutPlayer halibutPlayer) {
             //设置攻击后摇
             halibutPlayer.AttackRecoveryTimer = HalibutPlayer.AttackRecoveryDuration;
 
@@ -309,7 +303,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
             }
-            Owner.GetOverride<HalibutPlayer>().FishConeSurgeActive = false;
             Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
             Owner.GetOverride<HalibutPlayer>().FishSwarmTimer = 0;
         }
