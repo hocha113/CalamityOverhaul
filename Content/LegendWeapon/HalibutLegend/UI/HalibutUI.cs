@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
@@ -13,6 +14,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     [VaultLoaden(CWRConstant.UI + "Halibut/")]//用反射标签加载对应文件夹下的所有资源
     internal static class HalibutUIAsset
     {
+        //奈落之眼纹理，共两帧动画，第一帧是闭眼，第二帧是睁眼，单帧大小40(宽)*26(高)
+        public static Texture2D SeaEye;
         //按钮，大小46*26
         public static Texture2D Button;
         //大比目鱼的头像图标，放置在屏幕左下角作为UI的入口，大小74*74
@@ -65,9 +68,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             HalibutUILeftSidebar.Instance.Update();
             HalibutUIPanel.Instance.Update();
+            DomainUI.Instance.Update(); // 更新领域UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            DomainUI.Instance.Draw(spriteBatch); // 先绘制领域UI（在最底层）
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
 
