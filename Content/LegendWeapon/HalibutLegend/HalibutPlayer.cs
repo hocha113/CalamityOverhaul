@@ -130,6 +130,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
 
+        #region 僵尸鱼技能数据
+        /// <summary>僵尸鱼技能冷却时间</summary>
+        public int FishZombieCooldown { get; set; }
+        #endregion
+
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
@@ -207,6 +212,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //终极技能冷却
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
+
+            //僵尸鱼技能冷却
+            if (FishZombieCooldown > 0) FishZombieCooldown--;
 
             //海域领域激活检测，不要在服务器上访问按键
             if (!VaultUtils.isServer && CWRKeySystem.Halibut_Domain.JustPressed) {

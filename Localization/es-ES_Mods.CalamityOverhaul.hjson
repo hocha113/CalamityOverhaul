@@ -1555,6 +1555,7 @@ Projectiles: {
 	// SuperpositionCannon.DisplayName: Superposition Cannon
 	// FishTeleportProj.DisplayName: Fish Teleport Proj
 	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
+	// WaterZombie.DisplayName: Water Zombie
 }
 
 Configs: {
@@ -5662,6 +5663,11 @@ FishSkill: {
 	}
 
 	Sparkling: {
+		// DisplayName: ""
+		// Tooltip: ""
+	}
+
+	FishZombie: {
 		// DisplayName: ""
 		// Tooltip: ""
 	}
