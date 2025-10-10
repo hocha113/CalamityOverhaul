@@ -1757,17 +1757,16 @@ Buffs: {
 }
 
 Keybinds: {
-	HeavenfallLongbowSkillKey.DisplayName: Arco largo de la caída del cielo: Juicio de las manifestaciones
-	InfinitePickSkillKey.DisplayName: Pico infinito: Cambio de forma
-	TOM_OneClickP.DisplayName: Síntesis Omega: Colocación con un clic
-	TOM_QuickFetch.DisplayName: Síntesis Omega: Recogida rápida
-	TOM_GatheringItem.DisplayName: Síntesis Omega: Agrupar objetos
-	TOM_GlobalRecall.DisplayName: Síntesis Omega: Recoger todo
-	Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo
-	Murasama_DownKey.DisplayName: Murasama: Golpe descendente
 	ADS_Key.DisplayName: Abrir miras
 	KreLoad_Key.DisplayName: Recargar
+	HeavenfallLongbowSkillKey.DisplayName: Arco largo de la caída del cielo: Juicio de las manifestaciones
+	InfinitePickSkillKey.DisplayName: Pico infinito: Cambio de forma
+	Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo
+	Murasama_DownKey.DisplayName: Murasama: Golpe descendente
 	// Halibut_Domain.DisplayName: Halibut: Sea Domain
+	// Halibut_Clone.DisplayName: Halibut_ Clone
+	// Halibut_Restart.DisplayName: Halibut_ Restart
+	// Halibut_Superposition.DisplayName: Halibut_ Superposition
 }
 
 TextContent: {

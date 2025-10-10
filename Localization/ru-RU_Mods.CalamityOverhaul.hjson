@@ -1779,17 +1779,16 @@ Buffs: {
 }
 
 Keybinds: {
-	HeavenfallLongbowSkillKey.DisplayName: Небесный Лук Падения: Суд Вселенной
-	InfinitePickSkillKey.DisplayName: Бесконечная Кирка: Изменение Формы
-	TOM_OneClickP.DisplayName: Омега Синтез: Однокнопочная Установка
-	TOM_QuickFetch.DisplayName: Омега Синтез: Быстрое Извлечение
-	TOM_GatheringItem.DisplayName: Омега Синтез: Сбор Предметов
-	TOM_GlobalRecall.DisplayName: Омега Синтез: Глобальный Отзыв
-	Murasama_TriggerKey.DisplayName: Мурасама: Восходящий удар
-	Murasama_DownKey.DisplayName: Мурасама: Удар в падении
 	ADS_Key.DisplayName: Открыть Прицел
 	KreLoad_Key.DisplayName: Перезарядка
+	HeavenfallLongbowSkillKey.DisplayName: Небесный Лук Падения: Суд Вселенной
+	InfinitePickSkillKey.DisplayName: Бесконечная Кирка: Изменение Формы
+	Murasama_TriggerKey.DisplayName: Мурасама: Восходящий удар
+	Murasama_DownKey.DisplayName: Мурасама: Удар в падении
 	// Halibut_Domain.DisplayName: Halibut: Sea Domain
+	// Halibut_Clone.DisplayName: Halibut_ Clone
+	// Halibut_Restart.DisplayName: Halibut_ Restart
+	// Halibut_Superposition.DisplayName: Halibut_ Superposition
 }
 
 TextContent: {

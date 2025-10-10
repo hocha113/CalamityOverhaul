@@ -1742,17 +1742,16 @@ Buffs: {
 }
 
 Keybinds: {
-	HeavenfallLongbowSkillKey.DisplayName: Himmelsfallenlangbogen: Kosmisches Urteil
-	InfinitePickSkillKey.DisplayName: Endloser Spitzhacke: Formwechsel
-	TOM_OneClickP.DisplayName: Omega-Synthese: Ein-Klick-Platzierung
-	TOM_QuickFetch.DisplayName: Omega-Synthese: Schnelle Entnahme
-	TOM_GatheringItem.DisplayName: Omega-Synthese: Gegenstände sammeln
-	TOM_GlobalRecall.DisplayName: Omega-Synthese: Alles zurückrufen
-	Murasama_TriggerKey.DisplayName: Murasama: Auslösetaste
-	Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
 	ADS_Key.DisplayName: Zielfernrohr öffnen
 	KreLoad_Key.DisplayName: Nachladen
+	HeavenfallLongbowSkillKey.DisplayName: Himmelsfallenlangbogen: Kosmisches Urteil
+	InfinitePickSkillKey.DisplayName: Endloser Spitzhacke: Formwechsel
+	Murasama_TriggerKey.DisplayName: Murasama: Auslösetaste
+	Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
 	// Halibut_Domain.DisplayName: Halibut: Sea Domain
+	// Halibut_Clone.DisplayName: Halibut_ Clone
+	// Halibut_Restart.DisplayName: Halibut_ Restart
+	// Halibut_Superposition.DisplayName: Halibut_ Superposition
 }
 
 TextContent: {

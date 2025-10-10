@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int SkillID;
 
+        #region 闪光皇后
         /// <summary>闪光技能：当前齐射是否激活</summary>
         public bool SparklingVolleyActive { get; set; }
         /// <summary>闪光技能：齐射冷却计时（帧）</summary>
@@ -36,7 +37,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public bool SparklingDeparturePhase { get; set; }
         /// <summary>闪光技能：离场阶段计时</summary>
         public int SparklingDepartureTimer { get; set; }
+        #endregion
 
+        #region 鱼形换影
         /// <summary>
         /// 移形换影技能激活状态
         /// </summary>
@@ -76,6 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 攻击后摇持续时间（60帧 = 1秒）
         /// </summary>
         public const int AttackRecoveryDuration = 60;
+        #endregion
 
         #region 克隆技能数据
         public bool CloneFishActive { get; set; }
@@ -87,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int CloneFishToggleCD { get; set; }
 
         /// <summary>克隆体数量（1-5）</summary>
-        public int CloneCount { get; set; } = 1;//调试，先保持1个
+        public int CloneCount { get; set; } = 1;//先保持1个
         /// <summary>最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）</summary>
         public int CloneMinDelay { get; set; } = 60;
         /// <summary>克隆体间隔帧数（每个克隆体之间的时间差，20帧=0.33秒）</summary>
@@ -221,9 +225,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //僵尸鱼技能冷却
             if (FishZombieCooldown > 0) FishZombieCooldown--;
 
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Item item = Player.GetItem();
             //海域领域激活检测，不要在服务器上访问按键
-            if (!VaultUtils.isServer && CWRKeySystem.Halibut_Domain.JustPressed) {
-                SeaDomain.AltUse(Player.GetItem(), Player);
+            if (CWRKeySystem.Halibut_Domain.JustPressed) {
+                SeaDomain.AltUse(item, Player);
+            }
+            //封锁过去，埋葬现在，截断未来...难道我今天真的要被孟小董杀死？不，现在还不能放弃...
+            else if (CWRKeySystem.Halibut_Clone.JustPressed) {
+                CloneCount = SeaDomainLayers;
+                CloneFish.AltUse(item, Player);
+            }
+            //既然总部认为我已经死了，那么就让你们看看，我死后，到底会发生什么事情
+            else if (CWRKeySystem.Halibut_Restart.JustPressed) {
+                if (SeaDomainLayers >= 5) {//大于等于五层领域后才能使用
+                    RestartFish.AltUse(item, Player);
+                }
+            }
+            //叠加袭击
+            else if (CWRKeySystem.Halibut_Superposition.JustPressed) {
+                if (SeaDomainLayers >= 7) {//大于等于七层领域后才能使用
+                    Superposition.AltUse(item, Player);
+                }
             }
         }
 

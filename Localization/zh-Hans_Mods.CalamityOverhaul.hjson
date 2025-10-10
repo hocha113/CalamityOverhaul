@@ -1738,17 +1738,16 @@ Buffs: {
 }
 
 Keybinds: {
-	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
-	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
-	TOM_OneClickP.DisplayName: 欧米茄合成:一键摆放
-	TOM_QuickFetch.DisplayName: 欧米茄合成:快速拿取
-	TOM_GatheringItem.DisplayName: 欧米茄合成:聚拢物品
-	TOM_GlobalRecall.DisplayName: 欧米茄合成:全部收回
-	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
-	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
+	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
+	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
+	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
+	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
 	Halibut_Domain.DisplayName: 大比目鱼:海洋领域
+	Halibut_Clone.DisplayName: 大比目鱼:过去身入侵
+	Halibut_Restart.DisplayName: 大比目鱼:重启
+	Halibut_Superposition.DisplayName: 大比目鱼:叠加
 }
 
 TextContent: {

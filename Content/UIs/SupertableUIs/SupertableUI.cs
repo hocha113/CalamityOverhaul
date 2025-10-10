@@ -417,7 +417,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             FinalizeCraftingResult();
         }
         private void HandleContinuousGather(int index) {
-            if (CWRKeySystem.TOM_GatheringItem.Current) {
+            if (Main.keyState.PressingShift()) {
                 GatheringItem(index, ref Main.mouseItem);
                 FinalizeCraftingResult();
             }

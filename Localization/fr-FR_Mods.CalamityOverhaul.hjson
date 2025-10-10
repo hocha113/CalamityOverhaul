@@ -1743,17 +1743,16 @@ Buffs: {
 }
 
 Keybinds: {
-	HeavenfallLongbowSkillKey.DisplayName: Arc long de la chute céleste : Jugement universel
-	InfinitePickSkillKey.DisplayName: Pioche infinie : Changement de forme
-	TOM_OneClickP.DisplayName: Synthèse Omega : Placement instantané
-	TOM_QuickFetch.DisplayName: Synthèse Omega : Collecte rapide
-	TOM_GatheringItem.DisplayName: Synthèse Omega : Rassemblement d'objets
-	TOM_GlobalRecall.DisplayName: Synthèse Omega : Rappel global
-	Murasama_TriggerKey.DisplayName: Murasama : Touche de déclenchement
-	Murasama_DownKey.DisplayName: Murasama : Frappe vers le bas
 	ADS_Key.DisplayName: Activer la visée
 	KreLoad_Key.DisplayName: Recharger
+	HeavenfallLongbowSkillKey.DisplayName: Arc long de la chute céleste : Jugement universel
+	InfinitePickSkillKey.DisplayName: Pioche infinie : Changement de forme
+	Murasama_TriggerKey.DisplayName: Murasama : Touche de déclenchement
+	Murasama_DownKey.DisplayName: Murasama : Frappe vers le bas
 	// Halibut_Domain.DisplayName: Halibut: Sea Domain
+	// Halibut_Clone.DisplayName: Halibut_ Clone
+	// Halibut_Restart.DisplayName: Halibut_ Restart
+	// Halibut_Superposition.DisplayName: Halibut_ Superposition
 }
 
 TextContent: {

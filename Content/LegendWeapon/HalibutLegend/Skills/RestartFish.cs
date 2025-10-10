@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Activate(player);
             hp.RestartFishToggleCD = ToggleCD;
-            hp.RestartFishCooldown = 60;
+            hp.RestartFishCooldown = RestartCooldown;
         }
 
         public static void Activate(Player player) {
