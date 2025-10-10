@@ -264,43 +264,134 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float riseDistance = 60f;
             Projectile.position.Y -= riseDistance / EmergeDuration;
 
-            //地面爬出特效
             if (StateTimer < EmergeDuration * 0.8f) {
-                //泥土粒子
-                if (Main.rand.NextBool(2)) {
-                    Vector2 dustPos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-20f, 20f), 0);
-                    Dust dirt = Dust.NewDustPerfect(
-                        dustPos,
-                        DustID.Dirt,
-                        new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-5f, -2f)),
-                        Scale: Main.rand.NextFloat(1.5f, 2.5f)
-                    );
-                    dirt.noGravity = false;
+                //初期（0-40%）：地面开裂效果
+                if (emergeProgress < 0.4f) {
+                    //小型泥土颗粒从裂缝中溅出
+                    if (Main.rand.NextBool(3)) {
+                        Vector2 dustPos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-5f, 2f));
+                        float xVel = Main.rand.NextFloat(-1.5f, 1.5f);
+                        float yVel = Main.rand.NextFloat(-3f, -1f);
+                        
+                        Dust dirt = Dust.NewDustPerfect(
+                            dustPos,
+                            DustID.Dirt,
+                            new Vector2(xVel, yVel),
+                            Scale: Main.rand.NextFloat(0.8f, 1.3f)
+                        );
+                        dirt.noGravity = false;
+                        dirt.fadeIn = 0.8f;
+                    }
+
+                    //地面裂缝烟尘（灰色烟雾）
+                    if (Main.rand.NextBool(5)) {
+                        Dust smoke = Dust.NewDustPerfect(
+                            Projectile.Bottom + new Vector2(Main.rand.NextFloat(-10f, 10f), 0),
+                            DustID.Smoke,
+                            new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1.5f, -0.5f)),
+                            Scale: Main.rand.NextFloat(0.6f, 1f),
+                            Alpha: 120
+                        );
+                        smoke.noGravity = true;
+                        smoke.fadeIn = 0.5f;
+                    }
                 }
 
-                //水花粒子（溺尸特色）
-                if (Main.rand.NextBool(3)) {
-                    Vector2 waterPos = Projectile.Center + new Vector2(Main.rand.NextFloat(-15f, 15f), Main.rand.NextFloat(-10f, 10f));
-                    Dust water = Dust.NewDustPerfect(
-                        waterPos,
-                        DustID.Water,
-                        new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-4f, -1f)),
-                        Scale: Main.rand.NextFloat(1f, 2f)
-                    );
-                    water.noGravity = true;
-                    water.alpha = 100;
+                //中期（40-70%）：强力爬出，泥土飞溅
+                if (emergeProgress >= 0.4f && emergeProgress < 0.7f) {
+                    //中型泥土块从两侧飞出
+                    if (Main.rand.NextBool(4)) {
+                        float side = Main.rand.NextBool() ? -1f : 1f;
+                        Vector2 ejectVel = new Vector2(
+                            side * Main.rand.NextFloat(2.5f, 4.5f),
+                            Main.rand.NextFloat(-4f, -2.5f)
+                        );
+                        
+                        Dust dirtChunk = Dust.NewDustPerfect(
+                            Projectile.Bottom + new Vector2(side * Main.rand.NextFloat(5f, 15f), 0),
+                            DustID.Dirt,
+                            ejectVel,
+                            Scale: Main.rand.NextFloat(1f, 1.6f)
+                        );
+                        dirtChunk.noGravity = false;
+                    }
+
+                    //石块碎片
+                    if (Main.rand.NextBool(6)) {
+                        float side = Main.rand.NextBool() ? -1f : 1f;
+                        Dust stone = Dust.NewDustPerfect(
+                            Projectile.Bottom,
+                            DustID.Stone,
+                            new Vector2(side * Main.rand.NextFloat(2f, 4f), Main.rand.NextFloat(-3.5f, -2f)),
+                            Scale: Main.rand.NextFloat(0.7f, 1.2f)
+                        );
+                        stone.noGravity = false;
+                    }
+
+                    //溺尸特色：水珠从身体滴落
+                    if (Main.rand.NextBool(4)) {
+                        Vector2 waterDropPos = Projectile.Center + new Vector2(
+                            Main.rand.NextFloat(-10f, 10f), 
+                            Main.rand.NextFloat(-15f, 5f)
+                        );
+                        Dust waterDrop = Dust.NewDustPerfect(
+                            waterDropPos,
+                            DustID.Water,
+                            new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), Main.rand.NextFloat(1f, 2.5f)),
+                            Scale: Main.rand.NextFloat(0.6f, 1.1f),
+                            Alpha: 80
+                        );
+                        waterDrop.noGravity = false;
+                    }
                 }
 
-                //地面裂缝效果（石块粒子从两侧飞出）
-                if (Main.rand.NextBool(4)) {
-                    float side = Main.rand.NextBool() ? -1f : 1f;
-                    Dust stone = Dust.NewDustPerfect(
+                //后期（70-80%）：尘埃落定
+                if (emergeProgress >= 0.7f) {
+                    //细小尘埃漂浮
+                    if (Main.rand.NextBool(6)) {
+                        Dust dustFloat = Dust.NewDustPerfect(
+                            Projectile.Bottom + new Vector2(Main.rand.NextFloat(-15f, 15f), Main.rand.NextFloat(-5f, 0)),
+                            DustID.Smoke,
+                            new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.8f, -0.2f)),
+                            Scale: Main.rand.NextFloat(0.4f, 0.7f),
+                            Alpha: 150
+                        );
+                        dustFloat.noGravity = true;
+                        dustFloat.fadeIn = 0.3f;
+                    }
+
+                    //水汽蒸发效果（青绿色）
+                    if (Main.rand.NextBool(8)) {
+                        Dust mist = Dust.NewDustPerfect(
+                            Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
+                            DustID.DungeonWater,
+                            new Vector2(0, Main.rand.NextFloat(-0.5f, 0)),
+                            Scale: Main.rand.NextFloat(0.5f, 0.9f),
+                            Alpha: 100
+                        );
+                        mist.noGravity = true;
+                        mist.color = Color.Lerp(Color.Cyan, Color.LightGreen, 0.6f);
+                    }
+                }
+            }
+
+            if ((int)(emergeProgress * 100) == 30) {
+                //地面冲击环
+                for (int i = 0; i < 12; i++) {
+                    float angle = MathHelper.TwoPi * i / 12f;
+                    Vector2 shockDir = new Vector2(
+                        (float)Math.Cos(angle),
+                        (float)Math.Sin(angle)
+                    );
+                    
+                    Dust shockDust = Dust.NewDustPerfect(
                         Projectile.Bottom,
-                        DustID.Stone,
-                        new Vector2(side * Main.rand.NextFloat(3f, 6f), Main.rand.NextFloat(-6f, -3f)),
-                        Scale: Main.rand.NextFloat(1.2f, 2f)
+                        DustID.Smoke,
+                        shockDir * Main.rand.NextFloat(2f, 3.5f),
+                        Scale: Main.rand.NextFloat(0.8f, 1.2f),
+                        Alpha: 100
                     );
-                    stone.noGravity = false;
+                    shockDust.noGravity = true;
                 }
             }
 
@@ -447,51 +538,118 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 创建爆炸特效
+        /// 创建爆炸特效（重新设计）
         /// </summary>
         private void CreateExplosionEffect() {
-            //大量水花
-            for (int i = 0; i < 40; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
-                Dust water = Dust.NewDustPerfect(
+            //强力冲击环（快速扩散）
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 shockVel = new Vector2(
+                    (float)Math.Cos(angle),
+                    (float)Math.Sin(angle)
+                ) * Main.rand.NextFloat(10f, 14f);
+
+                Dust shockWave = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Water,
+                    shockVel,
+                    Scale: Main.rand.NextFloat(1.8f, 2.4f),
+                    Alpha: 50
+                );
+                shockWave.noGravity = true;
+                shockWave.color = Color.White;
+            }
+
+            //大型水花
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(7f, 7f);
+                float speedBoost = Main.rand.NextFloat(1f, 1.5f);
+                
+                Dust largeSplash = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
+                    DustID.Water,
+                    velocity * speedBoost,
+                    Scale: Main.rand.NextFloat(1.5f, 2.2f),
+                    Alpha: 60
+                );
+                largeSplash.noGravity = true;
+            }
+
+            //中型水花
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
+                
+                Dust mediumSplash = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
                     velocity,
-                    Scale: Main.rand.NextFloat(2f, 3.5f)
+                    Scale: Main.rand.NextFloat(1f, 1.5f),
+                    Alpha: 80
                 );
-                water.noGravity = true;
-                water.alpha = 50;
+                mediumSplash.noGravity = Main.rand.NextBool();
             }
 
-            //绿色腐烂水花（溺尸特色）
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
+            //小型水雾
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+                
+                Dust mist = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    DustID.DungeonWater,
+                    velocity,
+                    Scale: Main.rand.NextFloat(0.6f, 1f),
+                    Alpha: 120
+                );
+                mist.noGravity = true;
+                mist.color = Color.Lerp(Color.White, Color.Cyan, 0.5f);
+            }
+
+            //绿色腐败水花
+            for (int i = 0; i < 18; i++) {
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
+                
                 Dust poison = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Poisoned,
                     velocity,
-                    Scale: Main.rand.NextFloat(1.5f, 2.5f)
+                    Scale: Main.rand.NextFloat(1f, 1.6f),
+                    Alpha: 70
                 );
                 poison.noGravity = true;
+                poison.color = Color.Lerp(Color.Green, Color.DarkGreen, Main.rand.NextFloat());
             }
 
-            //尸块Gore效果（使用原版僵尸的Gore）
+            //腐烂气泡效果
+            for (int i = 0; i < 10; i++) {
+                Dust bubble = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                    DustID.ToxicBubble,
+                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-4f, -1f)),
+                    Scale: Main.rand.NextFloat(0.8f, 1.3f),
+                    Alpha: 100
+                );
+                bubble.noGravity = false;
+            }
+
             if (Main.netMode != NetmodeID.Server) {
-                //生成随机尸块效果（使用通用Gore类型）
-                int goreCount = Main.rand.Next(3, 7);
-                for (int i = 0; i < goreCount; i++) {
+                //主要尸块（3-5块）
+                int mainGoreCount = Main.rand.Next(3, 6);
+                for (int i = 0; i < mainGoreCount; i++) {
                     //使用僵尸NPC的Gore ID范围
-                    int goreType = Main.rand.Next(11, 14); //僵尸的Gore ID通常在这个范围
+                    int goreType = Main.rand.Next(11, 14);
+                    Vector2 goreVel = Main.rand.NextVector2CircularEdge(5f, 5f);
+                    
                     Gore.NewGore(
                         Projectile.GetSource_Death(), 
-                        Projectile.Center + Main.rand.NextVector2Circular(10f, 10f), 
-                        Main.rand.NextVector2CircularEdge(6f, 6f), 
+                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), 
+                        goreVel, 
                         goreType
                     );
                 }
 
-                //额外的血液效果
-                for (int i = 0; i < 5; i++) {
+                //小型碎片（2-3块）
+                int smallGoreCount = Main.rand.Next(2, 4);
+                for (int i = 0; i < smallGoreCount; i++) {
                     Gore.NewGore(
                         Projectile.GetSource_Death(), 
                         Projectile.Center, 
@@ -501,23 +659,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //冲击波圆环
+            for (int i = 0; i < 12; i++) {
+                Vector2 bloodVel = Main.rand.NextVector2CircularEdge(6f, 6f);
+                
+                Dust blood = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Blood,
+                    bloodVel,
+                    Scale: Main.rand.NextFloat(0.8f, 1.4f)
+                );
+                blood.noGravity = false;
+            }
+
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(-0.2f, 0.2f);
+                Vector2 smokeVel = new Vector2(
+                    (float)Math.Cos(angle),
+                    (float)Math.Sin(angle)
+                ) * Main.rand.NextFloat(3f, 5f);
+
+                Dust smoke = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Smoke,
+                    smokeVel,
+                    Scale: Main.rand.NextFloat(1.2f, 1.8f),
+                    Alpha: 120
+                );
+                smoke.noGravity = true;
+                smoke.color = Color.Lerp(Color.Gray, Color.DarkGreen, 0.3f);
+            }
+
             for (int i = 0; i < 20; i++) {
                 float angle = MathHelper.TwoPi * i / 20f;
                 Vector2 ringVel = new Vector2(
                     (float)Math.Cos(angle),
                     (float)Math.Sin(angle)
-                ) * 12f;
+                ) * Main.rand.NextFloat(9f, 12f);
 
                 Dust ring = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
                     ringVel,
-                    Scale: Main.rand.NextFloat(2.5f, 3.5f)
+                    Scale: Main.rand.NextFloat(1.5f, 2f),
+                    Alpha: 90
                 );
                 ring.noGravity = true;
-                ring.alpha = 80;
-                ring.color = Color.Lerp(Color.Cyan, Color.White, 0.5f);
+                ring.color = Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat());
+                ring.fadeIn = 0.8f;
+            }
+
+            //闪光效果
+            for (int i = 0; i < 6; i++) {
+                Dust flash = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Clentaminator_Cyan,
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    Scale: Main.rand.NextFloat(1f, 1.5f),
+                    Alpha: 0
+                );
+                flash.noGravity = true;
             }
         }
 
