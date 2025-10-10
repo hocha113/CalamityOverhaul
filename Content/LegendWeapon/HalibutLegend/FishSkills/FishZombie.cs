@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             //设置冷却
-            halibutPlayer.FishZombieCooldown = 60;
+            halibutPlayer.FishZombieCooldown = Cooldown;
 
             //计算目标方向（朝向光标）
             Vector2 targetDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 寻找地面位置（向下检测）
         /// </summary>
-        private Vector2 FindGroundPosition(Vector2 startPos) {
+        private static Vector2 FindGroundPosition(Vector2 startPos) {
             //向下检测最多500像素
             for (int y = 0; y < 500; y += 16) {
                 Vector2 checkPos = startPos + new Vector2(0, y);
