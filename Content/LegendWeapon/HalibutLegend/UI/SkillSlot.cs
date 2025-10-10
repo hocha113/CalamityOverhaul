@@ -60,7 +60,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
                     HalibutUIHead.Instance.FishSkill = FishSkill;
-                    HalibutOverride.SkillID = FishSkill.ID;
                 }
             }
             else {
@@ -73,6 +72,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             hoverSengs = Math.Clamp(hoverSengs, 0f, 1f);
+            //反正这样加载是没问题的，你就看跑不跑得起来吧！
+            if (FishSkill != null && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.SkillID = FishSkill.ID;
+            }
         }
 
         /// <summary>

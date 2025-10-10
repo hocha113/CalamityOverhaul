@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public readonly static Dictionary<Type, Texture2D> TypeToTex = [];
         public readonly static Dictionary<int, FishSkill> UnlockFishs = [];
         public readonly static Dictionary<int, FishSkill> IDToInstance = [];
+        public readonly static Dictionary<string, FishSkill> NameToInstance = [];
         public int ID => TypeToID[GetType()];
         public virtual string IconTexture => CWRConstant.UI + "Halibut/FishSkill/" + Name;
         public Texture2D Icon => TypeToTex[GetType()];
@@ -30,6 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Instances.Add(this);
             TypeToID[GetType()] = Instances.Count;
             IDToInstance[Instances.Count] = this;//技能ID从1开始，0什么都不是
+            NameToInstance[FullName] = this;
             if (!VaultUtils.isServer) {
                 TypeToTex[GetType()] = ModContent.Request<Texture2D>(IconTexture, AssetRequestMode.ImmediateLoad).Value;
             }
@@ -41,6 +44,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             UnlockFishs[UnlockFishID] = this;
             SetStaticDefaults();
             SetDefaults(true);
+        }
+
+        public virtual void SaveData(TagCompound tag) {
+            
+        }
+
+        public virtual void LoadData(TagCompound tag) {
+
         }
 
         public virtual void SetDefaults(bool create = false) {

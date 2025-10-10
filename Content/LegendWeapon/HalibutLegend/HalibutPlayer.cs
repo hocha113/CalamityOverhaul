@@ -11,6 +11,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutPlayer : PlayerOverride//这个类用于存储一些与玩家相关的额外数据
     {
+        /// <summary>
+        /// 技能ID
+        /// </summary>
+        public int SkillID;
+
         /// <summary>闪光技能：当前齐射是否激活</summary>
         public bool SparklingVolleyActive { get; set; }
         /// <summary>闪光技能：齐射冷却计时（帧）</summary>

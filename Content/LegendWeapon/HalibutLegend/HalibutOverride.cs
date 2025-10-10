@@ -35,10 +35,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
-        /// <summary>
-        /// 技能ID
-        /// </summary>
-        public static int SkillID;
         #endregion
         /// <summary>
         /// 获取时期对应的伤害
@@ -130,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? CanUseItem(Item item, Player player) {
             item.UseSound = SoundID.Item38;
-            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+            if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.CanUseItem(item, player);
                 if (result.HasValue) {
                     return result.Value;
@@ -140,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
-            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+            if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.AltFunctionUse(item, player);
                 if (result.HasValue) {
                     return result.Value;
@@ -150,7 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? UseItem(Item item, Player player) {
-            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+            if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.UseItem(item, player);
                 if (result.HasValue) {
                     return result.Value;
@@ -168,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 hp.RegisterShoot(type, velocity, damage, knockback, item.type);
             }
 
-            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+            if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.ShootAlt(item, player, source, position, velocity, type, damage, knockback);
                 if (result.HasValue) {
                     return result.Value;

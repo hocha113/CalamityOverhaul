@@ -3,9 +3,11 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -51,6 +53,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         public bool Open;
         public FishSkill FishSkill;
+
+        public override void SaveUIData(TagCompound tag) {
+            HalibutUILeftSidebar.Instance.SaveUIData(tag);
+            HalibutUIPanel.Instance.SaveUIData(tag);
+            DomainUI.Instance.SaveUIData(tag);
+        }
+
+        public override void LoadUIData(TagCompound tag) {
+            HalibutUILeftSidebar.Instance.LoadUIData(tag);
+            HalibutUIPanel.Instance.LoadUIData(tag);
+            DomainUI.Instance.LoadUIData(tag);
+        }
+
         public override void Update() {
             Size = Head.Size();
             DrawPosition = new Vector2(-4, Main.screenHeight - Size.Y);
@@ -141,6 +156,55 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = []; //槽位 -> 对应的粒子索引
+
+        public override void SaveUIData(TagCompound tag) {
+            IList<TagCompound> list = [];
+            foreach (var slot in halibutUISkillSlots) {
+                if (slot.FishSkill == null) {
+                    continue;
+                }
+                TagCompound skillTag = [];
+                skillTag["Name"] = slot.FishSkill.FullName;
+                slot.FishSkill.SaveData(tag);
+                list.Add(skillTag);
+            }
+            tag["FishSkills"] = list;
+
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
+                var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
+                if (skill != null) {
+                    tag["HalibutTargetSkillName"] = skill.FullName;
+                }
+            }
+        }
+
+        public override void LoadUIData(TagCompound tag) {
+            if (!tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
+                return;
+            }
+            halibutUISkillSlots.Clear();
+            foreach (var skillTag in list) {
+                if (!skillTag.TryGet<string>("Name", out var name) ||
+                    !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
+                    continue;
+                }
+                fishSkill.LoadData(skillTag);
+                SkillSlot newSlot = new() {
+                    FishSkill = fishSkill,
+                    appearProgress = 1f,//直接显示
+                    isAppearing = false
+                };
+                halibutUISkillSlots.Add(newSlot);
+            }
+
+            if (!tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
+                return;
+            }
+
+            var skill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
+
+            HalibutUIHead.Instance.FishSkill = skill;
+        }
 
         /// <summary>
         /// 添加新技能并触发飞行动画
