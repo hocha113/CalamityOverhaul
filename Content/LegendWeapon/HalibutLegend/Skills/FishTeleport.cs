@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             //计算目标位置（可能被领域限制）
             Vector2 targetPos = CalculateTeleportTarget(player);
-            
+
             Activate(player, targetPos);
             hp.FishTeleportToggleCD = ToggleCD;
             hp.FishTeleportCooldown = 20;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         internal static void SpawnTeleportEffect(Player player, Vector2 targetPos) {
             var source = player.GetSource_Misc("FishTeleportSkill");
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
-                , ModContent.ProjectileType<FishTeleportProj>(), 0, 0, player.whoAmI, 
+                , ModContent.ProjectileType<FishTeleportProj>(), 0, 0, player.whoAmI,
                 ai0: targetPos.X, ai1: targetPos.Y);
         }
     }
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             MaxLife = isDissipating ? 30f : 25f;
             Rotation = vel.ToRotation();
             rotationSpeed = rand.NextFloat(-0.1f, 0.1f);
-            
+
             TintColor = new Color(100 + rand.Next(50), 200 + rand.Next(55), 255);
         }
 
@@ -137,20 +137,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (TrailPositions.Count < 2) return;
             Texture2D tex = TextureAssets.MagicPixel.Value;
             float particleAlpha = GetAlpha() * globalAlpha;
-            
+
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
                 float progress = i / (float)TrailPositions.Count;
                 float trailAlpha = (1f - progress) * particleAlpha * 0.6f;
                 float width = Scale * (4f - progress * 2.5f);
-                
+
                 Vector2 start = TrailPositions[i];
                 Vector2 end = TrailPositions[i + 1];
                 Vector2 diff = end - start;
                 float rot = diff.ToRotation();
                 float len = diff.Length();
-                
+
                 Color c = TintColor * trailAlpha;
-                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1), 
+                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1),
                     c, rot, Vector2.Zero, new Vector2(len, width), SpriteEffects.None, 0f);
             }
         }
@@ -162,22 +162,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 2 => ItemID.Trout,
                 _ => ItemID.Tuna
             };
-            
+
             Main.instance.LoadItem(itemType);
             Texture2D fishTex = TextureAssets.Item[itemType].Value;
             Rectangle rect = fishTex.Bounds;
             Vector2 origin = rect.Size() * 0.5f;
-            
+
             float particleAlpha = GetAlpha() * globalAlpha;
             Color c = TintColor * particleAlpha;
-            
+
             //发光效果
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = (i * MathHelper.TwoPi / 3f).ToRotationVector2() * 2.5f;
-                Main.spriteBatch.Draw(fishTex, Position + offset - Main.screenPosition, rect, 
+                Main.spriteBatch.Draw(fishTex, Position + offset - Main.screenPosition, rect,
                     c * 0.4f, Rotation, origin, Scale * 0.9f, SpriteEffects.None, 0f);
             }
-            
+
             Main.spriteBatch.Draw(fishTex, Position - Main.screenPosition, rect, c, Rotation, origin, Scale, SpriteEffects.None, 0f);
         }
     }
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private List<TeleportFishParticle> dissipatingFish; //消散鱼群
         private List<TeleportFishParticle> gatheringFish; //聚拢鱼群
         private Vector2 targetPosition;
-        
+
         private enum TeleportState { Dissipating, Teleporting, Gathering, Complete }
         private TeleportState currentState = TeleportState.Dissipating;
         private int stateTimer = 0;
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int TeleportDuration = 5;
         private const int GatherDuration = 20;
         private float effectAlpha = 1f;
-        
+
         //特效元素
         private float dissipateFlashIntensity = 0f;
         private float gatherFlashIntensity = 0f;
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 dissipateCenter = Owner.Center;
                 InitializeDissipatingFish();
                 Projectile.localAI[0] = 1f;
-                
+
                 //播放消散音效
                 SoundEngine.PlaySound(SoundID.Item8, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.5f }, Owner.Center); //水波音效
@@ -280,10 +280,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void UpdateDissipating() {
             float progress = stateTimer / (float)DissipateDuration;
             dissipateFlashIntensity = (float)Math.Sin(progress * MathHelper.Pi) * 1.5f;
-            
+
             //玩家渐隐
             Owner.opacityForAnimation = 1f - progress;
-            
+
             //生成消散粒子
             if (stateTimer % 2 == 0) {
                 SpawnDissipateParticle();
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 currentState = TeleportState.Teleporting;
                 stateTimer = 0;
                 Owner.opacityForAnimation = 0f;
-                
+
                 //播放传送音效
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.5f }, Owner.Center);
             }
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 //执行传送
                 Owner.Teleport(targetPosition, 999);
                 Owner.velocity = Vector2.Zero;
-                
+
                 //生成传送特效
                 for (int i = 0; i < 30; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -318,10 +318,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].velocity = (targetPosition - pos).SafeNormalize(Vector2.Zero) * 8f;
                 }
-                
+
                 InitializeGatheringFish();
                 hasTeleported = true;
-                
+
                 //播放出现音效
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.3f }, targetPosition);
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, targetPosition);
@@ -336,10 +336,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void UpdateGathering() {
             float progress = stateTimer / (float)GatherDuration;
             gatherFlashIntensity = (float)Math.Sin(progress * MathHelper.Pi) * 2f;
-            
+
             //玩家渐现
             Owner.opacityForAnimation = progress;
-            
+
             //生成聚拢粒子
             if (stateTimer % 2 == 0) {
                 SpawnGatherParticle();
@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (stateTimer >= GatherDuration) {
                 currentState = TeleportState.Complete;
                 Owner.opacityForAnimation = 1f;
-                
+
                 //最终爆发效果
                 for (int i = 0; i < 20; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].velocity = angle.ToRotationVector2() * 6f;
                 }
-                
+
                 SoundEngine.PlaySound(SoundID.Splash, targetPosition);
             }
         }
@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void InitializeDissipatingFish() {
             dissipatingFish = new List<TeleportFishParticle>();
             int fishCount = 80;
-            
+
             for (int i = 0; i < fishCount; i++) {
                 float angle = (i / (float)fishCount) * MathHelper.TwoPi;
                 Vector2 spawnPos = dissipateCenter + Main.rand.NextVector2Circular(40, 40);
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void InitializeGatheringFish() {
             gatheringFish = new List<TeleportFishParticle>();
             int fishCount = 80;
-            
+
             for (int i = 0; i < fishCount; i++) {
                 float angle = (i / (float)fishCount) * MathHelper.TwoPi;
                 Vector2 spawnPos = targetPosition + angle.ToRotationVector2() * Main.rand.NextFloat(150f, 250f);
@@ -457,14 +457,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Texture2D bloomTex = CWRAsset.StarTexture.Value;
             float flashScale = 3f + intensity * 2f;
             Color flashColor = new Color(150, 230, 255, 0) * intensity * 0.4f;
-            
-            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor, 
+
+            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor,
                 0f, bloomTex.Size() / 2f, flashScale, SpriteEffects.None, 0f);
-            
-            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor * 0.7f, 
+
+            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor * 0.7f,
                 MathHelper.PiOver2, bloomTex.Size() / 2f, flashScale * 0.8f, SpriteEffects.None, 0f);
-            
-            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor * 0.5f, 
+
+            Main.spriteBatch.Draw(bloomTex, center - Main.screenPosition, null, flashColor * 0.5f,
                 MathHelper.PiOver4, bloomTex.Size() / 2f, flashScale * 1.2f, SpriteEffects.None, 0f);
         }
     }
@@ -495,7 +495,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public void Update() {
             Life++;
             float progress = Life / MaxLife;
-            
+
             if (IsGathering) {
                 //聚拢环：从大到小
                 Radius = initialRadius * (1f - progress * 0.8f);
@@ -504,7 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 //消散环：从小到大
                 Radius = initialRadius + progress * 100f;
             }
-            
+
             rotation += RotationSpeed;
         }
 
@@ -518,31 +518,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Texture2D tex = CWRAsset.StarTexture.Value;
             int segments = 20;
             float angleStep = MathHelper.TwoPi / segments;
-            
+
             for (int i = 0; i < segments; i++) {
                 float angle = i * angleStep + rotation;
                 Vector2 pos = Center + angle.ToRotationVector2() * Radius;
                 float scale = 0.6f + (float)Math.Sin(angle * 2f + Main.GlobalTimeWrappedHourly * 3f) * 0.25f;
                 Color c = new Color(120, 230, 255, 0) * alpha;
-                
-                Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, c, angle, 
+
+                Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, c, angle,
                     tex.Size() / 2f, scale * 0.4f, SpriteEffects.None, 0f);
             }
-            
+
             //绘制连接线
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep + rotation;
                 float angle2 = (i + 1) * angleStep + rotation;
                 Vector2 p1 = Center + angle1.ToRotationVector2() * Radius;
                 Vector2 p2 = Center + angle2.ToRotationVector2() * Radius;
-                
+
                 Vector2 diff = p2 - p1;
                 float rot = diff.ToRotation();
                 float length = diff.Length();
-                
+
                 Texture2D lineTex = TextureAssets.MagicPixel.Value;
                 Color lineColor = new Color(120, 230, 255, 0) * alpha * 0.5f;
-                Main.spriteBatch.Draw(lineTex, p1 - Main.screenPosition, new Rectangle(0, 0, 1, 1), 
+                Main.spriteBatch.Draw(lineTex, p1 - Main.screenPosition, new Rectangle(0, 0, 1, 1),
                     lineColor, rot, Vector2.Zero, new Vector2(length, 2f), SpriteEffects.None, 0f);
             }
         }

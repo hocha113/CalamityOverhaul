@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
@@ -264,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     if (SkillTooltipPanel.Instance.IsShowing) {
                         SkillTooltipPanel.Instance.ForceHide();
                     }
-                    
+
                     //等待介绍面板完全收起后，主面板才开始收起
                     if (SkillTooltipPanel.Instance.IsFullyClosed) {
                         Sengs -= 0.1f;
@@ -299,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //更新所有技能槽位（使用平滑的滚动偏移）
             float slotWidth = Skillcon.Width + 4;
             float baseX = 52;
-            
+
             //检查是否有任何技能槽位被悬停
             bool anySlotHovered = false;
 
@@ -313,17 +312,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 slot.DrawPosition = DrawPosition + new Vector2(targetX, 30);
                 slot.RelativeIndex = relativePosition; //用于判断是否在可见范围内
                 slot.Update();
-                
+
                 if (slot.hoverInMainPage) {
                     anySlotHovered = true;
                 }
             }
-            
+
             //如果没有槽位被悬停，隐藏介绍面板（带延迟）
             if (!anySlotHovered) {
                 SkillTooltipPanel.Instance.Hide();
             }
-            
+
             //更新介绍面板
             SkillTooltipPanel.Instance.Update();
         }
@@ -340,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //先绘制介绍面板（在主面板后面）
             SkillTooltipPanel.Instance.Draw(spriteBatch);
-            
+
             //绘制主面板
             spriteBatch.Draw(Panel, UIHitBox, Color.White);
 

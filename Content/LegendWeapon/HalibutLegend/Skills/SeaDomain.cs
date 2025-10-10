@@ -449,7 +449,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             //平滑跟随玩家
             targetCenter = Owner.Center;
             float distance = Vector2.Distance(domainCenter, targetCenter);
-            
+
             //距离越远，缓动速度越快（避免玩家瞬移后领域跟不上）
             float dynamicSpeed = smoothLerpSpeed;
             if (distance > 500f) {
@@ -458,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             else if (distance > 200f) {
                 dynamicSpeed = 0.15f; //中距离
             }
-            
+
             domainCenter = Vector2.Lerp(domainCenter, targetCenter, dynamicSpeed / 2f);
 
             switch (currentState) {
@@ -510,7 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void UpdateDomainEffects() {
             effectUpdateTimer++;
-            
+
             var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
             foreach (var key in toRemove) {
                 enemyEffects.Remove(key);
@@ -528,7 +528,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     if (!enemyEffects.ContainsKey(i)) {
                         enemyEffects[i] = new WaterPressureEffect(i);
                     }
-                    
+
                     float npcRadius = (npc.width + npc.height) * 0.25f;
                     enemyEffects[i].Update(npc.Center, npcRadius);
 
@@ -536,13 +536,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                         if (!boundNPCs.Contains(i)) {
                             boundNPCs.Add(i);
                         }
-                        
+
                         float dragStrength = 0.25f;
                         Vector2 desiredPos = domainCenter + (npc.Center - domainCenter).SafeNormalize(Vector2.Zero) * Math.Min(dist, maxDomainRadius * 0.8f);
                         Vector2 dragForce = (desiredPos - npc.Center) * dragStrength;
                         npc.velocity += dragForce;
                         Lighting.AddLight(npc.Center, TorchID.Blue);
-                        
+
                         if (dist > maxDomainRadius * 0.9f) {
                             Vector2 pullBack = (domainCenter - npc.Center).SafeNormalize(Vector2.Zero) * 5f;
                             npc.velocity += pullBack;

@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             timeClones = new List<InfiniteTimeClone>();
             restartFlashes = new List<RestartFlashEffect>();
             fishSwarms = new List<InfiniteFishBoid>();
-            
+
             //播放开场音效
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 1.2f, Pitch = -0.3f }, Owner.Center);
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 1.0f }, Owner.Center);
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private void SpawnRestartFlash() {
             restartFlashes.Add(new RestartFlashEffect(Owner.Center));
-            
+
             //播放重启音效
             SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.4f, Pitch = 0.3f }, Owner.Center);
         }
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void SpawnFish() {
             Vector2 spawnPos;
             float side = Main.rand.NextFloat(4f);
-            
+
             if (side < 1f) {
                 spawnPos = Owner.Center + new Vector2(Main.rand.NextFloat(-500, 500), -700);
             }
@@ -346,7 +346,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Vector2 direction = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 backDir = -direction;
             Vector2 perp = direction.RotatedBy(MathHelper.PiOver2);
-            
+
             int cannonCount = 7;
             float arc = MathHelper.ToRadians(70f);
 
@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (skillTimer == TotalDuration) {
                 //最终爆发
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f }, Owner.Center);
-                
+
                 for (int i = 0; i < 150; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 pos = Owner.Center + angle.ToRotationVector2() * Main.rand.NextFloat(200f);
@@ -505,9 +505,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             for (int i = 0; i < 3; i++) {
                 float layerScale = scale * (1f + i * 0.3f);
                 float layerAlpha = restartGlowIntensity * (1f - i * 0.3f);
-                Main.spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, 
+                Main.spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null,
                     glowColor * layerAlpha,
-                    pulsePhase + i * MathHelper.PiOver2, bloomTex.Size() / 2f, layerScale, 
+                    pulsePhase + i * MathHelper.PiOver2, bloomTex.Size() / 2f, layerScale,
                     SpriteEffects.None, 0f);
             }
         }
@@ -523,7 +523,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float MaxLife;
         public PlayerSnapshot Snapshot;
         public readonly List<Vector2> TrailPositions = new();
-        
+
         private const int MaxTrailLength = 35;
         private float spiralAngle;
         private float timeWarpFactor;
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         public void Update(Vector2 center) {
             Life++;
-            
+
             float progress = Life / MaxLife;
 
             //三阶段运动
@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public float Life;
         public float MaxLife;
         public readonly List<Vector2> TrailPositions = new();
-        
+
         private const int MaxTrailLength = 15;
         private float spiralAngle;
 
