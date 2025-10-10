@@ -34,14 +34,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         // 九只奈落之眼
         private readonly List<SeaEyeButton> eyes = [];
+        private readonly List<SeaEyeButton> activationSequence = []; // 按激活顺序排列
         private const int MaxEyes = 9;
         private const float EyeOrbitRadius = 75f; // 眼睛轨道半径
 
         // 大比目鱼中心图标
-        private Vector2 halibutCenter;
+        internal Vector2 halibutCenter;
         private const float HalibutSize = 45f;
         private float halibutRotation = 0f;
         private float halibutPulse = 0f;
+        private readonly List<HalibutPulseEffect> halibutPulses = [];
 
         // 圆环效果
         private readonly List<DomainRing> rings = [];
@@ -59,10 +61,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float contentFadeProgress = 0f;
         private const float ContentFadeDelay = 0.4f; // 内容在展开40%后开始淡入
 
+        // 激活动画（眼睛飞向中心并放大）
+        private readonly List<EyeActivationAnimation> activationAnimations = [];
+
         /// <summary>
         /// 获取当前激活的眼睛数量（即领域层数）
         /// </summary>
-        public int ActiveEyeCount => eyes.FindAll(e => e.IsActive).Count;
+        public int ActiveEyeCount => activationSequence.Count;
 
         /// <summary>
         /// 是否应该显示面板
@@ -70,9 +75,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public bool ShouldShow => HalibutUIPanel.Instance.Sengs >= 1f;
 
         public DomainUI() {
-            // 初始化九只眼睛
             for (int i = 0; i < MaxEyes; i++) {
-                float angle = (i / (float)MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2; // 从顶部开始
+                float angle = (i / (float)MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
                 eyes.Add(new SeaEyeButton(i, angle));
             }
         }
@@ -97,8 +101,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 计算锚点位置（动态跟随SkillTooltipPanel）
             Vector2 mainPanelPos = HalibutUIPanel.Instance.DrawPosition;
             Vector2 mainPanelSize = HalibutUIPanel.Instance.Size;
-
-            // 基础锚点：主面板右侧中心
             Vector2 baseAnchor = mainPanelPos + new Vector2(mainPanelSize.X, mainPanelSize.Y / 2);
 
             // 如果SkillTooltipPanel正在显示，锚点需要右移
@@ -136,7 +138,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18); // -6是为了与前面的面板重叠
             Size = new Vector2(currentWidth, PanelHeight);
 
-            if (expandProgress < 0.01f) return; // 完全收起时不更新
+            if (expandProgress < 0.01f) {
+                return; // 完全收起时不更新
+            }
 
             // 更新中心位置（相对于当前实际显示宽度的中心）
             // currentWidth是动画宽度，但实际显示区域是从DrawPosition.X开始的revealWidth
@@ -144,10 +148,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             halibutCenter = DrawPosition + new Vector2(revealWidth / 2, PanelHeight / 2);
 
             // 检测面板悬停
-            Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y,
-                (int)Size.X, (int)Size.Y);
+            Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Size.X, (int)Size.Y);
             hoveringPanel = panelRect.Contains(Main.MouseScreen.ToPoint());
-
             if (hoveringPanel) {
                 player.mouseInterface = true;
             }
@@ -170,18 +172,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             hoveredEye = null;
             foreach (var eye in eyes) {
                 eye.Update(halibutCenter, EyeOrbitRadius * easedProgress, easedProgress);
-
                 if (eye.IsHovered && hoveringPanel) {
                     hoveredEye = eye;
                 }
-
-                // 处理点击
                 if (eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
-                    eye.Toggle();
-                    SoundEngine.PlaySound(SoundID.MenuTick);
-
-                    // 生成粒子效果
-                    SpawnEyeToggleParticles(eye);
+                    HandleEyeToggle(eye);
                 }
             }
 
@@ -214,6 +209,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     SpawnAmbientParticle();
                 }
             }
+
+            for (int i = activationAnimations.Count - 1; i >= 0; i--) {
+                activationAnimations[i].Update(halibutCenter);
+                if (activationAnimations[i].Finished) {
+                    halibutPulses.Add(new HalibutPulseEffect(halibutCenter));
+                    activationAnimations.RemoveAt(i);
+                }
+            }
+
+            for (int i = halibutPulses.Count - 1; i >= 0; i--) {
+                halibutPulses[i].Update();
+                if (halibutPulses[i].Finished) {
+                    halibutPulses.RemoveAt(i);
+                }
+            }
+        }
+
+        private void HandleEyeToggle(SeaEyeButton eye) {
+            bool wasActive = eye.IsActive;
+            eye.Toggle();
+            SoundEngine.PlaySound(SoundID.MenuTick);
+            if (!wasActive && eye.IsActive) {
+                if (!activationSequence.Contains(eye)) {
+                    activationSequence.Add(eye);
+                    eye.LayerNumber = activationSequence.Count;
+                }
+                activationAnimations.Add(new EyeActivationAnimation(eye.Position));
+                SpawnEyeToggleParticles(eye, true);
+            }
+            else if (wasActive && !eye.IsActive) {
+                activationSequence.Remove(eye);
+                RecalculateLayerNumbers();
+                SpawnEyeToggleParticles(eye, false);
+            }
+        }
+
+        private void RecalculateLayerNumbers() {
+            for (int i = 0; i < activationSequence.Count; i++) {
+                activationSequence[i].LayerNumber = i + 1;
+            }
         }
 
         private void UpdateRings(int targetCount) {
@@ -230,11 +265,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void SpawnEyeToggleParticles(SeaEyeButton eye) {
+        private void SpawnEyeToggleParticles(SeaEyeButton eye, bool activating) {
             for (int i = 0; i < 12; i++) {
                 float angle = (i / 12f) * MathHelper.TwoPi;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
-                Color color = eye.IsActive ? new Color(100, 220, 255) : new Color(80, 80, 100);
+                Color color = activating ? new Color(100, 220, 255) : new Color(80, 80, 100);
                 particles.Add(new EyeParticle(eye.Position, velocity, color));
             }
         }
@@ -248,42 +283,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (expandProgress < 0.01f) return; // 完全收起时不绘制
-
-            float alpha = Math.Min(expandProgress * 2f, 1f); // 前50%快速淡入
-
-            // 绘制面板背景（使用TooltipPanel纹理，从右到左展开）
+            if (expandProgress < 0.01f) {
+                return;
+            }
+            float alpha = Math.Min(expandProgress * 2f, 1f);
             DrawPanel(spriteBatch, alpha);
-
-            // 绘制圆环（在所有内容下方）
             foreach (var ring in rings) {
                 ring.Draw(spriteBatch, alpha);
             }
-
-            // 绘制连接线（从眼睛到中心）
             DrawConnectionLines(spriteBatch, alpha);
-
-            // 绘制粒子
             foreach (var particle in particles) {
                 particle.Draw(spriteBatch, alpha);
             }
-
-            // 绘制大比目鱼
+            foreach (var pulse in halibutPulses) {
+                pulse.Draw(spriteBatch, alpha);
+            }
             DrawHalibut(spriteBatch, alpha);
-
-            // 绘制眼睛
             foreach (var eye in eyes) {
                 eye.Draw(spriteBatch, alpha);
             }
-
-            // 绘制悬停提示
-            if (hoveredEye != null && expandProgress >= 1f) {
-                DrawEyeTooltip(spriteBatch, hoveredEye, alpha);
+            foreach (var anim in activationAnimations) {
+                anim.Draw(spriteBatch, alpha);
             }
-
-            // 绘制顶部标题
             if (expandProgress > 0.8f) {
                 DrawTitle(spriteBatch, alpha);
+            }
+            if (hoveredEye != null && expandProgress >= 0.4f) {
+                DrawEyeTooltip(spriteBatch, hoveredEye, alpha);
             }
         }
 
@@ -337,139 +363,217 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             float length = Vector2.Distance(start, end);
-
-            // 主光线
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color,
-                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
-
-            // 外层柔和光晕
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color * 0.5f,
-                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness * 2f), SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color * 0.5f, MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness * 2f), SpriteEffects.None, 0);
         }
 
         private void DrawConnectionLines(SpriteBatch spriteBatch, float alpha) {
-            if (ActiveEyeCount == 0 || expandProgress < 0.5f) return;
-
+            if (ActiveEyeCount == 0 || expandProgress < 0.5f) {
+                return;
+            }
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-
-            foreach (var eye in eyes) {
-                if (!eye.IsActive) continue;
-
+            foreach (var eye in activationSequence) {
+                if (!eye.IsActive) {
+                    continue;
+                }
                 Vector2 start = halibutCenter;
                 Vector2 end = eye.Position;
                 Vector2 diff = end - start;
                 float length = diff.Length();
                 float rotation = diff.ToRotation();
-
-                // 计算连接线的波动
                 float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + eye.Index * 0.5f) * 1.5f;
-
-                // 绘制发光连接线
-                Color lineColor = Color.Lerp(new Color(80, 180, 255), new Color(120, 220, 255),
-                    (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + eye.Index) * 0.5f + 0.5f);
+                Color lineColor = Color.Lerp(new Color(80, 180, 255), new Color(120, 220, 255), (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + eye.Index) * 0.5f + 0.5f);
                 lineColor *= alpha * 0.35f * expandProgress;
-
-                spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1),
-                    lineColor, rotation, Vector2.Zero, new Vector2(length, 1.5f + wave), SpriteEffects.None, 0f);
+                spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), lineColor, rotation, Vector2.Zero, new Vector2(length, 1.5f + wave), SpriteEffects.None, 0f);
             }
         }
 
         private void DrawHalibut(SpriteBatch spriteBatch, float alpha) {
-            if (contentFadeProgress < 0.01f) return; // 内容未开始淡入时不绘制
-
+            if (contentFadeProgress < 0.01f) {
+                return;
+            }
             Texture2D halibutTex = TextureAssets.Item[HalibutOverride.ID].Value;
-
             float halibutAlpha = contentFadeProgress * alpha;
-
-            // 绘制发光光环（2层）
             for (int i = 0; i < 2; i++) {
                 float glowScale = (HalibutSize / halibutTex.Width) * (1.2f + i * 0.15f) * halibutPulse;
                 Color glowColor = Color.Lerp(new Color(100, 200, 255), new Color(80, 160, 240), i / 2f);
                 glowColor *= halibutAlpha * (0.3f - i * 0.1f);
-
-                spriteBatch.Draw(halibutTex, halibutCenter, null,
-                    glowColor, halibutRotation + i * 0.1f, halibutTex.Size() / 2, glowScale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(halibutTex, halibutCenter, null, glowColor, halibutRotation + i * 0.1f, halibutTex.Size() / 2, glowScale, SpriteEffects.None, 0f);
             }
-
-            // 绘制主体
             float mainScale = (HalibutSize / halibutTex.Width) * halibutPulse;
             Color mainColor = Color.White * halibutAlpha;
-            spriteBatch.Draw(halibutTex, halibutCenter, null,
-                mainColor, halibutRotation, halibutTex.Size() / 2, mainScale, SpriteEffects.None, 0f);
-
-            // 绘制层数文字
+            spriteBatch.Draw(halibutTex, halibutCenter, null, mainColor, halibutRotation, halibutTex.Size() / 2, mainScale, SpriteEffects.None, 0f);
             if (ActiveEyeCount > 0 && expandProgress >= 1f) {
                 string layerText = $"{ActiveEyeCount}";
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(layerText);
                 Vector2 textPos = halibutCenter - textSize / 2 + new Vector2(0, HalibutSize * 0.55f);
-
-                // 文字发光
                 for (int i = 0; i < 4; i++) {
                     float angle = MathHelper.TwoPi * i / 4;
                     Vector2 offset = angle.ToRotationVector2() * 1.5f;
-                    Utils.DrawBorderString(spriteBatch, layerText, textPos + offset,
-                        Color.Gold * halibutAlpha * 0.6f, 1f);
+                    Utils.DrawBorderString(spriteBatch, layerText, textPos + offset, Color.Gold * halibutAlpha * 0.6f, 1f);
                 }
-
                 Utils.DrawBorderString(spriteBatch, layerText, textPos, Color.White * halibutAlpha, 1f);
             }
         }
 
         private void DrawTitle(SpriteBatch spriteBatch, float alpha) {
-            if (contentFadeProgress < 0.5f) return; // 内容淡入50%后才显示标题
-
+            if (contentFadeProgress < 0.5f) {
+                return;
+            }
             float titleAlpha = contentFadeProgress * alpha;
             string title = "海域领域";
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title);
             Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 4);
-
-            // 标题发光
             Color titleGlow = Color.Gold * titleAlpha * 0.5f;
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4;
                 Vector2 offset = angle.ToRotationVector2() * 1.2f;
                 Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlow, 0.85f);
             }
-
             Color titleColor = Color.Lerp(Color.Gold, Color.White, 0.3f) * titleAlpha;
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor, 0.85f);
         }
 
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
-            string text = eye.IsActive ? $"第 {eye.Index + 1} 层" : $"第 {eye.Index + 1} 层";
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text);
-            Vector2 textPos = eye.Position + new Vector2(-textSize.X / 2, -55);
-
+            int displayLayer;
+            if (eye.IsActive) {
+                displayLayer = eye.LayerNumber ?? 0;
+            }
+            else {
+                displayLayer = ActiveEyeCount + 1;
+            }
+            if (displayLayer <= 0) {
+                displayLayer = 1;
+            }
+            string layerChinese = ChineseNumeral(displayLayer);
+            string title = $"第 {layerChinese} 层";
+            string desc = DomainEyeDescriptions.GetDescription(displayLayer);
+            float tooltipAlpha = alpha * 0.95f;
+            Vector2 panelSize = new Vector2(160, 110);
+            Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
+            if (basePos.X + panelSize.X > Main.screenWidth - 20) {
+                basePos.X = Main.screenWidth - panelSize.X - 20;
+            }
+            if (basePos.Y < 20) {
+                basePos.Y = 20;
+            }
+            Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
             Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Color shadow = Color.Black * (tooltipAlpha * 0.5f);
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(3, 3);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), shadow);
+            float openProg = Math.Min(1f, contentFadeProgress * 1.3f);
+            Color bgColor = new Color(25, 35, 55) * (tooltipAlpha * 0.92f);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgColor);
+            Color borderGlow = Color.CornflowerBlue * (tooltipAlpha * 0.6f * openProg);
+            DrawFancyBorder(spriteBatch, panelRect, borderGlow, tooltipAlpha);
+            Vector2 titlePos = basePos + new Vector2(10, 8);
+            Color titleGlow = Color.Gold * (tooltipAlpha * 0.55f);
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4;
+                Vector2 offset = ang.ToRotationVector2() * 1.25f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlow * 0.6f, 0.85f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, 0.85f);
+            Vector2 dividerStart = titlePos + new Vector2(0, 24);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - 20, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.8f, Color.Gold * tooltipAlpha * 0.1f, 1.2f);
+            Vector2 textPos = dividerStart + new Vector2(0, 8);
+            int wrapWidth = (int)panelSize.X - 20;
+            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
+            int drawn = 0;
+            for (int i = 0; i < lines.Length; i++) {
+                if (string.IsNullOrWhiteSpace(lines[i])) {
+                    continue;
+                }
+                string line = lines[i].TrimEnd('-', ' ');
+                Vector2 lp = textPos + new Vector2(4, drawn * 18);
+                if (lp.Y + 16 > panelRect.Bottom - 8) {
+                    break;
+                }
+                Utils.DrawBorderString(spriteBatch, line, lp + new Vector2(1, 1), Color.Black * tooltipAlpha * 0.5f, 0.7f);
+                Utils.DrawBorderString(spriteBatch, line, lp, Color.White * tooltipAlpha, 0.7f);
+                drawn++;
+            }
+            float starTime = Main.GlobalTimeWrappedHourly * 3f;
+            Vector2 star1 = new Vector2(panelRect.Right - 14, panelRect.Y + 12);
+            float s1Alpha = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * tooltipAlpha;
+            DrawStar(spriteBatch, star1, 4f, Color.Gold * s1Alpha);
+            Vector2 star2 = new Vector2(panelRect.Right - 20, panelRect.Bottom - 16);
+            float s2Alpha = ((float)Math.Sin(starTime + MathHelper.Pi) * 0.5f + 0.5f) * tooltipAlpha;
+            DrawStar(spriteBatch, star2, 3f, Color.Gold * s2Alpha);
+        }
 
-            // 背景
-            Rectangle bgRect = new Rectangle((int)textPos.X - 3, (int)textPos.Y - 1,
-                (int)textSize.X + 6, (int)textSize.Y + 2);
-            spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(0, 0, 0) * (alpha * 0.75f));
+        private static string ChineseNumeral(int i) {
+            return i switch {
+                1 => "一",
+                2 => "二",
+                3 => "三",
+                4 => "四",
+                5 => "五",
+                6 => "六",
+                7 => "七",
+                8 => "八",
+                9 => "九",
+                10 => "十",
+                _ => i.ToString()
+            };
+        }
 
-            // 边框
-            Color borderColor = new Color(100, 200, 255) * alpha;
-            // 上边框
-            spriteBatch.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, bgRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderColor);
-            // 下边框
-            spriteBatch.Draw(pixel, new Rectangle(bgRect.X, bgRect.Bottom - 1, bgRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderColor);
-            // 左边框
-            spriteBatch.Draw(pixel, new Rectangle(bgRect.X, bgRect.Y, 1, bgRect.Height),
-                new Rectangle(0, 0, 1, 1), borderColor);
-            // 右边框
-            spriteBatch.Draw(pixel, new Rectangle(bgRect.Right - 1, bgRect.Y, 1, bgRect.Height),
-                new Rectangle(0, 0, 1, 1), borderColor);
+        private void DrawFancyBorder(SpriteBatch spriteBatch, Rectangle rect, Color glow, float alpha) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Rectangle top = new Rectangle(rect.X, rect.Y, rect.Width, 1);
+            Rectangle bottom = new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1);
+            Rectangle left = new Rectangle(rect.X, rect.Y, 1, rect.Height);
+            Rectangle right = new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height);
+            spriteBatch.Draw(pixel, top, new Rectangle(0, 0, 1, 1), glow);
+            spriteBatch.Draw(pixel, bottom, new Rectangle(0, 0, 1, 1), glow * 0.8f);
+            spriteBatch.Draw(pixel, left, new Rectangle(0, 0, 1, 1), glow * 0.9f);
+            spriteBatch.Draw(pixel, right, new Rectangle(0, 0, 1, 1), glow * 0.9f);
+            Color corner = Color.White * (alpha * 0.6f);
+            DrawCorner(spriteBatch, new Vector2(rect.Left, rect.Top), corner, 0f);
+            DrawCorner(spriteBatch, new Vector2(rect.Right, rect.Top), corner, MathHelper.PiOver2);
+            DrawCorner(spriteBatch, new Vector2(rect.Right, rect.Bottom), corner, MathHelper.Pi);
+            DrawCorner(spriteBatch, new Vector2(rect.Left, rect.Bottom), corner, MathHelper.Pi + MathHelper.PiOver2);
+        }
 
-            // 文字
-            Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.7f);
+        private void DrawCorner(SpriteBatch spriteBatch, Vector2 pos, Color color, float rot) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            for (int i = 0; i < 3; i++) {
+                float len = 6 - i * 2;
+                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * (0.9f - i * 0.3f), rot, new Vector2(0, 0.5f), new Vector2(len, 1f), SpriteEffects.None, 0f);
+            }
+        }
+
+        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Vector2 edge = end - start;
+            float length = edge.Length();
+            if (length < 1f) {
+                return;
+            }
+            edge.Normalize();
+            float rotation = (float)Math.Atan2(edge.Y, edge.X);
+            int segments = Math.Max(1, (int)(length / 10f));
+            for (int i = 0; i < segments; i++) {
+                float t = (float)i / segments;
+                Vector2 segPos = start + edge * (length * t);
+                float segLength = length / segments;
+                Color color = Color.Lerp(startColor, endColor, t);
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+            }
+        }
+
+        private void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
+            spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
         }
     }
 
-    /// <summary>
-    /// 奈落之眼按钮
-    /// </summary>
     internal class SeaEyeButton
     {
         public int Index;
@@ -477,6 +581,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public bool IsActive;
         public Vector2 Position;
         public bool IsHovered;
+        public int? LayerNumber; // 激活层数（激活顺序）
 
         private float hoverScale = 1f;
         private float glowIntensity = 0f;
@@ -487,11 +592,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Index = index;
             Angle = angle;
             IsActive = false;
+            LayerNumber = null;
         }
 
         public void Toggle() {
             IsActive = !IsActive;
-            blinkTimer = 15f; // 眨眼动画
+            blinkTimer = 15f;
+            if (!IsActive) {
+                LayerNumber = null;
+            }
         }
 
         public void Update(Vector2 center, float orbitRadius, float panelAlpha) {
@@ -500,8 +609,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Position = center + Angle.ToRotationVector2() * (orbitRadius + wave);
 
             // 检测悬停
-            Rectangle hitbox = new Rectangle((int)(Position.X - EyeSize / 2), (int)(Position.Y - EyeSize / 2),
-                (int)EyeSize, (int)EyeSize);
+            Rectangle hitbox = new Rectangle((int)(Position.X - EyeSize / 2), (int)(Position.Y - EyeSize / 2), (int)EyeSize, (int)EyeSize);
             IsHovered = hitbox.Contains(Main.MouseScreen.ToPoint()) && panelAlpha >= 1f;
 
             // 悬停缩放动画
@@ -510,7 +618,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             // 发光强度
             float targetGlow = IsActive ? 1f : 0.3f;
-            if (IsHovered) targetGlow += 0.3f;
+            if (IsHovered) {
+                targetGlow += 0.3f;
+            }
             glowIntensity = MathHelper.Lerp(glowIntensity, targetGlow, 0.1f);
 
             // 眨眼动画
@@ -520,36 +630,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public void Draw(SpriteBatch spriteBatch, float alpha) {
-            if (SeaEye == null) return;
-
-            // 计算源矩形（第一帧：闭眼，第二帧：睁眼）
+            if (SeaEye == null) {
+                return;
+            }
             int frameHeight = SeaEye.Height / 2;
             bool shouldBlink = blinkTimer > 0f && blinkTimer % 10 < 5;
             int frame = (IsActive && !shouldBlink) ? 1 : 0;
             Rectangle sourceRect = new Rectangle(0, frame * frameHeight, SeaEye.Width, frameHeight);
-
             Vector2 drawPos = Position;
             Vector2 origin = new Vector2(SeaEye.Width / 2, frameHeight / 2);
             float scale = (EyeSize / SeaEye.Width) * hoverScale;
-
-            // 绘制外圈发光（仅激活时）
             if (IsActive) {
                 Color glowColor = new Color(100, 220, 255) * (alpha * glowIntensity * 0.5f);
                 float glowPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + Index) * 0.3f + 0.7f;
-                spriteBatch.Draw(SeaEye, drawPos, sourceRect, glowColor * glowPulse,
-                    0f, origin, scale * 1.25f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(SeaEye, drawPos, sourceRect, glowColor * glowPulse, 0f, origin, scale * 1.25f, SpriteEffects.None, 0f);
             }
-
-            // 绘制主体
             Color eyeColor = IsActive ? Color.White : new Color(100, 100, 120);
             eyeColor *= alpha * glowIntensity;
             spriteBatch.Draw(SeaEye, drawPos, sourceRect, eyeColor, 0f, origin, scale, SpriteEffects.None, 0f);
         }
     }
 
-    /// <summary>
-    /// 领域圆环效果
-    /// </summary>
     internal class DomainRing
     {
         public Vector2 Center;
@@ -558,11 +659,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public int LayerIndex;
         public float Alpha;
         public bool ShouldRemove;
-
         private float rotation = 0f;
         private float spawnProgress = 0f;
         private const float SpawnDuration = 30f;
-
         public DomainRing(Vector2 center, float radius, int index) {
             Center = center;
             TargetRadius = radius;
@@ -571,13 +670,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Alpha = 0f;
             ShouldRemove = false;
         }
-
         public void Update() {
-            // 生成动画
             if (spawnProgress < 1f) {
                 spawnProgress += 1f / SpawnDuration;
                 spawnProgress = Math.Clamp(spawnProgress, 0f, 1f);
-
                 float easedProgress = EaseOutCubic(spawnProgress);
                 CurrentRadius = TargetRadius * easedProgress;
                 Alpha = easedProgress;
@@ -586,54 +682,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 CurrentRadius = TargetRadius;
                 Alpha = 1f;
             }
-
-            // 旋转
             rotation += 0.005f * (1f + LayerIndex * 0.1f);
         }
-
         private static float EaseOutCubic(float t) {
             return 1f - (float)Math.Pow(1f - t, 3);
         }
-
         public void Draw(SpriteBatch spriteBatch, float panelAlpha) {
-            if (Alpha < 0.01f) return;
-
+            if (Alpha < 0.01f) {
+                return;
+            }
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             int segments = 48;
             float angleStep = MathHelper.TwoPi / segments;
-
-            // 颜色渐变（从内到外）
             float colorProgress = LayerIndex / 9f;
             Color baseColor = Color.Lerp(new Color(80, 180, 255), new Color(120, 220, 255), colorProgress);
-
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep + rotation;
                 float angle2 = (i + 1) * angleStep + rotation;
-
-                // 波动效果
                 float wave1 = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + angle1 * 2f) * 2f;
                 float wave2 = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + angle2 * 2f) * 2f;
-
                 Vector2 p1 = Center + angle1.ToRotationVector2() * (CurrentRadius + wave1);
                 Vector2 p2 = Center + angle2.ToRotationVector2() * (CurrentRadius + wave2);
-
                 Vector2 diff = p2 - p1;
                 float length = diff.Length();
                 float segRotation = diff.ToRotation();
-
-                // 亮度波动
                 float brightness = 0.6f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + angle1 * 3f) * 0.3f;
                 Color segColor = baseColor * brightness * Alpha * panelAlpha * 0.6f;
-
-                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1),
-                    segColor, segRotation, Vector2.Zero, new Vector2(length, 1.5f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), segColor, segRotation, Vector2.Zero, new Vector2(length, 1.5f), SpriteEffects.None, 0f);
             }
         }
     }
 
-    /// <summary>
-    /// 眼睛粒子效果
-    /// </summary>
     internal class EyeParticle
     {
         public Vector2 Position;
@@ -643,7 +722,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public float Scale;
         public float Rotation;
         public Color Color;
-
         public EyeParticle(Vector2 pos, Vector2 vel, Color color) {
             Position = pos;
             Velocity = vel;
@@ -653,23 +731,147 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Color = color;
         }
-
         public void Update() {
             Life++;
             Position += Velocity;
             Velocity *= 0.95f;
             Rotation += 0.05f;
         }
-
         public void Draw(SpriteBatch spriteBatch, float panelAlpha) {
             float progress = Life / MaxLife;
             float alpha = (1f - progress) * panelAlpha * 0.7f;
-
             Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
             Color drawColor = Color * alpha;
+            spriteBatch.Draw(tex, Position, null, drawColor, Rotation, tex.Size() / 2, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
+        }
+    }
 
-            spriteBatch.Draw(tex, Position, null, drawColor, Rotation,
-                tex.Size() / 2, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
+    internal class EyeActivationAnimation
+    {
+        private Vector2 startPos;
+        private float progress;
+        private const float Duration = 25f;
+        public bool Finished { get; private set; }
+        public EyeActivationAnimation(Vector2 start) {
+            startPos = start;
+            progress = 0f;
+            Finished = false;
+        }
+        public void Update(Vector2 target) {
+            if (Finished) {
+                return;
+            }
+            progress += 1f / Duration;
+            progress = Math.Clamp(progress, 0f, 1f);
+            if (progress >= 1f) {
+                Finished = true;
+            }
+        }
+        public void Draw(SpriteBatch spriteBatch, float alpha) {
+            if (Finished) {
+                return;
+            }
+            if (SeaEye == null) {
+                return;
+            }
+            Texture2D tex = SeaEye;
+            int frameHeight = tex.Height / 2;
+            Rectangle sourceRect = new Rectangle(0, frameHeight, tex.Width, frameHeight); // 使用睁眼帧
+            Vector2 center = DomainUI.Instance.halibutCenter;
+            Vector2 pos = Vector2.Lerp(startPos, center, EaseOut(progress));
+            float scale = MathHelper.Lerp(0.8f, 1.8f, EaseOutBack(progress));
+            float fade = 1f - Math.Abs(progress - 0.5f) * 2f; // 中间最亮
+            Color color = Color.White * (alpha * fade);
+            Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
+            spriteBatch.Draw(tex, pos, sourceRect, color, 0f, origin, scale * 0.4f, SpriteEffects.None, 0f);
+            Color ringColor = new Color(120, 220, 255) * (alpha * fade * 0.5f);
+            DrawPulseRing(spriteBatch, pos, scale * 22f, ringColor, 2f);
+        }
+        private static float EaseOut(float t) {
+            return 1f - (float)Math.Pow(1f - t, 3f);
+        }
+        private static float EaseOutBack(float t) {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
+        }
+        private void DrawPulseRing(SpriteBatch spriteBatch, Vector2 center, float radius, Color color, float thickness) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            int segs = 40;
+            float step = MathHelper.TwoPi / segs;
+            for (int i = 0; i < segs; i++) {
+                float a1 = i * step;
+                float a2 = (i + 1) * step;
+                Vector2 p1 = center + a1.ToRotationVector2() * radius;
+                Vector2 p2 = center + a2.ToRotationVector2() * radius;
+                Vector2 diff = p2 - p1;
+                float len = diff.Length();
+                float rot = diff.ToRotation();
+                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), color, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
+            }
+        }
+    }
+
+    internal class HalibutPulseEffect
+    {
+        private float progress;
+        private const float Duration = 35f;
+        private Vector2 center;
+        public bool Finished => progress >= 1f;
+        public HalibutPulseEffect(Vector2 c) {
+            center = c;
+            progress = 0f;
+        }
+        public void Update() {
+            if (Finished) {
+                return;
+            }
+            progress += 1f / Duration;
+            progress = Math.Clamp(progress, 0f, 1f);
+        }
+        public void Draw(SpriteBatch spriteBatch, float alpha) {
+            if (Finished) {
+                return;
+            }
+            float eased = 1f - (float)Math.Pow(1f - progress, 3f);
+            float radius = MathHelper.Lerp(18f, 80f, eased);
+            float fade = 1f - eased;
+            Color col = new Color(110, 210, 255) * (alpha * fade * 0.6f);
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            int segs = 64;
+            float step = MathHelper.TwoPi / segs;
+            for (int i = 0; i < segs; i++) {
+                float a1 = i * step;
+                float a2 = (i + 1) * step;
+                Vector2 p1 = center + a1.ToRotationVector2() * radius;
+                Vector2 p2 = center + a2.ToRotationVector2() * radius;
+                Vector2 diff = p2 - p1;
+                float len = diff.Length();
+                float rot = diff.ToRotation();
+                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), col, rot, Vector2.Zero, new Vector2(len, 2f), SpriteEffects.None, 0f);
+            }
+        }
+    }
+
+    internal static class DomainEyeDescriptions
+    {
+        private static readonly Dictionary<int, string> descriptions = new Dictionary<int, string> {
+            { 1, "初启领域之眼，微弱的潮汐感开始共鸣" },
+            { 2, "双目同开，水压在周遭缓慢聚集，力量渐显" },
+            { 3, "三重视界锁定海流，领域开始稳定成型" },
+            { 4, "第四层共鸣放大，涌动的寒意悄然扩散" },
+            { 5, "五层交织，环形水旋于脚下成形，给予守护" },
+            { 6, "第六层脉冲涌现，能量脉络变得清晰可辨" },
+            { 7, "七眼同辉，潮域对外界的侵蚀性显著增强" },
+            { 8, "第八层使水压几近凝实，力量几乎到达巅峰" },
+            { 9, "九层极境——海渊之形完全显现，伟力贯通" },
+            { 10, "十层神之境界" }
+        };
+        public static string GetDescription(int layer) {
+            if (descriptions.TryGetValue(layer, out string value)) {
+                return value;
+            }
+            return "Error";
         }
     }
 }

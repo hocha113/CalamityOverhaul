@@ -41,30 +41,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static int SkillID;
         #endregion
         /// <summary>
-        /// 获得成长等级
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public static int GetLevel(Item item) {
-            if (item.type != ModContent.ItemType<HalibutCannon>()) {
-                return 0;
-            }
-            CWRItem cwrItem = item.CWR();
-            if (cwrItem == null) {
-                return 0;
-            }
-            if (cwrItem.LegendData == null) {
-                return 0;
-            }
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
-            return cwrItem.LegendData.Level;
-        }
-        /// <summary>
         /// 获取时期对应的伤害
         /// </summary>
-        public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
+        public static int GetOnDamage(Item item) => DamageDictionary[HalibutData.GetLevel(item)];
         /// <summary>
         /// 计算伤害比例
         /// </summary>
@@ -76,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 获取时期对应的额外暴击
         /// </summary>
-        public static int GetOnCrit(Item item) => SetLevelCritDictionary[GetLevel(item)];
+        public static int GetOnCrit(Item item) => SetLevelCritDictionary[HalibutData.GetLevel(item)];
 
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
@@ -150,14 +129,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
+            item.UseSound = SoundID.Item38;
+            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+                bool? result = fishSkill.CanUseItem(item, player);
+                if (result.HasValue) {
+                    return result.Value;
+                }
+            }
             return true;
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
+            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+                bool? result = fishSkill.AltFunctionUse(item, player);
+                if (result.HasValue) {
+                    return result.Value;
+                }
+            }
             return false;
         }
 
         public override bool? UseItem(Item item, Player player) {
+            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+                bool? result = fishSkill.UseItem(item, player);
+                if (result.HasValue) {
+                    return result.Value;
+                }
+            }
             return null;
         }
 
@@ -165,16 +163,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 
             var hp = player.GetOverride<HalibutPlayer>();
+            //记录克隆需要的射击事件
+            if (hp.CloneFishActive) {
+                hp.RegisterShoot(type, velocity, damage, knockback, item.type);
+            }
+
+            if (FishSkill.IDToInstance.TryGetValue(SkillID, out var fishSkill)) {
+                bool? result = fishSkill.ShootAlt(item, player, source, position, velocity, type, damage, knockback);
+                if (result.HasValue) {
+                    return result.Value;
+                }
+            }
 
             if (player.altFunctionUse == 2) {
                 return false;//右键不触发普通攻击
             }
 
-            //普攻时尝试触发闪光技能
-            //if (SkillID == Sparkling.ID) {
-            //    hp.SparklingUseCounter++;
-            //    Sparkling.TryTriggerSparklingVolley(item, player, hp);
-            //}
+            if (fishSkill != null) {
+                bool? result = fishSkill.Shoot(item, player, source, position, velocity, type, damage, knockback);
+                if (result.HasValue) {
+                    return result.Value;
+                }
+            }
 
             int bulletAmt = Main.rand.Next(5, 8);
             for (int index = 0; index < bulletAmt; ++index) {
@@ -182,11 +192,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
                 int shot = Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
                 Main.projectile[shot].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
-            }
-
-            //记录克隆需要的射击事件
-            if (hp.CloneFishActive) {
-                hp.RegisterShoot(type, velocity, damage, knockback, item.type);
             }
 
             return false;

@@ -21,7 +21,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal const int DepartureDuration = 90;//离场动画时长
         internal static int shootDir;
         public override int UnlockFishID => ModContent.ItemType<SparklingEmpress>();
-        public override void Use(Item item, Player player) => TryTriggerSparklingVolley(item, player, player.GetOverride<HalibutPlayer>());
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            var hp = player.GetOverride<HalibutPlayer>();
+            hp.SparklingUseCounter++;
+            TryTriggerSparklingVolley(item, player, hp);
+            return null;
+        }
         internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
             if (hp.SparklingVolleyActive) return;
             if (hp.SparklingVolleyCooldown > 0) return;

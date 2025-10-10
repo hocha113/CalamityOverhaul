@@ -3,6 +3,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -17,6 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public readonly static Dictionary<Type, int> TypeToID = [];
         public readonly static Dictionary<Type, Texture2D> TypeToTex = [];
         public readonly static Dictionary<int, FishSkill> UnlockFishs = [];
+        public readonly static Dictionary<int, FishSkill> IDToInstance = [];
         public int ID => TypeToID[GetType()];
         public virtual string IconTexture => CWRConstant.UI + "Halibut/FishSkill/" + Name;
         public Texture2D Icon => TypeToTex[GetType()];
@@ -26,6 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public virtual int UnlockFishID => ItemID.None;
         protected override void VaultRegister() {
             TypeToID[GetType()] = Instances.Count;
+            IDToInstance[Instances.Count] = this;
             Instances.Add(this);
             if (!VaultUtils.isServer) {
                 TypeToTex[GetType()] = ModContent.Request<Texture2D>(IconTexture, AssetRequestMode.ImmediateLoad).Value;
@@ -46,6 +49,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public virtual void Use(Item item, Player player) {
 
+        }
+
+        public virtual bool? CanUseItem(Item item, Player player) {
+            return null;
+        }
+
+        public virtual bool? AltFunctionUse(Item item, Player player) {
+            return null;
+        }
+
+        public virtual bool? UseItem(Item item, Player player) {
+            return null;
+        }
+
+        public virtual bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return null;
+        }
+
+        public virtual bool? ShootAlt(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return null;
         }
     }
 }

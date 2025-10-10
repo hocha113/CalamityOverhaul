@@ -12,6 +12,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishSwarm : FishSkill
     {
         public override int UnlockFishID => ItemID.Bass;
+        public override bool? CanUseItem(Item item, Player player) {
+            if (player.altFunctionUse == 2) {
+                item.UseSound = null;
+                Use(item, player);
+                return false;
+            }
+            else {
+                ActivateFishConeSurge(player, player.To(Main.MouseWorld).UnitVector());
+                if (player.GetOverride<HalibutPlayer>().FishConeSurgeActive) {
+                    return false;
+                }
+            }
+            return null;
+        }
+        public override bool? AltFunctionUse(Item item, Player player) {
+            return true;
+        }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
@@ -78,7 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         public static void ActivateFishConeSurge(Player player, Vector2 attackDirection) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-
+            if (halibutPlayer.FishConeSurgeActive) {
+                return;
+            }
             //标记突袭激活
             halibutPlayer.FishConeSurgeActive = true;
 
@@ -290,6 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
             }
+            Owner.GetOverride<HalibutPlayer>().FishConeSurgeActive = false;
             Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
             Owner.GetOverride<HalibutPlayer>().FishSwarmTimer = 0;
         }
