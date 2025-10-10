@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -79,6 +80,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float angle = (i / (float)MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
                 eyes.Add(new SeaEyeButton(i, angle));
             }
+        }
+
+        public override void SaveUIData(TagCompound tag) {
+            // 保存激活的眼睛索引列表（按激活顺序）
+            List<int> activeEyeIndices = [];
+            foreach (var eye in activationSequence) {
+                if (eye.IsActive) {
+                    activeEyeIndices.Add(eye.Index);
+                }
+            }
+            tag["ActiveEyeIndices"] = activeEyeIndices;
+        }
+
+        public override void LoadUIData(TagCompound tag) {
+            // 读取激活的眼睛索引列表
+            if (!tag.TryGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
+                return;
+            }
+
+            // 清空当前激活序列
+            activationSequence.Clear();
+
+            // 重置所有眼睛状态
+            foreach (var eye in eyes) {
+                eye.IsActive = false;
+                eye.LayerNumber = null;
+            }
+
+            // 按保存的顺序重新激活眼睛
+            foreach (int index in activeIndices) {
+                if (index >= 0 && index < eyes.Count) {
+                    var eye = eyes[index];
+                    eye.IsActive = true;
+                    activationSequence.Add(eye);
+                    eye.LayerNumber = activationSequence.Count;
+                }
+            }
+
+            // 更新圆环
+            UpdateRings(activationSequence.Count);
+            lastActiveEyeCount = activationSequence.Count;
         }
 
         /// <summary>
@@ -224,6 +266,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (halibutPulses[i].Finished) {
                     halibutPulses.RemoveAt(i);
                 }
+            }
+
+            //同步HalibutPlayer
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.SeaDomainLayers = activationSequence.Count;
             }
         }
 
