@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            DomainUI.Instance.Draw(spriteBatch); // 先绘制领域UI（在最底层）
+            DomainUI.Instance.Draw(spriteBatch);
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
 
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 targetPos += new Vector2(Skillcon.Width / 2, Skillcon.Height / 10); //图标中心
             }
             else {
-                //如果不在可见范围，就飞向面板右侧（暗示有更多内容）
+                //如果不在可见范围，就飞往面板右侧（暗示有更多内容）
                 targetPos = DrawPosition + new Vector2(Size.X - 30, 30 + Skillcon.Height / 10);
             }
 
@@ -384,17 +384,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 slot.Draw(spriteBatch);
             }
 
-            //恢复正常绘制
+            //恢复裁剪矩形
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
 
             //绘制飞行粒子（在最上层）
             foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);
             }
 
+            //恢复RasterizerState
             rasterizer.ScissorTestEnable = false;
             Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了
             spriteBatch.End();

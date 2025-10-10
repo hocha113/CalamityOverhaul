@@ -13,7 +13,9 @@ using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAss
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 领域控制面板 - 从主面板上方滑出展开，控制海域领域的层数
+    /// 领域控制面板 - 从主面板右侧展开，与SkillTooltipPanel联动显示
+    /// 布局：主面板 | DomainUI（常规）
+    /// 布局：主面板 | SkillTooltipPanel | DomainUI（技能面板展开时）
     /// </summary>
     internal class DomainUI : UIHandle
     {
@@ -27,16 +29,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         // 面板尺寸（使用TooltipPanel的大小）
         private float PanelWidth => TooltipPanel.Width; // 214
         private float PanelHeight => TooltipPanel.Height; // 206
-        private Vector2 anchorPosition; // 锚点位置（主面板上方）
+        
+        // 位置相关
+        private Vector2 anchorPosition; // 锚点位置（动态计算，跟随SkillTooltipPanel）
+        private float currentWidth = 0f; // 当前宽度（用于从右到左展开动画）
+        private float targetWidth = 0f; // 目标宽度
+        private const float MinWidth = 8f; // 最小宽度（完全收起时）
         
         // 九只奈落之眼
         private readonly List<SeaEyeButton> eyes = [];
         private const int MaxEyes = 9;
-        private const float EyeOrbitRadius = 75f; // 眼睛轨道半径（缩小以适应面板）
+        private const float EyeOrbitRadius = 75f; // 眼睛轨道半径
         
         // 大比目鱼中心图标
         private Vector2 halibutCenter;
-        private const float HalibutSize = 45f; // 缩小以适应面板
+        private const float HalibutSize = 45f;
         private float halibutRotation = 0f;
         private float halibutPulse = 0f;
         
@@ -51,6 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         // 悬停和交互
         private bool hoveringPanel = false;
         private SeaEyeButton hoveredEye = null;
+        
+        // 内容淡入进度
+        private float contentFadeProgress = 0f;
+        private const float ContentFadeDelay = 0.4f; // 内容在展开40%后开始淡入
         
         /// <summary>
         /// 获取当前激活的眼睛数量（即领域层数）
@@ -92,13 +103,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         public override void Update()
         {
-            // 计算锚点位置（主面板上方，居中对齐）
+            // 计算锚点位置（动态跟随SkillTooltipPanel）
             Vector2 mainPanelPos = HalibutUIPanel.Instance.DrawPosition;
             Vector2 mainPanelSize = HalibutUIPanel.Instance.Size;
             
-            // 锚点在主面板上方，水平居中
-            float horizontalCenter = mainPanelPos.X + mainPanelSize.X / 2 - PanelWidth / 2;
-            anchorPosition = new Vector2(horizontalCenter, mainPanelPos.Y - PanelHeight - 8); // -8是间距
+            // 基础锚点：主面板右侧中心
+            Vector2 baseAnchor = mainPanelPos + new Vector2(mainPanelSize.X, mainPanelSize.Y / 2);
+            
+            // 如果SkillTooltipPanel正在显示，锚点需要右移
+            if (SkillTooltipPanel.Instance.IsShowing)
+            {
+                // 获取SkillTooltipPanel的实际宽度
+                float skillPanelWidth = SkillTooltipPanel.Instance.Size.X;
+                anchorPosition = baseAnchor + new Vector2(skillPanelWidth - 10, 0); // -10是为了与技能面板重叠
+            }
+            else
+            {
+                anchorPosition = baseAnchor;
+            }
             
             // 展开/收起动画
             if (ShouldShow)
@@ -121,15 +143,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 使用缓动函数
             float easedProgress = ShouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
             
-            // 从下往上滑出（Y轴移动）
-            float verticalOffset = (1f - easedProgress) * PanelHeight; // 完全收起时向下偏移整个面板高度
-            DrawPosition = anchorPosition + new Vector2(0, verticalOffset);
-            Size = new Vector2(PanelWidth, PanelHeight);
+            // 计算当前宽度（从右到左展开）
+            targetWidth = PanelWidth;
+            currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
+            
+            // 计算位置（从右向左滑出）
+            DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18); // -6是为了与前面的面板重叠
+            Size = new Vector2(currentWidth, PanelHeight);
             
             if (expandProgress < 0.01f) return; // 完全收起时不更新
             
-            // 更新中心位置（相对于面板中心）
-            halibutCenter = DrawPosition + Size / 2;
+            // 更新中心位置（相对于当前宽度的中心）
+            halibutCenter = DrawPosition + new Vector2(currentWidth / 2, PanelHeight / 2);
             
             // 检测面板悬停
             Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 
@@ -144,6 +169,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             // 更新大比目鱼动画
             halibutRotation += 0.005f;
             halibutPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.1f + 0.9f;
+            
+            // 内容淡入（延迟开始）
+            if (expandProgress > ContentFadeDelay && contentFadeProgress < 1f)
+            {
+                float adjustedProgress = (expandProgress - ContentFadeDelay) / (1f - ContentFadeDelay);
+                contentFadeProgress = Math.Min(contentFadeProgress + 0.1f, adjustedProgress);
+            }
+            else if (expandProgress <= ContentFadeDelay && contentFadeProgress > 0f)
+            {
+                contentFadeProgress -= 0.15f;
+                contentFadeProgress = Math.Clamp(contentFadeProgress, 0f, 1f);
+            }
             
             // 更新眼睛
             hoveredEye = null;
@@ -198,7 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (expandProgress >= 1f && currentActiveCount > 0)
             {
                 particleTimer++;
-                if (particleTimer % 15 == 0) // 降低频率
+                if (particleTimer % 15 == 0)
                 {
                     SpawnAmbientParticle();
                 }
@@ -217,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             while (rings.Count < targetCount)
             {
                 int index = rings.Count;
-                float radius = 30f + index * 12f; // 更小的半径和间距
+                float radius = 30f + index * 12f;
                 rings.Add(new DomainRing(halibutCenter, radius, index));
             }
         }
@@ -248,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             
             float alpha = Math.Min(expandProgress * 2f, 1f); // 前50%快速淡入
             
-            // 绘制面板背景（使用TooltipPanel纹理）
+            // 绘制面板背景（使用TooltipPanel纹理，从右到左展开）
             DrawPanel(spriteBatch, alpha);
             
             // 绘制圆环（在所有内容下方）
@@ -290,22 +327,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         private void DrawPanel(SpriteBatch spriteBatch, float alpha)
         {
-            // 计算源矩形（从下往上展开的裁剪效果）
+            // 计算源矩形（从右到左展开的裁剪效果）
             float revealProgress = expandProgress;
-            int revealHeight = (int)(PanelHeight * revealProgress);
+            int revealWidth = (int)(PanelWidth * revealProgress);
             
             Rectangle sourceRect = new Rectangle(
+                (int)(PanelWidth - revealWidth), // 从右侧开始显示
                 0,
-                (int)(PanelHeight - revealHeight), // 从底部开始显示
-                (int)PanelWidth,
-                revealHeight
+                revealWidth,
+                (int)PanelHeight
             );
             
             Rectangle destRect = new Rectangle(
-                (int)DrawPosition.X,
-                (int)(DrawPosition.Y + PanelHeight - revealHeight), // 从底部对齐
-                (int)PanelWidth,
-                revealHeight
+                (int)(DrawPosition.X + currentWidth - revealWidth), // 从右侧对齐
+                (int)DrawPosition.Y,
+                revealWidth,
+                (int)PanelHeight
             );
             
             // 绘制阴影
@@ -319,6 +356,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color panelColor = Color.White * (alpha * pulse);
             spriteBatch.Draw(TooltipPanel, destRect, sourceRect, panelColor);
             
+            // 绘制左侧连接边缘的发光效果
+            if (expandProgress > 0.1f)
+            {
+                Vector2 edgeStart = DrawPosition + new Vector2(0, 0);
+                Vector2 edgeEnd = DrawPosition + new Vector2(0, Size.Y);
+                float edgeGlowAlpha = Math.Min((expandProgress - 0.1f) / 0.2f, 1f);
+                DrawVerticalGlow(spriteBatch, edgeStart, edgeEnd, Color.Gold * alpha * edgeGlowAlpha * 0.6f, 4f);
+            }
+            
             // 绘制边框发光（只在完全展开后）
             if (expandProgress > 0.9f)
             {
@@ -327,6 +373,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 glowRect.Inflate(2, 2);
                 spriteBatch.Draw(TooltipPanel, glowRect, sourceRect, glowColor);
             }
+        }
+        
+        private void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness)
+        {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float length = Vector2.Distance(start, end);
+            
+            // 主光线
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, 
+                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
+            
+            // 外层柔和光晕
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color * 0.5f, 
+                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness * 2f), SpriteEffects.None, 0);
         }
         
         private void DrawConnectionLines(SpriteBatch spriteBatch, float alpha)
@@ -360,12 +420,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         private void DrawHalibut(SpriteBatch spriteBatch, float alpha)
         {
-            if (expandProgress < 0.3f) return; // 展开30%后才显示
+            if (contentFadeProgress < 0.01f) return; // 内容未开始淡入时不绘制
             
             Texture2D halibutTex = TextureAssets.Item[HalibutOverride.ID].Value;
             
-            // 计算淡入透明度
-            float halibutAlpha = Math.Min((expandProgress - 0.3f) / 0.4f, 1f) * alpha;
+            float halibutAlpha = contentFadeProgress * alpha;
             
             // 绘制发光光环（2层）
             for (int i = 0; i < 2; i++)
@@ -397,21 +456,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     float angle = MathHelper.TwoPi * i / 4;
                     Vector2 offset = angle.ToRotationVector2() * 1.5f;
                     Utils.DrawBorderString(spriteBatch, layerText, textPos + offset, 
-                        Color.Gold * alpha * 0.6f, 1f);
+                        Color.Gold * halibutAlpha * 0.6f, 1f);
                 }
                 
-                Utils.DrawBorderString(spriteBatch, layerText, textPos, Color.White * alpha, 1f);
+                Utils.DrawBorderString(spriteBatch, layerText, textPos, Color.White * halibutAlpha, 1f);
             }
         }
         
         private void DrawTitle(SpriteBatch spriteBatch, float alpha)
         {
+            if (contentFadeProgress < 0.5f) return; // 内容淡入50%后才显示标题
+            
+            float titleAlpha = contentFadeProgress * alpha;
             string title = "海域领域";
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title);
-            Vector2 titlePos = DrawPosition + new Vector2(PanelWidth / 2 - titleSize.X / 2, 8);
+            Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 8);
             
             // 标题发光
-            Color titleGlow = Color.Gold * alpha * 0.5f;
+            Color titleGlow = Color.Gold * titleAlpha * 0.5f;
             for (int i = 0; i < 4; i++)
             {
                 float angle = MathHelper.TwoPi * i / 4;
@@ -419,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlow, 0.85f);
             }
             
-            Color titleColor = Color.Lerp(Color.Gold, Color.White, 0.3f) * alpha;
+            Color titleColor = Color.Lerp(Color.Gold, Color.White, 0.3f) * titleAlpha;
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor, 0.85f);
         }
         
@@ -470,7 +532,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float hoverScale = 1f;
         private float glowIntensity = 0f;
         private float blinkTimer = 0f;
-        private const float EyeSize = 20f; // 缩小眼睛尺寸
+        private const float EyeSize = 20f;
         
         public SeaEyeButton(int index, float angle)
         {
@@ -600,7 +662,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (Alpha < 0.01f) return;
             
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            int segments = 48; // 降低分段数以优化性能
+            int segments = 48;
             float angleStep = MathHelper.TwoPi / segments;
             
             // 颜色渐变（从内到外）
