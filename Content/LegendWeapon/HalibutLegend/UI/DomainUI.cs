@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.UIHandles;
-using Microsoft.Xna.Framework;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,9 +11,7 @@ using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAss
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 领域控制面板 - 从主面板右侧展开，与SkillTooltipPanel联动显示
-    /// 布局：主面板 | DomainUI（常规）
-    /// 布局：主面板 | SkillTooltipPanel | DomainUI（技能面板展开时）
+    /// 领域控制面板
     /// </summary>
     internal class DomainUI : UIHandle
     {
@@ -24,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         // 展开控制
         private float expandProgress = 0f; // 展开进度（0-1）
-        private const float ExpandDuration = 20f; // 展开动画持续帧数
+        private const float ExpandDuration = 10f; // 展开动画持续帧数
         
         // 面板尺寸（使用TooltipPanel的大小）
         private float PanelWidth => TooltipPanel.Width; // 214
@@ -135,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             {
                 if (expandProgress > 0f)
                 {
-                    expandProgress -= 1f / (ExpandDuration * 0.6f); // 收起稍快
+                    expandProgress -= 1f / ExpandDuration;
                     expandProgress = Math.Clamp(expandProgress, 0f, 1f);
                 }
             }
@@ -153,8 +149,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             
             if (expandProgress < 0.01f) return; // 完全收起时不更新
             
-            // 更新中心位置（相对于当前宽度的中心）
-            halibutCenter = DrawPosition + new Vector2(currentWidth / 2, PanelHeight / 2);
+            // 更新中心位置（相对于当前实际显示宽度的中心）
+            // currentWidth是动画宽度，但实际显示区域是从DrawPosition.X开始的revealWidth
+            float revealWidth = PanelWidth * expandProgress;
+            halibutCenter = DrawPosition + new Vector2(revealWidth / 2, PanelHeight / 2);
             
             // 检测面板悬停
             Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 
@@ -327,19 +325,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         
         private void DrawPanel(SpriteBatch spriteBatch, float alpha)
         {
-            // 计算源矩形（从右到左展开的裁剪效果）
+            // 计算源矩形（从左到右展开的裁剪效果，与SkillTooltipPanel一致）
             float revealProgress = expandProgress;
             int revealWidth = (int)(PanelWidth * revealProgress);
             
             Rectangle sourceRect = new Rectangle(
-                (int)(PanelWidth - revealWidth), // 从右侧开始显示
+                0, // 从左侧开始显示
                 0,
                 revealWidth,
                 (int)PanelHeight
             );
             
             Rectangle destRect = new Rectangle(
-                (int)(DrawPosition.X + currentWidth - revealWidth), // 从右侧对齐
+                (int)DrawPosition.X, // 从左侧对齐
                 (int)DrawPosition.Y,
                 revealWidth,
                 (int)PanelHeight
@@ -470,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float titleAlpha = contentFadeProgress * alpha;
             string title = "海域领域";
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title);
-            Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 8);
+            Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 4);
             
             // 标题发光
             Color titleGlow = Color.Gold * titleAlpha * 0.5f;
@@ -489,7 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         {
             string text = eye.IsActive ? $"第 {eye.Index + 1} 层" : $"第 {eye.Index + 1} 层";
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text);
-            Vector2 textPos = eye.Position + new Vector2(-textSize.X / 2, -25);
+            Vector2 textPos = eye.Position + new Vector2(-textSize.X / 2, -55);
             
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             
