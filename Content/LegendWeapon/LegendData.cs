@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// <summary>
         /// 这个传奇应该升级到的等级
         /// </summary>
-        public virtual int TargetLevle => 0;
+        public virtual int TargetLevel => 0;
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
@@ -107,10 +107,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public virtual void Update() {
-            if (TargetLevle > Level || UpgradeTagNameIsEmpty) {
+            if (TargetLevel > Level || UpgradeTagNameIsEmpty) {
                 UpgradeWorldName = Main.worldName;
                 UpgradeWorldFullName = SaveWorld.WorldFullName;
-                Level = TargetLevle;
+                Level = TargetLevel;
             }
         }
 

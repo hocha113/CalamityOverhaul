@@ -2,6 +2,6 @@
 {
     internal class SHPCData : LegendData
     {
-        public override int TargetLevle => InWorldBossPhase.SHPC_Level();
+        public override int TargetLevel => InWorldBossPhase.SHPC_Level();
     }
 }

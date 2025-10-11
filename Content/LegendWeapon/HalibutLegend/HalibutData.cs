@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutData : LegendData
     {
-        public override int TargetLevle => InWorldBossPhase.Halibut_Level();
+        public override int TargetLevel => InWorldBossPhase.Halibut_Level();
 
         /// <summary>
         /// 获得成长等级
