@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void Use(Item item, Player player) {
             //设置冷却
-            SetCooldown();
+            //SetCooldown();
 
             //生成云朵弹幕
             int cloudProj = Projectile.NewProjectile(
@@ -268,24 +268,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
 
                 //计算玩家倾斜角度（根据飞行方向）
-                float velocityAngle = Projectile.velocity.ToRotation();
-                
-                //将角度限制在合理范围内（-30度到30度）
-                float maxTiltAngle = MathHelper.Pi / 6f; // 30度
-                float targetRotation = MathHelper.Clamp(velocityAngle, -maxTiltAngle, maxTiltAngle);
-                
-                //如果向左飞，需要镜像角度
+                float targetRotation = Projectile.velocity.ToRotation();
                 if (Owner.direction == -1) {
                     targetRotation = MathHelper.Pi - targetRotation;
                 }
 
                 //平滑过渡到目标角度
-                Owner.fullRotation = MathHelper.Lerp(Owner.fullRotation, targetRotation, 0.15f) * Owner.direction;
-                Owner.fullRotationOrigin = Owner.Size / 2f;
+                Owner.fullRotation = targetRotation * Owner.direction;
+                Owner.fullRotationOrigin = Owner.Size / 2;
             }
             else {
                 //低速时恢复水平
-                Owner.fullRotation = MathHelper.Lerp(Owner.fullRotation, 0f, 0.2f);
+                Owner.fullRotation = MathHelper.Lerp(Owner.fullRotation, 0f, 0.2f) * Owner.direction;
             }
 
             //持续生成云朵粒子（更频繁，更动态）
