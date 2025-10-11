@@ -18,43 +18,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override int DefaultCooldown => 60 * 15; // 15秒冷却
 
-        public override bool? AltFunctionUse(Item item, Player player) {
-            return true;
-        }
+        public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
-                //检查冷却
-                if (Cooldown > 0) {
-                    return false;
-                }
-
+                if (Cooldown > 0) return false;
                 item.UseSound = null;
                 Use(item, player);
                 return false;
             }
-
             return base.CanUseItem(item, player);
         }
 
         public override void Use(Item item, Player player) {
-            //设置冷却
             //SetCooldown();
-
-            //生成云朵弹幕
-            int cloudProj = Projectile.NewProjectile(
+            Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
-                player.Center + new Vector2(0, -100), // 在玩家上方生成
+                player.Center + new Vector2(0, -100),
                 Vector2.Zero,
                 ModContent.ProjectileType<CloudRide>(),
                 0,
                 0f,
                 player.whoAmI
             );
-
-            //播放召唤音效
-            SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.8f, Pitch = 0.2f }, player.Center); // 柔和的云雾音效
-            SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with { Volume = 0.5f, Pitch = 0.5f }, player.Center); // 风声
+            SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.8f, Pitch = 0.2f }, player.Center);
+            SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with { Volume = 0.5f, Pitch = 0.5f }, player.Center);
         }
     }
 
@@ -91,6 +79,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private List<CloudParticle> cloudParticles = new();
 
         /// <summary>
+        /// 云鱼粒子系统（伴飞的云鱼）
+        /// </summary>
+        private List<CloudFishParticle> cloudFishParticles = new();
+
+        /// <summary>
         /// 雨滴生成计时器
         /// </summary>
         private int rainTimer = 0;
@@ -125,6 +118,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private float originalGravity = 0f;
 
+        /// <summary>
+        /// 云鱼数量
+        /// </summary>
+        private const int CloudFishCount = 15;
+
         public override void SetDefaults() {
             Projectile.width = 140;
             Projectile.height = 60;
@@ -142,9 +140,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        /// <summary>
+        /// 初始化云鱼粒子
+        /// </summary>
+        private void InitializeCloudFish() {
+            cloudFishParticles.Clear();
+            for (int i = 0; i < CloudFishCount; i++) {
+                //在云朵周围随机位置生成云鱼
+                float angle = MathHelper.TwoPi * i / CloudFishCount + Main.rand.NextFloat(-0.25f, 0.25f);
+                float distance = Main.rand.NextFloat(90f, 150f);
+
+                Vector2 spawnOffset = new Vector2(
+                    (float)Math.Cos(angle) * distance,
+                    (float)Math.Sin(angle) * distance * 0.55f // 扁平分布
+                );
+
+                cloudFishParticles.Add(new CloudFishParticle {
+                    Position = Projectile.Center + spawnOffset,
+                    Velocity = Main.rand.NextVector2Circular(2f, 1f),
+                    Scale = Main.rand.NextFloat(0.8f, 1.25f), // 增大基础尺寸
+                    Rotation = angle,
+                    Alpha = 0f, // 初始透明，逐渐淡入
+                    FishID = i,
+                    BehaviorRandomness = Main.rand.NextFloat(0.85f, 1.25f),
+                    PhaseOffset = Main.rand.NextFloat(MathHelper.TwoPi),
+                    Color = Color.Lerp(new Color(190, 225, 255), new Color(255, 255, 255), Main.rand.NextFloat())
+                });
+            }
+        }
+
         public override void AI() {
             if (!Owner.active || Owner.dead) {
                 Phase = 2;
+            }
+
+            if (LifeTimer == 0) {
+                //初始化云鱼粒子
+                InitializeCloudFish();
             }
 
             LifeTimer++;
@@ -154,6 +186,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //更新云朵粒子
             UpdateCloudParticles();
+
+            //更新云鱼粒子
+            UpdateCloudFishParticles();
 
             switch (Phase) {
                 case 0: // 飞向玩家脚下
@@ -187,6 +222,161 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (cloudRollOffsets[i] > MathHelper.TwoPi) {
                     cloudRollOffsets[i] -= MathHelper.TwoPi;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 更新云鱼粒子（鱼群算法）
+        /// </summary>
+        private void UpdateCloudFishParticles() {
+            for (int i = 0; i < cloudFishParticles.Count; i++) {
+                CloudFishParticle fish = cloudFishParticles[i];
+
+                //淡入效果
+                if (Phase == 0 || Phase == 1) {
+                    if (fish.Alpha < 1f) {
+                        fish.Alpha += 0.05f;
+                        if (fish.Alpha > 1f) fish.Alpha = 1f;
+                    }
+                }
+                else if (Phase == 2) {
+                    //消散阶段淡出
+                    fish.Alpha -= 0.08f;
+                }
+
+                //=== 鱼群算法实现 ===
+                Vector2 separationForce = Vector2.Zero;
+                Vector2 alignmentForce = Vector2.Zero;
+                Vector2 cohesionForce = Vector2.Zero;
+
+                Vector2 centerOfMass = Projectile.Center;
+                Vector2 averageVelocity = Vector2.Zero;
+                int nearbyFishCount = 0;
+
+                //计算与其他云鱼的关系
+                for (int j = 0; j < cloudFishParticles.Count; j++) {
+                    if (i == j) continue;
+
+                    CloudFishParticle otherFish = cloudFishParticles[j];
+                    float distance = Vector2.Distance(fish.Position, otherFish.Position);
+
+                    //分离力：避免碰撞
+                    if (distance < 40f && distance > 0.1f) {
+                        Vector2 awayFromOther = (fish.Position - otherFish.Position).SafeNormalize(Vector2.Zero);
+                        separationForce += awayFromOther / distance;
+                    }
+
+                    //对齐和聚合计算
+                    if (distance < 120f) {
+                        centerOfMass += otherFish.Position;
+                        averageVelocity += otherFish.Velocity;
+                        nearbyFishCount++;
+                    }
+                }
+
+                if (nearbyFishCount > 0) {
+                    centerOfMass /= nearbyFishCount;
+                    averageVelocity /= nearbyFishCount;
+
+                    //对齐力：向平均方向移动
+                    alignmentForce = (averageVelocity - fish.Velocity) * 0.1f;
+
+                    //聚合力：向群体中心移动
+                    cohesionForce = (centerOfMass - fish.Position).SafeNormalize(Vector2.Zero) * 0.3f;
+                }
+
+                //=== 围绕云朵运动的核心力 ===
+                Vector2 toCloud = Projectile.Center - fish.Position;
+                float distanceToCloud = toCloud.Length();
+
+                //维持在云朵周围的目标距离（椭圆形轨道）
+                float targetDistanceX = 100f;
+                float targetDistanceY = 60f;
+
+                //计算理想位置（椭圆轨道）
+                Vector2 directionToCloud = toCloud.SafeNormalize(Vector2.Zero);
+                float currentAngle = (float)Math.Atan2(directionToCloud.Y, directionToCloud.X);
+                
+                float idealDistance = (float)Math.Sqrt(
+                    Math.Pow(targetDistanceX * Math.Sin(currentAngle), 2) +
+                    Math.Pow(targetDistanceY * Math.Cos(currentAngle), 2)
+                );
+
+                //向心力和离心力的平衡
+                Vector2 orbitForce = Vector2.Zero;
+                if (distanceToCloud < idealDistance - 20f) {
+                    //太近了，向外推
+                    orbitForce = -directionToCloud * 1.5f;
+                }
+                else if (distanceToCloud > idealDistance + 20f) {
+                    //太远了，向内拉
+                    orbitForce = directionToCloud * 2.0f;
+                }
+
+                //=== 切向速度（围绕云朵旋转） ===
+                //根据云朵移动方向调整旋转方向
+                Vector2 tangentialDirection = new Vector2(-directionToCloud.Y, directionToCloud.X);
+                
+                //当云朵高速移动时，云鱼在后方加速追赶
+                float cloudSpeed = Projectile.velocity.Length();
+                bool isBehindCloud = Vector2.Dot(toCloud, Projectile.velocity) > 0;
+                float catchUpBoost = (isBehindCloud && cloudSpeed > 5f) ? 2.0f : 1.0f;
+
+                Vector2 tangentialForce = tangentialDirection * (2.5f + (float)Math.Sin(LifeTimer * 0.05f + fish.PhaseOffset) * 0.8f) * catchUpBoost;
+
+                //=== 跟随云朵的速度同步 ===
+                Vector2 velocitySync = Projectile.velocity * 0.6f;
+
+                //=== 波动效果（上下摆动） ===
+                float waveTime = LifeTimer * 0.08f + fish.PhaseOffset;
+                Vector2 waveForce = new Vector2(0, (float)Math.Sin(waveTime) * 0.4f * fish.BehaviorRandomness);
+
+                //=== 随机游动 ===
+                Vector2 randomWander = new Vector2(
+                    (float)Math.Sin(waveTime * 1.3f),
+                    (float)Math.Cos(waveTime * 1.7f)
+                ) * 0.3f * fish.BehaviorRandomness;
+
+                //=== 合成所有力 ===
+                Vector2 totalForce = Vector2.Zero;
+                totalForce += separationForce * 2.5f; // 分离力（避免重叠）
+                totalForce += alignmentForce * 1.2f; // 对齐力
+                totalForce += cohesionForce * 0.8f; // 聚合力
+                totalForce += orbitForce * 1.5f; // 轨道力
+                totalForce += tangentialForce; // 切向运动
+                totalForce += velocitySync; // 速度同步
+                totalForce += waveForce; // 波动
+                totalForce += randomWander; // 随机游动
+
+                //应用力
+                fish.Velocity += totalForce * 0.15f;
+
+                //速度限制
+                float maxSpeed = 8f * fish.BehaviorRandomness;
+                float minSpeed = 2f;
+                float currentSpeed = fish.Velocity.Length();
+
+                if (currentSpeed > maxSpeed) {
+                    fish.Velocity = fish.Velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
+                }
+                else if (currentSpeed < minSpeed && currentSpeed > 0.1f) {
+                    fish.Velocity = fish.Velocity.SafeNormalize(Vector2.Zero) * minSpeed;
+                }
+
+                //更新位置
+                fish.Position += fish.Velocity;
+                fish.Position += Projectile.velocity * 0.8f;
+
+                //更新旋转（面向移动方向）
+                if (fish.Velocity.LengthSquared() > 0.1f) {
+                    fish.Rotation = MathHelper.Lerp(fish.Rotation, fish.Velocity.ToRotation(), 0.2f);
+                }
+
+                //轻微的游动摆尾效果
+                fish.Rotation += (float)Math.Sin(LifeTimer * 0.2f + fish.PhaseOffset) * 0.08f;
+
+                //更新回列表
+                cloudFishParticles[i] = fish;
             }
         }
 
@@ -252,10 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //=== 玩家骑乘效果 ===
             //玩家位置跟随云朵（脚部位于云朵顶部）
             Owner.position = Projectile.Center + new Vector2(0, -25) - Owner.Size / 2f;
-            Owner.velocity = Projectile.velocity;
-            Owner.fallStart = (int)(Owner.position.Y / 16f);
-            Owner.gravity = 0f;
-            Owner.noFallDmg = true;
+            Owner.velocity = Projectile.velocity; Owner.fallStart = (int)(Owner.position.Y / 16f); Owner.gravity = 0f; Owner.noFallDmg = true;
 
             //玩家朝向飞行方向
             if (currentSpeed > 2f) {
@@ -275,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //平滑过渡到目标角度
                 Owner.fullRotation = targetRotation * Owner.direction;
-                Owner.fullRotationOrigin = Owner.Size / 2;
+                Owner.fullRotationOrigin = Owner.Size / 2f;
             }
             else {
                 //低速时恢复水平
@@ -459,24 +646,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(ref Color lightColor) {
             if (FishCloud.Fog == null) return false;
 
-            SpriteBatch spriteBatch = Main.spriteBatch;
-            Vector2 cloudCenter = Projectile.Center - Main.screenPosition;
+            SpriteBatch sb = Main.spriteBatch;
+            Vector2 center = Projectile.Center - Main.screenPosition;
 
             //=== 绘制主云体（扁平筋斗云形状） ===
-            DrawMainCloudBody(spriteBatch, cloudCenter);
+            DrawMainCloudBody(sb, center);
 
             //=== 绘制云朵粒子（翻滚效果） ===
-            DrawCloudParticles(spriteBatch);
+            DrawCloudParticles(sb);
+
+            //=== 绘制速度拖尾效果 ===
+            if (Phase == 1 && Projectile.velocity.Length() > 10f) {
+                DrawSpeedTrail(sb, center);
+            }
 
             //=== 绘制筋斗云黄金边缘效果 ===
             if (Phase == 1) {
-                DrawGoldenEdges(spriteBatch, cloudCenter);
+                DrawGoldenEdges(sb, center);
             }
 
-            //=== 速度拖尾效果 ===
-            if (Phase == 1 && Projectile.velocity.Length() > 10f) {
-                DrawSpeedTrail(spriteBatch, cloudCenter);
-            }
+            //=== 绘制云鱼粒子（伴飞效果） ===
+            DrawCloudFishParticles(sb);
 
             return false;
         }
@@ -484,7 +674,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 绘制主云体（扁平椭圆形，多层翻滚）
         /// </summary>
-        private void DrawMainCloudBody(SpriteBatch spriteBatch, Vector2 cloudCenter) {
+        private void DrawMainCloudBody(SpriteBatch sb, Vector2 center) {
             //云朵主体由多个扁平椭圆云团组成
             int cloudSegments = 12;
             
@@ -497,7 +687,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float radiusX = 55f + (float)Math.Sin(rollOffset) * 15f; // 横向半径大
                 float radiusY = 25f + (float)Math.Cos(rollOffset * 1.3f) * 8f; // 纵向半径小（扁平）
 
-                Vector2 cloudPartPos = cloudCenter + new Vector2(
+                Vector2 cloudPartPos = center + new Vector2(
                     (float)Math.Cos(angle + LifeTimer * 0.015f) * radiusX,
                     (float)Math.Sin(angle + LifeTimer * 0.015f) * radiusY
                 );
@@ -517,7 +707,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (float)Math.Sin(rollOffset + i * 0.5f) * 0.3f + 0.3f
                     );
 
-                    spriteBatch.Draw(
+                    sb.Draw(
                         FishCloud.Fog,
                         cloudPartPos,
                         null,
@@ -537,9 +727,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float coreAlpha = cloudAlpha * (0.5f - i * 0.1f);
                 float coreRotation = LifeTimer * 0.02f + i * 0.8f;
 
-                spriteBatch.Draw(
+                sb.Draw(
                     FishCloud.Fog,
-                    cloudCenter,
+                    center,
                     null,
                     Color.White * coreAlpha,
                     coreRotation,
@@ -554,25 +744,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 绘制云朵粒子（翻滚云雾效果）
         /// </summary>
-        private void DrawCloudParticles(SpriteBatch spriteBatch) {
-            foreach (CloudParticle particle in cloudParticles) {
-                Vector2 drawPos = particle.Position - Main.screenPosition;
-                float drawAlpha = particle.Alpha * cloudAlpha;
+        private void DrawCloudParticles(SpriteBatch sb) {
+            foreach (var p in cloudParticles) {
+                Vector2 pos = p.Position - Main.screenPosition;
+                float baseAlpha = p.Alpha * cloudAlpha;
 
                 //多层绘制，模拟云的厚度和柔和感
                 for (int layer = 0; layer < 3; layer++) {
-                    float layerScale = particle.Scale * (1f + layer * 0.18f);
-                    float layerAlpha = drawAlpha * (0.55f - layer * 0.12f);
+                    float s = p.Scale * (1f + layer * 0.18f);
+                    float a = baseAlpha * (0.55f - layer * 0.12f);
 
                     //扁平化粒子
-                    spriteBatch.Draw(
+                    sb.Draw(
                         FishCloud.Fog,
-                        drawPos,
+                        pos,
                         null,
-                        particle.Color * layerAlpha,
-                        particle.Rotation,
+                        p.Color * a,
+                        p.Rotation,
                         FishCloud.Fog.Size() / 2f,
-                        new Vector2(layerScale, layerScale * 0.7f) * cloudScale,
+                        new Vector2(s, s * 0.7f) * cloudScale,
                         SpriteEffects.None,
                         0f
                     );
@@ -581,95 +771,91 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
+        /// 绘制云鱼粒子（伴飞的云鱼群）
+        /// </summary>
+        private void DrawCloudFishParticles(SpriteBatch sb) {
+            //加载鱼的纹理
+            Main.instance.LoadItem(ItemID.Cloudfish);
+            Texture2D tex = TextureAssets.Item[ItemID.Cloudfish].Value;
+
+            foreach (var fish in cloudFishParticles) {
+                if (fish.Alpha <= 0.02f) continue;
+                Vector2 pos = fish.Position - Main.screenPosition;
+                Rectangle src = tex.GetRectangle();
+                Vector2 origin = src.Size() / 2f;
+
+                //根据速度判断朝向
+                int dir = fish.Velocity.X >= 0 ? 1 : -1;
+                SpriteEffects fx = dir > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+
+                float rot = fish.Rotation + (dir > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+                float alpha = fish.Alpha * (0.6f + 0.4f * cloudAlpha); // 独立透明度，不完全受云体影响
+
+                // 拖尾
+                if (fish.Velocity.Length() > 4f) {
+                    for (int t = 1; t <= 3; t++) {
+                        Vector2 trail = -fish.Velocity.SafeNormalize(Vector2.Zero) * t * 7f;
+                        float trailA = alpha * (1f - t / 3f) * 0.5f;
+                        sb.Draw(tex, pos + trail, src, fish.Color * trailA, rot, origin, fish.Scale * (0.9f - t * 0.05f), fx, 0f);
+                    }
+                }
+                // 主体
+                sb.Draw(tex, pos, src, fish.Color * alpha, rot, origin, fish.Scale, fx, 0f);
+                // 发光层
+                float speedGlow = fish.Velocity.Length();
+                if (speedGlow > 5f) {
+                    float gA = (speedGlow - 5f) / 4f * 0.4f * alpha;
+                    sb.Draw(tex, pos, src, Color.Lerp(Color.White, Color.Cyan, 0.5f) * gA, rot, origin, fish.Scale * 1.2f, fx, 0f);
+                }
+            }
+        }
+
+        /// <summary>
         /// 绘制黄金边缘效果（筋斗云经典特征）
         /// </summary>
-        private void DrawGoldenEdges(SpriteBatch spriteBatch, Vector2 cloudCenter) {
-            //外围黄金光晕（椭圆分布）
+        private void DrawGoldenEdges(SpriteBatch sb, Vector2 center) {
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f + LifeTimer * 0.025f;
-                float radiusX = 65f;
-                float radiusY = 32f;
-
-                Vector2 edgePos = cloudCenter + new Vector2(
-                    (float)Math.Cos(angle) * radiusX,
-                    (float)Math.Sin(angle) * radiusY
-                );
-
-                Color goldenEdge = new Color(255, 245, 180) * (cloudAlpha * 0.35f);
-
-                spriteBatch.Draw(
-                    FishCloud.Fog,
-                    edgePos,
-                    null,
-                    goldenEdge,
-                    angle,
-                    FishCloud.Fog.Size() / 2f,
-                    new Vector2(0.9f, 0.6f) * cloudScale,
-                    SpriteEffects.None,
-                    0f
-                );
+                Vector2 pos = center + new Vector2((float)Math.Cos(angle) * 65f, (float)Math.Sin(angle) * 32f);
+                sb.Draw(FishCloud.Fog, pos, null, new Color(255, 245, 180) * (cloudAlpha * 0.35f), angle, FishCloud.Fog.Size() / 2f, new Vector2(0.9f, 0.6f) * cloudScale, SpriteEffects.None, 0f);
             }
-
-            //内部发光核心（温暖的金色）
             for (int i = 0; i < 3; i++) {
-                float glowScale = (0.7f + i * 0.2f) * cloudScale;
-                float glowAlpha = cloudAlpha * (0.28f - i * 0.06f);
-
-                spriteBatch.Draw(
-                    FishCloud.Fog,
-                    cloudCenter,
-                    null,
-                    new Color(255, 250, 210) * glowAlpha,
-                    LifeTimer * 0.04f,
-                    FishCloud.Fog.Size() / 2f,
-                    new Vector2(glowScale, glowScale * 0.65f),
-                    SpriteEffects.None,
-                    0f
-                );
+                float s = (0.7f + i * 0.2f) * cloudScale; float a = cloudAlpha * (0.28f - i * 0.06f);
+                sb.Draw(FishCloud.Fog, center, null, new Color(255, 250, 210) * a, LifeTimer * 0.04f, FishCloud.Fog.Size() / 2f, new Vector2(s, s * 0.65f), SpriteEffects.None, 0f);
             }
         }
 
         /// <summary>
         /// 绘制速度拖尾
         /// </summary>
-        private void DrawSpeedTrail(SpriteBatch spriteBatch, Vector2 cloudCenter) {
-            Vector2 trailDirection = -Projectile.velocity.SafeNormalize(Vector2.Zero);
-            
+        private void DrawSpeedTrail(SpriteBatch sb, Vector2 center) {
+            Vector2 dir = -Projectile.velocity.SafeNormalize(Vector2.Zero);
             for (int i = 1; i <= 6; i++) {
-                Vector2 trailPos = cloudCenter + trailDirection * i * 18f;
-                float trailAlpha = cloudAlpha * (1f - i / 6f) * 0.35f;
-                float trailScale = cloudScale * (1.3f - i * 0.12f);
+                Vector2 pos = center + dir * i * 18f;
+                float a = cloudAlpha * (1f - i / 6f) * 0.35f;
+                float s = cloudScale * (1.3f - i * 0.12f);
 
-                spriteBatch.Draw(
-                    FishCloud.Fog,
-                    trailPos,
-                    null,
-                    Color.White * trailAlpha,
-                    LifeTimer * 0.015f,
-                    FishCloud.Fog.Size() / 2f,
-                    new Vector2(trailScale, trailScale * 0.65f),
-                    SpriteEffects.None,
-                    0f
-                );
+                sb.Draw(FishCloud.Fog, pos, null, Color.White * a, LifeTimer * 0.015f, FishCloud.Fog.Size() / 2f, new Vector2(s, s * 0.65f), SpriteEffects.None, 0f);
             }
         }
 
         public override void OnKill(int timeLeft) {
             //最终消散特效（扁平分布）
             for (int i = 0; i < 40; i++) {
-                Vector2 cloudPos = Projectile.Center + new Vector2(
-                    Main.rand.NextFloat(-80f, 80f),
-                    Main.rand.NextFloat(-35f, 35f)
-                );
+                Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-80f, 80f), Main.rand.NextFloat(-35f, 35f));
+                Dust d = Dust.NewDustPerfect(pos, DustID.Cloud, Main.rand.NextVector2Circular(3f, 2f), Scale: Main.rand.NextFloat(2f, 4f));
+                d.noGravity = true;
+                d.alpha = 100;
+            }
 
-                Dust cloudDust = Dust.NewDustPerfect(
-                    cloudPos,
-                    DustID.Cloud,
-                    Main.rand.NextVector2Circular(3f, 2f),
-                    Scale: Main.rand.NextFloat(2f, 4f)
-                );
-                cloudDust.noGravity = true;
-                cloudDust.alpha = 100;
+            //云鱼消散特效
+            foreach (var fish in cloudFishParticles) {
+                for (int k = 0; k < 3; k++) {
+                    Dust d = Dust.NewDustPerfect(fish.Position, DustID.Cloud, Main.rand.NextVector2Circular(2f, 2f), Scale: Main.rand.NextFloat(0.8f, 1.2f));
+                    d.noGravity = true;
+                    d.color = fish.Color;
+                    d.alpha = 120;
+                }
             }
 
             //恢复玩家状态
@@ -696,6 +882,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public float Alpha;
         public int LifeTime;
         public int MaxLifeTime;
+        public Color Color;
+    }
+
+    /// <summary>
+    /// 云鱼粒子数据结构（伴飞的云鱼）
+    /// </summary>
+    internal struct CloudFishParticle
+    {
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Scale;
+        public float Rotation;
+        public float Alpha;
+        public int FishID;
+        public float BehaviorRandomness;
+        public float PhaseOffset;
         public Color Color;
     }
 
