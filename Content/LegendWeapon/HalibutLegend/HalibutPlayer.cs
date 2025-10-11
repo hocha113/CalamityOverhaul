@@ -162,6 +162,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
 
+        /// <summary>
+        /// 低于或者等于这个等级的眼睛会进入死机状态
+        /// </summary>
+        /// <returns></returns>
+        public int CrashesLevel() {
+            return SeaDomainLayers >= 10 ? 3 : SeaDomainLayers >= 7 ? 2 : SeaDomainLayers >= 5 ? 1 : 0;
+        }
+
         public override void PostUpdate() {//在每帧更新后进行一些操作
             //克隆技能记录
             if (CloneFishActive) {

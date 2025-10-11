@@ -428,16 +428,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
-            int displayLayer;
-            if (eye.IsActive) {
-                displayLayer = eye.LayerNumber ?? 0;
-            }
-            else {
-                displayLayer = ActiveEyeCount + 1;
-            }
-            if (displayLayer <= 0) {
-                displayLayer = 1;
-            }
+            int displayLayer = eye.LayerNumberDisplay;
             string layerChinese = ChineseNumeral(displayLayer);
             string title = $"第 {layerChinese} 层";
             string desc = DomainEyeDescriptions.GetDescription(displayLayer);
@@ -575,6 +566,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public Vector2 Position;
         public bool IsHovered;
         public int? LayerNumber; //激活层数（激活顺序）
+        public int LayerNumberDisplay {
+            get {
+                int num;
+                if (IsActive) {
+                    num = LayerNumber ?? 1;
+                }
+                else {
+                    num = DomainUI.Instance.ActiveEyeCount + 1;
+                }
+                return num;
+            }
+        }
 
         private float hoverScale = 1f;
         private float glowIntensity = 0f;
