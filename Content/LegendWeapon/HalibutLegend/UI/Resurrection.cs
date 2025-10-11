@@ -241,7 +241,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             if (hitBox.Contains(Main.MouseScreen.ToPoint())) {
                 string percentText = $"{(int)(ratio * 100)}%";
-                Vector2 textSize = FontAssets.MouseText.Value.MeasureString(percentText);
                 Vector2 textPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -20);
 
                 //文本阴影
