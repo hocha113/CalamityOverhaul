@@ -202,7 +202,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 低于或者等于这个等级的眼睛会进入死机状态
         /// </summary>
         public int CrashesLevel() {
-            return 0;
+            //return 0;//测试用，所有眼睛都死机，或者返回你想要的死机等级
+            return GetCrashesLevel(Main.LocalPlayer.GetItem());
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
