@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
         public bool Open;
-        public static ref FishSkill FishSkill => ref player.GetModPlayer<HalibutUISave>().FishSkill;
+        public static ref FishSkill FishSkill => ref player.GetModPlayer<HalibutSave>().FishSkill;
 
         public static void SaveData(TagCompound tag) {
             HalibutUIPanel.Instance.SaveUIData(tag);
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         #region Data
         public static HalibutUIPanel Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIPanel>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
-        public List<SkillSlot> halibutUISkillSlots => player.GetModPlayer<HalibutUISave>().halibutUISkillSlots;
+        public List<SkillSlot> halibutUISkillSlots => player.GetModPlayer<HalibutSave>().halibutUISkillSlots;
         public LeftButtonUI leftButton = new LeftButtonUI();
         public RightButtonUI rightButton = new RightButtonUI();
         public float Sengs;

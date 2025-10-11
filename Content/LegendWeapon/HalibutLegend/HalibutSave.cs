@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutUISave : ModPlayer
+    internal class HalibutSave : ModPlayer
     {
         public readonly List<SkillSlot> halibutUISkillSlots = [];
         internal readonly List<SeaEyeButton> eyes = [];
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public FishSkill FishSkill;
         public override void SetStaticDefaults() {
             for (int i = 0; i < DomainUI.MaxEyes; i++) {
-                float angle = (i / (float)DomainUI.MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
+                float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
                 eyes.Add(new SeaEyeButton(i, angle));
             }
         }
@@ -46,7 +47,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
             tag["ActiveEyeIndices"] = activeEyeIndices;
+
+            //保存深渊复苏系统数据
+            if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
+                tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
+            }
         }
+
         public override void LoadData(TagCompound tag) {
             if (tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
                 halibutUISkillSlots.Clear();
@@ -70,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 activationSequence.Clear();
                 if (eyes.Count == 0) {
                     for (int i = 0; i < DomainUI.MaxEyes; i++) {
-                        float angle = (i / (float)DomainUI.MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
+                        float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
                         eyes.Add(new SeaEyeButton(i, angle));
                     }
                 }
@@ -91,6 +98,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //更新圆环
                 DomainUI.Instance.UpdateRings(activationSequence.Count);
                 DomainUI.Instance.lastActiveEyeCount = activationSequence.Count;
+            }
+
+            //加载深渊复苏系统数据
+            if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
+                if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
+                    hPlayer.ResurrectionSystem.LoadData(resurrectionTag);
+                }
             }
         }
     }

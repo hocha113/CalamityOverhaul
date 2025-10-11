@@ -21,6 +21,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public readonly static HashSet<FishSkill> UnlockedSkills = new();
 
+        #region 深渊复苏系统
+        /// <summary>
+        /// 深渊复苏系统实例
+        /// </summary>
+        public ResurrectionSystem ResurrectionSystem { get; private set; } = new();
+        #endregion
+
         #region 闪光皇后
         /// <summary>
         /// 当前齐射是否激活
@@ -172,6 +179,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
+            //更新深渊复苏系统
+            if (HasHalibut) {
+                ResurrectionSystem.Update();
+            }
+
             //克隆技能记录
             if (CloneFishActive) {
                 CloneFrameCounter++;
@@ -219,14 +231,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HasHalibut = item.Alives() && item.type == HalibutOverride.ID;
 
             //测试复苏条效果（仅在客户端且持有大比目鱼时）
-            if (!VaultUtils.isServer && HasHalibut && ResurrectionUI.Instance != null) {
+            if (!VaultUtils.isServer && HasHalibut) {
                 //按住某个键可以增加复苏值进行测试
                 //例如：按住左Shift增加，按住左Ctrl减少
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
-                    ResurrectionUI.Instance.AddResurrectionValue(0.5f);
+                    ResurrectionHelper.AddResurrectionValue(0.5f);
                 }
                 if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) {
-                    ResurrectionUI.Instance.AddResurrectionValue(-0.5f);
+                    ResurrectionHelper.AddResurrectionValue(-0.5f);
                 }
             }
 

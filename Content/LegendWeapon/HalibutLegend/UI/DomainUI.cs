@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const float MinWidth = 8f; //最小宽度（完全收起时）
 
         //九只奈落之眼
-        internal List<SeaEyeButton> eyes => player.GetModPlayer<HalibutUISave>().eyes;
-        internal List<SeaEyeButton> activationSequence => player.GetModPlayer<HalibutUISave>().activationSequence;
+        internal List<SeaEyeButton> eyes => player.GetModPlayer<HalibutSave>().eyes;
+        internal List<SeaEyeButton> activationSequence => player.GetModPlayer<HalibutSave>().activationSequence;
         internal const int MaxEyes = 9;
         internal const float EyeOrbitRadius = 75f; //眼睛轨道半径
 

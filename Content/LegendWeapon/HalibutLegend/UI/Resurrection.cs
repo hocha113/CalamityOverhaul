@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -15,13 +14,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static ResurrectionUI Instance => UIHandleLoader.GetUIHandleOfType<ResurrectionUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None; //手动调用
 
-        //复苏值相关（接口预留)
-        private float currentResurrectionValue = 0f; //当前复苏值
-        private float maxResurrectionValue = 100f; //最大复苏值
-        private float targetResurrectionValue = 0f; //目标复苏值（用于平滑过渡）
-
-        //平滑过渡相关
-        private float displayValue = 0f; //实际显示的复苏值
+        //UI相关数据（不再管理复苏值，仅用于显示）
+        private float displayValue = 0f; //实际显示的复苏值（用于平滑过渡）
         private const float SmoothSpeed = 0.15f; //平滑速度
 
         //视觉效果相关
@@ -40,22 +34,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const float CriticalThreshold = 0.9f; //90%以上进入危险状态
 
         /// <summary>
-        /// 获取复苏进度比例（0-1）
+        /// 获取玩家的复苏系统
         /// </summary>
-        public float ResurrectionRatio => Math.Clamp(currentResurrectionValue / maxResurrectionValue, 0f, 1f);
-
-        /// <summary>
-        /// 设置复苏值（外部接口）
-        /// </summary>
-        public void SetResurrectionValue(float value) {
-            targetResurrectionValue = Math.Clamp(value, 0f, maxResurrectionValue);
+        private ResurrectionSystem GetResurrectionSystem() {
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return halibutPlayer.ResurrectionSystem;
+            }
+            return null;
         }
 
         /// <summary>
-        /// 增加复苏值（外部接口）
+        /// 获取复苏进度比例（0-1）
         /// </summary>
-        public void AddResurrectionValue(float value) {
-            SetResurrectionValue(currentResurrectionValue + value);
+        public float ResurrectionRatio {
+            get {
+                var system = GetResurrectionSystem();
+                return system?.Ratio ?? 0f;
+            }
         }
 
         /// <summary>
@@ -86,17 +81,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
+            var resurrectionSystem = GetResurrectionSystem();
+            if (resurrectionSystem == null) {
+                return;
+            }
+
             //位置设置：在大比目鱼头像下方
             Vector2 headPos = HalibutUIHead.Instance.DrawPosition;
             Vector2 headSize = HalibutUIHead.Instance.Size;
             DrawPosition = headPos + new Vector2(headSize.X / 2 + 20, 40);
             Size = HalibutUIAsset.Resurrection.Size();
 
-            //平滑过渡复苏值
-            currentResurrectionValue = MathHelper.Lerp(currentResurrectionValue, targetResurrectionValue, SmoothSpeed);
-            displayValue = MathHelper.Lerp(displayValue, currentResurrectionValue, SmoothSpeed * 0.7f);
+            //平滑过渡显示值
+            float targetValue = resurrectionSystem.CurrentValue;
+            displayValue = MathHelper.Lerp(displayValue, targetValue, SmoothSpeed * 0.7f);
 
-            float ratio = ResurrectionRatio;
+            float ratio = resurrectionSystem.Ratio;
 
             //更新脉动计时器
             pulseTimer += 0.1f;
@@ -167,7 +167,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            float ratio = displayValue / maxResurrectionValue;
+            var resurrectionSystem = GetResurrectionSystem();
+            if (resurrectionSystem == null) {
+                return;
+            }
+
+            float ratio = displayValue / resurrectionSystem.MaxValue;
             ratio = Math.Clamp(ratio, 0f, 1f);
 
             Vector2 drawPos = DrawPosition + shakeOffset;
@@ -262,6 +267,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
                 Utils.DrawBorderString(spriteBatch, labelText, labelPos,
                     new Color(100, 200, 255), 0.75f, 0.5f, 0.5f);
+                
+                //绘制额外信息（复苏速度）
+                //if (Math.Abs(resurrectionSystem.ResurrectionRate) > 0.001f) {
+                //    string rateText = $"速度: {resurrectionSystem.ResurrectionRate:F2}/帧";
+                //    Vector2 ratePos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -52);
+                    
+                //    Utils.DrawBorderString(spriteBatch, rateText, ratePos + new Vector2(1, 1),
+                //        Color.Black * 0.8f, 0.65f, 0.5f, 0.5f);
+                    
+                //    Color rateColor = resurrectionSystem.ResurrectionRate > 0 
+                //        ? new Color(255, 100, 100) 
+                //        : new Color(100, 255, 100);
+                //    Utils.DrawBorderString(spriteBatch, rateText, ratePos,
+                //        rateColor, 0.65f, 0.5f, 0.5f);
+                //}
             }
         }
     }
