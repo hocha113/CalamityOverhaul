@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -216,6 +217,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             Item item = Player.GetItem();
             HasHalibut = item.Alives() && item.type == HalibutOverride.ID;
+
+            //测试复苏条效果（仅在客户端且持有大比目鱼时）
+            if (!VaultUtils.isServer && HasHalibut && ResurrectionUI.Instance != null) {
+                //按住某个键可以增加复苏值进行测试
+                //例如：按住左Shift增加，按住左Ctrl减少
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
+                    ResurrectionUI.Instance.AddResurrectionValue(0.5f);
+                }
+                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) {
+                    ResurrectionUI.Instance.AddResurrectionValue(-0.5f);
+                }
+            }
 
             if (VaultUtils.isServer || !HasHalibut) {
                 return;

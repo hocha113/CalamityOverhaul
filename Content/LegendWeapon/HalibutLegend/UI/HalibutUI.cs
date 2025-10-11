@@ -56,7 +56,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             HalibutUILeftSidebar.Instance.Update();
             HalibutUIPanel.Instance.Update();
-            DomainUI.Instance.Update(); // 更新领域UI
+            DomainUI.Instance.Update();
+            ResurrectionUI.Instance.Update(); //更新复苏条
 
             //反正这样加载是没问题的，你就看跑不跑得起来吧！
             if (FishSkill != null && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
@@ -68,6 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DomainUI.Instance.Draw(spriteBatch);
             HalibutUIPanel.Instance.Draw(spriteBatch);
             HalibutUILeftSidebar.Instance.Draw(spriteBatch);
+            ResurrectionUI.Instance.Draw(spriteBatch); //绘制复苏条
 
             spriteBatch.Draw(Head, UIHitBox, Color.White);
 
