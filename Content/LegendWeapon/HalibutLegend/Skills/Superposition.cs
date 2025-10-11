@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Activate(player);
             hp.SuperpositionToggleCD = ToggleCD;
-            hp.SuperpositionCooldown = 60; //调试用
+            hp.SuperpositionCooldown = SuperpositionCooldown; //调试用
         }
 
         public static void Activate(Player player) {
