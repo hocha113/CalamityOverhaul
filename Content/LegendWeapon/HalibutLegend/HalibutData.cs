@@ -7,10 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutData : LegendData
     {
-<<<<<<< Updated upstream
         public override int TargetLevel => InWorldBossPhase.Halibut_Level();
-=======
-        public override int TargetLevle => InWorldBossPhase.Halibut_Level();
         public static int GetLevel() => GetLevel(Main.LocalPlayer.GetItem());
 
         /// <summary>
