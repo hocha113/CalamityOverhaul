@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 冷却：45 秒
         /// </summary>
         public override int DefaultCooldown => 60 * 45;
-        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HasHalibut; // 未装备暂停冷却
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HasHalibut;//未装备暂停冷却
     }
 
     /// <summary>
