@@ -288,26 +288,204 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 HalibutUIAsset.Resurrection.Width, HalibutUIAsset.Resurrection.Height);
 
             if (hitBox.Contains(Main.MouseScreen.ToPoint())) {
-                string percentText = $"{(int)(ratio * 100)}%";
-                Vector2 textPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -20);
-                Utils.DrawBorderString(spriteBatch, percentText, textPos + new Vector2(1, 1),
-                    Color.Black * 0.8f, 0.9f, 0.5f, 0.5f);
-                Color textColor = GetStateColor(ratio);
-                Utils.DrawBorderString(spriteBatch, percentText, textPos,
-                    textColor, 0.9f, 0.5f, 0.5f);
-                string labelText = "深渊复苏";
-                Vector2 labelPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -36);
-                Utils.DrawBorderString(spriteBatch, labelText, labelPos + new Vector2(1, 1),
-                    Color.Black * 0.8f, 0.75f, 0.5f, 0.5f);
-                Utils.DrawBorderString(spriteBatch, labelText, labelPos,
-                    new Color(100, 200, 255), 0.75f, 0.5f, 0.5f);
-                if (lastKnownMax > 0f) {
-                    string maxText = $"上限 {resurrectionSystem.MaxValue:F0}";
-                    Vector2 maxPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, 52);
-                    Utils.DrawBorderString(spriteBatch, maxText, maxPos + new Vector2(1, 1), Color.Black * 0.6f, 0.6f, 0.5f, 0.5f);
-                    Utils.DrawBorderString(spriteBatch, maxText, maxPos, new Color(160, 230, 255), 0.6f, 0.5f, 0.5f);
-                }
+                DrawHoverTooltip(spriteBatch, resurrectionSystem, ratio);
             }
+        }
+
+        private void DrawHoverTooltip(SpriteBatch spriteBatch, ResurrectionSystem system, float ratio) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float alpha = 0.97f;
+            Vector2 baseSize = new Vector2(200, 148);
+            Vector2 mousePos = MousePosition + new Vector2(18, -baseSize.Y - 10);
+            if (mousePos.X + baseSize.X > Main.screenWidth - 16) {
+                mousePos.X = Main.screenWidth - baseSize.X - 16;
+            }
+            if (mousePos.Y < 20) {
+                mousePos.Y = 20;
+            }
+            Rectangle panelRect = new Rectangle((int)mousePos.X, (int)mousePos.Y, (int)baseSize.X, (int)baseSize.Y);
+
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(3, 3);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.45f * alpha);
+
+            float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
+            Color bgCol = new Color(18, 28, 46) * (alpha * wave);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
+
+            Color edgeColor = GetStateColor(ratio) * 0.6f * alpha;
+            DrawTooltipBorder(spriteBatch, panelRect, edgeColor);
+
+            string title = "深渊复苏状态";
+            Vector2 titlePos = new Vector2(panelRect.X + 12, panelRect.Y + 8);
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4f;
+                Vector2 o = ang.ToRotationVector2() * 1.2f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + o, edgeColor * 0.55f, 0.9f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
+
+            Vector2 dividerStart = titlePos + new Vector2(0, 26);
+            Vector2 dividerEnd = dividerStart + new Vector2(baseSize.X - 24, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, edgeColor * 0.9f, edgeColor * 0.05f, 1.4f);
+
+            float percent = ratio * 100f;
+            float cur = system.CurrentValue;
+            float max = system.MaxValue;
+            float rate = system.ResurrectionRate;
+
+            string rateLevel = GetRateLevel(rate);
+            string stateLine = GetStateSummary(ratio, rate);
+
+            Vector2 textStart = dividerStart + new Vector2(4, 10);
+            float lineHeight = 18f;
+            int lineIndex = 0;
+
+            DrawInfoLine(spriteBatch, $"百分比: {percent:F1}%", textStart, ref lineIndex, lineHeight, alpha, Color.White);
+            DrawInfoLine(spriteBatch, $"复苏值: {cur:F1} / {max:F1}", textStart, ref lineIndex, lineHeight, alpha, Color.White);
+            DrawInfoLine(spriteBatch, $"速度: {rate:F3}/帧  [{rateLevel}]", textStart, ref lineIndex, lineHeight, alpha, Color.White);
+            DrawWrappedSummary(spriteBatch, stateLine, panelRect, textStart + new Vector2(0, lineHeight * lineIndex + 4), alpha);
+
+            float starTime = Main.GlobalTimeWrappedHourly * 3f;
+            Vector2 star1 = new Vector2(panelRect.Right - 16, panelRect.Y + 14);
+            float s1a = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * alpha;
+            DrawStar(spriteBatch, star1, 4f, edgeColor * s1a);
+            Vector2 star2 = new Vector2(panelRect.Right - 30, panelRect.Bottom - 18);
+            float s2a = ((float)Math.Sin(starTime + MathHelper.Pi) * 0.5f + 0.5f) * alpha;
+            DrawStar(spriteBatch, star2, 3f, edgeColor * s2a);
+        }
+
+        private void DrawInfoLine(SpriteBatch sb, string text, Vector2 start, ref int index, float lineHeight, float alpha, Color baseColor) {
+            Vector2 pos = start + new Vector2(0, index * lineHeight);
+            Utils.DrawBorderString(sb, text, pos + new Vector2(1, 1), Color.Black * 0.5f * alpha, 0.8f);
+            Utils.DrawBorderString(sb, text, pos, baseColor * alpha, 0.8f);
+            index++;
+        }
+
+        private void DrawWrappedSummary(SpriteBatch sb, string summary, Rectangle panelRect, Vector2 start, float alpha) {
+            int wrapWidth = panelRect.Width - 24;
+            string[] lines = Utils.WordwrapString(summary, FontAssets.MouseText.Value, wrapWidth + 50, 20, out int _);
+            int drawn = 0;
+            for (int i = 0; i < lines.Length; i++) {
+                if (string.IsNullOrWhiteSpace(lines[i])) {
+                    continue;
+                }
+                string line = lines[i].TrimEnd('-', ' ');
+                Vector2 pos = start + new Vector2(2, drawn * 16f);
+                if (pos.Y + 14 > panelRect.Bottom - 8) {
+                    break;
+                }
+                Utils.DrawBorderString(sb, line, pos + new Vector2(1, 1), Color.Black * alpha * 0.5f, 0.7f);
+                Utils.DrawBorderString(sb, line, pos, Color.White * alpha, 0.7f);
+                drawn++;
+            }
+        }
+
+        private string GetRateLevel(float rate) {
+            if (rate < 0.01f) {
+                return "极低";
+            }
+            else if (rate < 0.025f) {
+                return "低";
+            }
+            else if (rate < 0.05f) {
+                return "中";
+            }
+            else if (rate < 0.09f) {
+                return "高";
+            }
+            else {
+                return "危险";
+            }
+        }
+
+        private string GetStateSummary(float ratio, float rate) {
+            string phase;
+            if (ratio < 0.25f) {
+                phase = "复苏平稳，尚无明显异象";
+            }
+            else if (ratio < 0.5f) {
+                phase = "局势渐起波纹，能量仍可控";
+            }
+            else if (ratio < 0.7f) {
+                phase = "脉冲已具侵蚀感，需要留意";
+            }
+            else if (ratio < 0.9f) {
+                phase = "高压区形成，领域边缘不稳定";
+            }
+            else {
+                phase = "深渊临界——随时可能失控";
+            }
+
+            string trend;
+            if (rate < 0.01f) {
+                trend = "几乎静止";
+            }
+            else if (rate < 0.025f) {
+                trend = "缓慢上升";
+            }
+            else if (rate < 0.05f) {
+                trend = "稳态攀升";
+            }
+            else if (rate < 0.09f) {
+                trend = "快速累积";
+            }
+            else {
+                trend = "危险激增";
+            }
+
+            return $"状态：{phase}。当前增长趋势：{trend}。请根据态势调整领域或研究策略";
+        }
+
+        private void DrawTooltipBorder(SpriteBatch sb, Rectangle rect, Color glow) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Rectangle top = new Rectangle(rect.X, rect.Y, rect.Width, 1);
+            Rectangle bottom = new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1);
+            Rectangle left = new Rectangle(rect.X, rect.Y, 1, rect.Height);
+            Rectangle right = new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height);
+            sb.Draw(pixel, top, new Rectangle(0, 0, 1, 1), glow);
+            sb.Draw(pixel, bottom, new Rectangle(0, 0, 1, 1), glow * 0.75f);
+            sb.Draw(pixel, left, new Rectangle(0, 0, 1, 1), glow * 0.85f);
+            sb.Draw(pixel, right, new Rectangle(0, 0, 1, 1), glow * 0.85f);
+            DrawCorner(sb, new Vector2(rect.Left, rect.Top), glow * 1.1f, 0f);
+            DrawCorner(sb, new Vector2(rect.Right, rect.Top), glow * 1.1f, MathHelper.PiOver2);
+            DrawCorner(sb, new Vector2(rect.Right, rect.Bottom), glow * 1.1f, MathHelper.Pi);
+            DrawCorner(sb, new Vector2(rect.Left, rect.Bottom), glow * 1.1f, MathHelper.Pi + MathHelper.PiOver2);
+        }
+
+        private void DrawCorner(SpriteBatch sb, Vector2 pos, Color color, float rot) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            for (int i = 0; i < 3; i++) {
+                float len = 6 - i * 2;
+                sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * (0.9f - i * 0.3f), rot, new Vector2(0, 0.5f), new Vector2(len, 1f), SpriteEffects.None, 0f);
+            }
+        }
+
+        private void DrawGradientLine(SpriteBatch sb, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Vector2 edge = end - start;
+            float length = edge.Length();
+            if (length < 1f) {
+                return;
+            }
+            edge.Normalize();
+            float rotation = (float)Math.Atan2(edge.Y, edge.X);
+            int segments = Math.Max(1, (int)(length / 10f));
+            for (int i = 0; i < segments; i++) {
+                float t = (float)i / segments;
+                Vector2 segPos = start + edge * (length * t);
+                float segLength = length / segments;
+                Color color = Color.Lerp(startColor, endColor, t);
+                sb.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+            }
+        }
+
+        private void DrawStar(SpriteBatch sb, Vector2 position, float size, Color color) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
+            sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
+            sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
+            sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
         }
     }
 
