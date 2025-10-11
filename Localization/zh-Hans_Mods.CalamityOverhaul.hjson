@@ -5356,9 +5356,14 @@ FishSkill: {
 	}
 
 	FishCloud: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 腾云驾雾
+		Tooltip: 
+			'''
+			右键可以乘上云朵进行高速移动
+			乘上雨云后可以穿墙，并使用武器
+			移动路径上将落下雨滴
+			'''
+		Studied: 看起来是鱼，其实是会游泳的云
 	}
 }
 
