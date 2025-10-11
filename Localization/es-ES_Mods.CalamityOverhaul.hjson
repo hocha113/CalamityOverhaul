@@ -1767,6 +1767,7 @@ Keybinds: {
 	// Halibut_Clone.DisplayName: Halibut_ Clone
 	// Halibut_Restart.DisplayName: Halibut_ Restart
 	// Halibut_Superposition.DisplayName: Halibut_ Superposition
+	// Halibut_Teleport.DisplayName: Halibut_ Teleport
 }
 
 TextContent: {

@@ -142,10 +142,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
 
-        public override void ResetEffects() {//用于每帧恢复数据
-
-        }
-
         public override void PostUpdate() {//在每帧更新后进行一些操作
             //克隆技能记录
             if (CloneFishActive) {
@@ -219,6 +215,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     Superposition.AltUse(item, Player);
                 }
             }
+            //领域传送
+            else if (CWRKeySystem.Halibut_Teleport.JustPressed) {
+                if (SeaDomainActive) {
+                    FishTeleport.AltUse(item, Player);
+                }
+            }
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
@@ -236,9 +238,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return true;
         }
 
-        #region 事件登记接口
         public void RegisterShoot(int projType, Vector2 velocity, int damage, float knockback, int itemType) {
-            if (!CloneFishActive) return;
+            if (!CloneFishActive) {
+                return;
+            }
             CloneShootEvents.Add(new CloneShootEvent {
                 FrameIndex = CloneFrameCounter,
                 Velocity = velocity,
@@ -253,6 +256,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 CloneShootEvents.RemoveAt(0);
             }
         }
-        #endregion
     }
 }

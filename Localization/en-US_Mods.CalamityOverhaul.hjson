@@ -1763,10 +1763,11 @@ Keybinds: {
 	InfinitePickSkillKey.DisplayName: Endless Pick form switch key
 	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 	Murasama_DownKey.DisplayName: Murasama:Down Key
-	Halibut_Domain.DisplayName: Halibut: Sea Domain
-	Halibut_Clone.DisplayName: Halibut_ Clone
-	Halibut_Restart.DisplayName: Halibut_ Restart
-	Halibut_Superposition.DisplayName: Halibut_ Superposition
+	Halibut_Domain.DisplayName: Halibut: Oceanic Domain
+	Halibut_Clone.DisplayName: Halibut: Invasion of the Former Self
+	Halibut_Restart.DisplayName: Halibut: Reboot
+	Halibut_Superposition.DisplayName: Halibut: Superposition
+	Halibut_Teleport.DisplayName: Halibut: Domain Teleport
 }
 
 TextContent: {
