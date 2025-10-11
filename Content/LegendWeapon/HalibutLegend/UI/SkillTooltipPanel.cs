@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int HideDelay = 15; //收回延迟（15帧 = 0.25秒）
         private bool pendingHide = false; //是否等待收回
 
+        //新增：悬停切换宽容期（在技能图标之间快速移动时保持面板不收回）
+        private int lingerTimer = 0; //宽容剩余时间
+        private const int LingerDuration = 30; //宽容期（30帧 = 0.5秒）
+
         //动画相关
         private float expandProgress = 0f; //展开进度（0-1）
         private const float ExpandDuration = 15f; //展开动画持续帧数
@@ -58,7 +62,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 显示指定技能的介绍面板
         /// </summary>
         public void Show(FishSkill skill, Vector2 mainPanelPosition, Vector2 mainPanelSize) {
-            if (skill == null) return;
+            if (skill == null) {
+                return;
+            }
 
             //检测技能切换
             if (CurrentSkill != skill) {
@@ -71,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     contentFadeProgress = 0f;
                 }
                 else {
-                    //如果切换技能，内容立即淡出再淡入
+                    //切换技能时内容重新淡入
                     contentFadeProgress = 0f;
                 }
             }
@@ -79,6 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             shouldShow = true;
             pendingHide = false; //取消待收回状态
             hideDelayTimer = 0; //重置延迟计时器
+            lingerTimer = 0; //正在显示时取消宽容计时
 
             //计算锚点位置（主面板右侧中心）
             anchorPosition = mainPanelPosition + new Vector2(mainPanelSize.X, mainPanelSize.Y / 2);
@@ -88,13 +95,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 隐藏介绍面板（带延迟）
+        /// 隐藏介绍面板（带延迟与宽容期）
         /// </summary>
         public void Hide() {
-            if (!pendingHide && shouldShow) {
-                pendingHide = true;
-                hideDelayTimer = 0;
+            if (!shouldShow) {
+                return;
             }
+            //启动宽容期，避免在图标之间的空隙闪烁收起
+            if (lingerTimer < LingerDuration) {
+                lingerTimer = LingerDuration;
+            }
+            pendingHide = true;
         }
 
         /// <summary>
@@ -104,6 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             shouldShow = false;
             pendingHide = false;
             hideDelayTimer = 0;
+            lingerTimer = 0;
         }
 
         /// <summary>
@@ -123,13 +135,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Update() {
-            //处理延迟收回逻辑
+            //处理宽容与延迟收回逻辑
             if (pendingHide) {
-                hideDelayTimer++;
-                if (hideDelayTimer >= HideDelay) {
-                    shouldShow = false;
-                    pendingHide = false;
-                    hideDelayTimer = 0;
+                if (lingerTimer > 0) {
+                    lingerTimer--;
+                }
+                else {
+                    hideDelayTimer++;
+                    if (hideDelayTimer >= HideDelay) {
+                        shouldShow = false;
+                        pendingHide = false;
+                        hideDelayTimer = 0;
+                        //收起后清理当前技能引用，避免残留文本
+                        CurrentSkill = null;
+                    }
                 }
             }
 
@@ -164,15 +183,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float easedProgress = shouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
 
-            //更新位置和尺寸
+            //更新位置和尺寸（保持与主面板右侧对齐）
             float panelHeight = TooltipPanel.Height;
             DrawPosition = anchorPosition + new Vector2(-6, -panelHeight / 2 - 18); //-4是为了与主面板稍微重叠
             Size = new Vector2(currentWidth, panelHeight);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            //完全收起时不绘制
-            if (expandProgress <= 0.01f || CurrentSkill == null) return;
+            if (expandProgress <= 0.01f) {
+                return;
+            }
+            if (CurrentSkill == null) {
+                return;
+            }
 
             float alpha = Math.Min(expandProgress * 2f, 1f); //前50%进度快速淡入
 
@@ -315,18 +338,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 绘制面板内容
         /// </summary>
         private void DrawContent(SpriteBatch spriteBatch, float panelAlpha) {
-            if (CurrentSkill?.Icon == null) return;
-
+            if (CurrentSkill?.Icon == null) {
+                return;
+            }
             //内容透明度
             float contentAlpha = contentFadeProgress * panelAlpha;
-            if (contentAlpha <= 0.01f) return;
-
+            if (contentAlpha <= 0.01f) {
+                return;
+            }
             //内容区域起始位置
             Vector2 contentStart = DrawPosition + new Vector2(Padding, Padding);
             float availableWidth = currentWidth - Padding * 2;
-
             //如果宽度不够，不绘制内容
-            if (availableWidth < 100) return;
+            if (availableWidth < 100) {
+                return;
+            }
 
             //1. 绘制技能图标（左上角）
             Vector2 iconPos = contentStart;
@@ -385,18 +411,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth + 40, 20, out int lineCount);
 
             //绘制每一行文本
-            for (int i = 0; i < Math.Min(lines.Length, 7); i++) //最多显示7行
-            {
-                if (string.IsNullOrEmpty(lines[i])) continue;
+            for (int i = 0; i < Math.Min(lines.Length, 7); i++) {
+                if (string.IsNullOrEmpty(lines[i])) {
+                    continue;
+                }
 
                 //移除末尾的连字符和空格（Terraria的WordwrapString会在某些情况下添加连字符）
                 string line = lines[i].TrimEnd('-', ' ');
-                if (string.IsNullOrEmpty(line)) continue;
+                if (string.IsNullOrEmpty(line)) {
+                    continue;
+                }
 
                 Vector2 linePos = tooltipPos + new Vector2(4, i * (LineSpacing + 14)); //行高调整为14
 
                 //检查是否超出面板底部
-                if (linePos.Y + 14 > DrawPosition.Y + Size.Y - Padding) break;
+                if (linePos.Y + 14 > DrawPosition.Y + Size.Y - Padding) {
+                    break;
+                }
 
                 //文字阴影
                 Utils.DrawBorderString(spriteBatch, line, linePos + new Vector2(1, 1),
@@ -431,7 +462,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 edge = end - start;
             float length = edge.Length();
 
-            if (length < 1f) return;
+            if (length < 1f) {
+                return;
+            }
 
             edge.Normalize();
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
