@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5353,3 +5353,5 @@ FishSkill: {
 		Studied: 散发着臭味的鱼，它还活着吗?
 	}
 }
+
+// NPCs.TheSpiritofTheAbyss.DisplayName: The Spiritof The Abyss

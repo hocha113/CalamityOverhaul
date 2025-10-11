@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5384,3 +5384,5 @@ FishSkill: {
 		Studied: ""
 	}
 }
+
+NPCs.TheSpiritofTheAbyss.DisplayName: The Spiritof The Abyss

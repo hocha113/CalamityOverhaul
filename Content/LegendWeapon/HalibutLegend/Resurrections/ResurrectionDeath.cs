@@ -9,10 +9,10 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 {
     /// <summary>
-    /// 深渊复苏死亡系统 - 处理复苏满时的死亡机制和演出
+    /// 深渊复苏死亡系统，处理复苏满时的死亡机制和演出
     /// </summary>
     public class ResurrectionDeathSystem : ModPlayer
     {
@@ -359,6 +359,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //杀死玩家
             Player.Hurt(damageSource, Player.statLife + 1, 0);
 
+            if (!VaultUtils.isClient) {
+                SpawnAbyssSpirit();
+            }
+
             //生成死亡特效
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 50; i++) {
@@ -374,6 +378,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                         DustID.Shadowflame, 0f, 0f, 100, Color.Black, 2f);
                     dust.velocity = Main.rand.NextVector2Circular(8f, 8f);
                     dust.noGravity = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 生成深渊厉鬼
+        /// </summary>
+        private void SpawnAbyssSpirit() {
+            int npcType = ModContent.NPCType<TheSpiritofTheAbyss>();
+
+            // 在死亡位置生成
+            int npcIndex = NPC.NewNPC(
+                Player.GetSource_Death(),
+                (int)Player.Center.X,
+                (int)Player.Center.Y,
+                npcType
+            );
+
+            if (npcIndex >= 0 && npcIndex < Main.maxNPCs) {
+                NPC spirit = Main.npc[npcIndex];
+
+                // 设置目标玩家
+                spirit.ai[2] = Player.whoAmI;
+
+                // 同步到客户端
+                if (Main.netMode == Terraria.ID.NetmodeID.Server) {
+                    NetMessage.SendData(Terraria.ID.MessageID.SyncNPC, -1, -1, null, npcIndex);
                 }
             }
         }

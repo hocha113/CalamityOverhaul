@@ -1,7 +1,7 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 {
     public class ResurrectionSystem
     {
@@ -379,10 +379,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
-            other.currentValue = this.currentValue;
-            other.maxValue = this.maxValue;
-            other.resurrectionRate = this.resurrectionRate;
-            other.isEnabled = this.isEnabled;
+            other.currentValue = currentValue;
+            other.maxValue = maxValue;
+            other.resurrectionRate = resurrectionRate;
+            other.isEnabled = isEnabled;
         }
 
         /// <summary>
