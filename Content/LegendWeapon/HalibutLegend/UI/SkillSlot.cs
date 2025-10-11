@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(SoundID.Grab);
-                    HalibutUIHead.Instance.FishSkill = FishSkill;
+                    HalibutUIHead.FishSkill = FishSkill;
                 }
             }
             else {

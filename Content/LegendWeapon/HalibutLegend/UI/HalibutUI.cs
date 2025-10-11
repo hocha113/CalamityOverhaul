@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -17,27 +18,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     internal static class HalibutUIAsset
     {
         //奈落之眼纹理，共两帧动画，第一帧是闭眼，第二帧是睁眼，单帧大小40(宽)*26(高)
-        public static Texture2D SeaEye;
+        public static Texture2D SeaEye = null;
         //按钮，大小46*26
-        public static Texture2D Button;
+        public static Texture2D Button = null;
         //大比目鱼的头像图标，放置在屏幕左下角作为UI的入口，大小74*74
-        public static Texture2D Head;
+        public static Texture2D Head = null;
         //左侧边栏，大小218*42
-        public static Texture2D LeftSidebar;
+        public static Texture2D LeftSidebar = null;
         //面板，大小242*214
-        public static Texture2D Panel;
+        public static Texture2D Panel = null;
         //提示面板，大小214*206
-        public static Texture2D TooltipPanel;
+        public static Texture2D TooltipPanel = null;
         //图标栏，大小60*52
-        public static Texture2D PictureSlot;
+        public static Texture2D PictureSlot = null;
         //技能图标，大小170*34，共五帧，对应五种技能的图标
-        public static Texture2D Skillcon;
+        public static Texture2D Skillcon = null;
         //左侧方向按钮
-        public static Texture2D LeftButton;
+        public static Texture2D LeftButton = null;
         //右侧方向按钮
-        public static Texture2D RightButton;
+        public static Texture2D RightButton = null;
         //下划线花边纹理
-        public static Texture2D TooltiplineBorder;
+        public static Texture2D TooltiplineBorder = null;
     }
 
     internal class HalibutUIHead : UIHandle
@@ -55,16 +56,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
         public bool Open;
-        public FishSkill FishSkill;
+        public static ref FishSkill FishSkill => ref player.GetModPlayer<HalibutUISave>().FishSkill;
 
-        public override void SaveUIData(TagCompound tag) {
-            HalibutUILeftSidebar.Instance.SaveUIData(tag);
+        public static void SaveData(TagCompound tag) {
             HalibutUIPanel.Instance.SaveUIData(tag);
             DomainUI.Instance.SaveUIData(tag);
         }
 
-        public override void LoadUIData(TagCompound tag) {
-            HalibutUILeftSidebar.Instance.LoadUIData(tag);
+        public static void LoadData(TagCompound tag) {
             HalibutUIPanel.Instance.LoadUIData(tag);
             DomainUI.Instance.LoadUIData(tag);
         }
@@ -149,9 +148,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
     internal class HalibutUIPanel : UIHandle
     {
+        #region Data
         public static HalibutUIPanel Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIPanel>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
-        public List<SkillSlot> halibutUISkillSlots = [];
+        public List<SkillSlot> halibutUISkillSlots => player.GetModPlayer<HalibutUISave>().halibutUISkillSlots;
         public LeftButtonUI leftButton = new LeftButtonUI();
         public RightButtonUI rightButton = new RightButtonUI();
         public float Sengs;
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = []; //槽位 -> 对应的粒子索引
-
+        #endregion
         public static void FishSkillTooltip(Item item, List<TooltipLine> tooltips) {
             if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || !halibutPlayer.HasHalibut) {
                 return;
@@ -198,48 +198,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 OverrideColor = accent2
             };
             tooltips.Add(line);
-        }
-
-        public override void SaveUIData(TagCompound tag) {
-            IList<TagCompound> list = [];
-            foreach (var slot in halibutUISkillSlots) {
-                if (slot.FishSkill == null) {
-                    continue;
-                }
-                TagCompound skillTag = [];
-                skillTag["Name"] = slot.FishSkill.FullName;
-                slot.FishSkill.SaveData(tag);
-                list.Add(skillTag);
-            }
-            tag["FishSkills"] = list;
-
-            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
-                var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
-                if (skill != null) {
-                    tag["HalibutTargetSkillName"] = skill.FullName;
-                }
-            }
-        }
-
-        public override void LoadUIData(TagCompound tag) {
-            if (!tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
-                return;
-            }
-            halibutUISkillSlots.Clear();
-            foreach (var skillTag in list) {
-                if (!skillTag.TryGet<string>("Name", out var name) ||
-                    !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
-                    continue;
-                }
-                fishSkill.LoadData(skillTag);
-                halibutUISkillSlots.Add(AddSkillSlot(fishSkill, 1f));
-            }
-
-            if (!tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
-                return;
-            }
-
-            HalibutUIHead.Instance.FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
         }
 
         public static SkillSlot AddSkillSlot(FishSkill fishSkill, float appearProgress) {
@@ -316,7 +274,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Update() {
-            halibutUISkillSlots ??= [];
             pendingSlots ??= [];
 
             //确保滚动偏移量在有效范围内
