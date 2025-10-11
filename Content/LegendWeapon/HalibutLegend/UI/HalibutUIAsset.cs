@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //下划线花边纹理
         public static Texture2D TooltiplineBorder = null;
         //复苏进度条的底部边框，大小82*32
-        public static Texture2D Palinesthesia = null;
+        public static Texture2D Resurrection = null;
         //复苏进度条的进度填充，大小52*8，和底部边框配合使用，偏移值为(24, 12)
-        public static Texture2D PalinesthesiaTop = null;
+        public static Texture2D ResurrectionTop = null;
     }
 }
