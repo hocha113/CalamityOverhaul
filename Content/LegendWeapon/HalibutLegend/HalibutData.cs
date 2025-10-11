@@ -12,10 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 =======
         public override int TargetLevle => InWorldBossPhase.Halibut_Level();
         public static int GetLevel() => GetLevel(Main.LocalPlayer.GetItem());
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
         /// <summary>
         /// 获得成长等级
