@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         /// <returns></returns>
         public int CrashesLevel() {
-            return 10;
+            return 0;
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作

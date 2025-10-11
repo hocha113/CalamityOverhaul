@@ -64,6 +64,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //激活动画（眼睛飞向中心并放大）
         private readonly List<EyeActivationAnimation> activationAnimations = [];
 
+        //复苏增长相关常量
+        private const float BaseResurrectionRatePerEye = 0.02f; //单层基础复苏速度
+        private const float GeometricFactor = 1.18f; //几何倍率（每更高一层的额外提高倍率）
+        private const float CrashedEyeSideEffectRate = 0.001f; //死机眼睛的极小副作用
+
         ///<summary>
         ///获取当前激活的眼睛数量（即领域层数）
         ///</summary>
@@ -231,6 +236,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.SeaDomainLayers = activationSequence.Count;
             }
+
+            //每帧更新复苏速度，确保死机状态变化能及时反映
+            UpdateResurrectionRate();
+        }
+
+        /// <summary>
+        /// 根据激活眼睛数量与层级计算复苏速度：
+        ///  未死机的眼睛：Base * GeometricFactor^(层级-1)
+        ///  死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
+        ///  结果为绝对设置，不进行累加，保证稳定性
+        /// </summary>
+        private void UpdateResurrectionRate() {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            float rate = 0f;
+            int crashLevel = halibutPlayer.CrashesLevel();
+
+            for (int i = 0; i < activationSequence.Count; i++) {
+                SeaEyeButton eye = activationSequence[i];
+                if (!eye.IsActive) {
+                    continue;
+                }
+
+                int layer = eye.LayerNumber ?? 1;
+                bool isCrashed = layer <= crashLevel;
+
+                if (isCrashed) {
+                    rate += CrashedEyeSideEffectRate;
+                }
+                else {
+                    float eyeRate = BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, layer - 1);
+                    rate += eyeRate;
+                }
+            }
+
+            halibutPlayer.ResurrectionSystem.ResurrectionRate = rate;
         }
 
         private void HandleEyeToggle(SeaEyeButton eye) {
@@ -250,6 +293,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 RecalculateLayerNumbers();
                 SpawnEyeToggleParticles(eye, false);
             }
+
+            //切换时立即刷新复苏速度
+            UpdateResurrectionRate();
         }
 
         private void RecalculateLayerNumbers() {
