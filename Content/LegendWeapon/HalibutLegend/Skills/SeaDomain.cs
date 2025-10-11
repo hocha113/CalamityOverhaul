@@ -572,13 +572,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 定期播放深海氛围音效
             ambientSoundTimer++;
-            if (ambientSoundTimer % 180 == 0) {  // 每3秒
-                SoundEngine.PlaySound(SoundID.Dolphin with {
-                    Volume = 0.2f,
-                    Pitch = -0.5f,
-                    MaxInstances = 2
-                }, domainCenter);
-            }
+            //if (ambientSoundTimer % 180 == 0) {  // 每3秒
+            //    SoundEngine.PlaySound(SoundID.Dolphin with {
+            //        Volume = 0.2f,
+            //        Pitch = -0.5f,
+            //        MaxInstances = 2
+            //    }, domainCenter);
+            //}
 
             // 随机的鱼群游动音效
             if (ambientSoundTimer % 120 == 0 && Main.rand.NextBool(3)) {
