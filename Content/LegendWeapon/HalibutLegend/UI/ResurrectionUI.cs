@@ -15,52 +15,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static ResurrectionUI Instance => UIHandleLoader.GetUIHandleOfType<ResurrectionUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None; //手动调用
 
-        //UI相关数据（不再管理复苏值，仅用于显示）
-        private float displayValue = 0f; //实际显示的复苏值（用于平滑过渡）
-        private const float SmoothSpeed = 0.15f; //平滑速度
+        private float displayValue = 0f;
+        private const float SmoothSpeed = 0.15f;
 
-        //视觉效果相关
-        private float shakeIntensity = 0f; //抖动强度
-        private Vector2 shakeOffset = Vector2.Zero; //抖动偏移
-        private float pulseTimer = 0f; //脉动计时器
-        private float glowIntensity = 0f; //发光强度
-        private float warningFlashTimer = 0f; //警告闪烁计时器
+        private float shakeIntensity = 0f;
+        private Vector2 shakeOffset = Vector2.Zero;
+        private float pulseTimer = 0f;
+        private float glowIntensity = 0f;
+        private float warningFlashTimer = 0f;
 
-        //粒子效果
         private readonly System.Collections.Generic.List<ResurrectionParticle> particles = [];
         private int particleSpawnTimer = 0;
 
-        //改良演出粒子（研究新鱼导致上限上升）
         private readonly System.Collections.Generic.List<ImprovePulse> improvePulses = [];
         private readonly System.Collections.Generic.List<ImproveFlyParticle> improveFlyParticles = [];
-        private float improveFlash = 0f; //上限提升时的闪光
-        private float lastKnownMax = -1f;
+        private float improveFlash = 0f;
 
-        //危险阈值
-        private const float DangerThreshold = 0.7f; //70%以上开始警告
-        private const float CriticalThreshold = 0.9f; //90%以上进入危险状态
+        private const float DangerThreshold = 0.7f;
+        private const float CriticalThreshold = 0.9f;
 
-        /// <summary>
-        /// 在研究新的鱼完成时触发复苏条改良演出
-        /// </summary>
-        public void TriggerImproveEffect(Vector2 worldStartPos, int flyCount, float oldMax, float newMax) {
+        public void TriggerImproveEffect(Vector2 worldStartPos, int flyCount) {
             if (flyCount < 1) {
                 flyCount = 1;
             }
             if (flyCount > 30) {
                 flyCount = 30;
             }
-            lastKnownMax = newMax;
-            improveFlash = 1.2f; //立即闪光
+            improveFlash = 1.2f;
             for (int i = 0; i < flyCount; i++) {
                 float delay = i * 4f;
                 improveFlyParticles.Add(new ImproveFlyParticle(worldStartPos, delay));
             }
         }
 
-        /// <summary>
-        /// 获取玩家的复苏系统
-        /// </summary>
         private ResurrectionSystem GetResurrectionSystem() {
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return halibutPlayer.ResurrectionSystem;
@@ -153,7 +140,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //改良飞行粒子更新
             for (int i = improveFlyParticles.Count - 1; i >= 0; i--) {
                 improveFlyParticles[i].Update(this);
                 if (improveFlyParticles[i].Arrived) {
@@ -207,7 +193,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Vector2 drawPos = DrawPosition + shakeOffset;
 
-            //绘制粒子（在底层）
             foreach (var particle in particles) {
                 particle.Draw(spriteBatch);
             }
@@ -215,32 +200,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 fp.Draw(spriteBatch);
             }
 
-            //绘制阴影
             spriteBatch.Draw(HalibutUIAsset.Resurrection, drawPos + new Vector2(2, 2), null,
                 Color.Black * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-            //绘制底部边框
             spriteBatch.Draw(HalibutUIAsset.Resurrection, drawPos, null,
                 Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-            //绘制进度填充条
             if (ratio > 0.01f) {
-                Vector2 barPos = drawPos + new Vector2(24, 12); //偏移值
-                int fillWidth = (int)(52 * ratio); //填充宽度
+                Vector2 barPos = drawPos + new Vector2(24, 12);
+                int fillWidth = (int)(52 * ratio);
 
                 if (fillWidth > 0) {
                     Rectangle sourceRect = new Rectangle(0, 0, fillWidth, HalibutUIAsset.ResurrectionTop.Height);
                     Color fillColor = GetStateColor(ratio);
 
-                    //绘制底层暗色（营造深度感）
                     spriteBatch.Draw(HalibutUIAsset.ResurrectionTop, barPos + new Vector2(0, 1), sourceRect,
                         fillColor * 0.6f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-                    //绘制主填充条
                     spriteBatch.Draw(HalibutUIAsset.ResurrectionTop, barPos, sourceRect,
                         fillColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-                    //绘制发光效果
                     if (glowIntensity > 0.1f) {
                         Color glowColor = fillColor with { A = 0 };
                         float pulse = (float)Math.Sin(pulseTimer * 3f) * 0.3f + 0.7f;
@@ -250,18 +229,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                             new Vector2(1f, 1.2f), SpriteEffects.None, 0f);
                     }
 
-                    //绘制高光（顶部亮带）
                     Rectangle highlightRect = new Rectangle(0, 0, fillWidth, 2);
                     spriteBatch.Draw(HalibutUIAsset.ResurrectionTop, barPos, highlightRect,
                         Color.White * 0.4f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 }
             }
 
-            //绘制前景边框（增强立体感）
             spriteBatch.Draw(HalibutUIAsset.Resurrection, drawPos, null,
                 Color.White * 0.3f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-            //绘制危险状态的警告边框
             if (ratio >= DangerThreshold) {
                 float flash = (float)Math.Sin(warningFlashTimer * 6f) * 0.5f + 0.5f;
                 Color warningColor = ratio >= CriticalThreshold
@@ -273,7 +249,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     1.05f, SpriteEffects.None, 0f);
             }
 
-            //改良脉冲绘制（在最上层但在文字下）
             foreach (var pulse in improvePulses) {
                 pulse.Draw(spriteBatch);
             }
@@ -296,19 +271,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             float alpha = 0.97f;
 
-            //基础尺寸与排版参数
-            float minWidth = 200f;
-            float maxWidth = 380f;
-            float horizontalPadding = 12f; //左右内边距
-            float topPadding = 8f;
-            float bottomPadding = 12f;
+            float minWidth = 220f;
+            float maxWidth = 420f;
+            float horizontalPadding = 14f;
+            float topPadding = 10f;
+            float bottomPadding = 14f;
             float titleExtra = 6f;
-            float dividerSpacing = 6f;
+            float dividerSpacing = 8f;
             float infoSpacingTop = 10f;
             float infoLineHeight = 18f;
-            float summarySpacing = 4f;
+            float summarySpacing = 6f;
             float summaryLineHeight = 16f;
-            float contentRightPadding = 12f;
+            float contentRightPadding = 14f;
 
             float percent = ratio * 100f;
             float cur = system.CurrentValue;
@@ -316,24 +290,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float rate = system.ResurrectionRate;
 
             string rateLevel = GetRateLevel(rate);
+            Color rateLevelColor = GetRateLevelColor(rateLevel);
             string stateLine = GetStateSummary(ratio, rate);
 
             string title = "深渊复苏状态";
-            string line1 = $"百分比: {percent:F1}%";
-            string line2 = $"复苏值: {cur:F1} / {max:F1}";
-            string line3 = $"速度: {rate:F3}/帧  [{rateLevel}]";
+            string line1 = $"百分比 : {percent:F1}%";
+            string line2 = $"复苏值 : {cur:F1} / {max:F1}";
+            string line3 = $"速度   : {rate:F3}/帧";
 
-            //先用最小宽度估算内容
             float workingWidth = minWidth;
-            float contentWidth = workingWidth - horizontalPadding - contentRightPadding; //文本可用宽
+            float contentWidth = workingWidth - horizontalPadding - contentRightPadding;
 
-            //测量信息行宽度
             float infoMaxLine = 0f;
             infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line1).X);
             infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line2).X);
-            infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line3).X);
+            infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line3).X + 60f);
 
-            //包裹摘要（可能需要多次以适应宽度）
             string[] summaryLines = WrapSummary(stateLine, contentWidth);
             float summaryMaxLine = 0f;
             for (int i = 0; i < summaryLines.Length; i++) {
@@ -346,15 +318,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //如果内容宽度不足以容纳最长行，则扩大面板宽度
             float longest = Math.Max(infoMaxLine, summaryMaxLine);
             if (longest > contentWidth) {
                 workingWidth = Math.Clamp(longest + horizontalPadding + contentRightPadding, minWidth, maxWidth);
                 contentWidth = workingWidth - horizontalPadding - contentRightPadding;
-                summaryLines = WrapSummary(stateLine, contentWidth); //重新包裹
+                summaryLines = WrapSummary(stateLine, contentWidth);
             }
 
-            //计算摘要行数（忽略空行）
             int summaryDrawLines = 0;
             for (int i = 0; i < summaryLines.Length; i++) {
                 if (!string.IsNullOrWhiteSpace(summaryLines[i])) {
@@ -362,20 +332,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //计算高度
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
-            float infoBlockHeight = infoLineHeight * 3f; //三条信息行
+            float infoBlockHeight = infoLineHeight * 3f;
             float summaryBlockHeight = summaryDrawLines * summaryLineHeight;
-            float dividerHeight = 2f; //分割线区域的占位
+            float dividerHeight = 2f;
 
             float panelHeight = topPadding
                 + titleHeight + titleExtra
                 + dividerSpacing + dividerHeight
                 + infoSpacingTop + infoBlockHeight
+                + dividerSpacing + dividerHeight
                 + summarySpacing + summaryBlockHeight
                 + bottomPadding;
 
-            //限制高度最大不超过屏幕（必要时可进一步裁剪）
             float screenLimit = Main.screenHeight - 40f;
             if (panelHeight > screenLimit) {
                 panelHeight = screenLimit;
@@ -392,43 +361,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Rectangle panelRect = new Rectangle((int)mousePos.X, (int)mousePos.Y, (int)panelSize.X, (int)panelSize.Y);
 
-            //背景与阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.45f * alpha);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.5f * alpha);
             float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
-            Color bgCol = new Color(18, 28, 46) * (alpha * wave);
+            Color baseA = new Color(14, 22, 38) * (alpha * wave);
+            Color baseB = new Color(8, 26, 46) * 0.3f;
+            Color bgCol = new Color(
+                (byte)Math.Clamp(baseA.R + baseB.R, 0, 255),
+                (byte)Math.Clamp(baseA.G + baseB.G, 0, 255),
+                (byte)Math.Clamp(baseA.B + baseB.B, 0, 255),
+                (byte)Math.Clamp(baseA.A + baseB.A, 0, 255)
+            );
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
 
-            Color edgeColor = GetStateColor(ratio) * 0.6f * alpha;
+            Color edgeColor = GetStateColor(ratio) * 0.65f * alpha;
             DrawTooltipBorder(spriteBatch, panelRect, edgeColor);
 
-            //标题
             Vector2 titlePos = new Vector2(panelRect.X + horizontalPadding, panelRect.Y + topPadding);
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
-                Vector2 o = ang.ToRotationVector2() * 1.2f;
+                Vector2 o = ang.ToRotationVector2() * 1.25f;
                 Utils.DrawBorderString(spriteBatch, title, titlePos + o, edgeColor * 0.55f, 0.9f);
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
 
-            //分割线
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + titleExtra);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - horizontalPadding - contentRightPadding, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd, edgeColor * 0.9f, edgeColor * 0.05f, 1.3f);
 
-            //信息行
             Vector2 infoStart = dividerStart + new Vector2(0, dividerSpacing + infoSpacingTop);
             int infoIndex = 0;
             DrawInfoLine(spriteBatch, line1, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
             DrawInfoLine(spriteBatch, line2, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
-            DrawInfoLine(spriteBatch, line3, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
+            DrawInfoLineRate(spriteBatch, line3, rateLevel, rateLevelColor, infoStart, ref infoIndex, infoLineHeight, alpha);
 
-            //摘要
-            Vector2 summaryStart = infoStart + new Vector2(0, infoIndex * infoLineHeight + summarySpacing);
+            Vector2 divider2Start = infoStart + new Vector2(0, infoIndex * infoLineHeight + dividerSpacing * 0.6f);
+            Vector2 divider2End = divider2Start + new Vector2(panelSize.X - horizontalPadding - contentRightPadding, 0);
+            DrawDashedLine(spriteBatch, divider2Start, divider2End, edgeColor * 0.6f, 6f, 3f);
+
+            Vector2 summaryStart = divider2Start + new Vector2(0, dividerSpacing + summarySpacing);
+            DrawSummaryHeader(spriteBatch, summaryStart - new Vector2(0, summarySpacing + 4f), edgeColor, alpha);
             DrawSummaryLines(spriteBatch, summaryLines, summaryStart, panelRect, summaryLineHeight, alpha);
 
-            //星星点缀
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
             Vector2 star1 = new Vector2(panelRect.Right - 18, panelRect.Y + 14);
             float s1a = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * alpha;
@@ -439,16 +414,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private string[] WrapSummary(string text, float contentWidth) {
-            //使用WordwrapString进行简单包裹，并返回结果
-            string[] lines = Utils.WordwrapString(text, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out int _);
-            return lines;
+            return Utils.WordwrapString(text, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out int _);
         }
 
         private void DrawInfoLine(SpriteBatch sb, string text, Vector2 start, ref int index, float lineHeight, float alpha, Color baseColor) {
             Vector2 pos = start + new Vector2(0, index * lineHeight);
-            Utils.DrawBorderString(sb, text, pos + new Vector2(1, 1), Color.Black * 0.5f * alpha, 0.8f);
-            Utils.DrawBorderString(sb, text, pos, baseColor * alpha, 0.8f);
+            Utils.DrawBorderString(sb, text, pos + new Vector2(1, 1), Color.Black * 0.55f * alpha, 0.78f);
+            Utils.DrawBorderString(sb, text, pos, baseColor * alpha, 0.78f);
             index++;
+        }
+
+        private void DrawInfoLineRate(SpriteBatch sb, string textPrefix, string level, Color levelColor, Vector2 start, ref int index, float lineHeight, float alpha) {
+            Vector2 pos = start + new Vector2(0, index * lineHeight);
+            string composed = textPrefix + "  [" + level + "]";
+            Utils.DrawBorderString(sb, composed, pos + new Vector2(1, 1), Color.Black * 0.6f * alpha, 0.78f);
+            Utils.DrawBorderString(sb, textPrefix, pos, Color.White * alpha, 0.78f);
+            Vector2 prefixSize = FontAssets.MouseText.Value.MeasureString(textPrefix + "  ");
+            Vector2 levelPos = pos + new Vector2(prefixSize.X, 0);
+            Utils.DrawBorderString(sb, "[" + level + "]", levelPos, levelColor * alpha, 0.78f);
+            index++;
+        }
+
+        private void DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
+            string header = "当前态势评估";
+            for (int i = 0; i < 4; i++) {
+                float a = MathHelper.TwoPi * i / 4f;
+                Vector2 o = a.ToRotationVector2() * 1.1f;
+                Utils.DrawBorderString(sb, header, pos + o, edgeColor * 0.4f * alpha, 0.72f);
+            }
+            Utils.DrawBorderString(sb, header, pos, Color.Lerp(edgeColor, Color.White, 0.4f) * alpha, 0.72f);
         }
 
         private void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
@@ -459,12 +453,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 string line = lines[i].TrimEnd('-', ' ');
                 Vector2 pos = start + new Vector2(2, drawn * lineHeight);
-                if (pos.Y + (lineHeight - 2f) > panelRect.Bottom - 8) {
+                if (pos.Y + (lineHeight - 2f) > panelRect.Bottom - 10) {
                     break;
                 }
                 Utils.DrawBorderString(sb, line, pos + new Vector2(1, 1), Color.Black * alpha * 0.5f, 0.7f);
-                Utils.DrawBorderString(sb, line, pos, Color.White * alpha, 0.7f);
+                Utils.DrawBorderString(sb, line, pos, new Color(230, 240, 255) * alpha, 0.7f);
                 drawn++;
+            }
+        }
+
+        private Color GetRateLevelColor(string level) {
+            if (level == "极低") {
+                return new Color(120, 200, 255);
+            }
+            else if (level == "低") {
+                return new Color(100, 220, 170);
+            }
+            else if (level == "中") {
+                return new Color(255, 210, 90);
+            }
+            else if (level == "高") {
+                return new Color(255, 140, 70);
+            }
+            else {
+                return new Color(255, 70, 70);
             }
         }
 
@@ -531,7 +543,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Rectangle left = new Rectangle(rect.X, rect.Y, 1, rect.Height);
             Rectangle right = new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height);
             sb.Draw(pixel, top, new Rectangle(0, 0, 1, 1), glow);
-            sb.Draw(pixel, bottom, new Rectangle(0, 0, 1, 1), glow * 0.75f);
+            sb.Draw(pixel, bottom, new Rectangle(0, 0, 1, 1), glow * 0.7f);
             sb.Draw(pixel, left, new Rectangle(0, 0, 1, 1), glow * 0.85f);
             sb.Draw(pixel, right, new Rectangle(0, 0, 1, 1), glow * 0.85f);
             DrawCorner(sb, new Vector2(rect.Left, rect.Top), glow * 1.1f, 0f);
@@ -564,6 +576,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
                 sb.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+            }
+        }
+
+        private void DrawDashedLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, float dashLength, float gapLength) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Vector2 dir = end - start;
+            float len = dir.Length();
+            if (len < 1f) {
+                return;
+            }
+            dir.Normalize();
+            float drawn = 0f;
+            while (drawn < len) {
+                float seg = Math.Min(dashLength, len - drawn);
+                Vector2 segStart = start + dir * drawn;
+                sb.Draw(pixel, segStart, new Rectangle(0, 0, 1, 1), color, dir.ToRotation(), new Vector2(0, 0.5f), new Vector2(seg, 1.2f), SpriteEffects.None, 0f);
+                drawn += dashLength + gapLength;
             }
         }
 
@@ -619,9 +648,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
     }
 
-    /// <summary>
-    /// 改良飞行粒子：从研究槽位飞向复苏条
-    /// </summary>
     internal class ImproveFlyParticle
     {
         private Vector2 startPos;
@@ -684,9 +710,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
     }
 
-    /// <summary>
-    /// 改良脉冲：到达后在复苏条位置扩散的光圈
-    /// </summary>
     internal class ImprovePulse
     {
         private Vector2 center;
