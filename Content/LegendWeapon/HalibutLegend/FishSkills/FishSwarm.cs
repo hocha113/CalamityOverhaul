@@ -60,6 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
+            SetCooldown();
             //激活技能
             halibutPlayer.FishSwarmActive = true;
             halibutPlayer.FishSwarmTimer = 0;
