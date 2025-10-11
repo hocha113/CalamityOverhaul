@@ -432,8 +432,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string composed = textPrefix + "  [" + level + "]";
             Utils.DrawBorderString(sb, composed, pos + new Vector2(1, 1), Color.Black * 0.6f * alpha, 0.78f);
             Utils.DrawBorderString(sb, textPrefix, pos, Color.White * alpha, 0.78f);
-            Vector2 prefixSize = FontAssets.MouseText.Value.MeasureString(textPrefix + "  ");
-            Vector2 levelPos = pos + new Vector2(prefixSize.X, 0);
+            Vector2 prefixSize = FontAssets.MouseText.Value.MeasureString(textPrefix);
+            Vector2 levelPos = pos + new Vector2(prefixSize.X - 16, 0);
             Utils.DrawBorderString(sb, "[" + level + "]", levelPos, levelColor * alpha, 0.78f);
             index++;
         }
