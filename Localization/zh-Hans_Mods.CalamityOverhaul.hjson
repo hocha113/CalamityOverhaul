@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5357,7 +5357,7 @@ FishSkill: {
 
 	FishCloud: {
 		DisplayName: 腾云驾雾
-		Tooltip: 
+		Tooltip:
 			'''
 			右键可以乘上云朵进行高速移动
 			乘上雨云后可以穿墙，并使用武器

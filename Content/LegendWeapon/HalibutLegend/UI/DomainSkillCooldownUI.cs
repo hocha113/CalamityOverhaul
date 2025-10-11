@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             _activeIcons.Sort((a, b) => b.Current.CompareTo(a.Current));
 
-            Vector2 screenAnchor = new(Main.screenWidth / 13 * 12, Main.screenHeight / 13 * 12 - 120);
+            Vector2 screenAnchor = new(Main.screenWidth - 80, Main.screenHeight - 180);
             float globalOffset = MathHelper.Lerp(20f, 0f, EaseOutCubic(_panelAppear));
 
             for (int i = 0; i < _activeIcons.Count; i++) {
