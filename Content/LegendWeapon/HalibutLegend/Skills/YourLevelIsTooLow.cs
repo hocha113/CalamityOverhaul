@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 8;
         private const int ToggleCD = 30;
-        private const int UltimateCooldown = 3600; //60秒终极冷却
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Activate(player);
             hp.YourLevelIsTooLowToggleCD = ToggleCD;
-            hp.YourLevelIsTooLowCooldown = 600; //调试用10秒
+            hp.YourLevelIsTooLowCooldown = 600;
         }
 
         public static void Activate(Player player) {
