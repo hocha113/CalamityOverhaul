@@ -84,13 +84,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">
-      <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
+      <HintPath>..\CalamityMod.dll</HintPath>
     </Reference>
     <Reference Include="InnoVault">
       <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
     </Reference>
     <Reference Include="ThoriumMod">
-      <HintPath>..\..\ModReader\ThoriumMod\ThoriumMod.dll</HintPath>
+      <HintPath>..\ThoriumMod.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

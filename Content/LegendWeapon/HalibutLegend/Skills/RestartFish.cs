@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.RestartFishToggleCD > 0 || hp.RestartFishCooldown > 0) return;
-
+            player.SetResurrectionValue(0);
             Activate(player);
             hp.RestartFishToggleCD = ToggleCD;
             hp.RestartFishCooldown = RestartCooldown;

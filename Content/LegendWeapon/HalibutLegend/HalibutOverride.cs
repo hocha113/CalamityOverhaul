@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
                 {1, 4 },
-                {2, 5 },
+                {2, 4 },
                 {3, 7 },
                 {4, 8 },
                 {5, 10 },
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            int bulletAmt = Main.rand.Next(5, 8);
+            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 3), (1 + HalibutData.GetLevel() / 3));
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;

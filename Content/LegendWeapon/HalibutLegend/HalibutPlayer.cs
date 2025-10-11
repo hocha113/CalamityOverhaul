@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -172,9 +171,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         #endregion
 
         /// <summary>
+        /// 每个时期阶段对应的死机等级
+        /// </summary>
+        private static Dictionary<int, int> CrashesLevelDictionary = new Dictionary<int, int>(){
+            {0, 0},
+            {1, 1},
+            {2, 1},
+            {3, 2},
+            {4, 3},
+            {5, 4},
+            {6, 5},
+            {7, 5},
+            {8, 6},
+            {9, 7},
+            {10, 8},
+            {11, 8},
+            {12, 9},
+            {13, 10},
+            {14, 10}
+        };
+
+        /// <summary>
+        /// 获取死机等级
+        /// </summary>
+        public static int GetCrashesLevel(Item item) {
+            int level = HalibutData.GetLevel(item);
+            return CrashesLevelDictionary.ContainsKey(level) ? CrashesLevelDictionary[level] : 1;
+        }
+        /// <summary>
         /// 低于或者等于这个等级的眼睛会进入死机状态
         /// </summary>
-        /// <returns></returns>
         public int CrashesLevel() {
             return 0;
         }

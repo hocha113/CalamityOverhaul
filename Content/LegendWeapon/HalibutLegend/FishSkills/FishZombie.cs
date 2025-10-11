@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 可召唤的溺尸数量
         /// </summary>
-        public virtual int ZombieCount => 5;
+        public virtual int ZombieCount => 5 + 2 * HalibutData.GetLevel();//5+2倍等级
 
         public override int DefaultCooldown => 480;
 

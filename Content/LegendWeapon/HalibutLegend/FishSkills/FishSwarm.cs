@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 技能最大持续时间（5秒 = 300帧）
         /// </summary>
         public const int FishSwarmDuration = 300;
-        public override int DefaultCooldown => 300;
+        public override int DefaultCooldown => 60 * 20;
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             if (player.altFunctionUse == 2) {
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
 
             //生成鱼群130-140条鱼，增加数量以提高视觉效果
-            int fishCount = Main.rand.Next(130, 141);
+            int fishCount = Main.rand.Next(40 + 4 * HalibutData.GetLevel(), 50 + 4 * HalibutData.GetLevel());
             for (int i = 0; i < fishCount; i++) {
                 //在玩家周围随机位置生成鱼
                 float angle = MathHelper.TwoPi * i / fishCount + Main.rand.NextFloat(-0.5f, 0.5f);
@@ -460,9 +460,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             surgeDirection = direction;
             surgeTimer = 0;
             Projectile.friendly = true;
-            Projectile.damage = shootState.WeaponDamage;
+            Projectile.damage = (int)(shootState.WeaponDamage * 0.75);
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
