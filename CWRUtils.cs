@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -496,6 +497,8 @@ namespace CalamityOverhaul
             };
             return line;
         }
+
+        internal static HalibutPlayer GetHalibut(this Player player) => player.GetOverride<HalibutPlayer>(); 
 
         public static CWRNpc CWR(this NPC npc) {
             return npc.GetGlobalNPC<CWRNpc>();

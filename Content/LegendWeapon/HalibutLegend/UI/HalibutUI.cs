@@ -4,9 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
@@ -172,6 +174,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = []; //槽位 -> 对应的粒子索引
 
+        public static void FishSkillTooltip(Item item, List<TooltipLine> tooltips) {
+            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || !halibutPlayer.HasHalibut) {
+                return;
+            }
+            if (!FishSkill.UnlockFishs.TryGetValue(item.type, out FishSkill fishSkill)) {
+                return;
+            }
+            //水色渐变：更柔和且高对比度
+            float ft = (Main.LocalPlayer.miscCounter % 120) / 120f;
+            float wave = (float)Math.Sin(ft * MathHelper.TwoPi) * 0.5f + 0.5f; //0-1
+            Color mainA = new Color(40, 140, 190);
+            Color mainB = new Color(120, 230, 255);
+            Color accent = Color.Lerp(mainA, mainB, wave);
+            Color accent2 = Color.Lerp(mainA, mainB, 0.35f + wave * 0.3f);
+
+            var line = new TooltipLine(CWRMod.Instance, "FishSkillTooltip"
+                , HalibutPlayer.UnlockedSkills.Contains(fishSkill) ? HalibutText.Instance.FishOnStudied.Value : HalibutText.Instance.FishByStudied.Value) {
+                OverrideColor = accent
+            };
+            tooltips.Add(line);
+
+            line = new TooltipLine(CWRMod.Instance, "FishSkillTooltip2", fishSkill.Studied.Value) {
+                OverrideColor = accent2
+            };
+            tooltips.Add(line);
+        }
+
         public override void SaveUIData(TagCompound tag) {
             IList<TagCompound> list = [];
             foreach (var slot in halibutUISkillSlots) {
@@ -204,12 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     continue;
                 }
                 fishSkill.LoadData(skillTag);
-                SkillSlot newSlot = new() {
-                    FishSkill = fishSkill,
-                    appearProgress = 1f,//直接显示
-                    isAppearing = false
-                };
-                halibutUISkillSlots.Add(newSlot);
+                halibutUISkillSlots.Add(AddSkillSlot(fishSkill, 1f));
             }
 
             if (!tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
@@ -217,6 +241,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             HalibutUIHead.Instance.FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
+        }
+
+        public static SkillSlot AddSkillSlot(FishSkill fishSkill, float appearProgress) {
+            SkillSlot newSlot = new() {
+                FishSkill = fishSkill,
+                appearProgress = appearProgress,
+                isAppearing = false
+            };
+            HalibutPlayer.UnlockedSkills.Add(fishSkill);
+            return newSlot;
         }
 
         /// <summary>
@@ -244,12 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             flyingParticles.Add(particle);
 
             //创建技能槽位，但标记为未激活状态
-            SkillSlot newSlot = new SkillSlot() {
-                FishSkill = fishSkill,
-                appearProgress = 0f,
-                isAppearing = false //等待粒子到达后再开始出现动画
-            };
-
+            SkillSlot newSlot = AddSkillSlot(fishSkill, 0f);
             halibutUISkillSlots.Add(newSlot);
 
             //记录这个槽位需要等待对应的粒子

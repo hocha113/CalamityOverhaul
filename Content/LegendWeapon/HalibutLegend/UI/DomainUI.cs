@@ -231,6 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             for (int i = rings.Count - 1; i >= 0; i--) {
+                rings[i].Center = halibutCenter;
                 rings[i].Update();
                 if (rings[i].ShouldRemove) {
                     rings.RemoveAt(i);

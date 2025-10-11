@@ -2,6 +2,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.UI.AmmoView;
 using CalamityOverhaul.Content.RemakeItems;
@@ -819,6 +821,8 @@ namespace CalamityOverhaul.Content
                     , Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
                 tooltips.Add(line);
             }
+
+            HalibutUIPanel.FishSkillTooltip(item, tooltips);
         }
 
         public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset) {

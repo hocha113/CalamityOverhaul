@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public string LocalizationCategory => "FishSkill";
         public LocalizedText DisplayName => this.GetLocalization(nameof(DisplayName), () => "");
         public LocalizedText Tooltip => this.GetLocalization(nameof(Tooltip), () => "");
+        public LocalizedText Studied => this.GetLocalization(nameof(Studied), () => "");
         public readonly static Dictionary<Type, int> TypeToID = [];
         public readonly static Dictionary<Type, Texture2D> TypeToTex = [];
         public readonly static Dictionary<int, FishSkill> UnlockFishs = [];
@@ -53,6 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override void VaultSetup() {
             _ = DisplayName;
             _ = Tooltip;
+            _ = Studied;
             UnlockFishs[UnlockFishID] = this;
             SetStaticDefaults();
             SetDefaults(true);

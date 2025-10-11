@@ -2160,7 +2160,23 @@ Biomes: {
 }
 
 Legend: {
-	// HalibutText.FishByStudied: Mods.CalamityOverhaul.Legend.HalibutText.FishByStudied
+	HalibutText: {
+		/* FishByStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			This fish can be studied
+			''' */
+		/* FishOnStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			This fish has been studied
+			''' */
+		/* FishByPuzzle:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			This fish can be used as a piece of the puzzle
+			''' */
+	}
 
 	MuraText: {
 		Subtest_Text0:
@@ -5268,15 +5284,18 @@ FishSkill: {
 	FishSwarm: {
 		// DisplayName: ""
 		// Tooltip: ""
+		// Studied: ""
 	}
 
 	Sparkling: {
 		// DisplayName: ""
 		// Tooltip: ""
+		// Studied: ""
 	}
 
 	FishZombie: {
 		// DisplayName: ""
 		// Tooltip: ""
+		// Studied: ""
 	}
 }

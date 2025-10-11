@@ -11,9 +11,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     internal class HalibutText : ModType, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
+        public static HalibutText Instance => ModContent.GetInstance<HalibutText>();
         protected override void Register() { }
         #region 字段内容
         public LocalizedText FishByStudied { get; private set; }
+        public LocalizedText FishOnStudied { get; private set; }
+        public LocalizedText FishByPuzzle { get; private set; }
         #endregion
         #region Utils
         public static string GetTextKey(string key) => $"Mods.CalamityOverhaul.Legend.HalibutText.{key}";

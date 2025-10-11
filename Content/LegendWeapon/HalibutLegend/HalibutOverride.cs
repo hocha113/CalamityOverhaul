@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
 using Terraria;

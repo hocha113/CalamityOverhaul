@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public bool HasHalibut;
 
+        public readonly static HashSet<FishSkill> UnlockedSkills = new();
+
         #region 闪光皇后
         /// <summary>
         /// 当前齐射是否激活
