@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.width = 118;
             Item.height = 56;
             Item.useTime = 10;
-            Item.useAnimation = 20;
+            Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.rare = ModContent.RarityType<HotPink>();
             Item.noMelee = true;
