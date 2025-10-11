@@ -17,21 +17,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //显示控制
         public FishSkill CurrentSkill; //当前要显示的技能
-        private FishSkill lastSkill; //上一次显示的技能（用于检测切换）
         private bool shouldShow = false; //内部状态：是否应该显示
 
         //收回延迟
         private int hideDelayTimer = 0; //收回延迟计时器
-        private const int HideDelay = 15; //收回延迟（15帧 = 0.25秒）
+        private const int HideDelay = 15; //收回延迟
         private bool pendingHide = false; //是否等待收回
 
-        //新增：悬停切换宽容期（在技能图标之间快速移动时保持面板不收回）
+        //悬停切换宽容期（在技能图标之间快速移动时保持面板不收回）
         private int lingerTimer = 0; //宽容剩余时间
-        private const int LingerDuration = 30; //宽容期（30帧 = 0.5秒）
+        private const int LingerDuration = 15; //宽容期
+
+        //意图推断 - 鼠标离开技能浏览区域的独立计时
+        private int outsideTimer = 0; //鼠标离开技能区域的时间
+        private const int OutsideHideDelay = 30; //离开技能区域多久后允许真正隐藏
 
         //动画相关
         private float expandProgress = 0f; //展开进度（0-1）
-        private const float ExpandDuration = 15f; //展开动画持续帧数
+        private const float ExpandDuration = 20f; //展开动画持续帧数
         private float contentFadeProgress = 0f; //内容淡入进度
         private const float ContentFadeDelay = 0.4f; //内容在展开40%后开始淡入
 
@@ -59,82 +62,145 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public bool IsFullyClosed => expandProgress <= 0.01f;
 
         /// <summary>
+        /// 计算技能行区域（用于意图推断）
+        /// </summary>
+        private static Rectangle GetSkillRegionRect() {
+            var panel = HalibutUIPanel.Instance;
+            if (panel == null) {
+                return Rectangle.Empty;
+            }
+            if (panel.halibutUISkillSlots == null) {
+                return Rectangle.Empty;
+            }
+            if (panel.halibutUISkillSlots.Count == 0) {
+                return Rectangle.Empty;
+            }
+            int minX = int.MaxValue;
+            int minY = int.MaxValue;
+            int maxX = int.MinValue;
+            int maxY = int.MinValue;
+            foreach (var s in panel.halibutUISkillSlots) {
+                var r = s.UIHitBox;
+                if (r.Width == 0 || r.Height == 0) {
+                    continue;
+                }
+                if (r.X < minX) {
+                    minX = r.X;
+                }
+                if (r.Y < minY) {
+                    minY = r.Y;
+                }
+                if (r.Right > maxX) {
+                    maxX = r.Right;
+                }
+                if (r.Bottom > maxY) {
+                    maxY = r.Bottom;
+                }
+            }
+            if (minX == int.MaxValue) {
+                return Rectangle.Empty;
+            }
+            //添加一定的填充，让技能之间的空白依旧算在浏览区域里
+            const int pad = 8;
+            var rect = new Rectangle(minX - pad, minY - pad, (maxX - minX) + pad * 2, (maxY - minY) + pad * 2);
+            return rect;
+        }
+
+        /// <summary>
+        /// 鼠标是否在技能浏览区域里（推断为想继续阅读 / 切换技能说明）
+        /// </summary>
+        private bool MouseInBrowseArea(out Rectangle area) {
+            area = GetSkillRegionRect();
+            if (area == Rectangle.Empty) {
+                return false;
+            }
+            Vector2 m = Main.MouseScreen;
+            return area.Contains((int)m.X, (int)m.Y);
+        }
+
+        /// <summary>
         /// 显示指定技能的介绍面板
         /// </summary>
         public void Show(FishSkill skill, Vector2 mainPanelPosition, Vector2 mainPanelSize) {
             if (skill == null) {
                 return;
             }
-
             //检测技能切换
             if (CurrentSkill != skill) {
-                lastSkill = CurrentSkill;
                 CurrentSkill = skill;
-
-                //如果之前没有显示，从头开始动画
                 if (!shouldShow) {
                     expandProgress = 0f;
                     contentFadeProgress = 0f;
                 }
                 else {
-                    //切换技能时内容重新淡入
-                    contentFadeProgress = 0f;
+                    contentFadeProgress = 0f; //切换重新淡入
                 }
             }
-
             shouldShow = true;
-            pendingHide = false; //取消待收回状态
-            hideDelayTimer = 0; //重置延迟计时器
-            lingerTimer = 0; //正在显示时取消宽容计时
-
-            //计算锚点位置（主面板右侧中心）
+            pendingHide = false;
+            hideDelayTimer = 0;
+            lingerTimer = 0;
+            outsideTimer = 0;
             anchorPosition = mainPanelPosition + new Vector2(mainPanelSize.X, mainPanelSize.Y / 2);
-
-            //计算目标宽度
             targetWidth = TooltipPanel.Width;
         }
 
         /// <summary>
-        /// 隐藏介绍面板（带延迟与宽容期）
+        /// 外部请求隐藏（会进入宽容 + 外离计时 + 延迟）
         /// </summary>
         public void Hide() {
-            if (!shouldShow) {
+            if (!shouldShow || pendingHide) {
                 return;
             }
-            //启动宽容期，避免在图标之间的空隙闪烁收起
             if (lingerTimer < LingerDuration) {
                 lingerTimer = LingerDuration;
             }
             pendingHide = true;
         }
 
-        /// <summary>
-        /// 强制立即隐藏（无延迟）
-        /// </summary>
         public void ForceHide() {
             shouldShow = false;
             pendingHide = false;
             hideDelayTimer = 0;
             lingerTimer = 0;
+            outsideTimer = 0;
         }
 
-        /// <summary>
-        /// EaseOutBack缓动 - 带回弹效果
-        /// </summary>
         private static float EaseOutBack(float t) {
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
             return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
         }
 
-        /// <summary>
-        /// EaseInCubic缓动 - 快速收起
-        /// </summary>
         private static float EaseInCubic(float t) {
             return t * t * t;
         }
 
         public override void Update() {
+            // 意图推断：判断鼠标是否仍在技能浏览区域
+            bool inBrowse = MouseInBrowseArea(out Rectangle browseRect);
+            bool onPanel = IsMouseOnPanel();
+            if (shouldShow) {
+                if (inBrowse || onPanel) {
+                    //保持显示，清空脱离计时
+                    outsideTimer = 0;
+                    //如果仍在浏览区域且之前处于待隐藏状态，则取消隐藏流程
+                    if (pendingHide) {
+                        pendingHide = false;
+                        hideDelayTimer = 0;
+                        lingerTimer = 0;
+                    }
+                }
+                else {
+                    //不在浏览区域，并且当前也没有悬停具体技能 -> 记录脱离时间
+                    outsideTimer++;
+                    if (outsideTimer == OutsideHideDelay) {
+                        //达到脱离阈值后才真正进入 Hide 流程
+                        Hide();
+                    }
+                }
+            }
+
             //处理宽容与延迟收回逻辑
             if (pendingHide) {
                 if (lingerTimer > 0) {
@@ -146,33 +212,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         shouldShow = false;
                         pendingHide = false;
                         hideDelayTimer = 0;
-                        //收起后清理当前技能引用，避免残留文本
                         CurrentSkill = null;
                     }
                 }
             }
 
             if (shouldShow && CurrentSkill != null) {
-                //展开动画
                 if (expandProgress < 1f) {
                     expandProgress += 1f / ExpandDuration;
                     expandProgress = Math.Clamp(expandProgress, 0f, 1f);
                 }
-
-                //内容淡入（延迟开始）
                 if (expandProgress > ContentFadeDelay && contentFadeProgress < 1f) {
                     float adjustedProgress = (expandProgress - ContentFadeDelay) / (1f - ContentFadeDelay);
                     contentFadeProgress = Math.Min(contentFadeProgress + 0.1f, adjustedProgress);
                 }
             }
             else {
-                //收起动画（更快）
                 if (expandProgress > 0f) {
-                    expandProgress -= 1f / (ExpandDuration * 0.5f);
+                    expandProgress -= 1f / ExpandDuration;
                     expandProgress = Math.Clamp(expandProgress, 0f, 1f);
                 }
-
-                //内容快速淡出
                 if (contentFadeProgress > 0f) {
                     contentFadeProgress -= 0.15f;
                     contentFadeProgress = Math.Clamp(contentFadeProgress, 0f, 1f);
@@ -189,6 +248,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Size = new Vector2(currentWidth, panelHeight);
         }
 
+        private bool IsMouseOnPanel() {
+            Vector2 m = Main.MouseScreen;
+            Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)currentWidth, (int)Size.Y);
+            return panelRect.Contains((int)m.X, (int)m.Y);
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (expandProgress <= 0.01f) {
                 return;
@@ -196,58 +261,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (CurrentSkill == null) {
                 return;
             }
-
-            float alpha = Math.Min(expandProgress * 2f, 1f); //前50%进度快速淡入
-
-            //绘制面板主体（使用裁剪来实现从左到右展开的效果）
+            float alpha = Math.Min(expandProgress * 2f, 1f);
             Rectangle panelRect = new Rectangle(
                 (int)DrawPosition.X,
                 (int)DrawPosition.Y,
                 (int)currentWidth,
                 (int)Size.Y
             );
-
-            //计算源矩形（从左侧开始裁剪）
             Rectangle sourceRect = new Rectangle(
                 0,
                 0,
                 (int)(TooltipPanel.Width * MathHelper.Clamp((currentWidth / targetWidth), 0, 1f)),
                 TooltipPanel.Height
             );
-
-            //绘制阴影（略微偏移）
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
             Color shadowColor = Color.Black * (alpha * 0.4f);
             spriteBatch.Draw(TooltipPanel, shadowRect, sourceRect, shadowColor);
-
-            //绘制面板主体
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
             Color panelColor = Color.White * (alpha * pulse);
             spriteBatch.Draw(TooltipPanel, panelRect, sourceRect, panelColor);
-
-            //绘制左侧连接边缘的发光效果
             if (expandProgress > 0.1f) {
                 Vector2 edgeStart = DrawPosition + new Vector2(0, 0);
                 Vector2 edgeEnd = DrawPosition + new Vector2(0, Size.Y);
                 float edgeGlowAlpha = Math.Min((expandProgress - 0.1f) / 0.2f, 1f);
                 DrawVerticalGlow(spriteBatch, edgeStart, edgeEnd, Color.Gold * alpha * edgeGlowAlpha * 0.6f, 4f);
             }
-
-            //绘制边框高光
             if (expandProgress > 0.3f) {
                 Color glowColor = Color.Gold with { A = 0 } * (alpha * 0.2f * pulse);
                 Rectangle glowRect = panelRect;
                 glowRect.Inflate(2, 2);
                 spriteBatch.Draw(TooltipPanel, glowRect, sourceRect, glowColor);
             }
-
-            //绘制舞动的星星粒子（在面板上方）
             if (expandProgress > 0.5f) {
                 DrawFloatingStars(spriteBatch, alpha);
             }
-
-            //绘制内容（只在展开足够时）
             if (expandProgress > ContentFadeDelay && currentWidth > targetWidth * 0.5f) {
                 DrawContent(spriteBatch, alpha);
             }
@@ -321,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 绘制垂直发光线条
         /// </summary>
-        private void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
+        private static void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             float length = Vector2.Distance(start, end);
 
@@ -457,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 绘制渐变线条
         /// </summary>
-        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
@@ -485,7 +533,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <summary>
         /// 绉绘制星星装饰
         /// </summary>
-        private void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color) {
+        private static void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
 
             //绘制八芒星
