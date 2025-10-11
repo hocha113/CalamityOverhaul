@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures; // 访问 HalibutPlayer
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills; // SeaDomainProj
-
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
@@ -52,8 +51,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
 
             bool unlimited = hPlayer.SeaDomainActive && hPlayer.SeaDomainLayers >= UnlimitedLayersThreshold;
-            if (skill.Cooldown > 0 && !unlimited)
+            if (skill.Cooldown > 0 && !unlimited) {
+                triggerThisHit = false;
                 return; // 冷却中且不是无限模式
+            }
+               
 
             int damageTaken = info.Damage; // 已经过防御后的真实损失
             if (damageTaken <= 0)
