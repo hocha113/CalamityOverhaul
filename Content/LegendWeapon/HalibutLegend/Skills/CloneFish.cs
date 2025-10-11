@@ -288,12 +288,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
         }
 
+        private void Shoot(HalibutPlayer hp, PlayerSnapshot snap) {
+            //重放射击事件
+            int replayFrame = hp.CloneFrameCounter - replayDelay;
+            int shootNum = 1;
+            float randomRot = 0f;
+            if (hp.CloneShootEvents.Count <= 0) {
+                return;
+            }
+            for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
+                var ev = hp.CloneShootEvents[i];
+                if (ev.FrameIndex != replayFrame || !Projectile.IsOwnedByLocalPlayer()) {
+                    continue;
+                }
+                for (int j = 0; j < shootNum; j++) {
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
+                    , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
+                    , ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
+                    Main.projectile[proj].friendly = true;
+                }
+            }
+        }
+
         private void UpdateActive(HalibutPlayer hp) {
             //检查是否有足够的快照
             if (hp.CloneSnapshots.Count < replayDelay) return;
 
             int index = hp.CloneSnapshots.Count - replayDelay;
-            var snap = hp.CloneSnapshots[index];
+            PlayerSnapshot snap = hp.CloneSnapshots[index];
             Projectile.Center = snap.Position + Owner.Size * 0.5f;
             Projectile.velocity = snap.Velocity;
 
@@ -301,21 +323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
             //重放射击事件
-            int replayFrame = hp.CloneFrameCounter - replayDelay;
-            int shootNum = 1;
-            float randomRot = 0f;
-            if (hp.CloneShootEvents.Count > 0) {
-                for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
-                    var ev = hp.CloneShootEvents[i];
-                    if (ev.FrameIndex == replayFrame && Projectile.IsOwnedByLocalPlayer()) {
-                        for (int j = 0; j < shootNum; j++) {
-                            int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
-                            , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot), ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
-                            Main.projectile[proj].friendly = true;
-                        }
-                    }
-                }
-            }
+            Shoot(hp, snap);
 
             boids ??= CreateBoids(Owner.Center);
             Vector2 clusterTarget = Projectile.Center + new Vector2(0, -16);
