@@ -1541,6 +1541,8 @@ Projectiles: {
 	// FishTeleportProj.DisplayName: Fish Teleport Proj
 	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
 	// WaterZombie.DisplayName: Water Zombie
+	// CloudRain.DisplayName: Cloud Rain
+	// CloudRide.DisplayName: Cloud Ride
 }
 
 Configs: {
@@ -5341,6 +5343,12 @@ FishSkill: {
 	}
 
 	FishZombie: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishCloud: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

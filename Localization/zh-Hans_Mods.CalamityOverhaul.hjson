@@ -1536,6 +1536,8 @@ Projectiles: {
 	// FishTeleportProj.DisplayName: Fish Teleport Proj
 	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
 	// WaterZombie.DisplayName: Water Zombie
+	// CloudRain.DisplayName: Cloud Rain
+	// CloudRide.DisplayName: Cloud Ride
 }
 
 Configs: {
@@ -5351,6 +5353,12 @@ FishSkill: {
 			靠近敌人后造成一次爆炸
 			'''
 		Studied: 散发着臭味的鱼，它还活着吗?
+	}
+
+	FishCloud: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 
