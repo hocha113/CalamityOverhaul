@@ -56,10 +56,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
                 {1, 4 },
-                {2, 4 },
+                {2, 5 },
                 {3, 7 },
-                {4, 8 },
-                {5, 10 },
+                {4, 9 },
+                {5, 11 },
                 {6, 13 },
                 {7, 15 },
                 {8, 18 },
