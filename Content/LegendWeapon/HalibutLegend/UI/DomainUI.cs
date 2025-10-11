@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -243,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     activationSequence.Add(eye);
                     eye.LayerNumber = activationSequence.Count;
                 }
-                
+
                 activationAnimations.Add(new EyeActivationAnimation(eye.Position));
                 SpawnEyeToggleParticles(eye, true);
             }

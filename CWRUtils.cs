@@ -498,7 +498,7 @@ namespace CalamityOverhaul
             return line;
         }
 
-        internal static HalibutPlayer GetHalibut(this Player player) => player.GetOverride<HalibutPlayer>(); 
+        internal static HalibutPlayer GetHalibut(this Player player) => player.GetOverride<HalibutPlayer>();
 
         public static CWRNpc CWR(this NPC npc) {
             return npc.GetGlobalNPC<CWRNpc>();

@@ -35,30 +35,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SeaDomainActive) return;
             hp.SeaDomainActive = true;
-            
+
             // 播放领域开启音效：瀑布+深海氛围+水流涌动
             if (Main.myPlayer == player.whoAmI) {
                 // 主要水流音效（瀑布声）
-                SoundEngine.PlaySound(SoundID.Waterfall with { 
-                    Volume = 0.8f, 
+                SoundEngine.PlaySound(SoundID.Waterfall with {
+                    Volume = 0.8f,
                     Pitch = -0.3f,  // 降低音调，营造深海感
-                    MaxInstances = 1 
+                    MaxInstances = 1
                 }, player.Center);
-                
+
                 // 叠加雷鸣音效（营造威严感）
-                SoundEngine.PlaySound(SoundID.Thunder with { 
-                    Volume = 0.4f, 
+                SoundEngine.PlaySound(SoundID.Thunder with {
+                    Volume = 0.4f,
                     Pitch = -0.5f,  // 低沉的雷鸣
-                    MaxInstances = 1 
+                    MaxInstances = 1
                 }, player.Center);
-                
+
                 // 深海回响音效
                 SoundEngine.PlaySound(SoundID.Item29 with {  // 水晶音效
                     Volume = 0.6f,
                     Pitch = -0.8f,  // 极低音调
                     MaxInstances = 1
                 }, player.Center);
-                
+
                 SpawnDomain(player);
             }
         }
@@ -66,15 +66,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         public static void Deactivate(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             hp.SeaDomainActive = false;
-            
+
             // 播放领域关闭音效：水流消退
             if (Main.myPlayer == player.whoAmI) {
-                SoundEngine.PlaySound(SoundID.Splash with { 
-                    Volume = 0.6f, 
+                SoundEngine.PlaySound(SoundID.Splash with {
+                    Volume = 0.6f,
                     Pitch = -0.4f,  // 低沉的水流消退声
-                    MaxInstances = 1 
+                    MaxInstances = 1
                 }, player.Center);
-                
+
                 // 气泡破裂音效
                 SoundEngine.PlaySound(SoundID.Item54 with {  // 柔和的破裂声
                     Volume = 0.4f,
@@ -481,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 domainCenter = Owner.Center;
                 targetCenter = Owner.Center;
                 Projectile.localAI[0] = 1f;
-                
+
                 // 初始化环境音效循环
                 if (Main.myPlayer == Owner.whoAmI) {
                     ambientLoopSlot = SoundEngine.PlaySound(SoundID.Waterfall with {
@@ -630,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     if (SeaDomain.IsWeakEntity(npc)) {
                         if (!boundNPCs.Contains(i)) {
                             boundNPCs.Add(i);
-                            
+
                             // 播放束缚音效
                             if (Main.myPlayer == Owner.whoAmI) {
                                 SoundEngine.PlaySound(SoundID.Item20 with {  // 钩爪音效
@@ -638,7 +638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                                     Pitch = -0.3f,
                                     MaxInstances = 5
                                 }, npc.Center);
-                                
+
                                 // 叠加水压音效
                                 SoundEngine.PlaySound(SoundID.Splash with {
                                     Volume = 0.25f,
@@ -725,7 +725,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (stateTimer % 12 == 0 && layers != null) {
                 float randomRadius = layers[Main.rand.Next(layers.Count)].Radius * Main.rand.NextFloat(0.6f, 1f);
                 ripples.Add(new WaterRipple(domainCenter, randomRadius));
-                
+
                 // 扩张过程中的水波音效
                 if (Main.myPlayer == Owner.whoAmI && stateTimer % 24 == 0) {
                     SoundEngine.PlaySound(SoundID.Item85 with {  // 魔法音效
@@ -746,7 +746,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                         layer.InitializeFish(domainCenter);
                     }
                 }
-                
+
                 // 领域完全展开音效
                 if (Main.myPlayer == Owner.whoAmI) {
                     SoundEngine.PlaySound(SoundID.Item29 with {

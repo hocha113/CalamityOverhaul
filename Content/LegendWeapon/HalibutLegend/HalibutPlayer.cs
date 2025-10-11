@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
-            foreach(var skill in FishSkill.Instances) {
+            foreach (var skill in FishSkill.Instances) {
                 if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
                     skill.Cooldown--;
                 }

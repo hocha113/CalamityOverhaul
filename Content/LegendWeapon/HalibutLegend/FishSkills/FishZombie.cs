@@ -29,12 +29,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Cooldown > 0) {
                     return false;
                 }
-                
+
                 item.UseSound = null;
                 Use(item, player);
                 return false;
             }
-            
+
             return base.CanUseItem(item, player);
         }
 
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float angleSpread = MathHelper.ToRadians(60f); //60度扇形
                 float angle = targetDirection.ToRotation() + Main.rand.NextFloat(-angleSpread, angleSpread);
                 float distance = Main.rand.NextFloat(150f, 300f);
-                
+
                 Vector2 spawnOffset = new(
                     (float)Math.Cos(angle) * distance,
                     (float)Math.Sin(angle) * distance
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         Vector2 dustPos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-5f, 2f));
                         float xVel = Main.rand.NextFloat(-1.5f, 1.5f);
                         float yVel = Main.rand.NextFloat(-3f, -1f);
-                        
+
                         Dust dirt = Dust.NewDustPerfect(
                             dustPos,
                             DustID.Dirt,
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                             side * Main.rand.NextFloat(2.5f, 4.5f),
                             Main.rand.NextFloat(-4f, -2.5f)
                         );
-                        
+
                         Dust dirtChunk = Dust.NewDustPerfect(
                             Projectile.Bottom + new Vector2(side * Main.rand.NextFloat(5f, 15f), 0),
                             DustID.Dirt,
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //溺尸特色：水珠从身体滴落
                     if (Main.rand.NextBool(4)) {
                         Vector2 waterDropPos = Projectile.Center + new Vector2(
-                            Main.rand.NextFloat(-10f, 10f), 
+                            Main.rand.NextFloat(-10f, 10f),
                             Main.rand.NextFloat(-15f, 5f)
                         );
                         Dust waterDrop = Dust.NewDustPerfect(
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (float)Math.Cos(angle),
                         (float)Math.Sin(angle)
                     );
-                    
+
                     Dust shockDust = Dust.NewDustPerfect(
                         Projectile.Bottom,
                         DustID.Smoke,
@@ -452,7 +452,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冲刺加速
             if (StateTimer < ChargeDuration) {
                 Vector2 chargeDirection = (targetPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
-                
+
                 if (StateTimer == 1) {
                     Projectile.velocity = Projectile.velocity.RotatedByRandom(0.3f);
                 }
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (StateTimer < 20) {
                     Projectile.velocity += chargeDirection * 1.5f;
                 }
-                
+
                 //最大速度限制
                 float maxChargeSpeed = 20f;
                 if (Projectile.velocity.Length() > maxChargeSpeed) {
@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 15; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(7f, 7f);
                 float speedBoost = Main.rand.NextFloat(1f, 1.5f);
-                
+
                 Dust largeSplash = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
                     DustID.Water,
@@ -573,7 +573,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //中型水花
             for (int i = 0; i < 20; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
-                
+
                 Dust mediumSplash = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
@@ -587,7 +587,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //小型水雾
             for (int i = 0; i < 15; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                
+
                 Dust mist = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
                     DustID.DungeonWater,
@@ -602,7 +602,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //绿色腐败水花
             for (int i = 0; i < 18; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
-                
+
                 Dust poison = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Poisoned,
@@ -633,11 +633,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //使用僵尸NPC的Gore ID范围
                     int goreType = Main.rand.Next(11, 14);
                     Vector2 goreVel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                    
+
                     Gore.NewGore(
-                        Projectile.GetSource_Death(), 
-                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), 
-                        goreVel, 
+                        Projectile.GetSource_Death(),
+                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                        goreVel,
                         goreType
                     );
                 }
@@ -646,9 +646,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 int smallGoreCount = Main.rand.Next(2, 4);
                 for (int i = 0; i < smallGoreCount; i++) {
                     Gore.NewGore(
-                        Projectile.GetSource_Death(), 
-                        Projectile.Center, 
-                        Main.rand.NextVector2CircularEdge(4f, 4f), 
+                        Projectile.GetSource_Death(),
+                        Projectile.Center,
+                        Main.rand.NextVector2CircularEdge(4f, 4f),
                         GoreID.Smoke1 + Main.rand.Next(3)
                     );
                 }
@@ -656,7 +656,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             for (int i = 0; i < 12; i++) {
                 Vector2 bloodVel = Main.rand.NextVector2CircularEdge(6f, 6f);
-                
+
                 Dust blood = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Blood,

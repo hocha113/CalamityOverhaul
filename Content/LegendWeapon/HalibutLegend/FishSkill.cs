@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public virtual void SaveData(TagCompound tag) {
-            
+
         }
 
         public virtual void LoadData(TagCompound tag) {
