@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             Activate(player, targetPos);
             hp.FishTeleportToggleCD = ToggleCD;
-            hp.FishTeleportCooldown = 20;
+            hp.FishTeleportCooldown = TeleportCooldown;
         }
 
         private static Vector2 CalculateTeleportTarget(Player player) {
