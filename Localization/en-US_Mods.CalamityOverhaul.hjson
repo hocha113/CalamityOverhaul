@@ -1556,6 +1556,7 @@ Projectiles: {
 	WaterZombie.DisplayName: Water Zombie
 	CloudRain.DisplayName: Cloud Rain
 	CloudRide.DisplayName: Cloud Ride
+	FishVoodooMark.DisplayName: Fish Voodoo Mark
 }
 
 Configs: {
@@ -5387,6 +5388,12 @@ FishSkill: {
 	}
 
 	FishCloud: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishVoodoo: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""

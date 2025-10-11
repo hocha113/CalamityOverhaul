@@ -1538,6 +1538,7 @@ Projectiles: {
 	// WaterZombie.DisplayName: Water Zombie
 	// CloudRain.DisplayName: Cloud Rain
 	// CloudRide.DisplayName: Cloud Ride
+	// FishVoodooMark.DisplayName: Fish Voodoo Mark
 }
 
 Configs: {
@@ -5364,6 +5365,12 @@ FishSkill: {
 			移动路径上将落下雨滴
 			'''
 		Studied: 看起来是鱼，其实是会游泳的云
+	}
+
+	FishVoodoo: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

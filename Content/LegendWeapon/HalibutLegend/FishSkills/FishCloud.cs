@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -31,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void Use(Item item, Player player) {
-            //SetCooldown();
+            SetCooldown();
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
                 player.Center + new Vector2(0, -100),
@@ -43,6 +44,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
             SoundEngine.PlaySound(SoundID.Item96 with { Volume = 0.8f, Pitch = 0.2f }, player.Center);
             SoundEngine.PlaySound(SoundID.DD2_BetsyWindAttack with { Volume = 0.5f, Pitch = 0.5f }, player.Center);
+        }
+
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            return player.CountProjectilesOfID<CloudRide>() == 0;
         }
     }
 
