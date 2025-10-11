@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 5;
         private const int ToggleCD = 20;
-        private const int RestartCooldown = 1200; //20秒冷却
+        private const int RestartCooldown = 60 * 60 * 3; //3分钟冷却
 
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
