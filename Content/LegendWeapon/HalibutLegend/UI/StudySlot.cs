@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                             res.MaxValue = oldMax + ResurrectionMaxIncreasePerFish;
                             res.Reset(); //清空当前复苏值
                             float flyNum = Math.Clamp(ResurrectionMaxIncreasePerFish / 3f, 4f, 18f);
-                            ResurrectionUI.Instance?.TriggerImproveEffect(startPos, (int)flyNum, oldMax, res.MaxValue);
+                            ResurrectionUI.Instance?.TriggerImproveEffect(startPos, (int)flyNum);
                         }
                     }
 
