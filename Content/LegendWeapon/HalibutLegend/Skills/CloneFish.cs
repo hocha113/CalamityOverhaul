@@ -303,13 +303,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             //重放射击事件
             int replayFrame = hp.CloneFrameCounter - replayDelay;
             int shootNum = 1;
+            float randomRot = 0f;
             if (hp.CloneShootEvents.Count > 0) {
                 for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
                     var ev = hp.CloneShootEvents[i];
                     if (ev.FrameIndex == replayFrame && Projectile.IsOwnedByLocalPlayer()) {
                         for (int j = 0; j < shootNum; j++) {
                             int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
-                            , snap.Position + Owner.Size * 0.5f, ev.Velocity, ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
+                            , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot), ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
                             Main.projectile[proj].friendly = true;
                         }
                     }
