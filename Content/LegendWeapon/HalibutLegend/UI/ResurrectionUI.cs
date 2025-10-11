@@ -30,9 +30,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private readonly System.Collections.Generic.List<ResurrectionParticle> particles = [];
         private int particleSpawnTimer = 0;
 
+        //改良演出粒子（研究新鱼导致上限上升）
+        private readonly System.Collections.Generic.List<ImprovePulse> improvePulses = [];
+        private readonly System.Collections.Generic.List<ImproveFlyParticle> improveFlyParticles = [];
+        private float improveFlash = 0f; //上限提升时的闪光
+        private float lastKnownMax = -1f;
+
         //危险阈值
         private const float DangerThreshold = 0.7f; //70%以上开始警告
         private const float CriticalThreshold = 0.9f; //90%以上进入危险状态
+
+        /// <summary>
+        /// 在研究新的鱼完成时触发复苏条改良演出
+        /// </summary>
+        public void TriggerImproveEffect(Vector2 worldStartPos, int flyCount, float oldMax, float newMax) {
+            if (flyCount < 1) {
+                flyCount = 1;
+            }
+            if (flyCount > 30) {
+                flyCount = 30;
+            }
+            lastKnownMax = newMax;
+            improveFlash = 1.2f; //立即闪光
+            for (int i = 0; i < flyCount; i++) {
+                float delay = i * 4f;
+                improveFlyParticles.Add(new ImproveFlyParticle(worldStartPos, delay));
+            }
+        }
 
         /// <summary>
         /// 获取玩家的复苏系统
@@ -44,9 +68,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return null;
         }
 
-        /// <summary>
-        /// 获取复苏进度比例（0-1）
-        /// </summary>
         public float ResurrectionRatio {
             get {
                 var system = GetResurrectionSystem();
@@ -54,25 +75,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        /// <summary>
-        /// 获取当前状态对应的颜色
-        /// </summary>
         private Color GetStateColor(float ratio) {
             if (ratio >= CriticalThreshold) {
-                //危险状态：红色闪烁
                 float flash = (float)Math.Sin(warningFlashTimer * 8f) * 0.5f + 0.5f;
                 return Color.Lerp(new Color(255, 50, 50), new Color(255, 150, 0), flash);
             }
             else if (ratio >= DangerThreshold) {
-                //警告状态：橙黄色
                 return Color.Lerp(new Color(255, 200, 50), new Color(255, 100, 50), ratio - DangerThreshold);
             }
             else if (ratio >= 0.4f) {
-                //中等状态：黄色到橙色渐变
                 return Color.Lerp(new Color(100, 200, 255), new Color(255, 200, 50), (ratio - 0.4f) / 0.3f);
             }
             else {
-                //安全状态：蓝色
                 return Color.Lerp(new Color(50, 150, 255), new Color(100, 200, 255), ratio / 0.4f);
             }
         }
@@ -87,40 +101,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            //位置设置：在大比目鱼头像下方
             Vector2 headPos = HalibutUIHead.Instance.DrawPosition;
             Vector2 headSize = HalibutUIHead.Instance.Size;
             DrawPosition = headPos + new Vector2(headSize.X / 2 + 20, 40);
             Size = HalibutUIAsset.Resurrection.Size();
 
-            //平滑过渡显示值
             float targetValue = resurrectionSystem.CurrentValue;
             displayValue = MathHelper.Lerp(displayValue, targetValue, SmoothSpeed * 0.7f);
 
             float ratio = resurrectionSystem.Ratio;
 
-            //更新脉动计时器
             pulseTimer += 0.1f;
             warningFlashTimer += 0.1f;
 
-            //根据复苏值调整视觉效果强度
             if (ratio >= CriticalThreshold) {
-                //危险状态：强烈抖动
                 shakeIntensity = MathHelper.Lerp(shakeIntensity, 3f, 0.2f);
                 glowIntensity = MathHelper.Lerp(glowIntensity, 1f, 0.2f);
             }
             else if (ratio >= DangerThreshold) {
-                //警告状态：轻微抖动
                 shakeIntensity = MathHelper.Lerp(shakeIntensity, 1.5f, 0.15f);
                 glowIntensity = MathHelper.Lerp(glowIntensity, 0.6f, 0.15f);
             }
             else {
-                //安全状态：无抖动
                 shakeIntensity = MathHelper.Lerp(shakeIntensity, 0f, 0.1f);
                 glowIntensity = MathHelper.Lerp(glowIntensity, 0.2f, 0.1f);
             }
 
-            //计算抖动偏移
             if (shakeIntensity > 0.1f) {
                 shakeOffset = new Vector2(
                     (float)(Math.Sin(pulseTimer * 20f) * shakeIntensity),
@@ -131,7 +137,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 shakeOffset = Vector2.Zero;
             }
 
-            //更新粒子
             for (int i = particles.Count - 1; i >= 0; i--) {
                 particles[i].Update();
                 if (particles[i].IsDead) {
@@ -139,7 +144,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //生成粒子（危险状态时更频繁）
             if (ratio > DangerThreshold) {
                 particleSpawnTimer++;
                 int spawnRate = ratio >= CriticalThreshold ? 3 : 8;
@@ -149,12 +153,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
+            //改良飞行粒子更新
+            for (int i = improveFlyParticles.Count - 1; i >= 0; i--) {
+                improveFlyParticles[i].Update(this);
+                if (improveFlyParticles[i].Arrived) {
+                    Vector2 center = GetBarCenter();
+                    improvePulses.Add(new ImprovePulse(center));
+                    improveFlyParticles.RemoveAt(i);
+                }
+            }
+
+            for (int i = improvePulses.Count - 1; i >= 0; i--) {
+                improvePulses[i].Update();
+                if (improvePulses[i].Finished) {
+                    improvePulses.RemoveAt(i);
+                }
+            }
+
+            if (improveFlash > 0f) {
+                improveFlash -= 0.05f;
+                if (improveFlash < 0f) {
+                    improveFlash = 0f;
+                }
+            }
+
             UIHitBox = DrawPosition.GetRectangle(Size);
         }
 
-        /// <summary>
-        /// 生成粒子效果
-        /// </summary>
+        internal Vector2 GetBarCenter() {
+            return DrawPosition + shakeOffset + new Vector2(HalibutUIAsset.Resurrection.Width / 2f, HalibutUIAsset.Resurrection.Height / 2f);
+        }
+
         private void SpawnParticle(float ratio) {
             Vector2 barPos = DrawPosition + new Vector2(24, 12) + shakeOffset;
             Vector2 particlePos = barPos + new Vector2(Main.rand.NextFloat(0, 52), Main.rand.NextFloat(-2, 10));
@@ -181,6 +210,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //绘制粒子（在底层）
             foreach (var particle in particles) {
                 particle.Draw(spriteBatch);
+            }
+            foreach (var fp in improveFlyParticles) {
+                fp.Draw(spriteBatch);
             }
 
             //绘制阴影
@@ -241,40 +273,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     1.05f, SpriteEffects.None, 0f);
             }
 
-            //绘制百分比文本（悬停时显示）
+            //改良脉冲绘制（在最上层但在文字下）
+            foreach (var pulse in improvePulses) {
+                pulse.Draw(spriteBatch);
+            }
+
+            if (improveFlash > 0f) {
+                float flashAlpha = Math.Min(1f, improveFlash);
+                spriteBatch.Draw(HalibutUIAsset.Resurrection, drawPos, null,
+                    new Color(120, 220, 255) with { A = 0 } * flashAlpha * 0.5f, 0f, Vector2.Zero, 1.08f, SpriteEffects.None, 0f);
+            }
+
             Rectangle hitBox = new Rectangle((int)drawPos.X, (int)drawPos.Y,
                 HalibutUIAsset.Resurrection.Width, HalibutUIAsset.Resurrection.Height);
 
             if (hitBox.Contains(Main.MouseScreen.ToPoint())) {
                 string percentText = $"{(int)(ratio * 100)}%";
                 Vector2 textPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -20);
-
-                //文本阴影
                 Utils.DrawBorderString(spriteBatch, percentText, textPos + new Vector2(1, 1),
                     Color.Black * 0.8f, 0.9f, 0.5f, 0.5f);
-
-                //文本主体
                 Color textColor = GetStateColor(ratio);
                 Utils.DrawBorderString(spriteBatch, percentText, textPos,
                     textColor, 0.9f, 0.5f, 0.5f);
-
-                //绘制"深渊复苏"标签
                 string labelText = "深渊复苏";
-
                 Vector2 labelPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -36);
-
                 Utils.DrawBorderString(spriteBatch, labelText, labelPos + new Vector2(1, 1),
                     Color.Black * 0.8f, 0.75f, 0.5f, 0.5f);
-
                 Utils.DrawBorderString(spriteBatch, labelText, labelPos,
                     new Color(100, 200, 255), 0.75f, 0.5f, 0.5f);
+                if (lastKnownMax > 0f) {
+                    string maxText = $"上限 {resurrectionSystem.MaxValue:F0}";
+                    Vector2 maxPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, 52);
+                    Utils.DrawBorderString(spriteBatch, maxText, maxPos + new Vector2(1, 1), Color.Black * 0.6f, 0.6f, 0.5f, 0.5f);
+                    Utils.DrawBorderString(spriteBatch, maxText, maxPos, new Color(160, 230, 255), 0.6f, 0.5f, 0.5f);
+                }
             }
         }
     }
 
-    /// <summary>
-    /// 复苏条粒子效果
-    /// </summary>
     internal class ResurrectionParticle
     {
         public Vector2 Position;
@@ -285,7 +321,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public int Life;
         public int MaxLife;
         public bool IsDead => Life >= MaxLife;
-
         public ResurrectionParticle(Vector2 position, Vector2 velocity, Color color) {
             Position = position;
             Velocity = velocity;
@@ -295,36 +330,142 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Life = 0;
             MaxLife = Main.rand.Next(30, 60);
         }
-
         public void Update() {
             Life++;
             Position += Velocity;
-            Velocity.Y += 0.1f; //重力
-            Velocity *= 0.98f; //阻力
-
-            //淡出
+            Velocity.Y += 0.1f;
+            Velocity *= 0.98f;
             float lifeRatio = Life / (float)MaxLife;
             Alpha = 1f - lifeRatio;
             Scale *= 0.98f;
         }
-
         public void Draw(SpriteBatch spriteBatch) {
             if (IsDead) {
                 return;
             }
-
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Color drawColor = Color * Alpha;
-
-            //绘制粒子核心
             spriteBatch.Draw(pixel, Position, new Rectangle(0, 0, 1, 1),
                 drawColor, 0f, new Vector2(0.5f, 0.5f),
                 Scale * 2f, SpriteEffects.None, 0f);
-
-            //绘制粒子光晕
             spriteBatch.Draw(pixel, Position, new Rectangle(0, 0, 1, 1),
                 drawColor with { A = 0 } * 0.5f, 0f, new Vector2(0.5f, 0.5f),
                 Scale * 4f, SpriteEffects.None, 0f);
+        }
+    }
+
+    /// <summary>
+    /// 改良飞行粒子：从研究槽位飞向复苏条
+    /// </summary>
+    internal class ImproveFlyParticle
+    {
+        private Vector2 startPos;
+        private Vector2 currentPos;
+        private float time;
+        private float delay;
+        private float progress;
+        private float duration;
+        private float rotation;
+        private float scale;
+        public bool Arrived;
+        public ImproveFlyParticle(Vector2 start, float delayFrames) {
+            startPos = start;
+            currentPos = start;
+            delay = delayFrames;
+            duration = 50f + Main.rand.NextFloat(10f);
+            rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            scale = Main.rand.NextFloat(0.6f, 1.1f);
+            Arrived = false;
+        }
+        public void Update(ResurrectionUI ui) {
+            if (Arrived) {
+                return;
+            }
+            time++;
+            if (time < delay) {
+                return;
+            }
+            float t = (time - delay) / duration;
+            if (t >= 1f) {
+                t = 1f;
+                Arrived = true;
+            }
+            progress = EaseOutCubic(t);
+            Vector2 target = ui.GetBarCenter();
+            Vector2 mid = (startPos + target) / 2f + new Vector2(0, -40f - Main.rand.NextFloat(30f));
+            currentPos = Bezier(startPos, mid, target, progress);
+            rotation += 0.15f;
+        }
+        public void Draw(SpriteBatch spriteBatch) {
+            if (Arrived) {
+                return;
+            }
+            if (time < delay) {
+                return;
+            }
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float alpha = 1f - progress * 0.3f;
+            Color col = Color.Lerp(new Color(80, 180, 255), new Color(200, 240, 255), progress) * alpha;
+            Vector2 size = new Vector2(6f * scale, 2f * scale);
+            spriteBatch.Draw(pixel, currentPos, new Rectangle(0, 0, 1, 1), col, rotation, new Vector2(0.5f, 0.5f), size, SpriteEffects.None, 0f);
+            spriteBatch.Draw(pixel, currentPos, new Rectangle(0, 0, 1, 1), col * 0.5f, rotation + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), size * 0.6f, SpriteEffects.None, 0f);
+        }
+        private static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t) {
+            float u = 1f - t;
+            return u * u * a + 2f * u * t * b + t * t * c;
+        }
+        private static float EaseOutCubic(float t) {
+            return 1f - (float)Math.Pow(1f - t, 3f);
+        }
+    }
+
+    /// <summary>
+    /// 改良脉冲：到达后在复苏条位置扩散的光圈
+    /// </summary>
+    internal class ImprovePulse
+    {
+        private Vector2 center;
+        private float progress;
+        private const float Duration = 40f;
+        public bool Finished => progress >= 1f;
+        public ImprovePulse(Vector2 c) {
+            center = c;
+            progress = 0f;
+        }
+        public void Update() {
+            if (Finished) {
+                return;
+            }
+            progress += 1f / Duration;
+            if (progress > 1f) {
+                progress = 1f;
+            }
+        }
+        public void Draw(SpriteBatch spriteBatch) {
+            if (Finished) {
+                return;
+            }
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float eased = EaseOutCubic(progress);
+            float radius = MathHelper.Lerp(10f, 95f, eased);
+            float thickness = MathHelper.Lerp(8f, 1.5f, eased);
+            float alpha = 1f - eased;
+            Color col = Color.Lerp(new Color(90, 190, 255), new Color(200, 230, 255), eased) * alpha * 0.8f;
+            int segs = 60;
+            float step = MathHelper.TwoPi / segs;
+            for (int i = 0; i < segs; i++) {
+                float a1 = i * step;
+                float a2 = (i + 1) * step;
+                Vector2 p1 = center + a1.ToRotationVector2() * radius;
+                Vector2 p2 = center + a2.ToRotationVector2() * radius;
+                Vector2 diff = p2 - p1;
+                float len = diff.Length();
+                float rot = diff.ToRotation();
+                spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), col, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
+            }
+        }
+        private static float EaseOutCubic(float t) {
+            return 1f - (float)Math.Pow(1f - t, 3f);
         }
     }
 }

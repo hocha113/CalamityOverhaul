@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int ResearchDuration = 7200; //研究总时长（2分钟 = 7200帧，60fps * 120秒）
         private bool isResearching = false; //是否正在研究
 
+        //复苏系统交互
+        private const float ResurrectionMaxIncreasePerFish = 15f; //每条新鱼提升上限
+
         public override void Update() {
             Item ??= new Item();
             Size = PictureSlot.Size();
@@ -71,16 +74,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (isResearching && Item.Alives() && Item.type > ItemID.None) {
                 researchTimer += 100;
 
-                //研究完成
                 if (researchTimer >= ResearchDuration) {
                     SoundEngine.PlaySound(SoundID.ResearchComplete);
                     isResearching = false;
                     researchTimer = 0;
 
+                    bool unlockedNewFish = false;
+                    Vector2 startPos = DrawPosition + new Vector2(26, 26);
+
                     if (FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
-                        // 使用新的动画方法，从研究槽位中心飞出
-                        Vector2 startPos = DrawPosition + new Vector2(26, 26); // 物品图标中心
                         HalibutUIPanel.Instance.AddSkillWithAnimation(fishSkill, startPos);
+                        unlockedNewFish = true;
+                    }
+
+                    if (unlockedNewFish) {
+                        if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                            var res = halibutPlayer.ResurrectionSystem;
+                            float oldMax = res.MaxValue;
+                            res.MaxValue = oldMax + ResurrectionMaxIncreasePerFish;
+                            res.Reset(); //清空当前复苏值
+                            float flyNum = Math.Clamp(ResurrectionMaxIncreasePerFish / 3f, 4f, 18f);
+                            ResurrectionUI.Instance?.TriggerImproveEffect(startPos, (int)flyNum, oldMax, res.MaxValue);
+                        }
                     }
 
                     Item.TurnToAir();

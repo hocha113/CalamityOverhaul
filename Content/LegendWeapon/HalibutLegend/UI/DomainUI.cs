@@ -243,9 +243,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         /// <summary>
         /// 根据激活眼睛数量与层级计算复苏速度：
-        ///  未死机的眼睛：Base * GeometricFactor^(层级-1)
-        ///  死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
-        ///  结果为绝对设置，不进行累加，保证稳定性
+        /// 未死机的眼睛：Base * GeometricFactor^(层级-1)
+        /// 死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
+        /// 结果为绝对设置，不进行累加，保证稳定性
         /// </summary>
         private void UpdateResurrectionRate() {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
