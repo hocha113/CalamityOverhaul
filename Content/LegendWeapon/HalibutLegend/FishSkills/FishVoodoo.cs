@@ -7,6 +7,7 @@ using Terraria.DataStructures; // 访问 HalibutPlayer
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills; // SeaDomainProj
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
@@ -16,14 +17,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class FishVoodoo : FishSkill
     {
-        /// <summary>
-        /// 研究巫毒娃娃鱼解锁
-        /// </summary>
         public override int UnlockFishID => ItemID.GuideVoodooFish;
-        /// <summary>
-        /// 冷却：45 秒
-        /// </summary>
-        public override int DefaultCooldown => 60 * 45;
+        public override int DefaultCooldown => 60 * 45; // 45 秒
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HasHalibut;//未装备暂停冷却
     }
 
@@ -33,6 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishVoodooPlayer : ModPlayer
     {
         private bool triggerThisHit;
+        private const int UnlimitedLayersThreshold = 9; // >=9 层领域时无限替死
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
             // 不在此处改写伤害（避免和其它 Mod 计算冲突），仅预判是否要触发
@@ -44,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer))
                 return;
 
-            // 只在冷却完成时尝试：在 OnHurt 中真正执行逻辑
+            // 不检查冷却（在 OnHurt 决定），标记可尝试
             triggerThisHit = true;
         }
 
@@ -55,20 +51,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer))
                 return;
 
-            if (skill.Cooldown > 0)
-                return;
+            bool unlimited = hPlayer.SeaDomainActive && hPlayer.SeaDomainLayers >= UnlimitedLayersThreshold;
+            if (skill.Cooldown > 0 && !unlimited)
+                return; // 冷却中且不是无限模式
 
             int damageTaken = info.Damage; // 已经过防御后的真实损失
             if (damageTaken <= 0)
                 return;
 
-            // 寻找目标 NPC
-            NPC target = PickRedirectTarget(Player.Center, 800f);
-            if (target == null) {
-                return; // 没目标就放弃
+            List<NPC> targets = null;
+            if (hPlayer.SeaDomainActive) {
+                targets = GetSeaDomainTargets(Player, out float domainRadius, out Vector2 domainCenter);
+                if (targets.Count == 0) {
+                    // 领域内没有敌人时降级为随机
+                    NPC lone = PickRedirectTarget(Player.Center, 800f);
+                    if (lone != null) targets.Add(lone);
+                }
+            }
+            else {
+                NPC target = PickRedirectTarget(Player.Center, 800f);
+                if (target != null) {
+                    targets = new List<NPC> { target };
+                }
             }
 
-            // 回血（抵消本次伤害）
+            if (targets == null || targets.Count == 0)
+                return;
+
+            // 回血（抵消 + 奖励气血） 目前设计为 3 倍恢复
             Player.statLife += damageTaken * 3;
             if (Player.statLife > Player.statLifeMax2)
                 Player.statLife = Player.statLifeMax2;
@@ -77,31 +87,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Player.immuneTime = Math.Max(Player.immuneTime, 30);
 
             int dir = Player.direction;
-            // 回退：使用自定义 HitInfo
-            NPC.HitInfo hit = new NPC.HitInfo {
-                Damage = damageTaken,
-                Knockback = 0f,
-                HitDirection = dir,
-                Crit = false
-            };
-            target.StrikeNPC(hit);
+            foreach (var npc in targets) {
+                if (!npc.active) continue;
+                NPC.HitInfo hit = new NPC.HitInfo {
+                    Damage = damageTaken,
+                    Knockback = 0f,
+                    HitDirection = dir,
+                    Crit = false
+                };
+                npc.StrikeNPC(hit);
+            }
 
-            // 冷却
-            skill.SetCooldown();
+            // 冷却（九层及以上无限替死不进入冷却）
+            if (!unlimited) {
+                skill.SetCooldown();
+            }
+            else {
+                skill.Cooldown = 0; // 保证保持 0
+            }
 
-            // 视觉 / 音效演出
-            PlayAbsorbEffects(Player, target, damageTaken);
-            SpawnLinkDust(Player.Center, target.Center);
-            SpawnTargetImpact(target);
-            SpawnMarkProjectile(target);
+            // 演出：玩家中心聚合 -> 每个目标分裂
+            foreach (var npc in targets) {
+                PlayAbsorbEffects(Player, npc, damageTaken / targets.Count);
+                SpawnLinkDust(Player.Center, npc.Center);
+                SpawnTargetImpact(npc);
+                SpawnMarkProjectile(npc);
+            }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp
             , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
             if (triggerThisHit) {
-                return false; //触发时必定免死
+                return false; //触发时免死
             }
             return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
+        }
+
+        private static List<NPC> GetSeaDomainTargets(Player player, out float radius, out Vector2 center) {
+            radius = 0f; center = player.Center;
+            List<NPC> list = new();
+            // 寻找玩家的 SeaDomainProj
+            int projType = ModContent.ProjectileType<SeaDomainProj>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile pr = Main.projectile[i];
+                if (!pr.active || pr.owner != player.whoAmI || pr.type != projType) continue;
+                center = pr.Center;
+                if (pr.ModProjectile is SeaDomainProj sea) {
+                    radius = Math.Max(radius, sea.GetMaxRadius());
+                }
+            }
+            if (radius <= 0f) radius = 800f; // 兜底半径
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.lifeMax <= 5 || npc.dontTakeDamage) continue;
+                if (!npc.CanBeChasedBy(player)) continue;
+                if (Vector2.Distance(center, npc.Center) <= radius) {
+                    list.Add(npc);
+                }
+            }
+            return list;
         }
 
         private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {
@@ -137,47 +181,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return Main.npc[candidates[pick]];
         }
 
-        private void PlayAbsorbEffects(Player player, NPC target, int dmg) {
+        private void PlayAbsorbEffects(Player player, NPC target, int dmgShare) {
             // 玩家周围暗影散裂
-            for (int i = 0; i < 40; i++) {
+            for (int i = 0; i < 24; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
                 Vector2 pos = player.Center + Main.rand.NextVector2CircularEdge(32f, 32f);
-                int dustId = Dust.NewDust(pos, 0, 0, DustID.Shadowflame, vel.X, vel.Y, 120, default, Main.rand.NextFloat(1f, 1.6f));
+                int dustId = Dust.NewDust(pos, 0, 0, DustID.Shadowflame, vel.X, vel.Y, 120, default, Main.rand.NextFloat(0.9f, 1.4f));
                 Main.dust[dustId].noGravity = true;
-                Main.dust[dustId].fadeIn = 1.2f;
             }
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < 12; i++) {
                 Vector2 dir = (target.Center - player.Center).SafeNormalize(Vector2.Zero).RotatedByRandom(0.6f);
                 Vector2 vel = dir * Main.rand.NextFloat(4f, 9f);
-                int dustId = Dust.NewDust(player.Center, 0, 0, DustID.PurpleTorch, vel.X, vel.Y, 80, default, Main.rand.NextFloat(0.9f, 1.3f));
+                int dustId = Dust.NewDust(player.Center, 0, 0, DustID.PurpleTorch, vel.X, vel.Y, 80, default, Main.rand.NextFloat(0.8f, 1.2f));
                 Main.dust[dustId].noGravity = true;
             }
-            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1f, Pitch = -0.3f }, player.Center);
-            SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.6f, Pitch = 0.2f }, target.Center);
-            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalDryadTouch with { Volume = 0.5f, Pitch = -0.1f }, player.Center);
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = -0.3f }, player.Center);
+            SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.35f, Pitch = 0.2f }, target.Center);
         }
 
         private void SpawnLinkDust(Vector2 from, Vector2 to) {
-            int steps = 24;
+            int steps = 18;
             for (int i = 0; i <= steps; i++) {
                 float t = i / (float)steps;
-                Vector2 pos = Vector2.Lerp(from, to, t) + Main.rand.NextVector2Circular(6f, 6f);
-                Vector2 vel = Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.3f, 1.2f);
-                int dustId = Dust.NewDust(pos, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 150, default, Main.rand.NextFloat(0.8f, 1.4f));
+                Vector2 pos = Vector2.Lerp(from, to, t) + Main.rand.NextVector2Circular(5f, 5f);
+                Vector2 vel = (to - from).SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(0.5f, 2f);
+                int dustId = Dust.NewDust(pos, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 150, default, Main.rand.NextFloat(0.7f, 1.3f));
                 Main.dust[dustId].noGravity = true;
-                Main.dust[dustId].color = Color.Lerp(Color.MediumPurple, Color.HotPink, Main.rand.NextFloat());
             }
         }
 
         private void SpawnTargetImpact(NPC target) {
-            for (int i = 0; i < 50; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
-                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 60, default, Main.rand.NextFloat(1.2f, 1.9f));
+            for (int i = 0; i < 30; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
+                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 60, default, Main.rand.NextFloat(1.1f, 1.6f));
                 Main.dust[dustId].noGravity = true;
             }
-            for (int i = 0; i < 30; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(3f, 3f);
-                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.MagicMirror, vel.X, vel.Y, 120, default, Main.rand.NextFloat(0.9f, 1.5f));
+            for (int i = 0; i < 18; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);
+                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.MagicMirror, vel.X, vel.Y, 120, default, Main.rand.NextFloat(0.8f, 1.3f));
                 Main.dust[dustId].noGravity = true;
             }
         }
@@ -225,7 +266,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Projectile.Center - Main.screenPosition;
             Rectangle rect = tex.Frame();
             Vector2 origin = rect.Size() / 2f;
-            float progress = 1f - Projectile.timeLeft / 60f;
             float scale = 1.1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.15f;
 
             // 发光脉冲圈
