@@ -16,41 +16,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     /// </summary>
     public class ResurrectionDeathSystem : ModPlayer
     {
-        #region 死亡状态数据
+        #region 死亡状态枚举
         /// <summary>
-        /// 是否正在进行复苏死亡演出
+        /// 死亡流程状态
         /// </summary>
-        public bool IsResurrectionDeathActive { get; private set; }
+        private enum DeathState
+        {
+            None,           // 无状态
+            Warning,        // 警告阶段
+            DeathAnimation, // 死亡动画阶段
+            Executing,      // 执行死亡
+            Cooldown        // 冷却期（防止重复触发）
+        }
 
+        private DeathState currentState = DeathState.None;
+        #endregion
+
+        #region 死亡状态数据
         /// <summary>
         /// 死亡演出计时器
         /// </summary>
-        private int deathAnimationTimer = 0;
+        private int stateTimer = 0;
 
         /// <summary>
-        /// 死亡演出总时长（帧）
+        /// 警告阶段持续时间
         /// </summary>
-        private const int DeathAnimationDuration = 240; //4秒
+        private const int WarningDuration = 60; // 1秒
 
         /// <summary>
-        /// 死亡前的短暂预警时间
+        /// 死亡动画持续时间
         /// </summary>
-        private const int DeathWarningDuration = 60; //1秒
+        private const int DeathAnimationDuration = 180; // 3秒
 
         /// <summary>
-        /// 是否处于死亡预警阶段
+        /// 冷却时间（防止连续触发）
         /// </summary>
-        private bool isDeathWarning = false;
-
-        /// <summary>
-        /// 预警计时器
-        /// </summary>
-        private int warningTimer = 0;
+        private const int CooldownDuration = 30; // 0.5秒
 
         /// <summary>
         /// 死亡后复苏值保留比例（0-1）
         /// </summary>
-        private const float ResurrectionRetainRatio = 0.8f; //保留80%，即减少20
+        private const float ResurrectionRetainRatio = 0.8f; // 保留80%，即减少20
 
         /// <summary>
         /// 屏幕震动强度
@@ -73,114 +79,152 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private float shadowDistortionIntensity = 0f;
 
         /// <summary>
-        /// 音效播放标记
+        /// 是否已执行死亡
         /// </summary>
-        private bool hasPlayedDeathSound = false;
+        private bool hasExecutedDeath = false;
+
+        /// <summary>
+        /// 玩家透明度修改
+        /// </summary>
+        private float playerAlphaMultiplier = 1f;
         #endregion
 
-        #region 系统更新
+        #region 主更新逻辑
         public override void PreUpdate() {
             var system = Player.GetResurrectionSystem();
-            if (system == null) return;
-
-            //检查是否达到致命阈值
-            if (system.IsFull && !Player.dead && !IsResurrectionDeathActive) {
-                StartDeathWarning();
+            if (system == null) {
+                ResetState();
+                return;
             }
 
-            //更新死亡预警
-            if (isDeathWarning) {
-                UpdateDeathWarning();
+            // 如果玩家已经死亡，重置状态
+            if (Player.dead) {
+                if (currentState != DeathState.None && currentState != DeathState.Cooldown) {
+                    ResetState();
+                }
+                return;
             }
 
-            //更新死亡演出
-            if (IsResurrectionDeathActive) {
-                UpdateDeathAnimation();
-            }
+            // 状态机更新
+            UpdateStateMachine(system);
 
-            //更新粒子效果
-            UpdateParticles();
-
-            //更新触手效果
-            UpdateTentacles();
+            // 更新视觉效果
+            UpdateVisualEffects();
         }
 
         /// <summary>
-        /// 开始死亡预警
+        /// 状态机更新
         /// </summary>
-        private void StartDeathWarning() {
-            isDeathWarning = true;
-            warningTimer = 0;
-            
-            //播放警告音效
-            SoundEngine.PlaySound(SoundID.Roar with { 
-                Volume = 1.2f, 
-                Pitch = -0.5f,
-                MaxInstances = 1
-            }, Player.Center);
+        private void UpdateStateMachine(ResurrectionSystem system) {
+            stateTimer++;
 
-            //生成警告文本
-            CombatText.NewText(Player.getRect(), Color.DarkRed, 
+            switch (currentState) {
+                case DeathState.None:
+                    // 检查是否应该开始死亡流程
+                    if (system.IsFull) {
+                        StartWarningPhase();
+                    }
+                    break;
+
+                case DeathState.Warning:
+                    UpdateWarningPhase();
+                    break;
+
+                case DeathState.DeathAnimation:
+                    UpdateDeathAnimationPhase();
+                    break;
+
+                case DeathState.Executing:
+                    UpdateExecutingPhase();
+                    break;
+
+                case DeathState.Cooldown:
+                    UpdateCooldownPhase(system);
+                    break;
+            }
+        }
+        #endregion
+
+        #region 警告阶段
+        /// <summary>
+        /// 开始警告阶段
+        /// </summary>
+        private void StartWarningPhase() {
+            currentState = DeathState.Warning;
+            stateTimer = 0;
+
+            // 播放警告音效
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Roar with {
+                    Volume = 1.2f,
+                    Pitch = -0.5f,
+                    MaxInstances = 1
+                }, Player.Center);
+            }
+
+            // 生成警告文本
+            CombatText.NewText(Player.getRect(), Color.DarkRed,
                 "深渊正在吞噬你...", dramatic: true, dot: false);
 
-            //开始生成大量粒子
-            for (int i = 0; i < 50; i++) {
+            // 生成初始粒子
+            for (int i = 0; i < 30; i++) {
                 SpawnAbyssParticle(Player.Center, large: true);
             }
         }
 
         /// <summary>
-        /// 更新死亡预警
+        /// 更新警告阶段
         /// </summary>
-        private void UpdateDeathWarning() {
-            warningTimer++;
+        private void UpdateWarningPhase() {
+            // 视觉效果
+            screenShakeIntensity = MathHelper.Lerp(screenShakeIntensity, 8f, 0.15f);
+            shadowDistortionIntensity = MathHelper.Lerp(shadowDistortionIntensity, 1f, 0.1f);
 
-            //预警期间的视觉效果
-            screenShakeIntensity = MathHelper.Lerp(screenShakeIntensity, 8f, 0.1f);
-            shadowDistortionIntensity = MathHelper.Lerp(shadowDistortionIntensity, 1f, 0.05f);
-
-            //持续生成粒子
-            if (warningTimer % 3 == 0) {
+            // 生成粒子
+            if (stateTimer % 5 == 0) {
                 SpawnAbyssParticle(Player.Center, large: Main.rand.NextBool());
             }
 
-            //生成触手
-            if (warningTimer % 10 == 0) {
+            // 生成触手
+            if (stateTimer % 12 == 0) {
                 SpawnTentacle();
             }
 
-            //预警结束，触发死亡
-            if (warningTimer >= DeathWarningDuration) {
-                TriggerResurrectionDeath();
+            // 警告阶段结束，进入死亡动画
+            if (stateTimer >= WarningDuration) {
+                StartDeathAnimationPhase();
             }
         }
+        #endregion
 
+        #region 死亡动画阶段
         /// <summary>
-        /// 触发复苏死亡
+        /// 开始死亡动画阶段
         /// </summary>
-        private void TriggerResurrectionDeath() {
-            isDeathWarning = false;
-            IsResurrectionDeathActive = true;
-            deathAnimationTimer = 0;
-            hasPlayedDeathSound = false;
+        private void StartDeathAnimationPhase() {
+            currentState = DeathState.DeathAnimation;
+            stateTimer = 0;
+            hasExecutedDeath = false;
 
-            //锁定玩家控制
+            // 锁定玩家控制
             Player.noItems = true;
             Player.noBuilding = true;
 
-            //播放死亡音效
-            SoundEngine.PlaySound(SoundID.NPCDeath59 with { 
-                Volume = 1.5f, 
-                Pitch = -0.8f 
-            }, Player.Center);
+            // 播放死亡音效
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.NPCDeath59 with {
+                    Volume = 1.5f,
+                    Pitch = -0.8f
+                }, Player.Center);
+            }
 
-            //生成大量死亡粒子
-            for (int i = 0; i < 100; i++) {
+            // 生成大量粒子
+            for (int i = 0; i < 80; i++) {
                 SpawnAbyssParticle(Player.Center, large: true);
             }
 
-            //生成更多触手
-            for (int i = 0; i < 8; i++) {
+            // 生成触手
+            for (int i = 0; i < 6; i++) {
                 SpawnTentacle();
             }
 
@@ -188,71 +232,114 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         /// <summary>
-        /// 更新死亡演出
+        /// 更新死亡动画阶段
         /// </summary>
-        private void UpdateDeathAnimation() {
-            deathAnimationTimer++;
+        private void UpdateDeathAnimationPhase() {
+            float progress = stateTimer / (float)DeathAnimationDuration;
 
-            float progress = deathAnimationTimer / (float)DeathAnimationDuration;
+            // 第一阶段：拉扯效果（0-0.4）
+            if (progress < 0.4f) {
+                float pullProgress = progress / 0.4f;
 
-            //第一阶段：拉扯效果（0-0.3）
-            if (progress < 0.3f) {
-                float pullProgress = progress / 0.3f;
-                
-                //向中心拉扯
-                Vector2 pullDirection = Vector2.Zero - Player.Center;
-                if (pullDirection.Length() > 10f) {
-                    pullDirection.Normalize();
-                    Player.velocity += pullDirection * pullProgress * 2f;
-                }
+                // 向玩家下方拉扯（模拟被深渊吞噬）
+                Player.velocity.Y += pullProgress * 0.5f;
+                Player.velocity.X *= 0.95f;
 
-                //强烈震动
-                screenShakeIntensity = 15f * (1f - pullProgress);
-                shadowDistortionIntensity = 1f;
+                // 强烈震动
+                screenShakeIntensity = MathHelper.Lerp(15f, 10f, pullProgress);
+                shadowDistortionIntensity = 1f + pullProgress;
 
-                //大量粒子
-                for (int i = 0; i < 3; i++) {
+                // 大量粒子
+                if (stateTimer % 2 == 0) {
                     SpawnAbyssParticle(Player.Center, large: true);
                 }
+
+                // 玩家开始变透明
+                playerAlphaMultiplier = 1f - pullProgress * 0.3f;
             }
-            //第二阶段：扭曲消失（0.3-0.7）
+            // 第二阶段：扭曲消失（0.4-0.7）
             else if (progress < 0.7f) {
-                float dissolveProgress = (progress - 0.3f) / 0.4f;
-                
-                //玩家变得半透明并扭曲
+                float dissolveProgress = (progress - 0.4f) / 0.3f;
+
+                // 玩家继续变透明
+                playerAlphaMultiplier = 0.7f - dissolveProgress * 0.5f;
+
+                // 减速
                 Player.velocity *= 0.9f;
-                screenShakeIntensity = MathHelper.Lerp(15f, 5f, dissolveProgress);
-                shadowDistortionIntensity = 1f + dissolveProgress * 2f;
 
-                //在50%时播放最终音效
-                if (!hasPlayedDeathSound && dissolveProgress >= 0.5f) {
-                    hasPlayedDeathSound = true;
-                    SoundEngine.PlaySound(SoundID.DD2_EtherianPortalDryadTouch with { 
-                        Volume = 1.0f, 
-                        Pitch = -1.0f 
-                    }, Player.Center);
-                }
+                // 视觉效果
+                screenShakeIntensity = MathHelper.Lerp(10f, 5f, dissolveProgress);
+                shadowDistortionIntensity = 2f + dissolveProgress;
 
-                //持续粒子
-                if (deathAnimationTimer % 2 == 0) {
+                // 持续粒子
+                if (stateTimer % 3 == 0) {
                     SpawnAbyssParticle(Player.Center, large: true);
                 }
-            }
-            //第三阶段：完全死亡（0.7-1.0）
-            else {
-                if (deathAnimationTimer == (int)(DeathAnimationDuration * 0.7f)) {
-                    //执行真正的死亡
-                    ExecuteDeath();
+
+                // 播放额外音效
+                if (dissolveProgress >= 0.5f && !hasExecutedDeath) {
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.DD2_EtherianPortalDryadTouch with {
+                            Volume = 1.0f,
+                            Pitch = -1.0f
+                        }, Player.Center);
+                    }
+                    hasExecutedDeath = true;
                 }
-                //淡出效果
+            }
+            // 第三阶段：执行死亡（0.7-1.0）
+            else {
                 float fadeProgress = (progress - 0.7f) / 0.3f;
+
+                // 玩家几乎透明
+                playerAlphaMultiplier = 0.2f - fadeProgress * 0.2f;
+
+                // 淡出效果
                 screenShakeIntensity = MathHelper.Lerp(5f, 0f, fadeProgress);
                 shadowDistortionIntensity = MathHelper.Lerp(3f, 0f, fadeProgress);
+
+                // 在70%时执行死亡
+                if (progress >= 0.7f && !hasExecutedDeath) {
+                    hasExecutedDeath = true;
+                    StartExecutingPhase();
+                    return; // 立即切换状态
+                }
             }
 
-            //演出结束
-            if (deathAnimationTimer >= DeathAnimationDuration) {
-                EndDeathAnimation();
+            // 动画结束，进入执行阶段（如果还没有）
+            if (stateTimer >= DeathAnimationDuration) {
+                if (!hasExecutedDeath) {
+                    StartExecutingPhase();
+                } else {
+                    // 如果已经执行了死亡，进入冷却
+                    StartCooldownPhase();
+                }
+            }
+
+            // 禁用玩家控制
+            DisablePlayerControls();
+        }
+        #endregion
+
+        #region 执行死亡阶段
+        /// <summary>
+        /// 开始执行死亡
+        /// </summary>
+        private void StartExecutingPhase() {
+            currentState = DeathState.Executing;
+            stateTimer = 0;
+
+            // 执行真正的死亡
+            ExecuteDeath();
+        }
+
+        /// <summary>
+        /// 更新执行阶段
+        /// </summary>
+        private void UpdateExecutingPhase() {
+            // 等待一小段时间确保死亡完成
+            if (stateTimer >= 10 || Player.dead) {
+                StartCooldownPhase();
             }
         }
 
@@ -260,32 +347,86 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 执行真正的死亡
         /// </summary>
         private void ExecuteDeath() {
-            //使用深渊主题的死亡原因
-            PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(Player.name));
-            //杀死玩家
-            Player.Hurt(damageSource, int.MaxValue - 1, 0);
+            // 使用深渊主题的死亡原因
+            PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(
+                CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(Player.name)
+            );
 
-            //生成死亡特效
-            for (int i = 0; i < 50; i++) {
-                Dust dust = Dust.NewDustDirect(Player.position, Player.width, Player.height, 
-                    DustID.DungeonWater, 0f, 0f, 100, Color.DarkBlue, 2.5f);
-                dust.velocity *= 3f;
-                dust.noGravity = true;
+            // 杀死玩家
+            Player.Hurt(damageSource, Player.statLife + 1, 0);
+
+            // 生成死亡特效
+            if (!VaultUtils.isServer) {
+                for (int i = 0; i < 50; i++) {
+                    Dust dust = Dust.NewDustDirect(Player.position, Player.width, Player.height,
+                        DustID.DungeonWater, 0f, 0f, 100, Color.DarkBlue, 2.5f);
+                    dust.velocity *= 3f;
+                    dust.noGravity = true;
+                }
+
+                // 额外的深色粒子
+                for (int i = 0; i < 30; i++) {
+                    Dust dust = Dust.NewDustDirect(Player.position, Player.width, Player.height,
+                        DustID.Shadowflame, 0f, 0f, 100, Color.Black, 2f);
+                    dust.velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    dust.noGravity = true;
+                }
             }
+        }
+        #endregion
+
+        #region 冷却阶段
+        /// <summary>
+        /// 开始冷却阶段
+        /// </summary>
+        private void StartCooldownPhase() {
+            currentState = DeathState.Cooldown;
+            stateTimer = 0;
+            playerAlphaMultiplier = 1f;
         }
 
         /// <summary>
-        /// 结束死亡演出
+        /// 更新冷却阶段
         /// </summary>
-        private void EndDeathAnimation() {
-            IsResurrectionDeathActive = false;
-            deathAnimationTimer = 0;
+        private void UpdateCooldownPhase(ResurrectionSystem system) {
+            // 冷却期间淡出效果
+            screenShakeIntensity *= 0.9f;
+            shadowDistortionIntensity *= 0.9f;
+
+            // 冷却结束
+            if (stateTimer >= CooldownDuration) {
+                // 如果复苏值仍然是满的，重新开始流程
+                if (system.IsFull && !Player.dead) {
+                    ResetState();
+                    StartWarningPhase();
+                } else {
+                    ResetState();
+                }
+            }
+        }
+        #endregion
+
+        #region 状态重置
+        /// <summary>
+        /// 重置状态
+        /// </summary>
+        private void ResetState() {
+            currentState = DeathState.None;
+            stateTimer = 0;
             screenShakeIntensity = 0f;
             shadowDistortionIntensity = 0f;
-            
-            //清理效果
+            hasExecutedDeath = false;
+            playerAlphaMultiplier = 1f;
+
+            // 清理效果
             abyssParticles.Clear();
             tentacles.Clear();
+
+            // 恢复玩家控制
+            if (!Player.dead) {
+                Player.noItems = false;
+                Player.noBuilding = false;
+            }
         }
         #endregion
 
@@ -294,48 +435,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             var system = Player.GetResurrectionSystem();
             if (system == null) return;
 
-            //死亡后，复苏值不会完全清零，而是保持在危险水平
-            //这会给玩家持续的压迫感
+            // 死亡后，复苏值不会完全清零，而是保持在危险水平
             if (system.CurrentValue >= system.MaxValue * 0.95f) {
                 float retainedValue = system.MaxValue * ResurrectionRetainRatio;
                 system.SetValue(retainedValue, triggerEvents: false);
-                //播放不祥音效
-                SoundEngine.PlaySound(SoundID.Zombie103 with { 
-                    Volume = 0.8f, 
-                    Pitch = -0.5f 
-                });
+
+                // 显示警告信息
+                Main.NewText("深渊的印记依然缠绕着你...", 200, 50, 50);
+                Main.NewText($"复苏值: {(int)(ResurrectionRetainRatio * 100)}%", 255, 150, 50);
+
+                // 播放不祥音效
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Zombie103 with {
+                        Volume = 0.8f,
+                        Pitch = -0.5f
+                    });
+                }
             }
 
-            //重置演出状态
-            IsResurrectionDeathActive = false;
-            isDeathWarning = false;
-            warningTimer = 0;
-            deathAnimationTimer = 0;
-            hasPlayedDeathSound = false;
+            // 重置演出状态
+            ResetState();
         }
         #endregion
 
-        #region 粒子效果系统
+        #region 视觉效果更新
         /// <summary>
-        /// 生成深渊粒子
+        /// 更新视觉效果
         /// </summary>
-        private void SpawnAbyssParticle(Vector2 center, bool large = false) {
-            Vector2 position = center + Main.rand.NextVector2Circular(200, 200);
-            Vector2 velocity = (center - position).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 6f);
-            
-            abyssParticles.Add(new AbyssParticle(position, velocity, large));
-        }
-
-        /// <summary>
-        /// 更新粒子
-        /// </summary>
-        private void UpdateParticles() {
+        private void UpdateVisualEffects() {
+            // 更新粒子
             for (int i = abyssParticles.Count - 1; i >= 0; i--) {
                 abyssParticles[i].Update();
                 if (abyssParticles[i].IsDead) {
                     abyssParticles.RemoveAt(i);
                 }
             }
+
+            // 更新触手
+            for (int i = tentacles.Count - 1; i >= 0; i--) {
+                tentacles[i].Update(Player.Center);
+                if (tentacles[i].IsDead) {
+                    tentacles.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 生成深渊粒子
+        /// </summary>
+        private void SpawnAbyssParticle(Vector2 center, bool large = false) {
+            Vector2 position = center + Main.rand.NextVector2Circular(200, 200);
+            Vector2 velocity = (center - position).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 6f);
+
+            abyssParticles.Add(new AbyssParticle(position, velocity, large));
         }
 
         /// <summary>
@@ -344,26 +496,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private void SpawnTentacle() {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             Vector2 startPos = Player.Center + angle.ToRotationVector2() * 400f;
-            
+
             tentacles.Add(new AbyssTentacle(startPos, Player.Center, angle));
         }
+        #endregion
 
+        #region 玩家控制
         /// <summary>
-        /// 更新触手
+        /// 禁用玩家控制
         /// </summary>
-        private void UpdateTentacles() {
-            for (int i = tentacles.Count - 1; i >= 0; i--) {
-                tentacles[i].Update(Player.Center);
-                if (tentacles[i].IsDead) {
-                    tentacles.RemoveAt(i);
-                }
-            }
+        private void DisablePlayerControls() {
+            Player.noItems = true;
+            Player.noBuilding = true;
+            Player.controlJump = false;
+            Player.controlDown = false;
+            Player.controlLeft = false;
+            Player.controlRight = false;
+            Player.controlUp = false;
+            Player.controlUseItem = false;
+            Player.controlUseTile = false;
+            Player.controlThrow = false;
         }
         #endregion
 
         #region 渲染效果
         public override void ModifyScreenPosition() {
-            //应用屏幕震动
+            // 应用屏幕震动
             if (screenShakeIntensity > 0.1f) {
                 Main.screenPosition += new Vector2(
                     Main.rand.NextFloat(-screenShakeIntensity, screenShakeIntensity),
@@ -374,47 +532,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void PostUpdate() {
-            //应用死亡演出期间的玩家效果
-            if (IsResurrectionDeathActive) {
-                //禁用玩家控制
-                Player.noItems = true;
-                Player.noBuilding = true;
-                Player.controlJump = false;
-                Player.controlDown = false;
-                Player.controlLeft = false;
-                Player.controlRight = false;
-                Player.controlUp = false;
-                Player.controlUseItem = false;
-                Player.controlUseTile = false;
-                Player.controlThrow = false;
+            // 应用玩家透明度
+            if (playerAlphaMultiplier < 1f) {
+                // 通过调整玩家颜色来模拟透明度
+                Player.immuneAlpha = (int)((1f - playerAlphaMultiplier) * 255f);
             }
         }
+
+        /// <summary>
+        /// 检查是否处于死亡演出状态
+        /// </summary>
+        public bool IsInDeathSequence => currentState != DeathState.None && currentState != DeathState.Cooldown;
 
         /// <summary>
         /// 绘制死亡演出特效
         /// </summary>
         public void DrawDeathEffects(SpriteBatch spriteBatch) {
-            if (!IsResurrectionDeathActive && !isDeathWarning) {
-                return;
-            }
-            //绘制触手
+            if (currentState == DeathState.None) return;
+
+            // 绘制触手
             foreach (var tentacle in tentacles) {
                 tentacle.Draw(spriteBatch);
             }
 
-            //绘制粒子
+            // 绘制粒子
             foreach (var particle in abyssParticles) {
                 particle.Draw(spriteBatch);
             }
 
-            //绘制屏幕暗化效果
-            if (IsResurrectionDeathActive) {
-                float progress = deathAnimationTimer / (float)DeathAnimationDuration;
-                float darkness = MathHelper.Clamp(progress * 1.5f, 0f, 0.8f);
-                
-                Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-                spriteBatch.Draw(TextureAssets.MagicPixel.Value, screenRect, 
-                    Color.Black * darkness);
+            // 绘制屏幕暗化效果
+            if (currentState == DeathState.DeathAnimation || currentState == DeathState.Executing) {
+                float darkness = 0f;
+
+                if (currentState == DeathState.DeathAnimation) {
+                    float progress = stateTimer / (float)DeathAnimationDuration;
+                    darkness = MathHelper.Clamp(progress * 1.5f, 0f, 0.7f);
+                } else {
+                    darkness = 0.7f;
+                }
+
+                if (darkness > 0.01f) {
+                    Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+                    spriteBatch.Draw(TextureAssets.MagicPixel.Value, screenRect,
+                        Color.Black * darkness);
+                }
             }
         }
         #endregion
@@ -447,8 +608,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Alpha = 1f;
             Life = 0;
             MaxLife = large ? Main.rand.Next(60, 120) : Main.rand.Next(30, 60);
-            
-            //深渊主题颜色
+
+            // 深渊主题颜色
             Color = Main.rand.Next(4) switch {
                 0 => new Color(5, 10, 40),
                 1 => new Color(10, 5, 50),
@@ -474,8 +635,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Texture2D texture = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
             Color drawColor = Color * Alpha;
 
-            spriteBatch.Draw(texture, Position - Main.screenPosition, null, 
-                drawColor, Rotation, texture.Size() / 2f, Scale, 
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null,
+                drawColor, Rotation, texture.Size() / 2f, Scale,
                 SpriteEffects.None, 0f);
         }
     }
@@ -506,8 +667,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Life = 0;
             MaxLife = 120;
             Segments = new List<Vector2>();
-            
-            //初始化分段
+
+            // 初始化分段
             for (int i = 0; i < SegmentCount; i++) {
                 Segments.Add(start);
             }
@@ -517,15 +678,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Life++;
             TargetPosition = playerCenter;
 
-            //生长阶段（0-0.3）
+            // 生长阶段（0-0.3）
             if (Progress < 0.3f) {
                 Progress += 0.02f;
             }
-            //保持阶段（0.3-0.7）
+            // 保持阶段（0.3-0.7）
             else if (Progress < 0.7f) {
                 Progress += 0.005f;
             }
-            //消失阶段（0.7-1.0）
+            // 消失阶段（0.7-1.0）
             else {
                 Progress += 0.02f;
                 Alpha *= 0.95f;
@@ -533,25 +694,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             Progress = Math.Min(Progress, 1f);
 
-            //更新触手分段位置
+            // 更新触手分段位置
             UpdateSegments();
         }
 
         private void UpdateSegments() {
             Vector2 direction = TargetPosition - StartPosition;
-            float totalLength = direction.Length() * Progress;
-            
+
             for (int i = 0; i < SegmentCount; i++) {
                 float segmentProgress = i / (float)(SegmentCount - 1);
-                Vector2 basePos = Vector2.Lerp(StartPosition, TargetPosition, 
+                Vector2 basePos = Vector2.Lerp(StartPosition, TargetPosition,
                     segmentProgress * Progress);
-                
-                //添加波浪效果
-                float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + 
+
+                // 添加波浪效果
+                float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f +
                     segmentProgress * MathHelper.Pi) * 30f;
                 Vector2 perpendicular = Vector2.Normalize(
                     new Vector2(-direction.Y, direction.X));
-                
+
                 Segments[i] = basePos + perpendicular * wave;
             }
         }
@@ -560,20 +720,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (IsDead || Alpha < 0.01f) return;
 
             Texture2D texture = TextureAssets.Chain12.Value;
-            
+
             for (int i = 0; i < Segments.Count - 1; i++) {
                 Vector2 start = Segments[i] - Main.screenPosition;
                 Vector2 end = Segments[i + 1] - Main.screenPosition;
-                
+
                 Vector2 diff = end - start;
                 float rotation = diff.ToRotation() - MathHelper.PiOver2;
                 float distance = diff.Length();
-                
+
                 Color color = new Color(20, 10, 50) * Alpha * 0.8f;
-                
-                spriteBatch.Draw(texture, start, null, color, rotation, 
-                    new Vector2(texture.Width / 2f, 0), 
-                    new Vector2(1f, distance / texture.Height), 
+
+                spriteBatch.Draw(texture, start, null, color, rotation,
+                    new Vector2(texture.Width / 2f, 0),
+                    new Vector2(1f, distance / texture.Height),
                     SpriteEffects.None, 0f);
             }
         }
