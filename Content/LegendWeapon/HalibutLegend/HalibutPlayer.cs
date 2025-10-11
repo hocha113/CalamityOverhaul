@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public static int GetCrashesLevel(Item item) {
             int level = HalibutData.GetLevel(item);
-            return CrashesLevelDictionary.ContainsKey(level) ? CrashesLevelDictionary[level] : 1;
+            return CrashesLevelDictionary.TryGetValue(level, out int value) ? value : 1;
         }
         /// <summary>
         /// 低于或者等于这个等级的眼睛会进入死机状态

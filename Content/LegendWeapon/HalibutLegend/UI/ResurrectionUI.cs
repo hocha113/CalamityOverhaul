@@ -336,13 +336,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float infoBlockHeight = infoLineHeight * 3f;
             float summaryBlockHeight = summaryDrawLines * summaryLineHeight;
             float dividerHeight = 2f;
+            float headerEstimatedHeight = FontAssets.MouseText.Value.MeasureString("当前态势评估").Y * 0.72f + 6f; //预估标题实际占用高度
 
             float panelHeight = topPadding
                 + titleHeight + titleExtra
                 + dividerSpacing + dividerHeight
                 + infoSpacingTop + infoBlockHeight
                 + dividerSpacing + dividerHeight
-                + summarySpacing + summaryBlockHeight
+                + summarySpacing + headerEstimatedHeight + summaryBlockHeight
                 + bottomPadding;
 
             float screenLimit = Main.screenHeight - 40f;
@@ -400,8 +401,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 divider2End = divider2Start + new Vector2(panelSize.X - horizontalPadding - contentRightPadding, 0);
             DrawDashedLine(spriteBatch, divider2Start, divider2End, edgeColor * 0.6f, 6f, 3f);
 
-            Vector2 summaryStart = divider2Start + new Vector2(0, dividerSpacing + summarySpacing);
-            DrawSummaryHeader(spriteBatch, summaryStart - new Vector2(0, summarySpacing + 4f), edgeColor, alpha);
+            //绘制摘要标题并计算真实高度
+            Vector2 summaryHeaderPos = divider2Start + new Vector2(0, dividerSpacing + summarySpacing);
+            float headerHeight = DrawSummaryHeader(spriteBatch, summaryHeaderPos, edgeColor, alpha);
+            Vector2 summaryStart = summaryHeaderPos + new Vector2(0, headerHeight + 4f);
             DrawSummaryLines(spriteBatch, summaryLines, summaryStart, panelRect, summaryLineHeight, alpha);
 
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
@@ -435,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             index++;
         }
 
-        private static void DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
+        private static float DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
             string header = "当前态势评估";
             for (int i = 0; i < 4; i++) {
                 float a = MathHelper.TwoPi * i / 4f;
@@ -443,6 +446,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(sb, header, pos + o, edgeColor * 0.4f * alpha, 0.72f);
             }
             Utils.DrawBorderString(sb, header, pos, Color.Lerp(edgeColor, Color.White, 0.4f) * alpha, 0.72f);
+            Vector2 size = FontAssets.MouseText.Value.MeasureString(header) * 0.72f;
+            return size.Y; //返回高度供布局使用
         }
 
         private static void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
