@@ -102,43 +102,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         #endregion
 
         #region 海域领域技能数据
-        /// <summary>海域领域是否激活</summary>
+        /// <summary>
+        /// 海域领域是否激活
+        /// </summary>
         public bool SeaDomainActive { get; set; }
-        /// <summary>海域领域触发冷却</summary>
+        /// <summary>
+        /// 海域领域触发冷却
+        /// </summary>
         public int SeaDomainToggleCD { get; set; }
-        /// <summary>海域领域冷却时间</summary>
-        public int SeaDomainCooldown { get; set; }
-        /// <summary>海域领域最大冷却（8秒）</summary>
-        public const int SeaDomainMaxCooldown = 480;
-        /// <summary>海域领域层数（1-10）</summary>
+        /// <summary>
+        /// 海域领域层数（1-10）
+        /// </summary>
         public int SeaDomainLayers { get; set; } = 1;
         #endregion
 
         #region 重启技能数据
-        /// <summary>重启技能触发冷却</summary>
+        /// <summary>
+        /// 重启技能触发冷却
+        /// </summary>
         public int RestartFishToggleCD { get; set; }
-        /// <summary>重启技能冷却时间</summary>
+        /// <summary>
+        /// 重启技能冷却时间
+        /// </summary>
         public int RestartFishCooldown { get; set; }
         #endregion
 
         #region 瞬移技能数据
-        /// <summary>瞬移技能触发冷却</summary>
+        /// <summary>
+        /// 瞬移技能触发冷却
+        /// </summary>
         public int FishTeleportToggleCD { get; set; }
-        /// <summary>瞬移技能冷却时间</summary>
+        /// <summary>
+        /// 瞬移技能冷却时间
+        /// </summary>
         public int FishTeleportCooldown { get; set; }
         #endregion
 
         #region 叠加攻击技能数据
-        /// <summary>叠加攻击触发冷却</summary>
+        /// <summary>
+        /// 叠加攻击触发冷却
+        /// </summary>
         public int SuperpositionToggleCD { get; set; }
-        /// <summary>叠加攻击冷却时间</summary>
+        /// <summary>
+        /// 叠加攻击冷却时间
+        /// </summary>
         public int SuperpositionCooldown { get; set; }
         #endregion
 
         #region 终极技能数据
-        /// <summary>终极技能触发冷却</summary>
+        /// <summary>
+        /// 终极技能触发冷却
+        /// </summary>
         public int YourLevelIsTooLowToggleCD { get; set; }
-        /// <summary>终极技能冷却时间</summary>
+        /// <summary>
+        /// 终极技能冷却时间
+        /// </summary>
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
 
@@ -163,7 +181,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //海域领域冷却
             if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
-            if (SeaDomainCooldown > 0) SeaDomainCooldown--;
 
             //重启技能冷却
             if (RestartFishToggleCD > 0) RestartFishToggleCD--;
