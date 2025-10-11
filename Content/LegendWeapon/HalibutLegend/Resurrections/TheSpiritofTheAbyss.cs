@@ -601,77 +601,227 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (ghostOpacity <= 0f) return false;
 
-            // 使用一个简单的纹理代替玩家纹理
-            Texture2D glowTexture = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
-            Vector2 drawPosition = NPC.Center - screenPos;
+            // 准备玩家快照数据
+            Player ghostPlayer = GetGhostPlayerData();
+            if (ghostPlayer == null) return false;
 
             // 深渊主题颜色
             Color ghostColor = new Color(10, 30, 60) * ghostOpacity;
-            Color eyeColor = new Color(100, 150, 255) * eyeGlowIntensity * ghostOpacity;
+            Color glowColor = new Color(100, 150, 255) * eyeGlowIntensity * ghostOpacity;
 
-            // 绘制扭曲效果（多层半透明）
+            // 结束当前批次，准备绘制玩家
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, 
+                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+                Main.GameViewMatrix.ZoomMatrix);
+
+            // 绘制扭曲的残影层
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = new Vector2(
                     (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i) * distortionIntensity * 3f,
                     (float)Math.Cos(Main.GlobalTimeWrappedHourly * 3f + i) * distortionIntensity * 2f
                 );
 
-                spriteBatch.Draw(glowTexture,
-                    drawPosition + offset + headTilt * 10f,
-                    null,
-                    ghostColor * (0.3f / (i + 1)),
-                    0f,
-                    glowTexture.Size() / 2f,
-                    2f,
-                    SpriteEffects.None,
-                    0f);
+                DrawGhostPlayer(ghostPlayer, offset + headTilt * 10f, 
+                    ghostColor * (0.3f / (i + 1)));
             }
 
-            // 绘制主体（人形轮廓）
-            Rectangle bodyRect = new Rectangle(0, 0, 20, 42);
-            Texture2D bodyTexture = TextureAssets.MagicPixel.Value;
-            
-            spriteBatch.Draw(bodyTexture,
-                drawPosition + headTilt * 10f,
-                bodyRect,
-                ghostColor * 0.8f,
-                0f,
-                new Vector2(10, 21),
-                new Vector2(2f, 4f),
-                SpriteEffects.None,
-                0f);
+            // 绘制主体玩家
+            DrawGhostPlayer(ghostPlayer, headTilt * 10f, ghostColor * 0.8f);
+
+            // 切换到发光混合模式绘制眼睛
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, 
+                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+                Main.GameViewMatrix.ZoomMatrix);
 
             // 绘制眼睛发光
-            Vector2 eyeOffset = headTilt * 10f + new Vector2(0, -15);
-            
-            spriteBatch.Draw(glowTexture,
-                drawPosition + eyeOffset + new Vector2(-4, 0),
-                null,
-                eyeColor,
-                0f,
-                glowTexture.Size() / 2f,
-                0.15f,
-                SpriteEffects.None,
-                0f);
-
-            spriteBatch.Draw(glowTexture,
-                drawPosition + eyeOffset + new Vector2(4, 0),
-                null,
-                eyeColor,
-                0f,
-                glowTexture.Size() / 2f,
-                0.15f,
-                SpriteEffects.None,
-                0f);
+            DrawGhostEyes(spriteBatch, glowColor);
 
             // 绘制粒子
             foreach (var particle in particles) {
                 particle.Draw(spriteBatch);
             }
 
+            // 恢复正常绘制模式
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, 
+                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+                Main.GameViewMatrix.ZoomMatrix);
+
             return false;
         }
+
+        /// <summary>
+        /// 获取用于渲染的幽灵玩家数据
+        /// </summary>
+        private static Player ghostRenderPlayer;
+        private Player GetGhostPlayerData() {
+            if (targetPlayer == null) return null;
+
+            ghostRenderPlayer ??= new Player();
+            Player ghost = ghostRenderPlayer;
+
+            // 重置并复制玩家数据
+            ghost.ResetEffects();
+            ghost.CopyVisuals(targetPlayer);
+
+            // 设置位置和动画
+            ghost.position = NPC.position;
+            ghost.velocity = NPC.velocity;
+            ghost.direction = NPC.velocity.X < 0 ? -1 : 1; // 根据移动方向
+            ghost.whoAmI = targetPlayer.whoAmI;
+
+            // 设置动画帧（根据状态）
+            switch (CurrentState) {
+                case SpiritState.Dormant:
+                    // 站立姿势
+                    ghost.bodyFrame = new Rectangle(0, 56 * 0, 40, 56);
+                    ghost.legFrame = new Rectangle(0, 56 * 0, 40, 56);
+                    break;
+
+                case SpiritState.Wandering:
+                    // 行走动画
+                    int walkFrame = (int)(Main.GlobalTimeWrappedHourly * 10f) % 20;
+                    ghost.bodyFrame = new Rectangle(0, 56 * (walkFrame / 4), 40, 56);
+                    ghost.legFrame = new Rectangle(0, 56 * (walkFrame / 4), 40, 56);
+                    break;
+
+                case SpiritState.Observing:
+                    // 凝视姿势（类似站立）
+                    ghost.bodyFrame = new Rectangle(0, 56 * 0, 40, 56);
+                    ghost.legFrame = new Rectangle(0, 56 * 0, 40, 56);
+                    break;
+
+                case SpiritState.Hunting:
+                    // 冲刺姿势
+                    ghost.bodyFrame = new Rectangle(0, 56 * 14, 40, 56);
+                    ghost.legFrame = new Rectangle(0, 56 * 6, 40, 56);
+                    break;
+
+                case SpiritState.Killing:
+                    // 攻击姿势
+                    ghost.bodyFrame = new Rectangle(0, 56 * 2, 40, 56);
+                    ghost.legFrame = new Rectangle(0, 56 * 2, 40, 56);
+                    break;
+            }
+
+            // 应用头部倾斜
+            ghost.fullRotation = headTilt.X * 0.3f;
+
+            return ghost;
+        }
+
+        /// <summary>
+        /// 绘制幽灵玩家
+        /// </summary>
+        private void DrawGhostPlayer(Player ghost, Vector2 offset, Color tintColor) {
+            if (ghost == null) return;
+
+            // 保存原始颜色
+            Color originalSkinColor = ghost.skinColor;
+            Color originalHairColor = ghost.hairColor;
+            Color originalEyeColor = ghost.eyeColor;
+            Color originalShirtColor = ghost.shirtColor;
+            Color originalUnderShirtColor = ghost.underShirtColor;
+            Color originalPantsColor = ghost.pantsColor;
+            Color originalShoeColor = ghost.shoeColor;
+
+            // 应用深渊幽灵配色
+            ghost.skinColor = tintColor;
+            ghost.hairColor = tintColor;
+            ghost.eyeColor = new Color(0, 0, 0, 0); // 眼睛单独绘制
+            ghost.shirtColor = tintColor;
+            ghost.underShirtColor = tintColor;
+            ghost.pantsColor = tintColor;
+            ghost.shoeColor = tintColor;
+
+            // 临时调整位置
+            Vector2 originalPosition = ghost.position;
+            ghost.position += offset;
+
+            try {
+                // 使用游戏的玩家渲染器绘制
+                Main.PlayerRenderer.DrawPlayer(
+                    Main.Camera,
+                    ghost,
+                    ghost.position,
+                    0f,
+                    ghost.fullRotationOrigin
+                );
+            }
+            catch (Exception) {
+                // 渲染失败时静默处理
+            }
+
+            // 恢复原始状态
+            ghost.position = originalPosition;
+            ghost.skinColor = originalSkinColor;
+            ghost.hairColor = originalHairColor;
+            ghost.eyeColor = originalEyeColor;
+            ghost.shirtColor = originalShirtColor;
+            ghost.underShirtColor = originalUnderShirtColor;
+            ghost.pantsColor = originalPantsColor;
+            ghost.shoeColor = originalShoeColor;
+        }
+
+        /// <summary>
+        /// 绘制幽灵眼睛发光效果
+        /// </summary>
+        private void DrawGhostEyes(SpriteBatch spriteBatch, Color glowColor) {
+            Texture2D glowTexture = TextureAssets.Extra[ExtrasID.ThePerfectGlow].Value;
+            Vector2 drawPosition = NPC.Center - Main.screenPosition;
+
+            // 眼睛位置偏移
+            Vector2 eyeOffset = headTilt * 10f + new Vector2(0, -18);
+
+            // 左眼
+            spriteBatch.Draw(glowTexture,
+                drawPosition + eyeOffset + new Vector2(-5, 0),
+                null,
+                glowColor,
+                0f,
+                glowTexture.Size() / 2f,
+                0.2f,
+                SpriteEffects.None,
+                0f);
+
+            // 右眼
+            spriteBatch.Draw(glowTexture,
+                drawPosition + eyeOffset + new Vector2(5, 0),
+                null,
+                glowColor,
+                0f,
+                glowTexture.Size() / 2f,
+                0.2f,
+                SpriteEffects.None,
+                0f);
+
+            // 眼睛光晕（更大的发光）
+            if (eyeGlowIntensity > 0.8f) {
+                spriteBatch.Draw(glowTexture,
+                    drawPosition + eyeOffset + new Vector2(-5, 0),
+                    null,
+                    glowColor * 0.5f,
+                    0f,
+                    glowTexture.Size() / 2f,
+                    0.4f * eyeGlowIntensity,
+                    SpriteEffects.None,
+                    0f);
+
+                spriteBatch.Draw(glowTexture,
+                    drawPosition + eyeOffset + new Vector2(5, 0),
+                    null,
+                    glowColor * 0.5f,
+                    0f,
+                    glowTexture.Size() / 2f,
+                    0.4f * eyeGlowIntensity,
+                    SpriteEffects.None,
+                    0f);
+            }
+        }
         #endregion
+
     }
 
     #region 粒子类
