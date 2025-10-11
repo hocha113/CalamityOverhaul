@@ -295,39 +295,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private void DrawHoverTooltip(SpriteBatch spriteBatch, ResurrectionSystem system, float ratio) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             float alpha = 0.97f;
-            Vector2 baseSize = new Vector2(200, 148);
-            Vector2 mousePos = MousePosition + new Vector2(18, -baseSize.Y - 10);
-            if (mousePos.X + baseSize.X > Main.screenWidth - 16) {
-                mousePos.X = Main.screenWidth - baseSize.X - 16;
-            }
-            if (mousePos.Y < 20) {
-                mousePos.Y = 20;
-            }
-            Rectangle panelRect = new Rectangle((int)mousePos.X, (int)mousePos.Y, (int)baseSize.X, (int)baseSize.Y);
 
-            Rectangle shadowRect = panelRect;
-            shadowRect.Offset(3, 3);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.45f * alpha);
-
-            float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
-            Color bgCol = new Color(18, 28, 46) * (alpha * wave);
-            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
-
-            Color edgeColor = GetStateColor(ratio) * 0.6f * alpha;
-            DrawTooltipBorder(spriteBatch, panelRect, edgeColor);
-
-            string title = "深渊复苏状态";
-            Vector2 titlePos = new Vector2(panelRect.X + 12, panelRect.Y + 8);
-            for (int i = 0; i < 4; i++) {
-                float ang = MathHelper.TwoPi * i / 4f;
-                Vector2 o = ang.ToRotationVector2() * 1.2f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + o, edgeColor * 0.55f, 0.9f);
-            }
-            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
-
-            Vector2 dividerStart = titlePos + new Vector2(0, 26);
-            Vector2 dividerEnd = dividerStart + new Vector2(baseSize.X - 24, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, edgeColor * 0.9f, edgeColor * 0.05f, 1.4f);
+            //基础尺寸与排版参数
+            float minWidth = 200f;
+            float maxWidth = 380f;
+            float horizontalPadding = 12f; //左右内边距
+            float topPadding = 8f;
+            float bottomPadding = 12f;
+            float titleExtra = 6f;
+            float dividerSpacing = 6f;
+            float infoSpacingTop = 10f;
+            float infoLineHeight = 18f;
+            float summarySpacing = 4f;
+            float summaryLineHeight = 16f;
+            float contentRightPadding = 12f;
 
             float percent = ratio * 100f;
             float cur = system.CurrentValue;
@@ -337,22 +318,130 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string rateLevel = GetRateLevel(rate);
             string stateLine = GetStateSummary(ratio, rate);
 
-            Vector2 textStart = dividerStart + new Vector2(4, 10);
-            float lineHeight = 18f;
-            int lineIndex = 0;
+            string title = "深渊复苏状态";
+            string line1 = $"百分比: {percent:F1}%";
+            string line2 = $"复苏值: {cur:F1} / {max:F1}";
+            string line3 = $"速度: {rate:F3}/帧  [{rateLevel}]";
 
-            DrawInfoLine(spriteBatch, $"百分比: {percent:F1}%", textStart, ref lineIndex, lineHeight, alpha, Color.White);
-            DrawInfoLine(spriteBatch, $"复苏值: {cur:F1} / {max:F1}", textStart, ref lineIndex, lineHeight, alpha, Color.White);
-            DrawInfoLine(spriteBatch, $"速度: {rate:F3}/帧  [{rateLevel}]", textStart, ref lineIndex, lineHeight, alpha, Color.White);
-            DrawWrappedSummary(spriteBatch, stateLine, panelRect, textStart + new Vector2(0, lineHeight * lineIndex + 4), alpha);
+            //先用最小宽度估算内容
+            float workingWidth = minWidth;
+            float contentWidth = workingWidth - horizontalPadding - contentRightPadding; //文本可用宽
 
+            //测量信息行宽度
+            float infoMaxLine = 0f;
+            infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line1).X);
+            infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line2).X);
+            infoMaxLine = Math.Max(infoMaxLine, FontAssets.MouseText.Value.MeasureString(line3).X);
+
+            //包裹摘要（可能需要多次以适应宽度）
+            string[] summaryLines = WrapSummary(stateLine, contentWidth);
+            float summaryMaxLine = 0f;
+            for (int i = 0; i < summaryLines.Length; i++) {
+                if (string.IsNullOrWhiteSpace(summaryLines[i])) {
+                    continue;
+                }
+                float w = FontAssets.MouseText.Value.MeasureString(summaryLines[i]).X;
+                if (w > summaryMaxLine) {
+                    summaryMaxLine = w;
+                }
+            }
+
+            //如果内容宽度不足以容纳最长行，则扩大面板宽度
+            float longest = Math.Max(infoMaxLine, summaryMaxLine);
+            if (longest > contentWidth) {
+                workingWidth = Math.Clamp(longest + horizontalPadding + contentRightPadding, minWidth, maxWidth);
+                contentWidth = workingWidth - horizontalPadding - contentRightPadding;
+                summaryLines = WrapSummary(stateLine, contentWidth); //重新包裹
+            }
+
+            //计算摘要行数（忽略空行）
+            int summaryDrawLines = 0;
+            for (int i = 0; i < summaryLines.Length; i++) {
+                if (!string.IsNullOrWhiteSpace(summaryLines[i])) {
+                    summaryDrawLines++;
+                }
+            }
+
+            //计算高度
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
+            float infoBlockHeight = infoLineHeight * 3f; //三条信息行
+            float summaryBlockHeight = summaryDrawLines * summaryLineHeight;
+            float dividerHeight = 2f; //分割线区域的占位
+
+            float panelHeight = topPadding
+                + titleHeight + titleExtra
+                + dividerSpacing + dividerHeight
+                + infoSpacingTop + infoBlockHeight
+                + summarySpacing + summaryBlockHeight
+                + bottomPadding;
+
+            //限制高度最大不超过屏幕（必要时可进一步裁剪）
+            float screenLimit = Main.screenHeight - 40f;
+            if (panelHeight > screenLimit) {
+                panelHeight = screenLimit;
+            }
+
+            Vector2 panelSize = new Vector2(workingWidth, panelHeight);
+            Vector2 mousePos = MousePosition + new Vector2(18, -panelSize.Y - 12);
+            if (mousePos.X + panelSize.X > Main.screenWidth - 16) {
+                mousePos.X = Main.screenWidth - panelSize.X - 16;
+            }
+            if (mousePos.Y < 16) {
+                mousePos.Y = 16;
+            }
+
+            Rectangle panelRect = new Rectangle((int)mousePos.X, (int)mousePos.Y, (int)panelSize.X, (int)panelSize.Y);
+
+            //背景与阴影
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(3, 3);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.45f * alpha);
+            float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
+            Color bgCol = new Color(18, 28, 46) * (alpha * wave);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
+
+            Color edgeColor = GetStateColor(ratio) * 0.6f * alpha;
+            DrawTooltipBorder(spriteBatch, panelRect, edgeColor);
+
+            //标题
+            Vector2 titlePos = new Vector2(panelRect.X + horizontalPadding, panelRect.Y + topPadding);
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4f;
+                Vector2 o = ang.ToRotationVector2() * 1.2f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + o, edgeColor * 0.55f, 0.9f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
+
+            //分割线
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + titleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - horizontalPadding - contentRightPadding, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, edgeColor * 0.9f, edgeColor * 0.05f, 1.3f);
+
+            //信息行
+            Vector2 infoStart = dividerStart + new Vector2(0, dividerSpacing + infoSpacingTop);
+            int infoIndex = 0;
+            DrawInfoLine(spriteBatch, line1, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
+            DrawInfoLine(spriteBatch, line2, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
+            DrawInfoLine(spriteBatch, line3, infoStart, ref infoIndex, infoLineHeight, alpha, Color.White);
+
+            //摘要
+            Vector2 summaryStart = infoStart + new Vector2(0, infoIndex * infoLineHeight + summarySpacing);
+            DrawSummaryLines(spriteBatch, summaryLines, summaryStart, panelRect, summaryLineHeight, alpha);
+
+            //星星点缀
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
-            Vector2 star1 = new Vector2(panelRect.Right - 16, panelRect.Y + 14);
+            Vector2 star1 = new Vector2(panelRect.Right - 18, panelRect.Y + 14);
             float s1a = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * alpha;
             DrawStar(spriteBatch, star1, 4f, edgeColor * s1a);
-            Vector2 star2 = new Vector2(panelRect.Right - 30, panelRect.Bottom - 18);
+            Vector2 star2 = new Vector2(panelRect.Right - 34, panelRect.Bottom - 20);
             float s2a = ((float)Math.Sin(starTime + MathHelper.Pi) * 0.5f + 0.5f) * alpha;
             DrawStar(spriteBatch, star2, 3f, edgeColor * s2a);
+        }
+
+        private string[] WrapSummary(string text, float contentWidth) {
+            //使用WordwrapString进行简单包裹，并返回结果
+            string[] lines = Utils.WordwrapString(text, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out int _);
+            return lines;
         }
 
         private void DrawInfoLine(SpriteBatch sb, string text, Vector2 start, ref int index, float lineHeight, float alpha, Color baseColor) {
@@ -362,17 +451,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             index++;
         }
 
-        private void DrawWrappedSummary(SpriteBatch sb, string summary, Rectangle panelRect, Vector2 start, float alpha) {
-            int wrapWidth = panelRect.Width - 24;
-            string[] lines = Utils.WordwrapString(summary, FontAssets.MouseText.Value, wrapWidth + 50, 20, out int _);
+        private void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
             int drawn = 0;
             for (int i = 0; i < lines.Length; i++) {
                 if (string.IsNullOrWhiteSpace(lines[i])) {
                     continue;
                 }
                 string line = lines[i].TrimEnd('-', ' ');
-                Vector2 pos = start + new Vector2(2, drawn * 16f);
-                if (pos.Y + 14 > panelRect.Bottom - 8) {
+                Vector2 pos = start + new Vector2(2, drawn * lineHeight);
+                if (pos.Y + (lineHeight - 2f) > panelRect.Bottom - 8) {
                     break;
                 }
                 Utils.DrawBorderString(sb, line, pos + new Vector2(1, 1), Color.Black * alpha * 0.5f, 0.7f);
