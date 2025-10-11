@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         /// <returns></returns>
         public int CrashesLevel() {
-            return SeaDomainLayers >= 10 ? 3 : SeaDomainLayers >= 7 ? 2 : SeaDomainLayers >= 5 ? 1 : 0;
+            return 10;
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
