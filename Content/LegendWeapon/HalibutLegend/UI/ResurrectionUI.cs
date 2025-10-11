@@ -413,18 +413,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawStar(spriteBatch, star2, 3f, edgeColor * s2a);
         }
 
-        private string[] WrapSummary(string text, float contentWidth) {
+        private static string[] WrapSummary(string text, float contentWidth) {
             return Utils.WordwrapString(text, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out int _);
         }
 
-        private void DrawInfoLine(SpriteBatch sb, string text, Vector2 start, ref int index, float lineHeight, float alpha, Color baseColor) {
+        private static void DrawInfoLine(SpriteBatch sb, string text, Vector2 start, ref int index, float lineHeight, float alpha, Color baseColor) {
             Vector2 pos = start + new Vector2(0, index * lineHeight);
             Utils.DrawBorderString(sb, text, pos + new Vector2(1, 1), Color.Black * 0.55f * alpha, 0.78f);
             Utils.DrawBorderString(sb, text, pos, baseColor * alpha, 0.78f);
             index++;
         }
 
-        private void DrawInfoLineRate(SpriteBatch sb, string textPrefix, string level, Color levelColor, Vector2 start, ref int index, float lineHeight, float alpha) {
+        private static void DrawInfoLineRate(SpriteBatch sb, string textPrefix, string level, Color levelColor, Vector2 start, ref int index, float lineHeight, float alpha) {
             Vector2 pos = start + new Vector2(0, index * lineHeight);
             string composed = textPrefix + "  [" + level + "]";
             Utils.DrawBorderString(sb, composed, pos + new Vector2(1, 1), Color.Black * 0.6f * alpha, 0.78f);
@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             index++;
         }
 
-        private void DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
+        private static void DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
             string header = "当前态势评估";
             for (int i = 0; i < 4; i++) {
                 float a = MathHelper.TwoPi * i / 4f;
@@ -445,7 +445,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Utils.DrawBorderString(sb, header, pos, Color.Lerp(edgeColor, Color.White, 0.4f) * alpha, 0.72f);
         }
 
-        private void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
+        private static void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
             int drawn = 0;
             for (int i = 0; i < lines.Length; i++) {
                 if (string.IsNullOrWhiteSpace(lines[i])) {
@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private Color GetRateLevelColor(string level) {
+        private static Color GetRateLevelColor(string level) {
             if (level == "极低") {
                 return new Color(120, 200, 255);
             }
@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private string GetRateLevel(float rate) {
+        private static string GetRateLevel(float rate) {
             if (rate < 0.01f) {
                 return "极低";
             }
@@ -498,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private string GetStateSummary(float ratio, float rate) {
+        private static string GetStateSummary(float ratio, float rate) {
             string phase;
             if (ratio < 0.25f) {
                 phase = "复苏平稳，尚无明显异象";
