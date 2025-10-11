@@ -515,7 +515,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 dynamicSpeed = 0.15f; //中距离
             }
 
-            domainCenter = Vector2.Lerp(domainCenter, targetCenter, dynamicSpeed / 2f);
+            if (Owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.FishTeleportCooldown > 0) {
+                domainCenter = Vector2.Lerp(domainCenter, targetCenter, dynamicSpeed / 2f);
+            }
+            else {
+                domainCenter = targetCenter;
+            }
 
             // 更新循环音效位置
             if (SoundEngine.TryGetActiveSound(ambientLoopSlot, out var sound)) {
