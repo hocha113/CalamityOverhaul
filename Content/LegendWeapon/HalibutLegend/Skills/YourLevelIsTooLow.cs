@@ -528,7 +528,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private float spiralAngle;
         private float timeWarpFactor;
         private float orbitRadius;
-        private int convergePhase;
 
         public InfiniteTimeClone(Vector2 spawnPos, PlayerSnapshot snapshot) {
             Position = spawnPos;
@@ -540,7 +539,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             spiralAngle = Main.rand.NextFloat(MathHelper.TwoPi);
             timeWarpFactor = Main.rand.NextFloat(0.9f, 1.4f);
             orbitRadius = 450f;
-            convergePhase = 0;
         }
 
         public void Update(Vector2 center) {
@@ -558,7 +556,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
             else if (progress < 0.8f) {
                 //阶段2：快速收拢
-                convergePhase = 1;
                 float convergeProgress = (progress - 0.4f) / 0.4f;
                 orbitRadius = MathHelper.Lerp(280f, 50f, MathHelper.SmoothStep(0f, 1f, convergeProgress));
                 spiralAngle += 0.15f * timeWarpFactor;
@@ -566,7 +563,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
             else {
                 //阶段3：融合消失
-                convergePhase = 2;
                 float fadeProgress = (progress - 0.8f) / 0.2f;
                 orbitRadius = MathHelper.Lerp(50f, 0f, fadeProgress);
                 spiralAngle += 0.2f * timeWarpFactor;

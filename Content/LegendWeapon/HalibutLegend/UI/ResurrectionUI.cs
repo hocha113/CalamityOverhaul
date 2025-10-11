@@ -267,21 +267,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
                 Utils.DrawBorderString(spriteBatch, labelText, labelPos,
                     new Color(100, 200, 255), 0.75f, 0.5f, 0.5f);
-                
-                //绘制额外信息（复苏速度）
-                //if (Math.Abs(resurrectionSystem.ResurrectionRate) > 0.001f) {
-                //    string rateText = $"速度: {resurrectionSystem.ResurrectionRate:F2}/帧";
-                //    Vector2 ratePos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -52);
-                    
-                //    Utils.DrawBorderString(spriteBatch, rateText, ratePos + new Vector2(1, 1),
-                //        Color.Black * 0.8f, 0.65f, 0.5f, 0.5f);
-                    
-                //    Color rateColor = resurrectionSystem.ResurrectionRate > 0 
-                //        ? new Color(255, 100, 100) 
-                //        : new Color(100, 255, 100);
-                //    Utils.DrawBorderString(spriteBatch, rateText, ratePos,
-                //        rateColor, 0.65f, 0.5f, 0.5f);
-                //}
             }
         }
     }

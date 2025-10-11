@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public event Action<float, float> OnValueChanged;
 
         /// <summary>
-        /// 复苏值达到最大值事件
+        /// 复苏值达到最大值事件（危险！会导致玩家死亡）
         /// </summary>
         public event Action OnMaxValueReached;
 
@@ -47,6 +47,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 复苏速度变化事件
         /// </summary>
         public event Action<float> OnRateChanged;
+
+        /// <summary>
+        /// 进入危险区域事件（70%以上）
+        /// </summary>
+        public event Action OnEnterDangerZone;
+
+        /// <summary>
+        /// 进入极危区域事件（90%以上）
+        /// </summary>
+        public event Action OnEnterCriticalZone;
+
+        /// <summary>
+        /// 离开危险区域事件
+        /// </summary>
+        public event Action OnLeaveDangerZone;
+
+        private bool wasInDangerZone = false;
+        private bool wasInCriticalZone = false;
         #endregion
 
         #region 阈值回调
@@ -200,6 +218,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             // 应用复苏速度
             if (Math.Abs(resurrectionRate) > 0.001f) {
                 AddValue(resurrectionRate, true);
+            }
+
+            // 检查危险区域状态
+            CheckDangerZone();
+        }
+
+        /// <summary>
+        /// 检查并触发危险区域事件
+        /// </summary>
+        private void CheckDangerZone() {
+            float ratio = Ratio;
+            bool isInDangerZone = ratio >= 0.7f;
+            bool isInCriticalZone = ratio >= 0.9f;
+
+            // 进入极危区域
+            if (isInCriticalZone && !wasInCriticalZone) {
+                wasInCriticalZone = true;
+                OnEnterCriticalZone?.Invoke();
+            }
+            // 离开极危区域
+            else if (!isInCriticalZone && wasInCriticalZone) {
+                wasInCriticalZone = false;
+            }
+
+            // 进入危险区域
+            if (isInDangerZone && !wasInDangerZone) {
+                wasInDangerZone = true;
+                OnEnterDangerZone?.Invoke();
+            }
+            // 离开危险区域
+            else if (!isInDangerZone && wasInDangerZone) {
+                wasInDangerZone = false;
+                OnLeaveDangerZone?.Invoke();
             }
         }
         #endregion

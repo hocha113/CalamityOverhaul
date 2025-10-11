@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -46,6 +47,18 @@ namespace CalamityOverhaul.Common
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             DrawAdditiveProjectile();
+
+            Main.spriteBatch.End();
+
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            foreach (Player player in Main.ActivePlayers) {
+                if (player.active && !player.DeadOrGhost &&
+                    player.TryGetModPlayer(out ResurrectionDeathSystem deathSystem)) {
+                    deathSystem.DrawDeathEffects(Main.spriteBatch);
+                }
+            }
 
             Main.spriteBatch.End();
         }
