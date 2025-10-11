@@ -256,7 +256,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //绘制"深渊复苏"标签
                 string labelText = "深渊复苏";
 
-                Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(labelText);
                 Vector2 labelPos = drawPos + new Vector2(HalibutUIAsset.Resurrection.Width / 2, -36);
 
                 Utils.DrawBorderString(spriteBatch, labelText, labelPos + new Vector2(1, 1),
