@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 120;
         internal const float RoingArc = 160f;
         internal const int DepartureDelay = 90;//全部发射后延迟进入离场
-        internal const int DepartureDuration = 90;//离场动画时长
+        internal static readonly int DepartureDuration = 90 - (HalibutData.GetDomainLayer() * 5);//离场动画时长
         internal static int shootDir;
         public override int UnlockFishID => ModContent.ItemType<SparklingEmpress>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             hp.SparklingVolleyActive = true;
             hp.SparklingVolleyTimer = 0;
-            hp.SparklingFishCount = (int)(4 + 2.5 % HalibutData.GetLevel()); //
+            hp.SparklingFishCount = (4 + HalibutData.GetDomainLayer()); //  4+领域数量鱼
             hp.SparklingNextFireIndex = 0;
             hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
 

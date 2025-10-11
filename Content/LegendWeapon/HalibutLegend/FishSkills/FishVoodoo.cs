@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishVoodoo : FishSkill
     {
         public override int UnlockFishID => ItemID.GuideVoodooFish;
-        public override int DefaultCooldown => 60 * 45; // 45 秒
+        public override int DefaultCooldown => 60 * (60 - HalibutData.GetDomainLayer() * 3); // 60 - 3 * 领域等级 秒
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HasHalibut;//未装备暂停冷却
     }
 

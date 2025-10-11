@@ -291,8 +291,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private void Shoot(HalibutPlayer hp, PlayerSnapshot snap) {
             //重放射击事件
             int replayFrame = hp.CloneFrameCounter - replayDelay;
-            int shootNum = 1;
-            float randomRot = 0f;
+            int shootNum = 1 + HalibutData.GetLevel() / 4;
+            float randomRot = 0.15f;
             if (hp.CloneShootEvents.Count <= 0) {
                 return;
             }

@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 可召唤的溺尸数量
         /// </summary>
-        public virtual int ZombieCount => 5 + 2 * HalibutData.GetLevel();//5+2倍等级
+        public virtual int ZombieCount => 5 + 2 * HalibutData.GetDomainLayer();//5+2倍领域等级
 
-        public override int DefaultCooldown => 480;
+        public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer());
 
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     groundPos,
                     Vector2.Zero,
                     ModContent.ProjectileType<WaterZombie>(),
-                    (int)(shootState.WeaponDamage * 1.5f), //伤害倍率
+                    (int)(shootState.WeaponDamage * HalibutData.GetDomainLayer() * 0.75f),//伤害倍率
                     shootState.WeaponKnockback,
                     player.whoAmI,
                     ai0: delay //延迟帧数
