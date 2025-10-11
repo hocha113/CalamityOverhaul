@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Fishing.SunkenSeaCatches;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -15,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class Sparkling : FishSkill
     {
         private static int _sparklingVolleyIdSeed = 0;
-
+        public override int DefaultCooldown => 120;
         internal const float RoingArc = 160f;
         internal const int DepartureDelay = 90;//全部发射后延迟进入离场
         internal const int DepartureDuration = 90;//离场动画时长
@@ -28,9 +29,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             TryTriggerSparklingVolley(item, player, hp);
             return null;
         }
-        internal static void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
-            if (hp.SparklingVolleyActive) return;
-            if (hp.SparklingVolleyCooldown > 0) return;
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            bool hasSparklingFish = player.CountProjectilesOfID<SparklingFishHolder>() > 0;
+            if (halibutPlayer.SparklingVolleyActive) {
+                if (halibutPlayer.SparklingVolleyTimer > 0 && !hasSparklingFish) {
+                    halibutPlayer.SparklingVolleyActive = false;
+                }
+                halibutPlayer.SparklingVolleyTimer++;
+            }
+            return !hasSparklingFish;
+        }
+        internal void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
+            if (hp.SparklingVolleyActive) {
+                return;
+            }
+            if (Cooldown > 0) {
+                return;
+            }
 
             shootDir = player.direction;
 
@@ -42,7 +57,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             hp.SparklingFishCount = 13; //13条鱼
             hp.SparklingNextFireIndex = 0;
             hp.SparklingVolleyId = _sparklingVolleyIdSeed++;
-            hp.SparklingVolleyCooldown = HalibutPlayer.SparklingBaseCooldown; //设置基础冷却
+
+            SetCooldown();
 
             Vector2 aimDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);

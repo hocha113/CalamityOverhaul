@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -28,28 +29,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    SoundEngine.PlaySound(SoundID.Grab);
+                    bool hasFish = false;
+                    HalibutUIPanel.Instance.halibutUISkillSlots.ForEach(slot => {
+                        if (slot.FishSkill.UnlockFishID == Main.mouseItem.type) {
+                            hasFish = true;
+                        }
+                    });
 
-                    //如果正在研究中，则取出物品并停止研究
-                    if (isResearching && Item.Alives() && Item.type > ItemID.None) {
-                        Main.mouseItem = Item.Clone();
-                        Item.TurnToAir();
-                        isResearching = false;
-                        researchTimer = 0;
+                    if (hasFish) {//你已经研究过这个鱼了
+                        SoundEngine.PlaySound(CWRSound.ButtonZero);
                     }
-                    //否则放入新物品并开始研究
-                    else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {
-                        Item = Main.mouseItem.Clone();
-                        Main.mouseItem.TurnToAir();
-                        isResearching = true;
-                        researchTimer = 0;
-                    }
-                    //如果槽位有物品但鼠标没有，则取出
-                    else if (Item.Alives() && Item.type > ItemID.None) {
-                        Main.mouseItem = Item.Clone();
-                        Item.TurnToAir();
-                        isResearching = false;
-                        researchTimer = 0;
+                    else {
+                        SoundEngine.PlaySound(SoundID.Grab);
+
+                        //如果正在研究中，则取出物品并停止研究
+                        if (isResearching && Item.Alives() && Item.type > ItemID.None) {
+                            Main.mouseItem = Item.Clone();
+                            Item.TurnToAir();
+                            isResearching = false;
+                            researchTimer = 0;
+                        }
+                        //否则放入新物品并开始研究
+                        else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {
+                            Item = Main.mouseItem.Clone();
+                            Main.mouseItem.TurnToAir();
+                            isResearching = true;
+                            researchTimer = 0;
+                        }
+                        //如果槽位有物品但鼠标没有，则取出
+                        else if (Item.Alives() && Item.type > ItemID.None) {
+                            Main.mouseItem = Item.Clone();
+                            Item.TurnToAir();
+                            isResearching = false;
+                            researchTimer = 0;
+                        }
                     }
                 }
             }

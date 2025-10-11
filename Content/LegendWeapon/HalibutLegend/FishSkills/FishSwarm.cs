@@ -12,6 +12,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishSwarm : FishSkill
     {
         public override int UnlockFishID => ItemID.Bass;
+        /// <summary>
+        /// 技能最大持续时间（5秒 = 300帧）
+        /// </summary>
+        public const int FishSwarmDuration = 300;
+        public override int DefaultCooldown => 300;
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             if (player.altFunctionUse == 2) {
@@ -30,11 +35,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
         }
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            //更新技能状态
+            if (halibutPlayer.FishSwarmActive) {
+                halibutPlayer.FishSwarmTimer++;
+
+                if (halibutPlayer.FishSwarmTimer >= FishSwarmDuration) {
+                    //技能结束
+                    halibutPlayer.FishSwarmActive = false;
+                    halibutPlayer.FishSwarmTimer = 0;
+                    SetCooldown();
+                }
+            }
+            if (halibutPlayer.AttackRecoveryTimer > 0) {
+                halibutPlayer.AttackRecoveryTimer--;
+            }
+            return true;
+        }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             //检查技能是否在冷却中
-            if (halibutPlayer.FishSwarmCooldown > 0 || halibutPlayer.FishSwarmActive) {
+            if (Cooldown > 0 || halibutPlayer.FishSwarmActive) {
                 return;
             }
 
@@ -173,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = HalibutPlayer.FishSwarmDuration;
+            Projectile.timeLeft = FishSwarm.FishSwarmDuration;
             Projectile.alpha = 255; //完全透明
         }
 
@@ -425,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = HalibutPlayer.FishSwarmDuration + 60; //额外时间用于淡出
+            Projectile.timeLeft = FishSwarm.FishSwarmDuration + 60; //额外时间用于淡出
         }
 
         /// <summary>

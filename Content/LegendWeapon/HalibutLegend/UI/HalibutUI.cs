@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -40,6 +41,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
     internal class HalibutUIHead : UIHandle
     {
+        [VaultLoaden("@InnoVault/Effects/")]
+        private static Asset<Effect> GearProgress { get; set; }
         public static HalibutUIHead Instance => UIHandleLoader.GetUIHandleOfType<HalibutUIHead>();
         private bool _active;
         public override bool Active {
@@ -82,6 +85,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutUILeftSidebar.Instance.Update();
             HalibutUIPanel.Instance.Update();
             DomainUI.Instance.Update(); // 更新领域UI
+
+            //反正这样加载是没问题的，你就看跑不跑得起来吧！
+            if (FishSkill != null && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.SkillID = FishSkill.ID;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -91,9 +99,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             spriteBatch.Draw(Head, UIHitBox, Color.White);
 
-            if (FishSkill != null) {//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
-                spriteBatch.Draw(FishSkill.Icon, DrawPosition + new Vector2(14), null, Color.White);
+            if (FishSkill == null) {
+                return;
             }
+
+            GearProgress.Value.Parameters["Progress"].SetValue(1f - FishSkill.CooldownRatio);
+            GearProgress.Value.Parameters["Rotation"].SetValue(-MathHelper.PiOver2);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, GearProgress.Value, Main.UIScaleMatrix);
+            spriteBatch.Draw(FishSkill.Icon, DrawPosition + new Vector2(14), null, Color.White);//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
         }
     }
 
@@ -200,9 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            var skill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
-
-            HalibutUIHead.Instance.FishSkill = skill;
+            HalibutUIHead.Instance.FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
         }
 
         /// <summary>

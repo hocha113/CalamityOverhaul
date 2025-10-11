@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -15,27 +13,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 技能ID
         /// </summary>
         public int SkillID;
+        /// <summary>
+        /// 是否拥有大比目鱼
+        /// </summary>
+        public bool HasHalibut;
 
         #region 闪光皇后
-        /// <summary>闪光技能：当前齐射是否激活</summary>
+        /// <summary>
+        /// 当前齐射是否激活
+        /// </summary>
         public bool SparklingVolleyActive { get; set; }
-        /// <summary>闪光技能：齐射冷却计时（帧）</summary>
-        public int SparklingVolleyCooldown { get; set; }
-        /// <summary>闪光技能：当前正在齐射的唯一ID</summary>
+        /// <summary>
+        /// 当前正在齐射的唯一ID
+        /// </summary>
         public int SparklingVolleyId { get; set; } = -1;
-        /// <summary>闪光技能：齐射内部计时</summary>
+        /// <summary>
+        /// 齐射内部计时
+        /// </summary>
         public int SparklingVolleyTimer { get; set; }
-        /// <summary>闪光技能：武器普通攻击使用计数</summary>
+        /// <summary>
+        /// 武器普通攻击使用计数
+        /// </summary>
         public int SparklingUseCounter { get; set; }
-        /// <summary>闪光技能：基础冷却（帧）</summary>
-        public const int SparklingBaseCooldown = 120; //2秒
-        /// <summary>闪光技能：鱼数量</summary>
+        /// <summary>
+        /// 鱼数量
+        /// </summary>
         public int SparklingFishCount { get; set; }
-        /// <summary>闪光技能：下一条鱼开火索引</summary>
+        /// <summary>
+        /// 下一条鱼开火索引
+        /// </summary>
         public int SparklingNextFireIndex { get; set; }
-        /// <summary>闪光技能：全部激光发射完成后的离场阶段</summary>
+        /// <summary>
+        /// 全部激光发射完成后的离场阶段
+        /// </summary>
         public bool SparklingDeparturePhase { get; set; }
-        /// <summary>闪光技能：离场阶段计时</summary>
+        /// <summary>
+        /// 离场阶段计时
+        /// </summary>
         public int SparklingDepartureTimer { get; set; }
         #endregion
 
@@ -44,37 +58,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 移形换影技能激活状态
         /// </summary>
         public bool FishSwarmActive { get; set; }
-
         /// <summary>
         /// 技能持续时间计数器
         /// </summary>
         public int FishSwarmTimer { get; set; }
-
-        /// <summary>
-        /// 技能最大持续时间（5秒 = 300帧）
-        /// </summary>
-        public const int FishSwarmDuration = 300;
-
         /// <summary>
         /// 技能冷却时间
         /// </summary>
         public int FishSwarmCooldown { get; set; }
-
         /// <summary>
         /// 技能冷却最大时间（10秒）
         /// </summary>
         public const int FishSwarmMaxCooldown = 600;
-
         /// <summary>
         /// 螺旋尖锥突袭状态
         /// </summary>
         public bool FishConeSurgeActive { get; set; }
-
         /// <summary>
         /// 突袭后攻击后摇计时器
         /// </summary>
         public int AttackRecoveryTimer { get; set; }
-
         /// <summary>
         /// 攻击后摇持续时间（60帧 = 1秒）
         /// </summary>
@@ -139,51 +142,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
 
-        #region 僵尸鱼技能数据
-        /// <summary>僵尸鱼技能冷却时间</summary>
-        public int FishZombieCooldown { get; set; }
-        #endregion
-
         public override void ResetEffects() {//用于每帧恢复数据
 
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
-            if (Player.ownedProjectileCounts[ModContent.ProjectileType<SparklingFishHolder>()] == 0) {
-                if (SparklingVolleyCooldown > 0) {
-                    SparklingVolleyCooldown--;
-                }
-            }
-
-            if (SparklingVolleyActive) {
-                if (SparklingVolleyTimer > 0 && Player.ownedProjectileCounts[ModContent.ProjectileType<SparklingFishHolder>()] == 0) {
-                    SparklingVolleyActive = false;
-                }
-                SparklingVolleyTimer++;
-            }
-
-            //更新技能状态
-            if (FishSwarmActive) {
-                FishSwarmTimer++;
-
-                if (FishSwarmTimer >= FishSwarmDuration) {
-                    //技能结束
-                    FishSwarmActive = false;
-                    FishSwarmTimer = 0;
-                    FishSwarmCooldown = 60;
-                }
-            }
-
-            //更新冷却
-            if (FishSwarmCooldown > 0) {
-                FishSwarmCooldown--;
-            }
-
-            //更新攻击后摇
-            if (AttackRecoveryTimer > 0) {
-                AttackRecoveryTimer--;
-            }
-
             //克隆技能记录
             if (CloneFishActive) {
                 CloneFrameCounter++;
@@ -222,15 +185,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
-            //僵尸鱼技能冷却
-            if (FishZombieCooldown > 0) FishZombieCooldown--;
-
-
-            if (VaultUtils.isServer) {
-                return;
+            foreach(var skill in FishSkill.Instances) {
+                if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
+                    skill.Cooldown--;
+                }
             }
 
             Item item = Player.GetItem();
+            HasHalibut = item.Alives() && item.type == HalibutOverride.ID;
+
+            if (VaultUtils.isServer || !HasHalibut) {
+                return;
+            }
+
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
                 SeaDomain.AltUse(item, Player);

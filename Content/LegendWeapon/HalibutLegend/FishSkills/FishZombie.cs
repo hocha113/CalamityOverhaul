@@ -17,21 +17,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         public virtual int ZombieCount => 5;
 
-        /// <summary>
-        /// 技能冷却时间（帧）
-        /// </summary>
-        public virtual int Cooldown => 480; //8秒
+        public override int DefaultCooldown => 480;
 
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            
             if (player.altFunctionUse == 2) {
                 //检查冷却
-                if (halibutPlayer.FishZombieCooldown > 0) {
+                if (Cooldown > 0) {
                     return false;
                 }
                 
@@ -47,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             //设置冷却
-            halibutPlayer.FishZombieCooldown = Cooldown;
+            SetCooldown();
 
             //计算目标方向（朝向光标）
             Vector2 targetDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);

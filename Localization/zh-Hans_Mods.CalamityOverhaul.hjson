@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -6324,12 +6324,20 @@ FishSkill: {
 	}
 
 	Sparkling: {
-		// DisplayName: ""
-		// Tooltip: ""
+		DisplayName: 闪光皇舞
+		Tooltip:
+			'''
+			开火时周期性的召唤数条闪光皇后鱼进行轮射
+			开火期间冷却时间不会减少
+			'''
 	}
 
 	FishZombie: {
-		// DisplayName: ""
-		// Tooltip: ""
+		DisplayName: 舞蹈僵尸
+		Tooltip:
+			'''
+			右键可以召唤一群溺尸冲向敌人
+			靠近敌人后造成一次爆炸
+			'''
 	}
 }

@@ -25,6 +25,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public virtual string IconTexture => CWRConstant.UI + "Halibut/FishSkill/" + Name;
         public Texture2D Icon => TypeToTex[GetType()];
         /// <summary>
+        /// 技能冷却时间，单位为帧
+        /// </summary>
+        public int Cooldown;
+        /// <summary>
+        /// 技能的基础冷却时间，单位为帧
+        /// </summary>
+        public virtual int DefaultCooldown => 60;
+        /// <summary>
+        /// 技能冷却比例，1表示完全冷却，0表示刚使用完
+        /// </summary>
+        public float CooldownRatio => Cooldown / (float)DefaultCooldown;
+        /// <summary>
         /// 研究什么鱼才能得到这个技能？
         /// </summary>
         public virtual int UnlockFishID => ItemID.None;
@@ -44,6 +56,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             UnlockFishs[UnlockFishID] = this;
             SetStaticDefaults();
             SetDefaults(true);
+        }
+
+        public void SetCooldown() {
+            Cooldown = DefaultCooldown;
         }
 
         public virtual void SaveData(TagCompound tag) {
@@ -82,6 +98,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public virtual bool? ShootAlt(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return null;
+        }
+
+        public virtual bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            return true;
         }
     }
 }
