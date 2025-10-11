@@ -392,14 +392,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color panelColor = Color.White * (alpha * pulse);
             spriteBatch.Draw(TooltipPanel, destRect, sourceRect, panelColor);
 
-            // 绘制左侧连接边缘的发光效果
-            if (expandProgress > 0.1f) {
-                Vector2 edgeStart = DrawPosition + new Vector2(0, 0);
-                Vector2 edgeEnd = DrawPosition + new Vector2(0, Size.Y);
-                float edgeGlowAlpha = Math.Min((expandProgress - 0.1f) / 0.2f, 1f);
-                DrawVerticalGlow(spriteBatch, edgeStart, edgeEnd, Color.Gold * alpha * edgeGlowAlpha * 0.6f, 4f);
-            }
-
             // 绘制边框发光（只在完全展开后）
             if (expandProgress > 0.9f) {
                 Color glowColor = Color.Gold with { A = 0 } * (alpha * 0.3f * pulse);
@@ -407,13 +399,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 glowRect.Inflate(2, 2);
                 spriteBatch.Draw(TooltipPanel, glowRect, sourceRect, glowColor);
             }
-        }
-
-        private void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
-            float length = Vector2.Distance(start, end);
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color * 0.5f, MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness * 2f), SpriteEffects.None, 0);
         }
 
         private void DrawConnectionLines(SpriteBatch spriteBatch, float alpha) {

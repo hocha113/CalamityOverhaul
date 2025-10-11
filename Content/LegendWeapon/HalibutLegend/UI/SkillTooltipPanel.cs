@@ -281,12 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
             Color panelColor = Color.White * (alpha * pulse);
             spriteBatch.Draw(TooltipPanel, panelRect, sourceRect, panelColor);
-            if (expandProgress > 0.1f) {
-                Vector2 edgeStart = DrawPosition + new Vector2(0, 0);
-                Vector2 edgeEnd = DrawPosition + new Vector2(0, Size.Y);
-                float edgeGlowAlpha = Math.Min((expandProgress - 0.1f) / 0.2f, 1f);
-                DrawVerticalGlow(spriteBatch, edgeStart, edgeEnd, Color.Gold * alpha * edgeGlowAlpha * 0.6f, 4f);
-            }
             if (expandProgress > 0.3f) {
                 Color glowColor = Color.Gold with { A = 0 } * (alpha * 0.2f * pulse);
                 Rectangle glowRect = panelRect;
@@ -364,22 +358,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //绘制中心高光
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.8f,
                 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 0.5f, size * 0.5f), SpriteEffects.None, 0);
-        }
-
-        /// <summary>
-        /// 绘制垂直发光线条
-        /// </summary>
-        private static void DrawVerticalGlow(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
-            float length = Vector2.Distance(start, end);
-
-            //主光线
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color,
-                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
-
-            //外层柔和光晕
-            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color * 0.5f,
-                MathHelper.PiOver2, new Vector2(0, 0.5f), new Vector2(length, thickness * 2f), SpriteEffects.None, 0);
         }
 
         /// <summary>
