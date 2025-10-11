@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            int index = InWorldBossPhase.Halibut_Level();
+            int index = HalibutData.GetLevel(item);
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 string num = (index + 1).ToString();

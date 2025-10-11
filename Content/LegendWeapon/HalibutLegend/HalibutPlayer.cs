@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 每个时期阶段对应的死机等级
         /// </summary>
-        private static Dictionary<int, int> CrashesLevelDictionary = new Dictionary<int, int>(){
+        private static Dictionary<int, int> CrashesLevelDictionary => new Dictionary<int, int>(){
             {0, 0},
             {1, 1},
             {2, 1},
