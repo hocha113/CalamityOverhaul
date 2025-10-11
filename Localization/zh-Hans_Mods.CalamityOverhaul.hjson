@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5362,4 +5362,4 @@ FishSkill: {
 	}
 }
 
-// NPCs.TheSpiritofTheAbyss.DisplayName: The Spiritof The Abyss
+NPCs.TheSpiritofTheAbyss.DisplayName: 渊洋之灵
