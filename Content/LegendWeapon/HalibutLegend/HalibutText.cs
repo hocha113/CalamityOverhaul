@@ -13,20 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public string LocalizationCategory => "Legend";
         protected override void Register() { }
         #region 字段内容
-        public LocalizedText Greeting0 { get; private set; }
-        public LocalizedText Greeting1 { get; private set; }
-        public LocalizedText Greeting2 { get; private set; }
-        public LocalizedText Greeting3 { get; private set; }
-        public LocalizedText Greeting4 { get; private set; }
-        public LocalizedText Greeting5 { get; private set; }
-        public LocalizedText Greeting6 { get; private set; }
-        public LocalizedText Greeting7 { get; private set; }
-        public LocalizedText Greeting8 { get; private set; }
-        public LocalizedText Greeting9 { get; private set; }
-        public LocalizedText Greeting10 { get; private set; }
-        public LocalizedText Greeting11 { get; private set; }
-        public LocalizedText Greeting12 { get; private set; }
-        public LocalizedText Greeting13 { get; private set; }
+        public LocalizedText FishByStudied { get; private set; }
         #endregion
         #region Utils
         public static string GetTextKey(string key) => $"Mods.CalamityOverhaul.Legend.HalibutText.{key}";
