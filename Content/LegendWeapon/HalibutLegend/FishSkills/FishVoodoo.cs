@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return list;
         }
 
-        private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {
+        private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {//TODO:这里的逻辑有问题，一会儿修
             skill = null;
             hPlayer = Player.GetOverride<HalibutPlayer>();
             if (hPlayer == null || !hPlayer.HasHalibut)

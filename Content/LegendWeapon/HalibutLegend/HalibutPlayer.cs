@@ -18,7 +18,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 是否拥有大比目鱼
         /// </summary>
         public bool HasHalibut;
-
+        /// <summary>
+        /// 已解锁的技能列表
+        /// </summary>
         public readonly static HashSet<FishSkill> UnlockedSkills = new();
 
         #region 深渊复苏系统
