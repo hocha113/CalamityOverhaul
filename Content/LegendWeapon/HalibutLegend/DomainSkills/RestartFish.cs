@@ -1,10 +1,12 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,7 +22,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.RestartFishToggleCD > 0 || hp.RestartFishCooldown > 0) return;
-            player.SetResurrectionValue(0);
             Activate(player);
             hp.RestartFishToggleCD = ToggleCD;
             hp.RestartFishCooldown = RestartCooldown;
@@ -163,6 +164,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
     #endregion
+
+    internal class RestartPlayer : ModPlayer
+    {
+        public override bool PreKill(double damage, int hitDirection, bool pvp
+            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
+            if (Player.CountProjectilesOfID<RestartEffectProj>() > 0) {
+                return false; //正在重启，阻止死亡
+            }
+            return true;
+        }
+    }
 
     internal class RestartEffectProj : BaseHeldProj
     {
@@ -348,24 +360,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         private void ExecuteRestart() {
             //满血
-            Owner.statLife = Owner.statLifeMax2;
-            Owner.HealEffect(Owner.statLifeMax2);
+            Owner.Heal(Owner.statLifeMax2);
 
             //清除所有buff
             for (int i = 0; i < Player.MaxBuffs; i++) {
-                int buffType = Owner.buffType[i];
-                if (buffType > 0 && !Main.debuff[buffType] && !Main.buffNoTimeDisplay[buffType]) {
-                    Owner.DelBuff(i);
-                }
+                Owner.DelBuff(i);
             }
 
-            //清除所有debuff
-            for (int i = 0; i < Player.MaxBuffs; i++) {
-                int buffType = Owner.buffType[i];
-                if (buffType > 0 && Main.debuff[buffType]) {
-                    Owner.DelBuff(i);
-                }
-            }
+            Owner.SetResurrectionValue(0);//复苏进度归零
 
             //生成大量恢复粒子
             for (int i = 0; i < 50; i++) {

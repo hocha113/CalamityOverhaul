@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     {
         public FishSkill FishSkill;
         public Vector2 Position;
-        public Vector2 Velocity;
         public float Scale = 0.5f;
         public float Rotation;
         public float RotationSpeed;

@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -288,7 +288,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
-                SeaDomain.AltUse(item, Player);
+                if (SeaDomainLayers > 0 || SeaDomainActive) {
+                    SeaDomain.AltUse(item, Player);
+                }
             }
             //封锁过去，埋葬现在，截断未来...难道我今天真的要被孟小董杀死？不，现在还不能放弃...
             else if (CWRKeySystem.Halibut_Clone.JustPressed) {

@@ -36,19 +36,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!Player.active || Player.dead)
                 return;
 
-            if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer))
-                return;
-
             // 不检查冷却（在 OnHurt 决定），标记可尝试
             triggerThisHit = true;
         }
 
         public override void OnHurt(Player.HurtInfo info) {
-            if (!triggerThisHit)
+            if (!triggerThisHit) {
                 return;
+            }
 
-            if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer))
+            if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer)) {
+                triggerThisHit = false;
                 return;
+            }
 
             bool unlimited = hPlayer.SeaDomainActive && hPlayer.SeaDomainLayers >= UnlimitedLayersThreshold;
             if (skill.Cooldown > 0 && !unlimited) {
@@ -58,8 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
 
             int damageTaken = info.Damage; // 已经过防御后的真实损失
-            if (damageTaken <= 0)
+            if (damageTaken <= 0) {
+                triggerThisHit = false;
                 return;
+            }
 
             List<NPC> targets = null;
             if (hPlayer.SeaDomainActive) {
@@ -77,8 +79,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            if (targets == null || targets.Count == 0)
+            if (targets == null || targets.Count == 0) {
+                triggerThisHit = false;
                 return;
+            }
 
             // 回血（抵消 + 奖励气血） 目前设计为 3 倍恢复
             Player.statLife += damageTaken * 3;
@@ -120,6 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreKill(double damage, int hitDirection, bool pvp
             , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
             if (triggerThisHit) {
+                triggerThisHit = false;
                 return false; //触发时免死
             }
             return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
@@ -150,18 +155,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return list;
         }
 
-        private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {//TODO:这里的逻辑有问题，一会儿修
+        private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {
             skill = null;
             hPlayer = Player.GetOverride<HalibutPlayer>();
-            if (hPlayer == null || !hPlayer.HasHalibut)
+            if (hPlayer == null || !hPlayer.HasHalibut) {
                 return false;
-            if (!FishSkill.UnlockFishs.TryGetValue(ItemID.GuideVoodooFish, out FishSkill fs))
+            }
+            if (!FishSkill.UnlockFishs.TryGetValue(ItemID.GuideVoodooFish, out FishSkill fs)) {
                 return false;
-            skill = fs as FishVoodoo;
-            if (skill == null)
+            }
+            if (hPlayer.SkillID != fs.ID) {
                 return false;
-            if (!HalibutPlayer.UnlockedSkills.Contains(skill))
+            }
+            if (fs is not FishVoodoo fv) {
                 return false;
+            }
+            skill = fv;
             return true;
         }
 

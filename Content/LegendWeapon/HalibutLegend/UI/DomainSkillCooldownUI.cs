@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static Asset<Effect> GearProgress { get; set; }
 
         //使用反射加载，大小都是34*34，名称需与资源名一致
-        public static Texture2D RestartFish;   //重启
-        public static Texture2D Superposition; //叠加
-        public static Texture2D FishTeleport;  //传送
+        public static Texture2D RestartFish = null;   //重启
+        public static Texture2D Superposition = null; //叠加
+        public static Texture2D FishTeleport = null;  //传送
 
         //跟踪最大冷却，用于计算剩余比例
         private readonly Dictionary<DomainSkill, int> _maxCooldown = new();
