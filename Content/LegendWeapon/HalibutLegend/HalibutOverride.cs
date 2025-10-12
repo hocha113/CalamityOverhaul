@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
-using InnoVault;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;

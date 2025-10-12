@@ -385,13 +385,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void CatchFish(FishingAttempt attempt, ref int itemDrop
-            , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
-            if (CWRServerConfig.Instance.WeaponOverhaul && !attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {
-                itemDrop = ModContent.ItemType<HalibutCannon>();
-            }
-        }
-
         public override void PreUpdateMovement() {
             if (RideElectricMinRocketRecoverStateTime > 0) {
                 RideElectricMinRocketRecoverStateTime--;
