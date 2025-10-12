@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string title = "深渊复苏状态";
             string line1 = $"百分比 : {percent:F1}%";
             string line2 = $"复苏值 : {cur:F1} / {max:F1}";
-            string line3 = $"速度   : {rate:F3}/帧";
+            string line3 = $"速度   : {rate * 60:F3}/秒";
 
             float workingWidth = minWidth;
             float contentWidth = workingWidth - horizontalPadding - contentRightPadding;

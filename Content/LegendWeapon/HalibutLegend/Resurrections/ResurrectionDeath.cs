@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -7,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
     /// <summary>
     /// 深渊复苏死亡系统，处理复苏满时的死亡机制和演出
     /// </summary>
-    public class ResurrectionDeathSystem : ModPlayer
+    public class ResurrectionDeathSystem : ModPlayer, ILocalizedModType
     {
         #region 死亡状态枚举
         /// <summary>
@@ -90,6 +90,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// </summary>
         private float playerAlphaMultiplier = 1f;
         #endregion
+
+        public static LocalizedText DeathText { get; private set; }
+
+        public override void SetStaticDefaults() {
+            DeathText = this.GetLocalization(nameof(DeathText), () => "{0}死于深渊复苏");
+        }
 
         #region 主更新逻辑
         public override void PreUpdate() {
@@ -352,9 +358,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 执行真正的死亡
         /// </summary>
         private void ExecuteDeath() {
-            //使用深渊主题的死亡原因
+            //使用深渊的死亡原因
             PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(
-                CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(Player.name)
+                DeathText.ToNetworkText(Player.name)
             );
 
             //杀死玩家
@@ -581,6 +587,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 检查是否处于死亡演出状态
         /// </summary>
         public bool IsInDeathSequence => currentState != DeathState.None && currentState != DeathState.Cooldown;
+
+        public string LocalizationCategory => "Resurrections";
 
         /// <summary>
         /// 绘制死亡演出特效
