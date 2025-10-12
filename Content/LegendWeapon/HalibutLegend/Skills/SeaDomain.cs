@@ -94,320 +94,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
     }
 
-    #region 领域层数据
-    internal class DomainLayer
-    {
-        public float Radius;
-        public float TargetRadius;
-        public List<DomainFishBoid> Fish;
-        public int FishCount;
-        public Color BorderColor;
-        public float RotationSpeed;
-        public float WaveAmplitude;
-        public int LayerIndex;
-
-        public DomainLayer(int layerIndex, int totalLayers) {
-            LayerIndex = layerIndex;
-
-            //优化半径计算：前3层密集，后续层逐渐扩大
-            float baseRadius = 220f;
-            float radiusStep;
-            if (layerIndex < 3) {
-                //前3层：紧密布局
-                radiusStep = 130f;
-                TargetRadius = baseRadius + (layerIndex * radiusStep);
-            }
-            else {
-                //3层之后：渐进扩大
-                float base3LayerRadius = baseRadius + (2 * 130f); //第3层的半径
-                radiusStep = 100f + ((layerIndex - 2) * 15f); //逐渐增大间距
-                TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
-            }
-            Radius = TargetRadius;
-
-            //鱼数量：前5层线性增长，后续层增长放缓
-            if (layerIndex < 5) {
-                FishCount = 20 + (layerIndex * 10);
-            }
-            else {
-                FishCount = 60 + ((layerIndex - 4) * 6);
-            }
-
-            //颜色渐变：多层时使用更丰富的色谱
-            float colorProgress = layerIndex / (float)Math.Max(1, totalLayers - 1);
-            if (totalLayers <= 3) {
-                //1-3层：深蓝到浅蓝
-                BorderColor = Color.Lerp(new Color(60, 160, 255), new Color(120, 220, 255), colorProgress);
-            }
-            else if (totalLayers <= 7) {
-                //4-7层：深蓝到青绿
-                BorderColor = Color.Lerp(new Color(50, 140, 255), new Color(100, 230, 240), colorProgress);
-            }
-            else {
-                //8-10层：深蓝到亮青
-                BorderColor = Color.Lerp(new Color(40, 120, 255), new Color(120, 255, 255), colorProgress);
-            }
-
-            //旋转速度：外层更慢
-            RotationSpeed = MathHelper.Lerp(1f, 0.3f, colorProgress);
-
-            //波动幅度：外层更大
-            WaveAmplitude = MathHelper.Lerp(6f, 14f, colorProgress);
-
-            Fish = new List<DomainFishBoid>();
-        }
-
-        public void InitializeFish(Vector2 center) {
-            Fish.Clear();
-            for (int i = 0; i < FishCount; i++) {
-                float angle = (i / (float)FishCount) * MathHelper.TwoPi;
-                Fish.Add(new DomainFishBoid(center, Radius, angle));
-            }
-        }
-    }
-    #endregion
-
-    #region 领域鱼群系统
-    internal enum FishSize { Small, Medium, Large }
-
-    internal class DomainFishBoid
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Scale;
-        public float Frame;
-        public FishSize Size;
-        public int FishType;
-        public Color TintColor;
-        private float OrbitAngle;
-        private float OrbitSpeed;
-        private float RadiusOffset;
-        private float NoiseSeed;
-        private float VerticalWave;
-        private float VerticalPhase;
-        private float DashTimer;
-        private float DashCooldown;
-        private Vector2 dashVelocity;
-        public readonly List<Vector2> TrailPositions = new();
-        private const int MaxTrailLength = 8;
-
-        public DomainFishBoid(Vector2 center, float baseRadius, float angle) {
-            var rand = Main.rand;
-            OrbitAngle = angle;
-
-            float sizeRoll = rand.NextFloat();
-            if (sizeRoll < 0.5f) {
-                Size = FishSize.Small;
-                Scale = 0.4f + rand.NextFloat() * 0.25f;
-                OrbitSpeed = 0.018f + rand.NextFloat() * 0.025f;
-                VerticalWave = rand.NextFloat(10f, 20f);
-            }
-            else if (sizeRoll < 0.85f) {
-                Size = FishSize.Medium;
-                Scale = 0.65f + rand.NextFloat() * 0.3f;
-                OrbitSpeed = 0.012f + rand.NextFloat() * 0.015f;
-                VerticalWave = rand.NextFloat(20f, 35f);
-            }
-            else {
-                Size = FishSize.Large;
-                Scale = 1.0f + rand.NextFloat() * 0.4f;
-                OrbitSpeed = 0.008f + rand.NextFloat() * 0.01f;
-                VerticalWave = rand.NextFloat(25f, 45f);
-            }
-
-            FishType = rand.Next(3);
-            RadiusOffset = rand.NextFloat(-40f, 40f);
-            Frame = rand.NextFloat(10f);
-            NoiseSeed = rand.NextFloat(1000f);
-            VerticalPhase = rand.NextFloat(MathHelper.TwoPi);
-            Position = center + OrbitAngle.ToRotationVector2() * (baseRadius + RadiusOffset);
-            Velocity = Vector2.Zero;
-            DashCooldown = rand.NextFloat(180f, 360f);
-
-            TintColor = Size switch {
-                FishSize.Small => new Color(120, 220, 255, 255),
-                FishSize.Medium => new Color(100, 200, 240, 255),
-                FishSize.Large => new Color(80, 180, 230, 255),
-                _ => Color.White
-            };
-        }
-
-        public void Update(Vector2 center, float baseRadius, float domainAlpha) {
-            OrbitAngle += OrbitSpeed * (0.8f + domainAlpha * 0.4f);
-            float time = Main.GameUpdateCount * 0.05f + NoiseSeed;
-            float wobble = (float)Math.Sin(time * 1.2f) * 8f;
-            float verticalOffset = (float)Math.Sin(time * 0.8f + VerticalPhase) * VerticalWave * domainAlpha;
-
-            float targetRadius = baseRadius + RadiusOffset + wobble;
-            Vector2 targetPos = center + OrbitAngle.ToRotationVector2() * targetRadius;
-            targetPos.Y += verticalOffset;
-
-            DashCooldown--;
-            if (DashCooldown <= 0 && DashTimer <= 0) {
-                DashTimer = 25f;
-                DashCooldown = Main.rand.NextFloat(200f, 400f);
-                float dashAngle = OrbitAngle + Main.rand.NextFloat(-0.5f, 0.5f);
-                dashVelocity = dashAngle.ToRotationVector2() * (6f + Scale * 3f);
-            }
-
-            if (DashTimer > 0) {
-                DashTimer--;
-                targetPos += dashVelocity * (DashTimer / 25f);
-                dashVelocity *= 0.92f;
-            }
-
-            Position = Vector2.Lerp(Position, targetPos, 0.15f);
-            Velocity = (targetPos - Position) * 0.1f;
-            Frame += 0.3f + OrbitSpeed * 8f + (DashTimer > 0 ? 0.5f : 0f);
-
-            TrailPositions.Insert(0, Position);
-            if (TrailPositions.Count > MaxTrailLength) {
-                TrailPositions.RemoveAt(TrailPositions.Count - 1);
-            }
-        }
-
-        public void DrawTrail(float alpha) {
-            if (TrailPositions.Count < 2) return;
-            Texture2D tex = TextureAssets.MagicPixel.Value;
-
-            for (int i = 0; i < TrailPositions.Count - 1; i++) {
-                float progress = i / (float)TrailPositions.Count;
-                float trailAlpha = (1f - progress) * alpha * 0.5f;
-                float width = Scale * (3f - progress * 2f);
-
-                Vector2 start = TrailPositions[i];
-                Vector2 end = TrailPositions[i + 1];
-                Vector2 diff = end - start;
-                float rot = diff.ToRotation();
-                float len = diff.Length();
-
-                Color c = TintColor * trailAlpha * 0.6f;
-                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1),
-                    c, rot, Vector2.Zero, new Vector2(len, width), SpriteEffects.None, 0f);
-            }
-        }
-    }
-    #endregion
-
-    #region 深度气泡链
-    internal class BubbleChain
-    {
-        public Vector2 Position;
-        public float Life;
-        public float MaxLife;
-        public float Speed;
-        public float Scale;
-        private float wobblePhase;
-
-        public BubbleChain(Vector2 pos) {
-            Position = pos;
-            Life = 0f;
-            MaxLife = Main.rand.NextFloat(120f, 200f);
-            Speed = Main.rand.NextFloat(0.8f, 1.5f);
-            Scale = Main.rand.NextFloat(0.6f, 1.2f);
-            wobblePhase = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
-        public void Update() {
-            Life++;
-            Position.Y -= Speed;
-            float wobble = (float)Math.Sin(Life * 0.1f + wobblePhase) * 2f;
-            Position.X += wobble * 0.05f;
-        }
-
-        public bool ShouldRemove() => Life >= MaxLife;
-
-        public void Draw(float domainAlpha) {
-            float progress = Life / MaxLife;
-            float alpha = (1f - progress) * domainAlpha * 0.7f;
-            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value; //气泡贴图
-            Color c = new Color(150, 220, 255, 0) * alpha;
-            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, 0f, tex.Size() / 2f, Scale, SpriteEffects.None, 0f);
-        }
-    }
-    #endregion
-
-    #region 水压侵蚀效果
-    internal class WaterPressureEffect
-    {
-        public int NPCIndex;
-        public int Life;
-        public readonly List<WaterPressureParticle> Particles = new();
-        private int particleSpawnTimer;
-
-        public WaterPressureEffect(int npcIndex) {
-            NPCIndex = npcIndex;
-            Life = 0;
-        }
-
-        public void Update(Vector2 npcCenter, float npcRadius) {
-            Life++;
-            particleSpawnTimer++;
-
-            if (particleSpawnTimer % 3 == 0) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 pos = npcCenter + angle.ToRotationVector2() * npcRadius * Main.rand.NextFloat(0.8f, 1.2f);
-                Particles.Add(new WaterPressureParticle(pos, npcCenter));
-            }
-
-            for (int i = Particles.Count - 1; i >= 0; i--) {
-                Particles[i].Update();
-                if (Particles[i].ShouldRemove()) {
-                    Particles.RemoveAt(i);
-                }
-            }
-        }
-
-        public void Draw() {
-            foreach (var p in Particles) {
-                p.Draw();
-            }
-        }
-    }
-
-    internal class WaterPressureParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Life;
-        public float MaxLife;
-        public float Scale;
-        public float Rotation;
-        private Color color;
-
-        public WaterPressureParticle(Vector2 pos, Vector2 npcCenter) {
-            Position = pos;
-            Life = 0f;
-            MaxLife = Main.rand.NextFloat(20f, 40f);
-            Scale = Main.rand.NextFloat(0.8f, 1.5f);
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-
-            Vector2 toCenter = (npcCenter - pos).SafeNormalize(Vector2.Zero);
-            Velocity = toCenter * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1f, 1f);
-
-            color = Main.rand.NextBool() ? new Color(100, 200, 255) : new Color(80, 180, 255);
-        }
-
-        public void Update() {
-            Life++;
-            Position += Velocity;
-            Velocity *= 0.95f;
-            Rotation += 0.1f;
-        }
-
-        public bool ShouldRemove() => Life >= MaxLife;
-
-        public void Draw() {
-            float progress = Life / MaxLife;
-            float alpha = (1f - progress) * 0.8f;
-            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
-            Color c = color * alpha;
-            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation,
-                tex.Size() / 2f, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
-        }
-    }
-    #endregion
-
     internal class SeaDomainProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -974,6 +660,320 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Main.spriteBatch.Draw(fishTex, fish.Position - Main.screenPosition, rect, c, rot, origin, fish.Scale * 0.7f, spriteEffects, 0f);
         }
     }
+
+    #region 领域层数据
+    internal class DomainLayer
+    {
+        public float Radius;
+        public float TargetRadius;
+        public List<DomainFishBoid> Fish;
+        public int FishCount;
+        public Color BorderColor;
+        public float RotationSpeed;
+        public float WaveAmplitude;
+        public int LayerIndex;
+
+        public DomainLayer(int layerIndex, int totalLayers) {
+            LayerIndex = layerIndex;
+
+            //优化半径计算：前3层密集，后续层逐渐扩大
+            float baseRadius = 220f;
+            float radiusStep;
+            if (layerIndex < 3) {
+                //前3层：紧密布局
+                radiusStep = 130f;
+                TargetRadius = baseRadius + (layerIndex * radiusStep);
+            }
+            else {
+                //3层之后：渐进扩大
+                float base3LayerRadius = baseRadius + (2 * 130f); //第3层的半径
+                radiusStep = 100f + ((layerIndex - 2) * 15f); //逐渐增大间距
+                TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
+            }
+            Radius = TargetRadius;
+
+            //鱼数量：前5层线性增长，后续层增长放缓
+            if (layerIndex < 5) {
+                FishCount = 20 + (layerIndex * 10);
+            }
+            else {
+                FishCount = 60 + ((layerIndex - 4) * 6);
+            }
+
+            //颜色渐变：多层时使用更丰富的色谱
+            float colorProgress = layerIndex / (float)Math.Max(1, totalLayers - 1);
+            if (totalLayers <= 3) {
+                //1-3层：深蓝到浅蓝
+                BorderColor = Color.Lerp(new Color(60, 160, 255), new Color(120, 220, 255), colorProgress);
+            }
+            else if (totalLayers <= 7) {
+                //4-7层：深蓝到青绿
+                BorderColor = Color.Lerp(new Color(50, 140, 255), new Color(100, 230, 240), colorProgress);
+            }
+            else {
+                //8-10层：深蓝到亮青
+                BorderColor = Color.Lerp(new Color(40, 120, 255), new Color(120, 255, 255), colorProgress);
+            }
+
+            //旋转速度：外层更慢
+            RotationSpeed = MathHelper.Lerp(1f, 0.3f, colorProgress);
+
+            //波动幅度：外层更大
+            WaveAmplitude = MathHelper.Lerp(6f, 14f, colorProgress);
+
+            Fish = new List<DomainFishBoid>();
+        }
+
+        public void InitializeFish(Vector2 center) {
+            Fish.Clear();
+            for (int i = 0; i < FishCount; i++) {
+                float angle = (i / (float)FishCount) * MathHelper.TwoPi;
+                Fish.Add(new DomainFishBoid(center, Radius, angle));
+            }
+        }
+    }
+    #endregion
+
+    #region 领域鱼群系统
+    internal enum FishSize { Small, Medium, Large }
+
+    internal class DomainFishBoid
+    {
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Scale;
+        public float Frame;
+        public FishSize Size;
+        public int FishType;
+        public Color TintColor;
+        private float OrbitAngle;
+        private float OrbitSpeed;
+        private float RadiusOffset;
+        private float NoiseSeed;
+        private float VerticalWave;
+        private float VerticalPhase;
+        private float DashTimer;
+        private float DashCooldown;
+        private Vector2 dashVelocity;
+        public readonly List<Vector2> TrailPositions = new();
+        private const int MaxTrailLength = 8;
+
+        public DomainFishBoid(Vector2 center, float baseRadius, float angle) {
+            var rand = Main.rand;
+            OrbitAngle = angle;
+
+            float sizeRoll = rand.NextFloat();
+            if (sizeRoll < 0.5f) {
+                Size = FishSize.Small;
+                Scale = 0.4f + rand.NextFloat() * 0.25f;
+                OrbitSpeed = 0.018f + rand.NextFloat() * 0.025f;
+                VerticalWave = rand.NextFloat(10f, 20f);
+            }
+            else if (sizeRoll < 0.85f) {
+                Size = FishSize.Medium;
+                Scale = 0.65f + rand.NextFloat() * 0.3f;
+                OrbitSpeed = 0.012f + rand.NextFloat() * 0.015f;
+                VerticalWave = rand.NextFloat(20f, 35f);
+            }
+            else {
+                Size = FishSize.Large;
+                Scale = 1.0f + rand.NextFloat() * 0.4f;
+                OrbitSpeed = 0.008f + rand.NextFloat() * 0.01f;
+                VerticalWave = rand.NextFloat(25f, 45f);
+            }
+
+            FishType = rand.Next(3);
+            RadiusOffset = rand.NextFloat(-40f, 40f);
+            Frame = rand.NextFloat(10f);
+            NoiseSeed = rand.NextFloat(1000f);
+            VerticalPhase = rand.NextFloat(MathHelper.TwoPi);
+            Position = center + OrbitAngle.ToRotationVector2() * (baseRadius + RadiusOffset);
+            Velocity = Vector2.Zero;
+            DashCooldown = rand.NextFloat(180f, 360f);
+
+            TintColor = Size switch {
+                FishSize.Small => new Color(120, 220, 255, 255),
+                FishSize.Medium => new Color(100, 200, 240, 255),
+                FishSize.Large => new Color(80, 180, 230, 255),
+                _ => Color.White
+            };
+        }
+
+        public void Update(Vector2 center, float baseRadius, float domainAlpha) {
+            OrbitAngle += OrbitSpeed * (0.8f + domainAlpha * 0.4f);
+            float time = Main.GameUpdateCount * 0.05f + NoiseSeed;
+            float wobble = (float)Math.Sin(time * 1.2f) * 8f;
+            float verticalOffset = (float)Math.Sin(time * 0.8f + VerticalPhase) * VerticalWave * domainAlpha;
+
+            float targetRadius = baseRadius + RadiusOffset + wobble;
+            Vector2 targetPos = center + OrbitAngle.ToRotationVector2() * targetRadius;
+            targetPos.Y += verticalOffset;
+
+            DashCooldown--;
+            if (DashCooldown <= 0 && DashTimer <= 0) {
+                DashTimer = 25f;
+                DashCooldown = Main.rand.NextFloat(200f, 400f);
+                float dashAngle = OrbitAngle + Main.rand.NextFloat(-0.5f, 0.5f);
+                dashVelocity = dashAngle.ToRotationVector2() * (6f + Scale * 3f);
+            }
+
+            if (DashTimer > 0) {
+                DashTimer--;
+                targetPos += dashVelocity * (DashTimer / 25f);
+                dashVelocity *= 0.92f;
+            }
+
+            Position = Vector2.Lerp(Position, targetPos, 0.15f);
+            Velocity = (targetPos - Position) * 0.1f;
+            Frame += 0.3f + OrbitSpeed * 8f + (DashTimer > 0 ? 0.5f : 0f);
+
+            TrailPositions.Insert(0, Position);
+            if (TrailPositions.Count > MaxTrailLength) {
+                TrailPositions.RemoveAt(TrailPositions.Count - 1);
+            }
+        }
+
+        public void DrawTrail(float alpha) {
+            if (TrailPositions.Count < 2) return;
+            Texture2D tex = TextureAssets.MagicPixel.Value;
+
+            for (int i = 0; i < TrailPositions.Count - 1; i++) {
+                float progress = i / (float)TrailPositions.Count;
+                float trailAlpha = (1f - progress) * alpha * 0.5f;
+                float width = Scale * (3f - progress * 2f);
+
+                Vector2 start = TrailPositions[i];
+                Vector2 end = TrailPositions[i + 1];
+                Vector2 diff = end - start;
+                float rot = diff.ToRotation();
+                float len = diff.Length();
+
+                Color c = TintColor * trailAlpha * 0.6f;
+                Main.spriteBatch.Draw(tex, start - Main.screenPosition, new Rectangle(0, 0, 1, 1),
+                    c, rot, Vector2.Zero, new Vector2(len, width), SpriteEffects.None, 0f);
+            }
+        }
+    }
+    #endregion
+
+    #region 深度气泡链
+    internal class BubbleChain
+    {
+        public Vector2 Position;
+        public float Life;
+        public float MaxLife;
+        public float Speed;
+        public float Scale;
+        private float wobblePhase;
+
+        public BubbleChain(Vector2 pos) {
+            Position = pos;
+            Life = 0f;
+            MaxLife = Main.rand.NextFloat(120f, 200f);
+            Speed = Main.rand.NextFloat(0.8f, 1.5f);
+            Scale = Main.rand.NextFloat(0.6f, 1.2f);
+            wobblePhase = Main.rand.NextFloat(MathHelper.TwoPi);
+        }
+
+        public void Update() {
+            Life++;
+            Position.Y -= Speed;
+            float wobble = (float)Math.Sin(Life * 0.1f + wobblePhase) * 2f;
+            Position.X += wobble * 0.05f;
+        }
+
+        public bool ShouldRemove() => Life >= MaxLife;
+
+        public void Draw(float domainAlpha) {
+            float progress = Life / MaxLife;
+            float alpha = (1f - progress) * domainAlpha * 0.7f;
+            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value; //气泡贴图
+            Color c = new Color(150, 220, 255, 0) * alpha;
+            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, 0f, tex.Size() / 2f, Scale, SpriteEffects.None, 0f);
+        }
+    }
+    #endregion
+
+    #region 水压侵蚀效果
+    internal class WaterPressureEffect
+    {
+        public int NPCIndex;
+        public int Life;
+        public readonly List<WaterPressureParticle> Particles = new();
+        private int particleSpawnTimer;
+
+        public WaterPressureEffect(int npcIndex) {
+            NPCIndex = npcIndex;
+            Life = 0;
+        }
+
+        public void Update(Vector2 npcCenter, float npcRadius) {
+            Life++;
+            particleSpawnTimer++;
+
+            if (particleSpawnTimer % 3 == 0) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = npcCenter + angle.ToRotationVector2() * npcRadius * Main.rand.NextFloat(0.8f, 1.2f);
+                Particles.Add(new WaterPressureParticle(pos, npcCenter));
+            }
+
+            for (int i = Particles.Count - 1; i >= 0; i--) {
+                Particles[i].Update();
+                if (Particles[i].ShouldRemove()) {
+                    Particles.RemoveAt(i);
+                }
+            }
+        }
+
+        public void Draw() {
+            foreach (var p in Particles) {
+                p.Draw();
+            }
+        }
+    }
+
+    internal class WaterPressureParticle
+    {
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Life;
+        public float MaxLife;
+        public float Scale;
+        public float Rotation;
+        private Color color;
+
+        public WaterPressureParticle(Vector2 pos, Vector2 npcCenter) {
+            Position = pos;
+            Life = 0f;
+            MaxLife = Main.rand.NextFloat(20f, 40f);
+            Scale = Main.rand.NextFloat(0.8f, 1.5f);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+
+            Vector2 toCenter = (npcCenter - pos).SafeNormalize(Vector2.Zero);
+            Velocity = toCenter * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1f, 1f);
+
+            color = Main.rand.NextBool() ? new Color(100, 200, 255) : new Color(80, 180, 255);
+        }
+
+        public void Update() {
+            Life++;
+            Position += Velocity;
+            Velocity *= 0.95f;
+            Rotation += 0.1f;
+        }
+
+        public bool ShouldRemove() => Life >= MaxLife;
+
+        public void Draw() {
+            float progress = Life / MaxLife;
+            float alpha = (1f - progress) * 0.8f;
+            Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
+            Color c = color * alpha;
+            Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation,
+                tex.Size() / 2f, Scale * (0.3f + progress * 0.2f), SpriteEffects.None, 0f);
+        }
+    }
+    #endregion
 
     #region 水纹效果
     internal class WaterRipple

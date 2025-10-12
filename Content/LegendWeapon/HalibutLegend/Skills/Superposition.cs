@@ -293,7 +293,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private const int ExplodeDuration = 40;
 
         private float effectAlpha = 0f;
-        private float chargeIntensity = 0f;
         private Vector2 attackDirection = Vector2.UnitX;
 
         public override void SetDefaults() {
@@ -406,8 +405,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateCharging() {
-            float progress = stateTimer / (float)ChargeDuration;
-            chargeIntensity = progress;
             effectAlpha = 1f;
 
             if (stateTimer == 1) {
@@ -880,7 +877,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 1;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
