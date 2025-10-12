@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;
             }
-            return 10;
             return cwrItem.LegendData.Level;
         }
 
