@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (Downed29.Invoke() || Downed30.Invoke()) {
+            if (Downed29.Invoke() && Downed30.Invoke()) {
                 level = 13;
             }
             else {
