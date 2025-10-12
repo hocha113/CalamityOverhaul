@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishDemonicHell : FishSkill
     {
         public override int UnlockFishID => ItemID.DemonicHellfish;
-        public override int DefaultCooldown => 60 * 25; //25s
+        public override int DefaultCooldown => 60 * 15; //15s
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
@@ -26,22 +26,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return base.CanUseItem(item, player);
         }
         public override void Use(Item item, Player player) {
-            //SetCooldown();
+            SetCooldown();
             //在玩家前方生成法阵（与鼠标方向）
             Vector2 dir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX * player.direction);
             Vector2 spawnPos = player.Center + dir * 160f; //距离玩家 160
             Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, dir,
                 ModContent.ProjectileType<HellRitualCircle>(), 0, 0f, player.whoAmI, ai0: player.direction);
 
-            // 生成初始召唤粒子效果
+            //生成初始召唤粒子效果
             SpawnSummonParticles(spawnPos);
 
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 0.8f, Pitch = -0.7f }, spawnPos);
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = -0.4f }, spawnPos);
         }
 
-        private void SpawnSummonParticles(Vector2 position) {
-            // 召唤时的地狱火焰涌现效果
+        private static void SpawnSummonParticles(Vector2 position) {
+            //召唤时的地狱火焰涌现效果
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
@@ -73,12 +73,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> StarTexture = null;
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
-
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> Extra_193 = null;
-
         public override void SetDefaults() {
             Projectile.width = 300;
             Projectile.height = 300;
@@ -101,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             ChargeTimer++;
 
-            // 充能过程中持续生成粒子
+            //充能过程中持续生成粒子
             if (ChargeTimer < ChargeTime) {
                 SpawnChargeParticles();
             }
@@ -110,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FireBlast();
             }
 
-            // 照明效果
+            //照明效果
             float lightIntensity = progress * 2.5f;
             Lighting.AddLight(Projectile.Center,
                 1.2f * lightIntensity,
@@ -119,9 +113,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnChargeParticles() {
-            // 每3帧生成一组粒子
+            //每3帧生成一组粒子
             if (Main.rand.NextBool(3)) {
-                // 向心聚集的地狱火焰
+                //向心聚集的地狱火焰
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(150f, 250f);
                 Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
@@ -139,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 prt.ai[3] = 80;
             }
 
-            // 法阵边缘的火焰环
+            //法阵边缘的火焰环
             if (Main.rand.NextBool(2)) {
                 float ringAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float ringRadius = 140f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 10f;
@@ -159,13 +153,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void FireBlast() {
-            // 发射主爆炸弹幕
+            //发射主爆炸弹幕
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
             int damage = (int)(Owner.GetShootState().WeaponDamage * 6.5f);
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 6f,
                 ModContent.ProjectileType<HellFireBlast>(), damage, 6f, Owner.whoAmI);
 
-            // 发射时的粒子爆发
+            //发射时的粒子爆发
             for (int i = 0; i < 50; i++) {
                 float angle = MathHelper.TwoPi * i / 50f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
@@ -182,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 prt.ai[3] = 100;
             }
 
-            // 环形冲击尘埃
+            //环形冲击尘埃
             for (int i = 0; i < 80; i++) {
                 float ang = MathHelper.TwoPi * i / 80f;
                 Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(6f, 14f);
@@ -204,34 +198,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float glow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
             float p = progress;
 
-            // 基础颜色方案
-            Color hellCore = new Color(255, 200, 80);      // 明亮核心
-            Color hellMid = new Color(255, 90, 30);        // 中层橙红
-            Color hellEdge = new Color(200, 40, 20);       // 边缘深红
-            Color hellDark = new Color(120, 20, 40);       // 暗紫红
+            //基础颜色方案
+            Color hellCore = new Color(255, 200, 80);      //明亮核心
+            Color hellMid = new Color(255, 90, 30);        //中层橙红
+            Color hellEdge = new Color(200, 40, 20);       //边缘深红
+            Color hellDark = new Color(120, 20, 40);       //暗紫红
 
-            // 多层旋转圆环（地狱风格）
+            //多层旋转圆环（地狱风格）
             DrawHellRing(sb, pixel, center, 160f, 8f, hellEdge, p, 0.8f, 12);
             DrawHellRing(sb, pixel, center, 160f * p, 12f, Color.Lerp(hellCore, hellMid, p) * p, p, 0.4f, 8);
             DrawHellRing(sb, pixel, center, 140f, 3f, hellDark, p, 1.2f, 6);
             DrawHellRing(sb, pixel, center, 120f * p, 6f, Color.Lerp(hellCore, hellEdge, p * 0.7f) * p, p, -1.0f, 10);
 
-            // 五芒星魔法阵（核心图案）
+            //五芒星魔法阵（核心图案）
             DrawPentagram(sb, pixel, center, 100f, 4f, Color.Lerp(hellMid, hellCore, glow) * p,
                 Main.GlobalTimeWrappedHourly * 0.5f);
             DrawPentagram(sb, pixel, center, 85f, 3f, Color.Lerp(hellEdge, hellMid, glow) * p * 0.8f,
                 -Main.GlobalTimeWrappedHourly * 0.7f);
 
-            // 外层符文圆环
+            //外层符文圆环
             DrawRuneCircle(sb, pixel, center, 130f, p, hellMid, hellEdge);
 
-            // 内层复杂几何图案
+            //内层复杂几何图案
             DrawHexagon(sb, pixel, center, 70f, 3f, Color.Lerp(hellCore, hellMid, p * 0.5f) * p,
                 Main.GlobalTimeWrappedHourly * 0.6f);
             DrawHexagon(sb, pixel, center, 60f, 2f, hellEdge * p * 0.7f,
                 -Main.GlobalTimeWrappedHourly * 0.8f);
 
-            // 径向地狱符文（使用纹理）
+            //径向地狱符文（使用纹理）
             if (StarTexture?.Value != null) {
                 DrawRadialRunes(sb, StarTexture.Value, center, 110f, p, hellCore, hellMid);
             }
@@ -239,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        private void DrawHellRing(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
+        private static void DrawHellRing(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
             float thickness, Color c, float progress, float rotSpeed, int pulseSegments) {
             int segments = 180;
             float angleStep = MathHelper.TwoPi / segments;
@@ -249,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float ang = i * angleStep + rotOffset;
                 Vector2 pos = center + ang.ToRotationVector2() * radius;
 
-                // 分段脉冲效果
+                //分段脉冲效果
                 float segmentIndex = (ang / MathHelper.TwoPi) * pulseSegments;
                 float pulse = (float)Math.Sin(segmentIndex * MathHelper.Pi + progress * 15f);
                 float energyFlow = (float)Math.Sin(ang * 4f - Main.GlobalTimeWrappedHourly * 5f);
@@ -262,9 +256,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void DrawPentagram(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
+        private static void DrawPentagram(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
             float thickness, Color col, float rot) {
-            // 绘制五芒星（经典地狱符号）
+            //绘制五芒星（经典地狱符号）
             int points = 5;
             Vector2[] vertices = new Vector2[points * 2];
 
@@ -273,19 +267,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 vertices[i * 2] = center + angle.ToRotationVector2() * radius;
             }
 
-            // 连接顶点形成五芒星（每个顶点连接到第二个下一个顶点）
+            //连接顶点形成五芒星（每个顶点连接到第二个下一个顶点）
             for (int i = 0; i < points; i++) {
                 int next = (i * 2) % points;
                 DrawLine(sb, pixel, vertices[i * 2], vertices[next * 2], thickness, col);
             }
         }
 
-        private void DrawHexagon(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
+        private static void DrawHexagon(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
             float thickness, Color col, float rot) {
             DrawPolygon(sb, pixel, center, 6, radius, thickness, col, rot);
         }
 
-        private void DrawRuneCircle(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
+        private static void DrawRuneCircle(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
             float progress, Color innerCol, Color outerCol) {
             int runeCount = 12;
             float runeSize = 8f;
@@ -298,12 +292,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 runePos = center + angle.ToRotationVector2() * radius;
                 Color runeColor = Color.Lerp(outerCol, innerCol, pulse) * progress;
 
-                // 绘制符文形状（简化为菱形）
+                //绘制符文形状（简化为菱形）
                 DrawDiamond(sb, pixel, runePos, runeSize * (0.8f + pulse * 0.4f), runeColor, angle);
             }
         }
 
-        private void DrawDiamond(SpriteBatch sb, Texture2D pixel, Vector2 center, float size, Color col, float rot) {
+        private static void DrawDiamond(SpriteBatch sb, Texture2D pixel, Vector2 center, float size, Color col, float rot) {
             Vector2[] points = new Vector2[4];
             for (int i = 0; i < 4; i++) {
                 float angle = rot + i * MathHelper.PiOver2;
@@ -314,7 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void DrawRadialRunes(SpriteBatch sb, Texture2D runeTex, Vector2 center, float radius,
+        private static void DrawRadialRunes(SpriteBatch sb, Texture2D runeTex, Vector2 center, float radius,
             float progress, Color innerCol, Color outerCol) {
             int count = 8;
             for (int i = 0; i < count; i++) {
@@ -331,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void DrawPolygon(SpriteBatch sb, Texture2D pixel, Vector2 center, int sides,
+        private static void DrawPolygon(SpriteBatch sb, Texture2D pixel, Vector2 center, int sides,
             float radius, float thickness, Color col, float rot) {
             if (sides < 3) return;
             Vector2 prev = center + (rot).ToRotationVector2() * radius;
@@ -343,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void DrawLine(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end,
+        private static void DrawLine(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end,
             float thickness, Color col) {
             Vector2 diff = end - start;
             float len = diff.Length();
@@ -391,21 +385,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float life = 90 - Projectile.timeLeft;
 
             if (life < FlyTime) {
-                // 飞行阶段
+                //飞行阶段
                 Projectile.scale = 0.6f + life / FlyTime * 0.8f;
                 Projectile.velocity *= 1.02f;
 
-                // 飞行轨迹粒子
+                //飞行轨迹粒子
                 if (Main.rand.NextBool(2)) {
                     SpawnTrailParticle();
                 }
             }
             else {
-                // 减速并扩散
+                //减速并扩散
                 Projectile.velocity *= 0.96f;
                 Projectile.scale *= 1.01f;
 
-                // 预爆炸粒子
+                //预爆炸粒子
                 if (Main.rand.NextBool(3)) {
                     SpawnPreExplosionParticle();
                 }
@@ -415,7 +409,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            // 动态旋转
+            //动态旋转
             Projectile.rotation += 0.15f;
 
             Lighting.AddLight(Projectile.Center, 1.6f, 0.6f, 0.2f);
@@ -429,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 d.noGravity = true;
             }
 
-            // 初始地狱火焰粒子
+            //初始地狱火焰粒子
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
                 var prt = PRTLoader.NewParticle<PRT_HellFlame>(
@@ -470,10 +464,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void Explode() {
-            // 伤害区域扩大
+            //伤害区域扩大
             Projectile.Explode(220, default, false);
 
-            // 大量地狱火焰粒子（主要视觉效果）
+            //大量地狱火焰粒子（主要视觉效果）
             for (int i = 0; i < 80; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 float spd = Main.rand.NextFloat(4f, 18f);
@@ -491,7 +485,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 prt.ai[3] = 120;
             }
 
-            // 额外的螺旋火焰
+            //额外的螺旋火焰
             for (int i = 0; i < 30; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 float spd = Main.rand.NextFloat(6f, 12f);
@@ -509,7 +503,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 prt.ai[3] = 100;
             }
 
-            // 传统尘埃效果
+            //传统尘埃效果
             for (int i = 0; i < 140; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 float spd = Main.rand.NextFloat(4f, 18f);
@@ -536,22 +530,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 center = Projectile.Center - Main.screenPosition;
             float scale = Projectile.scale;
 
-            // 时间因子
+            //时间因子
             float time = Main.GlobalTimeWrappedHourly;
             float lifeProgress = 1f - Projectile.timeLeft / 90f;
 
-            // 动态脉冲
+            //动态脉冲
             float mainPulse = (float)Math.Sin(time * 8f) * 0.5f + 0.5f;
             float fastPulse = (float)Math.Sin(time * 15f) * 0.5f + 0.5f;
 
-            // 颜色定义
-            Color coreColor = new Color(255, 220, 100, 0);    // 核心：亮黄
-            Color innerColor = new Color(255, 150, 40, 0);    // 内层：橙色
-            Color midColor = new Color(230, 80, 30, 0);       // 中层：橙红
-            Color outerColor = new Color(180, 40, 20, 0);     // 外层：深红
-            Color edgeColor = new Color(100, 20, 30, 0);      // 边缘：暗红
+            //颜色定义
+            Color coreColor = new Color(255, 220, 100, 0);    //核心：亮黄
+            Color innerColor = new Color(255, 150, 40, 0);    //内层：橙色
+            Color midColor = new Color(230, 80, 30, 0);       //中层：橙红
+            Color outerColor = new Color(180, 40, 20, 0);     //外层：深红
+            Color edgeColor = new Color(100, 20, 30, 0);      //边缘：暗红
 
-            // === 第1层：最外层扩散辉光 ===
+            //=== 第1层：最外层扩散辉光 ===
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = scale * (2.2f + mainPulse * 0.3f);
@@ -563,12 +557,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            // === 第3层：中层主体火焰 ===
+            //=== 第3层：中层主体火焰 ===
             if (SoftGlow?.Value != null) {
                 Texture2D mainGlow = SoftGlow.Value;
                 float mainScale = scale * (1.3f + mainPulse * 0.15f);
 
-                // 不规则形变效果
+                //不规则形变效果
                 for (int i = 0; i < 4; i++) {
                     float offset = (float)Math.Sin(time * 6f + i * MathHelper.PiOver2) * 8f * scale;
                     Vector2 pos = center + (Projectile.rotation + i * MathHelper.PiOver2).ToRotationVector2() * offset;
@@ -580,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            // === 第4层：内层明亮火焰 ===
+            //=== 第4层：内层明亮火焰 ===
             if (SoftGlow?.Value != null) {
                 Texture2D innerGlow = SoftGlow.Value;
                 float innerScale = scale * (1.0f + fastPulse * 0.2f);
@@ -591,12 +585,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            // === 第5层：核心高亮 ===
+            //=== 第5层：核心高亮 ===
             if (SoftGlow?.Value != null) {
                 Texture2D core = SoftGlow.Value;
                 float coreScale = scale * (0.5f + fastPulse * 0.3f);
 
-                // 双层核心（制造强烈亮点）
+                //双层核心（制造强烈亮点）
                 sb.Draw(core, center, null,
                     Color.White with { A = 0 } * 0.9f,
                     Projectile.rotation * 2f, core.Size() / 2f, coreScale * 0.8f,
@@ -608,11 +602,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            // === 第6层：能量闪电纹理 ===
+            //=== 第6层：能量闪电纹理 ===
             if (StarTexture?.Value != null) {
                 Texture2D star = StarTexture.Value;
 
-                // 多个旋转的星形闪光
+                //多个旋转的星形闪光
                 for (int i = 0; i < 3; i++) {
                     float starRotation = Projectile.rotation * (2f + i * 0.5f) + time * (3f + i);
                     float starScale = scale * (0.4f + i * 0.1f + fastPulse * 0.15f);
@@ -627,14 +621,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            // === 第7层：旋转能量束（类似太阳耀斑） ===
+            //=== 第7层：旋转能量束（类似太阳耀斑） ===
             Texture2D pixel = CWRAsset.StarTexture.Value;
             for (int i = 0; i < 6; i++) {
                 float beamRotation = Projectile.rotation + time * 4f + i * MathHelper.TwoPi / 6f;
                 float beamLength = 80f * scale * (0.8f + mainPulse * 0.4f);
                 float beamWidth = 6f * scale;
 
-                // 渐变色光束
+                //渐变色光束
                 Color beamColor = Color.Lerp(innerColor, edgeColor, i / 6f);
                 Vector2 beamScale = new Vector2(beamLength, beamWidth);
                 beamColor.A = 0;
@@ -644,7 +638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            // === 第9层：外围能量粒子环 ===
+            //=== 第9层：外围能量粒子环 ===
             for (int i = 0; i < 12; i++) {
                 float particleAngle = time * 3f + i * MathHelper.TwoPi / 12f;
                 float particleDistance = 60f * scale * (1f + (float)Math.Sin(time * 4f + i) * 0.2f);
