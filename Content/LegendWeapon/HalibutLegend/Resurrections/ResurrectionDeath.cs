@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             );
 
             //杀死玩家
-            Player.Hurt(damageSource, Player.statLife + 1, 0);
+            Player.KillMe(damageSource, Player.statLife + 1, 0, false);
 
             if (!VaultUtils.isClient) {
                 //SpawnAbyssSpirit();//没做完，暂时取消

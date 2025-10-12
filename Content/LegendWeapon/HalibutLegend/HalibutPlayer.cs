@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             {10, 8},
             {11, 8},
             {12, 9},
-            {13, 10},
+            {13, 9},
             {14, 10}
         };
 
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 低于或者等于这个等级的眼睛会进入死机状态
         /// </summary>
         public int CrashesLevel() {
-            //return 10;//测试用，所有眼睛都死机，或者返回你想要的死机等级
+            //return 10;//测试用，所有眼睛都死机，或者返回想要的死机等级
             return GetCrashesLevel(Main.LocalPlayer.GetItem());
         }
 
