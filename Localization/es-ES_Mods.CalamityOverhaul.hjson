@@ -1600,6 +1600,11 @@ Configs: {
 				'''
 		}
 
+		HalibutDomainConciseDisplay: {
+			// Label: Halibut Ocean Domain Minimal Display
+			// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		}
+
 		Headers: {
 			CWRSystem: Configuración del sistema de mejora
 			CWRWeapon: Configuración de armas de mejora
@@ -1730,11 +1735,6 @@ Configs: {
 		ShowReloadingProgressUI: {
 			// Label: Show Reloading Progress
 			// Tooltip: When opened, the ammo loading progress will be displayed
-		}
-
-		HalibutDomainConciseDisplay: {
-			// Label: Halibut Domain Concise Display
-			// Tooltip: ""
 		}
 	}
 }

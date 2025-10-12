@@ -1613,6 +1613,11 @@ Configs: {
 				'''
 		}
 
+		HalibutDomainConciseDisplay: {
+			// Label: Halibut Ocean Domain Minimal Display
+			// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		}
+
 		Headers: {
 			CWRSystem: Система Overhaul
 			CWRWeapon: Настройки оружия Overhaul
@@ -1752,11 +1757,6 @@ Configs: {
 		ShowReloadingProgressUI: {
 			Label: Показать ход перезарядки
 			Tooltip: При открытии отображается прогресс загрузки боеприпасов
-		}
-
-		HalibutDomainConciseDisplay: {
-			// Label: Halibut Domain Concise Display
-			// Tooltip: ""
 		}
 	}
 }
