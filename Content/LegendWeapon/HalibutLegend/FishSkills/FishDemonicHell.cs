@@ -532,7 +532,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //时间因子
             float time = Main.GlobalTimeWrappedHourly;
-            float lifeProgress = 1f - Projectile.timeLeft / 90f;
 
             //动态脉冲
             float mainPulse = (float)Math.Sin(time * 8f) * 0.5f + 0.5f;
