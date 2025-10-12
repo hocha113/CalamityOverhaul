@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void FireBlast() {
             //发射主爆炸弹幕
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
-            int damage = (int)(Owner.GetShootState().WeaponDamage * (4f + HalibutData.GetDomainLayer() / 2));
+            int damage = (int)(Owner.GetShootState().WeaponDamage * (4f + HalibutData.GetDomainLayer()));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 6f,
                 ModContent.ProjectileType<HellFireBlast>(), damage, 6f, Owner.whoAmI);
 

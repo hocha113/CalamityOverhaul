@@ -768,7 +768,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     Projectile.Center + forward * 30f,
                     velocity,
                     ModContent.ProjectileType<CannonFishShot>(),
-                    shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) / 2,
+                    shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) * 2,
                     shootState.WeaponKnockback,
                     Owner.whoAmI,
                     Main.rand.Next(9999)

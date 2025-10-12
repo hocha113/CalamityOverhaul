@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             boids ??= CreateBoidsForSpawn(Projectile.Center);
             Vector2 gatherTarget = Projectile.Center;
             foreach (var b in boids) {
-                Vector2 toCenter = (gatherTarget - b.Position) * 0.15f;
+                Vector2 toCenter = (gatherTarget - b.Position) * 0.05f;
                 b.Velocity += toCenter;
                 if (b.Velocity.Length() > 5f) b.Velocity = b.Velocity.SafeNormalize(Vector2.Zero) * 5f;
                 b.Position += b.Velocity;
