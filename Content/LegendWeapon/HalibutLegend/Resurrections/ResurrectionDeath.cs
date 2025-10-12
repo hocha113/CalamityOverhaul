@@ -361,7 +361,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             Player.Hurt(damageSource, Player.statLife + 1, 0);
 
             if (!VaultUtils.isClient) {
-                SpawnAbyssSpirit();
+                //SpawnAbyssSpirit();//没做完，暂时取消
             }
 
             //生成死亡特效
