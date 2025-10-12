@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishDemonicHell : FishSkill
     {
         public override int UnlockFishID => ItemID.DemonicHellfish;
-        public override int DefaultCooldown => 60 * 15; //15s
+        public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer()); //15s
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void FireBlast() {
             //发射主爆炸弹幕
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
-            int damage = (int)(Owner.GetShootState().WeaponDamage * 6.5f);
+            int damage = (int)(Owner.GetShootState().WeaponDamage * (4f + HalibutData.GetDomainLayer() / 2));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 6f,
                 ModContent.ProjectileType<HellFireBlast>(), damage, 6f, Owner.whoAmI);
 
