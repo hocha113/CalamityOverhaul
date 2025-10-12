@@ -131,6 +131,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     return result.Value;
                 }
             }
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+                && (halibutPlayer.SuperpositionCooldown > 0 || halibutPlayer.SuperpositionToggleCD > 0)) {
+                return false;
+            }
             return true;
         }
 
