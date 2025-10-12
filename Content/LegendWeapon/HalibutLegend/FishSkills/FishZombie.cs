@@ -410,18 +410,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             StateTimer++;
 
             //寻找最近的敌人
-            float maxDetectDistance = 800f;
-            float closestDistance = maxDetectDistance;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        targetNPC = i;
-                    }
-                }
+            float maxDetectDistance = 1800f;
+            var npc = Projectile.Center.FindClosestNPC(maxDetectDistance, true, true);
+            if (npc != null) {
+                targetNPC = npc.whoAmI;
             }
 
             //如果找到目标或超时，进入冲刺状态
