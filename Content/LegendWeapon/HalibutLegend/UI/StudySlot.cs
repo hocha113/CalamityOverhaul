@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + new Vector2(26, 26), 40, 1f, 0, itemColor);
 
                 //使用颜色渐变表示进度
-                Color fillColor = Color.Lerp(Color.Peru, Color.Gold, pct);
+                Color fillColor = Color.Lerp(Color.White, Color.Blue, pct);
                 if (isResearching) {
                     //添加脉动效果
                     float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f + 0.9f;

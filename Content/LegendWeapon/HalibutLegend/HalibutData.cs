@@ -49,9 +49,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <returns></returns>
         public static int GetDomainLayer(Player player) {
             if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return halibutPlayer.SeaDomainLayers;
+                return (int)MathHelper.Max(halibutPlayer.SeaDomainLayers, 1);
             }
-            return 0;
+            return 1;
         }
     }
 }

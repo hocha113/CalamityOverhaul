@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+            Projectile.localNPCHitCooldown = 16;
         }
 
         public override void AI() {
@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void Explode() {
             //伤害区域扩大
-            Projectile.Explode(220, default, false);
+            Projectile.Explode(620, default, false);
 
             //大量地狱火焰粒子（主要视觉效果）
             for (int i = 0; i < 80; i++) {
