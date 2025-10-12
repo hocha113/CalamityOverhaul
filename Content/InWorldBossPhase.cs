@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content
         #region Data
         public static bool Level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
 
-        public static bool Level1 => DownedV1.Invoke() || Downed1.Invoke();
+        public static bool Level1 => DownedV1.Invoke();
 
         public static bool Level2 => DownedV2.Invoke() || DownedV3.Invoke();
 
@@ -405,7 +405,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (DownedV7.Invoke() || Downed13.Invoke()) {
+            if (DownedV7.Invoke()) {
                 level = 7;
             }
             else {

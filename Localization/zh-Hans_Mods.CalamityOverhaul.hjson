@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1794,11 +1794,7 @@ TextContent: {
 			那个黏糊糊的蓝胖子，沙海之下的海妖余孽，蘑菇洞里面的僵尸蟹
 			解决他们中的一个，这是你的第一步
 			'''
-		Murasama_TextDictionary_Content_1:
-			'''
-			夜月当空，让我们去戳爆那颗在空中乱飞的大眼球，让那个伪神彻底变成瞎子
-			沙海在振动，去那下面一探究竟，然后解决那个大牡蛎
-			'''
+		Murasama_TextDictionary_Content_1: 夜月当空，让我们去戳爆那颗在空中乱飞的大眼球，让那个伪神彻底变成瞎子
 		Murasama_TextDictionary_Content_2:
 			'''
 			伪神的残躯玷污着泰拉的大地，异端在世界尽头滋生，异形在大陆上横行
@@ -1985,8 +1981,6 @@ TextContent: {
 			我喜欢考古发掘，上次在丛林里面转悠的时候我看到了一个巨大的遗迹
 			我们现在应该有打开那扇遗迹之门的钥匙，去看看吧，
 			里面有一台巨大的远古机械等待我们给它塞电池，就像空调遥控器那样
-			除此之外，地表还散布着一种外星瘟疫，能够感染大地和绝大多数的无机物，
-			每到夜晚会有一台痛苦的采矿机器在徘徊，它以被感染许久，让我们给它一个解脱
 			'''
 		Halibut_TextDictionary_Content_7:
 			'''

@@ -460,7 +460,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             surgeDirection = direction;
             surgeTimer = 0;
             Projectile.friendly = true;
-            Projectile.damage = (int)(shootState.WeaponDamage * 0.75);
+            Projectile.damage = (int)(shootState.WeaponDamage * (0.5 + HalibutData.GetDomainLayer() / 5));
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
