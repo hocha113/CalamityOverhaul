@@ -354,16 +354,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override string Texture => CWRConstant.Placeholder;
         private const int FlyTime = 24;
-
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> SoftGlow = null;
-
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> StarTexture = null;
-
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> Extra_193 = null;
-
+        private bool explode;
         public override void SetDefaults() {
             Projectile.width = 60;
             Projectile.height = 60;
@@ -371,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 3;
             Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 16;
@@ -464,6 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void Explode() {
+            explode = true;
             //伤害区域扩大
             Projectile.Explode(620, default, false);
 
@@ -523,6 +519,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (explode) {
+                return;
+            }
+            Explode();
         }
 
         public override bool PreDraw(ref Color lightColor) {
