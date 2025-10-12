@@ -692,6 +692,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (!IsActive) {
                 LayerNumber = null;
             }
+            PlayEyeDeactivationSound(this);
+        }
+
+        /// <summary>
+        /// 播放眼睛关闭音效
+        /// </summary>
+        private static void PlayEyeDeactivationSound(SeaEyeButton eye) {
+            bool wasCrashed = eye.IsCrashed;
+
+            if (!wasCrashed) {
+                //机械停止音
+                SoundEngine.PlaySound(SoundID.Item1 with { //金属音
+                    Volume = 0.4f,
+                    Pitch = -0.6f,
+                    MaxInstances = 3
+                });
+
+                //压力释放
+                SoundEngine.PlaySound(SoundID.Item54 with { //柔和破裂音
+                    Volume = 0.3f,
+                    Pitch = 0.1f,
+                    MaxInstances = 2
+                });
+            }
+            else {
+                //能量消散音
+                SoundEngine.PlaySound(SoundID.Item30 with {
+                    Volume = 0.35f,
+                    Pitch = -0.2f,
+                    MaxInstances = 3
+                });
+
+                //轻柔的气息音
+                SoundEngine.PlaySound(SoundID.Item85 with { //魔法消散音
+                    Volume = 0.3f,
+                    Pitch = -0.3f,
+                    MaxInstances = 2
+                });
+
+                //封印音（淡出感）
+                SoundEngine.PlaySound(SoundID.Item20 with { //钩爪收回音
+                    Volume = 0.25f,
+                    Pitch = -0.5f,
+                    MaxInstances = 2
+                });
+            }
+
+            // 通用：轻微的回响消失
+            SoundEngine.PlaySound(SoundID.MenuClose with {
+                Volume = 0.2f,
+                Pitch = -0.4f,
+                MaxInstances = 5
+            });
         }
 
         public void Update(Vector2 center, float orbitRadius, float panelAlpha) {

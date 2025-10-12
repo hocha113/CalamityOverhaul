@@ -5324,4 +5324,4 @@ FishSkill: {
 }
 
 // NPCs.TheSpiritofTheAbyss.DisplayName: The Spiritof The Abyss
-// Resurrections.ResurrectionDeathSystem.DeathText: "{0}死于深渊复苏"
+// Resurrections.ResurrectionDeathSystem.DeathText: "{0} was slain by the Abyssal Resurgence"
