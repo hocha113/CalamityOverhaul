@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.noMelee = true;
             Item.knockBack = 1f;
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
-            Item.UseSound = SoundID.Item38;
+            Item.UseSound = SoundID.Item38 with { Volume = 0.8f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 12f;
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            item.UseSound = SoundID.Item38;
+            item.UseSound = SoundID.Item38 with { Volume = 0.8f };
             if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.CanUseItem(item, player);
                 if (result.HasValue) {
