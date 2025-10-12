@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content
 
         public static bool Level2 => DownedV2.Invoke() || DownedV3.Invoke();
 
-        public static bool Level3 => DownedV4.Invoke() || Downed3.Invoke() || Downed4.Invoke();
+        public static bool Level3 => Downed3.Invoke() || Downed4.Invoke();
 
-        public static bool Level4 => Downed5.Invoke();
+        public static bool Level4 => Downed5.Invoke() || DownedV4.Invoke();
         /// <summary>
         /// 任意灾厄三王
         /// </summary>

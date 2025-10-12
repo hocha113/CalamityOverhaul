@@ -2,6 +2,9 @@
 using CalamityMod.Dusts;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.DesertScourge;
+using CalamityMod.NPCs.HiveMind;
+using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
@@ -276,20 +279,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<Crabulon>() || target.type == ModContent.NPCType<CrabShroom>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 0.75f;
+            if (target.type == ModContent.NPCType<DesertScourgeBody>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<DesertScourgeHead>() || target.type == ModContent.NPCType<DesertScourgeTail>()) {
+                modifiers.FinalDamage *= 2.5f;
+            }
+            if (target.type == ModContent.NPCType<DesertNuisanceHead>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<DesertNuisanceHead>() || target.type == ModContent.NPCType<DesertNuisanceTail>()) {
+                modifiers.FinalDamage *= 2.5f;
+            }
+            if (target.type == ModContent.NPCType<DesertNuisanceHeadYoung>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<DesertNuisanceHeadYoung>() || target.type == ModContent.NPCType<DesertNuisanceTailYoung>()) {
+                modifiers.FinalDamage *= 2.5f;
             }
             if (target.type == NPCID.KingSlime) {
                 modifiers.FinalDamage *= 1.5f;
             }
+            if (target.type == NPCID.EyeofCthulhu) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == NPCID.BrainofCthulhu) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == NPCID.Creeper) {
+                modifiers.FinalDamage *= 1.1f;
+            }
+            if (target.type == ModContent.NPCType<BloodlettingServant>() || target.type == NPCID.ServantofCthulhu) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelEmerald>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == NPCID.EaterofWorldsBody || target.type == NPCID.EaterofWorldsHead || target.type == NPCID.EaterofWorldsTail) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == ModContent.NPCType<HiveBlob>() || target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
+                modifiers.FinalDamage *= 1.75f;
+            }
             if (target.type == NPCID.QueenBee) {
-                modifiers.FinalDamage *= 0.85f;
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == NPCID.SkeletronHead) {
+                modifiers.FinalDamage *= 1.25f;
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
             }
             if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 1.1f;
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
+            }
+            if (target.type == ModContent.NPCType<CorruptSlimeSpawn>() || target.type == ModContent.NPCType<CorruptSlimeSpawn2>() || target.type == ModContent.NPCType<CrimsonSlimeSpawn>() || target.type == ModContent.NPCType<CrimsonSlimeSpawn2>()) {
+                modifiers.FinalDamage *= 1.75f;
+            }
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 0.9f;
@@ -315,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.3f + level * 0.1f)));
             }
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.45f;
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.1f)));
             }
             if (target.type == CWRLoad.PlaguebringerGoliath) {
@@ -372,7 +422,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {
-                modifiers.FinalDamage /= 2f;
+                modifiers.FinalDamage *= 1.75f;
             }
 
             if (!target.IsWormBody()) {

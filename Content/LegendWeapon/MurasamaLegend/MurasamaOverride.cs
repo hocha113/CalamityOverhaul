@@ -124,11 +124,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 12 },
-                {1, 16 },
-                {2, 23 },
-                {3, 28 },
+                {1, 18 },
+                {2, 25 },
+                {3, 35 },
                 {4, 40 },
-                {5, 65 },
+                {5, 50 },
                 {6, 90 },
                 {7, 140 },
                 {8, 280 },
