@@ -1559,6 +1559,8 @@ Projectiles: {
 	// CloudRain.DisplayName: Cloud Rain
 	// CloudRide.DisplayName: Cloud Ride
 	// FishVoodooMark.DisplayName: Fish Voodoo Mark
+	// HellFireBlast.DisplayName: Hell Fire Blast
+	// HellRitualCircle.DisplayName: Hell Ritual Circle
 }
 
 Configs: {
@@ -5348,6 +5350,12 @@ FishSkill: {
 	}
 
 	FishVoodoo: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishDemonicHell: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
