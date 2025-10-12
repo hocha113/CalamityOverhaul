@@ -5,6 +5,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,16 +16,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.DemonicHellfish;
         public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer()); 
-        public override bool? AltFunctionUse(Item item, Player player) => true;
-        public override bool? CanUseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2) {
-                if (Cooldown > 0) return false;
-                item.UseSound = null;
+
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (Cooldown <= 0 && player.CountProjectilesOfID<HellRitualCircle>() == 0) {
                 Use(item, player);
-                return false;
             }
-            return base.CanUseItem(item, player);
+            return null;
         }
+
         public override void Use(Item item, Player player) {
             SetCooldown();
             //在玩家前方生成法阵（与鼠标方向）

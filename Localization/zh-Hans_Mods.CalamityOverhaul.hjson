@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5377,7 +5377,7 @@ FishSkill: {
 		DisplayName: 地狱炎爆
 		Tooltip:
 			'''
-			右键可以召唤地狱炎阵，
+			射击时周期性的召唤地狱炎阵，
 			蓄力完成后发射出一枚地狱火球
 			地狱火球飞行一段时间后爆炸
 			'''
