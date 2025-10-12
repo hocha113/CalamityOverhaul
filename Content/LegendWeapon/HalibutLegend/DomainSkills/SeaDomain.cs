@@ -129,10 +129,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private int ambientSoundTimer;
         private int bubbleSoundTimer;
 
-        // 移动时的内容淡出（除边界线外）
-        private float movementFadeFactor = 1f; // 0-1 越低越淡
+        // 通用移动淡出
+        private float movementFadeFactor = 1f;
         private const float MoveThreshold = 3f; // 玩家判定移动速度
         private const float TargetMoveFade = 0.18f; // 移动时目标透明度
+
+        // 鱼群专用更激进淡出
+        private float fishFadeFactor = 1f;
+        private const float TargetMoveFishFade = 0.04f; // 移动近乎完全隐藏
+        private const float FishFadeLerpMoving = 0.45f; // 更快消失
+        private const float FishFadeLerpRest = 0.35f;   // 快速恢复
 
         /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
         public float GetMaxRadius() {
@@ -216,6 +222,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             // 加速淡出/淡入：移动时快 -> 静止时更快恢复
             float lerpSpeed = moving ? 0.25f : 0.35f;
             movementFadeFactor = MathHelper.Lerp(movementFadeFactor, targetFade, lerpSpeed);
+            float fishTarget = moving ? TargetMoveFishFade : 1f;
+            fishFadeFactor = MathHelper.Lerp(fishFadeFactor, fishTarget, moving ? FishFadeLerpMoving : FishFadeLerpRest);
 
             switch (currentState) {
                 case DomainState.Expanding:
@@ -551,6 +559,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             // 计算移动后的内容透明度（边界始终使用 domainAlpha）
             float contentAlpha = domainAlpha * movementFadeFactor;
+            float fishAlpha = domainAlpha * fishFadeFactor;
 
             //从内到外绘制各层边界
             foreach (var layer in layers) {
@@ -590,7 +599,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             //绘制所有鱼主体
             foreach (var layer in layers) {
                 foreach (var fish in layer.Fish) {
-                    DrawFish(fish, contentAlpha);
+                    DrawFish(fish, fishAlpha);
                 }
             }
 
@@ -669,16 +678,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 origin = rect.Size() * 0.5f;
             float fade = 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + fish.Frame) * 0.2f;
 
+            // 进一步随淡出压低亮度 (alpha^0.8 稍提升静止时饱和，低 alpha 时更暗)
+            float brightnessScale = MathF.Pow(alpha, 0.8f);
+
             if (fish.Size == FishSize.Large) {
                 for (int i = 0; i < 4; i++) {
                     Vector2 offset = (i * MathHelper.PiOver2).ToRotationVector2() * 2f;
-                    Color glowColor = fish.TintColor * 0.4f * fade * alpha;
+                    Color glowColor = fish.TintColor * 0.4f * fade * brightnessScale;
                     Main.spriteBatch.Draw(fishTex, fish.Position + offset - Main.screenPosition, rect,
                         glowColor, rot, origin, fish.Scale * 0.72f, spriteEffects, 0f);
                 }
             }
 
-            Color c = fish.TintColor * fade * alpha;
+            Color c = fish.TintColor * fade * brightnessScale;
             Main.spriteBatch.Draw(fishTex, fish.Position - Main.screenPosition, rect, c, rot, origin, fish.Scale * 0.7f, spriteEffects, 0f);
         }
     }
