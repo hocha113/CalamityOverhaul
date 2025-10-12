@@ -307,8 +307,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void FireLaser() {
             SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0.3f, Volume = 0.8f }, Projectile.Center);
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
+            int damage = Projectile.damage;
             int beam = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 10f, dir * 0.1f,
-                ModContent.ProjectileType<SparklingRay>(), Projectile.damage, 1f, Projectile.owner, Projectile.identity);
+                ModContent.ProjectileType<SparklingRay>(), damage, 1f, Projectile.owner, Projectile.identity);
             if (Main.projectile.IndexInRange(beam)) {
                 Main.projectile[beam].rotation = dir.ToRotation();
                 Main.projectile[beam].localAI[0] = 0;
