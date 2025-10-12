@@ -55,19 +55,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
-                {1, 4 },
-                {2, 5 },
-                {3, 7 },
-                {4, 9 },
-                {5, 11 },
-                {6, 13 },
-                {7, 15 },
-                {8, 22 },
-                {9, 28 },
-                {10, 35 },
-                {11, 55 },
-                {12, 80 },
-                {13, 70 },
+                {1, 5 },
+                {2, 7 },
+                {3, 9 },
+                {4, 12 },
+                {5, 15 },
+                {6, 18 },
+                {7, 23 },
+                {8, 35 },
+                {9, 45 },
+                {10, 65 },
+                {11, 80 },
+                {12, 110 },
+                {13, 150 },
                 {14, 100 }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel() / 2));
+            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel()));
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;

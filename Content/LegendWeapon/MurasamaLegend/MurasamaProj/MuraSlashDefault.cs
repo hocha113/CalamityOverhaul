@@ -167,22 +167,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.QueenBee) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 0.6f;
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.45f;
+                modifiers.FinalDamage *= 0.65f;
             }
             if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.35f;
-            }
-            if (target.type == NPCID.QueenSlimeBoss) {
-                modifiers.FinalDamage *= 0.9f;
-            }
-            if (target.type == CWRLoad.AquaticScourgeBody) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.55f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
@@ -190,19 +184,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            if (target.type == CWRLoad.PerforatorBodyLarge || target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.CosmicGuardianBody
-                || target.type == CWRLoad.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRLoad.PerforatorBodySmall) {
-                modifiers.FinalDamage *= 0.5f;
-            }
             if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
                 || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
             if (target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail) {
                 modifiers.FinalDamage *= 3.5f;
-            }
-            if (target.type == NPCID.TheDestroyerBody || target.type == CWRLoad.StormWeaverBody) {
-                modifiers.FinalDamage *= 0.55f;
             }
             if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
                 modifiers.FinalDamage *= 2.5f;
@@ -276,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
 
             if (!target.IsWormBody()) {
-                modifiers.DefenseEffectiveness *= 0.75f;
+                modifiers.DefenseEffectiveness *= 0.5f;
             }
 
             if (target.boss) {

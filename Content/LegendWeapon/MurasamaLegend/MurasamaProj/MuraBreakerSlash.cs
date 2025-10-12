@@ -288,24 +288,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.4f;
-            }
             if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 0.9f;
             }
-            if (target.type == CWRLoad.AquaticScourgeBody) {
-                modifiers.FinalDamage *= 0.5f;
-            }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
-            }
-            if (target.type == CWRLoad.PerforatorBodyLarge || target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.CosmicGuardianBody
-                 || target.type == CWRLoad.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRLoad.PerforatorBodySmall) {
-                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 1.5f;
@@ -321,11 +311,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 0.7f;
+                modifiers.FinalDamage *= 1.1f;
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.3f + level * 0.1f)));
             }
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
-                modifiers.FinalDamage *= 0.4f;
+                modifiers.FinalDamage *= 0.5f;
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.1f)));
             }
             if (target.type == CWRLoad.PlaguebringerGoliath) {
@@ -356,20 +346,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == CWRLoad.StormWeaverTail || target.type == CWRLoad.StormWeaverHead) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            if (target.type == CWRLoad.StormWeaverBody) {
-                modifiers.FinalDamage *= 0.7f;
-            }
             if (target.type == CWRLoad.Polterghast) {
-                modifiers.FinalDamage *= 0.8f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
                 modifiers.FinalDamage *= 3f;
             }
             if (target.type == CWRLoad.Yharon || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == CWRLoad.ThanatosHead) {
                 modifiers.FinalDamage *= 5.71f;
