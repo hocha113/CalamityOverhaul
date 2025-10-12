@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5370,15 +5370,23 @@ FishSkill: {
 	}
 
 	FishVoodoo: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 替死娃娃
+		Tooltip:
+			'''
+			持有该技能时，受伤时会必定免死，并将伤害转移到附近的敌人身上
+			每次免死后将进入冷却
+			'''
+		Studied: 不错的鱼，能让我想到一些有趣的实验
 	}
 
 	FishDemonicHell: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 地狱炎爆
+		Tooltip:
+			'''
+			右键可以召唤一片地狱火焰，
+			蓄力完成后发射出一枚地狱火焰球
+			'''
+		Studied: 这条鱼燃烧着地狱的烈焰
 	}
 }
 
