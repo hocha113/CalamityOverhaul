@@ -95,6 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Kill(); 
                 return; 
             }
+
+            Projectile.Center = Owner.Center;
+            Owner.direction = Math.Sign(Projectile.velocity.X);
             
             ChargeTimer++;
             
@@ -233,14 +236,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DrawRadialRunes(sb, StarTexture.Value, center, 110f, p, hellCore, hellMid);
             }
 
-            // 内核脉冲（多层辉光）
-            DrawCoreGlow(sb, pixel, center, p, baseScale, hellCore, hellMid, hellEdge);
-
-            // 充能完成时的额外闪光
-            if (p > 0.9f) {
-                DrawChargeFlash(sb, pixel, center, p, hellCore);
-            }
-
             return false;
         }
 
@@ -336,36 +331,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void DrawCoreGlow(SpriteBatch sb, Texture2D pixel, Vector2 center, float progress, 
-            float baseScale, Color core, Color mid, Color edge) {
-            // 多层核心辉光
-            for (int i = 0; i < 4; i++) {
-                float layerScale = (0.2f + i * 0.15f + progress * 0.3f) * baseScale;
-                float layerIntensity = 0.6f - i * 0.12f;
-                Color layerColor = i < 2 ? Color.Lerp(core, mid, i / 2f) : Color.Lerp(mid, edge, (i - 2) / 2f);
-                
-                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * (8f - i * 1.5f)) * 0.15f + 0.85f;
-                
-                sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), 
-                    layerColor * (layerIntensity * progress * pulse),
-                    0f, Vector2.Zero, 
-                    new Vector2(250f * layerScale, 250f * layerScale * 0.8f), 
-                    SpriteEffects.None, 0f);
-            }
-        }
-
-        private void DrawChargeFlash(SpriteBatch sb, Texture2D pixel, Vector2 center, float progress, Color core) {
-            // 充能完成的强烈闪光
-            float flashIntensity = (progress - 0.9f) / 0.1f;
-            float flashPulse = (float)Math.Sin(flashIntensity * MathHelper.Pi);
-            
-            sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), 
-                core * (flashPulse * 0.8f),
-                0f, Vector2.Zero, 
-                new Vector2(400f, 400f) * flashPulse, 
-                SpriteEffects.None, 0f);
-        }
-
         private void DrawPolygon(SpriteBatch sb, Texture2D pixel, Vector2 center, int sides, 
             float radius, float thickness, Color col, float rot) {
             if (sides < 3) return;
@@ -389,7 +354,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 地狱炎爆弹幕：向前飞行后在较小延迟内爆炸，生成大量火焰粒子
+    /// 地狱炎爆弹幕：专业级多层次火焰球渲染
     /// </summary>
     internal class HellFireBlast : ModProjectile
     {
@@ -398,6 +363,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> SoftGlow = null;
+        
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> StarTexture = null;
+        
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> Extra_193 = null;
 
         public override void SetDefaults() {
             Projectile.width = 60;
@@ -407,14 +378,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 90;
+            Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
         
         public override void AI() {
             if (Projectile.timeLeft == 90) {
-                // 初始爆闪
                 SpawnInitialBurst();
             }
             
@@ -432,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             else {
                 // 减速并扩散
-                Projectile.velocity *= 0.94f;
+                Projectile.velocity *= 0.96f;
                 Projectile.scale *= 1.01f;
                 
                 // 预爆炸粒子
@@ -440,10 +410,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpawnPreExplosionParticle();
                 }
                 
-                if (Projectile.timeLeft == 40) {
+                if (Projectile.timeLeft == 10) {
                     Explode();
                 }
             }
+            
+            // 动态旋转
+            Projectile.rotation += 0.15f;
             
             Lighting.AddLight(Projectile.Center, 1.6f, 0.6f, 0.2f);
         }
@@ -498,9 +471,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void Explode() {
             // 伤害区域扩大
-            Projectile.width = Projectile.height = 220;
-            Projectile.position -= new Vector2(110);
-            
+            Projectile.Explode(220, default, false);
+
             // 大量地狱火焰粒子（主要视觉效果）
             for (int i = 0; i < 80; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -556,55 +528,141 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
             
-            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
         }
+
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 center = Projectile.Center - Main.screenPosition;
-            
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.5f + 0.5f;
             float scale = Projectile.scale;
             
-            // 多层辉光绘制
-            Color coreColor = new Color(255, 200, 80, 0);
-            Color midColor = new Color(255, 100, 30, 0);
-            Color edgeColor = new Color(200, 40, 20, 0);
+            // 时间因子
+            float time = Main.GlobalTimeWrappedHourly;
+            float lifeProgress = 1f - Projectile.timeLeft / 90f;
             
-            // 外层扩散
-            for (int i = 0; i < 5; i++) {
-                float rot = MathHelper.TwoPi * i / 5f + Main.GlobalTimeWrappedHourly * 0.4f;
-                Vector2 off = rot.ToRotationVector2() * 18f * scale;
-                sb.Draw(pixel, center + off, new Rectangle(0, 0, 1, 1), 
-                    edgeColor * 0.4f, 0f, Vector2.Zero, 
-                    new Vector2(180f * scale, 180f * scale), SpriteEffects.None, 0f);
+            // 动态脉冲
+            float mainPulse = (float)Math.Sin(time * 8f) * 0.5f + 0.5f;
+            float fastPulse = (float)Math.Sin(time * 15f) * 0.5f + 0.5f;
+            
+            // 颜色定义
+            Color coreColor = new Color(255, 220, 100, 0);    // 核心：亮黄
+            Color innerColor = new Color(255, 150, 40, 0);    // 内层：橙色
+            Color midColor = new Color(230, 80, 30, 0);       // 中层：橙红
+            Color outerColor = new Color(180, 40, 20, 0);     // 外层：深红
+            Color edgeColor = new Color(100, 20, 30, 0);      // 边缘：暗红
+
+            // === 第1层：最外层扩散辉光 ===
+            if (SoftGlow?.Value != null) {
+                Texture2D glow = SoftGlow.Value;
+                float glowScale = scale * (2.2f + mainPulse * 0.3f);
+                float glowRotation = Projectile.rotation * 0.5f;
+                
+                sb.Draw(glow, center, null, 
+                    edgeColor * 0.3f, 
+                    glowRotation, glow.Size() / 2f, glowScale, 
+                    SpriteEffects.None, 0f);
             }
-            
-            // 中层火焰
-            sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), 
-                midColor * 0.7f, 0f, Vector2.Zero, 
-                new Vector2(140f * scale, 140f * scale), SpriteEffects.None, 0f);
-            
-            // 核心高亮
-            sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), 
-                coreColor * 0.9f, 0f, Vector2.Zero, 
-                new Vector2(100f * scale * (1f + pulse * 0.2f), 100f * scale * (1f + pulse * 0.2f)), 
-                SpriteEffects.None, 0f);
-            
-            // 旋转光束
-            for (int i = 0; i < 4; i++) {
-                float beamRot = Main.GlobalTimeWrappedHourly * 2f + i * MathHelper.PiOver2;
-                Vector2 beamScale = new Vector2(120f * scale, 8f * scale);
+
+            // === 第3层：中层主体火焰 ===
+            if (SoftGlow?.Value != null) {
+                Texture2D mainGlow = SoftGlow.Value;
+                float mainScale = scale * (1.3f + mainPulse * 0.15f);
+                
+                // 不规则形变效果
+                for (int i = 0; i < 4; i++) {
+                    float offset = (float)Math.Sin(time * 6f + i * MathHelper.PiOver2) * 8f * scale;
+                    Vector2 pos = center + (Projectile.rotation + i * MathHelper.PiOver2).ToRotationVector2() * offset;
+                    
+                    sb.Draw(mainGlow, pos, null, 
+                        midColor * 0.6f, 
+                        Projectile.rotation + i * 0.3f, mainGlow.Size() / 2f, mainScale * 0.9f, 
+                        SpriteEffects.None, 0f);
+                }
+            }
+
+            // === 第4层：内层明亮火焰 ===
+            if (SoftGlow?.Value != null) {
+                Texture2D innerGlow = SoftGlow.Value;
+                float innerScale = scale * (1.0f + fastPulse * 0.2f);
+                
+                sb.Draw(innerGlow, center, null, 
+                    innerColor * 0.8f, 
+                    -Projectile.rotation * 1.5f, innerGlow.Size() / 2f, innerScale, 
+                    SpriteEffects.None, 0f);
+            }
+
+            // === 第5层：核心高亮 ===
+            if (SoftGlow?.Value != null) {
+                Texture2D core = SoftGlow.Value;
+                float coreScale = scale * (0.5f + fastPulse * 0.3f);
+                
+                // 双层核心（制造强烈亮点）
+                sb.Draw(core, center, null, 
+                    Color.White with { A = 0 } * 0.9f, 
+                    Projectile.rotation * 2f, core.Size() / 2f, coreScale * 0.8f, 
+                    SpriteEffects.None, 0f);
+                
+                sb.Draw(core, center, null,
+                    coreColor with { A = 0 } * 1.0f, 
+                    -Projectile.rotation * 2.5f, core.Size() / 2f, coreScale, 
+                    SpriteEffects.None, 0f);
+            }
+
+            // === 第6层：能量闪电纹理 ===
+            if (StarTexture?.Value != null) {
+                Texture2D star = StarTexture.Value;
+                
+                // 多个旋转的星形闪光
+                for (int i = 0; i < 3; i++) {
+                    float starRotation = Projectile.rotation * (2f + i * 0.5f) + time * (3f + i);
+                    float starScale = scale * (0.4f + i * 0.1f + fastPulse * 0.15f);
+                    float starOpacity = 0.7f - i * 0.2f;
+                    
+                    Color starColor = Color.Lerp(coreColor, innerColor, i / 3f);
+                    starColor.A = 0;
+                    sb.Draw(star, center, null, 
+                        starColor * starOpacity, 
+                        starRotation, star.Size() / 2f, starScale, 
+                        SpriteEffects.None, 0f);
+                }
+            }
+
+            // === 第7层：旋转能量束（类似太阳耀斑） ===
+            Texture2D pixel = CWRAsset.StarTexture.Value;
+            for (int i = 0; i < 6; i++) {
+                float beamRotation = Projectile.rotation + time * 4f + i * MathHelper.TwoPi / 6f;
+                float beamLength = 80f * scale * (0.8f + mainPulse * 0.4f);
+                float beamWidth = 6f * scale;
+                
+                // 渐变色光束
+                Color beamColor = Color.Lerp(innerColor, edgeColor, i / 6f);
+                Vector2 beamScale = new Vector2(beamLength, beamWidth);
+                beamColor.A = 0;
                 sb.Draw(pixel, center, new Rectangle(0, 0, 1, 1), 
-                    coreColor * (0.5f * pulse), beamRot, Vector2.Zero, 
-                    beamScale, SpriteEffects.None, 0f);
+                    beamColor * (0.5f - i * 0.06f), 
+                    beamRotation, Vector2.Zero, beamScale, 
+                    SpriteEffects.None, 0f);
             }
-            
+
+            // === 第9层：外围能量粒子环 ===
+            for (int i = 0; i < 12; i++) {
+                float particleAngle = time * 3f + i * MathHelper.TwoPi / 12f;
+                float particleDistance = 60f * scale * (1f + (float)Math.Sin(time * 4f + i) * 0.2f);
+                Vector2 particlePos = center + particleAngle.ToRotationVector2() * particleDistance;
+                float particleScale = scale * 0.3f * (0.7f + (float)Math.Sin(time * 8f + i * 0.5f) * 0.3f);
+                
+                if (SoftGlow?.Value != null) {
+                    sb.Draw(SoftGlow.Value, particlePos, null, 
+                        outerColor * 0.6f, 
+                        particleAngle, SoftGlow.Value.Size() / 2f, particleScale, 
+                        SpriteEffects.None, 0f);
+                }
+            }
+
             return false;
         }
         
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            // 附加地狱火灼烧
             target.AddBuff(BuffID.OnFire3, 300);
         }
     }

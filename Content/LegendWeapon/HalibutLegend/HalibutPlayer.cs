@@ -259,16 +259,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HasHalibut = item.Alives() && item.type == HalibutOverride.ID;
 
             //测试复苏条效果（仅在客户端且持有大比目鱼时）
-            if (!VaultUtils.isServer && HasHalibut) {
-                //按住某个键可以增加复苏值进行测试
-                //例如：按住左Shift增加，按住左Ctrl减少
-                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
-                    ResurrectionHelper.AddResurrectionValue(0.5f);
-                }
-                if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) {
-                    ResurrectionHelper.AddResurrectionValue(-0.5f);
-                }
-            }
+            //if (!VaultUtils.isServer && HasHalibut) {
+            //    //按住某个键可以增加复苏值进行测试
+            //    //例如：按住左Shift增加，按住左Ctrl减少
+            //    if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)) {
+            //        ResurrectionHelper.AddResurrectionValue(0.5f);
+            //    }
+            //    if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) {
+            //        ResurrectionHelper.AddResurrectionValue(-0.5f);
+            //    }
+            //}
 
             if (VaultUtils.isServer || !HasHalibut) {
                 return;
