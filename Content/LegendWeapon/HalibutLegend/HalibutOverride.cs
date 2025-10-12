@@ -65,8 +65,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {8, 22 },
                 {9, 28 },
                 {10, 35 },
-                {11, 45 },
-                {12, 55 },
+                {11, 55 },
+                {12, 80 },
                 {13, 70 },
                 {14, 100 }
             };
