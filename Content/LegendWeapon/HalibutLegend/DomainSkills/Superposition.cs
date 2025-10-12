@@ -9,7 +9,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
     /// <summary>
     /// 叠加攻击技能 - 时空克隆体汇聚后释放大比目鱼炮齐射

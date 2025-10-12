@@ -9,7 +9,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
     internal static class RestartFish
     {

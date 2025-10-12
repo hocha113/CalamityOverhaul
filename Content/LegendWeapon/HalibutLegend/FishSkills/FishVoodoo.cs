@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

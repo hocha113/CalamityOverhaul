@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;

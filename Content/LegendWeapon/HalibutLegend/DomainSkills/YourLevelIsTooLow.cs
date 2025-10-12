@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
     //你的层次太低，永远无法理解我现在的状态
     //我是一个时代孕育出来的唯一，既然舍弃了玩家的身份，自封为神
