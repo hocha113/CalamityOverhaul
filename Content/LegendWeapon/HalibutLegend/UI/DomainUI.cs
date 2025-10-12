@@ -542,6 +542,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(spriteBatch, title, titlePos + offset, titleGlow * 0.6f, 0.85f);
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, 0.85f);
+
+            // 已死机标签（右上角）
+            if (eye.IsCrashed) {
+                string crashed = "已死机";
+                Vector2 crashSize = FontAssets.MouseText.Value.MeasureString(crashed) * 0.6f;
+                Vector2 crashPos = new(panelRect.Right - 10 - crashSize.X, titlePos.Y + 2);
+                // 发光底
+                for (int i = 0; i < 4; i++) {
+                    float ang = MathHelper.TwoPi * i / 4f;
+                    Vector2 off = ang.ToRotationVector2() * 1.1f;
+                    Utils.DrawBorderString(spriteBatch, crashed, crashPos + off, new Color(255, 60, 60) * tooltipAlpha * 0.5f, 0.6f);
+                }
+                Utils.DrawBorderString(spriteBatch, crashed, crashPos, new Color(255, 120, 120) * tooltipAlpha, 0.6f);
+            }
+
             Vector2 dividerStart = titlePos + new Vector2(0, 24);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - 20, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.8f, Color.Gold * tooltipAlpha * 0.1f, 1.2f);
