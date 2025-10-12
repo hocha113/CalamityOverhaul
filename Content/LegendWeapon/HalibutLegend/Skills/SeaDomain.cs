@@ -92,23 +92,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<SeaDomainProj>(), 0, 0, player.whoAmI, layers);
         }
-
-        /// <summary>判断是否为弱小可束缚生物</summary>
-        public static bool IsWeakEntity(NPC npc) {
-            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500) {
-                return false;
-            }
-                
-            if (npc.knockBackResist <= 0.3f) {
-                return false;
-            }
-
-            if (NPCID.Sets.ProjectileNPC[npc.type]) {
-                return false;
-            }
-                
-            return npc.friendly == false && npc.damage > 0;
-        }
     }
 
     #region 领域层数据
@@ -608,6 +591,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             maxDomainRadius = layers[^1].Radius;
         }
 
+        /// <summary>判断是否为弱小可束缚生物</summary>
+        public static bool IsWeakEntity(NPC npc) {
+            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500) {
+                return false;
+            }
+
+            if (npc.knockBackResist <= 0.3f) {
+                return false;
+            }
+
+            if (NPCID.Sets.ProjectileNPC[npc.type]) {
+                return false;
+            }
+
+            return npc.friendly == false && npc.damage > 0;
+        }
+
         private void UpdateDomainEffects() {
             var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
             foreach (var key in toRemove) {
@@ -631,7 +631,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     float npcRadius = (npc.width + npc.height) * 0.25f;
                     value.Update(npc.Center, npcRadius);
 
-                    if (SeaDomain.IsWeakEntity(npc)) {
+                    if (IsWeakEntity(npc)) {
                         if (!boundNPCs.Contains(i)) {
                             //播放束缚音效
                             if (Main.myPlayer == Owner.whoAmI) {
