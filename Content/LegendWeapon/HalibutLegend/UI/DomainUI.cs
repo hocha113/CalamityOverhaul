@@ -32,11 +32,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float targetWidth = 0f; //目标宽度
         private const float MinWidth = 8f; //最小宽度（完全收起时）
 
-        //九只奈落之眼
+        //九只奈落之眼 + 额外中心第十眼
         internal List<SeaEyeButton> eyes => player.GetModPlayer<HalibutSave>().eyes;
         internal List<SeaEyeButton> activationSequence => player.GetModPlayer<HalibutSave>().activationSequence;
-        internal const int MaxEyes = 9;
+        internal const int MaxEyes = 9; //外圈仍然是9
         internal const float EyeOrbitRadius = 75f; //眼睛轨道半径
+        private ExtraSeaEyeButton extraEye = new(); //第十只中心额外之眼
 
         //大比目鱼中心图标
         internal Vector2 halibutCenter;
@@ -56,6 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //悬停和交互
         private bool hoveringPanel = false;
         private SeaEyeButton hoveredEye = null;
+        private bool extraEyeHovered = false;
 
         //内容淡入进度
         private float contentFadeProgress = 0f;
@@ -72,7 +74,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///<summary>
         ///获取当前激活的眼睛数量（即领域层数）
         ///</summary>
-        public int ActiveEyeCount => activationSequence.Count;
+        public int ActiveEyeCount {
+            get {
+                int baseCount = activationSequence.Count;
+                if (extraEye != null && extraEye.IsActive) {
+                    baseCount++;
+                }
+                return baseCount;
+            }
+        }
 
         ///<summary>
         ///是否应该显示面板
@@ -182,11 +192,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
                     HandleEyeToggle(eye);
-                    player.GetOverride<HalibutPlayer>().SeaDomainLayers = activationSequence.Count;
+                    player.GetOverride<HalibutPlayer>().SeaDomainLayers = ActiveEyeCount;
                 }
             }
 
-            //更新圆环
+            //第十眼出现条件：外圈9全部激活 且 TheOnlyBornOfAnEra 条件满足
+            bool canShowExtra = false;
+            if (activationSequence.Count >= 9) {
+                if (HalibutPlayer.TheOnlyBornOfAnEra()) {
+                    canShowExtra = true;
+                }
+            }
+
+            //如果外圈未满足，强制关闭
+            if (!canShowExtra) {
+                extraEye.ForceClose();
+            }
+
+            extraEye.Update(halibutCenter, canShowExtra, easedProgress);
+            extraEyeHovered = extraEye.IsHovered && hoveringPanel;
+            if (extraEyeHovered && Main.mouseLeft && Main.mouseLeftRelease && canShowExtra) {
+                extraEye.Toggle();
+                SoundEngine.PlaySound(SoundID.MenuTick);
+                if (extraEye.IsActive) {
+                    halibutPulses.Add(new HalibutPulseEffect(halibutCenter));
+                }
+                player.GetOverride<HalibutPlayer>().SeaDomainLayers = ActiveEyeCount;
+                UpdateResurrectionRate();
+            }
+
             int currentActiveCount = ActiveEyeCount;
             if (currentActiveCount != lastActiveEyeCount) {
                 UpdateRings(currentActiveCount);
@@ -201,7 +235,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //更新粒子
             for (int i = particles.Count - 1; i >= 0; i--) {
                 particles[i].Update();
                 if (particles[i].Life >= particles[i].MaxLife) {
@@ -233,8 +266,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             //同步HalibutPlayer
-            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.SeaDomainLayers = activationSequence.Count;
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer2)) {
+                halibutPlayer2.SeaDomainLayers = ActiveEyeCount;
             }
 
             //每帧更新复苏速度，确保死机状态变化能及时反映
@@ -273,6 +306,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
+            if (extraEye.IsActive) {
+                bool crashed = 10 <= crashLevel;
+                if (crashed) {
+                    rate += CrashedEyeSideEffectRate;
+                }
+                else {
+                    rate += BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, 10 - 1);
+                }
+            }
+
             halibutPlayer.ResurrectionSystem.ResurrectionRate = rate;
         }
 
@@ -293,8 +336,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 RecalculateLayerNumbers();
                 SpawnEyeToggleParticles(eye, false);
             }
-
-            //切换时立即刷新复苏速度
             UpdateResurrectionRate();
         }
 
@@ -371,6 +412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             foreach (var eye in eyes) {
                 eye.Draw(spriteBatch, alpha);
             }
+            DrawExtraEye(spriteBatch, alpha);
             foreach (var anim in activationAnimations) {
                 anim.Draw(spriteBatch, alpha);
             }
@@ -379,6 +421,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             if (hoveredEye != null && expandProgress >= 0.4f) {
                 DrawEyeTooltip(spriteBatch, hoveredEye, alpha);
+            }
+            else if (extraEyeHovered && expandProgress >= 0.4f) {
+                DrawExtraEyeTooltip(spriteBatch, alpha);
             }
         }
 
@@ -461,6 +506,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 lineColor *= alpha * 0.35f * expandProgress;
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), lineColor, rotation, Vector2.Zero, new Vector2(length, 1.5f + wave), SpriteEffects.None, 0f);
             }
+            if (extraEye.IsActive) {
+                Vector2 start = halibutCenter + new Vector2(0, -HalibutSize * 0.2f);
+                Vector2 end = halibutCenter;
+                Vector2 diff = end - start;
+                float length = diff.Length();
+                float rotation = diff.ToRotation();
+                Color lineColor = Color.Lerp(new Color(150, 200, 255), new Color(220, 240, 255), (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f);
+                lineColor *= alpha * 0.4f;
+                spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), lineColor, rotation, Vector2.Zero, new Vector2(length, 2.2f), SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawHalibut(SpriteBatch spriteBatch, float alpha) {
@@ -489,6 +544,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 Utils.DrawBorderString(spriteBatch, layerText, textPos, Color.White * halibutAlpha, 1f);
             }
+        }
+
+        private void DrawExtraEye(SpriteBatch spriteBatch, float alpha) {
+            if (extraEye == null) {
+                return;
+            }
+            bool canShow = activationSequence.Count >= 9 && HalibutPlayer.TheOnlyBornOfAnEra();
+            if (!canShow) {
+                return;
+            }
+            extraEye.Draw(spriteBatch, halibutCenter, alpha);
         }
 
         private void DrawTitle(SpriteBatch spriteBatch, float alpha) {
@@ -584,6 +650,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 star2 = new Vector2(panelRect.Right - 20, panelRect.Bottom - 16);
             float s2Alpha = ((float)Math.Sin(starTime + MathHelper.Pi) * 0.5f + 0.5f) * tooltipAlpha;
             DrawStar(spriteBatch, star2, 3f, Color.Gold * s2Alpha);
+        }
+
+        private void DrawExtraEyeTooltip(SpriteBatch spriteBatch, float alpha) {
+            string title = "第 十 层";
+            string desc = DomainEyeDescriptions.GetDescription(10);
+            float tooltipAlpha = alpha * 0.98f;
+            Vector2 panelSize = new Vector2(170, 120);
+            Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
+            if (basePos.X + panelSize.X > Main.screenWidth - 20) {
+                basePos.X = Main.screenWidth - panelSize.X - 20;
+            }
+            if (basePos.Y < 20) {
+                basePos.Y = 20;
+            }
+            Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Color shadow = Color.Black * (tooltipAlpha * 0.55f);
+            Rectangle shadowRect = panelRect;
+            shadowRect.Offset(3, 3);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), shadow);
+            Color bgColor = new Color(30, 40, 65) * (tooltipAlpha * 0.95f);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgColor);
+            Color borderGlow = Color.Gold * (tooltipAlpha * 0.7f);
+            DrawFancyBorder(spriteBatch, panelRect, borderGlow, tooltipAlpha);
+            Vector2 titlePos = basePos + new Vector2(12, 10);
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4;
+                Vector2 offset = ang.ToRotationVector2() * 1.4f;
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, Color.Gold * tooltipAlpha * 0.55f, 0.9f);
+            }
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, 0.9f);
+            Vector2 dividerStart = titlePos + new Vector2(0, 26);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - 24, 0);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.85f, Color.Gold * tooltipAlpha * 0.05f, 1.4f);
+            Vector2 textPos = dividerStart + new Vector2(0, 8);
+            int wrapWidth = (int)panelSize.X - 24;
+            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
+            int drawn = 0;
+            for (int i = 0; i < lines.Length; i++) {
+                if (string.IsNullOrWhiteSpace(lines[i])) {
+                    continue;
+                }
+                string line = lines[i].TrimEnd('-', ' ');
+                Vector2 lp = textPos + new Vector2(4, drawn * 18);
+                if (lp.Y + 16 > panelRect.Bottom - 10) {
+                    break;
+                }
+                Utils.DrawBorderString(spriteBatch, line, lp + new Vector2(1, 1), Color.Black * tooltipAlpha * 0.5f, 0.75f);
+                Utils.DrawBorderString(spriteBatch, line, lp, Color.White * tooltipAlpha, 0.75f);
+                drawn++;
+            }
+            float swirl = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+            Vector2 star = new Vector2(panelRect.Right - 18, panelRect.Bottom - 18);
+            DrawStar(spriteBatch, star, 4.5f, Color.Gold * (tooltipAlpha * (0.6f + swirl * 0.4f)));
         }
 
         private static string ChineseNumeral(int i) {
