@@ -5358,7 +5358,7 @@ FishSkill: {
 	}
 
 	FishCloud: {
-		DisplayName: 腾云驾雾
+		DisplayName: 腾雨驾雾
 		Tooltip:
 			'''
 			右键可以乘上雨云进行高速移动
