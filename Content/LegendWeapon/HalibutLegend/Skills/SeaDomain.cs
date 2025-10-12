@@ -95,10 +95,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         /// <summary>判断是否为弱小可束缚生物</summary>
         public static bool IsWeakEntity(NPC npc) {
-            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500)
+            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500) {
                 return false;
-            if (npc.knockBackResist <= 0.3f)
+            }
+                
+            if (npc.knockBackResist <= 0.3f) {
                 return false;
+            }
+
+            if (NPCID.Sets.ProjectileNPC[npc.type]) {
+                return false;
+            }
+                
             return npc.friendly == false && npc.damage > 0;
         }
     }
@@ -440,7 +448,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         private readonly Dictionary<int, WaterPressureEffect> enemyEffects = new();
         private readonly HashSet<int> boundNPCs = new();
-        private int effectUpdateTimer;
 
         //领域中心平滑跟随
         private Vector2 domainCenter;
@@ -572,13 +579,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
             // 定期播放深海氛围音效
             ambientSoundTimer++;
-            //if (ambientSoundTimer % 180 == 0) {  // 每3秒
-            //    SoundEngine.PlaySound(SoundID.Dolphin with {
-            //        Volume = 0.2f,
-            //        Pitch = -0.5f,
-            //        MaxInstances = 2
-            //    }, domainCenter);
-            //}
 
             // 随机的鱼群游动音效
             if (ambientSoundTimer % 120 == 0 && Main.rand.NextBool(3)) {
@@ -609,8 +609,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         }
 
         private void UpdateDomainEffects() {
-            effectUpdateTimer++;
-
             var toRemove = enemyEffects.Where(kvp => !Main.npc[kvp.Key].active).Select(kvp => kvp.Key).ToList();
             foreach (var key in toRemove) {
                 enemyEffects.Remove(key);
@@ -625,20 +623,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 bool inDomain = dist < maxDomainRadius;
 
                 if (inDomain) {
-                    if (!enemyEffects.ContainsKey(i)) {
-                        enemyEffects[i] = new WaterPressureEffect(i);
+                    if (!enemyEffects.TryGetValue(i, out WaterPressureEffect value)) {
+                        value = new WaterPressureEffect(i);
+                        enemyEffects[i] = value;
                     }
 
                     float npcRadius = (npc.width + npc.height) * 0.25f;
-                    enemyEffects[i].Update(npc.Center, npcRadius);
+                    value.Update(npc.Center, npcRadius);
 
                     if (SeaDomain.IsWeakEntity(npc)) {
                         if (!boundNPCs.Contains(i)) {
-                            boundNPCs.Add(i);
-
-                            // 播放束缚音效
+                            //播放束缚音效
                             if (Main.myPlayer == Owner.whoAmI) {
-                                SoundEngine.PlaySound(SoundID.Item20 with {  // 钩爪音效
+                                SoundEngine.PlaySound(SoundID.Item20 with {  //钩爪音效
                                     Volume = 0.3f,
                                     Pitch = -0.3f,
                                     MaxInstances = 5
@@ -651,6 +648,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                                     MaxInstances = 5
                                 }, npc.Center);
                             }
+
+                            boundNPCs.Add(i);
                         }
 
                         float dragStrength = 0.25f;
@@ -666,49 +665,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     }
                 }
                 else {
-                    if (enemyEffects.ContainsKey(i)) {
-                        enemyEffects.Remove(i);
-                    }
+                    enemyEffects.Remove(i);
                     boundNPCs.Remove(i);
                 }
             }
-
-            ApplyProjectileHoming();
-        }
-
-        private void ApplyProjectileHoming() {
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || !proj.friendly || proj.hostile) continue;
-                if (proj.owner != Owner.whoAmI) continue;
-
-                float distToCenter = Vector2.Distance(proj.Center, domainCenter); //使用领域中心
-                if (distToCenter > maxDomainRadius) continue;
-
-                NPC target = FindNearestEnemy(proj.Center, maxDomainRadius);
-                if (target != null) {
-                    float homingStrength = 0.25f;
-                    Vector2 toTarget = (target.Center - proj.Center).SafeNormalize(Vector2.Zero);
-                    proj.velocity = Vector2.Lerp(proj.velocity, toTarget * proj.velocity.Length(), homingStrength);
-                }
-            }
-        }
-
-        private NPC FindNearestEnemy(Vector2 position, float maxRange) {
-            NPC closest = null;
-            float closestDist = maxRange;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
-
-                float dist = Vector2.Distance(npc.Center, position);
-                if (dist < closestDist && Vector2.Distance(npc.Center, domainCenter) < maxDomainRadius) {
-                    closest = npc;
-                    closestDist = dist;
-                }
-            }
-            return closest;
         }
 
         private void UpdateExpanding() {
