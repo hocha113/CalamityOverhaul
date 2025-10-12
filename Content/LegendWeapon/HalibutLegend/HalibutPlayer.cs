@@ -184,11 +184,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             {5, 3},
             {6, 4},
             {7, 5},
-            {8, 6},
-            {9, 7},
-            {10, 8},
+            {8, 5},
+            {9, 6},
+            {10, 7},
             {11, 8},
-            {12, 9},
+            {12, 8},
             {13, 9},
             {14, 10}
         };

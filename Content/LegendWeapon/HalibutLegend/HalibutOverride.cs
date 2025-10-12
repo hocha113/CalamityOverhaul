@@ -62,13 +62,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {5, 11 },
                 {6, 13 },
                 {7, 15 },
-                {8, 25 },
-                {9, 30 },
-                {10, 33 },
-                {11, 35 },
+                {8, 22 },
+                {9, 25 },
+                {10, 28 },
+                {11, 32 },
                 {12, 38 },
-                {13, 40 },
-                {14, 46 }
+                {13, 45 },
+                {14, 55 }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
                 {0, 0 },

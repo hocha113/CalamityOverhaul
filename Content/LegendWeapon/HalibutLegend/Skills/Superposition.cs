@@ -18,8 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
     {
         public static int ID = 6;
         private const int ToggleCD = 30;
-        private const int SuperpositionCooldown = 1800; //30秒终极技能冷却
-
+        private static readonly int SuperpositionCooldown = 60 * (30 - (HalibutData.GetDomainLayer() - 7) * 5); //30s基础冷却
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SuperpositionToggleCD > 0 || hp.SuperpositionCooldown > 0) {
@@ -772,7 +771,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     Projectile.Center + forward * 30f,
                     velocity,
                     ModContent.ProjectileType<CannonFishShot>(),
-                    shootState.WeaponDamage * 10,
+                    shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) / 2,
                     shootState.WeaponKnockback,
                     Owner.whoAmI,
                     Main.rand.Next(9999)
