@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public static void AltUse(Item item, Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.RestartFishToggleCD > 0 || hp.RestartFishCooldown > 0) return;
-            player.SetResurrectionValue(0);
             Activate(player);
             hp.RestartFishToggleCD = ToggleCD;
             hp.RestartFishCooldown = RestartCooldown;
@@ -367,6 +366,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             for (int i = 0; i < Player.MaxBuffs; i++) {
                 Owner.DelBuff(i);
             }
+
+            Owner.SetResurrectionValue(0);//复苏进度归零
 
             //生成大量恢复粒子
             for (int i = 0; i < 50; i++) {
