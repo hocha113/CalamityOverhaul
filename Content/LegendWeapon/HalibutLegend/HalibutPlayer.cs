@@ -284,6 +284,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
+            YourLevelIsTooLow.TryAutoActivate(Player);
+
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
                 SeaDomain.AltUse(item, Player);
