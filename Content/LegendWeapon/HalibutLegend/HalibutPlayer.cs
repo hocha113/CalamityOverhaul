@@ -208,6 +208,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return GetCrashesLevel(Main.LocalPlayer.GetItem());
         }
 
+        /// <summary>
+        /// 我是一个时代孕育出来的唯一，既然敢舍弃玩家的身份，自然是无所不能
+        /// </summary>
+        /// <returns></returns>
+        public static bool TheOnlyBornOfAnEra() {
+            return InWorldBossPhase.Downed31.Invoke();
+        }
+
         public override void PostUpdate() {//在每帧更新后进行一些操作
             //更新深渊复苏系统
             if (HasHalibut) {
@@ -275,6 +283,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (VaultUtils.isServer || !HasHalibut) {
                 return;
             }
+
+            YourLevelIsTooLow.TryAutoActivate(Player);
 
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {

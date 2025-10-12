@@ -424,4 +424,124 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return "Error";
         }
     }
+
+    /// <summary>
+    /// 第十只中心额外之眼
+    /// </summary>
+    internal class ExtraSeaEyeButton
+    {
+        public bool IsActive;
+        public bool IsHovered;
+        private float hoverScale = 1f;
+        private float glowIntensity = 0f;
+        private float blinkTimer = 0f;
+        private const float EyeSize = 30f; //稍大
+
+        public int LayerNumberDisplay => 10;
+
+        public bool IsCrashed {
+            get {
+                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    return false;
+                }
+                int crashLevel = halibutPlayer.CrashesLevel();
+                return LayerNumberDisplay <= crashLevel;
+            }
+        }
+
+        public void ForceClose() {
+            if (IsActive) {
+                Toggle();
+            }
+        }
+
+        public void Toggle() {
+            IsActive = !IsActive;
+            blinkTimer = 18f;
+            PlayToggleSound();
+        }
+
+        private void PlayToggleSound() {
+            if (IsActive) {
+                SoundEngine.PlaySound(SoundID.Item29 with {
+                    Volume = 0.5f,
+                    Pitch = 0.1f
+                });
+                SoundEngine.PlaySound(SoundID.MaxMana with {
+                    Volume = 0.4f,
+                    Pitch = -0.2f
+                });
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuClose with {
+                    Volume = 0.35f,
+                    Pitch = -0.5f
+                });
+            }
+        }
+
+        public void Update(Vector2 center, bool canShow, float panelAlpha) {
+            if (!canShow) {
+                IsHovered = false;
+                hoverScale = MathHelper.Lerp(hoverScale, 0.85f, 0.2f);
+                glowIntensity = MathHelper.Lerp(glowIntensity, 0f, 0.2f);
+                return;
+            }
+
+            Rectangle hitbox = new Rectangle((int)(center.X - EyeSize / 2), (int)(center.Y - EyeSize / 2), (int)EyeSize, (int)EyeSize);
+            IsHovered = hitbox.Contains(Main.MouseScreen.ToPoint()) && panelAlpha >= 1f;
+
+            float targetScale = IsHovered ? 1.25f : 1.05f;
+            if (IsActive) {
+                targetScale += 0.05f;
+            }
+            hoverScale = MathHelper.Lerp(hoverScale, targetScale, 0.15f);
+
+            float targetGlow = IsActive ? 1f : 0.45f;
+            if (IsHovered) {
+                targetGlow += 0.35f;
+            }
+            glowIntensity = MathHelper.Lerp(glowIntensity, targetGlow, 0.1f);
+            if (blinkTimer > 0f) {
+                blinkTimer--;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 center, float alpha) {
+            if (SeaEye == null) {
+                return;
+            }
+            int frameHeight = SeaEye.Height / 4;
+            bool shouldBlink = blinkTimer > 0f && blinkTimer % 10 < 5;
+            bool isCrashed = IsCrashed;
+            int baseFrame = isCrashed ? 2 : 0;
+            int frame = (IsActive && !shouldBlink) ? (baseFrame + 1) : baseFrame;
+            Rectangle sourceRect = new Rectangle(0, frame * frameHeight, SeaEye.Width, frameHeight);
+            Vector2 origin = new Vector2(SeaEye.Width / 2, frameHeight / 2);
+            float scale = (EyeSize / SeaEye.Width) * hoverScale;
+
+            if (IsActive) {
+                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.25f + 0.75f;
+                Color haloColor;
+                if (isCrashed) {
+                    haloColor = new Color(255, 90, 90) * (alpha * glowIntensity * 0.5f * pulse);
+                }
+                else {
+                    haloColor = new Color(120, 230, 255) * (alpha * glowIntensity * 0.5f * pulse);
+                }
+                for (int i = 0; i < 3; i++) {
+                    float s = scale * (1.35f + i * 0.15f);
+                    Color ring = haloColor * (0.6f - i * 0.18f);
+                    spriteBatch.Draw(SeaEye, center, sourceRect, ring, 0f, origin, s, SpriteEffects.None, 0f);
+                }
+            }
+
+            Color eyeColor = IsActive ? Color.White : new Color(120, 140, 160);
+            if (isCrashed && IsActive) {
+                eyeColor = Color.Lerp(eyeColor, new Color(255, 110, 110), 0.55f);
+            }
+            eyeColor *= alpha * (0.8f + glowIntensity * 0.2f);
+            spriteBatch.Draw(SeaEye, center, sourceRect, eyeColor, 0f, origin, scale, SpriteEffects.None, 0f);
+        }
+    }
 }

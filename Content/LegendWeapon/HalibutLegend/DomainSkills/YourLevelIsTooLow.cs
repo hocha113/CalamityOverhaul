@@ -17,17 +17,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     internal static class YourLevelIsTooLow
     {
         public static int ID = 8;
-        private const int ToggleCD = 30;
 
+        //旧的冷却逻辑弃用，保留方法避免其它引用崩溃
         public static void AltUse(Item item, Player player) {
-            var hp = player.GetOverride<HalibutPlayer>();
-            if (hp.YourLevelIsTooLowToggleCD > 0 || hp.YourLevelIsTooLowCooldown > 0) {
+            TryAutoActivate(player);
+        }
+
+        /// <summary>
+        /// 自动激活：当达到10层并按住左键时调用
+        /// </summary>
+        public static void TryAutoActivate(Player player) {
+            if (!Main.mouseLeft) {
                 return;
             }
-
+            if (!player.TryGetOverride<HalibutPlayer>(out var hp)) {
+                return;
+            }
+            if (hp.SeaDomainLayers < 10 || !hp.SeaDomainActive) {
+                return;
+            }
+            if (!HalibutPlayer.TheOnlyBornOfAnEra()) {
+                return;
+            }
+            //只在本地玩家端生成，避免多次生成
+            if (player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            int projType = ModContent.ProjectileType<YourLevelIsTooLowProj>();
+            if (player.ownedProjectileCounts[projType] > 0) {
+                return;
+            }
             Activate(player);
-            hp.YourLevelIsTooLowToggleCD = ToggleCD;
-            hp.YourLevelIsTooLowCooldown = 600;
         }
 
         public static void Activate(Player player) {
@@ -52,6 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     /// <summary>
     /// 终极技能弹幕 - 无限重启叠加效果主控制器
+    /// 改为：按住左键且领域=10层时持续存在，松开或层数跌落则进入结束渐隐阶段
     /// </summary>
     internal class YourLevelIsTooLowProj : BaseHeldProj
     {
@@ -60,17 +81,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //时空克隆体系统
         private List<InfiniteTimeClone> timeClones;
         private int cloneSpawnTimer;
-        private const int CloneSpawnInterval = 8; //更快的克隆体生成速度
+        private const int CloneSpawnInterval = 8;
 
         //重启特效系统
         private List<RestartFlashEffect> restartFlashes;
         private int restartFlashTimer;
-        private const int RestartFlashInterval = 15; //重启闪光间隔
+        private const int RestartFlashInterval = 15;
 
         //鱼群系统
         private List<InfiniteFishBoid> fishSwarms;
         private int fishSpawnTimer;
-        private const int FishSpawnInterval = 3; //持续不断的鱼群
+        private const int FishSpawnInterval = 3;
 
         //法阵符环系统
         private List<InfiniteRuneCircle> runeCircles = new();
@@ -82,21 +103,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //炮阵系统
         private List<int> activeCannons = new();
         private int cannonSpawnTimer;
-        private const int CannonInterval = 45; //每隔45帧生成一轮炮阵
+        private const int CannonInterval = 45;
 
         //特效强度
         private float globalIntensity = 0f;
         private float pulsePhase = 0f;
         private float restartGlowIntensity = 0f;
 
-        //技能持续时间
-        private const int TotalDuration = 600; //10秒的绝对统治时间
-        private int skillTimer = 0;
+        //持续控制
+        private int skillTimer = 0; //用于内部节奏（不再限定上限）
+        private bool endingPhase;
+        private int endTimer;
+        private const int EndDuration = 60; //结束渐隐时长
 
         public override void SetDefaults() {
             Projectile.width = 1200;
             Projectile.height = 1200;
-            Projectile.timeLeft = TotalDuration + 60;
+            Projectile.timeLeft = 120; //通过刷新 timeLeft 维持
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
@@ -112,31 +135,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Projectile.Center = Owner.Center;
             skillTimer++;
 
-            //初始化
             if (skillTimer == 1) {
                 Initialize();
             }
 
-            //更新全局强度
-            UpdateGlobalIntensity();
+            bool keepCondition = Main.mouseLeft;
+            if (Owner.TryGetOverride<HalibutPlayer>(out var hp)) {
+                if (hp.SeaDomainLayers < 10) {
+                    keepCondition = false;
+                }
+            }
+            if (!HalibutPlayer.TheOnlyBornOfAnEra()) {
+                keepCondition = false;
+            }
 
-            //更新各个系统
+            if (!endingPhase) {
+                if (keepCondition) {
+                    Projectile.timeLeft = 120; //刷新生存
+                }
+                else {
+                    endingPhase = true;
+                }
+            }
+
+            UpdateGlobalIntensity();
+            if (endingPhase) {
+                float fade = 1f - endTimer / (float)EndDuration;
+                globalIntensity *= fade;
+                restartGlowIntensity *= fade;
+            }
+
             UpdateTimeClones();
             UpdateRestartFlashes();
             UpdateFishSwarms();
             UpdateRuneCircles();
             UpdateEnergyRings();
             UpdateCannons();
+            if (!endingPhase) {
+                SpawnNewElements();
+                ContinuousHeal();
+            }
 
-            //生成新元素
-            SpawnNewElements();
-
-            //持续治疗和状态恢复
-            ContinuousHeal();
-
-            //结束阶段
-            if (skillTimer >= TotalDuration) {
-                HandleEnding();
+            if (endingPhase) {
+                endTimer++;
+                if (endTimer >= EndDuration) {
+                    Projectile.Kill();
+                }
             }
         }
 
@@ -161,19 +205,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         private void UpdateGlobalIntensity() {
-            //强度快速上升后保持
-            if (skillTimer < 30) {
-                globalIntensity = MathHelper.Lerp(globalIntensity, 1f, 0.15f);
+            if (!endingPhase) {
+                if (skillTimer < 30) {
+                    globalIntensity = MathHelper.Lerp(globalIntensity, 1f, 0.15f);
+                }
+                else {
+                    globalIntensity = 1f;
+                }
             }
-            else if (skillTimer > TotalDuration - 60) {
-                //结束阶段逐渐减弱
-                float endProgress = (skillTimer - (TotalDuration - 60)) / 60f;
-                globalIntensity = 1f - endProgress;
-            }
-            else {
-                globalIntensity = 1f;
-            }
-
             pulsePhase += 0.08f;
             float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
             restartGlowIntensity = pulse * globalIntensity;
@@ -396,26 +435,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        private void HandleEnding() {
-            if (skillTimer == TotalDuration) {
-                //最终爆发
-                SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f }, Owner.Center);
-
-                for (int i = 0; i < 150; i++) {
-                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    Vector2 pos = Owner.Center + angle.ToRotationVector2() * Main.rand.NextFloat(200f);
-                    int dustType = Main.rand.Next(new int[] { DustID.Electric, DustID.BlueFairy, DustID.Water });
-                    int dust = Dust.NewDust(pos, 1, 1, dustType, 0, 0, 0, default, 3f);
-                    Main.dust[dust].noGravity = true;
-                    Main.dust[dust].velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 30f);
-                }
-            }
-
-            if (skillTimer > TotalDuration + 60) {
-                Projectile.Kill();
-            }
-        }
-
         private void DrawTimeClone(InfiniteTimeClone clone) {
             if (clone.Alpha < 0.05f) {
                 return;
@@ -494,7 +513,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         private void DrawGlobalRestartGlow() {
-            if (restartGlowIntensity < 0.05f) return;
+            if (restartGlowIntensity < 0.05f) {
+                return;
+            }
 
             Texture2D bloomTex = CWRAsset.StarTexture.Value;
             float scale = 8f + restartGlowIntensity * 4f;
