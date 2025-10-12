@@ -574,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     rainSpawnPos,
                     new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(8f, 12f)),
                     ModContent.ProjectileType<CloudRain>(),
-                    (int)(Owner.GetShootState().WeaponDamage * 0.5f),
+                    (int)(Owner.GetShootState().WeaponDamage * (0.5f + HalibutData.GetDomainLayer() / 5)),
                     2f,
                     Owner.whoAmI
                 );

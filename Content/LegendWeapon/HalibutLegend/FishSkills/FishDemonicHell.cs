@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishDemonicHell : FishSkill
     {
         public override int UnlockFishID => ItemID.DemonicHellfish;
-        public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer()); //15s
+        public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer()); 
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {

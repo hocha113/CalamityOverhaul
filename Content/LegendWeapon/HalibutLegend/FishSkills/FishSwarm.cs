@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
 
             //生成鱼群130-140条鱼，增加数量以提高视觉效果
-            int fishCount = Main.rand.Next(40 + 4 * HalibutData.GetLevel(), 50 + 4 * HalibutData.GetLevel());
+            int fishCount = Main.rand.Next(40 + 5 * HalibutData.GetDomainLayer(), 55 + 5 * HalibutData.GetDomainLayer());
             for (int i = 0; i < fishCount; i++) {
                 //在玩家周围随机位置生成鱼
                 float angle = MathHelper.TwoPi * i / fishCount + Main.rand.NextFloat(-0.5f, 0.5f);
