@@ -140,6 +140,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private const float FishFadeLerpMoving = 0.45f; // 更快消失
         private const float FishFadeLerpRest = 0.35f;   // 快速恢复
 
+        // 水压持续伤害相关
+        private int pressureDamageTimer;
+        private const int PressureTickInterval = 30; // 每30帧(0.5s)结算一次
+        private const int PressureBase = 4;          // 1层基础伤害
+        private const int PressurePerLayer = 3;      // 额外线性增长
+        private const float BossDamageFactor = 1.75f; // 对Boss增加
+        private const float HighLifeDamageFactor = 1.4f; //对高血量精英增加
+
         /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
         public float GetMaxRadius() {
             return maxDomainRadius;
@@ -159,6 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public override void AI() {
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
+            pressureDamageTimer++;
 
             //首帧初始化
             if (Projectile.localAI[0] == 0f) {
@@ -323,9 +332,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 boundNPCs.Remove(key);
             }
 
+            bool doDamageThisTick = pressureDamageTimer % PressureTickInterval == 0 && domainAlpha > 0.55f;
+            int scaledDamage = PressureBase + PressurePerLayer * (layerCount - 1); // 线性增长 1层=4 10层=31 每0.5s
+            if (scaledDamage < 1) scaledDamage = 1;
+
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!npc.active || npc.friendly) continue;
+                if (npc.dontTakeDamage || npc.lifeMax <= 1) continue;
 
                 float dist = Vector2.Distance(npc.Center, domainCenter); //使用领域中心
                 bool inDomain = dist < maxDomainRadius;
@@ -371,11 +385,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                             npc.velocity += pullBack;
                         }
                     }
+
+                    // 水压伤害处理（服务器侧）
+                    if (doDamageThisTick && Main.netMode != NetmodeID.MultiplayerClient) {
+                        int damage = scaledDamage;
+                        if (npc.boss) {
+                            damage = (int)(damage * BossDamageFactor);
+                        }
+                        else if (npc.lifeMax >= 5000) {
+                            damage = (int)(damage * HighLifeDamageFactor);
+                        }
+                        if (damage < 1) damage = 1;
+                        // 给予微小随机波动，避免所有数值一致
+                        damage += Main.rand.Next(-1, 2);
+                        if (damage < 1) damage = 1;
+                        // 伤害归属玩家
+                        npc.SimpleStrikeNPC(damage, npc.direction); // 移除不存在的 direction 命名参数
+                        // 轻微视觉反馈（客户端自行处理即可）
+                        if (Main.netMode != NetmodeID.Server) {
+                            SpawnPressureHitDust(npc, damage);
+                        }
+                    }
                 }
                 else {
                     enemyEffects.Remove(i);
                     boundNPCs.Remove(i);
                 }
+            }
+        }
+
+        private void SpawnPressureHitDust(NPC npc, int damage) {
+            int count = Math.Min(6, 2 + damage / 8);
+            for (int d = 0; d < count; d++) {
+                Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
+                int dust = Dust.NewDust(pos, 1, 1, DustID.Water, 0, 0, 120, new Color(90, 180, 255), 1.1f);
+                Main.dust[dust].velocity = (pos - npc.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3.2f);
+                Main.dust[dust].noGravity = true;
             }
         }
 

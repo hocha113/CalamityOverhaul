@@ -2,7 +2,9 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
+using InnoVault;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -131,8 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     return result.Value;
                 }
             }
-            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
-                && (halibutPlayer.SuperpositionCooldown > 0 || halibutPlayer.SuperpositionToggleCD > 0)) {
+            if (player.CountProjectilesOfID<SuperpositionProj>() > 0) {
                 return false;
             }
             return true;
