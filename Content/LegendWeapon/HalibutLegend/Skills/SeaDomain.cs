@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
@@ -128,6 +129,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private int ambientSoundTimer;
         private int bubbleSoundTimer;
 
+        // 移动时的内容淡出（除边界线外）
+        private float movementFadeFactor = 1f; // 0-1 越低越淡
+        private const float MoveThreshold = 3f; // 玩家判定移动速度
+        private const float TargetMoveFade = 0.18f; // 移动时目标透明度
+
         /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
         public float GetMaxRadius() {
             return maxDomainRadius;
@@ -203,6 +209,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                 sound.Position = domainCenter;
             }
 
+            // 根据玩家移动速度调整非边界元素透明度
+            float speed = Owner.velocity.Length();
+            bool moving = speed > MoveThreshold;
+            float targetFade = moving ? TargetMoveFade : 1f;
+            // 加速淡出/淡入：移动时快 -> 静止时更快恢复
+            float lerpSpeed = moving ? 0.25f : 0.35f;
+            movementFadeFactor = MathHelper.Lerp(movementFadeFactor, targetFade, lerpSpeed);
+
             switch (currentState) {
                 case DomainState.Expanding:
                     UpdateExpanding();
@@ -219,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             if (layers != null) {
                 foreach (var layer in layers) {
                     foreach (var fish in layer.Fish) {
-                        fish.Update(domainCenter, layer.Radius, domainAlpha);
+                        fish.Update(domainCenter, layer.Radius, domainAlpha); // 行为仍使用原始领域透明度
                     }
                 }
             }
@@ -531,48 +545,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
         private static float EaseInCubic(float t) => t * t * t;
 
         public override bool PreDraw(ref Color lightColor) {
-            if (layers == null) return false;
+            if (layers == null) {
+                return false;
+            }
 
-            //从内到外绘制各层
+            // 计算移动后的内容透明度（边界始终使用 domainAlpha）
+            float contentAlpha = domainAlpha * movementFadeFactor;
+
+            //从内到外绘制各层边界
             foreach (var layer in layers) {
-                //边界
                 if (domainAlpha > 0.01f) {
                     DrawLayerBorder(layer);
                 }
             }
 
+            if (CWRServerConfig.Instance.HalibutDomainConciseDisplay) {
+                return false;
+            }
+
             //水纹
             foreach (var ripple in ripples) {
-                ripple.Draw(domainCenter, domainAlpha);
+                ripple.Draw(domainCenter, contentAlpha);
             }
 
             //气泡
             if (bubbles != null) {
                 foreach (var bubble in bubbles) {
-                    bubble.Draw(domainAlpha);
+                    bubble.Draw(contentAlpha);
                 }
             }
 
             //水压效果
             foreach (var effect in enemyEffects.Values) {
-                effect.Draw();
+                effect.Draw(contentAlpha);
             }
 
             //绘制所有鱼拖尾
             foreach (var layer in layers) {
                 foreach (var fish in layer.Fish) {
-                    fish.DrawTrail(domainAlpha);
+                    fish.DrawTrail(contentAlpha);
                 }
             }
 
             //绘制所有鱼主体
             foreach (var layer in layers) {
                 foreach (var fish in layer.Fish) {
-                    DrawFish(fish, domainAlpha);
+                    DrawFish(fish, contentAlpha);
                 }
             }
 
-            DrawBoundIndicators();
+            DrawBoundIndicators(contentAlpha);
 
             return false;
         }
@@ -603,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
         }
 
-        private void DrawBoundIndicators() {
+        private void DrawBoundIndicators(float contentAlpha) {
             if (boundNPCs.Count == 0) return;
 
             Texture2D chainTex = TextureAssets.Chain12.Value;
@@ -624,7 +646,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
                     float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + progress * MathHelper.TwoPi) * 3f;
                     pos += diff.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * wave;
 
-                    Color c = new Color(100, 200, 255, 0) * 0.4f * domainAlpha;
+                    Color c = new Color(100, 200, 255, 0) * 0.4f * contentAlpha; // 使用淡出因子
                     Main.spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, c, rotation,
                         chainTex.Size() / 2f, 0.6f, SpriteEffects.None, 0f);
                 }
@@ -925,9 +947,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
             }
         }
 
-        public void Draw() {
+        public void Draw(float alpha) {
             foreach (var p in Particles) {
-                p.Draw();
+                p.Draw(alpha);
             }
         }
     }
@@ -964,9 +986,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills
 
         public bool ShouldRemove() => Life >= MaxLife;
 
-        public void Draw() {
+        public void Draw(float globalAlpha) {
             float progress = Life / MaxLife;
-            float alpha = (1f - progress) * 0.8f;
+            float alpha = (1f - progress) * 0.8f * globalAlpha;
+            if (alpha <= 0.01f) return;
             Texture2D tex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
             Color c = color * alpha;
             Main.spriteBatch.Draw(tex, Position - Main.screenPosition, null, c, Rotation,

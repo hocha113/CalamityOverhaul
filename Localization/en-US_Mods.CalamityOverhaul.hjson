@@ -1598,6 +1598,11 @@ Configs: {
 				'''
 		}
 
+		HalibutDomainConciseDisplay: {
+  			Label: Halibut Ocean Domain Minimal Display
+  			Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		}
+
 		Headers: {
 			CWRSystem: System Configs
 			CWRWeapon: Weapon Configs

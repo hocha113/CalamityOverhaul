@@ -1717,6 +1717,11 @@ Configs: {
 			// Label: Show Reloading Progress
 			// Tooltip: When opened, the ammo loading progress will be displayed
 		}
+
+		HalibutDomainConciseDisplay: {
+			// Label: Halibut Domain Concise Display
+			// Tooltip: ""
+		}
 	}
 }
 

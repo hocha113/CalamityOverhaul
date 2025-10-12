@@ -1580,6 +1580,11 @@ Configs: {
 				'''
 		}
 
+		HalibutDomainConciseDisplay: {
+			Label: 比目鱼海洋领域简约显示
+			Tooltip: 默认关闭，开启后会屏蔽掉领域内大多数的视觉效果
+		}
+
 		Headers: {
 			CWRSystem: 大修系统设置
 			CWRWeapon: 大修武器设置

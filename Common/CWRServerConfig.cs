@@ -103,6 +103,10 @@ namespace CalamityOverhaul.Common
         public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏效果
 
         [BackgroundColor(192, 54, 94, 255)]
+        [DefaultValue(false)]
+        public bool HalibutDomainConciseDisplay { get; set; }//大比目鱼领域简洁显示
+
+        [BackgroundColor(192, 54, 94, 255)]
         [SliderColor(224, 165, 56, 255)]
         [Range(Data.LoadingAA_Volume_MinValue, Data.LoadingAA_Volume_MaxValue)]
         [DefaultValue(1)]
