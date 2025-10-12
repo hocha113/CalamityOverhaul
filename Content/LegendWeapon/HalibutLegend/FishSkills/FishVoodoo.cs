@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -7,7 +8,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Skills;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 triggerThisHit = false;
                 return; // 冷却中且不是无限模式
             }
-               
+
 
             int damageTaken = info.Damage; // 已经过防御后的真实损失
             if (damageTaken <= 0)

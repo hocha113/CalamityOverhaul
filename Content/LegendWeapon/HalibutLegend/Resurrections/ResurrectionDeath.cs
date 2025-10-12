@@ -313,7 +313,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             if (stateTimer >= DeathAnimationDuration) {
                 if (!hasExecutedDeath) {
                     StartExecutingPhase();
-                } else {
+                }
+                else {
                     //如果已经执行了死亡，进入冷却
                     StartCooldownPhase();
                 }
@@ -434,7 +435,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (system.IsFull && !Player.dead) {
                     ResetState();
                     StartWarningPhase();
-                } else {
+                }
+                else {
                     ResetState();
                 }
             }
@@ -603,7 +605,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (currentState == DeathState.DeathAnimation) {
                     float progress = stateTimer / (float)DeathAnimationDuration;
                     darkness = MathHelper.Clamp(progress * 1.5f, 0f, 0.7f);
-                } else {
+                }
+                else {
                     darkness = 0.7f;
                 }
 

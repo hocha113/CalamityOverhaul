@@ -89,7 +89,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (distanceToSpirit < MaxRange) {
                     if (distanceToSpirit < MinRange) {
                         targetIntensity = 1f;
-                    } else {
+                    }
+                    else {
                         targetIntensity = 1f - ((distanceToSpirit - MinRange) / (MaxRange - MinRange));
                     }
 
@@ -114,7 +115,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 // 心跳音效
                 if (heartbeatSoundCooldown > 0) {
                     heartbeatSoundCooldown--;
-                } else {
+                }
+                else {
                     float heartbeatPhase = (float)Math.Sin(heartbeatTimer);
                     if (heartbeatPhase > 0.9f) {
                         PlayHeartbeatSound();
@@ -130,7 +132,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                         Main.rand.NextFloat(-0.5f, 0.5f)
                     ) * pulse * fearIntensity;
                 }
-            } else {
+            }
+            else {
                 heartbeatTimer = 0f;
             }
         }

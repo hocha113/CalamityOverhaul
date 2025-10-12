@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         private ref float StateTimer => ref NPC.ai[1];
         private ref float TargetPlayerIndex => ref NPC.ai[2];
         private ref float CustomAI1 => ref NPC.ai[3];
-        
+
         // 本地字段（不同步）
         private Player targetPlayer;
         private Vector2 spawnPosition;
@@ -54,11 +53,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         private Vector2 headTilt = Vector2.Zero;
         private int frameCounter = 0;
         private int currentFrame = 0;
-        
+
         // 环境音效
         private int ambientSoundTimer = 0;
         private const int AmbientSoundCooldown = 300; // 5秒
-        
+
         // 粒子效果
         private System.Collections.Generic.List<AbyssGhostParticle> particles = new();
         #endregion
@@ -106,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             CurrentState = SpiritState.Dormant;
             StateTimer = 0;
             ghostOpacity = 0f;
-            
+
             // 生成初始粒子效果
             for (int i = 0; i < 30; i++) {
                 SpawnParticle(NPC.Center);
@@ -119,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             // 生存时间检查
             NPC.timeLeft = 10; // 强制保持活跃
             CustomAI1++;
-            
+
             if (CustomAI1 >= LifeTime) {
                 DespawnWithEffect();
                 return;
@@ -127,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             // 获取目标玩家
             UpdateTargetPlayer();
-            
+
             // 淡入效果
             if (ghostOpacity < 1f) {
                 ghostOpacity += 0.01f;
@@ -231,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             // 检查是否有玩家接近
             if (targetPlayer != null) {
                 float dist = Vector2.Distance(NPC.Center, targetPlayer.Center);
-                
+
                 // 检查水触发条件
                 if (IsPlayerInWater(targetPlayer) && dist < WaterDetectionRange) {
                     TransitionToState(SpiritState.Hunting);
@@ -243,7 +242,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     if (StateTimer > DormantDuration) {
                         TransitionToState(SpiritState.Observing);
                     }
-                } else {
+                }
+                else {
                     // 开始游荡
                     if (StateTimer > DormantDuration * 2) {
                         TransitionToState(SpiritState.Wandering);
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     Main.rand.NextFloat(-1f, 1f),
                     Main.rand.NextFloat(-0.5f, 0.5f)
                 ).SafeNormalize(Vector2.Zero);
-                
+
                 NPC.velocity = wanderDirection * WanderSpeed;
             }
 
@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             // 检查玩家
             if (targetPlayer != null) {
                 float dist = Vector2.Distance(NPC.Center, targetPlayer.Center);
-                
+
                 if (IsPlayerInWater(targetPlayer) && dist < WaterDetectionRange) {
                     TransitionToState(SpiritState.Hunting);
                     return;
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         private void UpdateObserving() {
             NPC.velocity *= 0.98f; // 几乎静止
             distortionIntensity = 0.6f;
-            eyeGlowIntensity = MathHelper.Lerp(0.7f, 1f, 
+            eyeGlowIntensity = MathHelper.Lerp(0.7f, 1f,
                 (float)Math.Sin(StateTimer * 0.1f) * 0.5f + 0.5f); // 眼睛脉动发光
 
             if (targetPlayer != null) {
@@ -342,7 +342,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (StateTimer % 15 == 0) {
                     SpawnParticle(NPC.Center);
                 }
-            } else {
+            }
+            else {
                 TransitionToState(SpiritState.Dormant);
             }
         }
@@ -356,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             if (targetPlayer != null) {
                 Vector2 directionToPlayer = (targetPlayer.Center - NPC.Center).SafeNormalize(Vector2.Zero);
-                
+
                 // 极速冲刺
                 NPC.velocity = Vector2.Lerp(NPC.velocity, directionToPlayer * HuntingSpeed, 0.2f);
 
@@ -370,9 +371,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
                 // 播放狩猎音效
                 if (StateTimer % 30 == 0 && !VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Zombie53 with { 
-                        Volume = 0.8f, 
-                        Pitch = -0.6f 
+                    SoundEngine.PlaySound(SoundID.Zombie53 with {
+                        Volume = 0.8f,
+                        Pitch = -0.6f
                     }, NPC.Center);
                 }
 
@@ -387,7 +388,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if ((!IsPlayerInWater(targetPlayer) || dist > WaterDetectionRange * 2f) && StateTimer > 120) {
                     TransitionToState(SpiritState.Observing);
                 }
-            } else {
+            }
+            else {
                 TransitionToState(SpiritState.Dormant);
             }
         }
@@ -412,7 +414,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (StateTimer == 30) {
                     ExecuteKill(targetPlayer);
                 }
-            } else {
+            }
+            else {
                 // 杀戮完成，返回休眠
                 TransitionToState(SpiritState.Dormant);
             }
@@ -432,14 +435,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             // 状态转换音效
             if (!VaultUtils.isServer) {
                 if (newState == SpiritState.Hunting) {
-                    SoundEngine.PlaySound(SoundID.Roar with { 
-                        Volume = 1.2f, 
-                        Pitch = -0.8f 
+                    SoundEngine.PlaySound(SoundID.Roar with {
+                        Volume = 1.2f,
+                        Pitch = -0.8f
                     }, NPC.Center);
-                } else if (newState == SpiritState.Observing) {
-                    SoundEngine.PlaySound(SoundID.Zombie2 with { 
-                        Volume = 0.5f, 
-                        Pitch = -1f 
+                }
+                else if (newState == SpiritState.Observing) {
+                    SoundEngine.PlaySound(SoundID.Zombie2 with {
+                        Volume = 0.5f,
+                        Pitch = -1f
                     }, NPC.Center);
                 }
             }
@@ -481,9 +485,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 }
 
                 // 播放杀戮音效
-                SoundEngine.PlaySound(SoundID.NPCDeath59 with { 
-                    Volume = 1.5f, 
-                    Pitch = -0.9f 
+                SoundEngine.PlaySound(SoundID.NPCDeath59 with {
+                    Volume = 1.5f,
+                    Pitch = -0.9f
                 }, player.Center);
             }
         }
@@ -496,13 +500,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 for (int i = 0; i < 40; i++) {
                     SpawnParticle(NPC.Center);
                 }
-                
-                SoundEngine.PlaySound(SoundID.Item8 with { 
-                    Volume = 0.8f, 
-                    Pitch = -0.5f 
+
+                SoundEngine.PlaySound(SoundID.Item8 with {
+                    Volume = 0.8f,
+                    Pitch = -0.5f
                 }, NPC.Center);
             }
-            
+
             NPC.active = false;
         }
 
@@ -511,10 +515,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// </summary>
         private void PlaySpawnSound() {
             if (VaultUtils.isServer) return;
-            
-            SoundEngine.PlaySound(SoundID.Zombie104 with { 
-                Volume = 1.2f, 
-                Pitch = -0.8f 
+
+            SoundEngine.PlaySound(SoundID.Zombie104 with {
+                Volume = 1.2f,
+                Pitch = -0.8f
             }, NPC.Center);
         }
 
@@ -532,9 +536,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 if (CurrentState == SpiritState.Observing && targetPlayer != null) {
                     float dist = Vector2.Distance(NPC.Center, targetPlayer.Center);
                     if (dist < ObservationRange) {
-                        SoundEngine.PlaySound(SoundID.Zombie53 with { 
-                            Volume = 0.4f, 
-                            Pitch = -0.9f 
+                        SoundEngine.PlaySound(SoundID.Zombie53 with {
+                            Volume = 0.4f,
+                            Pitch = -0.9f
                         }, NPC.Center);
                     }
                 }
@@ -611,8 +615,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             // 结束当前批次，准备绘制玩家
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, 
-                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.PointClamp, null, Main.Rasterizer, null,
                 Main.GameViewMatrix.ZoomMatrix);
 
             // 绘制扭曲的残影层
@@ -622,7 +626,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     (float)Math.Cos(Main.GlobalTimeWrappedHourly * 3f + i) * distortionIntensity * 2f
                 );
 
-                DrawGhostPlayer(ghostPlayer, offset + headTilt * 10f, 
+                DrawGhostPlayer(ghostPlayer, offset + headTilt * 10f,
                     ghostColor * (0.3f / (i + 1)));
             }
 
@@ -631,8 +635,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             // 切换到发光混合模式绘制眼睛
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, 
-                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
+                SamplerState.PointClamp, null, Main.Rasterizer, null,
                 Main.GameViewMatrix.ZoomMatrix);
 
             // 绘制眼睛发光
@@ -645,8 +649,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             // 恢复正常绘制模式
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, 
-                SamplerState.PointClamp, null, Main.Rasterizer, null, 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.PointClamp, null, Main.Rasterizer, null,
                 Main.GameViewMatrix.ZoomMatrix);
 
             return false;
@@ -749,8 +753,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     0f,
                     ghost.fullRotationOrigin
                 );
-            }
-            catch (Exception) {
+            } catch (Exception) {
                 // 渲染失败时静默处理
             }
 
@@ -847,7 +850,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             Alpha = 1f;
             Life = 0;
             MaxLife = Main.rand.Next(40, 80);
-            
+
             Color = Main.rand.Next(3) switch {
                 0 => new Color(10, 20, 40),
                 1 => new Color(20, 40, 80),

@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //计算理想位置（椭圆轨道）
                 Vector2 directionToCloud = toCloud.SafeNormalize(Vector2.Zero);
                 float currentAngle = (float)Math.Atan2(directionToCloud.Y, directionToCloud.X);
-                
+
                 float idealDistance = (float)Math.Sqrt(
                     Math.Pow(targetDistanceX * Math.Sin(currentAngle), 2) +
                     Math.Pow(targetDistanceY * Math.Cos(currentAngle), 2)
@@ -320,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //=== 切向速度（围绕云朵旋转） ===
                 //根据云朵移动方向调整旋转方向
                 Vector2 tangentialDirection = new Vector2(-directionToCloud.Y, directionToCloud.X);
-                
+
                 //当云朵高速移动时，云鱼在后方加速追赶
                 float cloudSpeed = Projectile.velocity.Length();
                 bool isBehindCloud = Vector2.Dot(toCloud, Projectile.velocity) > 0;
@@ -479,13 +479,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.rand.NextFloat(-90f, 90f),
                     Main.rand.NextFloat(-25f, 25f)
                 );
-                
+
                 //粒子速度包含翻滚效果
                 Vector2 particleVel = -Projectile.velocity * 0.4f + new Vector2(
                     Main.rand.NextFloat(-1.5f, 1.5f),
                     Main.rand.NextFloat(-0.5f, 1.5f)
                 );
-                
+
                 SpawnCloudParticle(spawnOffset, particleVel);
             }
 
@@ -681,11 +681,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawMainCloudBody(SpriteBatch sb, Vector2 center) {
             //云朵主体由多个扁平椭圆云团组成
             int cloudSegments = 12;
-            
+
             for (int i = 0; i < cloudSegments; i++) {
                 //计算云团位置（扁平椭圆分布）
                 float angle = MathHelper.TwoPi * i / cloudSegments;
-                
+
                 //使用翻滚偏移创建动态效果
                 float rollOffset = cloudRollOffsets[i];
                 float radiusX = 55f + (float)Math.Sin(rollOffset) * 15f; // 横向半径大
@@ -700,7 +700,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 for (int layer = 0; layer < 4; layer++) {
                     float layerScale = (1.3f + layer * 0.25f) * cloudScale;
                     float layerAlpha = cloudAlpha * (0.45f - layer * 0.07f);
-                    
+
                     //每层旋转略有不同，增加厚度感
                     float layerRotation = angle + rollOffset * 0.5f + layer * 0.4f;
 

@@ -325,11 +325,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 int crashLevel = halibutPlayer.CrashesLevel();
                 isCrashed = eye.LayerNumberDisplay <= crashLevel;
             }
-            
+
             for (int i = 0; i < 12; i++) {
                 float angle = (i / 12f) * MathHelper.TwoPi;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
-                
+
                 //根据死机状态使用不同颜色
                 Color color;
                 if (isCrashed && activating) {
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 else {
                     color = activating ? new Color(100, 220, 255) : new Color(80, 80, 100);
                 }
-                
+
                 particles.Add(new EyeParticle(eye.Position, velocity, color));
             }
         }
@@ -426,13 +426,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            
+
             //获取死机等级
             int crashLevel = 0;
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 crashLevel = halibutPlayer.CrashesLevel();
             }
-            
+
             foreach (var eye in activationSequence) {
                 if (!eye.IsActive) {
                     continue;
@@ -443,21 +443,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float length = diff.Length();
                 float rotation = diff.ToRotation();
                 float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + eye.Index * 0.5f) * 1.5f;
-                
+
                 //判断这个眼睛是否死机
                 bool isCrashed = eye.LayerNumberDisplay <= crashLevel;
-                
+
                 //根据死机状态使用不同颜色
                 Color lineColor;
                 if (isCrashed) {
-                    lineColor = Color.Lerp(new Color(255, 100, 100), new Color(200, 80, 80), 
+                    lineColor = Color.Lerp(new Color(255, 100, 100), new Color(200, 80, 80),
                         (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + eye.Index) * 0.5f + 0.5f);
                 }
                 else {
-                    lineColor = Color.Lerp(new Color(80, 180, 255), new Color(120, 220, 255), 
+                    lineColor = Color.Lerp(new Color(80, 180, 255), new Color(120, 220, 255),
                         (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + eye.Index) * 0.5f + 0.5f);
                 }
-                
+
                 lineColor *= alpha * 0.35f * expandProgress;
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), lineColor, rotation, Vector2.Zero, new Vector2(length, 1.5f + wave), SpriteEffects.None, 0f);
             }
@@ -715,38 +715,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (SeaEye == null) {
                 return;
             }
-            
+
             int frameHeight = SeaEye.Height / 4; //现在是4帧
             bool shouldBlink = blinkTimer > 0f && blinkTimer % 10 < 5;
-            
+
             //判断使用哪组帧
             bool isCrashed = IsCrashed;
             int baseFrame = isCrashed ? 2 : 0; //死机使用帧2-3，正常使用帧0-1
-            
+
             //选择睁眼或闭眼帧
             int frame = (IsActive && !shouldBlink) ? (baseFrame + 1) : baseFrame;
-            
+
             Rectangle sourceRect = new Rectangle(0, frame * frameHeight, SeaEye.Width, frameHeight);
             Vector2 drawPos = Position;
             Vector2 origin = new Vector2(SeaEye.Width / 2, frameHeight / 2);
             float scale = (EyeSize / SeaEye.Width) * hoverScale;
-            
+
             if (IsActive) {
                 //死机状态使用不同的发光颜色
-                Color glowColor = isCrashed 
+                Color glowColor = isCrashed
                     ? new Color(255, 80, 80) * (alpha * glowIntensity * 0.5f) //红色发光
                     : new Color(100, 220, 255) * (alpha * glowIntensity * 0.5f); //正常蓝色发光
-                
+
                 float glowPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + Index) * 0.3f + 0.7f;
                 spriteBatch.Draw(SeaEye, drawPos, sourceRect, glowColor * glowPulse, 0f, origin, scale * 1.25f, SpriteEffects.None, 0f);
             }
-            
+
             //死机状态的眼睛颜色偏暗红
             Color eyeColor = IsActive ? Color.White : new Color(100, 100, 120);
             if (isCrashed && IsActive) {
                 eyeColor = Color.Lerp(eyeColor, new Color(255, 100, 100), 0.5f); //混合红色
             }
-            
+
             eyeColor *= alpha * glowIntensity;
             spriteBatch.Draw(SeaEye, drawPos, sourceRect, eyeColor, 0f, origin, scale, SpriteEffects.None, 0f);
         }
@@ -853,16 +853,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float progress;
         private const float Duration = 25f;
         private int eyeLayerNumber; //记录这个眼睛的层数
-        
+
         public bool Finished { get; private set; }
-        
+
         public EyeActivationAnimation(Vector2 start, int layerNumber = 1) {
             startPos = start;
             progress = 0f;
             Finished = false;
             eyeLayerNumber = layerNumber;
         }
-        
+
         public void Update(Vector2 target) {
             if (Finished) {
                 return;
@@ -873,7 +873,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Finished = true;
             }
         }
-        
+
         public void Draw(SpriteBatch spriteBatch, float alpha) {
             if (Finished) {
                 return;
@@ -881,21 +881,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (SeaEye == null) {
                 return;
             }
-            
+
             Texture2D tex = SeaEye;
             int frameHeight = tex.Height / 4; //现在是4帧
-            
+
             //判断是否死机
             bool isCrashed = false;
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 int crashLevel = halibutPlayer.CrashesLevel();
                 isCrashed = eyeLayerNumber <= crashLevel;
             }
-            
+
             //使用对应的睁眼帧
             int baseFrame = isCrashed ? 2 : 0;
             int frame = baseFrame + 1; //使用睁眼帧
-            
+
             Rectangle sourceRect = new Rectangle(0, frame * frameHeight, tex.Width, frameHeight);
             Vector2 center = DomainUI.Instance.halibutCenter;
             Vector2 pos = Vector2.Lerp(startPos, center, EaseOut(progress));
@@ -904,25 +904,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color color = Color.White * (alpha * fade);
             Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
             spriteBatch.Draw(tex, pos, sourceRect, color, 0f, origin, scale * 0.4f, SpriteEffects.None, 0f);
-            
+
             //根据死机状态使用不同的光环颜色
             Color ringColor = isCrashed
                 ? new Color(255, 100, 100) * (alpha * fade * 0.5f) //红色光环
                 : new Color(120, 220, 255) * (alpha * fade * 0.5f); //蓝色光环
-            
+
             DrawPulseRing(spriteBatch, pos, scale * 22f, ringColor, 2f);
         }
-        
+
         private static float EaseOut(float t) {
             return 1f - (float)Math.Pow(1f - t, 3f);
         }
-        
+
         private static float EaseOutBack(float t) {
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
             return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
         }
-        
+
         private void DrawPulseRing(SpriteBatch spriteBatch, Vector2 center, float radius, Color color, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             int segs = 40;

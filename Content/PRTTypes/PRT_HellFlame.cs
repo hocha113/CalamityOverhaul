@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Linq;
 using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
@@ -13,7 +12,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     internal class PRT_HellFlame : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
-        
+
         private Color[] hellColors;
         private int timer;
         private float speedVariation;
@@ -23,13 +22,13 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float timeLife;
         private float flickerIntensity;
         private float distortionPhase;
-        
+
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> StarTexture = null;
-        
+
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> SoftGlow = null;
-        
+
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> Extra_193 = null;
 
@@ -62,17 +61,17 @@ namespace CalamityOverhaul.Content.PRTTypes
             rotationSpeed = Main.rand.NextFloat(-0.15f, 0.15f);
             flickerIntensity = Main.rand.NextFloat(0.6f, 1.0f);
             distortionPhase = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-            
+
             // 尺寸变化
             size = Main.rand.NextFloat(0.6f, 1.4f);
-            
+
             // ai[0]: 行为模式 (0=向上飘，1=爆炸扩散，2=螺旋上升)
             // ai[1]: 特效强度
         }
 
         public override void AI() {
             float lifeRatio = timeLife / timeLeftMax;
-            
+
             // 复杂的透明度曲线：快速出现->持续->快速消失
             if (lifeRatio > 0.7f) {
                 // 淡入阶段
@@ -93,15 +92,15 @@ namespace CalamityOverhaul.Content.PRTTypes
                 case 0: // 默认：向上飘散 + 扭曲
                     ApplyRisingMotion(lifeRatio);
                     break;
-                    
+
                 case 1: // 爆炸扩散
                     ApplyExplosionMotion(lifeRatio);
                     break;
-                    
+
                 case 2: // 螺旋上升
                     ApplySpiralMotion(lifeRatio);
                     break;
-                    
+
                 case 3: // 环绕旋转
                     ApplyOrbitMotion(lifeRatio);
                     break;
@@ -109,7 +108,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             // 旋转
             Rotation += rotationSpeed * (1f - lifeRatio * 0.5f);
-            
+
             // 尺寸变化：先膨胀后收缩
             float sizeCurve = (float)Math.Sin(lifeRatio * MathHelper.Pi);
             Scale = size * (0.5f + sizeCurve * 1.2f) * (ai[1] > 0 ? ai[1] : 1f) * 0.1f;
@@ -162,7 +161,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             float lifeRatio = timeLife / timeLeftMax;
             Vector2 drawPos = Position - Main.screenPosition;
-            
+
             // 多层颜色混合：创造深度感
             Color coreColor = GetBlendedColor(lifeRatio, 0f, 0.3f);      // 核心：亮橙
             Color midColor = GetBlendedColor(lifeRatio, 0.3f, 0.7f);     // 中层：深红
@@ -215,7 +214,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             if (starTex != null && lifeRatio > 0.5f) {
                 float starPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f + distortionPhase);
                 float starIntensity = (lifeRatio - 0.5f) / 0.5f * (0.6f + starPulse * 0.4f);
-                
+
                 spriteBatch.Draw(
                     starTex,
                     drawPos,
@@ -256,17 +255,17 @@ namespace CalamityOverhaul.Content.PRTTypes
             float normalizedLife = 1f - lifeRatio;
             int colorCount = hellColors.Length;
             float colorIndex = normalizedLife * (colorCount - 1);
-            
+
             int index1 = (int)colorIndex;
             int index2 = Math.Min(index1 + 1, colorCount - 1);
             float blend = colorIndex - index1;
-            
+
             // 在指定范围内额外调整颜色
             if (normalizedLife >= rangeStart && normalizedLife <= rangeEnd) {
                 float rangeBlend = (normalizedLife - rangeStart) / (rangeEnd - rangeStart);
                 blend = MathHelper.Lerp(blend, rangeBlend, 0.5f);
             }
-            
+
             return Color.Lerp(hellColors[index1], hellColors[index2], blend);
         }
     }

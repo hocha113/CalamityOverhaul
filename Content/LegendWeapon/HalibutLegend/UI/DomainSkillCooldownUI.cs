@@ -50,21 +50,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         public override bool Active => _panelAppear > 0.01f || HasAnyCooldown();
 
-        private static bool TryGetHalibut(out HalibutPlayer hp, out Player player)
-        {
+        private static bool TryGetHalibut(out HalibutPlayer hp, out Player player) {
             player = Main.LocalPlayer;
             if (player?.active == true && player.TryGetOverride(out hp) && hp.HasHalibut) return true;
             hp = null; return false;
         }
 
-        private bool HasAnyCooldown()
-        {
+        private bool HasAnyCooldown() {
             if (!TryGetHalibut(out var hp, out _)) return false;
             return hp.RestartFishCooldown > 0 || hp.SuperpositionCooldown > 0 || hp.FishTeleportCooldown > 0;
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             if (!TryGetHalibut(out var hp, out var player)) {
                 _panelAppear = MathHelper.Clamp(_panelAppear - 0.08f, 0f, 1f);
                 _activeIcons.Clear();
@@ -121,19 +118,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void TriggerShake(DomainSkill skill)
-        {
+        private void TriggerShake(DomainSkill skill) {
             if (!_shakeStrength.TryGetValue(skill, out float v) || v < 0.6f) {
                 // 重置或强化为高值
                 _shakeStrength[skill] = 1f;
-            } else {
+            }
+            else {
                 // 若正在抖动，稍微叠加但不超过1
                 _shakeStrength[skill] = MathHelper.Clamp(v + 0.25f, 0f, 1f);
             }
         }
 
-        private void DecayShake(DomainSkill skill)
-        {
+        private void DecayShake(DomainSkill skill) {
             if (_shakeStrength.TryGetValue(skill, out float v)) {
                 v *= 0.82f; // 指数衰减
                 if (v < 0.02f) v = 0f;
@@ -141,8 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void CollectCooldown(int current, DomainSkill skill, Texture2D tex)
-        {
+        private void CollectCooldown(int current, DomainSkill skill, Texture2D tex) {
             if (current <= 0 || tex == null) return;
             if (!_maxCooldown.TryGetValue(skill, out int max) || current > max) { _maxCooldown[skill] = current; max = current; }
             if (max <= 0) return;
@@ -157,8 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             });
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
+        public override void Draw(SpriteBatch spriteBatch) {
             if (_panelAppear <= 0f || _activeIcons.Count == 0) return;
 
             foreach (var icon in _activeIcons) {
