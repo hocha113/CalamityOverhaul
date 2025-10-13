@@ -1574,6 +1574,7 @@ Projectiles: {
 	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
 	// FallingStarProjectile.DisplayName: Falling Star Projectile
 	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
+	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
 }
 
 Configs: {
@@ -5540,6 +5541,12 @@ FishSkill: {
 	}
 
 	FishFallenStar: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishHunger: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

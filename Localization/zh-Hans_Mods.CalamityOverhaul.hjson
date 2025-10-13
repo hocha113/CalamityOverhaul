@@ -1547,6 +1547,7 @@ Projectiles: {
 	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
 	// FallingStarProjectile.DisplayName: Falling Star Projectile
 	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
+	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
 }
 
 Configs: {
@@ -5430,6 +5431,12 @@ FishSkill: {
 			每隔一段时间会召唤一阵坠星落下
 			'''
 		Studied: 如果在白天，它或许会变成星星消失
+	}
+
+	FishHunger: {
+		DisplayName: 鱼中恶鬼
+		Tooltip: 开火时会释放几只恶鬼去撕咬敌人
+		Studied: 它确实很饥饿
 	}
 }
 
