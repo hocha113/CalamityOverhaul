@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         public override void Update() {
-            //此处更新在绘制线程中，所以他妈的为什么不能有一个单独的挂载在逻辑更新线程里的钩子
+            //此处更新在绘制线程中，所以他妈的为什么不能有一个单独的挂载在逻辑更新线程里的钩子，必须尽快在InnoVault里面处理好这件事情
         }
 
         public void LogicUpdate() {
@@ -412,7 +412,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 string fullLine = wrappedLines[i];
                 if (string.IsNullOrEmpty(fullLine)) continue;
                 string visLine;
-                if (finishedCurrent) visLine = fullLine; else {
+                if (finishedCurrent) visLine = fullLine;
+                else {
                     if (remaining <= 0) break;
                     int take = Math.Min(fullLine.Length, remaining);
                     visLine = fullLine[..take];
@@ -637,8 +638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Texture2D tex;
             try {
                 tex = ModContent.Request<Texture2D>(texturePath, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-            }
-            catch {
+            } catch {
                 return;
             }
             RegisterPortrait(speaker, tex, baseColor, silhouette);

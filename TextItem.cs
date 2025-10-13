@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
-using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;

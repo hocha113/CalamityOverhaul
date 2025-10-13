@@ -2,8 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;

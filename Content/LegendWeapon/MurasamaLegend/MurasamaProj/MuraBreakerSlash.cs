@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.WallofFleshEye) {
                 modifiers.FinalDamage *= 0.45f;
             }
-            if (target.type == ModContent.NPCType<Cryogen>() ) {
+            if (target.type == ModContent.NPCType<Cryogen>()) {
                 modifiers.FinalDamage *= 1.2f;
             }
             if (target.type == ModContent.NPCType<CryogenShield>()) {

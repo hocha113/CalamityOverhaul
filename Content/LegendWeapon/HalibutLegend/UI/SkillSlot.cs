@@ -1,13 +1,13 @@
 ﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
-using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
-using Terraria.ModLoader;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
+using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {

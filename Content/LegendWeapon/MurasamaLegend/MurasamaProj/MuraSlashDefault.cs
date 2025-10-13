@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<AquaticScourgeBody>()) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == ModContent.NPCType<AquaticScourgeHead>()|| target.type == ModContent.NPCType<AquaticScourgeTail>()) {
+            if (target.type == ModContent.NPCType<AquaticScourgeHead>() || target.type == ModContent.NPCType<AquaticScourgeTail>()) {
                 modifiers.FinalDamage *= 1.15f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<Leviathan>() || target.type == ModContent.NPCType<Anahita>()) {
                 modifiers.FinalDamage *= 1.75f;
             }
-            if (target.type == ModContent.NPCType<AnahitasIceShield>()|| target.type == ModContent.NPCType<AquaticAberration>()) {
+            if (target.type == ModContent.NPCType<AnahitasIceShield>() || target.type == ModContent.NPCType<AquaticAberration>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.GolemHeadFree || target.type == NPCID.Golem) {

@@ -147,8 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     if (string.Equals(t.Name, key, StringComparison.Ordinal)) {
                         try {
                             return (IADVScenario)Activator.CreateInstance(t);
-                        }
-                        catch {
+                        } catch {
                         }
                     }
                 }
