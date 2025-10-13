@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.GuideVoodooFish;
         public override int DefaultCooldown => 60 * (60 - HalibutData.GetDomainLayer() * 3); // 60 - 3 * 领域等级 秒
-        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HasHalibut;//未装备暂停冷却
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HeldHalibut;//未装备暂停冷却
     }
 
     /// <summary>
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer) {
             skill = null;
             hPlayer = Player.GetOverride<HalibutPlayer>();
-            if (hPlayer == null || !hPlayer.HasHalibut) {
+            if (hPlayer == null || !hPlayer.HeldHalibut) {
                 return false;
             }
             if (!FishSkill.UnlockFishs.TryGetValue(ItemID.GuideVoodooFish, out FishSkill fs)) {

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private static bool TryGetHalibut(out HalibutPlayer hp, out Player player) {
             player = Main.LocalPlayer;
-            if (player?.active == true && player.TryGetOverride(out hp) && hp.HasHalibut) return true;
+            if (player?.active == true && player.TryGetOverride(out hp) && hp.HeldHalibut) return true;
             hp = null; return false;
         }
 

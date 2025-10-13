@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private Dictionary<SkillSlot, int> pendingSlots = []; //槽位 -> 对应的粒子索引
         #endregion
         public static void FishSkillTooltip(Item item, List<TooltipLine> tooltips) {
-            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || !halibutPlayer.HasHalibut) {
+            if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || !halibutPlayer.HasHalubut) {
                 return;
             }
             if (!FishSkill.UnlockFishs.TryGetValue(item.type, out FishSkill fishSkill)) {

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Graphics;
 
@@ -15,9 +16,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int SkillID;
         /// <summary>
+        /// 是否手持大比目鱼
+        /// </summary>
+        public bool HeldHalibut;
+        /// <summary>
         /// 是否拥有大比目鱼
         /// </summary>
-        public bool HasHalibut;
+        public bool HasHalubut;
         /// <summary>
         /// 已解锁的技能列表
         /// </summary>
@@ -218,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
             //更新深渊复苏系统
-            if (HasHalibut) {
+            if (HeldHalibut) {
                 ResurrectionSystem.Update();
             }
 
@@ -266,8 +271,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             Item item = Player.GetItem();
-            HasHalibut = item.Alives() && item.type == HalibutOverride.ID;
-
+            HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
+            HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
             //测试复苏条效果（仅在客户端且持有大比目鱼时）
             //if (!VaultUtils.isServer && HasHalibut) {
             //    //按住某个键可以增加复苏值进行测试
@@ -280,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //    }
             //}
 
-            if (VaultUtils.isServer || !HasHalibut) {
+            if (VaultUtils.isServer || !HeldHalibut) {
                 return;
             }
 

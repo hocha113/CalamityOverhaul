@@ -184,8 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //阶段时长
         private const int GatherDuration = 25;      //聚集时间
         private const int FloatDuration = 35;       //漂浮时间
-        private const int OrbitDuration = 80;       //环绕时间
-        private const int ChargeDuration = 30;      //蓄力时间（新增）
+        private const int ChargeDuration = 30;      //蓄力时间
         private const float LaunchSpeed = 22f;      //发射速度
         
         //视觉效果
