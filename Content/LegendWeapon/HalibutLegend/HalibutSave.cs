@@ -9,11 +9,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutSave : ModPlayer
     {
+        /// <summary>
+        /// 大比目鱼UI技能栏（用于保存加载）
+        /// </summary>
         public readonly List<SkillSlot> halibutUISkillSlots = [];
+        /// <summary>
+        /// 所有眼睛列表（用于保存加载）
+        /// </summary>
         internal readonly List<SeaEyeButton> eyes = [];
+        /// <summary>
+        /// 按激活顺序排列的眼睛列表（用于保存加载）
+        /// </summary>
         public readonly List<SeaEyeButton> activationSequence = [];//按激活顺序排列
+        /// <summary>
+        /// 大比目鱼技能实例（用于保存加载）
+        /// </summary>
         public FishSkill FishSkill;
+        /// <summary>
+        /// 深渊复苏系统存档数据
+        /// </summary>
         public ResurrectionSystem ResurrectionSaveData = new();
+        /// <summary>
+        /// 是否已经初始化（用于捕捉玩家实例加载数据）
+        /// </summary>
+        private static bool initialized = false;
+        /// <summary>
+        /// 设置静态默认值
+        /// </summary>
         public override void SetStaticDefaults() {
             for (int i = 0; i < DomainUI.MaxEyes; i++) {
                 float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
@@ -108,7 +130,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
         }
 
-        private static bool initialized = false;
         public override void OnEnterWorld() {
             initialized = true;
         }
