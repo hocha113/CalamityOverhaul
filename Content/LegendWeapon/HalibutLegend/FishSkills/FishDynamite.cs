@@ -314,6 +314,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //大量爆炸粒子
             SpawnExplosionParticles();
 
+            Projectile.Explode(350, default, false);
+
             //爆炸音效
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.3f, Pitch = -0.4f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.0f, Pitch = -0.2f }, Projectile.Center);
