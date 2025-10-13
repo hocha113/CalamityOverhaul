@@ -11,6 +11,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Assets;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
@@ -114,6 +115,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             finishedCurrent = false;
             waitingForAdvance = false;
             contentFade = 0f;
+            //处理立绘淡入目标
+            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd)) {
+                foreach (var kv in portraits) {
+                    //当前说话者目标1 其它0
+                    kv.Value.TargetFade = kv.Key == current.Speaker ? 1f : 0f;
+                }
+            }
         }
 
         private void WrapCurrent() {
@@ -248,6 +256,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 if (contentFade < 1f) contentFade += 0.12f;
             }
+            //淡入淡出立绘
+            foreach (var kv in portraits) {
+                var p = kv.Value;
+                if (p.Texture == null) continue;
+                p.Fade = MathHelper.Lerp(p.Fade, p.TargetFade, portraitFadeSpeed);
+                if (p.Fade < 0.01f && p.TargetFade == 0f) p.Fade = 0f;
+            }
             player.mouseInterface |= Active;
             HandleInput();
         }
@@ -291,10 +306,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             float alpha = progress;
             Texture2D px = TextureAssets.MagicPixel.Value;
-            //阴影
             Rectangle shadow = panelRect; shadow.Offset(6, 8);
             spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
-            //深渊分层主底色 (更深暗 -> 轻微蓝绿生物荧光)
             int segs = 30;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -311,29 +324,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 c *= alpha * 0.95f;
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
-            //呼吸式暗潮覆盖 (中心略亮, 边缘更暗)
             float darkPulse = (float)Math.Sin(abyssPulse * 1.3f) * 0.5f + 0.5f;
             Color vignette = new Color(0, 20, 28) * (alpha * 0.35f * darkPulse);
             spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), vignette);
-            //水波
             DrawWaveOverlay(spriteBatch, panelRect, alpha * 0.9f);
-            //内层漂浮光雾
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 1.8f) * 0.5f + 0.5f;
             Rectangle inner = panelRect; inner.Inflate(-6, -6);
             spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
-            //框
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
-            //气泡
             foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.9f);
-            //星光 (降低亮度 更像浮游生物)
             foreach (var s in starFx) s.Draw(spriteBatch, alpha * 0.45f);
             if (current == null) return;
             float contentAlpha = contentFade * alpha;
             if (contentAlpha <= 0.01f) return;
+            DrawPortraitAndText(spriteBatch, panelRect, alpha, contentAlpha);
+        }
+
+        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            //说话者
-            if (!string.IsNullOrEmpty(current.Speaker)) {
-                Vector2 speakerPos = new(panelRect.X + Padding, panelRect.Y + 10);
+            bool hasPortrait = false;
+            PortraitData speakerPortrait = null;
+            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f) {
+                hasPortrait = true;
+                speakerPortrait = pd;
+            }
+            float leftOffset = Padding;
+            float topNameOffset = 10f;
+            float textBlockOffsetY = Padding + 36;
+            if (hasPortrait) {
+                float availHeight = panelRect.Height - 54f;
+                float maxPortraitHeight = Math.Clamp(availHeight, 90f, 260f);
+                Texture2D ptex = speakerPortrait.Texture;
+                float scale = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
+                Vector2 pSize = ptex.Size() * scale;
+                Vector2 pPos = new(panelRect.X + Padding + PortraitInnerPadding, panelRect.Y + panelRect.Height - pSize.Y - Padding - 10f);
+                DrawPortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 8), (int)(pPos.Y - 8), (int)(pSize.X + 16), (int)(pSize.Y + 16)), alpha * speakerPortrait.Fade);
+                Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade;
+                if (speakerPortrait.Silhouette) drawColor = new Color(10, 30, 40) * (contentAlpha * speakerPortrait.Fade) * 0.9f;
+                spriteBatch.Draw(ptex, pPos, null, drawColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                Color rim = new Color(140, 230, 255) * (contentAlpha * 0.4f * (float)Math.Sin(panelPulseTimer * 1.2f + speakerPortrait.Fade) * speakerPortrait.Fade + 0.4f * speakerPortrait.Fade);
+                DrawGlowRect(spriteBatch, new Rectangle((int)pPos.X - 4, (int)pPos.Y - 4, (int)pSize.X + 8, (int)pSize.Y + 8), rim);
+                leftOffset += PortraitWidth + 20f;
+            }
+            if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
+                Vector2 speakerPos = new(panelRect.X + leftOffset, panelRect.Y + topNameOffset);
                 Color nameGlow = new Color(140, 230, 255) * contentAlpha * 0.7f;
                 for (int i = 0; i < 4; i++) {
                     float a = MathHelper.TwoPi * i / 4f;
@@ -342,10 +376,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * contentAlpha, 0.9f);
                 Vector2 divStart = speakerPos + new Vector2(0, 26);
-                Vector2 divEnd = divStart + new Vector2(panelRect.Width - Padding * 2, 0);
+                Vector2 divEnd = divStart + new Vector2(panelRect.Width - leftOffset - Padding, 0);
                 DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (contentAlpha * 0.85f), new Color(70, 180, 230) * (contentAlpha * 0.05f), 1.3f);
             }
-            Vector2 textStart = new(panelRect.X + Padding, panelRect.Y + Padding + 36);
+            Vector2 textStart = new(panelRect.X + leftOffset, panelRect.Y + textBlockOffsetY);
             int remaining = visibleCharCount;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
             int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
@@ -376,7 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (!finishedCurrent) {
                 string fast = FastHint.Value;
                 Vector2 fastSize = font.MeasureString(fast) * 0.6f;
-                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y);
+                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 16);
                 Utils.DrawBorderString(spriteBatch, fast, fastPos, new Color(120, 200, 235) * 0.4f * contentAlpha, 0.7f);
             }
         }
@@ -550,6 +584,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Color color = Color.Lerp(startColor, endColor, t);
                 spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
+        }
+        //立绘相关
+        #region Portraits
+        private class PortraitData
+        {
+            public Texture2D Texture;
+            public Color BaseColor = Color.White;
+            public bool Silhouette;
+            public float Fade; //当前淡入
+            public float TargetFade; //目标淡入(0/1)
+        }
+        private static readonly Dictionary<string, PortraitData> portraits = new(StringComparer.Ordinal);
+        private const float PortraitWidth = 120f; //显示宽度
+        private const float PortraitInnerPadding = 8f;
+        private float portraitFadeSpeed = 0.15f;
+
+        /// <summary>注册一个立绘纹理路径</summary>
+        public static void RegisterPortrait(string speaker, string texturePath, Color? baseColor = null, bool silhouette = false) {
+            if (string.IsNullOrWhiteSpace(speaker) || string.IsNullOrWhiteSpace(texturePath)) return;
+            Texture2D tex;
+            try {
+                tex = ModContent.Request<Texture2D>(texturePath, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            }
+            catch {
+                return;
+            }
+            RegisterPortrait(speaker, tex, baseColor, silhouette);
+        }
+        /// <summary>注册一个立绘纹理路径</summary>
+        public static void RegisterPortrait(string speaker, Texture2D texture, Color? baseColor = null, bool silhouette = false) {
+            if (string.IsNullOrWhiteSpace(speaker)) return;
+            if (!portraits.TryGetValue(speaker, out var pd)) {
+                pd = new PortraitData();
+                portraits.Add(speaker, pd);
+            }
+            pd.Texture = texture;
+            pd.BaseColor = baseColor ?? Color.White;
+            pd.Silhouette = silhouette;
+            pd.Fade = 0f;
+            pd.TargetFade = 0f;
+        }
+
+        /// <summary>调整已注册立绘的显示风格</summary>
+        public static void SetPortraitStyle(string speaker, Color? baseColor = null, bool? silhouette = null) {
+            if (!portraits.TryGetValue(speaker, out var pd)) return;
+            if (baseColor.HasValue) pd.BaseColor = baseColor.Value;
+            if (silhouette.HasValue) pd.Silhouette = silhouette.Value;
+        }
+        #endregion
+
+        private void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
+            Texture2D px = TextureAssets.MagicPixel.Value;
+            Color back = new Color(5, 20, 28) * (alpha * 0.85f);
+            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), back);
+            Color edge = new Color(70, 180, 230) * (alpha * 0.6f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+        }
+
+        private void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
+            Texture2D px = TextureAssets.MagicPixel.Value;
+            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
+            int border = 2;
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.6f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.4f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
+            sb.Draw(px, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
         }
     }
 }
