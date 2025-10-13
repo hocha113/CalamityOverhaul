@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
-using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
