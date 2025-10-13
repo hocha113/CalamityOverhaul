@@ -32,14 +32,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    bool hasFish = false;
+                    bool dontStudy = false;
                     HalibutUIPanel.Instance.halibutUISkillSlots.ForEach(slot => {
                         if (slot.FishSkill.UnlockFishID == Main.mouseItem.type) {
-                            hasFish = true;
+                            dontStudy = true;
                         }
                     });
 
-                    if (hasFish) {//你已经研究过这个鱼了
+                    if (!FishSkill.UnlockFishs.ContainsKey(Main.mouseItem.type)) {
+                        dontStudy = true;//如果不是可以研究的东西也不能被研究啊
+                    }
+
+                    if (dontStudy) {//你已经研究过这个鱼了
                         SoundEngine.PlaySound(CWRSound.ButtonZero);
                     }
                     else {

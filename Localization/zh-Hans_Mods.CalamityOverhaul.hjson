@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1548,6 +1548,8 @@ Projectiles: {
 	// FallingStarProjectile.DisplayName: Falling Star Projectile
 	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
 	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
+	// BatSwarmController.DisplayName: Bat Swarm Controller
+	// BatSwarmMinion.DisplayName: Bat Swarm Minion
 }
 
 Configs: {
@@ -5437,6 +5439,12 @@ FishSkill: {
 		DisplayName: 鱼中恶鬼
 		Tooltip: 开火时会释放几只恶鬼去撕咬敌人
 		Studied: 它确实很饥饿
+	}
+
+	FishBat: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

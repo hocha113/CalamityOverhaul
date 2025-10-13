@@ -1568,6 +1568,8 @@ Projectiles: {
 	// FallingStarProjectile.DisplayName: Falling Star Projectile
 	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
 	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
+	// BatSwarmController.DisplayName: Bat Swarm Controller
+	// BatSwarmMinion.DisplayName: Bat Swarm Minion
 }
 
 Configs: {
@@ -5398,6 +5400,12 @@ FishSkill: {
 	}
 
 	FishHunger: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishBat: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
