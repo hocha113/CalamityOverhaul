@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 已解锁的技能列表
         /// </summary>
         public readonly static HashSet<FishSkill> UnlockedSkills = new();
+        /// <summary>
+        /// 隐藏玩家计时器
+        /// </summary>
+        public int HidePlayerTime;
 
         #region 深渊复苏系统
         /// <summary>
@@ -69,8 +73,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int SparklingDepartureTimer { get; set; }
         #endregion
-
-        public int HidePlayerTime;
 
         #region 鱼形换影
         /// <summary>
