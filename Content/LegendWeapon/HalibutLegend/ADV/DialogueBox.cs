@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
     internal class DialogueBox : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "Legend.HalibutText";
-        #region PreProcess Hook
+        #region 对话前置钩子
         public class DialoguePreProcessArgs
         {
             public string Speaker;
@@ -611,8 +611,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
-        //立绘相关
-        #region Portraits
+
+        #region 立绘相关
         private class PortraitData
         {
             public Texture2D Texture;
