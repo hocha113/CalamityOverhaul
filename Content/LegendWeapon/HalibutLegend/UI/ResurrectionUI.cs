@@ -78,20 +78,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        public override void Update() {
-            if (HalibutUIHead.Instance == null || HalibutUIAsset.Resurrection == null) {
-                return;
-            }
-
+        ///<summary>
+        ///纯逻辑更新 (数值平滑、动画驱动变量、粒子生成与生命周期, 不含UI定位)
+        ///</summary>
+        internal void LogicUpdate() {
             var resurrectionSystem = GetResurrectionSystem();
             if (resurrectionSystem == null) {
                 return;
             }
-
-            Vector2 headPos = HalibutUIHead.Instance.DrawPosition;
-            Vector2 headSize = HalibutUIHead.Instance.Size;
-            DrawPosition = headPos + new Vector2(headSize.X / 2 + 20, 40);
-            Size = HalibutUIAsset.Resurrection.Size();
 
             float targetValue = resurrectionSystem.CurrentValue;
             displayValue = MathHelper.Lerp(displayValue, targetValue, SmoothSpeed * 0.7f);
@@ -162,6 +156,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     improveFlash = 0f;
                 }
             }
+        }
+
+        public override void Update() {
+            if (HalibutUIHead.Instance == null || HalibutUIAsset.Resurrection == null) {
+                return;
+            }
+
+            var resurrectionSystem = GetResurrectionSystem();
+            if (resurrectionSystem == null) {
+                return;
+            }
+
+            Vector2 headPos = HalibutUIHead.Instance.DrawPosition;
+            Vector2 headSize = HalibutUIHead.Instance.Size;
+            DrawPosition = headPos + new Vector2(headSize.X / 2 + 20, 40);
+            Size = HalibutUIAsset.Resurrection.Size();
 
             UIHitBox = DrawPosition.GetRectangle(Size);
         }
@@ -401,7 +411,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 divider2End = divider2Start + new Vector2(panelSize.X - horizontalPadding - contentRightPadding, 0);
             DrawDashedLine(spriteBatch, divider2Start, divider2End, edgeColor * 0.6f, 6f, 3f);
 
-            //绘制摘要标题并计算真实高度
             Vector2 summaryHeaderPos = divider2Start + new Vector2(0, dividerSpacing + summarySpacing);
             float headerHeight = DrawSummaryHeader(spriteBatch, summaryHeaderPos, edgeColor, alpha);
             Vector2 summaryStart = summaryHeaderPos + new Vector2(0, headerHeight + 4f);

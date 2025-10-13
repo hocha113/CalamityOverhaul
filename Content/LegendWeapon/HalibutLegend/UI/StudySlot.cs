@@ -17,12 +17,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public Item Item = new Item();
 
         //研究相关字段
-        private int researchTimer = 0; //当前研究时间（帧数）
-        private const int ResearchDuration = 7200; //研究总时长（2分钟 = 7200帧，60fps * 120秒）
-        private bool isResearching = false; //是否正在研究
+        private int researchTimer = 0;//当前研究时间（帧数）
+        private const int ResearchDuration = 7200;//研究总时长（2分钟 = 7200帧，60fps * 120秒）
+        private bool isResearching = false;//是否正在研究
 
         //复苏系统交互
-        private const float ResurrectionMaxIncreasePerFish = 15f; //每条新鱼提升上限
+        private const float ResurrectionMaxIncreasePerFish = 15f;//每条新鱼提升上限
+
+        ///<summary>
+        ///纯逻辑更新: 研究进度推进、研究完成处理、复苏系统数值变更
+        ///</summary>
+        internal void LogicUpdate() {
+            if (!isResearching) {
+                return;
+            }
+            if (!Item.Alives() || Item.type <= ItemID.None) {
+                isResearching = false;
+                researchTimer = 0;
+                return;
+            }
+            researchTimer += 100;//推进进度 (与原逻辑保持一致的加速)
+            if (researchTimer < ResearchDuration) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.ResearchComplete);
+            isResearching = false;
+            researchTimer = 0;
+            bool unlockedNewFish = false;
+            Vector2 startPos = DrawPosition + new Vector2(26, 26);
+            if (FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
+                HalibutUIPanel.Instance.AddSkillWithAnimation(fishSkill, startPos);
+                unlockedNewFish = true;
+            }
+            if (unlockedNewFish) {
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    var res = halibutPlayer.ResurrectionSystem;
+                    float oldMax = res.MaxValue;
+                    res.MaxValue = oldMax + ResurrectionMaxIncreasePerFish;
+                    res.Reset();//清空当前复苏值
+                    float flyNum = Math.Clamp(ResurrectionMaxIncreasePerFish / 3f, 4f, 18f);
+                    ResurrectionUI.Instance?.TriggerImproveEffect(startPos, (int)flyNum);
+                }
+            }
+            Item.TurnToAir();
+        }
 
         public override void Update() {
             Item ??= new Item();
@@ -38,71 +76,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                             dontStudy = true;
                         }
                     });
-
                     if (!FishSkill.UnlockFishs.ContainsKey(Main.mouseItem.type)) {
                         dontStudy = true;//如果不是可以研究的东西也不能被研究啊
                     }
-
                     if (dontStudy) {//你已经研究过这个鱼了
                         SoundEngine.PlaySound(CWRSound.ButtonZero);
                     }
                     else {
                         SoundEngine.PlaySound(SoundID.Grab);
-
-                        //如果正在研究中，则取出物品并停止研究
-                        if (isResearching && Item.Alives() && Item.type > ItemID.None) {
+                        if (isResearching && Item.Alives() && Item.type > ItemID.None) {//正在研究则取出终止
                             Main.mouseItem = Item.Clone();
                             Item.TurnToAir();
                             isResearching = false;
                             researchTimer = 0;
                         }
-                        //否则放入新物品并开始研究
-                        else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {
+                        else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {//放入新物品开始
                             Item = Main.mouseItem.Clone();
                             Main.mouseItem.TurnToAir();
                             isResearching = true;
                             researchTimer = 0;
                         }
-                        //如果槽位有物品但鼠标没有，则取出
-                        else if (Item.Alives() && Item.type > ItemID.None) {
+                        else if (Item.Alives() && Item.type > ItemID.None) {//槽位有物品取出
                             Main.mouseItem = Item.Clone();
                             Item.TurnToAir();
                             isResearching = false;
                             researchTimer = 0;
                         }
                     }
-                }
-            }
-
-            //更新研究进度
-            if (isResearching && Item.Alives() && Item.type > ItemID.None) {
-                researchTimer += 100;
-
-                if (researchTimer >= ResearchDuration) {
-                    SoundEngine.PlaySound(SoundID.ResearchComplete);
-                    isResearching = false;
-                    researchTimer = 0;
-
-                    bool unlockedNewFish = false;
-                    Vector2 startPos = DrawPosition + new Vector2(26, 26);
-
-                    if (FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
-                        HalibutUIPanel.Instance.AddSkillWithAnimation(fishSkill, startPos);
-                        unlockedNewFish = true;
-                    }
-
-                    if (unlockedNewFish) {
-                        if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                            var res = halibutPlayer.ResurrectionSystem;
-                            float oldMax = res.MaxValue;
-                            res.MaxValue = oldMax + ResurrectionMaxIncreasePerFish;
-                            res.Reset(); //清空当前复苏值
-                            float flyNum = Math.Clamp(ResurrectionMaxIncreasePerFish / 3f, 4f, 18f);
-                            ResurrectionUI.Instance?.TriggerImproveEffect(startPos, (int)flyNum);
-                        }
-                    }
-
-                    Item.TurnToAir();
                 }
             }
         }
@@ -111,48 +111,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static Texture2D PictureSlotMask = null;
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(PictureSlot, UIHitBox, Color.White);
-
-            //计算研究进度
             float pct = isResearching && researchTimer > 0 ? researchTimer / (float)ResearchDuration : 0f;
-
             Vector2 barTopLeft = DrawPosition + new Vector2(8, 10);
-
-            //绘制研究的物品
             if (Item.Alives() && Item.type > ItemID.None) {
                 Color itemColor = Color.White;
                 if (isResearching) {
-                    //研究中的物品添加发光效果
                     float glow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.2f + 0.8f;
                     itemColor = Color.White * glow;
                 }
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, DrawPosition + new Vector2(26, 26), 40, 1f, 0, itemColor);
-
-                //使用颜色渐变表示进度
                 Color fillColor = Color.Lerp(Color.White, Color.Blue, pct);
                 if (isResearching) {
-                    //添加脉动效果
                     float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f + 0.9f;
                     fillColor *= pulse;
                 }
-
                 int recOffsetY = (int)(PictureSlotMask.Height * (1f - pct));
                 Rectangle rectangle = new Rectangle(0, recOffsetY, PictureSlotMask.Width, PictureSlotMask.Height - recOffsetY);
                 spriteBatch.Draw(PictureSlotMask, barTopLeft + new Vector2(0, recOffsetY), rectangle, fillColor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             }
-
-            //绘制研究剩余时间文本
             if (isResearching && hoverInMainPage) {
                 int remainingSeconds = (ResearchDuration - researchTimer) / 60;
                 int minutes = remainingSeconds / 60;
                 int seconds = remainingSeconds % 60;
                 string timeText = $"{minutes:D2}:{seconds:D2}";
-
                 Vector2 textPos = DrawPosition + new Vector2(30, -0);
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(timeText);
                 Utils.DrawBorderString(spriteBatch, timeText, textPos - textSize / 2, Color.Gold, 0.8f);
             }
-
-            //绘制进度百分比
             if (isResearching && pct > 0) {
                 string percentText = $"{(int)(pct * 100)}%";
                 Vector2 percentPos = DrawPosition + new Vector2(30, 65);

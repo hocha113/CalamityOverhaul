@@ -16,28 +16,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     internal class DomainUI : UIHandle
     {
         public static DomainUI Instance => UIHandleLoader.GetUIHandleOfType<DomainUI>();
-        public override LayersModeEnum LayersMode => LayersModeEnum.None; //手动调用
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;//手动调用
 
         //展开控制
-        private float expandProgress = 0f; //展开进度（0-1）
-        private const float ExpandDuration = 10f; //展开动画持续帧数
+        private float expandProgress = 0f;//展开进度（0-1）
+        private const float ExpandDuration = 10f;//展开动画持续帧数
 
         //面板尺寸（使用TooltipPanel的大小）
-        private float PanelWidth => TooltipPanel.Width; //214
-        private float PanelHeight => TooltipPanel.Height; //206
+        private float PanelWidth => TooltipPanel.Width;//214
+        private float PanelHeight => TooltipPanel.Height;//206
 
         //位置相关
-        private Vector2 anchorPosition; //锚点位置（动态计算，跟随SkillTooltipPanel）
-        private float currentWidth = 0f; //当前宽度（用于从右到左展开动画）
-        private float targetWidth = 0f; //目标宽度
-        private const float MinWidth = 8f; //最小宽度（完全收起时）
+        private Vector2 anchorPosition;//锚点位置（动态计算，跟随SkillTooltipPanel）
+        private float currentWidth = 0f;//当前宽度（用于从右到左展开动画）
+        private float targetWidth = 0f;//目标宽度
+        private const float MinWidth = 8f;//最小宽度（完全收起时）
 
         //九只奈落之眼 + 额外中心第十眼
         internal List<SeaEyeButton> eyes => player.GetModPlayer<HalibutSave>().eyes;
         internal List<SeaEyeButton> activationSequence => player.GetModPlayer<HalibutSave>().activationSequence;
-        internal const int MaxEyes = 9; //外圈仍然是9
-        internal const float EyeOrbitRadius = 75f; //眼睛轨道半径
-        private ExtraSeaEyeButton extraEye = new(); //第十只中心额外之眼
+        internal const int MaxEyes = 9;//外圈仍然是9
+        internal const float EyeOrbitRadius = 75f;//眼睛轨道半径
+        private ExtraSeaEyeButton extraEye = new();//第十只中心额外之眼
 
         //大比目鱼中心图标
         internal Vector2 halibutCenter;
@@ -61,15 +61,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //内容淡入进度
         private float contentFadeProgress = 0f;
-        private const float ContentFadeDelay = 0.4f; //内容在展开40%后开始淡入
+        private const float ContentFadeDelay = 0.4f;//内容在展开40%后开始淡入
 
         //激活动画（眼睛飞向中心并放大）
         private readonly List<EyeActivationAnimation> activationAnimations = [];
 
         //复苏增长相关常量
-        private const float BaseResurrectionRatePerEye = 0.02f; //单层基础复苏速度
-        private const float GeometricFactor = 1.2f; //几何倍率（每更高一层的额外提高倍率）
-        private const float CrashedEyeSideEffectRate = 0.0002f; //死机眼睛的极小副作用
+        private const float BaseResurrectionRatePerEye = 0.02f;//单层基础复苏速度
+        private const float GeometricFactor = 1.2f;//几何倍率（每更高一层的额外提高倍率）
+        private const float CrashedEyeSideEffectRate = 0.0002f;//死机眼睛的极小副作用
 
         ///<summary>
         ///获取当前激活的眼睛数量（即领域层数）
@@ -105,6 +105,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return t * t * t;
         }
 
+        ///<summary>
+        ///纯逻辑更新 (由系统层调用)
+        ///</summary>
+        internal void LogicUpdate() {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            halibutPlayer.SeaDomainLayers = ActiveEyeCount;//同步层数
+            UpdateResurrectionRate();//更新复苏速度
+        }
+
         public override void Update() {
             if (eyes.Count == 0) {
                 for (int i = 0; i < MaxEyes; i++) {
@@ -122,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (SkillTooltipPanel.Instance.IsShowing) {
                 //获取SkillTooltipPanel的实际宽度
                 float skillPanelWidth = SkillTooltipPanel.Instance.Size.X;
-                anchorPosition = baseAnchor + new Vector2(skillPanelWidth - 10, 0); //-10是为了与技能面板重叠
+                anchorPosition = baseAnchor + new Vector2(skillPanelWidth - 10, 0);//-10是为了与技能面板重叠
             }
             else {
                 anchorPosition = baseAnchor;
@@ -150,11 +162,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
 
             //计算位置（从右向左滑出）
-            DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18); //-6是为了与前面的面板重叠
+            DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18);//-6是为了与前面的面板重叠
             Size = new Vector2(currentWidth, PanelHeight);
 
             if (expandProgress < 0.01f) {
-                return; //完全收起时不更新
+                return;//完全收起时不更新
             }
 
             //更新中心位置（相对于当前实际显示宽度的中心）
@@ -192,7 +204,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 if (eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
                     HandleEyeToggle(eye);
-                    player.GetOverride<HalibutPlayer>().SeaDomainLayers = ActiveEyeCount;
                 }
             }
 
@@ -217,8 +228,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (extraEye.IsActive) {
                     halibutPulses.Add(new HalibutPulseEffect(halibutCenter));
                 }
-                player.GetOverride<HalibutPlayer>().SeaDomainLayers = ActiveEyeCount;
-                UpdateResurrectionRate();
             }
 
             int currentActiveCount = ActiveEyeCount;
@@ -264,14 +273,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     halibutPulses.RemoveAt(i);
                 }
             }
-
-            //同步HalibutPlayer
-            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer2)) {
-                halibutPlayer2.SeaDomainLayers = ActiveEyeCount;
-            }
-
-            //每帧更新复苏速度，确保死机状态变化能及时反映
-            UpdateResurrectionRate();
         }
 
         /// <summary>
@@ -336,7 +337,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 RecalculateLayerNumbers();
                 SpawnEyeToggleParticles(eye, false);
             }
-            UpdateResurrectionRate();
         }
 
         private void RecalculateLayerNumbers() {
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //根据死机状态使用不同颜色
                 Color color;
                 if (isCrashed && activating) {
-                    color = new Color(255, 100, 100); //红色粒子
+                    color = new Color(255, 100, 100);//红色粒子
                 }
                 else {
                     color = activating ? new Color(100, 220, 255) : new Color(80, 80, 100);
@@ -433,14 +433,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             int revealWidth = (int)(PanelWidth * revealProgress);
 
             Rectangle sourceRect = new Rectangle(
-                0, //从左侧开始显示
+                0,//从左侧开始显示
                 0,
                 revealWidth,
                 (int)PanelHeight
             );
 
             Rectangle destRect = new Rectangle(
-                (int)DrawPosition.X, //从左侧对齐
+                (int)DrawPosition.X,//从左侧对齐
                 (int)DrawPosition.Y,
                 revealWidth,
                 (int)PanelHeight
