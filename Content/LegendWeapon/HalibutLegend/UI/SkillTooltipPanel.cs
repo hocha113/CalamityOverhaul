@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -50,6 +51,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int Padding = 12; //内边距
         private const int LineSpacing = 6; //行间距
         private const int IconSize = 48; //图标大小
+
+        //文本滚动
+        private float scrollOffset = 0f; //当前滚动偏移
+        private float maxScrollOffset = 0f; //最大滚动偏移
+        private float scrollVelocity = 0f; //滚动速度（用于平滑）
+        private const float ScrollSpeedPerNotch = 48f; //每个滚轮刻度滚动像素
+        private const float ScrollDamping = 0.85f; //滚动阻尼
 
         /// <summary>
         /// 是否正在显示或展开中
@@ -135,6 +143,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 else {
                     contentFadeProgress = 0f; //切换重新淡入
                 }
+                //切换技能时重置滚动
+                scrollOffset = 0f;
+                scrollVelocity = 0f;
             }
             shouldShow = true;
             pendingHide = false;
@@ -164,6 +175,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             hideDelayTimer = 0;
             lingerTimer = 0;
             outsideTimer = 0;
+            scrollOffset = 0f;
+            scrollVelocity = 0f;
         }
 
         private static float EaseOutBack(float t) {
@@ -213,6 +226,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         pendingHide = false;
                         hideDelayTimer = 0;
                         CurrentSkill = null;
+                        scrollOffset = 0f;
+                        scrollVelocity = 0f;
                     }
                 }
             }
@@ -238,6 +253,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
+            //滚动速度阻尼 & 偏移更新（在 Draw 中会重新 clamp）
+            if (scrollVelocity != 0f) {
+                scrollOffset += scrollVelocity;
+                scrollVelocity *= ScrollDamping;
+                if (Math.Abs(scrollVelocity) < 0.1f) scrollVelocity = 0f;
+            }
+
             //计算当前宽度（使用缓动函数）
             float easedProgress = shouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
@@ -246,6 +268,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float panelHeight = TooltipPanel.Height;
             DrawPosition = anchorPosition + new Vector2(-6, -panelHeight / 2 - 18); //-4是为了与主面板稍微重叠
             Size = new Vector2(currentWidth, panelHeight);
+            UIHitBox = DrawPosition.GetRectangle(Size);
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+            if (hoverInMainPage) {
+                player.CWR().DontSwitchWeaponTime = 2;
+            }
         }
 
         private bool IsMouseOnPanel() {
@@ -361,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 绘制面板内容
+        /// 绘制面板内容（支持滚动）
         /// </summary>
         private void DrawContent(SpriteBatch spriteBatch, float panelAlpha) {
             if (CurrentSkill?.Icon == null) {
@@ -436,24 +463,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //使用WordwrapString进行换行
             string[] lines = Utils.WordwrapString(tooltip, FontAssets.MouseText.Value, textMaxWidth + 40, 20, out int lineCount);
 
-            //绘制每一行文本
-            for (int i = 0; i < Math.Min(lines.Length, 7); i++) {
-                if (string.IsNullOrEmpty(lines[i])) {
+            //文本可视区域底部
+            float textAreaBottom = DrawPosition.Y + Size.Y - Padding;
+            float lineHeight = LineSpacing + 14; //统一行高
+
+            //总文本高度（不限制行数）
+            int actualLines = 0;
+            for (int i = 0; i < lines.Length; i++) {
+                string ln = lines[i];
+                if (string.IsNullOrWhiteSpace(ln)) continue;
+                actualLines++;
+            }
+            float totalTextHeight = actualLines * lineHeight;
+
+            //可视高度（超出则需要滚动）
+            float visibleHeight = textAreaBottom - tooltipPos.Y;
+            bool needScroll = totalTextHeight > visibleHeight + 1f;
+            maxScrollOffset = needScroll ? Math.Max(0, totalTextHeight - visibleHeight) : 0f;
+
+            //处理鼠标滚轮输入（仅在鼠标位于面板内部时，并且需要滚动）
+            if (needScroll && IsMouseOnPanel()) {
+                int delta = PlayerInput.ScrollWheelDelta; // scroll up positive
+                if (delta != 0) {
+                    scrollVelocity -= delta * (ScrollSpeedPerNotch / 120f); //120 is typical per notch
+                }
+            }
+
+            //应用滚动（包含阻尼已在 Update）
+            if (!needScroll) {
+                scrollOffset = 0f;
+                scrollVelocity = 0f;
+            }
+            scrollOffset = Math.Clamp(scrollOffset, 0f, maxScrollOffset);
+
+            //绘制每一行文本（按滚动偏移裁剪）
+            float currentY = 0f;
+            for (int i = 0; i < lines.Length; i++) {
+                string raw = lines[i];
+                if (string.IsNullOrEmpty(raw)) continue;
+
+                string line = raw.TrimEnd('-', ' ');
+                if (string.IsNullOrEmpty(line)) continue;
+
+                //该行在整体文本中的顶部偏移
+                float lineTop = currentY;
+                float lineBottom = lineTop + lineHeight;
+                currentY += lineHeight;
+
+                //剔除不在可视范围的行
+                if (lineBottom < scrollOffset || lineTop > scrollOffset + visibleHeight) {
                     continue;
                 }
 
-                //移除末尾的连字符和空格（Terraria的WordwrapString会在某些情况下添加连字符）
-                string line = lines[i].TrimEnd('-', ' ');
-                if (string.IsNullOrEmpty(line)) {
-                    continue;
+                //行实际显示位置
+                float drawY = tooltipPos.Y + (lineTop - scrollOffset);
+                if (drawY + 14 < tooltipPos.Y - 4 || drawY > textAreaBottom + 4) {
+                    continue; //安全剪裁
                 }
 
-                Vector2 linePos = tooltipPos + new Vector2(4, i * (LineSpacing + 14)); //行高调整为14
-
-                //检查是否超出面板底部
-                if (linePos.Y + 14 > DrawPosition.Y + Size.Y - Padding) {
-                    break;
-                }
+                Vector2 linePos = new Vector2(tooltipPos.X + 4, drawY);
 
                 //文字阴影
                 Utils.DrawBorderString(spriteBatch, line, linePos + new Vector2(1, 1),
@@ -462,6 +530,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //文字主体
                 Color textColor = Color.White * contentAlpha;
                 Utils.DrawBorderString(spriteBatch, line, linePos, textColor, 0.75f);
+            }
+
+            //滚动提示（顶部/底部渐隐遮罩）
+            if (needScroll) {
+                DrawScrollFades(spriteBatch, new Vector2(DrawPosition.X, tooltipPos.Y), visibleHeight, contentAlpha);
             }
 
             //5. 绘制装饰星星（在角落轻微闪烁）
@@ -477,6 +550,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Vector2 bottomRightStar = DrawPosition + new Vector2(currentWidth - 16, Size.Y - 16);
                 float star2Alpha = ((float)Math.Sin(starTime + MathHelper.Pi) * 0.5f + 0.5f) * contentAlpha * 0.7f;
                 DrawStar(spriteBatch, bottomRightStar, 3f, Color.Gold * star2Alpha);
+            }
+        }
+
+        private void DrawScrollFades(SpriteBatch spriteBatch, Vector2 tooltipPos, float visibleHeight, float contentAlpha) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float fadeHeight = 24f;
+            float width = currentWidth - Padding * 2 + 8;
+            Vector2 leftTop = new Vector2(tooltipPos.X + 2, tooltipPos.Y - 8);
+
+            //顶部淡入（如果还有向上的内容）
+            if (scrollOffset > 2f) {
+                for (int i = 0; i < fadeHeight; i += 2) {
+                    float t = 1f - i / fadeHeight;
+                    Color c = Color.Black * (t * 0.35f * contentAlpha);
+                    spriteBatch.Draw(pixel, new Rectangle((int)leftTop.X, (int)(leftTop.Y + i - 2), (int)width, 2), c);
+                }
+            }
+            //底部淡入（还有向下内容）
+            if (scrollOffset < maxScrollOffset - 2f) {
+                float bottomY = tooltipPos.Y + visibleHeight - 2;
+                for (int i = 0; i < fadeHeight; i += 2) {
+                    float t = 1f - i / fadeHeight;
+                    Color c = Color.Black * (t * 0.35f * contentAlpha);
+                    spriteBatch.Draw(pixel, new Rectangle((int)leftTop.X, (int)(bottomY - fadeHeight + i), (int)width, 2), c);
+                }
             }
         }
 

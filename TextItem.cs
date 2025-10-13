@@ -1,5 +1,7 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -92,8 +94,8 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            ScenarioManager.Reset<FirstMet>();
-            ScenarioManager.Start<FirstMet>();
+            //ScenarioManager.Reset<FirstMet>();
+            //ScenarioManager.Start<FirstMet>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

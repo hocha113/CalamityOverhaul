@@ -403,6 +403,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            Main.instance.LoadItem(ItemID.DynamiteFish);
             Texture2D fishTex = TextureAssets.Item[ItemID.DynamiteFish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = fishTex.Frame(1, 1);
