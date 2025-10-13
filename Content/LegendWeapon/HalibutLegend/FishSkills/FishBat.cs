@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -13,7 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Batfish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
-        public bool Active;
         /// <summary>
         /// 蝙蝠群技能最大持续时间
         /// </summary>
@@ -27,8 +25,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (!halibutPlayer.BatSwarmActive && Cooldown <= 0) {
                     item.UseSound = null;
                     Use(item, player);
-                    return false;
                 }
+                return false;
             }
             else {
                 // 左键：消散蝙蝠群
@@ -39,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
             
-            return false;
+            return true;
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
@@ -67,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //SetCooldown();
+            SetCooldown();
             
             // 激活技能
             halibutPlayer.BatSwarmActive = true;
@@ -248,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Owner.wingTime = 0;
 
-            halibutPlayer.HidePlayerTime = 10;
+            halibutPlayer.HidePlayerTime = 2;
 
             // 计算目标速度（朝向光标，允许全方向飞行）
             Vector2 toMouse = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);

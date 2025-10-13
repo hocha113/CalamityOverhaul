@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            halibutPlayer.HidePlayerTime = 10;
+            halibutPlayer.HidePlayerTime = 2;
 
             //弹幕位置跟随玩家
             Projectile.Center = Owner.Center;
