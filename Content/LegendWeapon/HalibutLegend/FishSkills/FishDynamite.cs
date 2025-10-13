@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Texture2D LightBeam;
 
         public override int UnlockFishID => ItemID.DynamiteFish;
-        public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer());
+        public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 velocity = direction * 18f; //投掷速度
 
             //生成雷管鱼弹幕
-            int damage = (int)(player.GetShootState().WeaponDamage * 4.5f);
+            int damage = 1;
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
                 player.Center + direction * 40f,
@@ -310,6 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //大量爆炸粒子
             SpawnExplosionParticles();
 
+            Projectile.damage = Main.player[Projectile.owner].GetShootState().WeaponDamage * (5 + HalibutData.GetDomainLayer() * 6);//实际爆炸伤害
             Projectile.Explode(350, default, false);
 
             //爆炸音效
