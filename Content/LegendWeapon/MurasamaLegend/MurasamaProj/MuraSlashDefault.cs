@@ -1,10 +1,14 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.Cryogen;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.HiveMind;
+using CalamityMod.NPCs.Leviathan;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
+using CalamityMod.NPCs.PlaguebringerGoliath;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.SlimeGod;
@@ -221,15 +225,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2.25f;
             }
             if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 0.65f;
             }
             if (target.type == NPCID.WallofFleshEye) {
+                modifiers.FinalDamage *= 0.45f;
+            }
+            if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 1.1f;
+            }
+            if (target.type == ModContent.NPCType<Cryogen>()) {
+                modifiers.FinalDamage *= 1.1f;
+            }
+            if (target.type == ModContent.NPCType<CryogenShield>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<AquaticScourgeBody>()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == ModContent.NPCType<AquaticScourgeHead>()|| target.type == ModContent.NPCType<AquaticScourgeTail>()) {
+                modifiers.FinalDamage *= 1.15f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
+                modifiers.FinalDamage *= 1.75f;
+            }
+            if (target.type == ModContent.NPCType<Leviathan>() || target.type == ModContent.NPCType<Anahita>()) {
+                modifiers.FinalDamage *= 1.75f;
+            }
+            if (target.type == ModContent.NPCType<AnahitasIceShield>()|| target.type == ModContent.NPCType<AquaticAberration>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == NPCID.GolemHeadFree || target.type == NPCID.Golem) {
+                modifiers.FinalDamage *= 1.75f;
+            }
+            if (target.type == NPCID.DukeFishron) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == NPCID.Sharkron) {
+                modifiers.FinalDamage *= 1.3f;
+            }
+            if (target.type == ModContent.NPCType<PlagueMine>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
@@ -256,7 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
                 || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.75f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
                 modifiers.FinalDamage *= 1.1f;
@@ -307,7 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {
-                modifiers.FinalDamage *= 2.55f;
+                modifiers.FinalDamage *= 1.4f;
             }
 
             if (!target.IsWormBody()) {
