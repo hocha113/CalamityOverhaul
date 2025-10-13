@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<HungryCompanionProjectile>(),
-                        (int)(damage * 1.5 + HalibutData.GetDomainLayer() * 0.5),
+                        (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
                         knockback * 0.1f,
                         player.whoAmI,
                         ai0: ActiveHungries.Count //传递索引
@@ -176,9 +176,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 1200; //20秒生命期
+            Projectile.timeLeft = 60 * (10 + HalibutData.GetDomainLayer() * 2); //10-30秒生命期
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 20;
 
             //初始化随机相位
             breathingPhase = Main.rand.NextFloat(MathHelper.TwoPi);

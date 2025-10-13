@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 // 发射螺旋星星
                 Vector2 direction = velocity.SafeNormalize(Vector2.Zero);
-                int starDamage = (int)(damage * (1 + HalibutData.GetDomainLayer() * 0.15) * 1.300);
+                int starDamage = (int)(damage * (1 + HalibutData.GetDomainLayer() * 0.15));
 
                 // 生成主星星弹幕
                 int mainStar = Projectile.NewProjectile(
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<FallingStarProjectile>(),
-                    (int)(baseDamage * (1 + HalibutData.GetDomainLayer() * 0.15) * 1.300),
+                    (int)(baseDamage * (1 + HalibutData.GetDomainLayer() * 0.15) * 3.00),
                     8f,
                     player.whoAmI,
                     ai0: delay

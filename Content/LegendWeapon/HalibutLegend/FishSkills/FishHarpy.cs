@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center,
                         Vector2.Zero, //初始速度为0
                         ModContent.ProjectileType<HarpyFeatherOrbit>(),
-                        (int)(damage * (1.5 + HalibutData.GetDomainLayer() * 0.25)),
+                        (int)(damage * (2 + HalibutData.GetDomainLayer() * 0.5)),
                         knockback * 0.25f,
                         player.whoAmI,
                         ai0: ActiveFeathers.Count //传递索引用于均匀分布

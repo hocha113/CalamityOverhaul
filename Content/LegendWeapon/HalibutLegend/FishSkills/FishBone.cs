@@ -13,7 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishBone : FishSkill
     {
         public override int UnlockFishID => ItemID.Bonefish;
+<<<<<<< Updated upstream
         public override int DefaultCooldown => 60;
+=======
+        public override int DefaultCooldown => 60 - HalibutData.GetDomainLayer() * 4;
+>>>>>>> Stashed changes
 
         //骨头管理系统
         private static readonly List<int> ActiveBones = new();
@@ -34,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center,
                         Vector2.Zero, //初始速度为0
                         ModContent.ProjectileType<BonefishOrbit>(),
-                        (int)(damage * (2 + HalibutData.GetDomainLayer() * 0.4)),
+                        (int)(damage * (4 + HalibutData.GetDomainLayer() * 1.5)),
                         knockback * 0.25f,
                         player.whoAmI,
                         ai0: ActiveBones.Count //传递索引用于错开动画
@@ -139,9 +143,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float MaxOrbitSpeed = 0.5f;
 
         //蓄力参数
-        private const int GatherDuration = 20;      //聚集时间
-        private const int OrbitDuration = 60;       //环绕时间
-        private const int ChargeDuration = 40;      //蓄力时间
+        private static int GatherDuration = 20 - HalibutData.GetDomainLayer() ;      //聚集时间
+        private static int OrbitDuration = 60 - HalibutData.GetDomainLayer();       //环绕时间
+        private static int ChargeDuration = 40 - HalibutData.GetDomainLayer();      //蓄力时间
         private const float LaunchSpeed = 28f;      //发射速度
 
         //视觉效果
@@ -163,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.penetrate = -1;
             Projectile.timeLeft = int.MaxValue; ;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 3;
         }
 
         public override void AI() {
