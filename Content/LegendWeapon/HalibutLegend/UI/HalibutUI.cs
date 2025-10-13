@@ -235,6 +235,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return newValue;
         }
 
+        private void RollerUpdate() {
+            if (!hoverInMainPage) {
+                return;
+            }
+            player.CWR().DontSwitchWeaponTime = 5;//阻止切换武器
+            if (!SkillAreaHover()) {
+                return;
+            }
+            int delta = PlayerInput.ScrollWheelDeltaForUI;//使用tModLoader提供的UI滚轮增量
+            if (delta == 0) {
+                return;
+            }
+            int steps = delta / 120;
+            if (steps == 0) {
+                steps = delta > 0 ? 1 : -1;
+            }
+            scrollOffset -= steps;//滚轮上推向左, 下拉向右
+            int maxOff = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
+            if (scrollOffset < 0) {
+                scrollOffset = 0;
+            }
+            if (scrollOffset > maxOff) {
+                scrollOffset = maxOff;
+            }
+        }
+
         public override void Update() {
             pendingSlots ??= [];
 
@@ -301,26 +327,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             //滚轮横向滚动逻辑
-            if (hoverInMainPage || SkillAreaHover()) {
-                int delta = PlayerInput.ScrollWheelDeltaForUI;//使用tModLoader提供的UI滚轮增量
-                if (delta != 0) {
-                    int steps = delta / 120;
-                    if (steps == 0) {
-                        steps = delta > 0 ? 1 : -1;
-                    }
-                    scrollOffset -= steps;//滚轮上推向左, 下拉向右
-                    int maxOff = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
-                    if (scrollOffset < 0) {
-                        scrollOffset = 0;
-                    }
-                    if (scrollOffset > maxOff) {
-                        scrollOffset = maxOff;
-                    }
-                    if (player != null) {
-                        player.CWR().DontSwitchWeaponTime = 5;//阻止切换武器
-                    }
-                }
-            }
+            RollerUpdate();
 
             leftButton.DrawPosition = DrawPosition + new Vector2(16, 36);//硬编码调的位置偏移，别问为什么是这个值，问就是刚刚好
             leftButton.Update();
@@ -358,9 +365,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 (int)(DrawPosition.X + 40),
                 (int)(DrawPosition.Y + 20),
                 (int)(Size.X - 80),
-                (int)(Size.Y - 40)
+                44
             );
-            return area.Contains(Main.MouseScreen.ToPoint());
+            return area.Contains(MouseHitBox);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
