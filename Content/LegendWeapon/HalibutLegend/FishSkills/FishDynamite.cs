@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void Use(Item item, Player player) {
-            //SetCooldown();
+            SetCooldown();
 
             //计算投掷方向和速度
             Vector2 direction = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX * player.direction);

@@ -1543,6 +1543,7 @@ Projectiles: {
 	// HellRitualCircle.DisplayName: Hell Ritual Circle
 	// DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
 	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
+	// BonefishOrbit.DisplayName: Bonefish Orbit
 }
 
 Configs: {
@@ -5396,6 +5397,16 @@ FishSkill: {
 			鱼雷会在接触到敌人后爆炸
 			'''
 		Studied: 它的内脏结构非常复杂，主要由“轰”的那部分组成
+	}
+
+	FishBone: {
+		DisplayName: 回旋骨头
+		Tooltip:
+			'''
+			左键开火时周期性的生成伴飞的骨头
+			当受伤时这些骨头会失控的四散而飞
+			'''
+		Studied: 炖汤或许不错，好喝又补钙
 	}
 }
 

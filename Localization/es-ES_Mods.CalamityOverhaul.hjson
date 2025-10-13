@@ -1563,6 +1563,7 @@ Projectiles: {
 	// HellRitualCircle.DisplayName: Hell Ritual Circle
 	// DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
 	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
+	// BonefishOrbit.DisplayName: Bonefish Orbit
 }
 
 Configs: {
@@ -5369,6 +5370,12 @@ FishSkill: {
 	}
 
 	FishDynamite: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishBone: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
