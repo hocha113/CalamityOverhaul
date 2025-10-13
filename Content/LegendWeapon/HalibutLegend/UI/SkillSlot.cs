@@ -6,13 +6,16 @@ using Terraria.ID;
 using Terraria;
 using Terraria.GameContent;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
+using Terraria.ModLoader;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
-    internal class SkillSlot : UIHandle
+    internal class SkillSlot : UIHandle, ILocalizedModType
     {
         public static SkillSlot Instance => UIHandleLoader.GetUIHandleOfType<SkillSlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
+        public string LocalizationCategory => "Legend.HalibutText";
         public FishSkill FishSkill;
         public float hoverSengs;
         public float RelativeIndex;//相对于可见范围的位置
@@ -35,6 +38,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //拖拽相关字段
         internal bool beingDragged;//是否正被拖拽(由面板设置)
         internal float smoothLocalX;//平滑的本地X(由面板驱动)
+
+        internal static LocalizedText Hover1;
+        internal static LocalizedText Hover2;
+        internal static LocalizedText Hover3;
+        internal static LocalizedText Hover4;
+
+        public override void SetStaticDefaults() {
+            Hover1 = this.GetLocalization(nameof(Hover1), () => "Left Click: Select");
+            Hover2 = this.GetLocalization(nameof(Hover2), () => "Right Click: Pin to Top");
+            Hover3 = this.GetLocalization(nameof(Hover3), () => "Scroll Wheel: Scroll");
+            Hover4 = this.GetLocalization(nameof(Hover4), () => "Drag: Sort");
+        }
 
         public override void Update() {
             Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
@@ -133,10 +148,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (hintTimer < HintDelay) {
                 return;
             }
-            string l1 = "左键: 选择";
-            string l2 = "右键: 置顶";
-            string l3 = "滚轮: 滚动";
-            string l4 = "拖拽: 排序";
+            string l1 = Hover1.Value;
+            string l2 = Hover2.Value;
+            string l3 = Hover3.Value;
+            string l4 = Hover4.Value;
             var font = FontAssets.MouseText.Value;
             float w = Math.Max(font.MeasureString(l1).X, Math.Max(font.MeasureString(l2).X, font.MeasureString(l3).X));
             float lineH = 18f;

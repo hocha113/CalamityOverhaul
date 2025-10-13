@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2163,6 +2163,13 @@ Legend: {
 			[i:CalamityMod/HalibutCannon]:
 			这条鱼可成为拼图
 			'''
+
+		SkillSlot: {
+			Hover1: 左键: 选择
+			Hover2: 右键: 置顶
+			Hover3: 滚轮: 滚动
+			Hover4: 长按: 拖拽
+		}
 	}
 
 	MuraText: {

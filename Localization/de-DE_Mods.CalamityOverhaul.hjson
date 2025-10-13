@@ -2181,6 +2181,13 @@ Legend: {
 			[i:CalamityMod/HalibutCannon]:
 			This fish can be used as a piece of the puzzle
 			''' */
+
+		SkillSlot: {
+			// Hover1: Left Click: Select
+			// Hover2: Right Click: Pin to Top
+			// Hover3: Scroll Wheel: Scroll
+			// Hover4: Drag: Sort
+		}
 	}
 
 	MuraText: {
