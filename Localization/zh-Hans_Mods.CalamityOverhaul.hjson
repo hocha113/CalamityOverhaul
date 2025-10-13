@@ -5406,11 +5406,12 @@ FishSkill: {
 	}
 
 	FishBone: {
-		DisplayName: 回旋骨头
+		DisplayName: 鱼骨回旋
 		Tooltip:
 			'''
-			开火时周期性的生成伴飞的骨头
-			当受伤时这些骨头会失控的四散而飞
+			开火时周期性的生成环绕自身的回旋骨
+			环绕一段时间后飞出并返回
+			当受伤时这些骨头会直接碎裂
 			'''
 		Studied: 炖汤或许不错，好喝又补钙
 	}
@@ -5429,16 +5430,20 @@ FishSkill: {
 		DisplayName: 漫天星鱼
 		Tooltip:
 			'''
-			开火时会伴随着星星发射
-			每隔一段时间会召唤一阵坠星落下
+			开火时会伴随着星星发射，星星周围围绕着伴生星
+			每发射一定数量的星星会召唤一阵坠星落下
 			'''
 		Studied: 如果在白天，它或许会变成星星消失
 	}
 
 	FishHunger: {
-		DisplayName: 鱼中恶鬼
-		Tooltip: 开火时会释放几只恶鬼去撕咬敌人
-		Studied: 它确实很饥饿
+		DisplayName: 鱼中饿鬼
+		Tooltip: 
+			'''
+			开火时周期性的生成环绕自身的饿鬼
+			饿鬼数量达到上限时将追随你的指引撕咬敌人
+			'''
+		Studied: 它很饥饿
 	}
 
 	FishBat: {

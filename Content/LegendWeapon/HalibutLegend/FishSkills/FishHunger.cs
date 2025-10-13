@@ -14,11 +14,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishHunger : FishSkill
     {
         public override int UnlockFishID => ItemID.Hungerfish;
-        public override int DefaultCooldown => 30;
+        public override int DefaultCooldown => 60 - +HalibutData.GetDomainLayer() * 3;
 
         //恶鬼管理系统
         private static readonly List<int> ActiveHungries = new();
-        private const int MaxHungries = 3; //最多3个恶鬼
+        private static int MaxHungries = (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<HungryCompanionProjectile>(),
-                        (int)(damage * 0.7f),
-                        knockback * 0.6f,
+                        (int)(damage * 1.5 + HalibutData.GetDomainLayer() * 0.5),
+                        knockback * 0.1f,
                         player.whoAmI,
                         ai0: ActiveHungries.Count //传递索引
                     );
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 600; //10秒生命期
+            Projectile.timeLeft = 1200; //20秒生命期
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
 
