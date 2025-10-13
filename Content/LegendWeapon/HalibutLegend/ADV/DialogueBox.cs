@@ -190,34 +190,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     }
                 }
             }
-            //背景动画计时器（之前遗漏导致面板全静态）
+            //背景动画计时器
             panelPulseTimer += 0.035f;
             scanTimer += 0.022f;
             wavePhase += 0.018f;
+            abyssPulse += 0.01f;
             if (panelPulseTimer > MathHelper.TwoPi) panelPulseTimer -= MathHelper.TwoPi;
             if (scanTimer > MathHelper.TwoPi) scanTimer -= MathHelper.TwoPi;
             if (wavePhase > MathHelper.TwoPi) wavePhase -= MathHelper.TwoPi;
+            if (abyssPulse > MathHelper.TwoPi) abyssPulse -= MathHelper.TwoPi;
             //星粒子刷新
             Vector2 panelPos = anchorPos - new Vector2(FixedWidth / 2f, panelHeight);
             Vector2 panelSize = new(FixedWidth, panelHeight);
             starSpawnTimer++;
             if (Active && starSpawnTimer >= 30 && starFx.Count < 10) {
                 starSpawnTimer = 0;
-                Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(40f, panelSize.X - 40f), Main.rand.NextFloat(52f, panelSize.Y - 52f));
+                Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(BubbleSideMargin, panelSize.X - BubbleSideMargin), Main.rand.NextFloat(56f, panelSize.Y - 56f));
                 starFx.Add(new StarFx(p));
             }
             for (int i = starFx.Count - 1; i >= 0; i--) {
                 if (starFx[i].Update(panelPos, panelSize)) starFx.RemoveAt(i);
             }
-            //气泡刷新
+            //气泡刷新（受UIScale也保持在面板内）
+            float scaleW = Main.UIScale; //用于预留更安全的边界
             bubbleSpawnTimer++;
-            if (Active && bubbleSpawnTimer >= 14 && bubbles.Count < 18) {
+            if (Active && bubbleSpawnTimer >= 16 && bubbles.Count < 20) {
                 bubbleSpawnTimer = 0;
-                Vector2 start = panelPos + new Vector2(Main.rand.NextFloat(36f, panelSize.X - 36f), panelPos.Y + panelSize.Y - 12f);
-                bubbles.Add(new BubbleFx(start, panelSize.X));
+                float left = panelPos.X + BubbleSideMargin * scaleW;
+                float right = panelPos.X + panelSize.X - BubbleSideMargin * scaleW;
+                Vector2 start = new Vector2(Main.rand.NextFloat(left, right), panelPos.Y + panelSize.Y - 10f);
+                bubbles.Add(new BubbleFx(start));
             }
             for (int i = bubbles.Count - 1; i >= 0; i--) {
-                if (bubbles[i].Update()) bubbles.RemoveAt(i);
+                if (bubbles[i].Update(panelPos, panelSize)) bubbles.RemoveAt(i);
             }
             //内容打字机
             if (current != null && !closing) {
@@ -234,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             waitingForAdvance = true;
                         }
                         else if (visibleCharCount % 6 == 0) {
-                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.25f, Pitch = -0.4f });
+                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = -0.45f });
                         }
                     }
                 }
@@ -287,35 +292,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float alpha = progress;
             Texture2D px = TextureAssets.MagicPixel.Value;
             //阴影
-            Rectangle shadow = panelRect; shadow.Offset(5, 7);
-            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.45f));
-            //主底色海洋渐变
-            int segs = 28;
+            Rectangle shadow = panelRect; shadow.Offset(6, 8);
+            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
+            //深渊分层主底色 (更深暗 -> 轻微蓝绿生物荧光)
+            int segs = 30;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
                 float t2 = (i + 1) / (float)segs;
                 int y1 = panelRect.Y + (int)(t * panelRect.Height);
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
-                Color deep = new Color(4, 24, 38);
-                Color mid = new Color(10, 52, 80);
-                Color crest = new Color(24, 96, 130);
-                Color c = Color.Lerp(Color.Lerp(deep, mid, (float)Math.Sin(panelPulseTimer * 0.5f) * 0.5f + 0.5f), crest, t * 0.85f);
-                c *= alpha * 0.92f;
+                Color abyssDeep = new Color(2, 10, 18);
+                Color abyssMid = new Color(6, 32, 48);
+                Color bioEdge = new Color(12, 80, 110);
+                float breathing = (float)Math.Sin(abyssPulse) * 0.5f + 0.5f;
+                Color blendBase = Color.Lerp(abyssDeep, abyssMid, (float)Math.Sin(panelPulseTimer * 0.4f + t * 1.6f) * 0.5f + 0.5f);
+                Color c = Color.Lerp(blendBase, bioEdge, t * 0.6f * (0.4f + breathing * 0.6f));
+                c *= alpha * 0.95f;
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
-            //水波叠加
-            DrawWaveOverlay(spriteBatch, panelRect, alpha);
-            //内层柔光
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.1f) * 0.5f + 0.5f;
-            Rectangle inner = panelRect; inner.Inflate(-5, -5);
-            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(40, 140, 180) * (alpha * 0.08f * pulse));
+            //呼吸式暗潮覆盖 (中心略亮, 边缘更暗)
+            float darkPulse = (float)Math.Sin(abyssPulse * 1.3f) * 0.5f + 0.5f;
+            Color vignette = new Color(0, 20, 28) * (alpha * 0.35f * darkPulse);
+            spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), vignette);
+            //水波
+            DrawWaveOverlay(spriteBatch, panelRect, alpha * 0.9f);
+            //内层漂浮光雾
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 1.8f) * 0.5f + 0.5f;
+            Rectangle inner = panelRect; inner.Inflate(-6, -6);
+            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
             //框
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
             //气泡
-            foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.85f);
-            //星光(浮游生物)
-            foreach (var s in starFx) s.Draw(spriteBatch, alpha * 0.55f);
+            foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.9f);
+            //星光 (降低亮度 更像浮游生物)
+            foreach (var s in starFx) s.Draw(spriteBatch, alpha * 0.45f);
             if (current == null) return;
             float contentAlpha = contentFade * alpha;
             if (contentAlpha <= 0.01f) return;
@@ -323,16 +334,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             //说话者
             if (!string.IsNullOrEmpty(current.Speaker)) {
                 Vector2 speakerPos = new(panelRect.X + Padding, panelRect.Y + 10);
-                Color nameGlow = new Color(120, 220, 255) * contentAlpha * 0.6f;
+                Color nameGlow = new Color(140, 230, 255) * contentAlpha * 0.7f;
                 for (int i = 0; i < 4; i++) {
                     float a = MathHelper.TwoPi * i / 4f;
-                    Vector2 off = a.ToRotationVector2() * 1.7f;
+                    Vector2 off = a.ToRotationVector2() * 1.8f;
                     Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + off, nameGlow * 0.55f, 0.9f);
                 }
                 Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * contentAlpha, 0.9f);
                 Vector2 divStart = speakerPos + new Vector2(0, 26);
                 Vector2 divEnd = divStart + new Vector2(panelRect.Width - Padding * 2, 0);
-                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(90, 200, 255) * (contentAlpha * 0.75f), new Color(90, 200, 255) * (contentAlpha * 0.05f), 1.2f);
+                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (contentAlpha * 0.85f), new Color(70, 180, 230) * (contentAlpha * 0.05f), 1.3f);
             }
             Vector2 textStart = new(panelRect.X + Padding, panelRect.Y + Padding + 36);
             int remaining = visibleCharCount;
@@ -350,10 +361,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
                 if (linePos.Y + lineHeight > panelRect.Bottom - Padding) break;
-                //轻微水流抖动偏移
-                float wobble = (float)Math.Sin((wavePhase * 2f) + i * 0.6f) * 1.2f;
+                float wobble = (float)Math.Sin((wavePhase * 2.2f) + i * 0.55f) * 1.2f;
                 Vector2 wobblePos = linePos + new Vector2(wobble, 0);
-                Color lineColor = Color.Lerp(new Color(205, 240, 255), Color.White, 0.3f) * contentAlpha;
+                Color lineColor = Color.Lerp(new Color(180, 230, 250), Color.White, 0.35f) * contentAlpha;
                 Utils.DrawBorderString(spriteBatch, visLine, wobblePos, lineColor, 0.8f);
             }
             if (waitingForAdvance) {
@@ -361,13 +371,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 string hint = $"> {ContinueHint.Value}<";
                 Vector2 hintSize = font.MeasureString(hint) * 0.6f;
                 Vector2 hintPos = new(panelRect.Right - Padding - hintSize.X, panelRect.Bottom - Padding - hintSize.Y);
-                Utils.DrawBorderString(spriteBatch, hint, hintPos, new Color(120, 220, 255) * blink * contentAlpha, 0.6f);
+                Utils.DrawBorderString(spriteBatch, hint, hintPos, new Color(140, 230, 255) * blink * contentAlpha, 0.8f);
             }
             if (!finishedCurrent) {
                 string fast = FastHint.Value;
-                Vector2 fastSize = font.MeasureString(fast) * 0.5f;
-                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 16);
-                Utils.DrawBorderString(spriteBatch, fast, fastPos, new Color(160, 240, 255) * 0.35f * contentAlpha, 0.5f);
+                Vector2 fastSize = font.MeasureString(fast) * 0.6f;
+                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y);
+                Utils.DrawBorderString(spriteBatch, fast, fastPos, new Color(120, 200, 235) * 0.4f * contentAlpha, 0.7f);
             }
         }
 
@@ -469,6 +479,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private float wavePhase = 0f; //水波相位
+        private float abyssPulse = 0f; //深渊呼吸相位
+        private const float BubbleSideMargin = 34f; //泡泡水平边距控制
         private readonly List<BubbleFx> bubbles = new();
         private int bubbleSpawnTimer = 0;
 
@@ -481,32 +493,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public float Life;
             public float MaxLife;
             public float Seed;
-            public BubbleFx(Vector2 start, float width) {
+            public BubbleFx(Vector2 start) {
                 Pos = start;
                 Radius = Main.rand.NextFloat(3f, 7f);
-                RiseSpeed = Main.rand.NextFloat(0.6f, 1.4f);
-                Drift = Main.rand.NextFloat(-0.25f, 0.25f);
+                RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f);
+                Drift = Main.rand.NextFloat(-0.18f, 0.18f);
                 Life = 0f;
-                MaxLife = Main.rand.NextFloat(80f, 140f);
+                MaxLife = Main.rand.NextFloat(90f, 160f);
                 Seed = Main.rand.NextFloat(10f);
             }
-            public bool Update() {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 float t = Life / MaxLife;
-                Pos.Y -= RiseSpeed * (0.8f + (float)Math.Sin(t * Math.PI) * 0.3f);
-                Pos.X += (float)Math.Sin(Life * 0.05f + Seed) * Drift;
-                if (Life >= MaxLife) {
-                    return true;
-                }
+                Pos.Y -= RiseSpeed * (0.85f + (float)Math.Sin(t * Math.PI) * 0.25f);
+                Pos.X += (float)Math.Sin(Life * 0.045f + Seed) * Drift;
+                //限制在面板内部范围
+                float left = panelPos.X + BubbleSideMargin * 0.7f;
+                float right = panelPos.X + panelSize.X - BubbleSideMargin * 0.7f;
+                if (Pos.X < left) Pos.X = left;
+                if (Pos.X > right) Pos.X = right;
+                if (Life >= MaxLife || Pos.Y < panelPos.Y + 24f) return true;
                 return false;
             }
             public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = TextureAssets.MagicPixel.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
-                float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 20f) * 0.1f) * 0.15f);
-                Color core = new Color(120, 200, 255) * (alpha * 0.55f * fade);
-                Color rim = new Color(40, 150, 210) * (alpha * 0.35f * fade);
+                float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 15f) * 0.1f) * 0.18f);
+                Color core = new Color(140, 230, 255) * (alpha * 0.55f * fade);
+                Color rim = new Color(30, 100, 150) * (alpha * 0.4f * fade);
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), rim, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 1.8f, scale * 0.55f), SpriteEffects.None, 0f);
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f);
             }
