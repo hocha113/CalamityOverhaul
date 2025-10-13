@@ -1559,6 +1559,8 @@ Projectiles: {
 	FishVoodooMark.DisplayName: Fish Voodoo Mark
 	HellFireBlast.DisplayName: Hell Fire Blast
 	HellRitualCircle.DisplayName: Hell Ritual Circle
+	DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
+	DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 }
 
 Configs: {
@@ -5407,6 +5409,12 @@ FishSkill: {
 	}
 
 	FishDemonicHell: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishDynamite: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""

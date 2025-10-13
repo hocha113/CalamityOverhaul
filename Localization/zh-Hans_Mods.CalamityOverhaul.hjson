@@ -1541,6 +1541,8 @@ Projectiles: {
 	// FishVoodooMark.DisplayName: Fish Voodoo Mark
 	// HellFireBlast.DisplayName: Hell Fire Blast
 	// HellRitualCircle.DisplayName: Hell Ritual Circle
+	// DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
+	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 }
 
 Configs: {
@@ -1806,10 +1808,7 @@ TextContent: {
 			去解放被腐化的大陆，砍碎那坨伪神的大脑，剁碎那条紫色蠕虫！
 			我要看到你的刀在异形的血肉中飞舞!
 			'''
-		Murasama_TextDictionary_Content_3:
-			'''
-			腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
-			'''
+		Murasama_TextDictionary_Content_3: 腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
 		Murasama_TextDictionary_Content_4:
 			'''
 			史莱姆王国流传着一个传说，它们有一个堕落的异神，
@@ -5387,6 +5386,16 @@ FishSkill: {
 			地狱火球飞行一段时间后爆炸
 			'''
 		Studied: 这条鱼在地狱中燃烧
+	}
+
+	FishDynamite: {
+		DisplayName: 闪光鱼雷
+		Tooltip:
+			'''
+			右键可以投掷一枚鱼雷
+			鱼雷会在接触到敌人后爆炸
+			'''
+		Studied: 它的内脏结构非常复杂，主要由“轰”的那部分组成
 	}
 }
 
