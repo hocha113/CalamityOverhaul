@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -20,10 +21,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //读取是否曾钓到大比目鱼
             HasCaughtHalibut = tag.GetBool("HasCaughtHalibut");
         }
-        public override void CatchFish(FishingAttempt attempt, ref int itemDrop
-            , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
+        public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
             if (!CWRServerConfig.Instance.WeaponOverhaul || attempt.inHoney || attempt.inLava) {
                 return;
+            }
+
+            if (Main.rand.NextBool(20)) {//5%概率掉落鱼技能，得到一个随机的鱼类
+                List<int> wat = [.. FishSkill.UnlockFishs.Keys];
+                itemDrop = wat[Main.rand.Next(wat.Count)];
             }
 
             if (HasCaughtHalibut) {
