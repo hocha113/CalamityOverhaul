@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -182,7 +183,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     hideProgress += 1f / HideDuration;
                     hideProgress = Math.Clamp(hideProgress, 0f, 1f);
                     if (hideProgress >= 1f) {
-                        //完全关闭
                         current = null;
                         queue.Clear();
                         closing = false;
@@ -190,11 +190,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     }
                 }
             }
+            //背景动画计时器（之前遗漏导致面板全静态）
+            panelPulseTimer += 0.035f;
+            scanTimer += 0.022f;
+            if (panelPulseTimer > MathHelper.TwoPi) {
+                panelPulseTimer -= MathHelper.TwoPi;
+            }
+            if (scanTimer > MathHelper.TwoPi) {
+                scanTimer -= MathHelper.TwoPi;
+            }
+            //星粒子刷新（之前未调用导致列表不维护，虽然不影响文本，但统一整理）
+            Vector2 panelPos = anchorPos - new Vector2(FixedWidth / 2f, panelHeight);
+            Vector2 panelSize = new(FixedWidth, panelHeight);
+            starSpawnTimer++;
+            if (Active && starSpawnTimer >= 24 && starFx.Count < 14) {
+                starSpawnTimer = 0;
+                Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(32f, panelSize.X - 32f), Main.rand.NextFloat(40f, panelSize.Y - 40f));
+                starFx.Add(new StarFx(p));
+            }
+            for (int i = starFx.Count - 1; i >= 0; i--) {
+                if (starFx[i].Update(panelPos, panelSize)) {
+                    starFx.RemoveAt(i);
+                }
+            }
+
             //内容打字机
             if (current != null && !closing) {
                 if (!finishedCurrent) {
                     typeTimer++;
+                    
                     int interval = fastMode ? 1 : TypeInterval;
+
                     if (typeTimer >= interval) {
                         typeTimer = 0;
                         visibleCharCount++;
@@ -204,13 +230,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             finishedCurrent = true;
                             waitingForAdvance = true;
                         }
-                        else {
-                            if (visibleCharCount % 6 == 0) {
-                                SoundEngine.PlaySound(SoundID.MenuTick with {
-                                    Volume = 0.3f,
-                                    Pitch = -0.3f
-                                });
-                            }
+                        else if (visibleCharCount % 6 == 0) {
+                            SoundEngine.PlaySound(SoundID.MenuTick with {
+                                Volume = 0.3f,
+                                Pitch = -0.3f
+                            });
                         }
                     }
                 }
@@ -263,83 +287,208 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
             float width = FixedWidth;
             float height = panelHeight;
-            Vector2 panelOrigin = new Vector2(width / 2f, height);
+            Vector2 panelOrigin = new(width / 2f, height);
             Vector2 drawPos = anchorPos - panelOrigin;
-            drawPos.Y += (1f - eased) * 80f; //从下往上滑
-            Rectangle panelRect = new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
-            //背景参考SkillTooltipPanel风格
+            drawPos.Y += (1f - eased) * 90f;//更明显的上滑
+            Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
             float alpha = progress;
-            Rectangle shadowRect = panelRect;
-            shadowRect.Offset(4, 4);
-            Color shadowColor = Color.Black * (alpha * 0.4f);
-            spriteBatch.Draw(TooltipPanel, shadowRect, null, shadowColor);
-            Color panelColor = Color.White * alpha;
-            spriteBatch.Draw(TooltipPanel, panelRect, null, panelColor);
-            //轻微发光
-            Color glow = Color.Gold with { A = 0 } * (alpha * 0.15f * (float)(Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f));
-            Rectangle glowRect = panelRect;
-            glowRect.Inflate(2, 2);
-            spriteBatch.Draw(TooltipPanel, glowRect, null, glow);
+            //背景分层: 阴影 -> 主底色渐变 -> 内部柔光 -> 边框 -> 扫描线 -> 星粒子
+            Texture2D px = TextureAssets.MagicPixel.Value;
+            //阴影
+            Rectangle shadow = panelRect;
+            shadow.Offset(5, 6);
+            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.5f));
+            //主底色渐变(垂直分段绘制)
+            int segs = 24;
+            for (int i = 0; i < segs; i++) {
+                float t = i / (float)segs;
+                float t2 = (i + 1) / (float)segs;
+                int y1 = panelRect.Y + (int)(t * panelRect.Height);
+                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+                Color top = new Color(20, 32, 54);
+                Color mid = new Color(30, 42, 70);
+                Color bot = new Color(18, 28, 46);
+                Color c = Color.Lerp(Color.Lerp(top, mid, (float)Math.Sin(panelPulseTimer * 0.6f) * 0.5f + 0.5f), bot, t);
+                c *= alpha * 0.95f;
+                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
+            }
+            //内层柔亮晕圈
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.3f) * 0.5f + 0.5f;
+            Rectangle inner = panelRect;
+            inner.Inflate(-4, -4);
+            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), Color.CornflowerBlue * (alpha * 0.08f * pulse));
+            //边框线 + 角落亮点
+            DrawFrame(spriteBatch, panelRect, alpha, pulse);
+            //星粒子
+            foreach (var s in starFx) {
+                s.Draw(spriteBatch, alpha * 0.9f);
+            }
             if (current == null) {
                 return;
             }
-            //内容绘制
             float contentAlpha = contentFade * alpha;
             if (contentAlpha <= 0.01f) {
                 return;
             }
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            Vector2 textStart = new Vector2(panelRect.X + Padding, panelRect.Y + Padding + 28);
-            //绘制说话者
+            //说话者
             if (!string.IsNullOrEmpty(current.Speaker)) {
-                Vector2 speakerPos = new Vector2(panelRect.X + Padding, panelRect.Y + Padding - 4);
-                Color speakerGlow = Color.Gold * contentAlpha * 0.6f;
+                Vector2 speakerPos = new(panelRect.X + Padding, panelRect.Y + 10);
+                Color nameGlow = Color.Gold * contentAlpha * 0.55f;
                 for (int i = 0; i < 4; i++) {
-                    float ang = MathHelper.TwoPi * i / 4f;
-                    Vector2 off = ang.ToRotationVector2() * 1.3f;
-                    Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + off, speakerGlow, 0.85f);
+                    float a = MathHelper.TwoPi * i / 4f;
+                    Vector2 off = a.ToRotationVector2() * 1.5f;
+                    Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + off, nameGlow * 0.6f, 0.9f);
                 }
-                Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * contentAlpha, 0.85f);
+                Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * contentAlpha, 0.9f);
+                //分隔线
+                Vector2 divStart = speakerPos + new Vector2(0, 26);
+                Vector2 divEnd = divStart + new Vector2(panelRect.Width - Padding * 2, 0);
+                DrawGradientLine(spriteBatch, divStart, divEnd, Color.Gold * (contentAlpha * 0.7f), Color.Gold * (contentAlpha * 0.05f), 1.2f);
             }
-            //显示打字机内容
+            //文本区域起点
+            Vector2 textStart = new(panelRect.X + Padding, panelRect.Y + Padding + 34);
             int remaining = visibleCharCount;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
-            for (int i = 0; i < wrappedLines.Length; i++) {
+            int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
+
+            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
                 if (string.IsNullOrEmpty(fullLine)) {
-                    remaining -= 0;
+                    continue;
                 }
-                string visibleLine;
+                string visLine;
                 if (finishedCurrent) {
-                    visibleLine = fullLine;
+                    visLine = fullLine;
                 }
                 else {
                     if (remaining <= 0) {
                         break;
                     }
                     int take = Math.Min(fullLine.Length, remaining);
-                    visibleLine = fullLine.Substring(0, take);
+                    visLine = fullLine[..take];
                     remaining -= take;
                 }
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
                 if (linePos.Y + lineHeight > panelRect.Bottom - Padding) {
                     break;
                 }
-                Utils.DrawBorderString(spriteBatch, visibleLine, linePos, Color.White * contentAlpha, 0.78f);
+
+                Utils.DrawBorderString(spriteBatch, visLine, linePos, Color.White * contentAlpha, 0.78f);
             }
-            //继续提示
             if (waitingForAdvance) {
                 float blink = (float)Math.Sin(advanceBlinkTimer / 12f * MathHelper.TwoPi) * 0.5f + 0.5f;
                 string hint = $"> {ContinueHint.Value}<";
                 Vector2 hintSize = font.MeasureString(hint) * 0.6f;
-                Vector2 hintPos = new Vector2(panelRect.Right - Padding - hintSize.X, panelRect.Bottom - Padding - hintSize.Y);
+                Vector2 hintPos = new(panelRect.Right - Padding - hintSize.X, panelRect.Bottom - Padding - hintSize.Y);
                 Utils.DrawBorderString(spriteBatch, hint, hintPos, Color.Gold * blink * contentAlpha, 0.6f);
             }
             if (!finishedCurrent) {
                 string fast = FastHint.Value;
                 Vector2 fastSize = font.MeasureString(fast) * 0.5f;
-                Vector2 fastPos = new Vector2(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 14);
+                Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 16);
                 Utils.DrawBorderString(spriteBatch, fast, fastPos, Color.White * 0.4f * contentAlpha, 0.5f);
+            }
+        }
+
+        private void DrawFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
+            Texture2D px = TextureAssets.MagicPixel.Value;
+            //外框
+            Color edge = Color.Lerp(new Color(120, 200, 255), new Color(200, 230, 255), pulse) * (alpha * 0.65f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            //内发光边
+            Rectangle inner = rect;
+            inner.Inflate(-4, -4);
+            Color innerC = Color.Gold * (alpha * 0.15f * pulse);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
+            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.7f);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            //角星
+            DrawCornerStar(sb, new Vector2(rect.X + 8, rect.Y + 8), alpha * 0.9f);
+            DrawCornerStar(sb, new Vector2(rect.Right - 8, rect.Y + 8), alpha * 0.9f);
+            DrawCornerStar(sb, new Vector2(rect.X + 8, rect.Bottom - 8), alpha * 0.7f);
+            DrawCornerStar(sb, new Vector2(rect.Right - 8, rect.Bottom - 8), alpha * 0.7f);
+        }
+
+        private void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
+            Texture2D px = TextureAssets.MagicPixel.Value;
+            float size = 4f;
+            Color c = Color.Gold * a;
+            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.22f), SpriteEffects.None, 0f);
+            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.22f), SpriteEffects.None, 0f);
+        }
+
+        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Vector2 edge = end - start;
+            float length = edge.Length();
+            if (length < 1f) {
+                return;
+            }
+            edge.Normalize();
+            float rotation = (float)Math.Atan2(edge.Y, edge.X);
+            int segments = Math.Max(1, (int)(length / 10f));
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                Vector2 segPos = start + edge * (length * t);
+                float segLength = length / segments;
+                Color color = Color.Lerp(startColor, endColor, t);
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+            }
+        }
+
+        //视觉粒子
+        private readonly List<StarFx> starFx = new();
+        private int starSpawnTimer = 0;
+        private float panelPulseTimer = 0f;
+        private float scanTimer = 0f;
+
+        private class StarFx
+        {
+            public Vector2 Pos;
+            public float BaseRadius;
+            public float Rot;
+            public float Life;
+            public float MaxLife;
+            public float Seed;
+            public StarFx(Vector2 p) {
+                Pos = p;
+                BaseRadius = Main.rand.NextFloat(2f, 4f);
+                Rot = Main.rand.NextFloat(MathHelper.TwoPi);
+                Life = 0f;
+                MaxLife = Main.rand.NextFloat(60f, 140f);
+                Seed = Main.rand.NextFloat(10f);
+            }
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
+                Life++;
+                Rot += 0.02f;
+                float t = Life / MaxLife;
+                float amp = (float)Math.Sin((t + Seed) * Math.PI) * 0.5f + 0.5f;
+                float drift = (float)Math.Sin((Life + Seed * 20f) * 0.03f) * 6f;
+                Pos.X += drift * 0.02f;
+                //若超出范围或生命结束
+                if (Life >= MaxLife) {
+                    return true;
+                }
+                //若离开可视边界(容差)
+                if (Pos.X < panelPos.X - 40 || Pos.X > panelPos.X + panelSize.X + 40 || Pos.Y < panelPos.Y - 40 || Pos.Y > panelPos.Y + panelSize.Y + 40) {
+                    return true;
+                }
+                return false;
+            }
+            public void Draw(SpriteBatch sb, float alpha) {
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
+                float scale = BaseRadius * (0.6f + (float)Math.Sin((Life + Seed * 33f) * 0.08f) * 0.4f);
+                Color c = Color.Gold * (0.7f * fade);
+                Texture2D px = TextureAssets.MagicPixel.Value;
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
             }
         }
     }

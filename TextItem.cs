@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -35,7 +37,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         //public override void SetStaticDefaults() {
@@ -92,6 +94,8 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            ScenarioManager.Reset<FirstMet>();
+            ScenarioManager.Start<FirstMet>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
@@ -100,10 +104,10 @@ namespace CalamityOverhaul
 
             //MagikeCrossed.GetData(point).Domp();
 
-            for (int i = 0; i < 66; i++) {
-                Vector2 spawnPos = player.position + new Vector2(Main.rand.Next(229), Main.rand.Next(229));
-                PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
-            }
+            //for (int i = 0; i < 66; i++) {
+            //    Vector2 spawnPos = player.position + new Vector2(Main.rand.Next(229), Main.rand.Next(229));
+            //    PRTLoader.NewParticle<PRT_Nutritional>(spawnPos, Vector2.Zero);
+            //}
 
             //Main.MouseWorld.ToTileCoordinates16().Domp();
             //if (player.altFunctionUse == 2) {
