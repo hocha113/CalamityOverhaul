@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2210,6 +2210,11 @@ Legend: {
 			Trend4: 快速累积
 			Trend5: 危险激增
 			SummaryFormat: 状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
+		}
+
+		DialogueBox: {
+			// ContinueHint: 继续
+			// FastHint: 加速
 		}
 	}
 

@@ -2,6 +2,8 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
@@ -160,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-
+            ScenarioManager.Start("FirstMet");
             var hp = player.GetOverride<HalibutPlayer>();
             //记录克隆需要的射击事件
             if (hp.CloneFishActive) {

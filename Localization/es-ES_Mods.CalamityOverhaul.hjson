@@ -2265,6 +2265,11 @@ Legend: {
 			// Trend5: Spiraling toward collapse
 			// SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
 		}
+
+		DialogueBox: {
+			// ContinueHint: 继续
+			// FastHint: 加速
+		}
 	}
 
 	MuraText: {
