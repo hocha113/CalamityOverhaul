@@ -1545,6 +1545,8 @@ Projectiles: {
 	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 	// BonefishOrbit.DisplayName: Bonefish Orbit
 	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
+	// FallingStarProjectile.DisplayName: Falling Star Projectile
+	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
 }
 
 Configs: {
@@ -5418,6 +5420,16 @@ FishSkill: {
 			盘旋一段时间后会向四周飞出
 			'''
 		Studied: 我不认为这条鱼会飞，但它确实有翅膀
+	}
+
+	FishFallenStar: {
+		DisplayName: 漫天星鱼
+		Tooltip:
+			'''
+			开火时会伴随着星星发射
+			每隔一段时间会召唤一阵坠星落下
+			'''
+		Studied: 如果在白天，它或许会变成星星消失
 	}
 }
 

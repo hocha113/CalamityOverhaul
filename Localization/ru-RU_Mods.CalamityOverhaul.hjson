@@ -1572,6 +1572,8 @@ Projectiles: {
 	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 	// BonefishOrbit.DisplayName: Bonefish Orbit
 	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
+	// FallingStarProjectile.DisplayName: Falling Star Projectile
+	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
 }
 
 Configs: {
@@ -5532,6 +5534,12 @@ FishSkill: {
 	}
 
 	FishHarpy: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishFallenStar: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
