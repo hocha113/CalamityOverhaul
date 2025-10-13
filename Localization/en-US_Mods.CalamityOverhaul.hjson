@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2211,6 +2211,22 @@ Legend: {
 			Hover2: Right Click: Pin to Top
 			Hover3: Scroll Wheel: Scroll
 			Hover4: Drag: Sort
+		}
+
+		DomainUI: {
+			TitleText: Oceanic Domain
+			ExtraEyeTitleText: Layer X
+			CrashedLabelText: System Failure
+			EyeDesc1: The first eye opens — faint tides begin to resonate.
+			EyeDesc2: With both eyes awakened, water pressure gathers slowly, power emerging.
+			EyeDesc3: Triple vision locks onto the currents; the domain starts to stabilize.
+			EyeDesc4: The fourth resonance amplifies — a subtle chill spreads through the waves.
+			EyeDesc5: Five layers intertwine; a circular whirl forms beneath your feet, offering protection.
+			EyeDesc6: The sixth pulse surges, revealing clear veins of flowing energy.
+			EyeDesc7: With seven eyes shining together, the tide’s erosion of the outside world intensifies.
+			EyeDesc8: The eighth layer compresses the pressure into solidity; strength nears its peak.
+			EyeDesc9: The ninth boundary unveils the full form of the abyss — great power flows freely.
+			EyeDesc10: The tenth ascends beyond limit — a realm of gods.
 		}
 	}
 

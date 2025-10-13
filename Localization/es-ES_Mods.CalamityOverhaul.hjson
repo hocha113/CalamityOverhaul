@@ -2224,6 +2224,22 @@ Legend: {
 			// Hover3: Scroll Wheel: Scroll
 			// Hover4: Drag: Sort
 		}
+
+		DomainUI: {
+			// TitleText: 海域领域
+			// ExtraEyeTitleText: 第 十 层
+			// CrashedLabelText: 已死机
+			// EyeDesc1: 初启领域之眼，微弱的潮汐感开始共鸣
+			// EyeDesc2: 双目同开，水压在周遭缓慢聚集，力量渐显
+			// EyeDesc3: 三重视界锁定海流，领域开始稳定成型
+			// EyeDesc4: 第四层共鸣放大，涌动的寒意悄然扩散
+			// EyeDesc5: 五层交织，环形水旋于脚下成形，给予守护
+			// EyeDesc6: 第六层脉冲涌现，能量脉络变得清晰可辨
+			// EyeDesc7: 七眼同辉，潮域对外界的侵蚀性显著增强
+			// EyeDesc8: 第八层使水压几近凝实，力量几乎到达巅峰
+			// EyeDesc9: 九层极境，海渊之形完全显现，伟力贯通
+			// EyeDesc10: 十层无限叠加，神之境界
+		}
 	}
 
 	MuraText: {

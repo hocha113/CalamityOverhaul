@@ -6,6 +6,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader; //补充ModLoader引用以使用ILocalizedModType扩展
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -13,8 +15,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     ///<summary>
     ///领域控制面板
     ///</summary>
-    internal class DomainUI : UIHandle
+    internal class DomainUI : UIHandle, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend.HalibutText";
+        public static LocalizedText TitleText;
+        public static LocalizedText ExtraEyeTitleText;
+        public static LocalizedText CrashedLabelText;
+        internal static LocalizedText[] EyeLayerDescriptions = new LocalizedText[11];//1-10
+
+        public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "海域领域");
+            ExtraEyeTitleText = this.GetLocalization(nameof(ExtraEyeTitleText), () => "第 十 层");
+            CrashedLabelText = this.GetLocalization(nameof(CrashedLabelText), () => "已死机");
+            EyeLayerDescriptions[1] = this.GetLocalization("EyeDesc1", () => "初启领域之眼，微弱的潮汐感开始共鸣");
+            EyeLayerDescriptions[2] = this.GetLocalization("EyeDesc2", () => "双目同开，水压在周遭缓慢聚集，力量渐显");
+            EyeLayerDescriptions[3] = this.GetLocalization("EyeDesc3", () => "三重视界锁定海流，领域开始稳定成型");
+            EyeLayerDescriptions[4] = this.GetLocalization("EyeDesc4", () => "第四层共鸣放大，涌动的寒意悄然扩散");
+            EyeLayerDescriptions[5] = this.GetLocalization("EyeDesc5", () => "五层交织，环形水旋于脚下成形，给予守护");
+            EyeLayerDescriptions[6] = this.GetLocalization("EyeDesc6", () => "第六层脉冲涌现，能量脉络变得清晰可辨");
+            EyeLayerDescriptions[7] = this.GetLocalization("EyeDesc7", () => "七眼同辉，潮域对外界的侵蚀性显著增强");
+            EyeLayerDescriptions[8] = this.GetLocalization("EyeDesc8", () => "第八层使水压几近凝实，力量几乎到达巅峰");
+            EyeLayerDescriptions[9] = this.GetLocalization("EyeDesc9", () => "九层极境，海渊之形完全显现，伟力贯通");
+            EyeLayerDescriptions[10] = this.GetLocalization("EyeDesc10", () => "十层无限叠加，神之境界");
+        }
+
         public static DomainUI Instance => UIHandleLoader.GetUIHandleOfType<DomainUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//手动调用
 
@@ -134,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (SkillTooltipPanel.Instance.IsShowing) {
                 //获取SkillTooltipPanel的实际宽度
                 float skillPanelWidth = SkillTooltipPanel.Instance.Size.X;
-                anchorPosition = baseAnchor + new Vector2(skillPanelWidth - 10, 0);//-10是为了与技能面板重叠
+                anchorPosition = baseAnchor + new Vector2(skillPanelWidth - 10, 0);//-10重叠
             }
             else {
                 anchorPosition = baseAnchor;
@@ -162,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
 
             //计算位置（从右向左滑出）
-            DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18);//-6是为了与前面的面板重叠
+            DrawPosition = anchorPosition + new Vector2(-6, -PanelHeight / 2 - 18);
             Size = new Vector2(currentWidth, PanelHeight);
 
             if (expandProgress < 0.01f) {
@@ -313,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     rate += CrashedEyeSideEffectRate;
                 }
                 else {
-                    rate += BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, 10 - 1);
+                    rate += BaseResurrectionRatePerEye * MathF.Pow(GeometricFactor, 9);
                 }
             }
 
@@ -562,7 +586,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
             float titleAlpha = contentFadeProgress * alpha;
-            string title = "海域领域";
+            string title = TitleText.Value;
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title);
             Vector2 titlePos = DrawPosition + new Vector2(currentWidth / 2 - titleSize.X / 2, 4);
             Color titleGlow = Color.Gold * titleAlpha * 0.5f;
@@ -577,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
             int displayLayer = eye.LayerNumberDisplay;
-            string layerChinese = ChineseNumeral(displayLayer);
+            string layerChinese = GetLayerNumeralText(displayLayer);
             string title = $"第 {layerChinese} 层";
             string desc = DomainEyeDescriptions.GetDescription(displayLayer);
             float tooltipAlpha = alpha * 0.95f;
@@ -611,7 +635,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             // 已死机标签（右上角）
             if (eye.IsCrashed) {
-                string crashed = "已死机";
+                string crashed = CrashedLabelText.Value;
                 Vector2 crashSize = FontAssets.MouseText.Value.MeasureString(crashed) * 0.6f;
                 Vector2 crashPos = new(panelRect.Right - 10 - crashSize.X, titlePos.Y + 2);
                 // 发光底
@@ -653,7 +677,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawExtraEyeTooltip(SpriteBatch spriteBatch, float alpha) {
-            string title = "第 十 层";
+            string title = ExtraEyeTitleText.Value;
             string desc = DomainEyeDescriptions.GetDescription(10);
             float tooltipAlpha = alpha * 0.98f;
             Vector2 panelSize = new Vector2(170, 120);
@@ -706,7 +730,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawStar(spriteBatch, star, 4.5f, Color.Gold * (tooltipAlpha * (0.6f + swirl * 0.4f)));
         }
 
-        private static string ChineseNumeral(int i) {
+        private static string GetLayerNumeralText(int i) {
             return i switch {
                 1 => "一",
                 2 => "二",

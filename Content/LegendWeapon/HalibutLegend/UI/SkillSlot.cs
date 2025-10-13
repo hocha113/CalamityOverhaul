@@ -45,10 +45,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         internal static LocalizedText Hover4;
 
         public override void SetStaticDefaults() {
-            Hover1 = this.GetLocalization(nameof(Hover1), () => "Left Click: Select");
-            Hover2 = this.GetLocalization(nameof(Hover2), () => "Right Click: Pin to Top");
-            Hover3 = this.GetLocalization(nameof(Hover3), () => "Scroll Wheel: Scroll");
-            Hover4 = this.GetLocalization(nameof(Hover4), () => "Drag: Sort");
+            Hover1 = this.GetLocalization(nameof(Hover1), () => "左键: 选择");
+            Hover2 = this.GetLocalization(nameof(Hover2), () => "右键: 置顶");
+            Hover3 = this.GetLocalization(nameof(Hover3), () => "滚轮: 滚动");
+            Hover4 = this.GetLocalization(nameof(Hover4), () => "长按: 拖拽");
         }
 
         public override void Update() {
