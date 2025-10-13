@@ -20,6 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static readonly List<int> ActiveFeathers = new();
         private const int MaxFeathers = 12; //最多12根羽毛
         
+        //同步发射标志
+        public static bool ShouldLaunchAll { get; set; } = false;
+        
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             
@@ -52,6 +55,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                             Volume = 0.5f,
                             Pitch = 0.2f + ActiveFeathers.Count * 0.04f
                         }, player.Center);
+                        
+                        //检查是否达到最大值
+                        if (ActiveFeathers.Count >= MaxFeathers) {
+                            //延迟一小段时间后触发同步发射
+                            ShouldLaunchAll = false; //先重置
+                            
+                            //通知所有羽毛准备发射
+                            NotifyFeathersToLaunch(player);
+                        }
                     }
                 }
             }
@@ -61,6 +73,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static void CleanupInactiveFeathers() {
             ActiveFeathers.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
+        }
+
+        private void NotifyFeathersToLaunch(Player player) {
+            //播放特殊的蓄力完成音效
+            SoundEngine.PlaySound(SoundID.Item30 with { 
+                Volume = 0.7f, 
+                Pitch = 0.6f 
+            }, player.Center);
+            
+            SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { 
+                Volume = 0.5f, 
+                Pitch = 0.8f 
+            }, player.Center);
+            
+            //生成蓄力完成的视觉特效
+            for (int i = 0; i < 30; i++) {
+                float angle = MathHelper.TwoPi * i / 30f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
+                
+                Dust charge = Dust.NewDustPerfect(
+                    player.Center,
+                    DustID.Cloud,
+                    velocity,
+                    100,
+                    new Color(255, 255, 255),
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                charge.noGravity = true;
+                charge.fadeIn = 1.3f;
+            }
         }
 
         private void SpawnSummonEffect(Vector2 position) {
@@ -109,6 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Gathering,    //聚集阶段：羽毛飘向玩家
             Floating,     //漂浮阶段：自然漂浮并均匀分布
             Orbiting,     //环绕阶段：优雅旋转
+            Charging,     //蓄力阶段：所有羽毛到齐，准备同步发射
             Launching     //发射阶段：沿切线方向飞出
         }
         
@@ -136,11 +179,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int GatherDuration = 25;      //聚集时间
         private const int FloatDuration = 35;       //漂浮时间
         private const int OrbitDuration = 80;       //环绕时间
+        private const int ChargeDuration = 30;      //蓄力时间（新增）
         private const float LaunchSpeed = 22f;      //发射速度
         
         //视觉效果
         private float glowIntensity = 0f;
         private float swayAngle = 0f; //羽毛摇摆角度
+        
+        //同步发射计时器
+        private int launchCountdown = 0;
+        private const int LaunchDelay = 20; //蓄力完成后20帧发射
         
         [VaultLoaden(CWRConstant.Masking)]
         private static Asset<Texture2D> SoftGlow = null;
@@ -176,6 +224,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             
             StateTimer++;
             
+            //检查是否应该进入蓄力阶段
+            if (State == FeatherState.Orbiting) {
+                CheckForChargingPhase(owner);
+            }
+            
             //状态机
             switch (State) {
                 case FeatherState.Gathering:
@@ -188,6 +241,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     
                 case FeatherState.Orbiting:
                     OrbitingPhaseAI(owner);
+                    break;
+                    
+                case FeatherState.Charging:
+                    ChargingPhaseAI(owner);
                     break;
                     
                 case FeatherState.Launching:
@@ -206,6 +263,72 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.9f * lightIntensity, 
                 0.9f * lightIntensity, 
                 1.0f * lightIntensity);
+        }
+
+        /// <summary>
+        /// 检查是否应该进入蓄力阶段
+        /// </summary>
+        private void CheckForChargingPhase(Player owner) {
+            //计算当前羽毛总数
+            int totalFeathers = 0;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                if (Main.projectile[i].active && 
+                    Main.projectile[i].type == Projectile.type && 
+                    Main.projectile[i].owner == owner.whoAmI) {
+                    totalFeathers++;
+                }
+            }
+            
+            //如果达到12根且环绕时间超过一定阈值，进入蓄力阶段
+            if (totalFeathers >= 12 && StateTimer >= 30) {
+                State = FeatherState.Charging;
+                StateTimer = 0;
+                launchCountdown = LaunchDelay;
+                
+                //只由第一个羽毛播放蓄力音效（避免重复）
+                if (Projectile.whoAmI == GetFirstFeatherID(owner)) {
+                    SoundEngine.PlaySound(SoundID.Item30 with { 
+                        Volume = 0.7f, 
+                        Pitch = 0.6f 
+                    }, owner.Center);
+                    
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { 
+                        Volume = 0.5f, 
+                        Pitch = 0.8f 
+                    }, owner.Center);
+                    
+                    //蓄力完成的视觉特效
+                    for (int i = 0; i < 30; i++) {
+                        float angle = MathHelper.TwoPi * i / 30f;
+                        Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
+                        
+                        Dust charge = Dust.NewDustPerfect(
+                            owner.Center,
+                            DustID.Cloud,
+                            velocity,
+                            100,
+                            new Color(255, 255, 255),
+                            Main.rand.NextFloat(1.5f, 2.5f)
+                        );
+                        charge.noGravity = true;
+                        charge.fadeIn = 1.3f;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取第一个羽毛的ID（用于避免重复播放音效）
+        /// </summary>
+        private int GetFirstFeatherID(Player owner) {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                if (Main.projectile[i].active && 
+                    Main.projectile[i].type == Projectile.type && 
+                    Main.projectile[i].owner == owner.whoAmI) {
+                    return Main.projectile[i].whoAmI;
+                }
+            }
+            return Projectile.whoAmI;
         }
 
         /// <summary>
@@ -321,10 +444,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 环绕阶段：优雅旋转并加速
+        /// 环绕阶段：优雅旋转
         /// </summary>
         private void OrbitingPhaseAI(Player owner) {
-            float progress = StateTimer / OrbitDuration;
+            float progress = MathHelper.Clamp(StateTimer / OrbitDuration, 0f, 1f);
             
             //逐渐加速（使用EaseInOutQuad获得更平滑的加速）
             float speedProgress = EaseInOutQuad(progress);
@@ -351,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.35f);
             
             //辉光逐渐增强
-            glowIntensity = MathHelper.Lerp(0.6f, 1f, progress);
+            glowIntensity = MathHelper.Lerp(0.6f, 0.8f, progress);
             
             //优雅的羽毛轨迹
             if (Main.rand.NextBool(4)) {
@@ -359,18 +482,97 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             
             //旋转风声（频率提升）
-            if (StateTimer % (int)MathHelper.Lerp(30, 12, progress) == 0) {
+            if (StateTimer % (int)MathHelper.Lerp(30, 15, progress) == 0) {
                 SoundEngine.PlaySound(SoundID.Item32 with { 
-                    Volume = 0.2f + 0.2f * progress, 
-                    Pitch = 0.3f + progress * 0.4f 
+                    Volume = 0.2f + 0.15f * progress, 
+                    Pitch = 0.3f + progress * 0.3f 
                 }, Projectile.Center);
             }
             
-            //转入发射阶段
-            if (StateTimer >= OrbitDuration) {
+            //注意：不再在这里自动转入发射阶段，等待蓄力阶段
+        }
+
+        /// <summary>
+        /// 蓄力阶段：所有羽毛准备同步发射
+        /// </summary>
+        private void ChargingPhaseAI(Player owner) {
+            float progress = StateTimer / ChargeDuration;
+            
+            //保持最高旋转速度
+            orbitSpeed = MaxOrbitSpeed;
+            
+            //半径脉动（蓄力震荡感）
+            float radiusOscillation = (float)Math.Sin(StateTimer * 0.6f) * 12f * progress;
+            float currentRadius = orbitRadius * 0.92f + radiusOscillation;
+            
+            //更新环绕
+            currentOrbitAngle -= orbitSpeed;
+            Vector2 orbitOffset = currentOrbitAngle.ToRotationVector2() * currentRadius;
+            Vector2 targetPos = owner.Center + orbitOffset;
+            Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.4f);
+            
+            //最大辉光并闪烁
+            glowIntensity = 0.9f + (float)Math.Sin(StateTimer * 1.2f) * 0.1f;
+            
+            //密集蓄力粒子
+            if (Main.rand.NextBool()) {
+                SpawnChargeParticle(owner.Center, progress);
+            }
+            
+            //蓄力脉冲
+            if (StateTimer % 8 == 0) {
+                SpawnChargePulse();
+            }
+            
+            //高频蓄力音效
+            if (StateTimer % 6 == 0) {
+                SoundEngine.PlaySound(SoundID.Item32 with { 
+                    Volume = 0.2f + progress * 0.3f, 
+                    Pitch = 0.5f + progress * 0.5f 
+                }, Projectile.Center);
+            }
+            
+            //倒计时发射
+            launchCountdown--;
+            if (launchCountdown <= 0) {
                 State = FeatherState.Launching;
                 StateTimer = 0;
                 LaunchFeather();
+            }
+        }
+
+        private void SpawnChargeParticle(Vector2 ownerCenter, float progress) {
+            Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
+            Vector2 velocity = toCenter * Main.rand.NextFloat(2f, 5f) * progress;
+            
+            Dust charge = Dust.NewDustPerfect(
+                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                DustID.Cloud,
+                velocity,
+                100,
+                new Color(255, 255, 255),
+                Main.rand.NextFloat(1.3f, 2f)
+            );
+            charge.noGravity = true;
+            charge.fadeIn = 1.2f;
+        }
+
+        private void SpawnChargePulse() {
+            //环形蓄力脉冲
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
+                Vector2 velocity = angle.ToRotationVector2() * 3f;
+                
+                Dust pulse = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Cloud,
+                    velocity,
+                    100,
+                    new Color(255, 255, 255),
+                    Main.rand.NextFloat(1.5f, 2.2f)
+                );
+                pulse.noGravity = true;
+                pulse.fadeIn = 1.3f;
             }
         }
 
@@ -394,15 +596,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //发射羽毛特效
             SpawnLaunchEffect();
             
-            //轻柔的发射音效
-            SoundEngine.PlaySound(SoundID.Item1 with { 
-                Volume = 0.5f, 
-                Pitch = 0.6f 
-            }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item32 with { 
-                Volume = 0.4f, 
-                Pitch = 0.8f 
-            }, Projectile.Center);
+            //轻柔的发射音效（只由第一个羽毛播放）
+            if (Projectile.whoAmI == GetFirstFeatherID(Main.player[Projectile.owner])) {
+                SoundEngine.PlaySound(SoundID.Item1 with { 
+                    Volume = 0.6f, 
+                    Pitch = 0.6f 
+                }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item32 with { 
+                    Volume = 0.5f, 
+                    Pitch = 0.8f 
+                }, Projectile.Center);
+            }
         }
 
         /// <summary>
@@ -604,7 +808,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float alpha = (255f - Projectile.alpha) / 255f;
             
             //===== 绘制飘逸拖尾 =====
-            if (State == FeatherState.Orbiting || State == FeatherState.Launching) {
+            if (State == FeatherState.Orbiting || State == FeatherState.Charging || State == FeatherState.Launching) {
                 DrawFeatherAfterimages(sb, featherTex, sourceRect, origin, baseColor, alpha);
             }
             
@@ -613,6 +817,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = Projectile.scale * (0.8f + glowIntensity * 0.4f);
                 float glowAlpha = (glowIntensity - 0.3f) * alpha * 0.3f;
+                
+                //蓄力阶段增强辉光
+                if (State == FeatherState.Charging) {
+                    glowAlpha *= 1.5f;
+                }
                 
                 //柔和白光
                 sb.Draw(
@@ -652,9 +861,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
             
-            //环绕/发射时的轻微发光覆盖层
-            if ((State == FeatherState.Orbiting || State == FeatherState.Launching) && glowIntensity > 0.5f) {
+            //环绕/蓄力/发射时的轻微发光覆盖层
+            if ((State == FeatherState.Orbiting || State == FeatherState.Charging || State == FeatherState.Launching) 
+                && glowIntensity > 0.5f) {
                 float lightAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.35f;
+                
+                //蓄力阶段增强
+                if (State == FeatherState.Charging) {
+                    lightAlpha *= 1.3f;
+                }
+                
                 Color featherLight = new Color(245, 245, 255);
                 
                 sb.Draw(
@@ -679,19 +895,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawFeatherAfterimages(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect, 
             Vector2 origin, Color baseColor, float alpha) {
             
-            int afterimageCount = State == FeatherState.Launching ? 10 : 6;
+            int afterimageCount = State == FeatherState.Launching ? 10 : (State == FeatherState.Charging ? 8 : 6);
             
             for (int i = 0; i < afterimageCount; i++) {
                 if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
                 
                 float afterimageProgress = 1f - i / (float)afterimageCount;
-                float afterimageAlpha = afterimageProgress * alpha * 0.5f;
+                float afterimageAlpha = afterimageProgress * alpha * (State == FeatherState.Charging ? 0.6f : 0.5f);
                 
-                //残影颜色：环绕时淡蓝白，发射时更亮
+                //残影颜色：环绕时淡蓝白，蓄力时更亮，发射时最亮
                 Color afterimageColor;
                 if (State == FeatherState.Launching) {
                     afterimageColor = Color.Lerp(
                         new Color(240, 240, 255),
+                        new Color(255, 255, 255),
+                        afterimageProgress
+                    ) * afterimageAlpha;
+                }
+                else if (State == FeatherState.Charging) {
+                    afterimageColor = Color.Lerp(
+                        new Color(245, 245, 255),
                         new Color(255, 255, 255),
                         afterimageProgress
                     ) * afterimageAlpha;
