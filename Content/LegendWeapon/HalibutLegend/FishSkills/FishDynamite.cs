@@ -70,7 +70,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int MaxLifeTime = 600; //10秒生命期
         private const int LandingTime = 30; //着陆稳定时间
         private const float ProximityDetectionRange = 200f; //感应范围
-        private const float ExplosionRadius = 280f; //爆炸半径
         private bool hasDetonated = false;
         private int warningPulseTimer = 0;
         public override void SetStaticDefaults() {
@@ -292,9 +291,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (hasDetonated) return;
             hasDetonated = true;
 
-            //爆炸伤害
-            Projectile.width = Projectile.height = (int)ExplosionRadius;
-            Projectile.position -= new Vector2(ExplosionRadius / 2f);
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
