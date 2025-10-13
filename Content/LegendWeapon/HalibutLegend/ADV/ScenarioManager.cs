@@ -1,7 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
@@ -107,14 +105,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         public static bool Start(string key) {
             if (!scenarios.TryGetValue(key, out var sc)) {
-                return false;
+                sc = TryCreate(key); //尝试自动反射创建
+                if (sc == null) {
+                    return false;
+                }
+                Register(sc);
             }
-            if (active != null && DialogueBox.Instance.IsActive) {
+            if (active != null && DialogueBox.Instance.Active) {
                 return false; //当前仍在播放其它场景
             }
             active = sc;
             sc.Start();
             return true;
+        }
+
+        private static IADVScenario TryCreate(string key) {
+            var asm = typeof(ScenarioManager).Assembly;
+            foreach (var t in asm.GetTypes()) {
+                if (!t.IsAbstract && typeof(IADVScenario).IsAssignableFrom(t)) {
+                    if (string.Equals(t.Name, key, StringComparison.Ordinal)) {
+                        try {
+                            return (IADVScenario)Activator.CreateInstance(t);
+                        }
+                        catch {
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public static bool Start<T>() where T : IADVScenario, new() {
@@ -126,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         public static bool IsActive(string key) {
-            return active != null && active.Key == key && DialogueBox.Instance.IsActive;
+            return active != null && active.Key == key && DialogueBox.Instance.Active;
         }
 
         public static void ResetAll() {

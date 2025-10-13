@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityMod.Projectiles.Rogue;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -66,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private int advanceBlinkTimer = 0;
 
         //外部状态
-        public bool IsActive => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
+        public override bool Active => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
 
         //本地化提示
         private static LocalizedText ContinueHint;
@@ -131,6 +132,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 string[] lines = Utils.WordwrapString(block, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
                 foreach (var l in lines) {
+                    if (l == null) {
+                        continue;
+                    }
                     allLines.Add(l.TrimEnd('-', ' '));
                 }
             }
@@ -218,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
             }
             //输入
-            player.mouseInterface |= IsActive;
+            player.mouseInterface |= Active;
             HandleInput();
         }
 
@@ -227,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return;
             }
             //左键推进
-            if (Main.mouseLeft && Main.mouseLeftRelease) {
+            if (keyLeftPressState == KeyPressState.Pressed) {
                 if (!finishedCurrent) {
                     //直接完成
                     visibleCharCount = current.Content.Length;
@@ -299,7 +303,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             //显示打字机内容
             int remaining = visibleCharCount;
-            int wrapWidth = (int)(FixedWidth - Padding * 2 - 24);
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
             for (int i = 0; i < wrappedLines.Length; i++) {
                 string fullLine = wrappedLines[i];
