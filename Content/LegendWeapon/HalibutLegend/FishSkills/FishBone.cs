@@ -47,10 +47,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         //生成召唤粒子
                         SpawnSummonEffect(player.Center);
 
-                        //音效
-                        SoundEngine.PlaySound(SoundID.Item71 with {
-                            Volume = 0.6f,
-                            Pitch = 0.3f + ActiveBones.Count * 0.05f
+                        //骨质召唤音效
+                        SoundEngine.PlaySound(SoundID.Item1 with {
+                            Volume = 0.5f,
+                            Pitch = -0.4f + ActiveBones.Count * 0.05f
                         }, player.Center);
                     }
                 }
@@ -65,8 +65,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnSummonEffect(Vector2 position) {
             //召唤时的骨质粒子效果
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
+            for (int i = 0; i < 15; i++) {
+                float angle = MathHelper.TwoPi * i / 15f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
                 
                 Dust bone = Dust.NewDustPerfect(
@@ -75,9 +75,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    Main.rand.NextFloat(1.2f, 2f)
                 );
                 bone.noGravity = true;
+                bone.fadeIn = 1.2f;
+            }
+            
+            // 额外的骨质碎片
+            for (int i = 0; i < 8; i++) {
+                Dust shard = Dust.NewDustDirect(
+                    position - new Vector2(10),
+                    20, 20,
+                    DustID.Bone,
+                    Scale: Main.rand.NextFloat(1f, 1.5f)
+                );
+                shard.velocity = Main.rand.NextVector2Circular(3f, 3f);
+                shard.noGravity = true;
             }
         }
 
@@ -134,17 +147,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //视觉效果
         private float glowIntensity = 0f;
         private float trailIntensity = 0f;
-        private List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 20;
-        
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
-        
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> StarTexture = null;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -159,11 +164,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
-            
-            //初始化轨迹
-            for (int i = 0; i < MaxTrailLength; i++) {
-                trailPositions.Add(Projectile.Center);
-            }
         }
 
         public override void AI() {
@@ -204,15 +204,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
             
-            //更新轨迹
-            UpdateTrail();
-            
             //旋转
-            Projectile.rotation += MathHelper.Lerp(0.1f, 0.6f, orbitSpeed / MaxOrbitSpeed);
+            Projectile.rotation += MathHelper.Lerp(0.15f, 0.8f, orbitSpeed / MaxOrbitSpeed);
             
-            //照明
-            float lightIntensity = glowIntensity * 0.8f;
-            Lighting.AddLight(Projectile.Center, 0.8f * lightIntensity, 0.8f * lightIntensity, 0.9f * lightIntensity);
+            //骨质照明（冷白色）
+            float lightIntensity = glowIntensity * 0.6f;
+            Lighting.AddLight(Projectile.Center, 
+                0.7f * lightIntensity, 
+                0.7f * lightIntensity, 
+                0.8f * lightIntensity);
         }
 
         ///<summary>
@@ -234,8 +234,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             
             glowIntensity = MathHelper.Lerp(0f, 0.5f, progress);
             
-            //聚集粒子效果
-            if (Main.rand.NextBool(3)) {
+            //聚集骨质粒子
+            if (Main.rand.NextBool(4)) {
                 SpawnGatherParticle();
             }
             
@@ -244,10 +244,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = BoneState.Orbiting;
                 StateTimer = 0;
                 
-                //环绕开始音效
-                SoundEngine.PlaySound(SoundID.Item8 with { 
+                //骨头碰撞音效
+                SoundEngine.PlaySound(SoundID.Dig with { 
                     Volume = 0.4f, 
-                    Pitch = 0.2f 
+                    Pitch = 0.3f 
                 }, Projectile.Center);
             }
         }
@@ -280,16 +280,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = MathHelper.Lerp(0.5f, 0.8f, progress);
             trailIntensity = progress;
             
-            //能量聚集粒子
-            if (Main.rand.NextBool(2)) {
+            //骨质粒子环绕
+            if (Main.rand.NextBool(3)) {
                 SpawnOrbitParticle(owner.Center, progress);
             }
             
-            //周期性音效（加速感）
-            if (StateTimer % (int)MathHelper.Lerp(20, 5, progress) == 0) {
-                SoundEngine.PlaySound(SoundID.Item9 with { 
-                    Volume = 0.3f * progress, 
-                    Pitch = progress 
+            //周期性骨头摩擦音效
+            if (StateTimer % (int)MathHelper.Lerp(25, 8, progress) == 0) {
+                SoundEngine.PlaySound(SoundID.Item1 with { 
+                    Volume = 0.25f * progress, 
+                    Pitch = -0.5f + progress * 0.3f 
                 }, Projectile.Center);
             }
             
@@ -298,10 +298,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = BoneState.Charging;
                 StateTimer = 0;
                 
-                //蓄力音效
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { 
+                //骨质蓄力音效
+                SoundEngine.PlaySound(SoundID.Item67 with { 
                     Volume = 0.6f, 
-                    Pitch = 0.3f 
+                    Pitch = -0.4f 
                 }, Projectile.Center);
             }
         }
@@ -329,21 +329,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 0.8f + (float)Math.Sin(StateTimer * 0.8f) * 0.2f;
             trailIntensity = 1f;
             
-            //密集蓄力粒子
+            //密集骨质粒子
             if (Main.rand.NextBool()) {
                 SpawnChargeParticle(owner.Center, progress);
             }
             
-            //蓄力闪光环
+            //蓄力骨质脉冲
             if (StateTimer % 10 == 0) {
                 SpawnChargePulse(owner.Center);
             }
             
-            //高频音效（极限蓄力）
-            if (StateTimer % 5 == 0) {
-                SoundEngine.PlaySound(SoundID.MaxMana with { 
-                    Volume = 0.2f + progress * 0.3f, 
-                    Pitch = 0.5f + progress * 0.5f 
+            //高频骨头碰撞音效
+            if (StateTimer % 6 == 0) {
+                SoundEngine.PlaySound(SoundID.Dig with { 
+                    Volume = 0.15f + progress * 0.25f, 
+                    Pitch = 0.3f + progress * 0.4f 
                 }, Projectile.Center);
             }
             
@@ -366,19 +366,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
             
             Projectile.velocity = toMouse * finalSpeed;
-            Projectile.tileCollide = true;
+            if (!Framing.GetTileSafely(Projectile.Center.ToTileCoordinates16()).HasTile) {
+                Projectile.tileCollide = true;
+            }
             
-            //爆发式粒子效果
+            //爆发式骨质粒子
             SpawnLaunchBurst();
             
-            //强力发射音效
-            SoundEngine.PlaySound(SoundID.Item92 with { 
-                Volume = 0.8f, 
-                Pitch = 0.2f 
-            }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { 
+            //强力发射音效（骨头破碎）
+            SoundEngine.PlaySound(SoundID.Item14 with { 
                 Volume = 0.6f, 
-                Pitch = -0.3f 
+                Pitch = 0.5f 
+            }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.NPCHit2 with { 
+                Volume = 0.5f, 
+                Pitch = -0.2f 
             }, Projectile.Center);
         }
 
@@ -393,8 +395,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trailIntensity = 1f;
             glowIntensity = 0.9f;
             
-            //飞行粒子
-            if (Main.rand.NextBool(2)) {
+            //飞行骨质粒子
+            if (Main.rand.NextBool(3)) {
                 SpawnLaunchTrailParticle();
             }
             
@@ -439,16 +441,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //散射粒子效果
             SpawnScatterEffect();
             
-            //散射音效
-            SoundEngine.PlaySound(SoundID.NPCDeath2 with { 
+            //骨头破碎音效
+            SoundEngine.PlaySound(SoundID.NPCHit2 with { 
                 Volume = 0.5f, 
-                Pitch = 0.4f 
+                Pitch = 0.2f 
             }, Projectile.Center);
-        }
-
-        private void UpdateTrail() {
-            trailPositions.RemoveAt(0);
-            trailPositions.Add(Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Dig with { 
+                Volume = 0.4f, 
+                Pitch = 0.5f 
+            }, Projectile.Center);
         }
 
         //===== 粒子效果方法 =====
@@ -460,120 +461,124 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f),
                 100,
                 default,
-                Main.rand.NextFloat(0.8f, 1.2f)
+                Main.rand.NextFloat(0.8f, 1.3f)
             );
             gather.noGravity = true;
+            gather.fadeIn = 1.1f;
         }
 
         private void SpawnOrbitParticle(Vector2 ownerCenter, float progress) {
             Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(1f, 3f) * progress;
+            Vector2 velocity = toCenter * Main.rand.NextFloat(0.5f, 2f) * progress;
             
             Dust orbit = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.BlueFairy,
+                Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
+                DustID.Bone,
                 velocity,
                 100,
-                new Color(200, 200, 255),
-                Main.rand.NextFloat(1f, 1.5f)
+                default,
+                Main.rand.NextFloat(0.9f, 1.4f)
             );
             orbit.noGravity = true;
+            orbit.fadeIn = 1.1f;
         }
 
         private void SpawnChargeParticle(Vector2 ownerCenter, float progress) {
             Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(3f, 6f) * progress;
+            Vector2 velocity = toCenter * Main.rand.NextFloat(2f, 5f) * progress;
             
-            //能量粒子
+            //骨质粒子
             Dust charge = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                DustID.Electric,
+                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                DustID.Bone,
                 velocity,
                 100,
-                new Color(150, 200, 255),
-                Main.rand.NextFloat(1.2f, 1.8f)
+                default,
+                Main.rand.NextFloat(1.2f, 1.9f)
             );
             charge.noGravity = true;
+            charge.fadeIn = 1.2f;
             
-            //骨质粒子混合
-            if (Main.rand.NextBool(2)) {
-                Dust bone = Dust.NewDustPerfect(
-                    Projectile.Center,
+            //额外骨质碎片
+            if (Main.rand.NextBool(3)) {
+                Dust shard = Dust.NewDustDirect(
+                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    2, 2,
                     DustID.Bone,
-                    velocity * 0.5f,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1f, 1.5f)
+                    Scale: Main.rand.NextFloat(1f, 1.5f)
                 );
-                bone.noGravity = true;
+                shard.velocity = velocity * 0.6f;
+                shard.noGravity = true;
             }
         }
 
         private void SpawnChargePulse(Vector2 ownerCenter) {
-            //环形脉冲
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                Vector2 velocity = angle.ToRotationVector2() * 3f;
+            //环形骨质脉冲
+            for (int i = 0; i < 10; i++) {
+                float angle = MathHelper.TwoPi * i / 10f;
+                Vector2 velocity = angle.ToRotationVector2() * 2.5f;
                 
                 Dust pulse = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(180, 220, 255),
-                    Main.rand.NextFloat(1.5f, 2f)
-                );
-                pulse.noGravity = true;
-            }
-        }
-
-        private void SpawnLaunchBurst() {
-            //爆发式粒子
-            for (int i = 0; i < 30; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 15f);
-                
-                Dust burst = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Electric,
-                    velocity,
-                    100,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                burst.noGravity = true;
-            }
-            
-            //骨质碎片
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust bone = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Bone,
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(1.2f, 2f)
+                    Main.rand.NextFloat(1.3f, 1.8f)
                 );
+                pulse.noGravity = true;
+                pulse.fadeIn = 1.2f;
+            }
+        }
+
+        private void SpawnLaunchBurst() {
+            //爆发式骨质粒子
+            for (int i = 0; i < 25; i++) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f);
+                
+                Dust burst = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Bone,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.4f, 2.2f)
+                );
+                burst.noGravity = true;
+                burst.fadeIn = 1.3f;
+            }
+            
+            //骨质碎片
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
+                Dust bone = Dust.NewDustDirect(
+                    Projectile.Center,
+                    4, 4,
+                    DustID.Bone,
+                    Scale: Main.rand.NextFloat(1.2f, 2f)
+                );
+                bone.velocity = velocity;
                 bone.noGravity = true;
             }
         }
 
         private void SpawnLaunchTrailParticle() {
             Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                DustID.BlueFairy,
-                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.3f),
+                Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
+                DustID.Bone,
+                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f),
                 100,
-                new Color(180, 210, 255),
-                Main.rand.NextFloat(1f, 1.5f)
+                default,
+                Main.rand.NextFloat(0.9f, 1.4f)
             );
             trail.noGravity = true;
+            trail.fadeIn = 1.1f;
         }
 
         private void SpawnScatterEffect() {
             for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Vector2 velocity = Main.rand.NextVector2Circular(9f, 9f);
                 
                 Dust scatter = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -581,9 +586,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(1.2f, 2f)
+                    Main.rand.NextFloat(1.3f, 2.1f)
                 );
                 scatter.noGravity = true;
+                scatter.fadeIn = 1.2f;
             }
         }
 
@@ -610,29 +616,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity.Y = -oldVelocity.Y * 0.8f;
             }
             
-            //碰撞音效
+            //骨头碰撞音效
             SoundEngine.PlaySound(SoundID.Dig with { 
                 Volume = 0.5f, 
-                Pitch = 0.5f 
+                Pitch = 0.4f 
             }, Projectile.Center);
+            
+            //碰撞骨质碎片
+            for (int i = 0; i < 5; i++) {
+                Dust.NewDust(
+                    Projectile.position,
+                    Projectile.width,
+                    Projectile.height,
+                    DustID.Bone,
+                    Scale: Main.rand.NextFloat(1f, 1.5f)
+                );
+            }
             
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中粒子效果
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
+            //击中骨质粒子效果
+            for (int i = 0; i < 12; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                 Dust hitDust = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Bone,
                     velocity,
                     100,
                     default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    Main.rand.NextFloat(1.3f, 2f)
                 );
                 hitDust.noGravity = true;
+                hitDust.fadeIn = 1.2f;
             }
+            
+            //击中音效
+            SoundEngine.PlaySound(SoundID.NPCHit2 with { 
+                Volume = 0.4f, 
+                Pitch = 0.2f 
+            }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -645,71 +669,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
             
-            //===== 绘制能量轨迹 =====
-            if (trailIntensity > 0f && State != BoneState.Gathering) {
-                DrawEnergyTrail(sb, baseColor, alpha);
-            }
-            
-            //===== 绘制标准拖尾（发射阶段） =====
-            if (State == BoneState.Launching) {
-                for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                    if (Projectile.oldPos[i] == Vector2.Zero) continue;
-                    
-                    float trailAlpha = (1f - i / (float)Projectile.oldPos.Length) * alpha * 0.6f;
-                    Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                    
-                    sb.Draw(
-                        boneTex,
-                        trailPos,
-                        sourceRect,
-                        new Color(150, 200, 255) * trailAlpha,
-                        Projectile.rotation,
-                        origin,
-                        Projectile.scale * (1f - i * 0.03f),
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-            }
-            
-            //===== 绘制外层辉光 =====
-            if (glowIntensity > 0f && SoftGlow?.Value != null) {
-                Texture2D glow = SoftGlow.Value;
-                float glowScale = Projectile.scale * (1.2f + glowIntensity * 0.5f);
-                float glowAlpha = glowIntensity * alpha * 0.6f;
-                
-                //蓝白辉光
-                sb.Draw(
-                    glow,
-                    drawPos,
-                    null,
-                    new Color(180, 220, 255, 0) * glowAlpha,
-                    Projectile.rotation * 0.5f,
-                    glow.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0f
-                );
-                
-                //蓄力阶段额外闪光
-                if (State == BoneState.Charging) {
-                    float chargePulse = (float)Math.Sin(StateTimer * 0.8f) * 0.5f + 0.5f;
-                    sb.Draw(
-                        glow,
-                        drawPos,
-                        null,
-                        new Color(200, 240, 255, 0) * (glowAlpha * chargePulse),
-                        -Projectile.rotation * 0.8f,
-                        glow.Size() / 2f,
-                        glowScale * (1f + chargePulse * 0.3f),
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
+            //===== 绘制骨头残影拖尾 =====
+            if (State == BoneState.Orbiting || State == BoneState.Charging || State == BoneState.Launching) {
+                DrawBoneAfterimages(sb, boneTex, sourceRect, origin, baseColor, alpha);
             }
             
             //===== 绘制主体骨头 =====
-            //基础绘制
+            // 基础绘制
             sb.Draw(
                 boneTex,
                 drawPos,
@@ -722,39 +688,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
             
-            //能量覆盖层（蓄力时）
-            if (State == BoneState.Charging || State == BoneState.Launching) {
-                float energyAlpha = (State == BoneState.Charging ? 0.6f : 0.4f) * alpha;
+            //蓄力/发射时的骨质辉光覆盖层
+            if ((State == BoneState.Charging || State == BoneState.Launching) && glowIntensity > 0.5f) {
+                float glowAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.4f;
+                Color boneGlow = new Color(220, 220, 240); // 冷白色骨质辉光
+                
                 sb.Draw(
                     boneTex,
                     drawPos,
                     sourceRect,
-                    new Color(180, 220, 255) * energyAlpha,
+                    boneGlow * glowAlpha,
                     Projectile.rotation,
                     origin,
-                    Projectile.scale,
+                    Projectile.scale * 1.05f,
                     SpriteEffects.None,
                     0
-                );
-            }
-            
-            //===== 绘制星形闪光（发射瞬间） =====
-            if (State == BoneState.Launching && StateTimer < 10 && StarTexture?.Value != null) {
-                Texture2D star = StarTexture.Value;
-                float starProgress = StateTimer / 10f;
-                float starAlpha = (1f - starProgress) * alpha;
-                float starScale = Projectile.scale * (0.5f + starProgress * 0.5f);
-                
-                sb.Draw(
-                    star,
-                    drawPos,
-                    null,
-                    new Color(220, 240, 255, 0) * starAlpha,
-                    Projectile.rotation,
-                    star.Size() / 2f,
-                    starScale,
-                    SpriteEffects.None,
-                    0f
                 );
             }
             
@@ -762,40 +710,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         ///<summary>
-        ///绘制能量轨迹（螺旋残影）
+        ///绘制骨头残影拖尾
         ///</summary>
-        private void DrawEnergyTrail(SpriteBatch sb, Color baseColor, float alpha) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+        private void DrawBoneAfterimages(SpriteBatch sb, Texture2D boneTex, Rectangle sourceRect, 
+            Vector2 origin, Color baseColor, float alpha) {
             
-            for (int i = 0; i < trailPositions.Count - 1; i++) {
-                if (trailPositions[i] == Vector2.Zero || trailPositions[i + 1] == Vector2.Zero) continue;
+            int afterimageCount = State == BoneState.Launching ? 12 : 8;
+            
+            for (int i = 0; i < afterimageCount; i++) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
                 
-                float trailProgress = 1f - i / (float)trailPositions.Count;
-                float trailAlpha = trailProgress * trailIntensity * alpha * 0.5f;
-                float trailWidth = 4f * trailProgress * Projectile.scale;
+                float afterimageProgress = 1f - i / (float)afterimageCount;
+                float afterimageAlpha = afterimageProgress * trailIntensity * alpha;
                 
-                Vector2 start = trailPositions[i] - Main.screenPosition;
-                Vector2 end = trailPositions[i + 1] - Main.screenPosition;
-                Vector2 diff = end - start;
-                float length = diff.Length();
-                float rotation = diff.ToRotation();
+                //残影颜色：环绕时淡白，蓄力时增强，发射时最强
+                Color afterimageColor;
+                if (State == BoneState.Launching) {
+                    afterimageColor = Color.Lerp(
+                        new Color(200, 200, 220),  // 冷白
+                        new Color(240, 240, 255),  // 亮白
+                        afterimageProgress
+                    ) * (afterimageAlpha * 0.7f);
+                }
+                else if (State == BoneState.Charging) {
+                    afterimageColor = new Color(210, 210, 230) * (afterimageAlpha * 0.6f);
+                }
+                else {
+                    afterimageColor = baseColor * (afterimageAlpha * 0.5f);
+                }
                 
-                Color trailColor = Color.Lerp(
-                    new Color(150, 200, 255),
-                    new Color(200, 230, 255),
-                    trailProgress
-                );
+                Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float afterimageScale = Projectile.scale * MathHelper.Lerp(0.85f, 1f, afterimageProgress);
                 
                 sb.Draw(
-                    pixel,
-                    start,
-                    new Rectangle(0, 0, 1, 1),
-                    trailColor * trailAlpha,
-                    rotation,
-                    Vector2.Zero,
-                    new Vector2(length, trailWidth),
+                    boneTex,
+                    afterimagePos,
+                    sourceRect,
+                    afterimageColor,
+                    Projectile.rotation - i * 0.1f * (orbitSpeed / MaxOrbitSpeed), // 轻微旋转错位
+                    origin,
+                    afterimageScale,
                     SpriteEffects.None,
-                    0f
+                    0
                 );
             }
         }
