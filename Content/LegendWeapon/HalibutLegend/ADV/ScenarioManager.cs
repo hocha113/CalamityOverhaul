@@ -119,6 +119,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             return true;
         }
 
+        public static void Reset(string key) {
+            if (scenarios.TryGetValue(key, out var sc))
+                sc.Reset();
+        }
+
         private static IADVScenario TryCreate(string key) {
             var asm = typeof(ScenarioManager).Assembly;
             foreach (var t in asm.GetTypes()) {
@@ -141,6 +146,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Register(temp);
             }
             return Start(temp.Key);
+        }
+
+        public static void Reset<T>() where T : IADVScenario, new() {
+            var temp = new T();
+            if (scenarios.TryGetValue(temp.Key, out var sc))
+                sc.Reset();
         }
 
         public static bool IsActive(string key) {
