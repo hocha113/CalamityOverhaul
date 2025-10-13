@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static LocalizedText ExtraEyeTitleText;
         public static LocalizedText CrashedLabelText;
         internal static LocalizedText[] EyeLayerDescriptions = new LocalizedText[11];//1-10
+        public static LocalizedText LayerTitleFormat;
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "海域领域");
@@ -37,6 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             EyeLayerDescriptions[8] = this.GetLocalization("EyeDesc8", () => "第八层使水压几近凝实，力量几乎到达巅峰");
             EyeLayerDescriptions[9] = this.GetLocalization("EyeDesc9", () => "九层极境，海渊之形完全显现，伟力贯通");
             EyeLayerDescriptions[10] = this.GetLocalization("EyeDesc10", () => "十层无限叠加，神之境界");
+            LayerTitleFormat = this.GetLocalization(nameof(LayerTitleFormat), () => "第 {0} 层");
         }
 
         public static DomainUI Instance => UIHandleLoader.GetUIHandleOfType<DomainUI>();
@@ -601,8 +603,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
             int displayLayer = eye.LayerNumberDisplay;
-            string layerChinese = GetLayerNumeralText(displayLayer);
-            string title = $"第 {layerChinese} 层";
+            string title = string.Format(LayerTitleFormat.Value, GetLayerNumeralText(displayLayer));
             string desc = DomainEyeDescriptions.GetDescription(displayLayer);
             float tooltipAlpha = alpha * 0.95f;
             Vector2 panelSize = new Vector2(160, 110);
@@ -731,6 +732,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static string GetLayerNumeralText(int i) {
+            if (Language.ActiveCulture.LegacyId != (int)GameCulture.CultureName.Chinese) {
+                return i switch {
+                    1 => "I",
+                    2 => "II",
+                    3 => "III",
+                    4 => "IV",
+                    5 => "V",
+                    6 => "VI",
+                    7 => "VII",
+                    8 => "VIII",
+                    9 => "IX",
+                    10 => "X",
+                    _ => i.ToString()
+                };
+            }
             return i switch {
                 1 => "一",
                 2 => "二",

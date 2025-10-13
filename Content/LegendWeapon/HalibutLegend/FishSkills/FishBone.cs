@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 3;
             Projectile.timeLeft = int.MaxValue; ;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 3;
@@ -171,6 +171,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Player owner = Main.player[Projectile.owner];
 
             if (!owner.active || owner.dead) {
+                Projectile.Kill();
+                return;
+            }
+
+            if (!owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+                || halibutPlayer.SkillID != FishSkill.UnlockFishs[ItemID.Bonefish].ID) {
                 Projectile.Kill();
                 return;
             }

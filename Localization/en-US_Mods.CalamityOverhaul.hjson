@@ -2216,7 +2216,7 @@ Legend: {
 		DomainUI: {
 			TitleText: Oceanic Domain
 			ExtraEyeTitleText: Layer X
-			CrashedLabelText: System Failure
+			CrashedLabelText: Scream
 			EyeDesc1: The first eye opens — faint tides begin to resonate.
 			EyeDesc2: With both eyes awakened, water pressure gathers slowly, power emerging.
 			EyeDesc3: Triple vision locks onto the currents; the domain starts to stabilize.
@@ -2227,6 +2227,7 @@ Legend: {
 			EyeDesc8: The eighth layer compresses the pressure into solidity; strength nears its peak.
 			EyeDesc9: The ninth boundary unveils the full form of the abyss — great power flows freely.
 			EyeDesc10: The tenth ascends beyond limit — a realm of gods.
+			LayerTitleFormat: Layer {0}
 		}
 	}
 

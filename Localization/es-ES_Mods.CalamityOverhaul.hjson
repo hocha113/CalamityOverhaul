@@ -2226,19 +2226,20 @@ Legend: {
 		}
 
 		DomainUI: {
-			// TitleText: 海域领域
-			// ExtraEyeTitleText: 第 十 层
-			// CrashedLabelText: 已死机
-			// EyeDesc1: 初启领域之眼，微弱的潮汐感开始共鸣
-			// EyeDesc2: 双目同开，水压在周遭缓慢聚集，力量渐显
-			// EyeDesc3: 三重视界锁定海流，领域开始稳定成型
-			// EyeDesc4: 第四层共鸣放大，涌动的寒意悄然扩散
-			// EyeDesc5: 五层交织，环形水旋于脚下成形，给予守护
-			// EyeDesc6: 第六层脉冲涌现，能量脉络变得清晰可辨
-			// EyeDesc7: 七眼同辉，潮域对外界的侵蚀性显著增强
-			// EyeDesc8: 第八层使水压几近凝实，力量几乎到达巅峰
-			// EyeDesc9: 九层极境，海渊之形完全显现，伟力贯通
-			// EyeDesc10: 十层无限叠加，神之境界
+			// TitleText: Oceanic Domain
+			// ExtraEyeTitleText: Layer X
+			// CrashedLabelText: Scream
+			// EyeDesc1: The first eye opens — faint tides begin to resonate.
+			// EyeDesc2: With both eyes awakened, water pressure gathers slowly, power emerging.
+			// EyeDesc3: Triple vision locks onto the currents; the domain starts to stabilize.
+			// EyeDesc4: The fourth resonance amplifies — a subtle chill spreads through the waves.
+			// EyeDesc5: Five layers intertwine; a circular whirl forms beneath your feet, offering protection.
+			// EyeDesc6: The sixth pulse surges, revealing clear veins of flowing energy.
+			// EyeDesc7: With seven eyes shining together, the tide’s erosion of the outside world intensifies.
+			// EyeDesc8: The eighth layer compresses the pressure into solidity; strength nears its peak.
+			// EyeDesc9: The ninth boundary unveils the full form of the abyss — great power flows freely.
+			// EyeDesc10: The tenth ascends beyond limit — a realm of gods.
+			// LayerTitleFormat: Layer {0}
 		}
 	}
 
