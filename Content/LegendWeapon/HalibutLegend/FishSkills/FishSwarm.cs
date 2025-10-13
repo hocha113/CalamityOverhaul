@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (halibutPlayer.AttackRecoveryTimer > 0) {
                 halibutPlayer.AttackRecoveryTimer--;
             }
-            return true;
+            return player.CountProjectilesOfID<FishSwarmController>() == 0;
         }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();

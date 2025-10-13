@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            return true;
+            return player.CountProjectilesOfID<BatSwarmController>() == 0;
         }
 
         public override void Use(Item item, Player player) {
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 消散蝙蝠群
         /// </summary>
-        private void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
+        private static void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
             halibutPlayer.BatSwarmActive = false;
             halibutPlayer.BatSwarmTimer = 0;
 
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnDismissEffect(player.Center);
         }
 
-        private void SpawnTransformEffect(Vector2 position) {
+        private static void SpawnTransformEffect(Vector2 position) {
             // 化形时的黑暗粒子
             for (int i = 0; i < 40; i++) {
                 float angle = MathHelper.TwoPi * i / 40f;
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void SpawnDismissEffect(Vector2 position) {
+        private static void SpawnDismissEffect(Vector2 position) {
             // 消散时的黑暗粒子
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);

@@ -5438,7 +5438,7 @@ FishSkill: {
 
 	FishHunger: {
 		DisplayName: 鱼中饿鬼
-		Tooltip: 
+		Tooltip:
 			'''
 			开火时周期性的生成环绕自身的饿鬼
 			饿鬼数量达到上限时将追随你的指引撕咬敌人
