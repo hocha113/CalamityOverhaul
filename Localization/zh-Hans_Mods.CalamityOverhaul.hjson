@@ -1544,6 +1544,7 @@ Projectiles: {
 	// DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
 	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 	// BonefishOrbit.DisplayName: Bonefish Orbit
+	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
 }
 
 Configs: {
@@ -5403,10 +5404,20 @@ FishSkill: {
 		DisplayName: 回旋骨头
 		Tooltip:
 			'''
-			左键开火时周期性的生成伴飞的骨头
+			开火时周期性的生成伴飞的骨头
 			当受伤时这些骨头会失控的四散而飞
 			'''
 		Studied: 炖汤或许不错，好喝又补钙
+	}
+
+	FishHarpy: {
+		DisplayName: 飞天鱼羽
+		Tooltip:
+			'''
+			开火时周期性的生成伴飞的鸟妖羽毛
+			盘旋一段时间后会向四周飞出
+			'''
+		Studied: 我不认为这条鱼会飞，但它确实有翅膀
 	}
 }
 

@@ -1562,6 +1562,7 @@ Projectiles: {
 	DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
 	DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
 	BonefishOrbit.DisplayName: Bonefish Orbit
+	HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
 }
 
 Configs: {
@@ -5422,6 +5423,12 @@ FishSkill: {
 	}
 
 	FishBone: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishHarpy: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
