@@ -17,12 +17,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 30;
 
         //羽毛管理系统
-        private static readonly List<int> ActiveFeathers = new();
+        public static List<int> ActiveFeathers = new();
         private const int MaxFeathers = 12; //最多12根羽毛
-        
-        //同步发射标志
-        public static bool ShouldLaunchAll { get; set; } = false;
-        
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             
@@ -58,9 +54,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         
                         //检查是否达到最大值
                         if (ActiveFeathers.Count >= MaxFeathers) {
-                            //延迟一小段时间后触发同步发射
-                            ShouldLaunchAll = false; //先重置
-                            
                             //通知所有羽毛准备发射
                             NotifyFeathersToLaunch(player);
                         }
@@ -72,7 +65,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void CleanupInactiveFeathers() {
-            ActiveFeathers.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
+            List<int> list = [];
+            foreach (var id in ActiveFeathers) {
+                if (!id.TryGetProjectile(out var proj)) {
+                    continue;
+                }
+                if (proj.type != ModContent.ProjectileType<HarpyFeatherOrbit>()) {
+                    continue;
+                }
+                if (proj.ai[1] >= 4) {
+                    continue;
+                }
+                list.Add(id);
+            }
+            ActiveFeathers = list;
         }
 
         private void NotifyFeathersToLaunch(Player player) {
@@ -270,15 +276,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private void CheckForChargingPhase(Player owner) {
             //计算当前羽毛总数
-            int totalFeathers = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (Main.projectile[i].active && 
-                    Main.projectile[i].type == Projectile.type && 
-                    Main.projectile[i].owner == owner.whoAmI) {
-                    totalFeathers++;
-                }
-            }
-            
+            int totalFeathers = FishHarpy.ActiveFeathers.Count;
+
             //如果达到12根且环绕时间超过一定阈值，进入蓄力阶段
             if (totalFeathers >= 12 && StateTimer >= 30) {
                 State = FeatherState.Charging;
@@ -447,25 +446,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 环绕阶段：优雅旋转
         /// </summary>
         private void OrbitingPhaseAI(Player owner) {
-            float progress = MathHelper.Clamp(StateTimer / OrbitDuration, 0f, 1f);
+            //不再使用进度，因为不会自动结束
+            float timeProgress = MathHelper.Clamp(StateTimer / 60f, 0f, 1f); // 仅用于加速曲线
             
-            //逐渐加速（使用EaseInOutQuad获得更平滑的加速）
-            float speedProgress = EaseInOutQuad(progress);
+            //逐渐加速到最大速度
+            float speedProgress = EaseInOutQuad(timeProgress);
             orbitSpeed = MathHelper.Lerp(0.03f, MaxOrbitSpeed, speedProgress);
             
-            //半径随时间轻微收缩（增强紧凑感）
-            float radiusScale = MathHelper.Lerp(1f, 0.92f, speedProgress);
-            float radiusWave = (float)Math.Sin(StateTimer * 0.2f) * 6f * progress;
+            //半径随时间轻微收缩
+            float radiusScale = MathHelper.Lerp(1f, 0.92f, MathHelper.Clamp(speedProgress, 0f, 1f));
+            float radiusWave = (float)Math.Sin(StateTimer * 0.2f) * 6f;
             float currentRadius = orbitRadius * radiusScale + radiusWave;
             
             //更新环绕角度（逆时针旋转，更优雅）
             currentOrbitAngle -= orbitSpeed;
             
-            //漂浮叠加
-            floatPhase += floatFrequency * (1f - speedProgress * 0.5f);
+            //漂浮叠加（随时间减弱）
+            float floatScale = MathHelper.Clamp(1f - speedProgress * 0.6f, 0.4f, 1f);
+            floatPhase += floatFrequency * floatScale;
             Vector2 floatOffset = new Vector2(
-                (float)Math.Sin(floatPhase) * floatAmplitude * (1f - speedProgress * 0.6f),
-                (float)Math.Cos(floatPhase * 0.7f) * floatAmplitude * 0.6f * (1f - speedProgress * 0.6f)
+                (float)Math.Sin(floatPhase) * floatAmplitude * floatScale,
+                (float)Math.Cos(floatPhase * 0.7f) * floatAmplitude * 0.6f * floatScale
             );
             
             Vector2 orbitPos = owner.Center + currentOrbitAngle.ToRotationVector2() * currentRadius;
@@ -474,22 +475,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.35f);
             
             //辉光逐渐增强
-            glowIntensity = MathHelper.Lerp(0.6f, 0.8f, progress);
+            glowIntensity = MathHelper.Lerp(0.6f, 0.8f, timeProgress);
             
             //优雅的羽毛轨迹
             if (Main.rand.NextBool(4)) {
-                SpawnOrbitParticle(progress);
+                SpawnOrbitParticle(timeProgress);
             }
             
-            //旋转风声（频率提升）
-            if (StateTimer % (int)MathHelper.Lerp(30, 15, progress) == 0) {
+            //旋转风声
+            if (StateTimer % (int)MathHelper.Lerp(30, 15, timeProgress) == 0) {
                 SoundEngine.PlaySound(SoundID.Item32 with { 
-                    Volume = 0.2f + 0.15f * progress, 
-                    Pitch = 0.3f + progress * 0.3f 
+                    Volume = 0.2f + 0.15f * timeProgress, 
+                    Pitch = 0.3f + timeProgress * 0.3f 
                 }, Projectile.Center);
             }
             
-            //注意：不再在这里自动转入发射阶段，等待蓄力阶段
+            //注意：不再自动转入发射阶段，只能通过CheckForChargingPhase进入蓄力
         }
 
         /// <summary>
@@ -580,23 +581,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 发射羽毛
         /// </summary>
         private void LaunchFeather() {
-            //沿切线方向发射（逆时针旋转的切线）
-            Vector2 tangentDir = new Vector2(
-                -(float)Math.Sin(currentOrbitAngle),
-                (float)Math.Cos(currentOrbitAngle)
-            );
+            // 使用羽毛当前的朝向作为发射方向
+            // 环绕时羽毛朝向为 currentOrbitAngle - MathHelper.PiOver2
+            Vector2 launchDir = (currentOrbitAngle - MathHelper.PiOver2).ToRotationVector2();
             
-            //计算发射速度（基于旋转速度）
+            // 计算发射速度（基于旋转速度）
             float speedBonus = orbitSpeed / MaxOrbitSpeed;
             float finalSpeed = LaunchSpeed * (1f + speedBonus * 0.4f);
             
-            Projectile.velocity = tangentDir * finalSpeed;
+            Projectile.velocity = launchDir * finalSpeed;
             Projectile.tileCollide = true;
             
-            //发射羽毛特效
+            // 发射羽毛特效
             SpawnLaunchEffect();
             
-            //轻柔的发射音效（只由第一个羽毛播放）
+            // 轻柔的发射音效（只由第一个羽毛播放）
             if (Projectile.whoAmI == GetFirstFeatherID(Main.player[Projectile.owner])) {
                 SoundEngine.PlaySound(SoundID.Item1 with { 
                     Volume = 0.6f, 
@@ -841,7 +840,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算羽毛朝向
             float drawRotation;
             if (State == FeatherState.Launching) {
-                drawRotation = Projectile.rotation;
+                drawRotation = Projectile.rotation - MathHelper.PiOver2;
             }
             else {
                 //环绕时保持切线方向
@@ -929,7 +928,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //残影旋转（轻微延迟）
                 float afterimageRotation;
                 if (State == FeatherState.Launching) {
-                    afterimageRotation = Projectile.velocity.ToRotation() - i * 0.05f;
+                    afterimageRotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2 - i * 0.05f;
                 }
                 else {
                     afterimageRotation = currentOrbitAngle - MathHelper.PiOver2 + swayAngle - i * 0.08f;
