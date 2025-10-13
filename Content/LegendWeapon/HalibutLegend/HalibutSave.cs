@@ -30,10 +30,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public ResurrectionSystem ResurrectionSaveData = new();
         /// <summary>
-        /// 是否已经初始化（用于捕捉玩家实例加载数据）
-        /// </summary>
-        private static bool initialized = false;
-        /// <summary>
         /// 设置静态默认值
         /// </summary>
         public override void SetStaticDefaults() {
@@ -126,18 +122,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //加载深渊复苏系统数据
             if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
-                ResurrectionSaveData?.LoadData(resurrectionTag);
-            }
-        }
-
-        public override void OnEnterWorld() {
-            initialized = true;
-        }
-
-        public override void PostUpdate() {
-            if (initialized) {//邪道，用这种方法捕捉到大比目鱼玩家实例加载数据
-                ResurrectionSaveData.CopyTo(Player.GetHalibut().ResurrectionSystem);
-                initialized = false;
+                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
+                }
             }
         }
     }
