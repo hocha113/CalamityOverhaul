@@ -375,6 +375,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return area.Contains(MouseHitBox);
         }
 
+        public void MoveSlotToFront(SkillSlot slot) {
+            if (slot == null) {
+                return;
+            }
+            int idx = halibutUISkillSlots.IndexOf(slot);
+            if (idx <= 0) {
+                return;
+            }
+            halibutUISkillSlots.RemoveAt(idx);
+            halibutUISkillSlots.Insert(0, slot);
+            //重新设置出现动画：被移动的放大闪动
+            slot.appearProgress = 0f;
+            slot.isAppearing = true;
+            //为了视觉平滑, 将滚动偏移重置到0并快速过渡
+            scrollOffset = 0;
+            //辅以轻微提示音
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             var rasterizer = Main.Rasterizer;
             rasterizer.ScissorTestEnable = true;
@@ -422,6 +441,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);//绘制飞行粒子（在最上层）
             }
+            //绘制快捷提示(在粒子之后保证可见)
+            SkillSlot.HoveredSlot?.DrawHint(spriteBatch);
             rasterizer.ScissorTestEnable = false;//恢复RasterizerState
             Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了
             spriteBatch.End();
