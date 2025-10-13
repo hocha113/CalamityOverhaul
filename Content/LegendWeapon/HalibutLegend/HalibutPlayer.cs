@@ -70,6 +70,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int SparklingDepartureTimer { get; set; }
         #endregion
 
+        public int HidePlayerTime;
+
         #region 鱼形换影
         /// <summary>
         /// 移形换影技能激活状态
@@ -99,6 +101,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 攻击后摇持续时间（60帧 = 1秒）
         /// </summary>
         public const int AttackRecoveryDuration = 60;
+        #endregion
+
+        #region 蝙蝠
+        /// <summary>
+        /// 技能激活状态
+        /// </summary>
+        public bool BatSwarmActive { get; set; }
+        /// <summary>
+        /// 技能持续时间计数器
+        /// </summary>
+        public int BatSwarmTimer { get; set; }
         #endregion
 
         #region 克隆技能数据
@@ -264,6 +277,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (YourLevelIsTooLowToggleCD > 0) YourLevelIsTooLowToggleCD--;
             if (YourLevelIsTooLowCooldown > 0) YourLevelIsTooLowCooldown--;
 
+            if (HidePlayerTime > 0) HidePlayerTime--;
+
             foreach (var skill in FishSkill.Instances) {
                 if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
                     skill.Cooldown--;
@@ -324,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             //这里可以操纵players移除不需要绘制的玩家达到隐藏玩家的目的
-            if (FishSwarmActive) {
+            if (HidePlayerTime > 0) {
                 //移除正在使用技能的玩家，使其隐藏
                 List<Player> visiblePlayers = new List<Player>();
                 foreach (Player player in players) {

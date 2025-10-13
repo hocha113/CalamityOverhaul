@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //更新技能状态
             if (halibutPlayer.FishSwarmActive) {
-                halibutPlayer.FishSwarmTimer++;
-
-                if (halibutPlayer.FishSwarmTimer >= FishSwarmDuration) {
+                halibutPlayer.BatSwarmTimer++;
+                
+                if (halibutPlayer.BatSwarmTimer >= FishSwarmDuration) {
                     //技能结束
                     halibutPlayer.FishSwarmActive = false;
                     halibutPlayer.FishSwarmTimer = 0;
@@ -213,6 +213,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Kill();
                 return;
             }
+
+            halibutPlayer.HidePlayerTime = 10;
 
             //弹幕位置跟随玩家
             Projectile.Center = Owner.Center;

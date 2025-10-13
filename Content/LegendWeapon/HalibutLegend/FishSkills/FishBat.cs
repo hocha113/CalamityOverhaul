@@ -13,18 +13,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Batfish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
-
+        public bool Active;
         /// <summary>
-        /// 蝙蝠群技能最大持续时间（8秒 = 480帧）
+        /// 蝙蝠群技能最大持续时间
         /// </summary>
-        public const int BatSwarmDuration = 480;
+        public const int BatSwarmDuration = 1280;
 
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             
             if (player.altFunctionUse == 2) {
                 // 右键：激活蝙蝠化形
-                if (!halibutPlayer.FishSwarmActive && Cooldown <= 0) {
+                if (!halibutPlayer.BatSwarmActive && Cooldown <= 0) {
                     item.UseSound = null;
                     Use(item, player);
                     return false;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             else {
                 // 左键：消散蝙蝠群
-                if (halibutPlayer.FishSwarmActive) {
+                if (halibutPlayer.BatSwarmActive) {
                     item.UseSound = null;
                     DismissBatSwarm(player, halibutPlayer);
                     return false;
@@ -48,10 +48,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             // 更新技能状态
-            if (halibutPlayer.FishSwarmActive) {
-                halibutPlayer.FishSwarmTimer++;
-
-                if (halibutPlayer.FishSwarmTimer >= BatSwarmDuration) {
+            if (halibutPlayer.BatSwarmActive) {
+                halibutPlayer.BatSwarmTimer++;
+                if (halibutPlayer.BatSwarmTimer >= BatSwarmDuration) {
                     // 技能结束
                     DismissBatSwarm(player, halibutPlayer);
                 }
@@ -64,15 +63,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             // 检查技能是否在冷却中
-            if (Cooldown > 0 || halibutPlayer.FishSwarmActive) {
+            if (Cooldown > 0 || halibutPlayer.BatSwarmActive) {
                 return;
             }
 
-            SetCooldown();
+            //SetCooldown();
             
             // 激活技能
-            halibutPlayer.FishSwarmActive = true;
-            halibutPlayer.FishSwarmTimer = 0;
+            halibutPlayer.BatSwarmActive = true;
+            halibutPlayer.BatSwarmTimer = 0;
 
             // 生成控制器弹幕（管理玩家飞行和技能状态）
             int controller = Projectile.NewProjectile(
@@ -134,8 +133,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 消散蝙蝠群
         /// </summary>
         private void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
-            halibutPlayer.FishSwarmActive = false;
-            halibutPlayer.FishSwarmTimer = 0;
+            halibutPlayer.BatSwarmActive = false;
+            halibutPlayer.BatSwarmTimer = 0;
             
             // 杀死所有蝙蝠弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -234,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             HalibutPlayer halibutPlayer = Owner.GetOverride<HalibutPlayer>();
 
             // 检查技能是否结束
-            if (!halibutPlayer.FishSwarmActive) {
+            if (!halibutPlayer.BatSwarmActive) {
                 Projectile.Kill();
                 return;
             }
@@ -247,9 +246,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Owner.gravity = 0f;
             Owner.maxFallSpeed = 100f;
 
+            Owner.wingTime = 0;
+
+            halibutPlayer.HidePlayerTime = 10;
+
             // 计算目标速度（朝向光标，允许全方向飞行）
             Vector2 toMouse = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
-            float flySpeed = 12f + HalibutData.GetDomainLayer() * 0.5f; // 基础飞行速度
+            float flySpeed = 20f + HalibutData.GetDomainLayer() * 1.5f; // 基础飞行速度
             
             // 允许玩家通过移动键微调方向
             Vector2 inputDirection = Vector2.Zero;
@@ -257,6 +260,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Owner.controlRight) inputDirection.X += 1f;
             if (Owner.controlUp) inputDirection.Y -= 1f;
             if (Owner.controlDown) inputDirection.Y += 1f;
+
+            Owner.wingTime = 0;
             
             if (inputDirection != Vector2.Zero) {
                 inputDirection.Normalize();
@@ -266,7 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetVelocity = toMouse * flySpeed;
 
             // 平滑插值
-            float lerpSpeed = 0.12f;
+            float lerpSpeed = 0.22f;
             Owner.velocity = Vector2.Lerp(Owner.velocity, targetVelocity, lerpSpeed);
             Owner.direction = Math.Sign(Owner.velocity.X);
 
@@ -361,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             HalibutPlayer halibutPlayer = OwnerPlayer.GetOverride<HalibutPlayer>();
 
             // 检查技能是否结束
-            if (!halibutPlayer.FishSwarmActive) {
+            if (!halibutPlayer.BatSwarmActive) {
                 // 淡出效果
                 batAlpha -= 0.08f;
                 if (batAlpha <= 0f) {
