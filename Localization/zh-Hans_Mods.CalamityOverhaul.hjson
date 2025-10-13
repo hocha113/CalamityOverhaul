@@ -5443,13 +5443,17 @@ FishSkill: {
 			开火时周期性的生成环绕自身的饿鬼
 			饿鬼数量达到上限时将追随你的指引撕咬敌人
 			'''
-		Studied: 它很饥饿
+		Studied: 它看起来很饿
 	}
 
 	FishBat: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 群蝠幻流
+		Tooltip:
+			'''
+			右键可以化身为蝙蝠群进行快速移动
+			攻击将退出化形状态
+			'''
+		Studied: 它被倒挂着会睡着吗？
 	}
 }
 
