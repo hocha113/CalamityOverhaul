@@ -38,6 +38,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             ScenarioManager.Register(this);
         }
 
+        public override void VaultSetup() {
+            DialogueBox.OnPreProcessSegment += PreProcessSegment;
+        }
+
+        public override void Unload() {
+            DialogueBox.OnPreProcessSegment -= PreProcessSegment;
+        }
+
+        /// <summary>
+        /// 对话预处理钩子, 可用于动态修改对话内容
+        /// </summary>
+        /// <param name="args"></param>
+        public virtual void PreProcessSegment(DialogueBox.DialoguePreProcessArgs args) {
+
+        }
+
         protected void Add(string speaker, string content) {
             lines.Add((speaker, content));
         }

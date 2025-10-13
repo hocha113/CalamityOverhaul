@@ -1,18 +1,14 @@
-﻿using CalamityMod.Projectiles.Rogue;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Assets;
-using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
@@ -22,6 +18,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
     internal class DialogueBox : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "Legend.HalibutText";
+        #region PreProcess Hook
+        public class DialoguePreProcessArgs
+        {
+            public string Speaker;
+            public string Content;
+            public int Index;
+            public int Total;
+        }
+        public static event Action<DialoguePreProcessArgs> OnPreProcessSegment;
+        private int playedCount; //已播放计数
+        protected virtual void PreProcessSegment(DialoguePreProcessArgs args) { }
+        #endregion
 
         //静态访问
         public static DialogueBox Instance => UIHandleLoader.GetUIHandleOfType<DialogueBox>();
@@ -105,9 +113,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private void StartNext() {
             if (queue.Count == 0) {
                 BeginClose();
+                playedCount = 0; //重置计数
                 return;
             }
             current = queue.Dequeue();
+            playedCount++;
+            int index = playedCount - 1;
+            int total = playedCount + queue.Count; //当前+剩余
+            //预处理钩子
+            if (current != null) {
+                var args = new DialoguePreProcessArgs {
+                    Speaker = current.Speaker,
+                    Content = current.Content,
+                    Index = index,
+                    Total = total
+                };
+                PreProcessSegment(args); //虚函数
+                OnPreProcessSegment?.Invoke(args); //事件
+                //应用修改
+                current.Speaker = args.Speaker;
+                current.Content = args.Content;
+            }
             WrapCurrent();
             visibleCharCount = 0;
             typeTimer = 0;
@@ -115,10 +141,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             finishedCurrent = false;
             waitingForAdvance = false;
             contentFade = 0f;
-            //处理立绘淡入目标
             if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd)) {
                 foreach (var kv in portraits) {
-                    //当前说话者目标1 其它0
                     kv.Value.TargetFade = kv.Key == current.Speaker ? 1f : 0f;
                 }
             }
@@ -167,10 +191,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private void BeginClose() {
             closing = true;
             hideProgress = 0f;
+            //不在此处重置playedCount，流程结束在下一次StartNext时已归零
         }
 
         public override void Update() {
-            //此处更新在绘制线程中
+            //此处更新在绘制线程中，所以他妈的为什么不能有一个单独的挂载在逻辑更新线程里的钩子
         }
 
         public void LogicUpdate() {
@@ -443,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
 
-        private void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
+        private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.8f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
@@ -561,7 +586,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
 
-        private void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
+        private static void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             float size = 5f;
             Color c = new Color(150, 230, 255) * a;
@@ -569,7 +594,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
         }
 
-        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
@@ -600,7 +625,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private const float PortraitInnerPadding = 8f;
         private float portraitFadeSpeed = 0.15f;
 
-        /// <summary>注册一个立绘纹理路径</summary>
+        /// <summary>
+        /// 注册一个立绘纹理
+        /// </summary>
+        /// <param name="speaker"></param>
+        /// <param name="texturePath"></param>
+        /// <param name="baseColor"></param>
+        /// <param name="silhouette"></param>
         public static void RegisterPortrait(string speaker, string texturePath, Color? baseColor = null, bool silhouette = false) {
             if (string.IsNullOrWhiteSpace(speaker) || string.IsNullOrWhiteSpace(texturePath)) return;
             Texture2D tex;
@@ -612,7 +643,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             RegisterPortrait(speaker, tex, baseColor, silhouette);
         }
-        /// <summary>注册一个立绘纹理路径</summary>
+
+        /// <summary>
+        /// 注册一个立绘纹理
+        /// </summary>
+        /// <param name="speaker"></param>
+        /// <param name="texture"></param>
+        /// <param name="baseColor"></param>
+        /// <param name="silhouette"></param>
         public static void RegisterPortrait(string speaker, Texture2D texture, Color? baseColor = null, bool silhouette = false) {
             if (string.IsNullOrWhiteSpace(speaker)) return;
             if (!portraits.TryGetValue(speaker, out var pd)) {
@@ -626,15 +664,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             pd.TargetFade = 0f;
         }
 
-        /// <summary>调整已注册立绘的显示风格</summary>
+        /// <summary>
+        /// 调整已注册立绘的显示风格
+        /// </summary>
+        /// <param name="speaker"></param>
+        /// <param name="baseColor"></param>
+        /// <param name="silhouette"></param>
         public static void SetPortraitStyle(string speaker, Color? baseColor = null, bool? silhouette = null) {
             if (!portraits.TryGetValue(speaker, out var pd)) return;
             if (baseColor.HasValue) pd.BaseColor = baseColor.Value;
             if (silhouette.HasValue) pd.Silhouette = silhouette.Value;
         }
+
+        /// <summary>
+        /// 注册并设置一个立绘
+        /// </summary>
+        /// <param name="speaker"></param>
+        /// <param name="texture"></param>
+        /// <param name="baseColor"></param>
+        /// <param name="silhouette"></param>
+        public static void SetPortrait(string speaker, Texture2D texture, Color? baseColor = null, bool? silhouette = null) {
+            RegisterPortrait(speaker, texture, baseColor, silhouette ?? false);
+            SetPortraitStyle(speaker, baseColor, silhouette);
+        }
         #endregion
 
-        private void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
+        private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             Color back = new Color(5, 20, 28) * (alpha * 0.85f);
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), back);
@@ -645,7 +700,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
         }
 
-        private void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
+        private static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
             int border = 2;
