@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -5559,4 +5559,13 @@ FishSkill: {
 }
 
 NPCs.TheSpiritofTheAbyss.DisplayName: The Spiritof The Abyss
-Resurrections.ResurrectionDeathSystem.DeathText: "{0} was slain by the Abyssal Resurgence"
+
+Resurrections: {
+	ResurrectionDeathSystem: {
+		DeathText: "{0} was consumed by the Abyssal Resurgence"
+		WarningCombatText: The Abyss is devouring you...
+		DeathNoticeText: You have been swallowed by the Abyss...
+		MarkRemainText: The mark of the Abyss still clings to you...
+		RetainValueFormat: Resurgence Value: {0}%
+	}
+}

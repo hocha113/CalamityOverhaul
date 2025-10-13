@@ -92,9 +92,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         public static LocalizedText DeathText { get; private set; }
+        public static LocalizedText WarningCombatText { get; private set; } //深渊正在吞噬你...
+        public static LocalizedText DeathNoticeText { get; private set; } //你被深渊吞噬了...
+        public static LocalizedText MarkRemainText { get; private set; } //深渊的印记依然缠绕着你...
+        public static LocalizedText RetainValueFormat { get; private set; } //复苏值: {0}%
 
         public override void SetStaticDefaults() {
             DeathText = this.GetLocalization(nameof(DeathText), () => "{0}死于深渊复苏");
+            WarningCombatText = this.GetLocalization(nameof(WarningCombatText), () => "深渊正在吞噬你...");
+            DeathNoticeText = this.GetLocalization(nameof(DeathNoticeText), () => "你被深渊吞噬了...");
+            MarkRemainText = this.GetLocalization(nameof(MarkRemainText), () => "深渊的印记依然缠绕着你...");
+            RetainValueFormat = this.GetLocalization(nameof(RetainValueFormat), () => "复苏值: {0}%");
         }
 
         #region 主更新逻辑
@@ -160,8 +168,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         private void StartWarningPhase() {
             currentState = DeathState.Warning;
             stateTimer = 0;
-
-            //播放警告音效
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with {
                     Volume = 1.2f,
@@ -169,12 +175,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     MaxInstances = 1
                 }, Player.Center);
             }
-
-            //生成警告文本
             CombatText.NewText(Player.getRect(), Color.DarkRed,
-                "深渊正在吞噬你...", dramatic: true, dot: false);
-
-            //生成初始粒子
+                WarningCombatText.Value, dramatic: true, dot: false);
             for (int i = 0; i < 30; i++) {
                 SpawnAbyssParticle(Player.Center, large: true);
             }
@@ -213,31 +215,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             currentState = DeathState.DeathAnimation;
             stateTimer = 0;
             hasExecutedDeath = false;
-            midPhaseSoundPlayed = false; //重置中段音效标记
-
-            //锁定玩家控制
+            midPhaseSoundPlayed = false;
             Player.noItems = true;
             Player.noBuilding = true;
-
-            //播放死亡音效
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.NPCDeath59 with {
                     Volume = 1.5f,
                     Pitch = -0.8f
                 }, Player.Center);
             }
-
-            //生成大量粒子
             for (int i = 0; i < 80; i++) {
                 SpawnAbyssParticle(Player.Center, large: true);
             }
-
-            //生成触手
             for (int i = 0; i < 6; i++) {
                 SpawnTentacle();
             }
-
-            Main.NewText("你被深渊吞噬了...", 150, 0, 0);
+            Main.NewText(DeathNoticeText.Value, 150, 0, 0);
         }
 
         /// <summary>
@@ -477,18 +470,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #region 重生处理
         public override void OnRespawn() {
             var system = Player.GetResurrectionSystem();
-            if (system == null) return;
-
-            //死亡后，复苏值不会完全清零，而是保持在危险水平
+            if (system == null) {
+                return;
+            }
             if (system.CurrentValue >= system.MaxValue * 0.95f) {
                 float retainedValue = system.MaxValue * ResurrectionRetainRatio;
                 system.SetValue(retainedValue, triggerEvents: false);
-
-                //显示警告信息
-                Main.NewText("深渊的印记依然缠绕着你...", 200, 50, 50);
-                Main.NewText($"复苏值: {(int)(ResurrectionRetainRatio * 100)}%", 255, 150, 50);
-
-                //播放不祥音效
+                Main.NewText(MarkRemainText.Value, 200, 50, 50);
+                Main.NewText(string.Format(RetainValueFormat.Value, (int)(ResurrectionRetainRatio * 100)), 255, 150, 50);
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Zombie103 with {
                         Volume = 0.8f,
@@ -496,8 +485,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     });
                 }
             }
-
-            //重置演出状态
             ResetState();
         }
         #endregion

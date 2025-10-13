@@ -5506,4 +5506,13 @@ FishSkill: {
 }
 
 NPCs.TheSpiritofTheAbyss.DisplayName: 渊洋之灵
-Resurrections.ResurrectionDeathSystem.DeathText: "{0}死于深渊复苏"
+
+Resurrections: {
+	ResurrectionDeathSystem: {
+		DeathText: "{0}死于深渊复苏"
+		WarningCombatText: 深渊正在吞噬你...
+		DeathNoticeText: 你被深渊吞噬了...
+		MarkRemainText: 深渊的印记依然缠绕着你...
+		RetainValueFormat: 复苏值: {0}%
+	}
+}
