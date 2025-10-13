@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,6 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         internal readonly List<SeaEyeButton> eyes = [];
         public readonly List<SeaEyeButton> activationSequence = [];//按激活顺序排列
         public FishSkill FishSkill;
+        public ResurrectionSystem ResurrectionSaveData = new();
         public override void SetStaticDefaults() {
             for (int i = 0; i < DomainUI.MaxEyes; i++) {
                 float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
@@ -102,9 +104,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             //加载深渊复苏系统数据
             if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
-                if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
-                    hPlayer.ResurrectionSystem.LoadData(resurrectionTag);
-                }
+                ResurrectionSaveData?.LoadData(resurrectionTag);
+            }
+        }
+
+        private static bool initialized = false;
+        public override void OnEnterWorld() {
+            initialized = true;
+        }
+
+        public override void PostUpdate() {
+            if (initialized) {//邪道，用这种方法捕捉到大比目鱼玩家实例加载数据
+                ResurrectionSaveData.CopyTo(Player.GetHalibut().ResurrectionSystem);
+                initialized = false;
             }
         }
     }
