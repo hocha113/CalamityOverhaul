@@ -4,16 +4,66 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
     /// 深渊复苏进度条UI
     /// </summary>
-    internal class ResurrectionUI : UIHandle
+    internal class ResurrectionUI : UIHandle, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend.HalibutText";
+
         public static ResurrectionUI Instance => UIHandleLoader.GetUIHandleOfType<ResurrectionUI>();
-        public override LayersModeEnum LayersMode => LayersModeEnum.None; //手动调用
+
+        //本地化字段
+        public static LocalizedText TitleText; //深渊复苏状态
+        public static LocalizedText LinePercentFormat; //百分比 : {0:F1}%
+        public static LocalizedText LineValueFormat; //复苏值 : {0:F1} / {1:F1}
+        public static LocalizedText LineRateFormat; //速度   : {0:F3}/秒  (入参为 每秒值)
+        public static LocalizedText HeaderSummaryText; //当前态势评估
+        public static LocalizedText RateLevelVeryLow; //极低
+        public static LocalizedText RateLevelLow; //低
+        public static LocalizedText RateLevelMedium; //中
+        public static LocalizedText RateLevelHigh; //高
+        public static LocalizedText RateLevelDanger; //危险
+        public static LocalizedText Phase1; //复苏平稳，尚无明显异象
+        public static LocalizedText Phase2; //局势渐起波纹，能量仍可控
+        public static LocalizedText Phase3; //脉冲已具侵蚀感，需要留意
+        public static LocalizedText Phase4; //高压区形成，领域边缘不稳定
+        public static LocalizedText Phase5; //深渊临界——随时可能失控
+        public static LocalizedText Trend1; //几乎静止
+        public static LocalizedText Trend2; //缓慢上升
+        public static LocalizedText Trend3; //稳态攀升
+        public static LocalizedText Trend4; //快速累积
+        public static LocalizedText Trend5; //危险激增
+        public static LocalizedText SummaryFormat; //状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
+
+        public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "深渊复苏状态");
+            LinePercentFormat = this.GetLocalization(nameof(LinePercentFormat), () => "百分比 : {0:F1}%");
+            LineValueFormat = this.GetLocalization(nameof(LineValueFormat), () => "复苏值 : {0:F1} / {1:F1}");
+            LineRateFormat = this.GetLocalization(nameof(LineRateFormat), () => "速度   : {0:F3}/秒");
+            HeaderSummaryText = this.GetLocalization(nameof(HeaderSummaryText), () => "当前态势评估");
+            RateLevelVeryLow = this.GetLocalization(nameof(RateLevelVeryLow), () => "极低");
+            RateLevelLow = this.GetLocalization(nameof(RateLevelLow), () => "低");
+            RateLevelMedium = this.GetLocalization(nameof(RateLevelMedium), () => "中");
+            RateLevelHigh = this.GetLocalization(nameof(RateLevelHigh), () => "高");
+            RateLevelDanger = this.GetLocalization(nameof(RateLevelDanger), () => "危险");
+            Phase1 = this.GetLocalization(nameof(Phase1), () => "复苏平稳，尚无明显异象");
+            Phase2 = this.GetLocalization(nameof(Phase2), () => "局势渐起波纹，能量仍可控");
+            Phase3 = this.GetLocalization(nameof(Phase3), () => "脉冲已具侵蚀感，需要留意");
+            Phase4 = this.GetLocalization(nameof(Phase4), () => "高压区形成，领域边缘不稳定");
+            Phase5 = this.GetLocalization(nameof(Phase5), () => "深渊临界——随时可能失控");
+            Trend1 = this.GetLocalization(nameof(Trend1), () => "几乎静止");
+            Trend2 = this.GetLocalization(nameof(Trend2), () => "缓慢上升");
+            Trend3 = this.GetLocalization(nameof(Trend3), () => "稳态攀升");
+            Trend4 = this.GetLocalization(nameof(Trend4), () => "快速累积");
+            Trend5 = this.GetLocalization(nameof(Trend5), () => "危险激增");
+            SummaryFormat = this.GetLocalization(nameof(SummaryFormat), () => "状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略");
+        }
 
         private float displayValue = 0f;
         private const float SmoothSpeed = 0.15f;
@@ -303,10 +353,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color rateLevelColor = GetRateLevelColor(rateLevel);
             string stateLine = GetStateSummary(ratio, rate);
 
-            string title = "深渊复苏状态";
-            string line1 = $"百分比 : {percent:F1}%";
-            string line2 = $"复苏值 : {cur:F1} / {max:F1}";
-            string line3 = $"速度   : {rate * 60:F3}/秒";
+            string title = TitleText.Value;
+            string line1 = string.Format(LinePercentFormat.Value, percent);
+            string line2 = string.Format(LineValueFormat.Value, cur, max);
+            string line3 = string.Format(LineRateFormat.Value, rate * 60f);
 
             float workingWidth = minWidth;
             float contentWidth = workingWidth - horizontalPadding - contentRightPadding;
@@ -346,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float infoBlockHeight = infoLineHeight * 3f;
             float summaryBlockHeight = summaryDrawLines * summaryLineHeight;
             float dividerHeight = 2f;
-            float headerEstimatedHeight = FontAssets.MouseText.Value.MeasureString("当前态势评估").Y * 0.72f + 6f; //预估标题实际占用高度
+            float headerEstimatedHeight = FontAssets.MouseText.Value.MeasureString(HeaderSummaryText.Value).Y * 0.72f + 6f;
 
             float panelHeight = topPadding
                 + titleHeight + titleExtra
@@ -448,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static float DrawSummaryHeader(SpriteBatch sb, Vector2 pos, Color edgeColor, float alpha) {
-            string header = "当前态势评估";
+            string header = HeaderSummaryText.Value;
             for (int i = 0; i < 4; i++) {
                 float a = MathHelper.TwoPi * i / 4f;
                 Vector2 o = a.ToRotationVector2() * 1.1f;
@@ -456,7 +506,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             Utils.DrawBorderString(sb, header, pos, Color.Lerp(edgeColor, Color.White, 0.4f) * alpha, 0.72f);
             Vector2 size = FontAssets.MouseText.Value.MeasureString(header) * 0.72f;
-            return size.Y; //返回高度供布局使用
+            return size.Y;
         }
 
         private static void DrawSummaryLines(SpriteBatch sb, string[] lines, Vector2 start, Rectangle panelRect, float lineHeight, float alpha) {
@@ -477,16 +527,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static Color GetRateLevelColor(string level) {
-            if (level == "极低") {
+            if (level == RateLevelVeryLow.Value) {
                 return new Color(120, 200, 255);
             }
-            else if (level == "低") {
+            else if (level == RateLevelLow.Value) {
                 return new Color(100, 220, 170);
             }
-            else if (level == "中") {
+            else if (level == RateLevelMedium.Value) {
                 return new Color(255, 210, 90);
             }
-            else if (level == "高") {
+            else if (level == RateLevelHigh.Value) {
                 return new Color(255, 140, 70);
             }
             else {
@@ -496,58 +546,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private static string GetRateLevel(float rate) {
             if (rate < 0.01f) {
-                return "极低";
+                return RateLevelVeryLow.Value;
             }
             else if (rate < 0.025f) {
-                return "低";
+                return RateLevelLow.Value;
             }
             else if (rate < 0.05f) {
-                return "中";
+                return RateLevelMedium.Value;
             }
             else if (rate < 0.09f) {
-                return "高";
+                return RateLevelHigh.Value;
             }
             else {
-                return "危险";
+                return RateLevelDanger.Value;
             }
         }
 
         private static string GetStateSummary(float ratio, float rate) {
             string phase;
             if (ratio < 0.25f) {
-                phase = "复苏平稳，尚无明显异象";
+                phase = Phase1.Value;
             }
             else if (ratio < 0.5f) {
-                phase = "局势渐起波纹，能量仍可控";
+                phase = Phase2.Value;
             }
             else if (ratio < 0.7f) {
-                phase = "脉冲已具侵蚀感，需要留意";
+                phase = Phase3.Value;
             }
             else if (ratio < 0.9f) {
-                phase = "高压区形成，领域边缘不稳定";
+                phase = Phase4.Value;
             }
             else {
-                phase = "深渊临界——随时可能失控";
+                phase = Phase5.Value;
             }
 
             string trend;
             if (rate < 0.01f) {
-                trend = "几乎静止";
+                trend = Trend1.Value;
             }
             else if (rate < 0.025f) {
-                trend = "缓慢上升";
+                trend = Trend2.Value;
             }
             else if (rate < 0.05f) {
-                trend = "稳态攀升";
+                trend = Trend3.Value;
             }
             else if (rate < 0.09f) {
-                trend = "快速累积";
+                trend = Trend4.Value;
             }
             else {
-                trend = "危险激增";
+                trend = Trend5.Value;
             }
 
-            return $"状态：{phase}。当前增长趋势：{trend}。请根据态势调整领域或研究策略";
+            return string.Format(SummaryFormat.Value, phase, trend);
         }
 
         private void DrawTooltipBorder(SpriteBatch sb, Rectangle rect, Color glow) {

@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2228,6 +2228,30 @@ Legend: {
 			EyeDesc9: The ninth boundary unveils the full form of the abyss — great power flows freely.
 			EyeDesc10: The tenth ascends beyond limit — a realm of gods.
 			LayerTitleFormat: Layer {0}
+		}
+
+		ResurrectionUI: {
+			TitleText: Abyssal Resurrection State
+			LinePercentFormat: Completion : {0:F1}%
+			LineValueFormat: Resonance Value : {0:F1} / {1:F1}
+			LineRateFormat: Flow Rate : {0:F3}/s
+			HeaderSummaryText: Current Phenomenon Analysis
+			RateLevelVeryLow: Dormant
+			RateLevelLow: Faint
+			RateLevelMedium: Active
+			RateLevelHigh: Intense
+			RateLevelDanger: Cataclysmic
+			Phase1: The depths stir in silence; all remains within mortal grasp.
+			Phase2: Gentle tremors echo through the tide — the pulse begins to breathe.
+			Phase3: The abyss murmurs; unseen currents claw at the edges of control.
+			Phase4: Pressure mounts, and the veil of the domain begins to waver.
+			Phase5: The threshold breaks — the abyss gazes back.
+			Trend1: Still and silent
+			Trend2: Slowly awakening
+			Trend3: Rising with rhythm
+			Trend4: Swelling in fervor
+			Trend5: Spiraling toward collapse
+			SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
 		}
 	}
 
@@ -5410,75 +5434,127 @@ Arcanes: {
 
 FishSkill: {
 	FishSwarm: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Shoal Mirage
+		Tooltip:
+			'''
+			Right-click to morph into a swarm of fish and phase through obstacles.
+			Left-click to launch the swarm toward your cursor.
+			'''
+		Studied: An ordinary fish with surprisingly extraordinary potential.
 	}
 
 	Sparkling: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Radiant Queen’s Waltz
+		Tooltip:
+			'''
+			While firing, periodically summons several “Queenfish” to shoot in formation.
+			Cooldown does not recover during continuous fire.
+			'''
+		Studied: I believe studying this fish could advance laser technology dramatically.
 	}
 
 	FishZombie: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Dancing Dead
+		Tooltip:
+			'''
+			Right-click to summon a horde of drowned corpses that rush toward enemies.
+			They explode upon contact.
+			'''
+		Studied: A foul-smelling fish… is it truly still alive?
 	}
 
 	FishCloud: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Soaring Nimbus
+		Tooltip:
+			'''
+			Right-click to ride a raincloud and move at high speed.
+			You can pass through walls and attack while mounted.
+			Raindrops will fall along your path.
+			'''
+		Studied: It looks like a fish—but swims like a cloud.
 	}
 
 	FishVoodoo: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Voodoo Substitute
+		Tooltip:
+			'''
+			When equipped, prevents death by transferring incoming damage
+			to nearby enemies, then enters cooldown.
+			Within your domain, damage transfers to all enemies inside.
+			'''
+		Studied: A fine specimen—its properties inspire some rather dangerous experiments.
 	}
 
 	FishDemonicHell: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Infernal Burst
+		Tooltip:
+			'''
+			While firing, periodically summons a ring of hellfire.
+			Upon charging, releases a blazing inferno orb.
+			The orb explodes after traveling a short distance.
+			'''
+		Studied: This fish still burns, even in the depths of Hell.
 	}
 
 	FishDynamite: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Flashbang Torpedo
+		Tooltip:
+			'''
+			Right-click to throw a gravity-affected “torpedo fish.”
+			It explodes upon contact with an enemy—or after a brief delay.
+			'''
+		Studied: Its internal anatomy is intricate—mostly composed of the “boom” part.
 	}
 
 	FishBone: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Bone Recurve
+		Tooltip:
+			'''
+			While firing, periodically generates orbiting bones around you.
+			After circling for a time, they launch outward and return.
+			If you take damage, the bones shatter instantly.
+			'''
+		Studied: Might make a fine soup—rich in calcium and poor in mercy.
 	}
 
 	FishHarpy: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Winged Harpyfish
+		Tooltip:
+			'''
+			While firing, generates orbiting harpy feathers.
+			With continuous fire, the feathers spiral before scattering outward.
+			'''
+		Studied: I doubt it can fly… yet it undeniably has wings.
 	}
 
 	FishFallenStar: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Starry Shoal
+		Tooltip:
+			'''
+			Each shot releases a star surrounded by smaller companion stars.
+			After firing enough stars, a meteor shower will descend.
+			'''
+		Studied: Perhaps in daylight, it would simply vanish—returning to the sky.
 	}
 
 	FishHunger: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Glutton of the Deep
+		Tooltip:
+			'''
+			Periodically spawns hungry spirits that orbit around you.
+			Once they reach their limit, they rush forth to tear at your foes.
+			'''
+		Studied: It always looks hungry… perhaps it always is.
 	}
 
 	FishBat: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+		DisplayName: Bat Swarm Drift
+		Tooltip:
+			'''
+			Right-click to transform into a swarm of bats and dash through space.
+			Attacking breaks the transformation.
+			'''
+		Studied: I wonder… does it sleep while hanging upside down?
 	}
 }
 

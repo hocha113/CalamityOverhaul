@@ -2187,6 +2187,30 @@ Legend: {
 			EyeDesc10: 十层无限叠加，神之境界
 			LayerTitleFormat: 第 {0} 层
 		}
+
+		ResurrectionUI: {
+			TitleText: 深渊复苏状态
+			LinePercentFormat: 百分比 : {0:F1}%
+			LineValueFormat: 复苏值 : {0:F1} / {1:F1}
+			LineRateFormat: 速度   : {0:F3}/秒
+			HeaderSummaryText: 当前态势评估
+			RateLevelVeryLow: 极低
+			RateLevelLow: 低
+			RateLevelMedium: 中
+			RateLevelHigh: 高
+			RateLevelDanger: 危险
+			Phase1: 复苏平稳，尚无明显异象
+			Phase2: 局势渐起波纹，能量仍可控
+			Phase3: 脉冲已具侵蚀感，需要留意
+			Phase4: 高压区形成，领域边缘不稳定
+			Phase5: 深渊临界——随时可能失控
+			Trend1: 几乎静止
+			Trend2: 缓慢上升
+			Trend3: 稳态攀升
+			Trend4: 快速累积
+			Trend5: 危险激增
+			SummaryFormat: 状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
+		}
 	}
 
 	MuraText: {
