@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Placeables.Banners;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.DesertScourge;
@@ -12,7 +11,6 @@ using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using InnoVault.GameContent.BaseEntity;
-using log4net.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -190,13 +188,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.EyeofCthulhu) {
                 modifiers.FinalDamage *= 2f;
             }
-            if (target.type == ModContent.NPCType<BloodlettingServant>()|| target.type == NPCID.ServantofCthulhu) {
+            if (target.type == ModContent.NPCType<BloodlettingServant>() || target.type == NPCID.ServantofCthulhu) {
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelEmerald>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            if (target.type == NPCID.EaterofWorldsBody|| target.type == NPCID.EaterofWorldsHead|| target.type == NPCID.EaterofWorldsTail) {
+            if (target.type == NPCID.EaterofWorldsBody || target.type == NPCID.EaterofWorldsHead || target.type == NPCID.EaterofWorldsTail) {
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.BrainofCthulhu) {
@@ -205,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.Creeper) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == ModContent.NPCType<HiveBlob>()|| target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
+            if (target.type == ModContent.NPCType<HiveBlob>() || target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == NPCID.QueenBee) {

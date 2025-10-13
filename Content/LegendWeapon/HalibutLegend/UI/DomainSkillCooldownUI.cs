@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common; // For CWRKeySystem
+﻿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

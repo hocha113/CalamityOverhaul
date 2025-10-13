@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //羽毛管理系统
         public static List<int> ActiveFeathers = new();
-        private static int MaxFeathers = 5 + HalibutData.GetDomainLayer() ; //羽毛数
+        private static int MaxFeathers = 5 + HalibutData.GetDomainLayer(); //羽毛数
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishBone : FishSkill
     {
         public override int UnlockFishID => ItemID.Bonefish;
-        public override int DefaultCooldown => 60 ;
+        public override int DefaultCooldown => 60;
 
         //骨头管理系统
         private static readonly List<int> ActiveBones = new();

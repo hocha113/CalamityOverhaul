@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新技能状态
             if (halibutPlayer.FishSwarmActive) {
                 halibutPlayer.BatSwarmTimer++;
-                
+
                 if (halibutPlayer.BatSwarmTimer >= FishSwarmDuration) {
                     //技能结束
                     halibutPlayer.FishSwarmActive = false;

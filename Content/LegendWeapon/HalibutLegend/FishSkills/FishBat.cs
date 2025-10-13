@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            
+
             if (player.altFunctionUse == 2) {
                 // 右键：激活蝙蝠化形
                 if (!halibutPlayer.BatSwarmActive && Cooldown <= 0) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     return false;
                 }
             }
-            
+
             return true;
         }
 
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     DismissBatSwarm(player, halibutPlayer);
                 }
             }
-            
+
             return true;
         }
 
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             SetCooldown();
-            
+
             // 激活技能
             halibutPlayer.BatSwarmActive = true;
             halibutPlayer.BatSwarmTimer = 0;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             // 生成蝙蝠群（30-50只蝙蝠）
             int batCount = Main.rand.Next(30 + 2 * HalibutData.GetDomainLayer(), 50 + 3 * HalibutData.GetDomainLayer());
-            
+
             for (int i = 0; i < batCount; i++) {
                 // 在玩家周围随机位置生成蝙蝠
                 float angle = MathHelper.TwoPi * i / batCount + Main.rand.NextFloat(-0.3f, 0.3f);
@@ -114,15 +114,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             // 播放音效
-            SoundEngine.PlaySound(SoundID.NPCHit4 with { 
-                Volume = 0.7f, 
-                Pitch = -0.3f 
+            SoundEngine.PlaySound(SoundID.NPCHit4 with {
+                Volume = 0.7f,
+                Pitch = -0.3f
             }, player.Center);
             SoundEngine.PlaySound(SoundID.Zombie20 with { // 蝙蝠声音
-                Volume = 0.6f, 
-                Pitch = 0.5f 
+                Volume = 0.6f,
+                Pitch = 0.5f
             }, player.Center);
-            
+
             // 化形特效
             SpawnTransformEffect(player.Center);
         }
@@ -133,33 +133,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
             halibutPlayer.BatSwarmActive = false;
             halibutPlayer.BatSwarmTimer = 0;
-            
+
             // 杀死所有蝙蝠弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 if (Main.projectile[i].active &&
                     Main.projectile[i].type == ModContent.ProjectileType<BatSwarmMinion>() &&
                     Main.projectile[i].owner == player.whoAmI) {
-                    
+
                     Main.projectile[i].Kill();
                 }
             }
-            
+
             // 杀死控制器弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 if (Main.projectile[i].active &&
                     Main.projectile[i].type == ModContent.ProjectileType<BatSwarmController>() &&
                     Main.projectile[i].owner == player.whoAmI) {
-                    
+
                     Main.projectile[i].Kill();
                 }
             }
-            
+
             // 消散音效
-            SoundEngine.PlaySound(SoundID.NPCDeath4 with { 
-                Volume = 0.6f, 
-                Pitch = 0.2f 
+            SoundEngine.PlaySound(SoundID.NPCDeath4 with {
+                Volume = 0.6f,
+                Pitch = 0.2f
             }, player.Center);
-            
+
             // 消散特效
             SpawnDismissEffect(player.Center);
         }
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 40; i++) {
                 float angle = MathHelper.TwoPi * i / 40f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
-                
+
                 Dust dark = Dust.NewDustPerfect(
                     position,
                     DustID.Shadowflame,
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             // 消散时的黑暗粒子
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                
+
                 Dust dark = Dust.NewDustPerfect(
                     position,
                     DustID.Shadowflame,
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             // 计算目标速度（朝向光标，允许全方向飞行）
             Vector2 toMouse = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
             float flySpeed = 20f + HalibutData.GetDomainLayer() * 1.5f; // 基础飞行速度
-            
+
             // 允许玩家通过移动键微调方向
             Vector2 inputDirection = Vector2.Zero;
             if (Owner.controlLeft) inputDirection.X -= 1f;
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Owner.controlDown) inputDirection.Y += 1f;
 
             Owner.wingTime = 0;
-            
+
             if (inputDirection != Vector2.Zero) {
                 inputDirection.Normalize();
                 toMouse = Vector2.Lerp(toMouse, inputDirection, 0.4f).SafeNormalize(Vector2.Zero);
@@ -282,9 +282,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnFlightParticle() {
             Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(20f, 20f);
             Dust flight = Dust.NewDustPerfect(
-                dustPos, 
+                dustPos,
                 DustID.Shadowflame,
-                -Owner.velocity * 0.3f, 
+                -Owner.velocity * 0.3f,
                 Scale: Main.rand.NextFloat(0.8f, 1.3f)
             );
             flight.noGravity = true;
@@ -412,9 +412,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             // 生成飞行粒子
             if (Main.rand.NextBool(40) && batAlpha > 0.5f) {
                 Dust bat = Dust.NewDustPerfect(
-                    Projectile.Center, 
+                    Projectile.Center,
                     DustID.Shadowflame,
-                    Projectile.velocity * 0.2f, 
+                    Projectile.velocity * 0.2f,
                     Scale: Main.rand.NextFloat(0.5f, 0.8f)
                 );
                 bat.noGravity = true;
@@ -453,7 +453,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 // 根据ID决定顺时针还是逆时针
                 if (BatID % 2 == 0) tangent = -tangent;
                 totalForce += tangent * 2.5f;
-                
+
                 // 轻微向中心吸引
                 totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 0.3f;
             }
@@ -599,7 +599,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             // 绘制主体
             Color drawColor = Color.Lerp(lightColor, new Color(180, 180, 200), 0.3f);
-            
+
             Main.EntitySpriteDraw(
                 batTex,
                 drawPosition,
@@ -615,7 +615,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             // 速度快时的发光效果
             if (Projectile.velocity.Length() > 10f) {
                 float glowAlpha = (Projectile.velocity.Length() - 10f) / 8f * 0.4f * batAlpha;
-                
+
                 Main.EntitySpriteDraw(
                     batTex,
                     drawPosition,
