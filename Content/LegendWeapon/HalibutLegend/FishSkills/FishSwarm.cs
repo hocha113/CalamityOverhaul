@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 技能最大持续时间（5秒 = 300帧）
         /// </summary>
         public const int FishSwarmDuration = 300;
+        /// <summary>
+        /// 攻击后摇持续时间（60帧 = 1秒）
+        /// </summary>
+        public const int AttackRecoveryDuration = 60;
         public override int DefaultCooldown => 60 * (30 - HalibutData.GetDomainLayer() * 2);
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
@@ -39,9 +43,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //更新技能状态
             if (halibutPlayer.FishSwarmActive) {
-                halibutPlayer.BatSwarmTimer++;
+                halibutPlayer.FishSwarmTimer++;
 
-                if (halibutPlayer.BatSwarmTimer >= FishSwarmDuration) {
+                if (halibutPlayer.FishSwarmTimer >= FishSwarmDuration) {
                     //技能结束
                     halibutPlayer.FishSwarmActive = false;
                     halibutPlayer.FishSwarmTimer = 0;
@@ -51,11 +55,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (halibutPlayer.AttackRecoveryTimer > 0) {
                 halibutPlayer.AttackRecoveryTimer--;
             }
+
             return player.CountProjectilesOfID<FishSwarmController>() == 0;
         }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-
             //检查技能是否在冷却中
             if (Cooldown > 0 || halibutPlayer.FishSwarmActive) {
                 return;
@@ -120,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         public static void ActivateFishConeSurge(Player player, HalibutPlayer halibutPlayer) {
             //设置攻击后摇
-            halibutPlayer.AttackRecoveryTimer = HalibutPlayer.AttackRecoveryDuration;
+            halibutPlayer.AttackRecoveryTimer = AttackRecoveryDuration;
 
             //计算突袭方向（朝向光标）
             Vector2 surgeDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);

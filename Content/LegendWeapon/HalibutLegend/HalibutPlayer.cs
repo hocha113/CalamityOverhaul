@@ -84,14 +84,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int FishSwarmTimer { get; set; }
         /// <summary>
-        /// 技能冷却时间
-        /// </summary>
-        public int FishSwarmCooldown { get; set; }
-        /// <summary>
-        /// 技能冷却最大时间（10秒）
-        /// </summary>
-        public const int FishSwarmMaxCooldown = 600;
-        /// <summary>
         /// 螺旋尖锥突袭状态
         /// </summary>
         public bool FishConeSurgeActive { get; set; }
@@ -99,10 +91,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 突袭后攻击后摇计时器
         /// </summary>
         public int AttackRecoveryTimer { get; set; }
-        /// <summary>
-        /// 攻击后摇持续时间（60帧 = 1秒）
-        /// </summary>
-        public const int AttackRecoveryDuration = 60;
         #endregion
 
         #region 蝙蝠
