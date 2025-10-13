@@ -251,6 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (steps == 0) {
                 steps = delta > 0 ? 1 : -1;
             }
+            int old = scrollOffset;
             scrollOffset -= steps;//滚轮上推向左, 下拉向右
             int maxOff = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
             if (scrollOffset < 0) {
@@ -258,6 +259,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             if (scrollOffset > maxOff) {
                 scrollOffset = maxOff;
+            }
+            if (scrollOffset != old) {
+                float pitch = steps > 0 ? 0.15f : -0.15f;//方向性提示
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = pitch });
             }
         }
 
@@ -365,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 (int)(DrawPosition.X + 40),
                 (int)(DrawPosition.Y + 20),
                 (int)(Size.X - 80),
-                44
+                46
             );
             return area.Contains(MouseHitBox);
         }
