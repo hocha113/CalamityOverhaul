@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2163,6 +2163,54 @@ Legend: {
 			[i:CalamityMod/HalibutCannon]:
 			这条鱼可成为拼图
 			'''
+
+		SkillSlot: {
+			Hover1: 左键: 选择
+			Hover2: 右键: 置顶
+			Hover3: 滚轮: 滚动
+			Hover4: 长按: 拖拽
+		}
+
+		DomainUI: {
+			TitleText: 海域领域
+			ExtraEyeTitleText: 第 十 层
+			CrashedLabelText: 已死机
+			EyeDesc1: 初启领域之眼，微弱的潮汐感开始共鸣
+			EyeDesc2: 双目同开，水压在周遭缓慢聚集，力量渐显
+			EyeDesc3: 三重视界锁定海流，领域开始稳定成型
+			EyeDesc4: 第四层共鸣放大，涌动的寒意悄然扩散
+			EyeDesc5: 五层交织，环形水旋于脚下成形，给予守护
+			EyeDesc6: 第六层脉冲涌现，能量脉络变得清晰可辨
+			EyeDesc7: 七眼同辉，潮域对外界的侵蚀性显著增强
+			EyeDesc8: 第八层使水压几近凝实，力量几乎到达巅峰
+			EyeDesc9: 九层极境，海渊之形完全显现，伟力贯通
+			EyeDesc10: 十层无限叠加，神之境界
+			LayerTitleFormat: 第 {0} 层
+		}
+
+		ResurrectionUI: {
+			TitleText: 深渊复苏状态
+			LinePercentFormat: 百分比 : {0:F1}%
+			LineValueFormat: 复苏值 : {0:F1} / {1:F1}
+			LineRateFormat: 速度   : {0:F3}/秒
+			HeaderSummaryText: 当前态势评估
+			RateLevelVeryLow: 极低
+			RateLevelLow: 低
+			RateLevelMedium: 中
+			RateLevelHigh: 高
+			RateLevelDanger: 危险
+			Phase1: 复苏平稳，尚无明显异象
+			Phase2: 局势渐起波纹，能量仍可控
+			Phase3: 脉冲已具侵蚀感，需要留意
+			Phase4: 高压区形成，领域边缘不稳定
+			Phase5: 深渊临界——随时可能失控
+			Trend1: 几乎静止
+			Trend2: 缓慢上升
+			Trend3: 稳态攀升
+			Trend4: 快速累积
+			Trend5: 危险激增
+			SummaryFormat: 状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
+		}
 	}
 
 	MuraText: {
@@ -5458,4 +5506,13 @@ FishSkill: {
 }
 
 NPCs.TheSpiritofTheAbyss.DisplayName: 渊洋之灵
-Resurrections.ResurrectionDeathSystem.DeathText: "{0}死于深渊复苏"
+
+Resurrections: {
+	ResurrectionDeathSystem: {
+		DeathText: "{0}死于深渊复苏"
+		WarningCombatText: 深渊正在吞噬你...
+		DeathNoticeText: 你被深渊吞噬了...
+		MarkRemainText: 深渊的印记依然缠绕着你...
+		RetainValueFormat: 复苏值: {0}%
+	}
+}

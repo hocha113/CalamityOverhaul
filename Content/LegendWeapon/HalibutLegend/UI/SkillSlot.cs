@@ -6,13 +6,16 @@ using Terraria.ID;
 using Terraria;
 using Terraria.GameContent;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
+using Terraria.ModLoader;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
-    internal class SkillSlot : UIHandle
+    internal class SkillSlot : UIHandle, ILocalizedModType
     {
         public static SkillSlot Instance => UIHandleLoader.GetUIHandleOfType<SkillSlot>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;//不被自动更新，需要手动调用Update和Draw
+        public string LocalizationCategory => "Legend.HalibutText";
         public FishSkill FishSkill;
         public float hoverSengs;
         public float RelativeIndex;//相对于可见范围的位置
@@ -31,6 +34,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int hintTimer = 0;//提示计时
         private const int HintDelay = 10;//10帧后出现提示
         internal static SkillSlot HoveredSlot;//当前悬停的槽位(供面板调用绘制提示)
+
+        //拖拽相关字段
+        internal bool beingDragged;//是否正被拖拽(由面板设置)
+        internal float smoothLocalX;//平滑的本地X(由面板驱动)
+
+        internal static LocalizedText Hover1;
+        internal static LocalizedText Hover2;
+        internal static LocalizedText Hover3;
+        internal static LocalizedText Hover4;
+
+        public override void SetStaticDefaults() {
+            Hover1 = this.GetLocalization(nameof(Hover1), () => "左键: 选择");
+            Hover2 = this.GetLocalization(nameof(Hover2), () => "右键: 置顶");
+            Hover3 = this.GetLocalization(nameof(Hover3), () => "滚轮: 滚动");
+            Hover4 = this.GetLocalization(nameof(Hover4), () => "长按: 拖拽");
+        }
 
         public override void Update() {
             Size = new Vector2(Skillcon.Width, Skillcon.Height / 5);
@@ -104,6 +123,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 finalAlpha *= appearProgress;
                 rotation = (1f - appearProgress) * 0.5f;
             }
+            if (beingDragged) {
+                scale *= 1.15f;//拖拽时放大
+            }
             Color baseColor = Color.White * finalAlpha;
             Color glowColor = Color.Gold with { A = 0 } * hoverSengs * finalAlpha;
             Vector2 center = DrawPosition + Size / 2;
@@ -126,13 +148,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (hintTimer < HintDelay) {
                 return;
             }
-            string l1 = "左键: 选择";
-            string l2 = "右键: 置顶";
-            string l3 = "滚轮: 滚动";
+            string l1 = Hover1.Value;
+            string l2 = Hover2.Value;
+            string l3 = Hover3.Value;
+            string l4 = Hover4.Value;
             var font = FontAssets.MouseText.Value;
             float w = Math.Max(font.MeasureString(l1).X, Math.Max(font.MeasureString(l2).X, font.MeasureString(l3).X));
             float lineH = 18f;
-            Vector2 size = new Vector2(w + 20, lineH * 3 + 16);
+            Vector2 size = new Vector2(w + 20, lineH * 4 + 16);
             Vector2 pos = DrawPosition + new Vector2(Size.X / 2 - size.X / 2, -size.Y - 6);
             pos.X = Math.Clamp(pos.X, 16, Main.screenWidth - size.X - 16);
             pos.Y = Math.Max(16, pos.Y);
@@ -150,6 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Utils.DrawBorderString(spriteBatch, l1, tPos, Color.White, 0.75f);
             Utils.DrawBorderString(spriteBatch, l2, tPos + new Vector2(0, lineH), Color.White, 0.75f);
             Utils.DrawBorderString(spriteBatch, l3, tPos + new Vector2(0, lineH * 2), Color.White, 0.75f);
+            Utils.DrawBorderString(spriteBatch, l4, tPos + new Vector2(0, lineH * 3), Color.White, 0.75f);
         }
     }
 }

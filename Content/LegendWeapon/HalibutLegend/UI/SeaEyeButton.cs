@@ -5,6 +5,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader; //本地化接口
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -405,21 +407,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
     internal static class DomainEyeDescriptions
     {
-        private static readonly Dictionary<int, string> descriptions = new Dictionary<int, string> {
-            { 1, "初启领域之眼，微弱的潮汐感开始共鸣" },
-            { 2, "双目同开，水压在周遭缓慢聚集，力量渐显" },
-            { 3, "三重视界锁定海流，领域开始稳定成型" },
-            { 4, "第四层共鸣放大，涌动的寒意悄然扩散" },
-            { 5, "五层交织，环形水旋于脚下成形，给予守护" },
-            { 6, "第六层脉冲涌现，能量脉络变得清晰可辨" },
-            { 7, "七眼同辉，潮域对外界的侵蚀性显著增强" },
-            { 8, "第八层使水压几近凝实，力量几乎到达巅峰" },
-            { 9, "九层极境——海渊之形完全显现，伟力贯通" },
-            { 10, "十层神之境界" }
-        };
         public static string GetDescription(int layer) {
-            if (descriptions.TryGetValue(layer, out string value)) {
-                return value;
+            if (layer >= 1 && layer < DomainUI.EyeLayerDescriptions.Length) {
+                var lt = DomainUI.EyeLayerDescriptions[layer];
+                if (lt != null) {
+                    return lt.Value;
+                }
             }
             return "Error";
         }

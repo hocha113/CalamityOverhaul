@@ -145,6 +145,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //待激活的技能槽位（粒子到达后才激活）
         private Dictionary<SkillSlot, int> pendingSlots = [];//槽位 -> 对应的粒子索引
+
+        private SkillSlot draggingSlot;//当前拖拽中的槽位
+        private Vector2 dragOffset;//鼠标相对槽位中心偏移
+        private float dragVisualX;//拖拽视觉X
+        private int dragOriginalIndex = -1;//开始拖拽时原索引
+        private int dragInsertIndex = -1;//实时插入索引
+        private int dragHoldTimer = 0;//按住计时器
+        private const int DragHoldDelay = 8;//按住多少帧后开始拖拽
         #endregion
         public static void FishSkillTooltip(Item item, List<TooltipLine> tooltips) {
             if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || !halibutPlayer.HasHalubut) {
@@ -345,13 +353,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float slotWidth = Skillcon.Width + 4;//更新所有技能槽位（使用平滑的滚动偏移）
             float baseX = 52;
             bool anySlotHovered = false;//检查是否有任何技能槽位被悬停
+            //拖拽起始检测
+            if (draggingSlot == null && Main.mouseLeft) {
+                dragHoldTimer++;
+            }
+            else if (!Main.mouseLeft) {
+                dragHoldTimer = 0;
+            }
             for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                 var slot = halibutUISkillSlots[i];
                 float relativePosition = i - currentScrollOffset;//计算每个槽位的目标位置（基于平滑的滚动偏移）
                 float targetX = baseX + relativePosition * slotWidth;
-                slot.DrawPosition = DrawPosition + new Vector2(targetX, 30);
+                Vector2 slotPos = DrawPosition + new Vector2(targetX, 30);
+                if (draggingSlot == null || slot != draggingSlot) {
+                    //非拖拽中的槽位做平滑过渡
+                    slot.DrawPosition = Vector2.Lerp(slot.DrawPosition, slotPos, 0.4f);
+                }
                 slot.RelativeIndex = relativePosition;//用于判断是否在可见范围内
                 slot.Update();
+                if (slot.hoverInMainPage && draggingSlot == null && Main.mouseLeft && dragHoldTimer >= DragHoldDelay) {
+                    draggingSlot = slot;
+                    dragOriginalIndex = i;
+                    dragOffset = Main.MouseScreen - slot.DrawPosition;
+                    dragVisualX = slot.DrawPosition.X;
+                    slot.beingDragged = true;
+                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
+                }
                 if (slot.hoverInMainPage) {
                     anySlotHovered = true;
                 }
@@ -360,6 +387,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 SkillTooltipPanel.Instance.Hide();//如果没有槽位被悬停，隐藏介绍面板（带延迟）
             }
             SkillTooltipPanel.Instance.Update();//更新介绍面板
+            if (draggingSlot != null) {
+                //更新拖拽位置
+                Vector2 mouse = Main.MouseScreen - dragOffset;
+                dragVisualX = MathHelper.Lerp(dragVisualX, mouse.X, 0.5f);
+                draggingSlot.DrawPosition = new Vector2(dragVisualX, draggingSlot.DrawPosition.Y);
+                //计算插入索引（依据拖拽中心X）
+                float centerX = draggingSlot.DrawPosition.X + draggingSlot.Size.X / 2 - (DrawPosition.X + baseX);
+                float logicalIndexF = centerX / slotWidth + currentScrollOffset;
+                int logicalIndex = (int)Math.Round(logicalIndexF);
+                logicalIndex = Math.Clamp(logicalIndex, 0, halibutUISkillSlots.Count - 1);
+                dragInsertIndex = logicalIndex;
+                if (logicalIndex != dragOriginalIndex) {
+                    //为其他槽位腾出空间动画
+                    for (int i = 0; i < halibutUISkillSlots.Count; i++) {
+                        var slot = halibutUISkillSlots[i];
+                        if (slot == draggingSlot) {
+                            continue;
+                        }
+                        int targetIndex = i;
+                        if (dragOriginalIndex < logicalIndex) {
+                            if (i > dragOriginalIndex && i <= logicalIndex) {
+                                targetIndex = i - 1;
+                            }
+                        }
+                        else if (dragOriginalIndex > logicalIndex) {
+                            if (i >= logicalIndex && i < dragOriginalIndex) {
+                                targetIndex = i + 1;
+                            }
+                        }
+                        float rel = targetIndex - currentScrollOffset;
+                        float tx = baseX + rel * slotWidth;
+                        Vector2 newPos = DrawPosition + new Vector2(tx, 30);
+                        slot.DrawPosition = Vector2.Lerp(slot.DrawPosition, newPos, 0.35f);
+                    }
+                }
+                if (!Main.mouseLeftRelease) {
+                    //保持拖拽
+                }
+                else {
+                    //释放 -> 重新排序
+                    draggingSlot.beingDragged = false;
+                    if (dragInsertIndex != dragOriginalIndex && dragInsertIndex >= 0) {
+                        halibutUISkillSlots.Remove(draggingSlot);
+                        halibutUISkillSlots.Insert(dragInsertIndex, draggingSlot);
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.4f });
+                    }
+                    draggingSlot = null;
+                    dragOriginalIndex = -1;
+                    dragInsertIndex = -1;
+                    dragHoldTimer = 0;
+                }
+            }
         }
 
         private bool SkillAreaHover() {
