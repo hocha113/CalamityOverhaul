@@ -10,10 +10,14 @@ using CalamityMod.NPCs.HiveMind;
 using CalamityMod.NPCs.Leviathan;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
+using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
+using CalamityMod.NPCs.Signus;
 using CalamityMod.NPCs.SlimeGod;
+using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.NPCs.Yharon;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
@@ -121,6 +125,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.Blood);
                 return;
             }
+            if (npc.type == ModContent.NPCType<Yharon>()) {
+                spanDust(33, DustID.Blood);
+                return;
+            }
             if (npc.type == NPCID.TargetDummy) {
                 spanDust(33, Main.rand.NextBool() ? DustID.Grass : DustID.JungleGrass);
                 return;
@@ -132,6 +140,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (npc.type == ModContent.NPCType<BrimstoneHeart>()) {
                 spanDust(33, DustID.Blood);
+                return;
+            }
+            if (CWRLoad.targetNpcTypes2.Contains(npc.type)) {
+                spanDust(11, DustID.Blood);
                 return;
             }
             if (CWRLoad.targetNpcTypes8.Contains(npc.type)) {
@@ -384,12 +396,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.DukeFishron) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == NPCID.TheDestroyerBody || target.type == CWRLoad.AstrumDeusBody || target.type == CWRLoad.CosmicGuardianTail
-                || target.type == CWRLoad.CosmicGuardianHead || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail || target.type == CWRLoad.StormWeaverBody) {
-                modifiers.FinalDamage *= 1.1f;
+            if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
+                || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail
+                || target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail
+                || target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail
+                || target.type == CWRLoad.StormWeaverHead || target.type == CWRLoad.StormWeaverTail) {
+                modifiers.FinalDamage *= 1.33f;
             }
-            if (target.type == NPCID.TheDestroyer || target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail) {
-                modifiers.FinalDamage *= 3f;
+            if (target.type == ModContent.NPCType<StormWeaverBody>()) {
+                modifiers.FinalDamage *= 0.35f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
                 modifiers.FinalDamage *= 1.5f;
@@ -430,6 +445,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<Providence>()) {
                 modifiers.FinalDamage *= 0.8f;
             }
+            if (target.type == ModContent.NPCType<DarkEnergy>()) {
+                modifiers.FinalDamage *= 0.6f;
+            }
+            if (target.type == ModContent.NPCType<PolterghastHook>()) {
+                modifiers.FinalDamage *= 1.33f;
+            }
             if (target.type == CWRLoad.StormWeaverTail || target.type == CWRLoad.StormWeaverHead) {
                 modifiers.FinalDamage *= 1.5f;
             }
@@ -437,10 +458,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
-                modifiers.FinalDamage *= 3f;
-            }
-            if (target.type == CWRLoad.Yharon || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 2f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead) {
+                modifiers.FinalDamage *= 1.33f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsBody) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRLoad.AresBody|| target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon
+                || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2) {
                 modifiers.FinalDamage *= 0.5f;

@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.CeaselessVoid;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.Cryogen;
 using CalamityMod.NPCs.DesertScourge;
@@ -9,9 +10,12 @@ using CalamityMod.NPCs.Leviathan;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.PlaguebringerGoliath;
+using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
+using CalamityMod.NPCs.Signus;
 using CalamityMod.NPCs.SlimeGod;
+using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using InnoVault.GameContent.BaseEntity;
@@ -270,14 +274,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
-                || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail
+                || target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail
+                || target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail
+                || target.type == CWRLoad.StormWeaverHead || target.type == CWRLoad.StormWeaverTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
-            if (target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail) {
-                modifiers.FinalDamage *= 3.5f;
-            }
-            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
-                modifiers.FinalDamage *= 2.5f;
+            if (target.type == ModContent.NPCType<StormWeaverBody>()) {
+                modifiers.FinalDamage *= 0.35f;
             }
             if (target.type == NPCID.Probe) {
                 modifiers.FinalDamage *= 1.75f;
@@ -310,14 +314,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<Providence>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
+            if (target.type == ModContent.NPCType<DarkEnergy>()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == ModContent.NPCType<CosmicMine>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<PolterghastHook>()) {
+                modifiers.FinalDamage *= 1.33f;
+            }
             if (target.type == CWRLoad.StormWeaverTail || target.type == CWRLoad.StormWeaverHead) {
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRLoad.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
             }
-            if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
+            if (target.type == ModContent.NPCType<OldDukeToothBall>()) {
+                modifiers.FinalDamage *= 4f;
+            }
+            if (target.type == ModContent.NPCType<SulphurousSharkron>()) {
                 modifiers.FinalDamage *= 3f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead) {
+                modifiers.FinalDamage *= 1.33f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsBody) {
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == CWRLoad.Yharon) {
                 modifiers.FinalDamage *= 0.9f;
@@ -333,7 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (target.type == CWRLoad.AresBody || target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon
                 || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon) {
-                modifiers.FinalDamage *= 0.85f;
+                modifiers.FinalDamage *= 0.9f;
             }
             if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
                 modifiers.FinalDamage *= 1.666666f;
