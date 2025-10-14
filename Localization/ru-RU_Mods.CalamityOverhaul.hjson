@@ -1591,6 +1591,7 @@ Projectiles: {
 	// SlimeGelOrb.DisplayName: Slime Gel Orb
 	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
 	// BunnyfishHopper.DisplayName: Bunnyfish Hopper
+	// CatfishLeaper.DisplayName: Catfish Leaper
 }
 
 Configs: {
@@ -5722,6 +5723,12 @@ FishSkill: {
 	}
 
 	FishBunny: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishCat: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
