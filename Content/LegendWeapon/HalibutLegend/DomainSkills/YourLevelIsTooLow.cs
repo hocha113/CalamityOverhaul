@@ -222,6 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private void UpdateRestartFlashes() {
             //更新重启闪光
             for (int i = restartFlashes.Count - 1; i >= 0; i--) {
+                restartFlashes[i].Center = Owner.Center;
                 restartFlashes[i].Update();
                 if (restartFlashes[i].ShouldRemove()) {
                     restartFlashes.RemoveAt(i);

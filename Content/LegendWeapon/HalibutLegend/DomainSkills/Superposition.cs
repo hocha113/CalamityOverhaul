@@ -614,10 +614,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         private enum CannonState
         {
-            Deploy,  //部署展开
-            Charge,  //充能准备
-            Volley,  //齐射发射
-            Finish   //完成淡出
+            Deploy,
+            Charge,
+            Volley,
+            Finish
         }
 
         private CannonState state = CannonState.Deploy;
@@ -656,21 +656,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             timer++;
 
-            //计算位置和方向
             Vector2 direction = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 backDir = -direction;
             Vector2 perpendicular = direction.RotatedBy(MathHelper.PiOver2);
 
-            //位置跟随玩家（保持相对队形）
             Vector2 basePosition = Owner.Center + backDir * -80f;
             Vector2 offset = backDir.RotatedBy(angleOffset) * 20f +
                             perpendicular * (float)Math.Sin(angleOffset) * 40f;
             Projectile.Center = Vector2.Lerp(Projectile.Center, basePosition + offset, 0.15f);
 
-            //更新玩家朝向
             Owner.direction = Math.Sign(direction.X);
 
-            //状态机
             switch (state) {
                 case CannonState.Deploy:
                     UpdateDeploy();
@@ -757,25 +753,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             float spread = MathHelper.ToRadians(18f);
             ShootState shootState = Owner.GetShootState();
 
-            //发射鱼群弹幕
-            for (int i = 0; i < fishPerVolley; i++) {
-                float lerpFactor = (i + 0.5f) / fishPerVolley;
-                float angle = spread * (lerpFactor - 0.5f);
-                Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(14f, 18f);
+            //生成统一伤害判定弹幕
+            int projId = Projectile.NewProjectile(
+                source,
+                Projectile.Center + forward * 30f,
+                forward,
+                ModContent.ProjectileType<CannonFishSwarmHitbox>(),
+                shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) * 2,
+                shootState.WeaponKnockback,
+                Owner.whoAmI,
+                Projectile.whoAmI,  //传递炮的ID
+                volleyIndex         //传递齐射索引
+            );
 
-                int projId = Projectile.NewProjectile(
-                    source,
-                    Projectile.Center + forward * 30f,
-                    velocity,
-                    ModContent.ProjectileType<CannonFishShot>(),
-                    shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) * 2,
-                    shootState.WeaponKnockback,
-                    Owner.whoAmI,
-                    Main.rand.Next(9999)
-                );
+            //将鱼群实体数据传递给判定弹幕
+            if (projId >= 0 && Main.projectile[projId].ModProjectile is CannonFishSwarmHitbox hitbox) {
+                for (int i = 0; i < fishPerVolley; i++) {
+                    float lerpFactor = (i + 0.5f) / fishPerVolley;
+                    float angle = spread * (lerpFactor - 0.5f);
+                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(14f, 18f);
 
-                if (projId >= 0) {
-                    Main.projectile[projId].friendly = true;
+                    hitbox.AddFish(new FishEntity(
+                        Projectile.Center + forward * 30f,
+                        velocity,
+                        Main.rand.Next(9999)
+                    ));
                 }
             }
 
@@ -853,120 +855,238 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
 
     /// <summary>
-    /// 齐射鱼群弹幕 - 带环绕小鱼和群聚行为
+    /// 鱼群视觉实体，轻量级自定义实体，避免制造过多的弹幕实体造成过多的性能开销
     /// </summary>
-    internal class CannonFishShot : ModProjectile
+    internal class FishEntity
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Life;
+        public float MaxLife;
+        public float Seed;
+        public float Alpha;
+        public int FishType;
+        public float FishScale;
+        public float FishRotation;
+        public int FishDirection;
+        public readonly List<Vector2> TrailPositions = new();
+        private const int MaxTrailLength = 10;
 
-        private float seed;
-        private bool initialized;
-        private float alpha;
-        private int fishType;
-        private float fishScale;
-        private float fishRotation;
-        private int fishDirection;
-
-        public override void SetDefaults() {
-            Projectile.width = 24;
-            Projectile.height = 24;
-            Projectile.friendly = true;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 90;
-            Projectile.ignoreWater = true;
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.extraUpdates = 1;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+        public FishEntity(Vector2 position, Vector2 velocity, float seed) {
+            Position = position;
+            Velocity = velocity;
+            Seed = seed;
+            Life = 0;
+            MaxLife = 90f;
+            Alpha = 0f;
+            FishType = Main.rand.Next(3);
+            FishScale = 0.6f + Main.rand.NextFloat() * 0.3f;
+            FishDirection = velocity.X > 0 ? 1 : -1;
         }
 
-        public override void AI() {
-            if (!initialized) {
-                Initialize();
-            }
-
-            alpha = Math.Min(1f, alpha + 0.1f);
+        public void Update(List<FishEntity> swarm) {
+            Life++;
+            Alpha = Math.Min(1f, Alpha + 0.1f);
 
             //波动运动
-            Projectile.velocity *= 0.998f;
-            Vector2 waveOffset = new Vector2(0, (float)Math.Sin((Projectile.timeLeft + seed) * 0.2f)) * 0.06f;
-            Projectile.velocity += waveOffset;
+            Velocity *= 0.998f;
+            Vector2 waveOffset = new Vector2(0, (float)Math.Sin((MaxLife - Life + Seed) * 0.2f)) * 0.06f;
+            Velocity += waveOffset;
 
             //群聚行为
-            ApplyCohesion();
+            ApplyCohesion(swarm);
 
-            //更新朝向和旋转
-            UpdateRotation();
+            //更新朝向
+            if (Math.Abs(Velocity.X) > 0.5f) {
+                FishDirection = Velocity.X > 0 ? 1 : -1;
+            }
 
-            //生成轨迹粒子
-            SpawnTrailParticles();
+            if (Velocity.LengthSquared() > 0.1f) {
+                FishRotation = Velocity.ToRotation();
+            }
+
+            Position += Velocity;
+
+            //记录拖尾
+            TrailPositions.Insert(0, Position);
+            if (TrailPositions.Count > MaxTrailLength) {
+                TrailPositions.RemoveAt(TrailPositions.Count - 1);
+            }
         }
 
-        private void Initialize() {
-            initialized = true;
-            seed = Projectile.ai[0];
-            alpha = 0f;
-            fishType = Main.rand.Next(3); //0=Tuna, 1=Bass, 2=Trout
-            fishScale = 0.6f + Main.rand.NextFloat() * 0.3f;
-            fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
-        }
-
-        private void ApplyCohesion() {
+        private void ApplyCohesion(List<FishEntity> swarm) {
             Vector2 cohesion = Vector2.Zero;
             int nearbyCount = 0;
 
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (i == Projectile.whoAmI) {
+            foreach (var other in swarm) {
+                if (other == this) {
                     continue;
                 }
 
-                Projectile other = Main.projectile[i];
-                if (!other.active || other.type != Projectile.type || other.owner != Projectile.owner) {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(Projectile.Center, other.Center);
+                float distance = Vector2.Distance(Position, other.Position);
                 if (distance < 100f && distance > 0.1f) {
-                    cohesion += (other.Center - Projectile.Center).SafeNormalize(Vector2.Zero) / distance;
+                    cohesion += (other.Position - Position).SafeNormalize(Vector2.Zero) / distance;
                     nearbyCount++;
                 }
             }
 
             if (nearbyCount > 0) {
                 cohesion /= nearbyCount;
-                Projectile.velocity += cohesion * 0.15f;
+                Velocity += cohesion * 0.15f;
             }
         }
 
-        private void UpdateRotation() {
-            if (Math.Abs(Projectile.velocity.X) > 0.5f) {
-                fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
-            }
+        public bool ShouldRemove() => Life >= MaxLife;
 
-            if (Projectile.velocity.LengthSquared() > 0.1f) {
-                fishRotation = Projectile.velocity.ToRotation();
-            }
+        public Rectangle GetHitbox() {
+            return new Rectangle(
+                (int)(Position.X - 12),
+                (int)(Position.Y - 12),
+                24,
+                24
+            );
         }
 
-        private void SpawnTrailParticles() {
-            if (Main.rand.NextBool(4)) {
+        public void Draw() {
+            if (Alpha < 0.05f) {
+                return;
+            }
+
+            int itemType = FishType switch {
+                0 => ItemID.Tuna,
+                1 => ItemID.Bass,
+                2 => ItemID.Trout,
+                _ => ItemID.Tuna
+            };
+
+            Main.instance.LoadItem(itemType);
+            Texture2D fishTexture = TextureAssets.Item[itemType].Value;
+
+            Rectangle rect = fishTexture.Bounds;
+            Vector2 origin = rect.Size() * 0.5f;
+            SpriteEffects effects = FishDirection > 0
+                ? SpriteEffects.None
+                : SpriteEffects.FlipVertically;
+            float rotation = FishRotation + (FishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+
+            //绘制拖尾
+            for (int i = 0; i < TrailPositions.Count; i++) {
+                float trailProgress = i / (float)TrailPositions.Count;
+                float trailAlpha = Alpha * (1f - trailProgress) * 0.5f;
+                Vector2 trailPosition = TrailPositions[i] - Main.screenPosition;
+                float trailScale = FishScale * 0.8f * (1f - trailProgress * 0.3f);
+
+                Main.spriteBatch.Draw(
+                    fishTexture,
+                    trailPosition,
+                    rect,
+                    new Color(140, 200, 255) * trailAlpha,
+                    rotation,
+                    origin,
+                    trailScale,
+                    effects,
+                    0f
+                );
+            }
+
+            //绘制主体
+            Vector2 drawPosition = Position - Main.screenPosition;
+            Main.spriteBatch.Draw(
+                fishTexture,
+                drawPosition,
+                rect,
+                Color.White * Alpha,
+                rotation,
+                origin,
+                FishScale,
+                effects,
+                0f
+            );
+        }
+    }
+
+    /// <summary>
+    /// 统一伤害判定弹幕，管理一波鱼群的碰撞检测和视觉效果
+    /// </summary>
+    internal class CannonFishSwarmHitbox : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+
+        private readonly List<FishEntity> fishSwarm = new();
+        private int particleSpawnTimer;
+
+        public override void SetDefaults() {
+            Projectile.width = 800;
+            Projectile.height = 800;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 90;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 1;
+            Projectile.extraUpdates = 1;
+        }
+
+        public void AddFish(FishEntity fish) {
+            fishSwarm.Add(fish);
+        }
+
+        public override void AI() {
+            //更新所有鱼实体
+            foreach (var fish in fishSwarm) {
+                fish.Update(fishSwarm);
+            }
+
+            fishSwarm.RemoveAll(f => f.ShouldRemove());
+
+            //计算弹幕中心位置为所有鱼的平均位置
+            if (fishSwarm.Count > 0) {
+                Vector2 center = Vector2.Zero;
+                foreach (var fish in fishSwarm) {
+                    center += fish.Position;
+                }
+                Projectile.Center = center / fishSwarm.Count;
+            }
+
+            //生成轨迹粒子（降低频率）
+            particleSpawnTimer++;
+            if (particleSpawnTimer >= 8 && fishSwarm.Count > 0) {
+                particleSpawnTimer = 0;
+                var fish = fishSwarm[Main.rand.Next(fishSwarm.Count)];
                 int dust = Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
+                    fish.Position - new Vector2(12, 12),
+                    24,
+                    24,
                     DustID.Water,
                     0, 0, 150,
                     new Color(150, 210, 255),
                     1.0f
                 );
                 Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = -Projectile.velocity * 0.3f;
+                Main.dust[dust].velocity = -fish.Velocity * 0.3f;
+            }
+
+            //如果所有鱼都消失，移除弹幕
+            if (fishSwarm.Count == 0) {
+                Projectile.Kill();
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) => true;
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            //检测任意一条鱼是否与目标碰撞
+            foreach (var fish in fishSwarm) {
+                Rectangle fishHitbox = fish.GetHitbox();
+                if (fishHitbox.Intersects(targetHitbox)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //生成击中特效
             for (int i = 0; i < 3; i++) {
                 int dust = Dust.NewDust(
                     target.position,
@@ -983,93 +1103,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 8; i++) {
-                int dust = Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Water,
-                    0, 0, 120,
-                    new Color(160, 220, 255),
-                    1.4f
-                );
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = Main.rand.NextVector2Circular(3f, 3f);
+            //生成消失特效
+            if (fishSwarm.Count > 0) {
+                Vector2 center = Projectile.Center;
+                for (int i = 0; i < 8; i++) {
+                    int dust = Dust.NewDust(
+                        center - new Vector2(12, 12),
+                        24,
+                        24,
+                        DustID.Water,
+                        0, 0, 120,
+                        new Color(160, 220, 255),
+                        1.4f
+                    );
+                    Main.dust[dust].noGravity = true;
+                    Main.dust[dust].velocity = Main.rand.NextVector2Circular(3f, 3f);
+                }
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            int itemType = fishType switch {
-                0 => ItemID.Tuna,
-                1 => ItemID.Bass,
-                2 => ItemID.Trout,
-                _ => ItemID.Tuna
-            };
-
-            Main.instance.LoadItem(itemType);
-            Texture2D fishTexture = TextureAssets.Item[itemType].Value;
-
-            //绘制拖尾
-            DrawTrail(fishTexture);
-
-            //绘制主体
-            DrawMainFish(fishTexture);
-
-            return false;
-        }
-
-        private void DrawTrail(Texture2D texture) {
-            Rectangle rect = texture.Bounds;
-            Vector2 origin = rect.Size() * 0.5f;
-            SpriteEffects effects = fishDirection > 0
-                ? SpriteEffects.None
-                : SpriteEffects.FlipVertically;
-            float rotation = fishRotation + (fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    continue;
-                }
-
-                float trailProgress = i / (float)Projectile.oldPos.Length;
-                float trailAlpha = alpha * (1f - trailProgress) * 0.5f;
-                Vector2 trailPosition = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float trailScale = fishScale * 0.8f * (1f - trailProgress * 0.3f);
-
-                Main.spriteBatch.Draw(
-                    texture,
-                    trailPosition,
-                    rect,
-                    new Color(140, 200, 255) * trailAlpha,
-                    rotation,
-                    origin,
-                    trailScale,
-                    effects,
-                    0f
-                );
+            //绘制所有鱼实体
+            foreach (var fish in fishSwarm) {
+                fish.Draw();
             }
-        }
-
-        private void DrawMainFish(Texture2D texture) {
-            Rectangle rect = texture.Bounds;
-            Vector2 origin = rect.Size() * 0.5f;
-            SpriteEffects effects = fishDirection > 0
-                ? SpriteEffects.None
-                : SpriteEffects.FlipVertically;
-            float rotation = fishRotation + (fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-
-            Main.spriteBatch.Draw(
-                texture,
-                drawPosition,
-                rect,
-                Color.White * alpha,
-                rotation,
-                origin,
-                fishScale,
-                effects,
-                0f
-            );
+            return false;
         }
     }
     #endregion
