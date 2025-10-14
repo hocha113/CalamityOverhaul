@@ -1550,6 +1550,7 @@ Projectiles: {
 	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
 	// BatSwarmController.DisplayName: Bat Swarm Controller
 	// BatSwarmMinion.DisplayName: Bat Swarm Minion
+	// CannonFishSwarmHitbox.DisplayName: Cannon Fish Swarm Hitbox
 }
 
 Configs: {
