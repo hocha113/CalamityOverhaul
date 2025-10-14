@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -66,18 +65,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int BodySegments = 8;
         private List<Vector2> bodyPositions = new();
         private List<float> bodyRotations = new();
-        
+
         //蠕动参数
         private float wrigglePhase;
         private float wriggleSpeed = 0.15f;
         private float wriggleAmplitude = 8f;
-        
+
         //追踪目标
         private int targetNPC = -1;
         private float homingStrength = 0f;
 
         //状态枚举
-        private enum State {
+        private enum State
+        {
             Launching,    //发射阶段
             Seeking,      //寻找目标
             Homing,       //追踪目标
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             AITimer++;
-            
+
             //初始化身体段
             if (bodyPositions.Count == 0) {
                 for (int i = 0; i < BodySegments; i++) {
@@ -133,10 +133,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //更新身体段位置（蠕动效果）
             UpdateBodySegments();
-            
+
             //旋转朝向速度方向
             Projectile.rotation = Projectile.velocity.ToRotation();
-            
+
             //生成粒子效果
             if (Main.rand.NextBool(5)) {
                 SpawnParticles();
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //发射阶段：直线加速
             if (AITimer < 15) {
                 Projectile.velocity *= 1.03f;
-                
+
                 //发射15帧后进入寻找阶段
                 if (AITimer >= 15) {
                     AIState = (float)State.Seeking;
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 AIState = (float)State.Homing;
                 AITimer = 0;
                 homingStrength = 0.02f;
-                
+
                 //播放锁定音效
                 SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.3f, Pitch = 0.5f }, Projectile.Center);
             }
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             NPC target = Main.npc[targetNPC];
-            
+
             //逐渐增强追踪强度
             if (homingStrength < 0.15f) {
                 homingStrength += 0.005f;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算追踪方向
             Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * Projectile.velocity.Length(), homingStrength);
-            
+
             //速度逐渐加快
             if (Projectile.velocity.Length() < 25f) {
                 Projectile.velocity *= 1.02f;
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //应用蠕动效果
             ApplyWriggleMotion();
-            
+
             //接近目标时进入咬击状态
             float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
             if (distanceToTarget < 80f) {
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (AITimer < 10) {
                 Projectile.velocity *= 1.1f;
                 wriggleAmplitude = 15f; //咬击时蠕动幅度加大
-                
+
                 //咬击粒子爆发
                 if (AITimer % 2 == 0) {
                     for (int i = 0; i < 3; i++) {
@@ -258,14 +258,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private void ApplyWriggleMotion() {
             wrigglePhase += wriggleSpeed;
-            
+
             //计算蠕动的垂直偏移
             float wriggleOffset = (float)Math.Sin(wrigglePhase) * wriggleAmplitude;
-            
+
             //将偏移应用到速度的垂直方向
             Vector2 perpendicular = new Vector2(-Projectile.velocity.Y, Projectile.velocity.X).SafeNormalize(Vector2.Zero);
             Vector2 wriggleVelocity = perpendicular * wriggleOffset;
-            
+
             Projectile.velocity += wriggleVelocity;
         }
 
@@ -276,17 +276,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //头部位置
             bodyPositions[0] = Projectile.Center;
             bodyRotations[0] = Projectile.rotation;
-            
+
             //每个身体段跟随前一段
             for (int i = 1; i < BodySegments; i++) {
                 Vector2 targetPos = bodyPositions[i - 1];
                 Vector2 currentPos = bodyPositions[i];
-                
+
                 //保持固定距离
                 float segmentDistance = 8f;
                 Vector2 toTarget = targetPos - currentPos;
                 float distance = toTarget.Length();
-                
+
                 if (distance > segmentDistance) {
                     Vector2 moveDir = toTarget.SafeNormalize(Vector2.Zero);
                     bodyPositions[i] = currentPos + moveDir * (distance - segmentDistance);
@@ -295,15 +295,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Vector2 moveDir = toTarget.SafeNormalize(Vector2.Zero);
                     bodyPositions[i] = currentPos + moveDir * (distance - segmentDistance);
                 }
-                
+
                 //计算当前段和前一段的差值
                 Vector2 segmentDiff = bodyPositions[i - 1] - bodyPositions[i];
-                
+
                 //更新旋转
                 if (i > 0) {
                     bodyRotations[i] = segmentDiff.ToRotation();
                 }
-                
+
                 //蠕动波动
                 float segmentWriggle = (float)Math.Sin(wrigglePhase - i * 0.3f) * wriggleAmplitude * 0.5f;
                 Vector2 perpendicular = new Vector2(-segmentDiff.Y, segmentDiff.X).SafeNormalize(Vector2.Zero);
@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //随机选择身体段生成粒子
             int segmentIndex = Main.rand.Next(BodySegments);
             Vector2 particlePos = bodyPositions[segmentIndex];
-            
+
             Dust particle = Dust.NewDustPerfect(
                 particlePos,
                 DustID.Shadowflame,
@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //击中效果：咬击音效和粒子爆发
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Pitch = -0.2f }, Projectile.Center);
-            
+
             //血液粒子
             for (int i = 0; i < 8; i++) {
                 Vector2 particleVel = Main.rand.NextVector2Circular(4f, 4f);
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
                 blood.noGravity = true;
             }
-            
+
             //噬魂效果
             for (int i = 0; i < 5; i++) {
                 Dust soul = Dust.NewDustDirect(
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
                 soul.noGravity = true;
             }
-            
+
             //击中后穿透继续寻找下一个目标
             if (Projectile.penetrate > 1) {
                 AIState = (float)State.Seeking;
@@ -379,29 +379,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //加载噬魂怪纹理
             Main.instance.LoadProjectile(ProjectileID.EatersBite);
             Texture2D texture = TextureAssets.Projectile[ProjectileID.EatersBite].Value;
-            
+
             //计算纹理参数
             int frameHeight = texture.Height / Main.projFrames[ProjectileID.EatersBite];
             Rectangle sourceRect = new Rectangle(0, 0, texture.Width, frameHeight);
             Vector2 origin = sourceRect.Size() / 2f;
-            
+
             //绘制所有身体段（从尾到头）
             for (int i = BodySegments - 1; i >= 0; i--) {
                 Vector2 drawPos = bodyPositions[i] - Main.screenPosition;
                 float rotation = bodyRotations[i] + MathHelper.PiOver4;
-                
+
                 //尾部更小，头部更大
                 float scale = MathHelper.Lerp(0.6f, 1.0f, i / (float)BodySegments);
-                
+
                 //透明度渐变
                 float segmentAlpha = MathHelper.Lerp(0.6f, 1.0f, i / (float)BodySegments);
                 Color drawColor = lightColor * segmentAlpha * (1f - Projectile.alpha / 255f);
-                
+
                 //发光效果
                 if ((State)AIState == State.Biting) {
                     drawColor = Color.Lerp(drawColor, Color.Red, 0.5f);
                 }
-                
+
                 Main.EntitySpriteDraw(
                     texture,
                     drawPos,
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None,
                     0
                 );
-                
+
                 //头部额外发光
                 if (i == 0) {
                     Color glowColor = Color.Purple * 0.5f * (1f - Projectile.alpha / 255f);
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     );
                 }
             }
-            
+
             return false;
         }
 

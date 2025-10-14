@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
-        
+
         /// <summary>
         /// 每个时期阶段对应的死机等级
         /// </summary>

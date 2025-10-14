@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (shootCounter >= PhaseChangeInterval) {
                     shootCounter = 0;
                     sporePhase = (sporePhase + 1) % 4;
-                    
+
                     //形态切换特效
                     SpawnPhaseTransitionEffect(player);
                 }
@@ -53,9 +53,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnPhaseTransitionEffect(Player player) {
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with { 
-                Volume = 0.5f, 
-                Pitch = 0.3f 
+            SoundEngine.PlaySound(SoundID.NPCDeath1 with {
+                Volume = 0.5f,
+                Pitch = 0.3f
             }, player.Center);
 
             Color phaseColor = GetPhaseColor(sporePhase);
@@ -271,9 +271,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (exploded) return;
             exploded = true;
 
-            SoundEngine.PlaySound(SoundID.Item14 with { 
-                Volume = 0.6f, 
-                Pitch = 0.3f 
+            SoundEngine.PlaySound(SoundID.Item14 with {
+                Volume = 0.6f,
+                Pitch = 0.3f
             }, Projectile.Center);
 
             //爆炸粒子
@@ -307,7 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     NPC npc = Main.npc[i];
                     if (npc.active && !npc.friendly && npc.CanBeChasedBy() &&
                         Vector2.Distance(npc.Center, Projectile.Center) < 100f) {
-                        
+
                         Player owner = Main.player[Projectile.owner];
                         owner.ApplyDamageToNPC(npc, Projectile.damage, 0, 0, false);
                     }
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color color = new Color(100, 255, 255) * fade * 0.6f;
                 Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float scale = Projectile.scale * fade * 0.5f;
-                
+
                 Main.EntitySpriteDraw(
                     glowTex,
                     drawPos,
@@ -587,10 +587,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 NPC npc = Main.npc[i];
                 if (npc.active && !npc.friendly && npc.CanBeChasedBy() &&
                     Vector2.Distance(npc.Center, Projectile.Center) < 80f) {
-                    
+
                     Player owner = Main.player[Projectile.owner];
                     owner.ApplyDamageToNPC(npc, Projectile.damage / 3, 0, 0, false);
-                    
+
                     //中毒效果
                     npc.AddBuff(BuffID.Poisoned, 120);
                 }
@@ -616,9 +616,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with { 
-                Volume = 0.4f, 
-                Pitch = -0.2f 
+            SoundEngine.PlaySound(SoundID.NPCDeath1 with {
+                Volume = 0.4f,
+                Pitch = -0.2f
             }, Projectile.Center);
 
             //部署特效
@@ -737,7 +737,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (nextTarget != null) {
                     Vector2 direction = (nextTarget.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                     Projectile.velocity = direction * Projectile.velocity.Length();
-                    
+
                     //闪电链连接特效
                     CreateLightningChain(Projectile.Center, nextTarget.Center);
                 }
@@ -751,9 +751,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnLightningEffect(Vector2 position) {
-            SoundEngine.PlaySound(SoundID.Item93 with { 
-                Volume = 0.4f, 
-                Pitch = 0.5f 
+            SoundEngine.PlaySound(SoundID.Item93 with {
+                Volume = 0.4f,
+                Pitch = 0.5f
             }, position);
 
             for (int i = 0; i < 15; i++) {
@@ -815,10 +815,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
                 Color color = new Color(255, 255, 150) * fade * 0.7f;
                 Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                
+
                 //添加随机偏移模拟电弧
                 Vector2 offset = Main.rand.NextVector2Circular(2f, 2f) * (1f - fade);
-                
+
                 Main.EntitySpriteDraw(
                     glowTex,
                     drawPos + offset,

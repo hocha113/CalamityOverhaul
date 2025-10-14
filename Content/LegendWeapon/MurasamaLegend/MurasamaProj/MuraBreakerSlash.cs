@@ -13,7 +13,6 @@ using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
-using CalamityMod.NPCs.Signus;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
@@ -466,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == CWRLoad.DevourerofGodsBody) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRLoad.AresBody|| target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon
+            if (target.type == CWRLoad.AresBody || target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon
                 || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 1.5f;
             }
