@@ -1,14 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using ThoriumMod.Empowerments;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
@@ -26,50 +23,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2 && Cooldown <= 0) {
-                item.UseSound = null;
-                Vector2 velocity = player.To(Main.MouseWorld).UnitVector() * 12f;
-                Vector2 position = player.Center;
-                ShootState shootState = player.GetShootState();
-                var source = shootState.Source;
-                int damage = shootState.WeaponDamage;
-                float knockback = shootState.WeaponKnockback;
+            if (player.altFunctionUse != 2) {
+                return null;
+            }
 
-                SetCooldown();
-
-                int catCount = 4 + HalibutData.GetDomainLayer();
-
-                for (int i = 0; i < catCount; i++) {
-                    float throwAngle = velocity.ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
-                    float throwSpeed = Main.rand.NextFloat(12f, 18f);
-                    Vector2 throwVelocity = throwAngle.ToRotationVector2() * throwSpeed;
-                    throwVelocity.Y -= Main.rand.NextFloat(4f, 7f);
-
-                    Projectile.NewProjectile(
-                        source,
-                        position,
-                        throwVelocity,
-                        ModContent.ProjectileType<CatfishLeaper>(),
-                        (int)(damage * (2.8f + HalibutData.GetDomainLayer() * 0.8f)),
-                        knockback * 2.2f,
-                        player.whoAmI
-                    );
-                }
-
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.7f,
-                    Pitch = 0.4f
-                }, position);
-
-                SoundEngine.PlaySound(SoundID.Meowmere with {
-                    Volume = 0.5f,
-                    Pitch = 0.6f
-                }, position);
-
-                SpawnThrowEffect(position, velocity);
+            if (Cooldown > 0) {
                 return false;
             }
-            return null;
+
+            item.UseSound = null;
+            Vector2 velocity = player.To(Main.MouseWorld).UnitVector() * 12f;
+            Vector2 position = player.Center;
+            ShootState shootState = player.GetShootState();
+            var source = shootState.Source;
+            int damage = shootState.WeaponDamage;
+            float knockback = shootState.WeaponKnockback;
+
+            SetCooldown();
+
+            int catCount = 4 + HalibutData.GetDomainLayer();
+
+            for (int i = 0; i < catCount; i++) {
+                float throwAngle = velocity.ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
+                float throwSpeed = Main.rand.NextFloat(12f, 18f);
+                Vector2 throwVelocity = throwAngle.ToRotationVector2() * throwSpeed;
+                throwVelocity.Y -= Main.rand.NextFloat(4f, 7f);
+
+                Projectile.NewProjectile(
+                    source,
+                    position,
+                    throwVelocity,
+                    ModContent.ProjectileType<CatfishLeaper>(),
+                    (int)(damage * (2.8f + HalibutData.GetDomainLayer() * 0.8f)),
+                    knockback * 2.2f,
+                    player.whoAmI
+                );
+            }
+
+            SoundEngine.PlaySound(SoundID.Item1 with {
+                Volume = 0.7f,
+                Pitch = 0.4f
+            }, position);
+
+            SoundEngine.PlaySound(SoundID.Meowmere with {
+                Volume = 0.5f,
+                Pitch = 0.6f
+            }, position);
+
+            SpawnThrowEffect(position, velocity);
+
+            return false;
         }
 
         private static void SpawnThrowEffect(Vector2 position, Vector2 direction) {
