@@ -28,7 +28,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
                     // 向左滚动（减少偏移量）
-                    HalibutUIPanel.Instance.scrollOffset--;
+                    HalibutUIPanel.Instance.scrollOffset -= HalibutUIPanel.scrollStep;
+                    //确保滚动偏移量在有效范围内
+                    HalibutUIPanel.Instance.scrollOffset = Math.Clamp(HalibutUIPanel.Instance.scrollOffset, 0
+                        , Math.Max(0, HalibutUIPanel.Instance.halibutUISkillSlots.Count - HalibutUIPanel.maxVisibleSlots));
+
                 }
             }
             else {

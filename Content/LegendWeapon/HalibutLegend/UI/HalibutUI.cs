@@ -131,6 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //滚动相关字段
         public int scrollOffset = 0;//目标滚动偏移量
+        public const int scrollStep = 3;//每次滚动的步长
         private float currentScrollOffset = 0f;//当前实际滚动偏移量（用于平滑动画）
         private float scrollVelocity = 0f;//滚动速度（用于弹簧效果）
         public const int maxVisibleSlots = 3;//最多同时显示3个技能槽位
@@ -255,10 +256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (delta == 0) {
                 return;
             }
-            int steps = delta / 120;
-            if (steps == 0) {
-                steps = delta > 0 ? 1 : -1;
-            }
+            int steps = delta > 0 ? 1 : -1;//这里固定每次滚动一个单位，避免有些人的鼠标滚轮设置太过灵敏
             int old = scrollOffset;
             scrollOffset -= steps;//滚轮上推向左, 下拉向右
             int maxOff = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
