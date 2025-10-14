@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //拖拽相关字段
         internal bool beingDragged;//是否正被拖拽(由面板设置)
-        internal float smoothLocalX;//平滑的本地X(由面板驱动)
 
         internal static LocalizedText Hover1;
         internal static LocalizedText Hover2;

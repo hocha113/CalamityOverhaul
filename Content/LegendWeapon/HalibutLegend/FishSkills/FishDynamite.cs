@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //使用反射加载灰度纹理，这个是一个光束纹理，大小高1024宽256，
         //光束朝正上方，适合用来复合一些光束一类的特效或者爆炸的旋转光束演出
         [VaultLoaden(CWRConstant.Masking)]
-        public static Texture2D LightBeam;
+        public static Texture2D LightBeam = null;
 
         public override int UnlockFishID => ItemID.DynamiteFish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
