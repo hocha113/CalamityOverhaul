@@ -92,7 +92,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         }
                         else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {//放入新物品开始
                             Item = Main.mouseItem.Clone();
-                            Main.mouseItem.TurnToAir();
+                            Item.stack = 1;
+                            Main.mouseItem.stack--;
+                            if (Main.mouseItem.stack <= 0) {
+                                Main.mouseItem.TurnToAir();
+                            }
                             isResearching = true;
                             researchTimer = 0;
                         }
