@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //射流计数器
         private int streamCounter = 0;
-        private const int StreamInterval = 12;
+        private static int StreamInterval = 24- HalibutData.GetDomainLayer() ;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

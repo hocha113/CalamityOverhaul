@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center,
                         Vector2.Zero, //初始速度为0
                         ModContent.ProjectileType<BonefishOrbit>(),
-                        (int)(damage * (4 + HalibutData.GetDomainLayer() * 1.5)),
+                        (int)(damage * (3 + HalibutData.GetDomainLayer() * 2)),
                         knockback * 0.25f,
                         player.whoAmI,
                         ai0: ActiveBones.Count //传递索引用于错开动画

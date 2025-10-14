@@ -5527,9 +5527,16 @@ FishSkill: {
 	}
 
 	FishAmanita: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 轮转菌孢
+		Tooltip:
+			'''
+			开火时伴随着四种轮换的真菌子弹，每次射击都将切换到下种子弹
+			爆炸蘑菇：散射3发爆炸蘑菇，命中时爆炸造成小范围伤害
+			追踪孢子：散射5发追踪孢子，将快速的追踪至最近目标
+			毒雾蘑菇：散射2发毒雾蘑菇，命中时产生毒雾持续造成伤害
+			闪电孢子：散射5发闪电孢子，穿透路径上的所有敌人
+			'''
+		Studied: 它代表着蘑菇地的生态系统
 	}
 
 	FishHoney: {
@@ -5551,9 +5558,13 @@ FishSkill: {
 	}
 
 	FishCursed: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 冥焰迸发
+		Tooltip:
+			'''
+			开火时会伴随着散射诅咒火焰
+			诅咒火焰射出后将反重力下坠
+			'''
+		Studied: 它居然不会烧坏钓竿！？
 	}
 
 	FishSlime: {

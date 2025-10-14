@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 60;
 
         /// <summary>每次射击生成的噬魂虫数量</summary>
-        private const int BitesPerShot = 3;
+        private const int BitesPerShot = 1;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             //检查技能是否在冷却中

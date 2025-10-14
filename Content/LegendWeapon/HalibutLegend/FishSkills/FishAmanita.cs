@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishAmanita : FishSkill
     {
         public override int UnlockFishID => ItemID.AmanitaFungifin;
-        public override int DefaultCooldown => 60;
+        public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;
 
         private int sporePhase = 0;
         private int shootCounter = 0;
-        private const int PhaseChangeInterval = 5; //每5次射击切换一次孢子形态
+        private static int PhaseChangeInterval = 1; //每1次射击切换一次孢子形态
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaExplosiveMushroom>(),
-                    (int)(damage * 0.8f),
+                    (int)(damage * 2.5 + HalibutData.GetDomainLayer() * 0.6),
                     2f,
                     player.whoAmI
                 );
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     randomVel,
                     ModContent.ProjectileType<AmanitaHomingSpore>(),
-                    (int)(damage * 0.6f),
+                    (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
                     1.5f,
                     player.whoAmI
                 );
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaToxicMushroom>(),
-                    damage,
+                    (int)(damage * 1.75 * +HalibutData.GetDomainLayer() * 0.55),
                     3f,
                     player.whoAmI
                 );
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaLightningSpore>(),
-                    (int)(damage * 0.7f),
+                    (int)(damage * 1.75f + HalibutData.GetDomainLayer() * 0.55),
                     2f,
                     player.whoAmI
                 );
@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.penetrate = MaxBounces + 1;
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 150;
             Projectile.tileCollide = false;
             Projectile.extraUpdates = 2;

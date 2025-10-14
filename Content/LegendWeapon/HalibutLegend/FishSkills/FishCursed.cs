@@ -15,11 +15,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishCursed : FishSkill
     {
         public override int UnlockFishID => ItemID.Cursedfish;
-        public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;
+        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
 
         //火焰喷射计数器
         private int flameCounter = 0;
-        private const int FlameInterval = 8;
+        private static int FlameInterval = 18- HalibutData.GetDomainLayer();
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float spreadBase = 0.25f;
 
                 //根据领域层数增加火焰数量和扩散
-                int flameCount = 2 + HalibutData.GetDomainLayer() / 2;
+                int flameCount = 1 + HalibutData.GetDomainLayer() / 2;
 
                 for (int i = 0; i < flameCount; i++) {
                     float spreadAngle = MathHelper.Lerp(-spreadBase, spreadBase, i / (float)Math.Max(1, flameCount - 1));
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         flameVelocity,
                         ModContent.ProjectileType<CursedFlameStream>(),
-                        (int)(damage * (3f + HalibutData.GetDomainLayer() * 0.8f)),
+                        (int)(damage * (2f + HalibutData.GetDomainLayer() * 0.7f)),
                         knockback * 2f,
                         player.whoAmI
                     );

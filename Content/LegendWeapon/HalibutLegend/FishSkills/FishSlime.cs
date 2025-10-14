@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishSlime : FishSkill
     {
         public override int UnlockFishID => ItemID.Slimefish;
-        public override int DefaultCooldown => 70 - HalibutData.GetDomainLayer() * 5;
+        public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;
 
         //凝胶球生成计数器
         private int gelCounter = 0;
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //活跃的凝胶球追踪
         private static readonly List<int> ActiveGels = new();
-        private static int MaxGels => 8 + HalibutData.GetDomainLayer() * 2;
+        private static int MaxGels => 4 + HalibutData.GetDomainLayer();
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             if (!Active(player)) {
