@@ -1585,6 +1585,7 @@ Projectiles: {
 	// AmanitaToxicMushroom.DisplayName: Amanita Toxic Mushroom
 	// HoneyBeeMinion.DisplayName: Honey Bee Minion
 	// HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm Core
+	// SkeletronHandMinion.DisplayName: Skeletron Hand Minion
 }
 
 Configs: {
@@ -5686,6 +5687,12 @@ FishSkill: {
 	}
 
 	FishHoney: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	Fishotroning: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
