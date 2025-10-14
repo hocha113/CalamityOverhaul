@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishEaterofPlankton : FishSkill
     {
         public override int UnlockFishID => ItemID.EaterofPlankton;
-        public override int DefaultCooldown => 60;
+        public override int DefaultCooldown => 1;
 
         /// <summary>每次射击生成的噬魂虫数量</summary>
         private const int BitesPerShot = 1;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position + Main.rand.NextVector2Circular(20f, 20f),
                     biteVelocity,
                     ModContent.ProjectileType<SoulEaterBite>(),
-                    (int)(damage * 0.6f),
+                    (int)(damage * 1.25f + HalibutData.GetDomainLayer() * 0.65),
                     knockback * 0.5f,
                     player.whoAmI,
                     ai0: i //用于区分不同虫子
@@ -94,12 +94,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 20;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 3; //可穿透3个敌人
-            Projectile.timeLeft = 300;
+            Projectile.penetrate = 5; //可穿透5个敌人
+            Projectile.timeLeft = 480;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 5;
         }
 
         public override void AI() {
