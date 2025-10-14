@@ -1566,6 +1566,7 @@ Projectiles: {
 	// SkeletronHandMinion.DisplayName: Skeletron Hand Minion
 	// IchorStream.DisplayName: Ichor Stream
 	// CursedFlameStream.DisplayName: Cursed Flame Stream
+	// SlimeGelOrb.DisplayName: Slime Gel Orb
 }
 
 Configs: {
@@ -5566,6 +5567,12 @@ FishSkill: {
 	}
 
 	FishCursed: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishSlime: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
