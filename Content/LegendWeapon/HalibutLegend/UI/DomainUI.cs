@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -362,6 +363,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 activationSequence.Remove(eye);
                 RecalculateLayerNumbers();
                 SpawnEyeToggleParticles(eye, false);
+            }
+
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            if (halibutPlayer.SeaDomainActive) {
+                halibutPlayer.SeaDomainLayers = ActiveEyeCount;//同步层数
+                SeaDomain.Deactivate(player);
+                halibutPlayer.OnStartSeaDomain = true;
+            }
+            if (halibutPlayer.CloneFishActive) {
+                halibutPlayer.CloneCount = halibutPlayer.SeaDomainLayers;//同步数量
+                CloneFish.Deactivate(player);
+                halibutPlayer.OnStartClone = true;
             }
         }
 

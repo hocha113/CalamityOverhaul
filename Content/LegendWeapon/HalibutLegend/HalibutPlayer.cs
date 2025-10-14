@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutPlayer : PlayerOverride//这个类用于存储一些与玩家相关的额外数据
     {
+        #region Data
         /// <summary>
         /// 技能ID
         /// </summary>
@@ -119,6 +120,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int CloneMinDelay { get; set; } = 60;
         /// <summary>克隆体间隔帧数（每个克隆体之间的时间差，20帧=0.33秒）</summary>
         public int CloneInterval { get; set; } = 30;
+        /// <summary>
+        /// 将要启动克隆
+        /// </summary>
+        public bool OnStartClone;
         #endregion
 
         #region 海域领域技能数据
@@ -134,6 +139,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 海域领域层数（1-10）
         /// </summary>
         public int SeaDomainLayers { get; set; } = 1;
+        /// <summary>
+        /// 将要启动领域
+        /// </summary>
+        public bool OnStartSeaDomain;
         #endregion
 
         #region 重启技能数据
@@ -179,7 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public int YourLevelIsTooLowCooldown { get; set; }
         #endregion
-
+        
         /// <summary>
         /// 每个时期阶段对应的死机等级
         /// </summary>
@@ -200,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             {13, 9},
             {14, 10}
         };
-
+        #endregion
         /// <summary>
         /// 获取死机等级
         /// </summary>
@@ -322,6 +331,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (SeaDomainActive) {
                     FishTeleport.AltUse(item, Player);
                 }
+            }
+
+            if (!SeaDomainActive && OnStartSeaDomain && Player.CountProjectilesOfID<SeaDomainProj>() == 0) {
+                OnStartSeaDomain = false;
+                SeaDomain.AltUse(item, Player);
+            }
+            if (!CloneFishActive && OnStartClone && Player.CountProjectilesOfID<ClonePlayer>() == 0) {
+                OnStartClone = false;
+                CloneFish.AltUse(item, Player);
             }
         }
 
