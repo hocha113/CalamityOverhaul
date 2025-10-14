@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -124,10 +126,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     #region 骷髅王手臂仆从
+    internal class SkeletronHandExplode : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 200;
+            Projectile.penetrate = -1;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.timeLeft = 4;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = false;
+        }
+    }
+
     /// <summary>
     /// 骷髅王手臂，这里用了IK
     /// </summary>
-    internal class SkeletronHandMinion : ModProjectile
+    internal class SkeletronHandMinion : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.SkeletronHand;
 
@@ -199,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 80;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.DamageType = DamageClass.Summon;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
@@ -216,14 +234,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? CanDamage() => State == HandState.Swinging || State == HandState.Slamming || State == HandState.Sweeping;
 
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-
-            if (!owner.active || owner.dead) {
+            if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
             }
 
-            if (!FishSkill.GetT<Fishotroning>().Active(owner)) {
+            if (!FishSkill.GetT<Fishotroning>().Active(Owner)) {
+                Projectile.Kill();
+                return;
+            }
+
+            if (Owner.CountProjectilesOfID<Hit>() > 0) {
                 Projectile.Kill();
                 return;
             }
@@ -232,12 +253,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             StateTimer++;
             UpdateIdleOffset();
-            UpdateShoulderPosition(owner);
+            UpdateShoulderPosition(Owner);
 
             //状态机
             switch (State) {
                 case HandState.Idle:
-                    IdleBehavior(owner);
+                    IdleBehavior(Owner);
                     break;
                 case HandState.Targeting:
                     TargetingBehavior();
@@ -258,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ThrowingBehavior();
                     break;
                 case HandState.Recovering:
-                    RecoveringBehavior(owner);
+                    RecoveringBehavior(Owner);
                     break;
             }
 
@@ -375,8 +396,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //如果长时间无法接近目标,切换到投掷
-            if (StateTimer > 180 && distanceToTarget > 200f) {
+            //如果无法接近目标,切换到投掷
+            if (StateTimer > 30 && distanceToTarget >= 120) {
                 AttackType = 3;
                 State = HandState.WindingUp;
                 StateTimer = 0;
@@ -1028,6 +1049,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                 Volume = 0.9f
             }, position);
+
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<SkeletronHandExplode>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+            }
         }
 
         //缓动函数

@@ -1582,6 +1582,7 @@ Projectiles: {
 	// IchorStream.DisplayName: Ichor Stream
 	// CursedFlameStream.DisplayName: Cursed Flame Stream
 	// SlimeGelOrb.DisplayName: Slime Gel Orb
+	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
 }
 
 Configs: {
