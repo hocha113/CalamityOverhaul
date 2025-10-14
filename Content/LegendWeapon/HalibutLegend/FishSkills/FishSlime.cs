@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int MaxGels => 8 + HalibutData.GetDomainLayer() * 2;
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            if (!Active(player)) {
+                return false;
+            }
+
             ShootState shootState = player.GetShootState();
             Vector2 velocity = player.velocity;
             Vector2 position = player.Center;
