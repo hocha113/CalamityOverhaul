@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1551,6 +1551,7 @@ Projectiles: {
 	// BatSwarmController.DisplayName: Bat Swarm Controller
 	// BatSwarmMinion.DisplayName: Bat Swarm Minion
 	// CannonFishSwarmHitbox.DisplayName: Cannon Fish Swarm Hitbox
+	// SoulEaterBite.DisplayName: Soul Eater Bite
 }
 
 Configs: {
@@ -5507,6 +5508,12 @@ FishSkill: {
 			攻击将退出化形状态
 			'''
 		Studied: 它被倒挂着会睡着吗？
+	}
+
+	FishEaterofPlankton: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

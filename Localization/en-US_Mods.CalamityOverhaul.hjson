@@ -1569,6 +1569,7 @@ Projectiles: {
 	BatSwarmController.DisplayName: Bat Swarm Controller
 	BatSwarmMinion.DisplayName: Bat Swarm Minion
 	CannonFishSwarmHitbox.DisplayName: Cannon Fish Swarm Hitbox
+	SoulEaterBite.DisplayName: Soul Eater Bite
 }
 
 Configs: {
@@ -5561,6 +5562,12 @@ FishSkill: {
 			Attacking breaks the transformation.
 			'''
 		Studied: I wonder… does it sleep while hanging upside down?
+	}
+
+	FishEaterofPlankton: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
 	}
 }
 
