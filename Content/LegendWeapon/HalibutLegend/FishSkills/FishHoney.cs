@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SummonBeeSwarm(player, item);
             SetCooldown();
-            return null;
+            return false;
         }
 
         private static void SummonBeeSwarm(Player player, Item item) {

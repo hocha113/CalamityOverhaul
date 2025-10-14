@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //爆炸参数
         private const int MaxLifeTime = 600;
-        private const int ExplosionRadius = 205;
+        private const int ExplosionRadius = 100;
 
         public override void SetDefaults() {
             Projectile.width = 32;
