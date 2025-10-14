@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //骨头管理系统
         private static readonly List<int> ActiveBones = new();
-        private static int MaxBones = 3 + HalibutData.GetDomainLayer() / 2; //最多3-8根骨头
+        private static int MaxBones => 3 + HalibutData.GetDomainLayer() / 2; //最多3-8根骨头
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -161,8 +161,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = 3;
-            Projectile.timeLeft = int.MaxValue; ;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 10086;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 3;
         }
@@ -186,6 +186,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             StateTimer++;
+
+            if (Projectile.scale < 1.5f) {
+                Projectile.scale += 0.01f;
+            }
 
             //状态机
             switch (State) {
