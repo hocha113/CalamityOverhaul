@@ -322,35 +322,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             NPC target = Main.npc[targetNPCID];
+            float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
 
-            //移动到目标附近
-            Vector2 approachPos = target.Center + new Vector2(0, -180f);
-            MoveToPosition(approachPos, 0.2f);
+            //根据距离决定行为
+            if (distanceToTarget > 400f) {
+                //距离较远-直接进入投掷模式
+                AttackType = 3;
+                State = HandState.WindingUp;
+                StateTimer = 0;
+                attackStartPos = Projectile.Center;
+                attackTargetPos = target.Center;
+                attackWindUpIntensity = 1f;
+                
+                //投掷前置音效
+                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
+                    Volume = 0.4f,
+                    Pitch = -0.3f
+                }, Projectile.Center);
+            }
+            else {
+                //距离适中-移动到目标附近
+                Vector2 approachPos = target.Center + new Vector2(0, -180f);
+                MoveToPosition(approachPos, 0.2f);
 
-            glowIntensity = 0.5f;
-            armTension = 0.6f;
+                glowIntensity = 0.5f;
+                armTension = 0.6f;
 
-            //到达位置后选择攻击方式
-            if (Vector2.Distance(Projectile.Center, approachPos) < 120f) {
-                ChooseAttackType(target);
+                //到达位置后选择近战攻击方式
+                if (Vector2.Distance(Projectile.Center, approachPos) < 120f) {
+                    ChooseAttackType(target);
+                    State = HandState.WindingUp;
+                    StateTimer = 0;
+                    attackStartPos = Projectile.Center;
+                    attackTargetPos = target.Center;
+                    attackWindUpIntensity = 1f;
+                }
+
+                //锁定音效
+                if (StateTimer == 1) {
+                    SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
+                        Volume = 0.4f,
+                        Pitch = -0.3f
+                    }, Projectile.Center);
+                }
+            }
+
+            //如果长时间无法接近目标,切换到投掷
+            if (StateTimer > 180 && distanceToTarget > 200f) {
+                AttackType = 3;
                 State = HandState.WindingUp;
                 StateTimer = 0;
                 attackStartPos = Projectile.Center;
                 attackTargetPos = target.Center;
                 attackWindUpIntensity = 1f;
             }
-
-            //锁定音效
-            if (StateTimer == 1) {
-                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
-                    Volume = 0.4f,
-                    Pitch = -0.3f
-                }, Projectile.Center);
-            }
         }
 
         private void ChooseAttackType(NPC target) {
-            //根据相对位置和随机性选择攻击方式
+            //根据相对位置和随机性选择近战攻击方式
             Vector2 toTarget = target.Center - Projectile.Center;
             
             if (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0) {
@@ -358,17 +387,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 AttackType = 1;
             }
             else {
-                //横向-随机选择挥击/横扫/投掷
-                float rand = Main.rand.NextFloat();
-                if (rand < 0.35f) {
-                    AttackType = 0; //挥击
-                }
-                else if (rand < 0.7f) {
-                    AttackType = 2; //横扫
-                }
-                else {
-                    AttackType = 3; //投掷骨头
-                }
+                //横向-随机选择挥击/横扫
+                AttackType = Main.rand.NextBool() ? 0 : 2;
             }
         }
 
@@ -581,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
-                    Projectile.Center + throwDirection * 40f,
+                    Projectile.Center,
                     velocity,
                     ProjectileID.Bone,
                     Projectile.damage / 2,
