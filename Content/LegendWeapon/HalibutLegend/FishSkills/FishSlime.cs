@@ -1,17 +1,12 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs;
+﻿using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using ThoriumMod.Empowerments;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
@@ -120,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishSlimeGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (projectile.owner.TryGetPlayer(out var player) 
+            if (projectile.owner.TryGetPlayer(out var player)
                 && FishSkill.GetT<FishSlime>().Active(player)) {
                 //在这个技能下攻击会附加减速效果
                 target.AddBuff(BuffID.Slimed, 180 + HalibutData.GetDomainLayer() * 20);
@@ -232,7 +227,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //接近生命终点时进入爆炸前兆
             if (Projectile.timeLeft <= PreExplosionTime && State != GelState.Exploding) {
                 State = GelState.Exploding;
-                
+
                 //爆炸前兆音效
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
                     Volume = 0.5f,
@@ -282,7 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //周期性造成伤害
                     if (GelLife % 30 == 0) {
                         target.SimpleStrikeNPC(Projectile.damage / 4, 0, false, 0f, null, false, 0f, true);
-                        
+
                         //附着伤害效果
                         SpawnAttachDamageEffect(target.Center);
                     }
@@ -726,7 +721,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             foreach (var particle in gelParticles) {
                 Vector2 drawPos = particle.Position - Main.screenPosition;
-                Color particleColor = particle.IsCore 
+                Color particleColor = particle.IsCore
                     ? new Color(150, 230, 255) * particle.Opacity * 0.9f
                     : new Color(100, 200, 255) * particle.Opacity * 0.6f;
 

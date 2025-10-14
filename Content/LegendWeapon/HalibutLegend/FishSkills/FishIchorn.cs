@@ -34,10 +34,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //发射灵液射流
                 Vector2 shootDir = velocity.SafeNormalize(Vector2.Zero);
                 float spreadBase = 0.15f;
-                
+
                 //根据领域层数增加射流数量和扩散
                 int streamCount = 3 + HalibutData.GetDomainLayer() / 3;
-                
+
                 for (int i = 0; i < streamCount; i++) {
                     float spreadAngle = MathHelper.Lerp(-spreadBase, spreadBase, i / (float)Math.Max(1, streamCount - 1));
                     Vector2 streamVelocity = shootDir.RotatedBy(spreadAngle) * Main.rand.NextFloat(8f, 24f);
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishIchornGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (projectile.owner.TryGetPlayer(out var player) 
+            if (projectile.owner.TryGetPlayer(out var player)
                 && FishSkill.GetT<FishIchorn>().Active(player)) {
                 //在这个技能下攻击会附加灵液效果
                 int buffDuration = 300 + HalibutData.GetDomainLayer() * 30;
@@ -125,16 +125,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private ref float StreamLife => ref Projectile.ai[1];
-        
+
         //液体粒子系统
         private readonly List<IchorParticle> liquidParticles = new();
         private const int MaxParticles = 100;
         private int particleSpawnCounter = 0;
-        
+
         //液体拖尾粒子系统
         private readonly List<IchorTrailParticle> trailParticles = new();
         private const int MaxTrailParticles = 60;
-        
+
         //液体物理参数
         private const float Viscosity = 0.98f;        //粘度
         private const float Gravity = 0.35f;          //重力
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnStreamParticle() {
             Vector2 baseVel = Projectile.velocity;
             Vector2 particleVel = baseVel + Main.rand.NextVector2Circular(2f, 2f);
-            
+
             IchorParticle particle = new IchorParticle {
                 Position = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
                 Velocity = particleVel * Main.rand.NextFloat(0.7f, 1.1f),
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 25f);
             Vector2 particleVel = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.8f);
             particleVel += Main.rand.NextVector2Circular(1.5f, 1.5f);
-            
+
             IchorTrailParticle trail = new IchorTrailParticle {
                 Position = spawnPos + Main.rand.NextVector2Circular(6f, 6f),
                 Velocity = particleVel,
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //正常射流粒子
                     p.Velocity.Y += Gravity * FluidDensity;
                     p.Velocity *= Viscosity;
-                    
+
                     //表面张力-向射流中心吸引
                     Vector2 toCore = Projectile.Center - p.Position;
                     float distToCore = toCore.Length();
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //溅射粒子-更强重力
                     p.Velocity.Y += Gravity * 1.5f;
                     p.Velocity.X *= 0.98f;
-                    
+
                     //地面碰撞检测
                     if (Framing.GetTileSafely(p.Position.ToTileCoordinates()).HasTile) {
                         p.Velocity.Y *= -0.4f;
@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == FluidState.Streaming) {
                 CreateSplashEffect(Projectile.Center, oldVelocity);
-                
+
                 //溅射音效
                 SoundEngine.PlaySound(SoundID.Item95 with {
                     Volume = 0.5f,
@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //击中NPC-生成溅射效果
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             CreateSplashEffect(Projectile.Center, Projectile.velocity);
-            
+
             //附加灵液效果
             target.AddBuff(BuffID.Ichor, 360 + HalibutData.GetDomainLayer() * 40);
 
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //主溅射方向
             float mainAngle = normal.ToRotation();
-            
+
             //根据冲击速度计算溅射粒子数量
             int splashCount = (int)MathHelper.Clamp(impactSpeed * 3f, 20, 60);
 
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //溅射角度-半球形分布
                 float spreadAngle = Main.rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
                 float angle = mainAngle + spreadAngle;
-                
+
                 //溅射速度-符合物理的速度分布
                 float speedRatio = 1f - Math.Abs(spreadAngle) / MathHelper.PiOver2;
                 float speed = Main.rand.NextFloat(3f, 12f) * speedRatio * (impactSpeed / 20f);
@@ -576,7 +576,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             foreach (var particle in trailParticles) {
                 Vector2 drawPos = particle.Position - Main.screenPosition;
                 float rotation = particle.Velocity.ToRotation();
-                
+
                 //灵液金黄色
                 Color ichorColor = new Color(255, 200, 50) * particle.Opacity * 0.7f;
 
@@ -632,7 +632,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 drawPos = particle.Position - Main.screenPosition;
                 float scale = particle.Size * 0.08f;
                 float rotation = particle.Rotation;
-                
+
                 //灵液金黄色
                 Color ichorColor = new Color(255, 200, 50) * particle.Opacity * 0.8f;
 
@@ -701,11 +701,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < coreTrail.Count - 1; i++) {
                 float progress = 1f - i / (float)coreTrail.Count;
                 Vector2 drawPos = coreTrail[i] - Main.screenPosition;
-                
+
                 //计算方向
                 Vector2 toNext = coreTrail[i + 1] - coreTrail[i];
                 float rotation = toNext.ToRotation();
-                
+
                 //核心颜色-金黄渐变
                 Color coreColor = Color.Lerp(
                     new Color(255, 230, 100),
@@ -745,7 +745,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //绘制射流头部-最亮
             Vector2 headPos = Projectile.Center - Main.screenPosition;
             Color headColor = new Color(255, 240, 120) * glowPulse;
-            
+
             sb.Draw(
                 coreTex,
                 headPos,
