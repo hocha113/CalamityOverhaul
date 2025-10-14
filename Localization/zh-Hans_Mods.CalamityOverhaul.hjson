@@ -1563,6 +1563,7 @@ Projectiles: {
 	// CursedFlameStream.DisplayName: Cursed Flame Stream
 	// SlimeGelOrb.DisplayName: Slime Gel Orb
 	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
+	// BunnyfishHopper.DisplayName: Bunnyfish Hopper
 }
 
 Configs: {
@@ -5521,6 +5522,7 @@ FishSkill: {
 		Studied: 这条鱼被倒挂着会睡着吗？
 	}
 
+	FishEaterofPlankton: {
 		DisplayName: 腐虫漫迹
 		Tooltip:
 			'''
@@ -5540,7 +5542,7 @@ FishSkill: {
 			毒雾蘑菇：散射2发毒雾蘑菇，命中时产生毒雾持续造成伤害
 			闪电孢子：散射5发闪电孢子，命中时将进行一次折射
 			'''
-		Studied:这条鱼代表着蘑菇地的生态系统
+		Studied: 这条鱼代表着蘑菇地的生态系统
 	}
 
 	FishHoney: {
@@ -5587,7 +5589,13 @@ FishSkill: {
 			移动时将投出史莱姆凝胶
 			史莱姆凝胶将粘在触碰到它的目标身上
 			'''
-		Studied: 它看起来很"胶"着
+		Studied: 它看起来很胶着
+	}
+
+	FishBunny: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 
