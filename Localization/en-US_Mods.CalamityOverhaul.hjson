@@ -1585,6 +1585,8 @@ Projectiles: {
 	CatfishLeaper.DisplayName: Catfish Leaper
 	DirtBall.DisplayName: Dirt Ball
 	DirtFishFollower.DisplayName: Dirt Fish Follower
+	MudBall.DisplayName: Mud Ball
+	MudfishSentry.DisplayName: Mudfish Sentry
 }
 
 Configs: {
@@ -5634,6 +5636,12 @@ FishSkill: {
 	}
 
 	FishDirt: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishMud: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""

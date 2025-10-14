@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1567,6 +1567,8 @@ Projectiles: {
 	// CatfishLeaper.DisplayName: Catfish Leaper
 	// DirtBall.DisplayName: Dirt Ball
 	// DirtFishFollower.DisplayName: Dirt Fish Follower
+	// MudBall.DisplayName: Mud Ball
+	// MudfishSentry.DisplayName: Mudfish Sentry
 }
 
 Configs: {
@@ -5631,6 +5633,20 @@ FishSkill: {
 			'''
 			泥土的味道让我想起故乡的海床
 			这些小家伙倒是挺会抱团取暖
+			'''
+	}
+
+	FishMud: {
+		DisplayName: 泥沼哨兵
+		Tooltip: 
+			'''
+			开火时从地面召唤泥鱼哨兵
+			泥鱼会从地下冒出并向敌人发射泥球
+			攻击后潜回地下消失
+			'''
+		Studied: 
+			'''
+			这些家伙倒是挺会藏的
 			'''
 	}
 }

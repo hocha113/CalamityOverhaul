@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 startPos = DrawPosition + new Vector2(26, 26);
             if (FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
                 HalibutUIPanel.Instance.AddSkillWithAnimation(fishSkill, startPos);
+                HalibutUIPanel.Instance.QueueScroll(HalibutUIPanel.Instance.halibutUISkillSlots.Count);
                 unlockedNewFish = true;
             }
             if (unlockedNewFish) {
