@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 3;
+            Projectile.timeLeft = 2;
         }
         public override bool ShouldUpdatePosition() => false;
         public override bool? CanDamage() => false;

@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int MaxHands => 2 + HalibutData.GetDomainLayer() / 3;
         private int shootCounter = 0;
         private const int HandSpawnInterval = 5;
+        private int justHitCooldown;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -44,7 +45,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        private void SpawnSkeletronHand(Player player, IEntitySource source, int damage, float knockback) {
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            if (justHitCooldown > 0) {
+                justHitCooldown--;
+            }
+            if (justHitCooldown <= 0 && ActiveHands.Count > 0 && player.CountProjectilesOfID<Hit>() > 0) {
+                int index = ActiveHands[^1];
+                if (index.TryGetProjectile(out var hand)) {
+                    hand.Kill();
+                    ActiveHands.RemoveAt(ActiveHands.Count - 1);
+                    justHitCooldown = 2;
+                }
+            }
+            return true;
+        }
+
+        private static void SpawnSkeletronHand(Player player, IEntitySource source, int damage, float knockback) {
             //手臂直接从玩家中心生成
             Vector2 spawnPos = player.Center;
 
@@ -85,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             });
         }
 
-        private void SpawnSummonEffect(Vector2 position) {
+        private static void SpawnSummonEffect(Vector2 position) {
             //骨质粒子爆发
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
