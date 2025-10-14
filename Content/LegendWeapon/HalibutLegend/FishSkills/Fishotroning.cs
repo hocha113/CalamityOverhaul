@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<SkeletronHandMinion>(),
-                (int)(damage * (8 + HalibutData.GetDomainLayer() * 2)),
+                (int)(damage * (4 + HalibutData.GetDomainLayer() * 0.75)),
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
@@ -671,7 +671,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     throwOrigin + spawnOffset,
                     velocity,
                     ProjectileID.Bone,
-                    Projectile.damage / 2,
+                    (int)(Projectile.damage*0.07),
                     2f,
                     Projectile.owner
                 );
