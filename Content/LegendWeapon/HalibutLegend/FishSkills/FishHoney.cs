@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishHoney : FishSkill
     {
         public override int UnlockFishID => ItemID.Honeyfin;
-        public override int DefaultCooldown => 300;
+        public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer());
 
         public override bool? AltFunctionUse(Item item, Player player) {
             if (Cooldown <= 0) {
