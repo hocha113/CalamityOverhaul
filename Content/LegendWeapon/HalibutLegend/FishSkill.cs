@@ -108,16 +108,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return null;
         }
-
+        /// <summary>
+        /// 更新冷却时间，返回值表示是否继续更新
+        /// </summary>
+        /// <param name="halibutPlayer"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public virtual bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             return true;
         }
-
+        /// <summary>
+        /// 这个技能是否处于激活状态
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public virtual bool Active(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return false;
             }
             return halibutPlayer.SkillID == ID && halibutPlayer.HeldHalibut;
         }
+        /// <summary>
+        /// 这个技能是否处于激活状态
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool IsActive<T>(Player player) where T : FishSkill => GetT<T>().Active(player);
     }
 }
