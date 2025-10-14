@@ -138,7 +138,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float mouthOpenness = 0f;
         private int attackCooldown = 0;
         private int shotsFired = 0;
-        private Vector2 startPosition = Vector2.Zero;
         private bool isUnderground = false;
         private float targetRotation = 0f;
 
@@ -170,7 +169,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (StateTimer == 0 && State == SentryState.Rising) {
-                startPosition = Projectile.Center;
                 isUnderground = CheckIfUnderground();
 
                 if (!isUnderground) {
