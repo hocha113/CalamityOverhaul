@@ -1556,6 +1556,8 @@ Projectiles: {
 	// AmanitaHomingSpore.DisplayName: Amanita Homing Spore
 	// AmanitaLightningSpore.DisplayName: Amanita Lightning Spore
 	// AmanitaToxicMushroom.DisplayName: Amanita Toxic Mushroom
+	// HoneyBeeMinion.DisplayName: Honey Bee Minion
+	// HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm Core
 }
 
 Configs: {
@@ -5521,6 +5523,12 @@ FishSkill: {
 	}
 
 	FishAmanita: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishHoney: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
