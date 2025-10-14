@@ -19,19 +19,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2 && Cooldown <= 0) {
-                item.UseSound = null;
-                Vector2 velocity = player.To(Main.MouseWorld).UnitVector() * 12f;
-                Vector2 position = player.Center;
-                ShootState shootState = player.GetShootState();
-                var source = shootState.Source;
-                int damage = shootState.WeaponDamage * 2;
-                float knockback = shootState.WeaponKnockback;
+            if (player.altFunctionUse != 2) {
+                return null;
+            }
+
+            if (Cooldown > 0) {
+                return false;
+            }
+
+            item.UseSound = null;
+            Vector2 velocity = player.To(Main.MouseWorld).UnitVector() * 12f;
+            Vector2 position = player.Center;
+            ShootState shootState = player.GetShootState();
+            var source = shootState.Source;
+            int damage = shootState.WeaponDamage * 2;
+            float knockback = shootState.WeaponKnockback;
 
             SetCooldown();
 
-                //丢出兔子鱼的数量随领域层数增加
-                int bunnyCount = 3 + HalibutData.GetDomainLayer();
+            //丢出兔子鱼的数量随领域层数增加
+            int bunnyCount = 3 + HalibutData.GetDomainLayer();
 
             for (int i = 0; i < bunnyCount; i++) {
                 //随机抛射角度和速度
@@ -40,16 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 throwVelocity = throwAngle.ToRotationVector2() * throwSpeed;
                 throwVelocity.Y -= Main.rand.NextFloat(3f, 6f);
 
-                    Projectile.NewProjectile(
-                        source,
-                        position,
-                        throwVelocity,
-                        ModContent.ProjectileType<BunnyfishHopper>(),
-                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.7f)),
-                        knockback * 2f,
-                        player.whoAmI
-                    );
-                }
+                Projectile.NewProjectile(
+                    source,
+                    position,
+                    throwVelocity,
+                    ModContent.ProjectileType<BunnyfishHopper>(),
+                    (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.7f)),
+                    knockback * 2f,
+                    player.whoAmI
+                );
+            }
 
             //丢出音效
             SoundEngine.PlaySound(SoundID.Item1 with {
@@ -65,7 +72,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //生成抛掷粒子
             SpawnThrowEffect(position, velocity);
-
             return false;
         }
 
