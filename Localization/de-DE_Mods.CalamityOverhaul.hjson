@@ -1570,6 +1570,8 @@ Projectiles: {
 	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
 	// BunnyfishHopper.DisplayName: Bunnyfish Hopper
 	// CatfishLeaper.DisplayName: Catfish Leaper
+	// DirtBall.DisplayName: Dirt Ball
+	// DirtFishFollower.DisplayName: Dirt Fish Follower
 }
 
 Configs: {
@@ -5588,6 +5590,12 @@ FishSkill: {
 	}
 
 	FishCat: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishDirt: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

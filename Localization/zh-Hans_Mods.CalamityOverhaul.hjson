@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1565,6 +1565,8 @@ Projectiles: {
 	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
 	// BunnyfishHopper.DisplayName: Bunnyfish Hopper
 	// CatfishLeaper.DisplayName: Catfish Leaper
+	// DirtBall.DisplayName: Dirt Ball
+	// DirtFishFollower.DisplayName: Dirt Fish Follower
 }
 
 Configs: {
@@ -5615,6 +5617,12 @@ FishSkill: {
 			鲶鱼会在接触到敌人或一段时间后爆炸
 			'''
 		Studied: 哈基米！哈！
+	}
+
+	FishDirt: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 
