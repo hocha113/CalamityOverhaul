@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //射流计数器
         private int streamCounter = 0;
-        private static int StreamInterval = 24- HalibutData.GetDomainLayer() ;
+        private static int StreamInterval = 18- HalibutData.GetDomainLayer() ;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float spreadBase = 0.15f;
 
                 //根据领域层数增加射流数量和扩散
-                int streamCount = 3 + HalibutData.GetDomainLayer() / 3;
+                int streamCount = 1 + HalibutData.GetDomainLayer() / 2;
 
                 for (int i = 0; i < streamCount; i++) {
                     float spreadAngle = MathHelper.Lerp(-spreadBase, spreadBase, i / (float)Math.Max(1, streamCount - 1));
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         streamVelocity,
                         ModContent.ProjectileType<IchorStream>(),
-                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.5f)),
+                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.75f)),
                         knockback * 1.5f,
                         player.whoAmI
                     );

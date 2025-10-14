@@ -5550,7 +5550,7 @@ FishSkill: {
 		DisplayName: 骷臂掴击
 		Tooltip:
 			'''
-			开火时会长出骷髅王之手辅助战斗，受伤时将会碎裂一条手臂
+			开火时会长出骷髅王之手辅助战斗，受伤时将会损失一只骷髅王之手
 			远距离时骷髅王之手将会蓄力丢出骨头
 			近距离时骷髅王之手将会蓄力拍向目标
 			'''
@@ -5558,9 +5558,13 @@ FishSkill: {
 	}
 
 	FishIchorn: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 灵流蚀甲
+		Tooltip:
+			'''
+			开火时会伴随着散射灵液射流
+			灵液射流命中时将给予目标灵液效果
+			'''
+		Studied: 它的口水十分有用！
 	}
 
 	FishCursed: {

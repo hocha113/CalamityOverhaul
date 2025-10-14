@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<FallingStarProjectile>(),
-                    (int)(baseDamage * (1 + HalibutData.GetDomainLayer() * 0.15) * 3.00),
+                    (int)(baseDamage * (1 + HalibutData.GetDomainLayer() * 0.25) * 3.00),
                     8f,
                     player.whoAmI,
                     ai0: delay
