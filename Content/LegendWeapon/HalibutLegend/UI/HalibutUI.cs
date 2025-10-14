@@ -130,16 +130,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public float Sengs;
 
         //滚动相关字段
-        public int scrollOffset = 0;//目标滚动偏移量
-        public const int scrollStep = 3;//每次滚动的步长
+        public int scrollOffset = 0;//目标滚动偏移量(当前段目标)
+        public const int scrollStep = 3;//每次按钮指令的步长(逻辑步长, 将被拆分为逐槽动画)
         private float currentScrollOffset = 0f;//当前实际滚动偏移量（用于平滑动画）
         private float scrollVelocity = 0f;//滚动速度（用于弹簧效果）
         public const int maxVisibleSlots = 3;//最多同时显示3个技能槽位
+        //新增: 分段滚动队列
+        private int queuedScrollSteps = 0; //尚未执行的增量(正右负左)
+        private bool segmentInProgress = false; //当前是否在执行单步滚动动画
 
         //动画参数
-        private const float ScrollStiffness = 0.3f;//弹簧刚度
-        private const float ScrollDamping = 0.7f;//阻尼系数
-        private const float ScrollThreshold = 0.01f;//停止阈值
+        private const float ScrollStiffness = 0.35f;//弹簧刚度(稍增, 单步更紧凑)
+        private const float ScrollDamping = 0.72f;//阻尼系数(与刚度相协调)
+        private const float ScrollThreshold = 0.015f;//停止阈值(更严格, 防止抖动)
 
         //粒子系统
         public List<SkillIconEntity> flyingParticles = [];
@@ -244,6 +247,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return newValue;
         }
 
+        /// <summary>请求滚动指定步数(可为正/负, 将被拆分为单步动画).</summary>
+        public void QueueScroll(int steps) {
+            if (steps == 0) return;
+            queuedScrollSteps += steps;
+            //限制队列不要溢出到无效区域
+            int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
+            int projected = scrollOffset + queuedScrollSteps;
+            if (projected < 0) queuedScrollSteps -= projected; //剪裁左侧
+            if (projected > maxOffset) queuedScrollSteps -= (projected - maxOffset); //剪裁右侧
+        }
+
+        //拆分执行一个单步，如果存在队列
+        private void TryStartNextScrollSegment() {
+            if (segmentInProgress) return;
+            if (queuedScrollSteps == 0) return;
+            int dir = Math.Sign(queuedScrollSteps);
+            int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
+            int newTarget = Math.Clamp(scrollOffset + dir, 0, maxOffset);
+            if (newTarget == scrollOffset) { //无法再滚动, 丢弃该方向剩余队列
+                queuedScrollSteps = 0;
+                return;
+            }
+            scrollOffset = newTarget; //设定新的段目标
+            queuedScrollSteps -= dir; //消耗一格
+            segmentInProgress = true;
+            //段开始音效(轻提示)
+            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f, Pitch = dir > 0 ? 0.15f : -0.15f });
+        }
+
         private void RollerUpdate() {
             if (!hoverInMainPage) {
                 return;
@@ -275,11 +307,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public override void Update() {
             pendingSlots ??= [];
 
-            //确保滚动偏移量在有效范围内
+            //确保滚动偏移量在有效范围内(段目标)
             int maxOffset = Math.Max(0, halibutUISkillSlots.Count - maxVisibleSlots);
             scrollOffset = Math.Clamp(scrollOffset, 0, maxOffset);
 
-            //平滑滚动动画（弹簧阻尼效果）
+            //若当前段动画接近完成则允许启动下一段
+            if (segmentInProgress) {
+                if (Math.Abs(currentScrollOffset - scrollOffset) < 0.05f && Math.Abs(scrollVelocity) < 0.02f) {
+                    segmentInProgress = false;
+                }
+            }
+            //尝试开启下一段
+            TryStartNextScrollSegment();
+
+            //平滑滚动动画（弹簧阻尼效果） toward scrollOffset
             currentScrollOffset = SmoothDamp(currentScrollOffset, scrollOffset, ref scrollVelocity, 1f);
 
             //更新飞行粒子，并检查是否有槽位需要激活
