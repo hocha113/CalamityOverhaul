@@ -1578,6 +1578,7 @@ Projectiles: {
 	HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm Core
 	SkeletronHandMinion.DisplayName: Skeletron Hand Minion
 	IchorStream.DisplayName: Ichor Stream
+	CursedFlameStream.DisplayName: Cursed Flame Stream
 }
 
 Configs: {
@@ -5597,6 +5598,12 @@ FishSkill: {
 	}
 
 	FishIchorn: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishCursed: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
