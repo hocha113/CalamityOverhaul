@@ -132,7 +132,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //追击参数
         private const float DetectionRange = 600f;
         private const float ChaseRange = 400f;
-        private int chaseFailCount = 0;
 
         //生物动画
         private float squashStretch = 1f;
@@ -141,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //爆炸参数
         private const int MaxLifeTime = 600;
-        private const int ExplosionRadius = 140;
+        private const int ExplosionRadius = 205;
 
         public override void SetDefaults() {
             Projectile.width = 32;
@@ -151,6 +150,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = MaxLifeTime;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage /= 2f;
+            }
         }
 
         public override void AI() {
@@ -261,7 +266,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //验证目标
             if (!IsTargetValid()) {
                 State = BunnyState.OnGround;
-                chaseFailCount++;
                 groundTime = 0;
                 return;
             }
@@ -517,19 +521,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //创建兔子爆炸
         private void CreateBunnyExplosion() {
-            //范围伤害
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(Projectile.Center, npc.Center);
-                    if (dist < ExplosionRadius) {
-                        float damageRatio = 1f - dist / ExplosionRadius;
-                        int explosionDamage = (int)(Projectile.damage * (0.6f + damageRatio * 0.4f));
-
-                        npc.SimpleStrikeNPC(explosionDamage, 0, false, 8f, null, false, 0f, true);
-                    }
-                }
-            }
+            Projectile.Explode(ExplosionRadius, default, false);
 
             //爆炸粒子
             int particleCount = 45 + HalibutData.GetDomainLayer() * 5;

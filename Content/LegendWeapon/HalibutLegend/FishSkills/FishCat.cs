@@ -134,11 +134,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float spinSpeed = 0f;
         private float squashStretch = 1f;
         private int idleAnimTimer = 0;
-        private int huntFailCount = 0;
         private bool isSpinning = false;
 
         private const int MaxLifeTime = 540;
-        private const int ExplosionRadius = 155;
+        private const int ExplosionRadius = 255;
 
         public override void SetDefaults() {
             Projectile.width = 34;
@@ -148,6 +147,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = MaxLifeTime;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage /= 2f;
+            }
         }
 
         public override void AI() {
@@ -256,7 +261,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             if (!IsTargetValid()) {
                 State = CatState.OnGround;
-                huntFailCount++;
                 groundTime = 0;
                 return;
             }
@@ -490,19 +494,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void CreateCatExplosion() {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(Projectile.Center, npc.Center);
-                    if (dist < ExplosionRadius) {
-                        float damageRatio = 1f - dist / ExplosionRadius;
-                        int explosionDamage = (int)(Projectile.damage * (0.65f + damageRatio * 0.35f));
-
-                        npc.SimpleStrikeNPC(explosionDamage, 0, false, 9f, null, false, 0f, true);
-                    }
-                }
-            }
-
+            Projectile.Explode(ExplosionRadius, default, false);
             int particleCount = 50 + HalibutData.GetDomainLayer() * 6;
             for (int i = 0; i < particleCount; i++) {
                 float angle = MathHelper.TwoPi * i / particleCount;

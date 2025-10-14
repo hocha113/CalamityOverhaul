@@ -17,13 +17,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Honeyfin;
         public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer());
 
-        public override bool? AltFunctionUse(Item item, Player player) {
-            if (Cooldown <= 0) {
-                SummonBeeSwarm(player, item);
-                SetCooldown();
-                return true;
+        public override bool? AltFunctionUse(Item item, Player player) => true;
+
+        public override bool? CanUseItem(Item item, Player player) {
+            if (player.altFunctionUse != 2) {
+                return null;
             }
-            return false;
+
+            if (Cooldown > 0) {
+                return false;
+            }
+
+            SummonBeeSwarm(player, item);
+            SetCooldown();
+            return null;
         }
 
         private static void SummonBeeSwarm(Player player, Item item) {
