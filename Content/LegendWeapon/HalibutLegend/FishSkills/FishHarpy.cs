@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //羽毛管理系统
         public static List<int> ActiveFeathers = new();
         private static int MaxFeathers => 5 + HalibutData.GetDomainLayer();
-        
+
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             bool skillActive = FishSkill.GetT<FishHarpy>().Active(Owner);
-            
+
             if (!skillActive && State != FeatherState.Launching) {
                 if (State == FeatherState.Orbiting || State == FeatherState.Charging) {
                     LaunchFeather(Owner);
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (State == FeatherState.Orbiting) {
                 int totalFeathers = GetActiveFeatherCount(Owner);
                 int maxFeathers = 5 + HalibutData.GetDomainLayer();
-                
+
                 if (totalFeathers >= maxFeathers && StateTimer >= 30) {
                     SyncAllFeathersToCharging(Owner);
                 }
@@ -271,10 +271,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.projectile[i].type == Projectile.type &&
                     Main.projectile[i].owner == owner.whoAmI &&
                     Main.projectile[i].ai[1] < 4) {
-                    
+
                     Main.projectile[i].ai[1] = (float)FeatherState.Charging;
                     Main.projectile[i].localAI[0] = 0;
-                    
+
                     if (Main.projectile[i].ModProjectile is HarpyFeatherOrbit feather) {
                         feather.launchCountdown = LaunchDelay;
                     }
@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int myIndex = GetMyFeatherIndex(owner);
             int totalFeathers = GetActiveFeatherCount(owner);
             float targetAngle = MathHelper.TwoPi * myIndex / Math.Max(totalFeathers, 1);
-            
+
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
             float easeProgress = EaseOutSine(progress);
@@ -500,7 +500,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.velocity = launchDir * finalSpeed;
             Projectile.tileCollide = true;
-            
+
             State = FeatherState.Launching;
             StateTimer = 0;
 
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.projectile[i].type == Projectile.type &&
                     Main.projectile[i].owner == owner.whoAmI &&
                     Main.projectile[i].ai[1] < 4) {
-                    
+
                     if (Main.projectile[i].whoAmI == Projectile.whoAmI) {
                         return index;
                     }

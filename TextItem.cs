@@ -1,8 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

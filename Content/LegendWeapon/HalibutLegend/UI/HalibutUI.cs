@@ -247,7 +247,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return newValue;
         }
 
-        /// <summary>请求滚动指定步数(可为正/负, 将被拆分为单步动画).</summary>
+        /// <summary>
+        /// 请求滚动指定步数(可为正/负, 将被拆分为单步动画)
+        /// </summary>
+        /// <param name="steps"></param>
         public void QueueScroll(int steps) {
             if (steps == 0) return;
             queuedScrollSteps += steps;
