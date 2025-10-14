@@ -60,6 +60,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             SetDefaults(true);
         }
 
+        public static T GetT<T>() where T : FishSkill {
+            if (IDToInstance.TryGetValue(TypeToID[typeof(T)], out var skill) && skill is T t) {
+                return t;
+            }
+            return null;
+        }
+
         public void SetCooldown() {
             Cooldown = DefaultCooldown;
         }
@@ -104,6 +111,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public virtual bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             return true;
+        }
+
+        public virtual bool Active(Player player) {
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return false;
+            }
+            return halibutPlayer.SkillID == ID && halibutPlayer.HeldHalibut;
         }
     }
 }

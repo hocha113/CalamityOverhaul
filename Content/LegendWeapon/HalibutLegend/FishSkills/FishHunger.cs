@@ -195,6 +195,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
+            if (!FishSkill.GetT<FishHunger>().Active(owner)) {
+                Projectile.Kill();
+                return;
+            }
+
             StateTimer++;
 
             //更新动画帧

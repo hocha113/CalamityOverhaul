@@ -140,9 +140,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float MaxOrbitSpeed = 0.5f;
 
         //蓄力参数
-        private static int GatherDuration = 20 - HalibutData.GetDomainLayer();      //聚集时间
-        private static int OrbitDuration = 60 - HalibutData.GetDomainLayer();       //环绕时间
-        private static int ChargeDuration = 40 - HalibutData.GetDomainLayer();      //蓄力时间
+        private static int GatherDuration => 20 - HalibutData.GetDomainLayer();      //聚集时间
+        private static int OrbitDuration => 60 - HalibutData.GetDomainLayer();       //环绕时间
+        private static int ChargeDuration => 40 - HalibutData.GetDomainLayer();      //蓄力时间
         private const float LaunchSpeed = 28f;      //发射速度
 
         //视觉效果
@@ -175,8 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            if (!owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
-                || halibutPlayer.SkillID != FishSkill.UnlockFishs[ItemID.Bonefish].ID) {
+            if (!FishSkill.GetT<FishBone>().Active(owner)) {
                 Projectile.Kill();
                 return;
             }

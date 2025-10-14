@@ -469,7 +469,6 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;
             }
-            return 8;
 
             if (Level0) {
                 level = 1;

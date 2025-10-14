@@ -228,6 +228,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
+            if (State != FeatherState.Orbiting && !FishSkill.GetT<FishHarpy>().Active(owner)) {
+                State = FeatherState.Orbiting;
+            }
+
             StateTimer++;
 
             //检查是否应该进入蓄力阶段

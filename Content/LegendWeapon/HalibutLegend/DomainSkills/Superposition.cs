@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
     /// <summary>
-    /// 叠加攻击技能 - 时空克隆体汇聚后释放大比目鱼炮齐射
+    /// 叠加攻击技能，时空克隆体汇聚后释放大比目鱼炮齐射
     /// </summary>
     internal static class Superposition
     {
