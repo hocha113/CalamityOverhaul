@@ -2,6 +2,7 @@
 using CalamityMod.Dusts;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.CeaselessVoid;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.Cryogen;
 using CalamityMod.NPCs.DesertScourge;
@@ -116,6 +117,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.Blood);
                 return;
             }
+            if (CWRLoad.targetNpcTypes17.Contains(npc.type)) {
+                spanDust(33, DustID.Blood);
+                return;
+            }
             if (npc.type == NPCID.TargetDummy) {
                 spanDust(33, Main.rand.NextBool() ? DustID.Grass : DustID.JungleGrass);
                 return;
@@ -133,6 +138,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.BlueTorch);
                 return;
             }
+            if (npc.type == ModContent.NPCType<CeaselessVoid>()) {
+                spanDust(33, DustID.BlueTorch);
+                return;
+            }
             if (CWRLoad.targetNpcTypes9.Contains(npc.type)) {
                 spanDust(33, DustID.Sand);
                 return;
@@ -141,8 +150,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, (int)CalamityDusts.PurpleCosmilite);
                 return;
             }
+            if (npc.type == NPCID.MoonLordCore) {
+                spanDust(33, DustID.Blood);
+                return;
+            }
             if (CWRLoad.targetNpcTypes11.Contains(npc.type)) {
-                spanDust(13, DustID.Sand);
+                spanDust(33, DustID.Blood);
                 return;
             }
             if (CWRLoad.targetNpcTypes14.Contains(npc.type)) {

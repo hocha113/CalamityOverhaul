@@ -68,8 +68,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {10, 65 },
                 {11, 80 },
                 {12, 110 },
-                {13, 150 },
-                {14, 230 }
+                {13, 170 },
+                {14, 280 }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
                 {0, 0 },

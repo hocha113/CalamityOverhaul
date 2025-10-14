@@ -2242,7 +2242,6 @@ RemakeItems: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
 			'''
-			将火枪弹转化为源源不断的海弹流
 			legend_Text
 			[Lang4]
 			[Text]
