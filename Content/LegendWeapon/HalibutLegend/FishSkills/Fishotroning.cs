@@ -244,11 +244,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            if (Owner.CountProjectilesOfID<Hit>() > 0) {
-                Projectile.Kill();
-                return;
-            }
-
             Projectile.timeLeft = 60;
 
             StateTimer++;
