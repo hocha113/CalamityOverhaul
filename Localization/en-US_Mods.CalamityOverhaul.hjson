@@ -1581,6 +1581,7 @@ Projectiles: {
 	CursedFlameStream.DisplayName: Cursed Flame Stream
 	SlimeGelOrb.DisplayName: Slime Gel Orb
 	SkeletronHandExplode.DisplayName: Skeletron Hand Explode
+	BunnyfishHopper.DisplayName: Bunnyfish Hopper
 }
 
 Configs: {
@@ -5612,6 +5613,12 @@ FishSkill: {
 	}
 
 	FishSlime: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishBunny: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
