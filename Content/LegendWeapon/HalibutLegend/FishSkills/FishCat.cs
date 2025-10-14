@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             MaxInstances = 3,
         };
         public override int UnlockFishID => ItemID.Catfish;
-        public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer()/2);
+        public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer() / 2);
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -58,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 FindValidGroundPosition(Player player, NPC target) {
             Vector2 targetPos = target.Center;
             Vector2 dirToTarget = (targetPos - player.Center).SafeNormalize(Vector2.Zero);
-            
+
             for (int attempt = 0; attempt < 10; attempt++) {
                 float distance = Main.rand.NextFloat(200f, 400f);
                 float angleOffset = Main.rand.NextFloat(-0.8f, 0.8f);
@@ -103,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int count = 0;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI && 
+                if (proj.active && proj.owner == player.whoAmI &&
                     proj.type == ModContent.ProjectileType<MudfishSentry>()) {
                     count++;
                 }
@@ -142,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 startPosition = Vector2.Zero;
         private bool isUnderground = false;
         private float targetRotation = 0f;
-        
+
         private const int RisingDuration = 20;
         private const int EmergeDuration = 30;
         private const int IdleDuration = 40;
@@ -173,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (StateTimer == 0 && State == SentryState.Rising) {
                 startPosition = Projectile.Center;
                 isUnderground = CheckIfUnderground();
-                
+
                 if (!isUnderground) {
                     State = SentryState.Emerging;
                     StateTimer = 0;
@@ -209,14 +208,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Projectile.velocity = Vector2.Zero;
-            
+
             float mudLight = 0.5f + (float)Math.Sin(bodyWiggle * 2f) * 0.2f;
             Lighting.AddLight(Projectile.Center, mudLight * 0.6f, mudLight * 0.5f, mudLight * 0.3f);
         }
 
         private bool CheckIfUnderground() {
             Point tilePos = Projectile.Center.ToTileCoordinates();
-            
+
             for (int y = tilePos.Y; y >= tilePos.Y - 20; y--) {
                 if (WorldGen.InWorld(tilePos.X, y)) {
                     Tile tile = Main.tile[tilePos.X, y];
@@ -230,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private bool IsOnSurface() {
             Point tilePos = Projectile.Center.ToTileCoordinates();
-            
+
             for (int y = tilePos.Y; y >= tilePos.Y - 3; y--) {
                 if (WorldGen.InWorld(tilePos.X, y)) {
                     Tile tile = Main.tile[tilePos.X, y];
@@ -244,13 +243,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void RisingPhase() {
             Projectile.Center += new Vector2(0, -RisingSpeed);
-            
+
             emergingProgress = Math.Min(StateTimer / (float)RisingDuration, 0.3f);
-            
+
             if (StateTimer % 4 == 0) {
                 SpawnRisingDust();
             }
-            
+
             if (IsOnSurface() || StateTimer >= RisingDuration * 3) {
                 State = SentryState.Emerging;
                 StateTimer = 0;
@@ -264,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Volume = 0.8f,
                     Pitch = -0.3f
                 }, Projectile.Center);
-                
+
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Volume = 0.6f,
                     Pitch = 0.2f
@@ -356,7 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             mouthOpenness = MathHelper.Lerp(mouthOpenness, 0f, 0.2f);
-            
+
             targetRotation = MathHelper.PiOver2;
             Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.15f);
 
@@ -379,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Projectile.Center += new Vector2(0, 12.5f);
-            
+
             emergingProgress = Math.Max(1f - StateTimer / (float)SubmergeDuration, 0f);
 
             if (StateTimer >= SubmergeDuration) {
@@ -394,23 +393,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float shootAngle = Projectile.rotation;
             Vector2 shootDirection = shootAngle.ToRotationVector2();
             Vector2 shootPos = Projectile.Center + shootDirection * 15f * emergingProgress;
-            
+
             Vector2 toTarget = target.Center - shootPos;
             float distance = toTarget.Length();
-            
+
             toTarget = toTarget.SafeNormalize(Vector2.Zero);
-            
+
             float gravity = 0.25f;
             float speed = Math.Min(distance / 25f, 18f);
-            
+
             Vector2 velocity = toTarget * speed;
-            
+
             if (distance > 100f) {
                 float time = distance / speed;
                 float dropCompensation = 0.5f * gravity * time * time / distance;
                 velocity.Y -= dropCompensation * speed;
             }
-            
+
             velocity = velocity.RotatedByRandom(0.08f);
 
             Projectile.NewProjectile(
@@ -464,10 +463,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private NPC GetTarget() {
             int id = (int)TargetID;
             if (id < 0 || id >= Main.maxNPCs) return null;
-            
+
             NPC target = Main.npc[id];
             if (!target.active || !target.CanBeChasedBy()) return null;
-            
+
             return target;
         }
 
@@ -475,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-15f, 15f), Main.rand.NextFloat(10f, 20f));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(1f, 3f));
-                
+
                 Dust rising = Dust.NewDustPerfect(
                     pos,
                     DustID.Mud,
@@ -493,7 +492,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-25f, 25f), Main.rand.NextFloat(0, 12f));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-6f, -3f));
-                
+
                 Dust emerge = Dust.NewDustPerfect(
                     pos,
                     DustID.Mud,
@@ -518,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnTurningDust() {
             Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-10f, 10f));
-            
+
             Dust turning = Dust.NewDustPerfect(
                 pos,
                 DustID.Mud,
@@ -533,7 +532,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnIdleBubble() {
             Vector2 bubblePos = Projectile.Center + new Vector2(Main.rand.NextFloat(-12f, 12f), -20f * emergingProgress);
-            
+
             Dust bubble = Dust.NewDustPerfect(
                 bubblePos,
                 DustID.TintableDust,
@@ -548,7 +547,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnAttackDust() {
             Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-15f, 15f), -12f * emergingProgress);
-            
+
             Dust attack = Dust.NewDustPerfect(
                 pos,
                 DustID.Mud,
@@ -562,7 +561,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float EaseOutElastic(float x) {
             const float c4 = (2f * MathF.PI) / 3f;
-            return x == 0 ? 0 : x == 1 ? 1 : 
+            return x == 0 ? 0 : x == 1 ? 1 :
                 (float)(Math.Pow(2, -10 * x) * Math.Sin((x * 10 - 0.75) * c4) + 1);
         }
 
@@ -574,7 +573,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             Main.instance.LoadItem(ItemID.Mudfish);
             Texture2D texture = TextureAssets.Item[ItemID.Mudfish].Value;
-            
+
             if (texture == null) return false;
 
             Vector2 drawOrigin = Projectile.Center - Main.screenPosition;
@@ -665,7 +664,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Projectile.velocity.Y += Gravity;
             rotation += Projectile.velocity.Length() * 0.06f;
-            
+
             scale = 1f + (float)Math.Sin(Projectile.timeLeft * 0.15f) * 0.12f;
 
             if (Projectile.timeLeft % 2 == 0) {
@@ -694,25 +693,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
 
             SpawnSplatDust();
-            
+
             Projectile.penetrate--;
             if (Projectile.penetrate <= 0) {
                 return true;
             }
-            
+
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0.1f) {
                 Projectile.velocity.X = -oldVelocity.X * 0.4f;
             }
             if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0.1f) {
                 Projectile.velocity.Y = -oldVelocity.Y * 0.3f;
             }
-            
+
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Slow, 180);
-            
+
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
                 Volume = 0.6f,
                 Pitch = -0.4f
@@ -739,7 +738,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            
+
             Main.instance.LoadItem(ItemID.MudBlock);
             Texture2D mudTexture = TextureAssets.Item[ItemID.MudBlock].Value;
 
@@ -749,7 +748,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 3; i++) {
                 float angle = rotation + i * MathHelper.TwoPi / 3f;
                 Vector2 offset = angle.ToRotationVector2() * 3f;
-                
+
                 sb.Draw(
                     mudTexture,
                     drawPos + offset,
