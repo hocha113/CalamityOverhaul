@@ -11,6 +11,9 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
+    /// <summary>
+    /// 鱼技能基类，所有鱼技能都必须继承自这个类
+    /// </summary>
     internal abstract class FishSkill : VaultType<FishSkill>, ILocalizedModType
     {
         public string LocalizationCategory => "FishSkill";
