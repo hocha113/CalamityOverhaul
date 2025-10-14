@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 骷髅王鱼技能
+    /// 骷髅王鱼技能-召唤骷髅王手臂进行强力攻击
     /// </summary>
     internal class Fishotroning : FishSkill
     {
@@ -43,14 +43,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnSkeletronHand(Player player, IEntitySource source, int damage, float knockback) {
-            Vector2 spawnPos = player.Center + Main.rand.NextVector2Circular(120f, 120f);
+            //手臂直接从玩家中心生成
+            Vector2 spawnPos = player.Center;
 
             int handProj = Projectile.NewProjectile(
                 source,
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<SkeletronHandMinion>(),
-                damage * (8 + HalibutData.GetDomainLayer() * 2),
+                (int)(damage * (8 + HalibutData.GetDomainLayer() * 2)),
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
@@ -60,12 +61,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ActiveHands.Add(handProj);
                 SpawnSummonEffect(spawnPos);
 
+                //骨头摩擦音效
                 SoundEngine.PlaySound(SoundID.NPCHit2 with {
                     Volume = 0.8f,
                     Pitch = -0.3f
                 }, spawnPos);
 
-                SoundEngine.PlaySound(SoundID.Roar with {
+                //低沉的召唤音
+                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
                     Volume = 0.6f,
                     Pitch = -0.5f
                 }, spawnPos);
@@ -81,6 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnSummonEffect(Vector2 position) {
+            //骨质粒子爆发
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
@@ -97,6 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dust.fadeIn = 1.4f;
             }
 
+            //烟雾环
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 15; j++) {
                     float angle = MathHelper.TwoPi * j / 15f;
@@ -120,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     #region 骷髅王手臂仆从
     /// <summary>
-    /// 骷髅王手臂 - 使用IK系统实现流畅的攻击动作
+    /// 骷髅王手臂-使用IK系统实现流畅的攻击动作
     /// </summary>
     internal class SkeletronHandMinion : ModProjectile
     {
@@ -134,6 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Swinging,       //挥击
             Slamming,       //下砸
             Sweeping,       //横扫
+            Throwing,       //投掷骨头
             Recovering      //攻击后恢复
         }
 
@@ -154,25 +160,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //IK手臂参数
         private readonly List<Vector2> armSegments = new();
-        private const int ArmSegmentCount = 5;
-        private const float SegmentLength = 40f;
+        private const int ArmSegmentCount = 6;
+        private const float SegmentLength = 45f;
         private Vector2 shoulderPos = Vector2.Zero;
         private Vector2 handPos = Vector2.Zero;
+        private float armTension = 0f; //手臂张力,用于IK自然度
 
         //攻击参数
-        private const float SearchRange = 700f;
+        private const float SearchRange = 800f;
         private const int IdleDuration = 40;
-        private const int WindUpDuration = 25;
-        private const int SwingDuration = 20;
-        private const int SlamDuration = 25;
-        private const int SweepDuration = 30;
-        private const int RecoverDuration = 30;
+        private const int WindUpDuration = 30;
+        private const int SwingDuration = 18;
+        private const int SlamDuration = 22;
+        private const int SweepDuration = 35;
+        private const int ThrowDuration = 40;
+        private const int RecoverDuration = 35;
 
         //视觉效果
         private float glowIntensity = 0f;
         private float impactShake = 0f;
         private readonly List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 15;
+        private const int MaxTrailLength = 20;
+        private float handScale = 1f;
+        private float attackWindUpIntensity = 0f;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -237,6 +247,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 case HandState.Sweeping:
                     SweepingBehavior();
                     break;
+                case HandState.Throwing:
+                    ThrowingBehavior();
+                    break;
                 case HandState.Recovering:
                     RecoveringBehavior(owner);
                     break;
@@ -255,27 +268,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冲击震动衰减
             impactShake *= 0.85f;
 
+            //手部缩放回归
+            handScale = MathHelper.Lerp(handScale, 1f, 0.1f);
+
+            //蓄力强度衰减
+            attackWindUpIntensity *= 0.95f;
+
             //旋转朝向
             UpdateRotation();
         }
 
         private void UpdateIdleOffset() {
-            idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 30f;
-            idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 20f;
+            //更加明显的漂浮效果
+            idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 50f;
+            idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 30f;
         }
 
         private void UpdateShoulderPosition(Player owner) {
-            //肩膀位置固定在玩家后方
-            float angle = HandIndex * MathHelper.TwoPi / 3f;
-            shoulderPos = owner.Center + angle.ToRotationVector2() * 100f;
+            //肩膀固定在玩家中心
+            shoulderPos = owner.Center;
         }
 
         private void IdleBehavior(Player owner) {
-            //在玩家周围漂浮
-            Vector2 targetPos = shoulderPos + idleOffset + new Vector2(0, -80f);
+            //在玩家周围较远距离漂浮
+            float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
+            Vector2 targetPos = shoulderPos + angle.ToRotationVector2() * 150f + idleOffset + new Vector2(0, -80f);
             MoveToPosition(targetPos, 0.15f);
 
             glowIntensity = 0.3f;
+            armTension = 0.3f;
 
             //搜索敌人
             if (StateTimer > IdleDuration) {
@@ -303,23 +324,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             NPC target = Main.npc[targetNPCID];
 
             //移动到目标附近
-            Vector2 approachPos = target.Center + new Vector2(0, -150f);
+            Vector2 approachPos = target.Center + new Vector2(0, -180f);
             MoveToPosition(approachPos, 0.2f);
 
             glowIntensity = 0.5f;
+            armTension = 0.6f;
 
             //到达位置后选择攻击方式
-            if (Vector2.Distance(Projectile.Center, approachPos) < 100f) {
+            if (Vector2.Distance(Projectile.Center, approachPos) < 120f) {
                 ChooseAttackType(target);
                 State = HandState.WindingUp;
                 StateTimer = 0;
                 attackStartPos = Projectile.Center;
                 attackTargetPos = target.Center;
+                attackWindUpIntensity = 1f;
             }
 
             //锁定音效
             if (StateTimer == 1) {
-                SoundEngine.PlaySound(SoundID.Zombie13 with {
+                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
                     Volume = 0.4f,
                     Pitch = -0.3f
                 }, Projectile.Center);
@@ -327,16 +350,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void ChooseAttackType(NPC target) {
-            //根据相对位置选择攻击方式
+            //根据相对位置和随机性选择攻击方式
             Vector2 toTarget = target.Center - Projectile.Center;
-
-            if (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X)) {
-                //目标在下方 - 下砸攻击
+            
+            if (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0) {
+                //目标在下方-下砸攻击
                 AttackType = 1;
             }
             else {
-                //横向 - 随机选择挥击或横扫
-                AttackType = Main.rand.NextBool() ? 0 : 2;
+                //横向-随机选择挥击/横扫/投掷
+                float rand = Main.rand.NextFloat();
+                if (rand < 0.35f) {
+                    AttackType = 0; //挥击
+                }
+                else if (rand < 0.7f) {
+                    AttackType = 2; //横扫
+                }
+                else {
+                    AttackType = 3; //投掷骨头
+                }
             }
         }
 
@@ -349,17 +381,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float progress = StateTimer / WindUpDuration;
             glowIntensity = 0.5f + progress * 0.4f;
+            armTension = 0.9f;
 
-            //根据攻击类型后拉
+            //根据攻击类型后拉-增大幅度
             Vector2 windUpOffset = AttackType switch {
-                0 => new Vector2(-150f, -80f),  //挥击 - 向后上方拉
-                1 => new Vector2(0, -200f),      //下砸 - 向上拉
-                2 => new Vector2(-180f, 0),      //横扫 - 向侧后方拉
+                0 => new Vector2(-200f, -100f),  //挥击-向后上方拉
+                1 => new Vector2(0, -250f),      //下砸-向上拉
+                2 => new Vector2(-220f, 0),      //横扫-向侧后方拉
+                3 => new Vector2(-180f, -120f),  //投掷-向后上方
                 _ => Vector2.Zero
             };
 
             Vector2 targetPos = attackStartPos + windUpOffset;
-            MoveToPosition(targetPos, 0.25f);
+            MoveToPosition(targetPos, 0.3f);
+
+            //蓄力时手部放大
+            handScale = 1f + progress * 0.3f;
 
             //蓄力粒子
             if (Main.rand.NextBool(2)) {
@@ -380,6 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0 => HandState.Swinging,
                     1 => HandState.Slamming,
                     2 => HandState.Sweeping,
+                    3 => HandState.Throwing,
                     _ => HandState.Idle
                 };
                 StateTimer = 0;
@@ -399,21 +437,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SwingingBehavior() {
             float progress = StateTimer / SwingDuration;
             glowIntensity = 1f;
+            armTension = 1f;
 
-            //快速挥击弧线
+            //快速挥击弧线-增大范围
             float swingAngle = MathHelper.Lerp(
-                MathHelper.PiOver2,
-                -MathHelper.PiOver4,
+                MathHelper.PiOver2 * 1.2f,
+                -MathHelper.PiOver4 * 1.5f,
                 EaseInOutCubic(progress)
             );
 
             Vector2 swingOffset = new Vector2(
-                (float)Math.Cos(swingAngle) * 200f,
-                (float)Math.Sin(swingAngle) * 150f
+                (float)Math.Cos(swingAngle) * 250f,
+                (float)Math.Sin(swingAngle) * 180f
             );
 
             Projectile.Center = attackTargetPos + swingOffset;
-            Projectile.velocity = (attackTargetPos - Projectile.Center) * 0.8f;
+            Projectile.velocity = (attackTargetPos - Projectile.Center) * 1.2f;
+
+            //挥击时手部缩放效果
+            handScale = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.4f;
 
             //挥击特效
             SpawnSwingEffect();
@@ -428,22 +470,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SlammingBehavior() {
             float progress = StateTimer / SlamDuration;
             glowIntensity = 1f;
+            armTension = 1f;
 
-            //强力下砸
-            Vector2 slamStart = attackTargetPos + new Vector2(0, -200f);
+            //强力下砸-增强速度曲线
+            Vector2 slamStart = attackTargetPos + new Vector2(0, -250f);
             Vector2 slamEnd = attackTargetPos + new Vector2(0, 50f);
 
-            Projectile.Center = Vector2.Lerp(
-                slamStart,
-                slamEnd,
-                EaseInCubic(progress)
-            );
+            float easeProgress = EaseInCubic(progress);
+            Projectile.Center = Vector2.Lerp(slamStart, slamEnd, easeProgress);
 
             Projectile.velocity = Vector2.Lerp(
                 Vector2.Zero,
-                new Vector2(0, 50f),
-                progress
+                new Vector2(0, 60f),
+                easeProgress
             );
+
+            //下砸时手部逐渐握紧效果
+            handScale = 1f + (1f - progress) * 0.5f;
 
             //下砸轨迹特效
             SpawnSlamTrail();
@@ -458,22 +501,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SweepingBehavior() {
             float progress = StateTimer / SweepDuration;
             glowIntensity = 1f;
+            armTension = 1f;
 
-            //横扫弧线
+            //横扫弧线-增大范围
             float sweepAngle = MathHelper.Lerp(
-                -MathHelper.Pi,
-                MathHelper.Pi,
+                -MathHelper.Pi * 1.1f,
+                MathHelper.Pi * 1.1f,
                 EaseInOutQuad(progress)
             );
 
-            float radius = 180f;
+            float radius = 220f;
             Vector2 sweepOffset = new Vector2(
                 (float)Math.Cos(sweepAngle) * radius,
-                (float)Math.Sin(sweepAngle) * radius * 0.3f
+                (float)Math.Sin(sweepAngle) * radius * 0.4f
             );
 
             Projectile.Center = attackTargetPos + sweepOffset;
             Projectile.velocity = Vector2.Zero;
+
+            //横扫时手部扩张
+            handScale = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.35f;
 
             //横扫特效
             SpawnSweepEffect();
@@ -485,12 +532,98 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        private void ThrowingBehavior() {
+            float progress = StateTimer / ThrowDuration;
+            glowIntensity = 1f;
+            armTension = 0.8f;
+
+            if (StateTimer < ThrowDuration / 2) {
+                //前半段-手臂后拉蓄力
+                Vector2 windUpPos = attackStartPos + new Vector2(-180f, -120f);
+                MoveToPosition(windUpPos, 0.3f);
+                handScale = 1f + progress * 2f * 0.4f;
+
+                //蓄力粒子
+                if (Main.rand.NextBool(3)) {
+                    SpawnWindUpDust();
+                }
+            }
+            else {
+                //后半段-投掷动作
+                float throwProgress = (StateTimer - ThrowDuration / 2) / (ThrowDuration / 2);
+                Vector2 throwPos = attackTargetPos + new Vector2(-50f, -80f);
+                MoveToPosition(throwPos, 0.5f);
+                handScale = 1f + (1f - throwProgress) * 0.4f;
+
+                //投掷骨头
+                if (StateTimer == ThrowDuration / 2 + 5) {
+                    ThrowBones();
+                }
+            }
+
+            if (StateTimer >= ThrowDuration) {
+                State = HandState.Recovering;
+                StateTimer = 0;
+            }
+        }
+
+        private void ThrowBones() {
+            if (!IsTargetValid() || Main.myPlayer != Projectile.owner) return;
+
+            NPC target = Main.npc[targetNPCID];
+            Vector2 throwDirection = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+
+            //投掷5-8根骨头
+            int boneCount = 5 + Main.rand.Next(4);
+            for (int i = 0; i < boneCount; i++) {
+                float spreadAngle = MathHelper.Lerp(-0.4f, 0.4f, i / (float)(boneCount - 1));
+                Vector2 velocity = throwDirection.RotatedBy(spreadAngle) * Main.rand.NextFloat(18f, 25f);
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center + throwDirection * 40f,
+                    velocity,
+                    ProjectileID.Bone,
+                    Projectile.damage / 2,
+                    2f,
+                    Projectile.owner
+                );
+            }
+
+            //投掷特效
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = throwDirection.RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 10f);
+                Dust dust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Bone,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                dust.noGravity = true;
+            }
+
+            //投掷音效
+            SoundEngine.PlaySound(SoundID.Item1 with {
+                Volume = 0.7f,
+                Pitch = 0.3f
+            }, Projectile.Center);
+
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                Volume = 0.6f,
+                Pitch = 0.2f
+            }, Projectile.Center);
+        }
+
         private void RecoveringBehavior(Player owner) {
             float progress = StateTimer / RecoverDuration;
             glowIntensity = 1f - progress * 0.7f;
+            armTension = 0.5f;
 
             //返回待机位置
-            Vector2 recoverPos = shoulderPos + idleOffset + new Vector2(0, -80f);
+            float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
+            Vector2 recoverPos = shoulderPos + angle.ToRotationVector2() * 150f + idleOffset + new Vector2(0, -80f);
             MoveToPosition(recoverPos, 0.2f);
 
             if (StateTimer >= RecoverDuration) {
@@ -517,19 +650,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void UpdateArmIK() {
             handPos = Projectile.Center;
 
-            //FABRIK算法实现IK
-            //前向遍历 - 从手开始到肩膀
+            //增强的FABRIK算法,考虑手臂张力
+            float targetDistance = Vector2.Distance(shoulderPos, handPos);
+            float maxReach = SegmentLength * ArmSegmentCount;
+
+            //如果超出最大伸展范围,限制手的位置
+            if (targetDistance > maxReach * 0.98f) {
+                Vector2 direction = (handPos - shoulderPos).SafeNormalize(Vector2.Zero);
+                handPos = shoulderPos + direction * maxReach * 0.98f;
+                Projectile.Center = handPos;
+            }
+
+            //前向遍历-从手到肩
             armSegments[0] = handPos;
             for (int i = 1; i < ArmSegmentCount; i++) {
                 Vector2 direction = (armSegments[i - 1] - (i == ArmSegmentCount - 1 ? shoulderPos : armSegments[i])).SafeNormalize(Vector2.Zero);
-                armSegments[i] = armSegments[i - 1] - direction * SegmentLength;
+                
+                //根据张力调整关节位置,增加自然弯曲
+                float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
+                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f;
+                
+                armSegments[i] = armSegments[i - 1] - direction * SegmentLength + perpendicular;
             }
 
-            //反向遍历 - 从肩膀到手
+            //反向遍历-从肩到手
             armSegments[ArmSegmentCount - 1] = shoulderPos;
             for (int i = ArmSegmentCount - 2; i >= 0; i--) {
                 Vector2 direction = (armSegments[i] - armSegments[i + 1]).SafeNormalize(Vector2.Zero);
-                armSegments[i] = armSegments[i + 1] + direction * SegmentLength;
+                
+                //同样应用弯曲
+                float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
+                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f;
+                
+                armSegments[i] = armSegments[i + 1] + direction * SegmentLength + perpendicular;
             }
 
             //最终调整手的位置
@@ -652,7 +805,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void CreateImpactEffect(Vector2 position) {
-            impactShake = 10f;
+            impactShake = 12f;
 
             //冲击波
             for (int i = 0; i < 40; i++) {
@@ -697,7 +850,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void CreateSlamImpact(Vector2 position) {
-            impactShake = 15f;
+            impactShake = 18f;
 
             //强力冲击波
             for (int i = 0; i < 60; i++) {
@@ -822,7 +975,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D handTexture = TextureAssets.Npc[NPCID.SkeletronHand].Value;
             Vector2 origin = handTexture.Size() / 2f;
 
-            //绘制IK手臂链
+            //绘制IK手臂链-使用骨头纹理
             DrawArmChain(sb, lightColor);
 
             //绘制攻击拖尾
@@ -834,10 +987,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 shakeOffset = Main.rand.NextVector2Circular(impactShake, impactShake);
             Vector2 drawPos = Projectile.Center - Main.screenPosition + shakeOffset;
 
+            //蓄力辉光效果
+            if (attackWindUpIntensity > 0.3f) {
+                for (int i = 0; i < 3; i++) {
+                    float windUpScale = handScale * (1.15f + i * 0.1f);
+                    float windUpAlpha = (attackWindUpIntensity - 0.3f) * (1f - i * 0.3f) * 0.5f;
+
+                    sb.Draw(
+                        handTexture,
+                        drawPos,
+                        null,
+                        new Color(255, 200, 200, 0) * windUpAlpha,
+                        Projectile.rotation + MathHelper.Pi,
+                        origin,
+                        Projectile.scale * windUpScale,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
+            }
+
             //发光层
             if (glowIntensity > 0.5f) {
                 for (int i = 0; i < 3; i++) {
-                    float glowScale = 1.1f + i * 0.1f;
+                    float glowScale = handScale * (1.1f + i * 0.1f);
                     float glowAlpha = (glowIntensity - 0.5f) * (1f - i * 0.3f);
 
                     sb.Draw(
@@ -845,7 +1018,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         drawPos,
                         null,
                         new Color(200, 200, 220, 0) * glowAlpha,
-                        Projectile.rotation,
+                        Projectile.rotation + MathHelper.Pi,
                         origin,
                         Projectile.scale * glowScale,
                         SpriteEffects.None,
@@ -860,9 +1033,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 drawPos,
                 null,
                 lightColor,
-                Projectile.rotation,
+                Projectile.rotation + MathHelper.Pi,
                 origin,
-                Projectile.scale,
+                Projectile.scale * handScale,
                 SpriteEffects.None,
                 0
             );
@@ -871,29 +1044,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void DrawArmChain(SpriteBatch sb, Color lightColor) {
-            Texture2D chainTexture = TextureAssets.Chain12.Value; //骨质链条材质
-
+            //使用骨头弹幕纹理作为链条
+            Texture2D boneTexture = TextureAssets.Projectile[ProjectileID.Bone].Value;
+            
             for (int i = 0; i < armSegments.Count - 1; i++) {
                 Vector2 start = armSegments[i + 1];
                 Vector2 end = armSegments[i];
                 Vector2 diff = end - start;
                 float length = diff.Length();
-                float rotation = diff.ToRotation() - MathHelper.PiOver2;
+                float rotation = diff.ToRotation() + MathHelper.PiOver4;
 
-                Rectangle sourceRect = new Rectangle(0, 0, chainTexture.Width, (int)(length / Projectile.scale));
-                Vector2 origin = new Vector2(chainTexture.Width / 2f, 0);
-
-                sb.Draw(
-                    chainTexture,
-                    start - Main.screenPosition,
-                    sourceRect,
-                    lightColor * 0.8f,
-                    rotation,
-                    origin,
-                    Projectile.scale,
-                    SpriteEffects.None,
-                    0
-                );
+                //计算需要多少骨头来填充这段
+                int boneCount = Math.Max(1, (int)(length / 20f));
+                
+                for (int j = 0; j < boneCount; j++) {
+                    float progress = j / (float)boneCount;
+                    Vector2 bonePos = Vector2.Lerp(start, end, progress);
+                    
+                    //根据位置添加轻微的骨头大小变化
+                    float boneScale = Projectile.scale * MathHelper.Lerp(0.6f, 0.8f, (float)Math.Sin(progress * MathHelper.Pi));
+                    
+                    sb.Draw(
+                        boneTexture,
+                        bonePos - Main.screenPosition,
+                        null,
+                        lightColor * 0.9f,
+                        rotation + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i + j) * 0.1f,
+                        boneTexture.Size() / 2f,
+                        boneScale * 2f,
+                        SpriteEffects.None,
+                        0
+                    );
+                }
             }
         }
 
@@ -902,7 +1084,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (i >= trailPositions.Count - 1) continue;
 
                 float fade = (trailPositions.Count - i) / (float)trailPositions.Count;
-                Color trailColor = new Color(180, 180, 200, 0) * fade * 0.5f;
+                Color trailColor = new Color(180, 180, 200, 0) * fade * 0.6f;
 
                 sb.Draw(
                     texture,
@@ -911,7 +1093,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     trailColor,
                     Projectile.rotation,
                     origin,
-                    Projectile.scale * (0.8f + fade * 0.2f),
+                    Projectile.scale * handScale * (0.7f + fade * 0.3f),
                     SpriteEffects.None,
                     0
                 );
