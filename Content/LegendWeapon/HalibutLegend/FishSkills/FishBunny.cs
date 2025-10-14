@@ -25,48 +25,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 position = player.Center;
                 ShootState shootState = player.GetShootState();
                 var source = shootState.Source;
-                int damage = shootState.WeaponDamage;
+                int damage = shootState.WeaponDamage * 2;
                 float knockback = shootState.WeaponKnockback;
 
-                SetCooldown();
+            SetCooldown();
 
                 //丢出兔子鱼的数量随领域层数增加
-                int bunnyCount = 3 + HalibutData.GetDomainLayer()/2;
+                int bunnyCount = 3 + HalibutData.GetDomainLayer();
 
-                for (int i = 0; i < bunnyCount; i++) {
-                    //随机抛射角度和速度
-                    float throwAngle = velocity.ToRotation() + Main.rand.NextFloat(-0.4f, 0.4f);
-                    float throwSpeed = Main.rand.NextFloat(10f, 16f);
-                    Vector2 throwVelocity = throwAngle.ToRotationVector2() * throwSpeed;
-                    throwVelocity.Y -= Main.rand.NextFloat(3f, 6f);
+            for (int i = 0; i < bunnyCount; i++) {
+                //随机抛射角度和速度
+                float throwAngle = velocity.ToRotation() + Main.rand.NextFloat(-0.4f, 0.4f);
+                float throwSpeed = Main.rand.NextFloat(10f, 16f);
+                Vector2 throwVelocity = throwAngle.ToRotationVector2() * throwSpeed;
+                throwVelocity.Y -= Main.rand.NextFloat(3f, 6f);
 
                     Projectile.NewProjectile(
                         source,
                         position,
                         throwVelocity,
                         ModContent.ProjectileType<BunnyfishHopper>(),
-                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.75f)),
+                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.7f)),
                         knockback * 2f,
                         player.whoAmI
                     );
                 }
 
-                //丢出音效
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.6f,
-                    Pitch = 0.3f
-                }, position);
+            //丢出音效
+            SoundEngine.PlaySound(SoundID.Item1 with {
+                Volume = 0.6f,
+                Pitch = 0.3f
+            }, position);
 
-                //兔子叫声
-                SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.5f,
-                    Pitch = 0.8f
-                }, position);
+            //兔子叫声
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = 0.5f,
+                Pitch = 0.8f
+            }, position);
 
-                //生成抛掷粒子
-                SpawnThrowEffect(position, velocity);
-            }
-            return null;
+            //生成抛掷粒子
+            SpawnThrowEffect(position, velocity);
+
+            return false;
         }
 
         //抛掷特效
