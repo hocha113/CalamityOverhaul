@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         //复苏增长相关常量
         private const float BaseResurrectionRatePerEye = 0.02f;//单层基础复苏速度
         private const float GeometricFactor = 1.2f;//几何倍率（每更高一层的额外提高倍率）
-        private const float CrashedEyeSideEffectRate = 0.0002f;//死机眼睛的极小副作用
+        private const float CrashedEyeSideEffectRate = 0.0001f;//死机眼睛的极小副作用
 
         ///<summary>
         ///获取当前激活的眼睛数量（即领域层数）

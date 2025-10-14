@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
         public int CloneFishToggleCD { get; set; }
 
-        /// <summary>克隆体数量（1-5）</summary>
+        /// <summary>克隆体数量（1-10）</summary>
         public int CloneCount { get; set; } = 1;//先保持1个
         /// <summary>最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）</summary>
         public int CloneMinDelay { get; set; } = 60;
@@ -279,8 +279,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
             HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
 
-            if (!HeldHalibut && SeaDomainActive) {
-                SeaDomain.Deactivate(Player);
+            if (!HeldHalibut) {
+                if (SeaDomainActive) {
+                    SeaDomain.Deactivate(Player);
+                }
+                if (CloneFishActive) {
+                    CloneFish.Deactivate(Player);
+                }
             }
 
             if (VaultUtils.isServer || !HeldHalibut) {

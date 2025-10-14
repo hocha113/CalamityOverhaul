@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var source = player.GetSource_Misc("CloneFishSkill");
 
             //生成多个克隆体，每个有不同的延迟
-            int count = Math.Clamp(hp.CloneCount, 1, 5);
+            int count = Math.Clamp(hp.CloneCount, 1, 10);
             for (int i = 0; i < count; i++) {
                 int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
                 int proj = Projectile.NewProjectile(source, player.Center, Vector2.Zero
