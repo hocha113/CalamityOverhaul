@@ -1572,6 +1572,10 @@ Projectiles: {
 	// BatSwarmMinion.DisplayName: Bat Swarm Minion
 	// CannonFishSwarmHitbox.DisplayName: Cannon Fish Swarm Hitbox
 	// SoulEaterBite.DisplayName: Soul Eater Bite
+	// AmanitaExplosiveMushroom.DisplayName: Amanita Explosive Mushroom
+	// AmanitaHomingSpore.DisplayName: Amanita Homing Spore
+	// AmanitaLightningSpore.DisplayName: Amanita Lightning Spore
+	// AmanitaToxicMushroom.DisplayName: Amanita Toxic Mushroom
 }
 
 Configs: {
@@ -5519,6 +5523,12 @@ FishSkill: {
 	}
 
 	FishEaterofPlankton: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishAmanita: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
