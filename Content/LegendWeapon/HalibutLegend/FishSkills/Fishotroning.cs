@@ -1031,21 +1031,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         //缓动函数
-        private float EaseInOutCubic(float t) {
+        private static float EaseInOutCubic(float t) {
             return t < 0.5f
                 ? 4f * t * t * t
                 : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
         }
 
-        private float EaseInCubic(float t) {
+        private static float EaseInCubic(float t) {
             return t * t * t;
         }
 
-        private float EaseOutCubic(float t) {
+        private static float EaseOutCubic(float t) {
             return 1f - (float)Math.Pow(1f - t, 3);
         }
 
-        private float EaseInOutQuad(float t) {
+        private static float EaseInOutQuad(float t) {
             return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
         }
 
