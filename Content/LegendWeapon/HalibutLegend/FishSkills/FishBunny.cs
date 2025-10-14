@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SetCooldown();
 
             //丢出兔子鱼的数量随领域层数增加
-            int bunnyCount = 3 + HalibutData.GetDomainLayer();
+            int bunnyCount = 3 + HalibutData.GetDomainLayer()/2;
 
             for (int i = 0; i < bunnyCount; i++) {
                 //随机抛射角度和速度
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     throwVelocity,
                     ModContent.ProjectileType<BunnyfishHopper>(),
-                    (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.7f)),
+                    (int)(damage * (1.25f + HalibutData.GetDomainLayer() * 0.5f)),
                     knockback * 2f,
                     player.whoAmI
                 );
