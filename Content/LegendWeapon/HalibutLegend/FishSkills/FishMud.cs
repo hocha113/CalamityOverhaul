@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                     if (WorldGen.InWorld(tilePos.X, tilePos.Y)) {
                         Tile tile = Main.tile[tilePos.X, tilePos.Y];
-                        if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
+                        if (tile.HasSolidTile()) {
                             return new Vector2(checkPos.X, tilePos.Y * 16 - 16);
                         }
                     }
@@ -118,9 +118,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private enum SentryState
         {
+            Rising,
             Emerging,
             Idle,
             Attacking,
+            TurningDown,
             Submerging
         }
 
@@ -137,13 +139,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float mouthOpenness = 0f;
         private int attackCooldown = 0;
         private int shotsFired = 0;
+        private Vector2 startPosition = Vector2.Zero;
+        private bool isUnderground = false;
+        private float targetRotation = 0f;
         
+        private const int RisingDuration = 20;
         private const int EmergeDuration = 30;
         private const int IdleDuration = 40;
         private const int AttackDuration = 120;
-        private const int SubmergeDuration = 25;
+        private const int TurningDownDuration = 20;
+        private const int SubmergeDuration = 30;
         private const int AttackCooldownMax = 25;
         private const int ShotCount = 4;
+        private const float RisingSpeed = 4f;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -162,10 +170,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
+            if (StateTimer == 0 && State == SentryState.Rising) {
+                startPosition = Projectile.Center;
+                isUnderground = CheckIfUnderground();
+                
+                if (!isUnderground) {
+                    State = SentryState.Emerging;
+                    StateTimer = 0;
+                }
+            }
+
             StateTimer++;
             bodyWiggle += 0.12f;
 
+            if (Framing.GetTileSafely(Projectile.Center.ToTileCoordinates16()).HasTile) {
+                Projectile.position.Y -= 8f;
+            }
+
             switch (State) {
+                case SentryState.Rising:
+                    RisingPhase();
+                    break;
                 case SentryState.Emerging:
                     EmergingPhase();
                     break;
@@ -174,6 +199,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
                 case SentryState.Attacking:
                     AttackingPhase();
+                    break;
+                case SentryState.TurningDown:
+                    TurningDownPhase();
                     break;
                 case SentryState.Submerging:
                     SubmergingPhase();
@@ -184,6 +212,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             
             float mudLight = 0.5f + (float)Math.Sin(bodyWiggle * 2f) * 0.2f;
             Lighting.AddLight(Projectile.Center, mudLight * 0.6f, mudLight * 0.5f, mudLight * 0.3f);
+        }
+
+        private bool CheckIfUnderground() {
+            Point tilePos = Projectile.Center.ToTileCoordinates();
+            
+            for (int y = tilePos.Y; y >= tilePos.Y - 20; y--) {
+                if (WorldGen.InWorld(tilePos.X, y)) {
+                    Tile tile = Main.tile[tilePos.X, y];
+                    if (!tile.HasUnactuatedTile || !Main.tileSolid[tile.TileType]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool IsOnSurface() {
+            Point tilePos = Projectile.Center.ToTileCoordinates();
+            
+            for (int y = tilePos.Y; y >= tilePos.Y - 3; y--) {
+                if (WorldGen.InWorld(tilePos.X, y)) {
+                    Tile tile = Main.tile[tilePos.X, y];
+                    if (!tile.HasUnactuatedTile || !Main.tileSolid[tile.TileType]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void RisingPhase() {
+            Projectile.Center += new Vector2(0, -RisingSpeed);
+            
+            emergingProgress = Math.Min(StateTimer / (float)RisingDuration, 0.3f);
+            
+            if (StateTimer % 4 == 0) {
+                SpawnRisingDust();
+            }
+            
+            if (IsOnSurface() || StateTimer >= RisingDuration * 3) {
+                State = SentryState.Emerging;
+                StateTimer = 0;
+            }
         }
 
         private void EmergingPhase() {
@@ -216,6 +287,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void IdlePhase() {
             mouthOpenness = MathHelper.Lerp(mouthOpenness, 0f, 0.15f);
+            targetRotation = MathHelper.Lerp(targetRotation, 0f, 0.1f);
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.15f);
 
             NPC target = FindTarget();
             if (target != null) {
@@ -227,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (StateTimer >= IdleDuration) {
-                State = SentryState.Submerging;
+                State = SentryState.TurningDown;
                 StateTimer = 0;
             }
 
@@ -237,6 +310,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void AttackingPhase() {
+            if (Framing.GetTileSafely(Projectile.Center.ToTileCoordinates16()).HasTile) {
+                return;
+            }
+
             if (attackCooldown > 0) {
                 attackCooldown--;
                 mouthOpenness = MathHelper.Lerp(mouthOpenness, 0f, 0.15f);
@@ -250,7 +327,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Vector2 toTarget = target.Center - Projectile.Center;
-            float targetRotation = toTarget.ToRotation();
+            targetRotation = toTarget.ToRotation();
             Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.2f);
 
             if (attackCooldown == 0 && shotsFired < ShotCount) {
@@ -261,12 +338,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (shotsFired >= ShotCount || StateTimer >= AttackDuration) {
-                State = SentryState.Submerging;
+                State = SentryState.TurningDown;
                 StateTimer = 0;
             }
 
             if (StateTimer % 4 == 0) {
                 SpawnAttackDust();
+            }
+        }
+
+        private void TurningDownPhase() {
+            if (StateTimer == 1) {
+                SoundEngine.PlaySound(SoundID.Item21 with {
+                    Volume = 0.5f,
+                    Pitch = -0.6f
+                }, Projectile.Center);
+            }
+
+            mouthOpenness = MathHelper.Lerp(mouthOpenness, 0f, 0.2f);
+            
+            targetRotation = MathHelper.PiOver2;
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.15f);
+
+            if (StateTimer % 3 == 0) {
+                SpawnTurningDust();
+            }
+
+            if (StateTimer >= TurningDownDuration) {
+                State = SentryState.Submerging;
+                StateTimer = 0;
             }
         }
 
@@ -278,12 +378,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }, Projectile.Center);
             }
 
+            Projectile.Center += new Vector2(0, 12.5f);
+            
             emergingProgress = Math.Max(1f - StateTimer / (float)SubmergeDuration, 0f);
-            emergingProgress = EaseInQuad(emergingProgress);
-
-            if (StateTimer % 2 == 0) {
-                SpawnSubmergeDust();
-            }
 
             if (StateTimer >= SubmergeDuration) {
                 Projectile.Kill();
@@ -294,7 +391,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Projectile.owner != Main.myPlayer) return;
 
             Player owner = Main.player[Projectile.owner];
-            Vector2 shootPos = Projectile.Center + new Vector2(0, -15f * emergingProgress);
+            float shootAngle = Projectile.rotation;
+            Vector2 shootDirection = shootAngle.ToRotationVector2();
+            Vector2 shootPos = Projectile.Center + shootDirection * 15f * emergingProgress;
+            
             Vector2 toTarget = target.Center - shootPos;
             float distance = toTarget.Length();
             
@@ -371,8 +471,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target;
         }
 
+        private void SpawnRisingDust() {
+            for (int i = 0; i < 2; i++) {
+                Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-15f, 15f), Main.rand.NextFloat(10f, 20f));
+                Vector2 vel = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(1f, 3f));
+                
+                Dust rising = Dust.NewDustPerfect(
+                    pos,
+                    DustID.Mud,
+                    vel,
+                    100,
+                    new Color(85, 65, 50),
+                    Main.rand.NextFloat(1.3f, 2f)
+                );
+                rising.noGravity = true;
+                rising.fadeIn = 0.6f;
+            }
+        }
+
         private void SpawnEmergeDust() {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-25f, 25f), Main.rand.NextFloat(0, 12f));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-6f, -3f));
                 
@@ -382,7 +500,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     vel,
                     100,
                     new Color(90, 70, 50),
-                    Main.rand.NextFloat(1.8f, 3f)
+                    Main.rand.NextFloat(1.2f, 2f)
                 );
                 emerge.noGravity = Main.rand.NextBool();
             }
@@ -392,25 +510,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.Bottom - new Vector2(20, 8),
                     40, 16,
                     DustID.Mud,
-                    Scale: Main.rand.NextFloat(2.5f, 3.5f)
+                    Scale: Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 chunk.velocity = new Vector2(Main.rand.NextFloat(-5f, 5f), Main.rand.NextFloat(-7f, -4f));
             }
         }
 
-        private void SpawnSubmergeDust() {
-            Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-18f, 18f), Main.rand.NextFloat(-8f, 8f));
-            Vector2 vel = new Vector2(Main.rand.NextFloat(-2.5f, 2.5f), Main.rand.NextFloat(1.5f, 4f));
+        private void SpawnTurningDust() {
+            Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-10f, 10f));
             
-            Dust submerge = Dust.NewDustPerfect(
+            Dust turning = Dust.NewDustPerfect(
                 pos,
                 DustID.Mud,
-                vel,
+                Main.rand.NextVector2Circular(2f, 2f),
                 100,
-                new Color(80, 65, 45),
-                Main.rand.NextFloat(1.5f, 2.5f)
+                new Color(95, 75, 60),
+                Main.rand.NextFloat(1f, 1.8f)
             );
-            submerge.noGravity = false;
+            turning.noGravity = true;
+            turning.fadeIn = 0.7f;
         }
 
         private void SpawnIdleBubble() {
@@ -459,15 +577,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             
             if (texture == null) return false;
 
-            Vector2 drawOrigin = Projectile.Bottom - Main.screenPosition;
-            Vector2 fishOrigin = new Vector2(texture.Width / 2f, texture.Height);
+            Vector2 drawOrigin = Projectile.Center - Main.screenPosition;
+            Vector2 fishOrigin = new Vector2(texture.Width / 2f, texture.Height / 2f);
 
             float drawScale = emergingProgress * 1.2f;
             float yOffset = (1f - emergingProgress) * texture.Height;
             Vector2 drawPos = drawOrigin - new Vector2(0, yOffset);
 
             float wiggleRotation = (float)Math.Sin(bodyWiggle) * 0.1f * emergingProgress;
-            float totalRotation = Projectile.rotation + wiggleRotation;
+            float totalRotation = Projectile.rotation + wiggleRotation + MathHelper.PiOver4;
+
+            if (State == SentryState.TurningDown || State == SentryState.Submerging) {
+                wiggleRotation *= 0.5f;
+            }
 
             Color mudColor = lightColor;
             mudColor = Color.Lerp(mudColor, new Color(100, 80, 60), 0.4f);
