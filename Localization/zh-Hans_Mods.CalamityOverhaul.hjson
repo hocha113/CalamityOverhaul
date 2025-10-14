@@ -5620,9 +5620,18 @@ FishSkill: {
 	}
 
 	FishDirt: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 土鱼环游
+		Tooltip:
+			'''
+			移动时召唤土鱼群在身周环游
+			聚集足够数量后可发射土球攻击
+			土球会弹跳并最终在地面滚动造成持续伤害
+			'''
+		Studied:
+			'''
+			泥土的味道让我想起故乡的海床
+			这些小家伙倒是挺会抱团取暖
+			'''
 	}
 }
 
