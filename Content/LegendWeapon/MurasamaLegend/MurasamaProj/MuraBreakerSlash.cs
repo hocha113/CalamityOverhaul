@@ -419,10 +419,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<ProfanedGuardianHealer>() || target.type == ModContent.NPCType<ProfanedGuardianDefender>()) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
-                modifiers.FinalDamage *= 2.5f;
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<ProfanedRocks>()) {
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<Providence>()) {
                 modifiers.FinalDamage *= 0.8f;
