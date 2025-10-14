@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1569,6 +1569,7 @@ Projectiles: {
 	// DirtFishFollower.DisplayName: Dirt Fish Follower
 	// MudBall.DisplayName: Mud Ball
 	// MudfishSentry.DisplayName: Mudfish Sentry
+	// FallingPenguin.DisplayName: Falling Penguin
 }
 
 Configs: {
@@ -5645,6 +5646,17 @@ FishSkill: {
 			攻击后潜回地下消失
 			'''
 		Studied: 这些家伙倒是挺会藏的
+	}
+
+	FishPeng: {
+		DisplayName: 企鹅天降
+        Tooltip: 
+            '''
+            开火时在敌人头顶召唤企鹅
+            企鹅会从天空坠落砸向目标
+            砸击造成范围伤害和击退
+            '''
+        Studied: 它们可能来自马达加斯加
 	}
 }
 

@@ -1589,6 +1589,7 @@ Projectiles: {
 	// DirtFishFollower.DisplayName: Dirt Fish Follower
 	// MudBall.DisplayName: Mud Ball
 	// MudfishSentry.DisplayName: Mudfish Sentry
+	// FallingPenguin.DisplayName: Falling Penguin
 }
 
 Configs: {
@@ -5596,6 +5597,12 @@ FishSkill: {
 	}
 
 	FishMud: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishPeng: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
