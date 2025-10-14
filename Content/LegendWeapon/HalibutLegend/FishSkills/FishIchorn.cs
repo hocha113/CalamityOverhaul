@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 灵液鱼技能
+    /// 灵液鱼技能，灵液感染与周期性射流
     /// </summary>
     internal class FishIchorn : FishSkill
     {
@@ -36,12 +36,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float spreadBase = 0.15f;
                 
                 //根据领域层数增加射流数量和扩散
-                int streamCount = 1 + HalibutData.GetDomainLayer() / 3;
+                int streamCount = 3 + HalibutData.GetDomainLayer() / 3;
                 
                 for (int i = 0; i < streamCount; i++) {
                     float spreadAngle = MathHelper.Lerp(-spreadBase, spreadBase, i / (float)Math.Max(1, streamCount - 1));
-                    Vector2 streamVelocity = shootDir.RotatedBy(spreadAngle) * Main.rand.NextFloat(18f, 24f);
-                    
+                    Vector2 streamVelocity = shootDir.RotatedBy(spreadAngle) * Main.rand.NextFloat(8f, 24f);
+                    streamVelocity.Y -= 3;
+
                     Projectile.NewProjectile(
                         source,
                         position,
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 全局弹幕钩子-添加灵液感染效果
+    /// 全局弹幕钩子，添加灵液感染效果
     /// </summary>
     internal class FishIchornGlobalProj : GlobalProjectile
     {
@@ -105,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 灵液射流弹幕
+    /// 灵液射流弹幕，这里搓一下液体物理模拟玩玩
     /// </summary>
     internal class IchorStream : ModProjectile
     {
@@ -127,8 +128,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         
         //液体粒子系统
         private readonly List<IchorParticle> liquidParticles = new();
-        private const int MaxParticles = 80;
+        private const int MaxParticles = 100;
         private int particleSpawnCounter = 0;
+        
+        //液体拖尾粒子系统
+        private readonly List<IchorTrailParticle> trailParticles = new();
+        private const int MaxTrailParticles = 60;
         
         //液体物理参数
         private const float Viscosity = 0.98f;        //粘度
@@ -170,6 +175,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新所有液体粒子
             UpdateLiquidParticles();
 
+            //更新液体拖尾粒子
+            UpdateTrailParticles();
+
             //辉光脉冲
             glowPulse = (float)Math.Sin(StreamLife * 0.3f) * 0.3f + 0.7f;
 
@@ -192,6 +200,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //生成液体粒子
             if (particleSpawnCounter++ % 2 == 0 && liquidParticles.Count < MaxParticles) {
                 SpawnStreamParticle();
+            }
+
+            //生成液体拖尾粒子
+            if (StreamLife % 2 == 0 && trailParticles.Count < MaxTrailParticles) {
+                SpawnTrailParticle();
             }
 
             //周期性灵液残留
@@ -243,6 +256,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             };
 
             liquidParticles.Add(particle);
+        }
+
+        //生成液体拖尾粒子-模拟液体流动的连续性
+        private void SpawnTrailParticle() {
+            //在射流后方生成连续的液滴
+            Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 25f);
+            Vector2 particleVel = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.8f);
+            particleVel += Main.rand.NextVector2Circular(1.5f, 1.5f);
+            
+            IchorTrailParticle trail = new IchorTrailParticle {
+                Position = spawnPos + Main.rand.NextVector2Circular(6f, 6f),
+                Velocity = particleVel,
+                Size = Main.rand.NextFloat(0.8f, 1.8f),
+                Life = 0,
+                MaxLife = Main.rand.Next(15, 30),
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                RotationSpeed = Main.rand.NextFloat(-0.2f, 0.2f),
+                Opacity = 0.9f,
+                StretchFactor = 1f
+            };
+
+            trailParticles.Add(trail);
         }
 
         //更新所有液体粒子
@@ -299,6 +334,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
 
                 liquidParticles[i] = p;
+            }
+        }
+
+        //更新液体拖尾粒子
+        private void UpdateTrailParticles() {
+            for (int i = trailParticles.Count - 1; i >= 0; i--) {
+                IchorTrailParticle p = trailParticles[i];
+                p.Life++;
+
+                //应用重力和粘性
+                p.Velocity.Y += Gravity * FluidDensity * 1.2f;
+                p.Velocity *= 0.97f;
+
+                p.Position += p.Velocity;
+                p.Rotation += p.RotationSpeed;
+
+                //拉伸效果-根据速度动态调整
+                float speed = p.Velocity.Length();
+                p.StretchFactor = MathHelper.Lerp(1f, 2.5f, Math.Min(speed / 20f, 1f));
+
+                //透明度衰减
+                float lifeRatio = p.Life / (float)p.MaxLife;
+                p.Opacity = (1f - lifeRatio) * 0.8f;
+
+                //尺寸衰减
+                p.Size *= 0.99f;
+
+                //移除消逝的粒子
+                if (p.Life >= p.MaxLife || p.Opacity <= 0.05f) {
+                    trailParticles.RemoveAt(i);
+                    continue;
+                }
+
+                trailParticles[i] = p;
             }
         }
 
@@ -473,10 +542,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (State == FluidState.Splashing && Projectile.alpha > 200) {
                 //溅射状态几乎完全透明,只绘制粒子
                 DrawLiquidParticles();
+                DrawTrailParticles();
                 return false;
             }
 
             SpriteBatch sb = Main.spriteBatch;
+
+            //绘制液体拖尾粒子
+            DrawTrailParticles();
 
             //绘制液体粒子系统
             DrawLiquidParticles();
@@ -487,6 +560,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             return false;
+        }
+
+        //绘制液体拖尾粒子-创造液体流动感
+        private void DrawTrailParticles() {
+            SpriteBatch sb = Main.spriteBatch;
+            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
+            Texture2D streamTex = CWRAsset.LightShot.Value;
+
+            //使用加法混合
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            foreach (var particle in trailParticles) {
+                Vector2 drawPos = particle.Position - Main.screenPosition;
+                float rotation = particle.Velocity.ToRotation();
+                
+                //灵液金黄色
+                Color ichorColor = new Color(255, 200, 50) * particle.Opacity * 0.7f;
+
+                //拉伸的液滴形状
+                Vector2 scale = new Vector2(particle.Size * 0.08f, particle.Size * 0.15f * particle.StretchFactor);
+
+                //绘制拉伸液滴主体
+                sb.Draw(
+                    streamTex,
+                    drawPos,
+                    null,
+                    ichorColor,
+                    rotation,
+                    streamTex.Size() / 2f,
+                    scale,
+                    SpriteEffects.None,
+                    0
+                );
+
+                //液滴核心
+                Color coreColor = new Color(255, 230, 100) * particle.Opacity * 0.6f;
+                sb.Draw(
+                    glowTex,
+                    drawPos,
+                    null,
+                    coreColor,
+                    particle.Rotation,
+                    glowTex.Size() / 2f,
+                    particle.Size * 0.05f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //恢复正常混合
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         //绘制液体粒子-使用高级混合和灰度图
@@ -502,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             foreach (var particle in liquidParticles) {
                 Vector2 drawPos = particle.Position - Main.screenPosition;
-                float scale = particle.Size * 0.4f;
+                float scale = particle.Size * 0.08f;
                 float rotation = particle.Rotation;
                 
                 //灵液金黄色
@@ -545,7 +673,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         maskColor,
                         rotation * 0.7f,
                         maskTex.Size() / 2f,
-                        scale * 1.5f,
+                        scale * 1.8f,
                         SpriteEffects.None,
                         0
                     );
@@ -585,7 +713,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     progress
                 ) * progress * glowPulse * 0.8f;
 
-                float scale = progress * 0.4f;
+                float scale = progress * 0.1f;
 
                 sb.Draw(
                     coreTex,
@@ -593,8 +721,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     null,
                     coreColor,
                     rotation,
-                    coreTex.Size(),
-                    new Vector2(scale * 2f, scale * 0.8f),
+                    coreTex.Size() / 2f,
+                    new Vector2(scale * 2.5f, scale * 1f),
                     SpriteEffects.None,
                     0
                 );
@@ -607,8 +735,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     null,
                     glowColor,
                     rotation,
-                    coreTex.Size(),
-                    new Vector2(scale * 3f, scale * 1.5f),
+                    coreTex.Size() / 2f,
+                    new Vector2(scale * 4f, scale * 2f),
                     SpriteEffects.None,
                     0
                 );
@@ -625,7 +753,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 headColor * 0.9f,
                 Projectile.velocity.ToRotation(),
                 coreTex.Size() / 2f,
-                new Vector2(1.2f, 0.9f),
+                new Vector2(0.15f, 0.12f),
                 SpriteEffects.None,
                 0
             );
@@ -640,7 +768,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 starColor,
                 StreamLife * 0.1f,
                 starTex.Size() / 2f,
-                0.6f,
+                0.08f,
                 SpriteEffects.None,
                 0
             );
@@ -687,5 +815,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public float RotationSpeed;
         public float Opacity;
         public bool IsSplash;
+    }
+
+    /// <summary>
+    /// 灵液拖尾粒子数据结构-专门用于模拟液体流动
+    /// </summary>
+    internal struct IchorTrailParticle
+    {
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Size;
+        public int Life;
+        public int MaxLife;
+        public float Rotation;
+        public float RotationSpeed;
+        public float Opacity;
+        public float StretchFactor;
     }
 }
