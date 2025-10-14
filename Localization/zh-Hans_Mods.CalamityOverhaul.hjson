@@ -5608,15 +5608,13 @@ FishSkill: {
 	}
 
 	FishCat: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
-	}
-
-	FishCat: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 哈基鱼雷
+		Tooltip:
+			'''
+			右键可以投掷一群受重力影响的每次弹跳会发出叫声的弹跳鲶鱼
+			鲶鱼会在接触到敌人或一段时间后爆炸
+			'''
+		Studied: 哈基米！哈！
 	}
 }
 

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             MaxInstances = 3,
         };
         public override int UnlockFishID => ItemID.Catfish;
-        public override int DefaultCooldown => 220 - HalibutData.GetDomainLayer() * 12;
+        public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer()/2);
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SetCooldown();
 
-            int catCount = 4 + HalibutData.GetDomainLayer();
+            int catCount = 3 + HalibutData.GetDomainLayer();
 
             for (int i = 0; i < catCount; i++) {
                 float throwAngle = velocity.ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     throwVelocity,
                     ModContent.ProjectileType<CatfishLeaper>(),
-                    (int)(damage * (2.8f + HalibutData.GetDomainLayer() * 0.8f)),
+                    (int)(damage * (1.25f + HalibutData.GetDomainLayer() * 0.3f)),
                     knockback * 2.2f,
                     player.whoAmI
                 );
