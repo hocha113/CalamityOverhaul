@@ -1564,6 +1564,7 @@ Projectiles: {
 	// HoneyBeeMinion.DisplayName: Honey Bee Minion
 	// HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm Core
 	// SkeletronHandMinion.DisplayName: Skeletron Hand Minion
+	// IchorStream.DisplayName: Ichor Stream
 }
 
 Configs: {
@@ -5552,6 +5553,12 @@ FishSkill: {
 	}
 
 	Fishotroning: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishIchorn: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
