@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void RisingPhase() {
             Projectile.Center += new Vector2(0, -RisingSpeed);
 
-            emergingProgress = Math.Min(StateTimer / (float)RisingDuration, 0.3f);
+            emergingProgress = Math.Min(StateTimer / RisingDuration, 0.3f);
 
             if (StateTimer % 4 == 0) {
                 SpawnRisingDust();
@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }, Projectile.Center);
             }
 
-            emergingProgress = Math.Min(StateTimer / (float)EmergeDuration, 1f);
+            emergingProgress = Math.Min(StateTimer / EmergeDuration, 1f);
             emergingProgress = EaseOutElastic(emergingProgress);
 
             if (StateTimer % 2 == 0) {
@@ -379,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.Center += new Vector2(0, 12.5f);
 
-            emergingProgress = Math.Max(1f - StateTimer / (float)SubmergeDuration, 0f);
+            emergingProgress = Math.Max(1f - StateTimer / SubmergeDuration, 0f);
 
             if (StateTimer >= SubmergeDuration) {
                 Projectile.Kill();
@@ -559,14 +559,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             attack.noGravity = true;
         }
 
-        private float EaseOutElastic(float x) {
+        private static float EaseOutElastic(float x) {
             const float c4 = (2f * MathF.PI) / 3f;
             return x == 0 ? 0 : x == 1 ? 1 :
                 (float)(Math.Pow(2, -10 * x) * Math.Sin((x * 10 - 0.75) * c4) + 1);
-        }
-
-        private float EaseInQuad(float x) {
-            return x * x;
         }
 
         public override bool PreDraw(ref Color lightColor) {
