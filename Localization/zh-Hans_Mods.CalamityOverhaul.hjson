@@ -5547,7 +5547,7 @@ FishSkill: {
 	}
 
 	FishHoney: {
-		DisplayName: 蜜诏戍卫
+		DisplayName: 蜜诏群蜂
 		Tooltip:
 			'''
 			右键可以召唤一群环绕自身的蜜蜂
@@ -5598,6 +5598,16 @@ FishSkill: {
 	}
 
 	FishBunny: {
+		DisplayName: 蹦蹦炸弹
+		Tooltip:
+			'''
+			右键可以投掷一群受重力影响的弹跳兔兔鱼
+			兔兔鱼会在接触到敌人或一段时间后爆炸
+			'''
+		Studied: 危险的毛绒绒!
+	}
+
+	FishCat: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

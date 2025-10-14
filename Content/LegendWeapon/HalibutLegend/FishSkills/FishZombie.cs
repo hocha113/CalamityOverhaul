@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     groundPos,
                     Vector2.Zero,
                     ModContent.ProjectileType<WaterZombie>(),
-                    (int)(shootState.WeaponDamage * HalibutData.GetDomainLayer() * 0.75f),//伤害倍率
+                    (int)(shootState.WeaponDamage * (2 + HalibutData.GetDomainLayer() * 1.25)),//伤害倍率
                     shootState.WeaponKnockback,
                     player.whoAmI,
                     ai0: delay //延迟帧数
