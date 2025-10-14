@@ -1,13 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using ThoriumMod.Empowerments;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
@@ -22,7 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {
-            if (Cooldown <= 0) {
+            if (player.altFunctionUse == 2 && Cooldown <= 0) {
+                item.UseSound = null;
                 Vector2 velocity = player.To(Main.MouseWorld).UnitVector() * 12f;
                 Vector2 position = player.Center;
                 ShootState shootState = player.GetShootState();
