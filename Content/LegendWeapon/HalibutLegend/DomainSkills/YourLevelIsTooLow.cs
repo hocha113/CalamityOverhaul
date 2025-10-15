@@ -406,9 +406,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private void ContinuousHeal() {
             //每36帧恢复一次生命
             if (skillTimer % 36 == 0) { //频率稍降低
-                int healAmount = (int)(Owner.statLifeMax2 * 0.045f); //每次恢复4.5%最大生命
-                Owner.statLife = Math.Min(Owner.statLife + healAmount, Owner.statLifeMax2);
-                Owner.HealEffect(healAmount);
+                Owner.statLife = Owner.statLifeMax2;
+                Owner.HealEffect(Owner.statLifeMax2);
             }
 
             //持续清除debuff
