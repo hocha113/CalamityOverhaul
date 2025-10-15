@@ -213,6 +213,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.StarRoyale);
                 return;
             }
+            if (npc.type == ModContent.NPCType<SupremeCalamitas>() || npc.type == ModContent.NPCType<SupremeCataclysm>() || npc.type == ModContent.NPCType<SupremeCatastrophe>()) {
+                return;
+            }
+            if (npc.type == ModContent.NPCType<SuperDummyNPC>()) {
+                return;
+            }
 
             //执行击飞效果的具体代码
             npc.CWR().OverBeatBackBool = true;
@@ -482,7 +488,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.666666f;
             }
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 1.4f;
             }
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {

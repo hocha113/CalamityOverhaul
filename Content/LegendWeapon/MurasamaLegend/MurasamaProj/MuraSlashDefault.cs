@@ -364,7 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.55f;
             }
 
             //饿鬼(被触手连接在肉山身上的状态)
