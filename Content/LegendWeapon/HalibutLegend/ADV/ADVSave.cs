@@ -13,6 +13,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public bool PerforatorGift;
         public bool HiveMindGift;
         public bool WallOfFleshGift;
+        public bool SlimeGodGift;
+        public bool CryogenGift;
+        public bool BrimstoneElementalGift;
+        public bool AquaticScourgeGift;
+        public bool CalamitasCloneGift;
+        public bool PlanteraGift;
+        public bool GolemGift;
+        public bool MoonLordGift;
+        public bool LeviathanGift;
+        public bool PlaguebringerGift;
+        public bool ProvidenceGift;
+        public bool DevourerOfGodsGift;
+        public bool YharonGift;
+        public bool SupremeCalamitasGift;
 
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
@@ -25,6 +39,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 ["PerforatorGift"] = PerforatorGift,
                 ["HiveMindGift"] = HiveMindGift,
                 ["WallOfFleshGift"] = WallOfFleshGift,
+                ["SlimeGodGift"] = SlimeGodGift,
+                ["CryogenGift"] = CryogenGift,
+                ["BrimstoneElementalGift"] = BrimstoneElementalGift,
+                ["AquaticScourgeGift"] = AquaticScourgeGift,
+                ["CalamitasCloneGift"] = CalamitasCloneGift,
+                ["PlanteraGift"] = PlanteraGift,
+                ["GolemGift"] = GolemGift,
+                ["MoonLordGift"] = MoonLordGift,
+                ["LeviathanGift"] = LeviathanGift,
+                ["PlaguebringerGift"] = PlaguebringerGift,
+                ["ProvidenceGift"] = ProvidenceGift,
+                ["DevourerOfGodsGift"] = DevourerOfGodsGift,
+                ["YharonGift"] = YharonGift,
+                ["SupremeCalamitasGift"] = SupremeCalamitasGift,
             };
             return tag;
         }
@@ -56,6 +84,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             if (tag.TryGet("WallOfFleshGift", out bool w)) {
                 WallOfFleshGift = w;
+            }
+            if (tag.TryGet("SlimeGodGift", out bool sg)) {
+                SlimeGodGift = sg;
+            }
+            if (tag.TryGet("CryogenGift", out bool cr)) {
+                CryogenGift = cr;
+            }
+            if (tag.TryGet("BrimstoneElementalGift", out bool be)) {
+                BrimstoneElementalGift = be;
+            }
+            if (tag.TryGet("AquaticScourgeGift", out bool as_)) {
+                AquaticScourgeGift = as_;
+            }
+            if (tag.TryGet("CalamitasCloneGift", out bool cc)) {
+                CalamitasCloneGift = cc;
+            }
+            if (tag.TryGet("PlanteraGift", out bool pl)) {
+                PlanteraGift = pl;
+            }
+            if (tag.TryGet("GolemGift", out bool go)) {
+                GolemGift = go;
+            }
+            if (tag.TryGet("MoonLordGift", out bool ml)) {
+                MoonLordGift = ml;
+            }
+            if (tag.TryGet("LeviathanGift", out bool lv)) {
+                LeviathanGift = lv;
+            }
+            if (tag.TryGet("PlaguebringerGift", out bool pb)) {
+                PlaguebringerGift = pb;
+            }
+            if (tag.TryGet("ProvidenceGift", out bool pr)) {
+                ProvidenceGift = pr;
+            }
+            if (tag.TryGet("DevourerOfGodsGift", out bool dog)) {
+                DevourerOfGodsGift = dog;
+            }
+            if (tag.TryGet("YharonGift", out bool yh)) {
+                YharonGift = yh;
+            }
+            if (tag.TryGet("SupremeCalamitasGift", out bool sc)) {
+                SupremeCalamitasGift = sc;
             }
         }
     }
