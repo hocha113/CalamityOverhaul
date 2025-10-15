@@ -58,8 +58,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
-            tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]");
-            tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]");
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", noneTip: CWRLocText.Instance.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_DownKey, "[KEY2]", noneTip: CWRLocText.Instance.Notbound.Value);
 
             int index = Mura_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
@@ -83,14 +83,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
 
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-            tooltips.ReplaceTooltip("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
+            tooltips.ReplacePlaceholder("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
 
-            tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]");
-            tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]");
-            tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]");
+            tooltips.ReplacePlaceholder("[Lang1]", UnlockSkill1(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]");
+            tooltips.ReplacePlaceholder("[Lang2]", UnlockSkill2(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]");
+            tooltips.ReplacePlaceholder("[Lang3]", UnlockSkill3(item) ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]");
 
-            tooltips.ReplaceTooltip("[Lang4]", text3);
-            tooltips.ReplaceTooltip("legend_Text", text4);
+            tooltips.ReplacePlaceholder("[Lang4]", text3);
+            tooltips.ReplacePlaceholder("legend_Text", text4);
         }
     }
 }

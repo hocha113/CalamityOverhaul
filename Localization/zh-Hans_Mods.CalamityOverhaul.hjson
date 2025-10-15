@@ -2156,6 +2156,7 @@ TextContent: {
 		MachineRebellion_SpawnInfo: 在夜晚使用嘉登遥控器
 		MachineRebellion_DespawnMessage: 在夜晚使用嘉登遥控器
 		MachineRebellion_DisplayName: 机械暴乱
+		Notbound: "[未绑定按键]"
 	}
 }
 
@@ -2195,7 +2196,11 @@ Legend: {
 			TitleText: 海域领域
 			ExtraEyeTitleText: 第 十 层
 			CrashedLabelText: 已死机
-			EyeDesc1: 初启领域之眼，微弱的潮汐感开始共鸣
+			EyeDesc1:
+				'''
+				初启领域之眼，微弱的潮汐感开始共鸣
+				按下[KEY1]开启或者关闭鬼域
+				'''
 			EyeDesc2: 双目同开，水压在周遭缓慢聚集，力量渐显
 			EyeDesc3: 三重视界锁定海流，领域开始稳定成型
 			EyeDesc4: 第四层共鸣放大，涌动的寒意悄然扩散
@@ -5650,13 +5655,13 @@ FishSkill: {
 
 	FishPeng: {
 		DisplayName: 企鹅天降
-        Tooltip: 
-            '''
-            开火时在敌人头顶召唤企鹅
-            企鹅会从天空坠落砸向目标
-            砸击造成范围伤害和击退
-            '''
-        Studied: 它们可能来自马达加斯加
+		Tooltip:
+			'''
+			开火时在敌人头顶召唤企鹅
+			企鹅会从天空坠落砸向目标
+			砸击造成范围伤害和击退
+			'''
+		Studied: 它们可能来自马达加斯加
 	}
 }
 

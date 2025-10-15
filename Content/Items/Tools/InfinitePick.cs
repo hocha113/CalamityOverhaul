@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
@@ -120,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            tooltips.IntegrateHotkey(CWRKeySystem.InfinitePickSkillKey);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.InfinitePickSkillKey, noneTip: CWRLocText.Instance.Notbound.Value);
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {

@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.IntegrateHotkey(CWRKeySystem.HeavenfallLongbowSkillKey);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.HeavenfallLongbowSkillKey, noneTip: CWRLocText.Instance.Notbound.Value);
             CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         }
 

@@ -405,41 +405,6 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 将热键绑定的提示信息添加到 TooltipLine 列表中
-        /// </summary>
-        /// <param name="tooltips">要添加提示信息的 TooltipLine 列表</param>
-        /// <param name="mhk">Mod 热键绑定</param>
-        /// <param name="keyName">替换的关键字，默认为 "[KEY]"</param>
-        /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
-        public static void SetHotkey(this List<TooltipLine> tooltips, ModKeybind mhk, string keyName = "[KEY]", string modName = "") {
-            if (Main.dedServ || mhk is null) {
-                return;
-            }
-
-            string finalKey = mhk.TooltipHotkeyString();
-            tooltips.ReplaceTooltip(keyName, finalKey, modName);
-        }
-
-        /// <summary>
-        /// 替换 TooltipLine 列表中指定关键字的提示信息
-        /// </summary>
-        /// <param name="tooltips">要进行替换的 TooltipLine 列表</param>
-        /// <param name="targetKeyStr">要替换的关键字</param>
-        /// <param name="contentStr">替换后的内容</param>
-        /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
-        public static void ReplaceTooltip(this List<TooltipLine> tooltips, string targetKeyStr, string contentStr, string modName = "") {
-            foreach (var line in tooltips) {
-                if (modName != "" && line.Mod != modName) {
-                    continue;
-                }
-                if (!line.Text.Contains(targetKeyStr)) {
-                    continue;
-                }
-                line.Text = line.Text.Replace(targetKeyStr, contentStr);
-            }
-        }
-
         public static Color[] GetColorDate(Texture2D tex) {
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);

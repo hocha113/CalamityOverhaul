@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2198,6 +2198,7 @@ TextContent: {
 		MachineRebellion_SpawnInfo: Use the Garden remote control at night
 		MachineRebellion_DespawnMessage: Use the Garden remote control at night
 		MachineRebellion_DisplayName: Machine Rebellion
+		Notbound: "[Unbound keys]"
 	}
 }
 

@@ -180,6 +180,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText MachineRebellion_SpawnInfo { get; private set; }
         public LocalizedText MachineRebellion_DespawnMessage { get; private set; }
         public LocalizedText MachineRebellion_DisplayName { get; private set; }
+        public LocalizedText Notbound { get; private set; }
         #endregion
         protected override void Register() => Instance = this;
         #region Utils
