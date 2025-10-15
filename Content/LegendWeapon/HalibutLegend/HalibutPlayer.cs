@@ -199,8 +199,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         private static Dictionary<int, int> CrashesLevelDictionary => new Dictionary<int, int>(){
             {0, 0},
-            {1, 1},
-            {2, 2},
+            {1, 0},
+            {2, 1},
             {3, 2},
             {4, 3},
             {5, 3},
