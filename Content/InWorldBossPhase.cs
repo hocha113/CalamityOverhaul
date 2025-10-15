@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content
 
         public static bool Level11 => Downed28.Invoke();
 
-        public static bool Level12 => Downed29.Invoke() || Downed30.Invoke();
+        public static bool Level12 => Downed29.Invoke() && Downed30.Invoke();
 
         public static bool Level13 => Downed31.Invoke() || Downed32.Invoke();
         /// <summary>
@@ -469,7 +469,6 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;
             }
-
             if (Level0) {
                 level = 1;
             }
