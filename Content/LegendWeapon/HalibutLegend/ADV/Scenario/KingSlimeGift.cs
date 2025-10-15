@@ -48,6 +48,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!halibutPlayer.HeldHalibut) {
                 return;
             }
+            if (!save.FirstMet) {
+                return;//必须先触发过初次见面
+            }
             if (save.KingSlimeGift) {
                 return;
             }

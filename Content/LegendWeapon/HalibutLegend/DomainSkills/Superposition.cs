@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.DamageModify;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -1034,6 +1035,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override void AI() {
+            if (Projectile.DamageType != EndlessDamageClass.Instance 
+                && Projectile.owner.TryGetPlayer(out var player) 
+                && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                if (halibutPlayer.SeaDomainActive && halibutPlayer.SeaDomainLayers == 10) {
+                    Projectile.DamageType = EndlessDamageClass.Instance;//无限叠加下的弹幕使用无限伤害类型
+                }
+            }
+
             //更新所有鱼实体
             foreach (var fish in fishSwarm) {
                 fish.Update(fishSwarm);

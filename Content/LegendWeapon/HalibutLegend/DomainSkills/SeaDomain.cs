@@ -37,26 +37,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (hp.SeaDomainActive) return;
             hp.SeaDomainActive = true;
 
-            // 播放领域开启音效：瀑布+深海氛围+水流涌动
+            //播放领域开启音效：瀑布+深海氛围+水流涌动
             if (Main.myPlayer == player.whoAmI) {
-                // 主要水流音效（瀑布声）
-                SoundEngine.PlaySound(SoundID.Waterfall with {
-                    Volume = 0.8f,
-                    Pitch = -0.3f,  // 降低音调，营造深海感
-                    MaxInstances = 1
-                }, player.Center);
-
-                // 叠加雷鸣音效（营造威严感）
+                //叠加雷鸣音效（营造威严感）
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Volume = 0.4f,
-                    Pitch = -0.5f,  // 低沉的雷鸣
+                    Pitch = -0.5f,  //低沉的雷鸣
                     MaxInstances = 1
                 }, player.Center);
 
-                // 深海回响音效
-                SoundEngine.PlaySound(SoundID.Item29 with {  // 水晶音效
+                //深海回响音效
+                SoundEngine.PlaySound(SoundID.Item29 with {  //水晶音效
                     Volume = 0.6f,
-                    Pitch = -0.8f,  // 极低音调
+                    Pitch = -0.8f,  //极低音调
                     MaxInstances = 1
                 }, player.Center);
 
@@ -68,16 +61,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var hp = player.GetOverride<HalibutPlayer>();
             hp.SeaDomainActive = false;
 
-            // 播放领域关闭音效：水流消退
+            //播放领域关闭音效：水流消退
             if (Main.myPlayer == player.whoAmI) {
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Volume = 0.6f,
-                    Pitch = -0.4f,  // 低沉的水流消退声
+                    Pitch = -0.4f,  //低沉的水流消退声
                     MaxInstances = 1
                 }, player.Center);
 
-                // 气泡破裂音效
-                SoundEngine.PlaySound(SoundID.Item54 with {  // 柔和的破裂声
+                //气泡破裂音效
+                SoundEngine.PlaySound(SoundID.Item54 with {  //柔和的破裂声
                     Volume = 0.4f,
                     Pitch = 0.2f,
                     MaxInstances = 1
@@ -109,8 +102,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private enum DomainState { Expanding, Active, Collapsing }
         private DomainState currentState = DomainState.Expanding;
         private int stateTimer = 0;
-        private const int ExpandDuration = 50;
-        private const int CollapseDuration = 40;
+        private const int ExpandDuration = 120;
+        private const int CollapseDuration = 90;
         private float domainAlpha = 0f;
 
         private readonly List<WaterRipple> ripples = new();
@@ -122,33 +115,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //领域中心平滑跟随
         private Vector2 domainCenter;
         private Vector2 targetCenter;
-        private float smoothLerpSpeed = 0.1f; //缓动速度
+        private const float smoothLerpSpeed = 0.1f; //缓动速度
 
-        // 音效相关
-        private SlotId ambientLoopSlot; // 环境循环音效槽
+        //音效相关
         private int ambientSoundTimer;
         private int bubbleSoundTimer;
 
-        // 通用移动淡出
+        //通用移动淡出
         private float movementFadeFactor = 1f;
-        private const float MoveThreshold = 3f; // 玩家判定移动速度
-        private const float TargetMoveFade = 0.18f; // 移动时目标透明度
+        private const float MoveThreshold = 3f; //玩家判定移动速度
+        private const float TargetMoveFade = 0.18f; //移动时目标透明度
 
-        // 鱼群专用更激进淡出
+        //鱼群专用更激进淡出
         private float fishFadeFactor = 1f;
-        private const float TargetMoveFishFade = 0.04f; // 移动近乎完全隐藏
-        private const float FishFadeLerpMoving = 0.45f; // 更快消失
-        private const float FishFadeLerpRest = 0.35f;   // 快速恢复
+        private const float TargetMoveFishFade = 0.04f; //移动近乎完全隐藏
+        private const float FishFadeLerpMoving = 0.45f; //更快消失
+        private const float FishFadeLerpRest = 0.35f;   //快速恢复
 
-        // 水压持续伤害相关
+        //水压持续伤害相关
         private int pressureDamageTimer;
-        private const int PressureTickInterval = 30; // 每30帧(0.5s)结算一次
-        private const int PressureBase = 4;          // 1层基础伤害
-        private const int PressurePerLayer = 3;      // 额外线性增长
-        private const float BossDamageFactor = 1.75f; // 对Boss增加
+        private const int PressureTickInterval = 30; //每30帧(0.5s)结算一次
+        private const int PressureBase = 4;          //1层基础伤害
+        private const int PressurePerLayer = 3;      //额外线性增长
+        private const float BossDamageFactor = 1.75f; //对Boss增加
         private const float HighLifeDamageFactor = 1.4f; //对高血量精英增加
 
-        /// <summary>获取当前领域最大半径（供瞬移等技能使用）</summary>
+        /// <summary>
+        /// 获取当前领域最大半径（供瞬移等技能使用）
+        /// </summary>
+        /// <returns></returns>
         public float GetMaxRadius() {
             return maxDomainRadius;
         }
@@ -178,16 +173,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 domainCenter = Owner.Center;
                 targetCenter = Owner.Center;
                 Projectile.localAI[0] = 1f;
-
-                // 初始化环境音效循环
-                if (Main.myPlayer == Owner.whoAmI) {
-                    ambientLoopSlot = SoundEngine.PlaySound(SoundID.Waterfall with {
-                        Volume = 0.3f,
-                        Pitch = -0.6f,
-                        IsLooped = true,
-                        MaxInstances = 1
-                    }, domainCenter);
-                }
             }
 
             if (hp == null || !hp.SeaDomainActive) {
@@ -219,16 +204,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 domainCenter = targetCenter;
             }
 
-            // 更新循环音效位置
-            if (SoundEngine.TryGetActiveSound(ambientLoopSlot, out var sound)) {
-                sound.Position = domainCenter;
-            }
-
-            // 根据玩家移动速度调整非边界元素透明度
+            //根据玩家移动速度调整非边界元素透明度
             float speed = Owner.velocity.Length();
             bool moving = speed > MoveThreshold;
             float targetFade = moving ? TargetMoveFade : 1f;
-            // 加速淡出/淡入：移动时快 -> 静止时更快恢复
+            //加速淡出/淡入：移动时快 -> 静止时更快恢复
             float lerpSpeed = moving ? 0.25f : 0.35f;
             movementFadeFactor = MathHelper.Lerp(movementFadeFactor, targetFade, lerpSpeed);
             float fishTarget = moving ? TargetMoveFishFade : 1f;
@@ -250,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (layers != null) {
                 foreach (var layer in layers) {
                     foreach (var fish in layer.Fish) {
-                        fish.Update(domainCenter, layer.Radius, domainAlpha); // 行为仍使用原始领域透明度
+                        fish.Update(domainCenter, layer.Radius, domainAlpha); //行为仍使用原始领域透明度
                     }
                 }
             }
@@ -277,10 +257,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private void UpdateAmbientSounds() {
             if (Main.myPlayer != Owner.whoAmI) return;
 
-            // 定期播放深海氛围音效
+            //定期播放深海氛围音效
             ambientSoundTimer++;
 
-            // 随机的鱼群游动音效
+            //随机的鱼群游动音效
             if (ambientSoundTimer % 120 == 0 && Main.rand.NextBool(3)) {
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Volume = 0.15f,
@@ -289,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }, domainCenter + Main.rand.NextVector2Circular(maxDomainRadius * 0.7f, maxDomainRadius * 0.7f));
             }
 
-            // 气泡上浮音效
+            //气泡上浮音效
             bubbleSoundTimer++;
             if (bubbleSoundTimer % 40 == 0 && Main.rand.NextBool(2)) {
                 SoundEngine.PlaySound(SoundID.Drip with {
@@ -333,7 +313,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             bool doDamageThisTick = pressureDamageTimer % PressureTickInterval == 0 && domainAlpha > 0.55f;
-            int scaledDamage = PressureBase + PressurePerLayer * (layerCount - 1); // 线性增长 1层=4 10层=31 每0.5s
+            int scaledDamage = PressureBase + PressurePerLayer * (layerCount - 1); //线性增长 1层=4 10层=31 每0.5s
             if (scaledDamage < 1) scaledDamage = 1;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -363,7 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                                     MaxInstances = 5
                                 }, npc.Center);
 
-                                // 叠加水压音效
+                                //叠加水压音效
                                 SoundEngine.PlaySound(SoundID.Splash with {
                                     Volume = 0.25f,
                                     Pitch = -0.6f,
@@ -386,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         }
                     }
 
-                    // 水压伤害处理（服务器侧）
+                    //水压伤害处理（服务器侧）
                     if (doDamageThisTick && Main.netMode != NetmodeID.MultiplayerClient) {
                         int damage = scaledDamage;
                         if (npc.boss) {
@@ -396,12 +376,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                             damage = (int)(damage * HighLifeDamageFactor);
                         }
                         if (damage < 1) damage = 1;
-                        // 给予微小随机波动，避免所有数值一致
+                        //给予微小随机波动，避免所有数值一致
                         damage += Main.rand.Next(-1, 2);
                         if (damage < 1) damage = 1;
-                        // 伤害归属玩家
-                        npc.SimpleStrikeNPC(damage, npc.direction); // 移除不存在的 direction 命名参数
-                        // 轻微视觉反馈（客户端自行处理即可）
+                        //伤害归属玩家
+                        npc.SimpleStrikeNPC(damage, npc.direction); //移除不存在的 direction 命名参数
+                        //轻微视觉反馈（客户端自行处理即可）
                         if (Main.netMode != NetmodeID.Server) {
                             SpawnPressureHitDust(npc, damage);
                         }
@@ -444,11 +424,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 float randomRadius = layers[Main.rand.Next(layers.Count)].Radius * Main.rand.NextFloat(0.6f, 1f);
                 ripples.Add(new WaterRipple(domainCenter, randomRadius));
 
-                // 扩张过程中的水波音效
+                //扩张过程中的水波音效
                 if (Main.myPlayer == Owner.whoAmI && stateTimer % 24 == 0) {
-                    SoundEngine.PlaySound(SoundID.Item85 with {  // 魔法音效
+                    SoundEngine.PlaySound(SoundID.Item85 with {  //魔法音效
                         Volume = 0.2f,
-                        Pitch = -0.4f + (progress * 0.3f),  // 音调随扩张提升
+                        Pitch = -0.4f + (progress * 0.3f),  //音调随扩张提升
                         MaxInstances = 3
                     }, domainCenter);
                 }
@@ -465,7 +445,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     }
                 }
 
-                // 领域完全展开音效
+                //领域完全展开音效
                 if (Main.myPlayer == Owner.whoAmI) {
                     SoundEngine.PlaySound(SoundID.Item29 with {
                         Volume = 0.5f,
@@ -536,15 +516,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 SpawnCollapseParticle();
             }
 
-            // 停止循环音效
-            if (SoundEngine.TryGetActiveSound(ambientLoopSlot, out var sound)) {
-                sound.Volume = (1f - progress) * 0.3f;  // 淡出
-            }
-
             if (stateTimer >= CollapseDuration) {
-                if (SoundEngine.TryGetActiveSound(ambientLoopSlot, out var sound2)) {
-                    sound2.Stop();
-                }
                 Projectile.Kill();
             }
         }
@@ -602,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return false;
             }
 
-            // 计算移动后的内容透明度（边界始终使用 domainAlpha）
+            //计算移动后的内容透明度（边界始终使用 domainAlpha）
             float contentAlpha = domainAlpha * movementFadeFactor;
             float fishAlpha = domainAlpha * fishFadeFactor;
 
@@ -700,7 +672,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + progress * MathHelper.TwoPi) * 3f;
                     pos += diff.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * wave;
 
-                    Color c = new Color(100, 200, 255, 0) * 0.4f * contentAlpha; // 使用淡出因子
+                    Color c = new Color(100, 200, 255, 0) * 0.4f * contentAlpha; //使用淡出因子
                     Main.spriteBatch.Draw(chainTex, pos - Main.screenPosition, null, c, rotation,
                         chainTex.Size() / 2f, 0.6f, SpriteEffects.None, 0f);
                 }
@@ -723,7 +695,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 origin = rect.Size() * 0.5f;
             float fade = 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f + fish.Frame) * 0.2f;
 
-            // 进一步随淡出压低亮度 (alpha^0.8 稍提升静止时饱和，低 alpha 时更暗)
+            //进一步随淡出压低亮度 (alpha^0.8 稍提升静止时饱和，低 alpha 时更暗)
             float brightnessScale = MathF.Pow(alpha, 0.8f);
 
             if (fish.Size == FishSize.Large) {

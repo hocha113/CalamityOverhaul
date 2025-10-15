@@ -285,9 +285,17 @@ namespace CalamityOverhaul.Content.UIs
         /// </summary>
         /// <returns>如果找到了有效目标则返回true，否则返回false</returns>
         private bool FindClosestCrabulon() {
+            if (player == null) {
+                return false;
+            }
+
             //尝试获取玩家组件，如果失败则直接返回
             if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
                 modify = null;
+                return false;
+            }
+
+            if (crabulonPlayer == null) {
                 return false;
             }
 

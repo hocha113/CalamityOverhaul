@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -118,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override void AI() {
-            if (!Owner.active) {
+            if (!Owner.Alives()) {
                 Projectile.Kill();
                 return;
             }
@@ -521,6 +522,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     SpriteEffects.None,
                     0f);
             }
+        }
+    }
+
+    internal class YourLevelIsTooLowPlayer : ModPlayer
+    {
+        public override bool PreKill(double damage, int hitDirection, bool pvp
+            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
+            if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
+                return false; //无限重启，不死
+            }
+            return true;
         }
     }
 
