@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 3) {
-                ADVRewardPopup.ShowReward(ItemID.Bonefish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Fishotron, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
