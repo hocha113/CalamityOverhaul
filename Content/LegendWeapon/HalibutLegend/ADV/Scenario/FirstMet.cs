@@ -90,6 +90,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             Add(Rolename2.Value, Line21.Value);
         }
 
+        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {//第一次手持大比目鱼时触发对话
+            if (!halibutPlayer.HeldHalibut) {
+                return;
+            }
+
+            if (save.FirstMet) {
+                return;
+            }
+
+            ScenarioManager.Reset<FirstMet>();
+            ScenarioManager.Start<FirstMet>();
+            save.FirstMet = true;
+        }
+
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 5) {
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,

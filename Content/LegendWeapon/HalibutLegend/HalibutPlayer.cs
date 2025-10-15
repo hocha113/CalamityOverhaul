@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameSystem;
+using Stubble.Core.Classes;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -38,6 +40,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 深渊复苏系统实例
         /// </summary>
         public ResurrectionSystem ResurrectionSystem { get; private set; } = new();
+        #endregion
+
+        #region ADV场景数据
+        public ADVSave ADCSave { get; private set; } = new();
         #endregion
 
         #region 闪光皇后
@@ -237,6 +243,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //更新深渊复苏系统
             if (HeldHalibut) {
                 ResurrectionSystem.Update();
+            }
+
+            foreach (var scenario in ADVScenarioBase.Instances) {
+                scenario.Update(ADCSave, this);
             }
 
             //克隆技能记录

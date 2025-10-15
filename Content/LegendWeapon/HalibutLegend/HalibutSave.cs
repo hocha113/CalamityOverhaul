@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //保存深渊复苏系统数据
             if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
                 tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
+                tag["ADCSave"] = hPlayer.ADCSave.SaveData();
             }
 
             foreach (var scenario in ADVScenarioBase.Instances) {
@@ -125,10 +126,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 DomainUI.Instance.lastActiveEyeCount = activationSequence.Count;
             }
 
-            //加载深渊复苏系统数据
-            if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
-                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+            if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                //加载深渊复苏系统数据
+                if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
                     halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
+                }
+                //加载ADCSave数据
+                if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
+                    halibutPlayer.ADCSave.LoadData(adcTag);
                 }
             }
 

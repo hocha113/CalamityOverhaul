@@ -260,8 +260,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             finishedCurrent = true;
                             waitingForAdvance = true;
                         }
-                        else if (visibleCharCount % 6 == 0) {
-                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = -0.45f });
+                        else if (visibleCharCount % 4 == 0) {
+                            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.45f });
                         }
                     }
                 }

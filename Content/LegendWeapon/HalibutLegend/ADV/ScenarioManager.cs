@@ -62,6 +62,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         }
 
+        public virtual void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+
+        }
+
         private void Complete() { if (!IsCompleted) { IsCompleted = true; OnComplete(); } }
         protected virtual void OnComplete() { }
         public void Reset() => IsCompleted = false;
