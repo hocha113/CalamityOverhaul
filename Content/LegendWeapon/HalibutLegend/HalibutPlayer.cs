@@ -112,14 +112,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
         public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
         private const int MaxSnapshots = 60 * 10; //最多记录10秒（支持更长延迟）
-        /// <summary>克隆技能触发冷却，防止一帧多次切换</summary>
+        /// <summary>
+        /// 克隆技能触发冷却，防止一帧多次切换
+        /// </summary>
         public int CloneFishToggleCD { get; set; }
-
-        /// <summary>克隆体数量（1-10）</summary>
+        /// <summary>
+        /// 克隆体数量（1-10）
+        /// </summary>
         public int CloneCount { get; set; } = 1;//先保持1个
-        /// <summary>最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）</summary>
+        /// <summary>
+        /// 最小延迟帧数（最近的克隆体与玩家的时间差，30帧=0.5秒）
+        /// </summary>
         public int CloneMinDelay { get; set; } = 60;
-        /// <summary>克隆体间隔帧数（每个克隆体之间的时间差，20帧=0.33秒）</summary>
+        /// <summary>
+        /// 克隆体间隔帧数（每个克隆体之间的时间差，20帧=0.33秒）
+        /// </summary>
         public int CloneInterval { get; set; } = 30;
         /// <summary>
         /// 将要启动克隆
