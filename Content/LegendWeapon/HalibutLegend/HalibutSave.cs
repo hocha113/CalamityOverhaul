@@ -45,107 +45,111 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
         //首先需要明确的一点是，玩家是单实例的，UI也是单实例的，所以在保存加载中不要使用静态数据，因为需要每个玩家之间的数据独立
         public override void SaveData(TagCompound tag) {
-            IList<TagCompound> list = [];
-            foreach (var slot in halibutUISkillSlots) {
-                if (slot.FishSkill == null) {
-                    continue;
+            try {
+                IList<TagCompound> list = [];
+                foreach (var slot in halibutUISkillSlots) {
+                    if (slot.FishSkill == null) {
+                        continue;
+                    }
+                    TagCompound skillTag = [];
+                    skillTag["Name"] = slot.FishSkill.FullName;
+                    slot.FishSkill.SaveData(tag);
+                    list.Add(skillTag);
                 }
-                TagCompound skillTag = [];
-                skillTag["Name"] = slot.FishSkill.FullName;
-                slot.FishSkill.SaveData(tag);
-                list.Add(skillTag);
-            }
-            tag["FishSkills"] = list;
+                tag["FishSkills"] = list;
 
-            if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
-                var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
-                if (skill != null) {
-                    tag["HalibutTargetSkillName"] = skill.FullName;
+                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.SkillID > 0) {
+                    var skill = FishSkill.IDToInstance.GetValueOrDefault(halibutPlayer.SkillID);
+                    if (skill != null) {
+                        tag["HalibutTargetSkillName"] = skill.FullName;
+                    }
                 }
-            }
 
-            //保存激活的眼睛索引列表（按激活顺序）
-            List<int> activeEyeIndices = [];
-            foreach (var eye in activationSequence) {
-                if (eye.IsActive) {
-                    activeEyeIndices.Add(eye.Index);
+                //保存激活的眼睛索引列表（按激活顺序）
+                List<int> activeEyeIndices = [];
+                foreach (var eye in activationSequence) {
+                    if (eye.IsActive) {
+                        activeEyeIndices.Add(eye.Index);
+                    }
                 }
-            }
-            tag["ActiveEyeIndices"] = activeEyeIndices;
+                tag["ActiveEyeIndices"] = activeEyeIndices;
 
-            //保存深渊复苏系统数据
-            if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
-                tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
-                tag["ADCSave"] = hPlayer.ADCSave.SaveData();
-            }
+                //保存深渊复苏系统数据
+                if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
+                    tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
+                    tag["ADCSave"] = hPlayer.ADCSave.SaveData();
+                }
 
-            foreach (var scenario in ADVScenarioBase.Instances) {
-                scenario.SaveData(tag);
-            }
+                foreach (var scenario in ADVScenarioBase.Instances) {
+                    scenario.SaveData(tag);
+                }
+            } catch { }
         }
 
         public override void LoadData(TagCompound tag) {
-            if (tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
-                halibutUISkillSlots.Clear();
-                unlockSkills.Clear();
-                foreach (var skillTag in list) {
-                    if (!skillTag.TryGet<string>("Name", out var name) ||
-                        !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
-                        continue;
+            try {
+                if (tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
+                    halibutUISkillSlots.Clear();
+                    unlockSkills.Clear();
+                    foreach (var skillTag in list) {
+                        if (!skillTag.TryGet<string>("Name", out var name) ||
+                            !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
+                            continue;
+                        }
+                        fishSkill.LoadData(skillTag);
+                        halibutUISkillSlots.Add(HalibutUIPanel.AddSkillSlot(fishSkill, 1f));
+                        unlockSkills.Add(fishSkill);
                     }
-                    fishSkill.LoadData(skillTag);
-                    halibutUISkillSlots.Add(HalibutUIPanel.AddSkillSlot(fishSkill, 1f));
-                    unlockSkills.Add(fishSkill);
-                }
 
-                if (tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
-                    FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
-                }
-            }
-
-            //读取激活的眼睛索引列表
-            if (tag.TryGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
-                //清空当前激活序列
-                activationSequence.Clear();
-                if (eyes.Count == 0) {
-                    for (int i = 0; i < DomainUI.MaxEyes; i++) {
-                        float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
-                        eyes.Add(new SeaEyeButton(i, angle));
+                    if (tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
+                        FishSkill = FishSkill.NameToInstance.GetValueOrDefault(skillName);
                     }
                 }
-                //重置所有眼睛状态
-                foreach (var eye in eyes) {
-                    eye.IsActive = false;
-                    eye.LayerNumber = null;
+
+                //读取激活的眼睛索引列表
+                if (tag.TryGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
+                    //清空当前激活序列
+                    activationSequence.Clear();
+                    if (eyes.Count == 0) {
+                        for (int i = 0; i < DomainUI.MaxEyes; i++) {
+                            float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
+                            eyes.Add(new SeaEyeButton(i, angle));
+                        }
+                    }
+                    //重置所有眼睛状态
+                    foreach (var eye in eyes) {
+                        eye.IsActive = false;
+                        eye.LayerNumber = null;
+                    }
+                    //按保存的顺序重新激活眼睛
+                    foreach (int index in activeIndices) {
+                        if (index >= 0 && index < eyes.Count) {
+                            var eye = eyes[index];
+                            eye.IsActive = true;
+                            activationSequence.Add(eye);
+                            eye.LayerNumber = activationSequence.Count;
+                        }
+                    }
+                    //更新圆环
+                    DomainUI.Instance.UpdateRings(activationSequence.Count);
+                    DomainUI.Instance.lastActiveEyeCount = activationSequence.Count;
                 }
-                //按保存的顺序重新激活眼睛
-                foreach (int index in activeIndices) {
-                    if (index >= 0 && index < eyes.Count) {
-                        var eye = eyes[index];
-                        eye.IsActive = true;
-                        activationSequence.Add(eye);
-                        eye.LayerNumber = activationSequence.Count;
+
+                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    //加载深渊复苏系统数据
+                    if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
+                        halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
+                    }
+                    //加载ADCSave数据
+                    if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
+                        halibutPlayer.ADCSave.LoadData(adcTag);
                     }
                 }
-                //更新圆环
-                DomainUI.Instance.UpdateRings(activationSequence.Count);
-                DomainUI.Instance.lastActiveEyeCount = activationSequence.Count;
-            }
 
-            if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                //加载深渊复苏系统数据
-                if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
-                    halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
+                foreach (var scenario in ADVScenarioBase.Instances) {
+                    scenario.LoadData(tag);
                 }
-                //加载ADCSave数据
-                if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
-                    halibutPlayer.ADCSave.LoadData(adcTag);
-                }
-            }
-
-            foreach (var scenario in ADVScenarioBase.Instances) {
-                scenario.LoadData(tag);
-            }
+            } catch { }
         }
     }
 }
