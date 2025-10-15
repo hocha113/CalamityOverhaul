@@ -15,11 +15,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>
         /// 技能最大持续时间（5秒 = 300帧）
         /// </summary>
-        public const int FishSwarmDuration = 300;
+        public static int FishSwarmDuration => 300 + HalibutData.GetDomainLayer() * 30;
         /// <summary>
         /// 攻击后摇持续时间（60帧 = 1秒）
         /// </summary>
-        public const int AttackRecoveryDuration = 60;
+        public static int AttackRecoveryDuration = 60 - HalibutData.GetDomainLayer() * 4;
         public override int DefaultCooldown => 60 * (30 - HalibutData.GetDomainLayer() * 2);
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();

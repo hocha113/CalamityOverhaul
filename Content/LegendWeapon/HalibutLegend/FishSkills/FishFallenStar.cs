@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         // 星星管理系统
         private static int consecutiveShots = 0; // 连续射击计数
-        private static int ShotsForStarRain = 20 - HalibutData.GetDomainLayer(); // 每20-10次射击触发一次星雨
+        private static int ShotsForStarRain => 20 - HalibutData.GetDomainLayer(); // 每20-10次射击触发一次星雨
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

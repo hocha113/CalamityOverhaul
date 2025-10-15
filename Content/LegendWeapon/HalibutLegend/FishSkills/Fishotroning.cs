@@ -682,7 +682,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     throwOrigin + spawnOffset,
                     velocity,
                     ProjectileID.Bone,
-                    (int)(Projectile.damage * 0.06),
+                    (int)(Projectile.damage * 0.1),
                     2f,
                     Projectile.owner
                 );
