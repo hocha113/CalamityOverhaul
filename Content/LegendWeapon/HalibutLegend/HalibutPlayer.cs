@@ -26,10 +26,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public bool HasHalubut;
         /// <summary>
-        /// 已解锁的技能列表
-        /// </summary>
-        public readonly static HashSet<FishSkill> UnlockedSkills = new();
-        /// <summary>
         /// 隐藏玩家计时器
         /// </summary>
         public int HidePlayerTime;

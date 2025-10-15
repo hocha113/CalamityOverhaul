@@ -173,8 +173,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Color accent = Color.Lerp(mainA, mainB, wave);
             Color accent2 = Color.Lerp(mainA, mainB, 0.35f + wave * 0.3f);
 
+            bool unlock = false;
+            if (player.TryGetModPlayer<HalibutSave>(out var save)) {
+                unlock = save.unlockSkills.Contains(fishSkill);
+            }
+
             var line = new TooltipLine(CWRMod.Instance, "FishSkillTooltip"
-                , HalibutPlayer.UnlockedSkills.Contains(fishSkill) ? HalibutText.Instance.FishOnStudied.Value : HalibutText.Instance.FishByStudied.Value) {
+                , unlock ? HalibutText.Instance.FishOnStudied.Value : HalibutText.Instance.FishByStudied.Value) {
                 OverrideColor = accent
             };
             tooltips.Add(line);
@@ -191,7 +196,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 appearProgress = appearProgress,
                 isAppearing = false
             };
-            HalibutPlayer.UnlockedSkills.Add(fishSkill);
             return newSlot;
         }
 

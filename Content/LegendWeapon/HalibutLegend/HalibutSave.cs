@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         public readonly List<SkillSlot> halibutUISkillSlots = [];
         /// <summary>
+        /// 大比目鱼技能（用于保存加载）
+        /// </summary>
+        public readonly List<FishSkill> unlockSkills = [];
+        /// <summary>
         /// 所有眼睛列表（用于保存加载）
         /// </summary>
         internal readonly List<SeaEyeButton> eyes = [];
@@ -83,6 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override void LoadData(TagCompound tag) {
             if (tag.TryGet<IList<TagCompound>>("FishSkills", out var list)) {
                 halibutUISkillSlots.Clear();
+                unlockSkills.Clear();
                 foreach (var skillTag in list) {
                     if (!skillTag.TryGet<string>("Name", out var name) ||
                         !FishSkill.NameToInstance.TryGetValue(name, out var fishSkill)) {
@@ -90,6 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                     fishSkill.LoadData(skillTag);
                     halibutUISkillSlots.Add(HalibutUIPanel.AddSkillSlot(fishSkill, 1f));
+                    unlockSkills.Add(fishSkill);
                 }
 
                 if (tag.TryGet<string>("HalibutTargetSkillName", out var skillName)) {
