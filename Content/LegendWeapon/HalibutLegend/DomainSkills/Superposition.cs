@@ -1035,8 +1035,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override void AI() {
-            if (Projectile.DamageType != EndlessDamageClass.Instance 
-                && Projectile.owner.TryGetPlayer(out var player) 
+            if (Projectile.DamageType != EndlessDamageClass.Instance
+                && Projectile.owner.TryGetPlayer(out var player)
                 && player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 if (halibutPlayer.SeaDomainActive && halibutPlayer.SeaDomainLayers == 10) {
                     Projectile.DamageType = EndlessDamageClass.Instance;//无限叠加下的弹幕使用无限伤害类型

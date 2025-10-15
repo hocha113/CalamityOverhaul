@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
