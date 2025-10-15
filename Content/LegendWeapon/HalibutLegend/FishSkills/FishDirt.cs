@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Dirtfish;
         public override int DefaultCooldown => 60;
 
-        private static int MaxDirtFish => 5 + HalibutData.GetDomainLayer() ;
-        private static int FishPerDomainLayer => 1+ HalibutData.GetDomainLayer()/5;
+        private static int MaxDirtFish => 5 + HalibutData.GetDomainLayer();
+        private static int FishPerDomainLayer => 1 + HalibutData.GetDomainLayer() / 5;
         private int spawnTimer = 0;
         private const int SpawnInterval = 20;
 
@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                                 ballCenter,
                                 shootDirection * 16f,
                                 ModContent.ProjectileType<DirtBall>(),
-                                (int)(storedDamage * (2.3f + HalibutData.GetDomainLayer() * 0.45f)),
+                                (int)(storedDamage * (2.7f + HalibutData.GetDomainLayer() * 0.55f)),
                                 storedKnockback * 1.8f,
                                 owner.whoAmI,
                                 convergingCount
