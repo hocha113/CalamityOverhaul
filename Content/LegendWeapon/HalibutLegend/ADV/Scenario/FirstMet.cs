@@ -25,8 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            //第四段结束时给予奖励 Index=3 (0-based)
-            if (args.Index == 3 && !rewardGiven) {
+            if (args.Index == 3) {
                 rewardGiven = true;
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
