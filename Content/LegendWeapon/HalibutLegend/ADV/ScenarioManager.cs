@@ -31,11 +31,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Instances.Add(this);
             ScenarioManager.Register(this);
         }
+        
         public override void VaultSetup() {
-            DialogueBoxBase.OnPreProcessSegment += PreProcessSegment;
             SetStaticDefaults();
         }
-        public override void Unload() => DialogueBoxBase.OnPreProcessSegment -= PreProcessSegment;
+        
+        public override void Unload() { }
 
         public virtual void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) { }
 
@@ -46,6 +47,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (!built) { Build(); built = true; }
             if (lines.Count == 0) { Complete(); return; }
             var box = DialogueUIRegistry.Current;
+            
+            // 设置当前场景的预处理器
+            box.PreProcessor = PreProcessSegment;
+            
             for (int i = 0; i < lines.Count; i++) {
                 var l = lines[i]; bool last = i == lines.Count - 1;
                 if (last) box.EnqueueDialogue(l.speaker, l.content, Complete);
@@ -65,7 +70,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         }
 
-        private void Complete() { if (!IsCompleted) { IsCompleted = true; OnComplete(); } }
+        private void Complete() { 
+            if (!IsCompleted) { 
+                IsCompleted = true; 
+                OnComplete(); 
+            }
+            
+            // 清理预处理器引用
+            var box = DialogueUIRegistry.Current;
+            if (box != null && box.PreProcessor == PreProcessSegment) {
+                box.PreProcessor = null;
+            }
+        }
+        
         protected virtual void OnComplete() { }
         public void Reset() => IsCompleted = false;
     }

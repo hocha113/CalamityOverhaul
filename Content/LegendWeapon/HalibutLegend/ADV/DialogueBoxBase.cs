@@ -21,7 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public int Index;
             public int Total;
         }
-        public static event Action<DialoguePreProcessArgs> OnPreProcessSegment;
+        
+        // 移除静态事件，改为由场景主动设置预处理器
+        public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
+        
         protected class DialogueSegment
         {
             public string Speaker;
@@ -150,7 +153,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     Index = index,
                     Total = total
                 };
-                OnPreProcessSegment?.Invoke(args);
+                // 只调用当前设置的预处理器
+                PreProcessor?.Invoke(args);
                 current.Speaker = args.Speaker;
                 current.Content = args.Content;
             }
