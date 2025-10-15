@@ -18,7 +18,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //研究相关字段
         private int researchTimer = 0;//当前研究时间（帧数）
-        private const int ResearchDuration = 7200;//研究总时长（2分钟 = 7200帧，60fps * 120秒）
+        private int ResearchDuration {
+            get {
+                if (Item.Alives() && FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
+                    return fishSkill.ResearchDuration;
+                }
+                return 7200;
+            }
+        }
         private bool isResearching = false;//是否正在研究
 
         //复苏系统交互
@@ -36,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 researchTimer = 0;
                 return;
             }
-            researchTimer += 100;//推进进度 (与原逻辑保持一致的加速)
+            researchTimer++;//推进进度 (与原逻辑保持一致的加速)
             if (researchTimer < ResearchDuration) {
                 return;
             }

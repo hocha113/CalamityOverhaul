@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public readonly static Dictionary<int, FishSkill> IDToInstance = [];
         public readonly static Dictionary<string, FishSkill> NameToInstance = [];
         public int ID => TypeToID[GetType()];
+        public virtual int ResearchDuration => 7200;
         public virtual string IconTexture => CWRConstant.UI + "Halibut/FishSkill/" + Name;
         public Texture2D Icon => TypeToTex[GetType()];
         /// <summary>
