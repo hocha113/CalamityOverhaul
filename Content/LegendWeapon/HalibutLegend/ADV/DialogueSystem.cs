@@ -6,6 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
     {
         public override void UpdateUI(GameTime gameTime) {
             DialogueUIRegistry.Current?.LogicUpdate();
+            ADVRewardPopup.Instance?.LogicUpdate();
         }
     }
 }

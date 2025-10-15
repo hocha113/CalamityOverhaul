@@ -87,8 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public override bool Active => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
 
         //本地化提示
-        protected static LocalizedText ContinueHint;
-        protected static LocalizedText FastHint;
+        public static LocalizedText ContinueHint;
+        public static LocalizedText FastHint;
 
         public override void SetStaticDefaults() {
             ContinueHint = this.GetLocalization(nameof(ContinueHint), () => "继续");

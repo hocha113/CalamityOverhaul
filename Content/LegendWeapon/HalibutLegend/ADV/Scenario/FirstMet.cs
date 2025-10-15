@@ -1,8 +1,11 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+﻿using Terraria.ID;
+
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
 {
     internal class FirstMet : ADVScenarioBase
     {
         public override string Key => nameof(FirstMet);
+        private bool rewardGiven;
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait("？？？", ADVAsset.HeadADV);
             DialogueBoxBase.SetPortraitStyle("？？？", silhouette: true);
@@ -18,6 +21,14 @@
             Add("哈利鲈特", "我知道一个地方，那里有一条通往外界的路。");
             Add("哈利鲈特", "但是路上有很多危险的怪物，我需要你的帮助。");
             Add("哈利鲈特", "我们一起去吧！");
+        }
+
+        public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
+            //第四段结束时给予奖励 Index=3 (0-based)
+            if (args.Index == 3) {
+                rewardGiven = true;
+                ADVRewardPopup.ShowReward(ItemID.Bass, 1, "鲫鱼");
+            }
         }
     }
 }
