@@ -402,19 +402,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
     }
 
-    internal static class DomainEyeDescriptions
-    {
-        public static string GetDescription(int layer) {
-            if (layer >= 1 && layer < DomainUI.EyeLayerDescriptions.Length) {
-                var lt = DomainUI.EyeLayerDescriptions[layer];
-                if (lt != null) {
-                    return lt.Value;
-                }
-            }
-            return "Error";
-        }
-    }
-
     /// <summary>
     /// 第十只中心额外之眼
     /// </summary>

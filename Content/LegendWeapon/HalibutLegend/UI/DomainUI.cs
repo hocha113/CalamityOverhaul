@@ -617,10 +617,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor, 0.85f);
         }
 
+        public static string GetDescription(int layer) {
+            if (layer >= 1 && layer < EyeLayerDescriptions.Length) {
+                var lt = EyeLayerDescriptions[layer];
+                if (lt != null) {
+                    return lt.Value;
+                }
+            }
+            return "Error";
+        }
+
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
             int displayLayer = eye.LayerNumberDisplay;
             string title = string.Format(LayerTitleFormat.Value, GetLayerNumeralText(displayLayer));
-            string desc = DomainEyeDescriptions.GetDescription(displayLayer);
+            string desc = GetDescription(displayLayer);
             float tooltipAlpha = alpha * 0.95f;
             Vector2 panelSize = new Vector2(160, 110);
             Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
@@ -695,7 +705,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private void DrawExtraEyeTooltip(SpriteBatch spriteBatch, float alpha) {
             string title = ExtraEyeTitleText.Value;
-            string desc = DomainEyeDescriptions.GetDescription(10);
+            string desc = GetDescription(10);
             float tooltipAlpha = alpha * 0.98f;
             Vector2 panelSize = new Vector2(170, 120);
             Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
