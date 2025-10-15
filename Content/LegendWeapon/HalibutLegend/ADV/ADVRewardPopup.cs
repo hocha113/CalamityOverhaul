@@ -45,6 +45,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private readonly List<Star> stars = new();
         private int bubbleTimer;
         private int starTimer;
+        //面板区域缓存和鼠标悬停状态
+        private Rectangle panelRect;
+        private bool isHovering = false;
         public static int DefaultAppearDuration = 24;
         public static int DefaultHoldDuration = 50;
         public static int DefaultGiveDuration = 16;
@@ -112,7 +115,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     current.Hold++;
                     bool autoReady = false;
                     if (current.HoldDuration >= 0 && current.Hold >= current.HoldDuration) autoReady = true;
-                    bool click = keyLeftPressState == KeyPressState.Pressed;
+                    //只有在鼠标悬停在面板上且点击时才触发
+                    bool click = isHovering && keyLeftPressState == KeyPressState.Pressed;
                     if ((autoReady && !current.RequireClick) || (click && appearT >= 0.95f)) {
                         givingOut = true;
                         stateTimer = 0;
@@ -136,6 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     panelFade -= 0.08f;
                     if (panelFade < 0f) panelFade = 0f;
                 }
+                isHovering = false;
                 return;
             }
             if (panelFade < 1f) {
@@ -164,6 +169,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     StartNext();
                 }
             }
+            
+            //检测鼠标悬停状态
+            Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
+            isHovering = panelRect.Contains(mousePos.ToPoint());
+            
+            //只有在悬停时才阻止鼠标交互穿透
+            if (isHovering && Active) {
+                player.mouseInterface = true;
+            }
+            
             //粒子刷新
             Vector2 basePos = ResolveBasePosition(new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f));
             bubbleTimer++;
@@ -178,7 +193,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             for (int i = bubbles.Count - 1; i >= 0; i--) if (bubbles[i].Update()) bubbles.RemoveAt(i);
             for (int i = stars.Count - 1; i >= 0; i--) if (stars[i].Update()) stars.RemoveAt(i);
-            player.mouseInterface |= Active;
         }
         private void GiveCurrent() {
             if (current == null || current.Given) return;
@@ -212,6 +226,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Vector2 drawPos = anchor - panelSize / 2f;
             drawPos.Y -= MathHelper.Lerp(80f, 0f, slideIn);
             Rectangle rect = new((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
+            
+            //缓存面板矩形供鼠标检测使用
+            panelRect = rect;
+            
+            //鼠标悬停时添加高亮效果
+            float hoverGlow = isHovering ? 0.15f : 0f;
+            
             //深海渐层背景条
             int segs = 26;
             for (int i = 0; i < segs; i++) {
@@ -226,16 +247,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 float breathing = (float)Math.Sin(abyssPulse) * 0.5f + 0.5f;
                 Color blendBase = Color.Lerp(abyssDeep, abyssMid, (float)Math.Sin(panelPulse * 0.5f + t * 1.4f) * 0.5f + 0.5f);
                 Color c = Color.Lerp(blendBase, bioEdge, t * 0.55f * (0.4f + breathing * 0.6f));
-                c *= alpha * 0.92f;
+                c *= alpha * (0.92f + hoverGlow);
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
             //波浪横线
             DrawWaveLines(spriteBatch, rect, alpha * 0.65f);
             //内边微光
             Rectangle inner = rect; inner.Inflate(-6, -6);
-            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.08f * (0.4f + (float)Math.Sin(panelPulse * 1.3f) * 0.6f)));
+            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * (0.08f + hoverGlow * 0.5f) * (0.4f + (float)Math.Sin(panelPulse * 1.3f) * 0.6f)));
             //描边与角标
-            DrawFrame(spriteBatch, rect, alpha);
+            DrawFrame(spriteBatch, rect, alpha, hoverGlow);
             //气泡与星光
             foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.85f);
             foreach (var s in stars) s.Draw(spriteBatch, alpha * 0.5f);
@@ -281,20 +302,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Vector2 hs = font.MeasureString(hint) * 0.6f;
                 Vector2 hp = new(rect.Right - hs.X - 12f, rect.Bottom - hs.Y - 10f);
                 float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
-                Utils.DrawBorderString(spriteBatch, hint, hp, new Color(140, 230, 255) * (blink * alpha), 0.7f);
+                //悬停时提示文字更亮
+                float hintAlpha = isHovering ? blink * alpha * 1.2f : blink * alpha * 0.7f;
+                Utils.DrawBorderString(spriteBatch, hint, hp, new Color(140, 230, 255) * hintAlpha, 0.7f);
             }
         }
-        private void DrawFrame(SpriteBatch sb, Rectangle rect, float alpha) {
+        private void DrawFrame(SpriteBatch sb, Rectangle rect, float alpha, float hoverGlow = 0f) {
             Texture2D px = TextureAssets.MagicPixel.Value;
-            Color edge = new Color(70, 180, 230) * (alpha * 0.85f);
+            Color edge = new Color(70, 180, 230) * (alpha * (0.85f + hoverGlow * 0.3f));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
             sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-            DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
-            DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
-            DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.6f);
-            DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Bottom - 10), alpha * 0.6f);
+            DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * (0.9f + hoverGlow * 0.4f));
+            DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * (0.9f + hoverGlow * 0.4f));
+            DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * (0.6f + hoverGlow * 0.3f));
+            DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Bottom - 10), alpha * (0.6f + hoverGlow * 0.3f));
         }
         private void DrawWaveLines(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
