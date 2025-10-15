@@ -178,7 +178,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 string visLine;
                 if (finishedCurrent) {
                     visLine = fullLine;
-                } else {
+                }
+                else {
                     if (remaining <= 0) {
                         break;
                     }
@@ -290,69 +291,71 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private class StarFx
         {
             public Vector2 Pos; public float BaseRadius; public float Rot; public float Life; public float MaxLife; public float Seed;
-            public StarFx(Vector2 p) { 
-                Pos = p; 
-                BaseRadius = Main.rand.NextFloat(2f, 4f); 
-                Rot = Main.rand.NextFloat(MathHelper.TwoPi); 
-                Life = 0f; 
-                MaxLife = Main.rand.NextFloat(60f, 140f); 
-                Seed = Main.rand.NextFloat(10f); 
+            public StarFx(Vector2 p) {
+                Pos = p;
+                BaseRadius = Main.rand.NextFloat(2f, 4f);
+                Rot = Main.rand.NextFloat(MathHelper.TwoPi);
+                Life = 0f;
+                MaxLife = Main.rand.NextFloat(60f, 140f);
+                Seed = Main.rand.NextFloat(10f);
             }
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
-                Life++; Rot += 0.02f; float t = Life / MaxLife; 
-                float drift = (float)Math.Sin((Life + Seed * 20f) * 0.03f) * 6f; Pos.X += drift * 0.02f; if (Life >= MaxLife) return true; 
-                if (Pos.X < panelPos.X - 40 || Pos.X > panelPos.X + panelSize.X + 40 || Pos.Y < panelPos.Y - 40 || Pos.Y > panelPos.Y + panelSize.Y + 40) 
-                    return true; 
+                Life++; Rot += 0.02f; float t = Life / MaxLife;
+                float drift = (float)Math.Sin((Life + Seed * 20f) * 0.03f) * 6f; Pos.X += drift * 0.02f; if (Life >= MaxLife) return true;
+                if (Pos.X < panelPos.X - 40 || Pos.X > panelPos.X + panelSize.X + 40 || Pos.Y < panelPos.Y - 40 || Pos.Y > panelPos.Y + panelSize.Y + 40)
+                    return true;
                 return false;
             }
-            public void Draw(SpriteBatch sb, float alpha) { float t = Life / MaxLife; 
-                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha; 
-                float scale = BaseRadius * (0.6f + (float)Math.Sin((Life + Seed * 33f) * 0.08f) * 0.4f); 
-                Color c = Color.Gold * (0.7f * fade); 
-                Texture2D px = TextureAssets.MagicPixel.Value; 
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f); 
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f); }
+            public void Draw(SpriteBatch sb, float alpha) {
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
+                float scale = BaseRadius * (0.6f + (float)Math.Sin((Life + Seed * 33f) * 0.08f) * 0.4f);
+                Color c = Color.Gold * (0.7f * fade);
+                Texture2D px = TextureAssets.MagicPixel.Value;
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
+            }
         }
         private class BubbleFx
         {
-            public Vector2 Pos; 
-            public float Radius; 
-            public float RiseSpeed; 
-            public float Drift; 
-            public float Life; 
-            public float MaxLife; 
+            public Vector2 Pos;
+            public float Radius;
+            public float RiseSpeed;
+            public float Drift;
+            public float Life;
+            public float MaxLife;
             public float Seed;
-            public BubbleFx(Vector2 start) { 
-                Pos = start; 
-                Radius = Main.rand.NextFloat(3f, 7f); 
-                RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f); 
-                Drift = Main.rand.NextFloat(-0.18f, 0.18f); 
-                Life = 0f; 
-                MaxLife = Main.rand.NextFloat(90f, 160f); 
-                Seed = Main.rand.NextFloat(10f); 
+            public BubbleFx(Vector2 start) {
+                Pos = start;
+                Radius = Main.rand.NextFloat(3f, 7f);
+                RiseSpeed = Main.rand.NextFloat(0.55f, 1.25f);
+                Drift = Main.rand.NextFloat(-0.18f, 0.18f);
+                Life = 0f;
+                MaxLife = Main.rand.NextFloat(90f, 160f);
+                Seed = Main.rand.NextFloat(10f);
             }
-            public bool Update(Vector2 panelPos, Vector2 panelSize) { 
-                Life++; 
-                float t = Life / MaxLife; 
-                Pos.Y -= RiseSpeed * (0.85f + (float)Math.Sin(t * Math.PI) * 0.25f); 
-                Pos.X += (float)Math.Sin(Life * 0.045f + Seed) * Drift; 
-                float left = panelPos.X + BubbleSideMargin * 0.7f; 
-                float right = panelPos.X + panelSize.X - BubbleSideMargin * 0.7f; 
-                if (Pos.X < left) Pos.X = left; if (Pos.X > right) 
-                    Pos.X = right; 
-                if (Life >= MaxLife || Pos.Y < panelPos.Y + 24f) 
-                    return true; 
-                return false; 
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
+                Life++;
+                float t = Life / MaxLife;
+                Pos.Y -= RiseSpeed * (0.85f + (float)Math.Sin(t * Math.PI) * 0.25f);
+                Pos.X += (float)Math.Sin(Life * 0.045f + Seed) * Drift;
+                float left = panelPos.X + BubbleSideMargin * 0.7f;
+                float right = panelPos.X + panelSize.X - BubbleSideMargin * 0.7f;
+                if (Pos.X < left) Pos.X = left; if (Pos.X > right)
+                    Pos.X = right;
+                if (Life >= MaxLife || Pos.Y < panelPos.Y + 24f)
+                    return true;
+                return false;
             }
-            public void Draw(SpriteBatch sb, float alpha) { 
-                Texture2D px = TextureAssets.MagicPixel.Value; 
-                float t = Life / MaxLife; 
-                float fade = (float)Math.Sin(t * Math.PI); 
-                float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 15f) * 0.1f) * 0.18f); 
+            public void Draw(SpriteBatch sb, float alpha) {
+                Texture2D px = TextureAssets.MagicPixel.Value;
+                float t = Life / MaxLife;
+                float fade = (float)Math.Sin(t * Math.PI);
+                float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 15f) * 0.1f) * 0.18f);
                 Color core = new Color(140, 230, 255) * (alpha * 0.55f * fade);
-                Color rim = new Color(30, 100, 150) * (alpha * 0.4f * fade); 
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), rim, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 1.8f, scale * 0.55f), SpriteEffects.None, 0f); 
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f); 
+                Color rim = new Color(30, 100, 150) * (alpha * 0.4f * fade);
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), rim, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale * 1.8f, scale * 0.55f), SpriteEffects.None, 0f);
+                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), core, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale), SpriteEffects.None, 0f);
             }
         }
         #endregion

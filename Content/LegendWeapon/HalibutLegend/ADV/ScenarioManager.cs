@@ -61,7 +61,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (scenarios.ContainsKey(scenario.Key)) {
                 if (!overwrite) return;
                 scenarios[scenario.Key] = scenario;
-            } else scenarios.Add(scenario.Key, scenario);
+            }
+            else scenarios.Add(scenario.Key, scenario);
         }
 
         public static bool Start(string key) {

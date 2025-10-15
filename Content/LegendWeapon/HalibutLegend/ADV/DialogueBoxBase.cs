@@ -1,5 +1,4 @@
 ﻿using InnoVault.UIHandles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -169,7 +168,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             waitingForAdvance = false;
             if (playedCount <= 1 || showProgress < 1f) {
                 contentFade = 0f;
-            } else {
+            }
+            else {
                 contentFade = 1f;
             }
             if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd2)) {
@@ -218,7 +218,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     showProgress += 1f / ShowDuration;
                     showProgress = Math.Clamp(showProgress, 0f, 1f);
                 }
-            } else {
+            }
+            else {
                 if (hideProgress < 1f) {
                     hideProgress += 1f / HideDuration;
                     hideProgress = Math.Clamp(hideProgress, 0f, 1f);
@@ -244,11 +245,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             visibleCharCount = totalChars;
                             finishedCurrent = true;
                             waitingForAdvance = true;
-                        } else if (visibleCharCount % 6 == 0) {
+                        }
+                        else if (visibleCharCount % 6 == 0) {
                             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = -0.45f });
                         }
                     }
-                } else {
+                }
+                else {
                     advanceBlinkTimer++;
                 }
                 if (contentFade < 1f) {
@@ -317,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     }
                 }
             }
-            
+
             if (keyRightPressState == KeyPressState.Pressed && hover) {
                 BeginClose();
             }

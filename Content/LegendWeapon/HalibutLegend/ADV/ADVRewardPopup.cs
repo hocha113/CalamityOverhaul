@@ -1,5 +1,4 @@
 ﻿using InnoVault.UIHandles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -146,7 +145,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 if (appearT >= 1f) {
                     current.Hold++;
                 }
-            } else {
+            }
+            else {
                 float t = current.GiveDuration > 0 ? Math.Clamp(stateTimer / (float)current.GiveDuration, 0f, 1f) : 1f;
                 current.Appear = 1f - t;
                 if (t >= 1f) {
