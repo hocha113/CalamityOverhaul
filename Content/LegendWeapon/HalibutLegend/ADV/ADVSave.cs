@@ -9,6 +9,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public bool SkeletronGift;
         public bool EyeOfCthulhuGift;
         public bool KingSlimeGift;
+        public bool CrabulonGift;
+        public bool PerforatorGift;
+        public bool HiveMindGift;
+        public bool WallOfFleshGift;
 
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
@@ -17,6 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 ["SkeletronGift"] = SkeletronGift,
                 ["EyeOfCthulhuGift"] = EyeOfCthulhuGift,
                 ["KingSlimeGift"] = KingSlimeGift,
+                ["CrabulonGift"] = CrabulonGift,
+                ["PerforatorGift"] = PerforatorGift,
+                ["HiveMindGift"] = HiveMindGift,
+                ["WallOfFleshGift"] = WallOfFleshGift,
             };
             return tag;
         }
@@ -36,6 +44,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             if (tag.TryGet("KingSlimeGift", out bool ks)) {
                 KingSlimeGift = ks;
+            }
+            if (tag.TryGet("CrabulonGift", out bool c)) {
+                CrabulonGift = c;
+            }
+            if (tag.TryGet("PerforatorGift", out bool p)) {
+                PerforatorGift = p;
+            }
+            if (tag.TryGet("HiveMindGift", out bool h)) {
+                HiveMindGift = h;
+            }
+            if (tag.TryGet("WallOfFleshGift", out bool w)) {
+                WallOfFleshGift = w;
             }
         }
     }
