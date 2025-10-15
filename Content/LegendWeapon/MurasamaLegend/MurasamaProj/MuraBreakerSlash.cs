@@ -492,7 +492,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {
-                modifiers.FinalDamage *= 0.9f;
+                modifiers.FinalDamage *= 0.7f;
             }
 
             if (!target.IsWormBody()) {
