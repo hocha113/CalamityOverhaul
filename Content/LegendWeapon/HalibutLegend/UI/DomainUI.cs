@@ -801,7 +801,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float tooltipAlpha = alpha * 0.98f;
 
             //布局常量
-            float minWidth = 160f;
+            float minWidth = 260f;
             float maxWidth = 380f;
             float horizontalPadding = 14f;
             float rightPadding = 16f;
