@@ -42,11 +42,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         public abstract string LocalizationCategory { get; }
 
-        // 队列与当前状态
+        //队列与当前状态
         protected readonly Queue<DialogueSegment> queue = new();
         protected DialogueSegment current;
 
-        // 打字机
+        //打字机
         protected string[] wrappedLines = Array.Empty<string>();
         protected int visibleCharCount = 0;
         protected int typeTimer = 0;
@@ -54,10 +54,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected bool fastMode = false;
         protected bool finishedCurrent = false;
 
-        // 计数
+        //计数
         protected int playedCount = 0;
 
-        // 面板尺寸
+        //面板尺寸
         protected Vector2 anchorPos;
         protected float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
@@ -66,22 +66,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected virtual int LineSpacing => 6;
         protected abstract float PanelWidth { get; }
 
-        // 展开/收起动画
+        //展开/收起动画
         protected float showProgress = 0f;
         protected float hideProgress = 0f;
         protected virtual float ShowDuration => 18f;
         protected virtual float HideDuration => 14f;
         protected bool closing = false;
 
-        // 内容淡入
+        //内容淡入
         protected float contentFade = 0f;
         protected bool waitingForAdvance = false;
         protected int advanceBlinkTimer = 0;
 
-        // 外部状态
+        //外部状态
         public override bool Active => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
 
-        // 本地化提示
+        //本地化提示
         protected static LocalizedText ContinueHint;
         protected static LocalizedText FastHint;
 
@@ -180,7 +180,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             fastMode = false;
             finishedCurrent = false;
             waitingForAdvance = false;
-            contentFade = 0f;
+            //内容淡入策略:第一段或面板刚出现时才做淡入, 其余段保持为1避免闪烁
+            if (playedCount <= 1 || showProgress < 1f) {
+                contentFade = 0f;
+            } else {
+                contentFade = 1f; //保持全亮
+            }
             if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd)) {
                 foreach (var kv in portraits) {
                     kv.Value.TargetFade = kv.Key == current.Speaker ? 1f : 0f;
@@ -220,7 +225,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         public virtual void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
-            if (current == null && queue.Count > 0 && !closing) StartNext();
+            if (current == null && queue.Count > 0 && !closing) {
+                StartNext();
+            }
             if (!closing) {
                 if (showProgress < 1f && (current != null || queue.Count > 0)) {
                     showProgress += 1f / ShowDuration;
@@ -257,13 +264,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 } else {
                     advanceBlinkTimer++;
                 }
-                if (contentFade < 1f) contentFade += 0.12f;
+                if (contentFade < 1f) {
+                    contentFade += 0.12f;
+                }
             }
             foreach (var kv in portraits) {
                 var p = kv.Value;
-                if (p.Texture == null) continue;
+                if (p.Texture == null) {
+                    continue;
+                }
                 p.Fade = MathHelper.Lerp(p.Fade, p.TargetFade, portraitFadeSpeed);
-                if (p.Fade < 0.01f && p.TargetFade == 0f) p.Fade = 0f;
+                if (p.Fade < 0.01f && p.TargetFade == 0f) {
+                    p.Fade = 0f;
+                }
             }
 
             Vector2 panelPos = anchorPos - new Vector2(PanelWidth / 2f, panelHeight);
@@ -277,7 +290,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected virtual void StyleUpdate(Vector2 panelPos, Vector2 panelSize) { }
 
         protected virtual void HandleInput() {
-            if (current == null) return;
+            if (current == null) {
+                return;
+            }
             if (keyLeftPressState == KeyPressState.Pressed) {
                 if (!finishedCurrent) {
                     visibleCharCount = current.Content.Length;
@@ -288,7 +303,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     StartNext();
                 }
             }
-            if (Main.mouseRight && Main.mouseRightRelease) BeginClose();
+            if (Main.mouseRight && Main.mouseRightRelease) {
+                BeginClose();
+            }
             fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
         }
 
@@ -298,9 +315,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected static float EaseInCubic(float t) => t * t * t;
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (showProgress <= 0.01f && !closing) return;
+            if (showProgress <= 0.01f && !closing) {
+                return;
+            }
             float progress = closing ? (1f - hideProgress) : showProgress;
-            if (progress <= 0f) return;
+            if (progress <= 0f) {
+                return;
+            }
             float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
             float width = PanelWidth;
             float height = panelHeight;
@@ -313,10 +334,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);
         }
 
-        /// <summary>
-        /// 子类实现完整的风格绘制（背景/特效/文字）<br/>
-        /// alpha: 面板整体透明度 (0-1)；contentAlpha: 内容淡入乘积；eased: 展开动画插值(0-1)
-        /// </summary>
+        ///<summary>
+        ///子类实现完整的风格绘制（背景/特效/文字）<br/>
+        ///alpha: 面板整体透明度 (0-1)；contentAlpha: 内容淡入乘积；eased: 展开动画插值(0-1)
+        ///</summary>
         protected abstract void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress);
     }
 }
