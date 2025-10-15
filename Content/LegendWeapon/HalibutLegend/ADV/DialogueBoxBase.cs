@@ -21,10 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public int Index;
             public int Total;
         }
-        
+
         // 移除静态事件，改为由场景主动设置预处理器
         public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
-        
+
         protected class DialogueSegment
         {
             public string Speaker;

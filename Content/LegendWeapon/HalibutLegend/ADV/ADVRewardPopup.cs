@@ -169,16 +169,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     StartNext();
                 }
             }
-            
+
             //检测鼠标悬停状态
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
             isHovering = panelRect.Contains(mousePos.ToPoint());
-            
+
             //只有在悬停时才阻止鼠标交互穿透
             if (isHovering && Active) {
                 player.mouseInterface = true;
             }
-            
+
             //粒子刷新
             Vector2 basePos = ResolveBasePosition(new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f));
             bubbleTimer++;
@@ -226,13 +226,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Vector2 drawPos = anchor - panelSize / 2f;
             drawPos.Y -= MathHelper.Lerp(80f, 0f, slideIn);
             Rectangle rect = new((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
-            
+
             //缓存面板矩形供鼠标检测使用
             panelRect = rect;
-            
+
             //鼠标悬停时添加高亮效果
             float hoverGlow = isHovering ? 0.15f : 0f;
-            
+
             //深海渐层背景条
             int segs = 26;
             for (int i = 0; i < segs; i++) {
