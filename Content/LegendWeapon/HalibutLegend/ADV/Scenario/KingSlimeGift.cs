@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!NPC.downedSlimeKing) {
                 return;
             }
-            
+
             if (ScenarioManager.Start<KingSlimeGift>()) {
                 save.KingSlimeGift = true;
             }

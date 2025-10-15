@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!NPC.downedBoss3) {
                 return;
             }
-            
+
             if (ScenarioManager.Start<SkeletronGift>()) {
                 save.SkeletronGift = true;
             }

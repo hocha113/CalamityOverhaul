@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!NPC.downedBoss1) {
                 return;
             }
-            
+
             if (ScenarioManager.Start<EyeOfCthulhuGift>()) {
                 save.EyeOfCthulhuGift = true;
             }

@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!NPC.downedQueenBee) {
                 return;
             }
-            
+
             if (ScenarioManager.Start<QueenBeeGift>()) {
                 save.QueenBeeGift = true;
             }

@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameSystem;
-using Stubble.Core.Classes;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
