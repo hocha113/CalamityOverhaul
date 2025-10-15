@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -621,18 +622,100 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (layer >= 1 && layer < EyeLayerDescriptions.Length) {
                 var lt = EyeLayerDescriptions[layer];
                 if (lt != null) {
-                    return lt.Value;
+                    string value = lt.Value;
+                    value = value.Replace("[Halibut_Domain]", CWRKeySystem.Halibut_Domain.ToTooltipString());
+                    value = value.Replace("[Halibut_Restart]", CWRKeySystem.Halibut_Restart.ToTooltipString());
+                    value = value.Replace("[Halibut_Clone]", CWRKeySystem.Halibut_Clone.ToTooltipString());
+                    value = value.Replace("[Halibut_Superposition]", CWRKeySystem.Halibut_Superposition.ToTooltipString());
+                    value = value.Replace("[Halibut_Teleport]", CWRKeySystem.Halibut_Teleport.ToTooltipString());
+                    value = value.Replace("[Line]", "______________");
+                    return value;
                 }
             }
             return "Error";
         }
 
         private void DrawEyeTooltip(SpriteBatch spriteBatch, SeaEyeButton eye, float alpha) {
+            //动态尺寸计算，参考 ResurrectionUI 的方式
             int displayLayer = eye.LayerNumberDisplay;
             string title = string.Format(LayerTitleFormat.Value, GetLayerNumeralText(displayLayer));
             string desc = GetDescription(displayLayer);
             float tooltipAlpha = alpha * 0.95f;
-            Vector2 panelSize = new Vector2(160, 110);
+
+            //布局常量
+            float minWidth = 250f;
+            float maxWidth = 360f;
+            float horizontalPadding = 12f; //左侧内边距
+            float rightPadding = 14f;       //右侧内边距
+            float topPadding = 8f;
+            float bottomPadding = 12f;
+            float titleExtra = 6f;          //标题下额外空隙
+            float dividerSpacing = 6f;      //标题与分割线之间
+            float textSpacingTop = 8f;      //正文上间距
+            float lineHeight = 18f;         //正文行高
+
+            //初始工作宽度
+            float workingWidth = minWidth;
+            float contentWidth = workingWidth - horizontalPadding - rightPadding; //有效文字宽度
+
+            //先按最小宽度做一次换行
+            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out int _);
+
+            //测量最长行宽
+            float longest = 0f;
+            foreach (string l in lines) {
+                if (string.IsNullOrWhiteSpace(l)) {
+                    continue;
+                }
+                float w = FontAssets.MouseText.Value.MeasureString(l.TrimEnd('-', ' ')).X;
+                if (w > longest) {
+                    longest = w;
+                }
+            }
+
+            //考虑标题和死机标签宽度
+            float titleWidth = FontAssets.MouseText.Value.MeasureString(title).X;
+            if (eye.IsCrashed) {
+                string crashed = CrashedLabelText.Value;
+                float crashWidth = FontAssets.MouseText.Value.MeasureString(crashed).X * 0.6f + 26f; //标签宽度预留
+                titleWidth += crashWidth;
+            }
+            longest = Math.Max(longest, titleWidth);
+
+            if (longest > contentWidth) {
+                workingWidth = Math.Clamp(longest + horizontalPadding + rightPadding, minWidth, maxWidth);
+                contentWidth = workingWidth - horizontalPadding - rightPadding;
+                lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out _);
+            }
+
+            //统计有效行数
+            int drawLines = 0;
+            foreach (var l in lines) {
+                if (!string.IsNullOrWhiteSpace(l)) {
+                    drawLines++;
+                }
+            }
+
+            //标题高度 (缩放0.85f后的实际高度)
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.85f;
+            float dividerHeight = 1.2f;
+
+            //面板高度计算
+            float panelHeight = topPadding
+                + titleHeight + titleExtra
+                + dividerSpacing + dividerHeight
+                + textSpacingTop + drawLines * lineHeight
+                + bottomPadding;
+
+            //屏幕限制
+            float screenHeightLimit = Main.screenHeight - 40f;
+            if (panelHeight > screenHeightLimit) {
+                panelHeight = screenHeightLimit;
+            }
+
+            Vector2 panelSize = new Vector2(workingWidth, panelHeight);
+
+            //定位（鼠标上方）
             Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
             if (basePos.X + panelSize.X > Main.screenWidth - 20) {
                 basePos.X = Main.screenWidth - panelSize.X - 20;
@@ -640,18 +723,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (basePos.Y < 20) {
                 basePos.Y = 20;
             }
+
             Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            Color shadow = Color.Black * (tooltipAlpha * 0.5f);
+
+            //阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), shadow);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (tooltipAlpha * 0.5f));
+
             float openProg = Math.Min(1f, contentFadeProgress * 1.3f);
             Color bgColor = new Color(25, 35, 55) * (tooltipAlpha * 0.92f);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgColor);
+
             Color borderGlow = Color.CornflowerBlue * (tooltipAlpha * 0.6f * openProg);
             DrawFancyBorder(spriteBatch, panelRect, borderGlow, tooltipAlpha);
-            Vector2 titlePos = basePos + new Vector2(10, 8);
+
+            //标题
+            Vector2 titlePos = new Vector2(panelRect.X + horizontalPadding, panelRect.Y + topPadding);
             Color titleGlow = Color.Gold * (tooltipAlpha * 0.55f);
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4;
@@ -660,12 +749,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, 0.85f);
 
-            // 已死机标签（右上角）
+            //死机标签
             if (eye.IsCrashed) {
                 string crashed = CrashedLabelText.Value;
                 Vector2 crashSize = FontAssets.MouseText.Value.MeasureString(crashed) * 0.6f;
-                Vector2 crashPos = new(panelRect.Right - 10 - crashSize.X, titlePos.Y + 2);
-                // 发光底
+                Vector2 crashPos = new(panelRect.Right - rightPadding - crashSize.X, titlePos.Y + 2);
                 for (int i = 0; i < 4; i++) {
                     float ang = MathHelper.TwoPi * i / 4f;
                     Vector2 off = ang.ToRotationVector2() * 1.1f;
@@ -674,26 +762,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(spriteBatch, crashed, crashPos, new Color(255, 120, 120) * tooltipAlpha, 0.6f);
             }
 
-            Vector2 dividerStart = titlePos + new Vector2(0, 24);
-            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - 20, 0);
+            //分割线
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + titleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - horizontalPadding - rightPadding, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.8f, Color.Gold * tooltipAlpha * 0.1f, 1.2f);
-            Vector2 textPos = dividerStart + new Vector2(0, 8);
-            int wrapWidth = (int)panelSize.X - 20;
-            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
+
+            //正文
+            Vector2 textStart = dividerStart + new Vector2(0, dividerSpacing + textSpacingTop);
             int drawn = 0;
             for (int i = 0; i < lines.Length; i++) {
                 if (string.IsNullOrWhiteSpace(lines[i])) {
                     continue;
                 }
                 string line = lines[i].TrimEnd('-', ' ');
-                Vector2 lp = textPos + new Vector2(4, drawn * 18);
-                if (lp.Y + 16 > panelRect.Bottom - 8) {
-                    break;
+                Vector2 lp = textStart + new Vector2(2, drawn * lineHeight);
+                if (lp.Y + (lineHeight - 2f) > panelRect.Bottom - bottomPadding) {
+                    break; //高度溢出
                 }
                 Utils.DrawBorderString(spriteBatch, line, lp + new Vector2(1, 1), Color.Black * tooltipAlpha * 0.5f, 0.7f);
                 Utils.DrawBorderString(spriteBatch, line, lp, Color.White * tooltipAlpha, 0.7f);
                 drawn++;
             }
+
+            //装饰星星
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
             Vector2 star1 = new Vector2(panelRect.Right - 14, panelRect.Y + 12);
             float s1Alpha = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * tooltipAlpha;
@@ -704,54 +795,102 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawExtraEyeTooltip(SpriteBatch spriteBatch, float alpha) {
+            //动态尺寸
             string title = ExtraEyeTitleText.Value;
             string desc = GetDescription(10);
             float tooltipAlpha = alpha * 0.98f;
-            Vector2 panelSize = new Vector2(170, 120);
-            Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 8);
-            if (basePos.X + panelSize.X > Main.screenWidth - 20) {
-                basePos.X = Main.screenWidth - panelSize.X - 20;
+
+            //布局常量
+            float minWidth = 160f;
+            float maxWidth = 380f;
+            float horizontalPadding = 14f;
+            float rightPadding = 16f;
+            float topPadding = 10f;
+            float bottomPadding = 14f;
+            float titleExtra = 6f;
+            float dividerSpacing = 8f;
+            float textSpacingTop = 10f;
+            float lineHeight = 18f;
+            float titleScale = 0.9f;
+
+            float workingWidth = minWidth;
+            float contentWidth = workingWidth - horizontalPadding - rightPadding;
+
+            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out _);
+
+            float longest = 0f;
+            foreach (var l in lines) {
+                if (string.IsNullOrWhiteSpace(l)) continue;
+                float w = FontAssets.MouseText.Value.MeasureString(l.TrimEnd('-', ' ')).X;
+                if (w > longest) longest = w;
             }
-            if (basePos.Y < 20) {
-                basePos.Y = 20;
+
+            float titleWidth = FontAssets.MouseText.Value.MeasureString(title).X * titleScale;
+            longest = Math.Max(longest, titleWidth);
+
+            if (longest > contentWidth) {
+                workingWidth = Math.Clamp(longest + horizontalPadding + rightPadding, minWidth, maxWidth);
+                contentWidth = workingWidth - horizontalPadding - rightPadding;
+                lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out _);
             }
+
+            int drawLines = 0;
+            foreach (var l in lines) if (!string.IsNullOrWhiteSpace(l)) drawLines++;
+
+            float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * titleScale;
+            float dividerHeight = 1.4f;
+
+            float panelHeight = topPadding
+                + titleHeight + titleExtra
+                + dividerSpacing + dividerHeight
+                + textSpacingTop + drawLines * lineHeight
+                + bottomPadding;
+
+            float screenLimit = Main.screenHeight - 40f;
+            if (panelHeight > screenLimit) panelHeight = screenLimit;
+            Vector2 panelSize = new Vector2(workingWidth, panelHeight);
+
+            Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 10);
+            if (basePos.X + panelSize.X > Main.screenWidth - 20) basePos.X = Main.screenWidth - panelSize.X - 20;
+            if (basePos.Y < 20) basePos.Y = 20;
+
             Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            Color shadow = Color.Black * (tooltipAlpha * 0.55f);
-            Rectangle shadowRect = panelRect;
-            shadowRect.Offset(3, 3);
-            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), shadow);
+
+            //阴影
+            Rectangle shadowRect = panelRect; shadowRect.Offset(3, 3);
+            spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (tooltipAlpha * 0.55f));
+
             Color bgColor = new Color(30, 40, 65) * (tooltipAlpha * 0.95f);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgColor);
+
             Color borderGlow = Color.Gold * (tooltipAlpha * 0.7f);
             DrawFancyBorder(spriteBatch, panelRect, borderGlow, tooltipAlpha);
-            Vector2 titlePos = basePos + new Vector2(12, 10);
+
+            Vector2 titlePos = new Vector2(panelRect.X + horizontalPadding, panelRect.Y + topPadding);
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4;
                 Vector2 offset = ang.ToRotationVector2() * 1.4f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, Color.Gold * tooltipAlpha * 0.55f, 0.9f);
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, Color.Gold * tooltipAlpha * 0.55f, titleScale);
             }
-            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, 0.9f);
-            Vector2 dividerStart = titlePos + new Vector2(0, 26);
-            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - 24, 0);
+            Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, titleScale);
+
+            Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + titleExtra);
+            Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - horizontalPadding - rightPadding, 0);
             DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.85f, Color.Gold * tooltipAlpha * 0.05f, 1.4f);
-            Vector2 textPos = dividerStart + new Vector2(0, 8);
-            int wrapWidth = (int)panelSize.X - 24;
-            string[] lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
+
+            Vector2 textStart = dividerStart + new Vector2(0, dividerSpacing + textSpacingTop);
             int drawn = 0;
             for (int i = 0; i < lines.Length; i++) {
-                if (string.IsNullOrWhiteSpace(lines[i])) {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(lines[i])) continue;
                 string line = lines[i].TrimEnd('-', ' ');
-                Vector2 lp = textPos + new Vector2(4, drawn * 18);
-                if (lp.Y + 16 > panelRect.Bottom - 10) {
-                    break;
-                }
+                Vector2 lp = textStart + new Vector2(2, drawn * lineHeight);
+                if (lp.Y + (lineHeight - 2f) > panelRect.Bottom - bottomPadding) break;
                 Utils.DrawBorderString(spriteBatch, line, lp + new Vector2(1, 1), Color.Black * tooltipAlpha * 0.5f, 0.75f);
                 Utils.DrawBorderString(spriteBatch, line, lp, Color.White * tooltipAlpha, 0.75f);
                 drawn++;
             }
+
             float swirl = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
             Vector2 star = new Vector2(panelRect.Right - 18, panelRect.Bottom - 18);
             DrawStar(spriteBatch, star, 4.5f, Color.Gold * (tooltipAlpha * (0.6f + swirl * 0.4f)));

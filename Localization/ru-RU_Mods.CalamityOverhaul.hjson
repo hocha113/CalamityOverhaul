@@ -2235,7 +2235,7 @@ TextContent: {
 		MachineRebellion_SpawnInfo: Используйте садовый пульт управления ночью
 		MachineRebellion_DespawnMessage: Используйте садовый пульт управления ночью
 		MachineRebellion_DisplayName: Мятеж Машин
-		// Notbound: Mods.CalamityOverhaul.TextContent.CWRLocText.Notbound
+		// Notbound: "[Unbound keys]"
 	}
 }
 
