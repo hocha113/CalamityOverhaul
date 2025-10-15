@@ -313,10 +313,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<DesertScourgeBody>()) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<DesertScourgeHead>() || target.type == ModContent.NPCType<DesertScourgeTail>()) {
-                modifiers.FinalDamage *= 2.5f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<DesertNuisanceHead>()) {
                 modifiers.FinalDamage *= 1.5f;
@@ -337,10 +337,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.BrainofCthulhu) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 1.1f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<BloodlettingServant>() || target.type == NPCID.ServantofCthulhu) {
                 modifiers.FinalDamage *= 1.25f;

@@ -173,10 +173,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<DesertScourgeBody>()) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<DesertScourgeHead>() || target.type == ModContent.NPCType<DesertScourgeTail>()) {
-                modifiers.FinalDamage *= 3f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<DesertNuisanceHead>()) {
                 modifiers.FinalDamage *= 2f;
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<BloodlettingServant>() || target.type == NPCID.ServantofCthulhu) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.8f;
             }
             if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelEmerald>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
                 modifiers.FinalDamage *= 1.5f;
@@ -206,10 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.BrainofCthulhu) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.75f;
             }
             if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.75f;
             }
             if (target.type == ModContent.NPCType<HiveBlob>() || target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
                 modifiers.FinalDamage *= 2f;
