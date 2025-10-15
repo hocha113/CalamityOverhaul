@@ -187,13 +187,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             List<string> allLines = new();
             string[] manual = raw.Split('\n');
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            int wrapWidth = (int)(PanelWidth - Padding * 2 - 24);
+            //计算可用宽度(考虑立绘与文字缩放)
+            float textScale = 0.8f; //与绘制时保持一致
+            float baseWidth = PanelWidth - Padding * 2 - 24f;
+            bool hasPortrait = false;
+            if (!string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null) {
+                hasPortrait = true;
+            }
+            if (hasPortrait) {
+                baseWidth -= (PortraitWidth + 20f); //与绘制 leftOffset 增量同步
+            }
+            if (baseWidth < 60f) {
+                baseWidth = 60f; //最低保障
+            }
+            int wrapWidth = (int)(baseWidth / textScale); //换算为未缩放字体测量宽度
             foreach (var block in manual) {
                 if (string.IsNullOrWhiteSpace(block)) {
                     allLines.Add(string.Empty);
                     continue;
                 }
-                string[] lines = Utils.WordwrapString(block, FontAssets.MouseText.Value, wrapWidth + 40, 20, out int _);
+                string[] lines = Utils.WordwrapString(block, font, wrapWidth, 9999, out int _);
                 foreach (var l in lines) {
                     if (l == null) {
                         continue;
@@ -207,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float contentHeight = textLines * lineHeight + Padding * 2 + 28;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
-        public override void Update() { HandleInput(); }//控制操作在绘制线程中进行，避免高刷新时无法交互
+        public override void Update() { HandleInput(); }
         public virtual void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
             if (current == null && queue.Count > 0 && !closing) {
