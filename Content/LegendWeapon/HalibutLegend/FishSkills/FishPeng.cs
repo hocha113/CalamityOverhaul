@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 60 * (8 - HalibutData.GetDomainLayer() / 2);
 
         private int spawnTimer = 0;
-        private static int MaxActivePenguins = 3 + HalibutData.GetDomainLayer() / 2;
+        private static int MaxActivePenguins => 3 + HalibutData.GetDomainLayer() / 2;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (!Active(player) || Cooldown > 0) {

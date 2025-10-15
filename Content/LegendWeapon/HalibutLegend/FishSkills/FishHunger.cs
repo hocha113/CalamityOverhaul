@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //恶鬼管理系统
         private static readonly List<int> ActiveHungries = new();
-        private static int MaxHungries = (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
+        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

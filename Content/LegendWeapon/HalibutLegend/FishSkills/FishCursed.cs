@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //火焰喷射计数器
         private int flameCounter = 0;
-        private static int FlameInterval = 18 - HalibutData.GetDomainLayer();
+        private static int FlameInterval => 18 - HalibutData.GetDomainLayer();
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
