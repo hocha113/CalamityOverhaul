@@ -87,18 +87,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     if (!FishSkill.UnlockFishs.ContainsKey(Main.mouseItem.type)) {
                         dontStudy = true;//如果不是可以研究的东西也不能被研究啊
                     }
+
                     if (dontStudy) {//你已经研究过这个鱼了
-                        SoundEngine.PlaySound(CWRSound.ButtonZero);
-                    }
-                    else {
                         SoundEngine.PlaySound(SoundID.Grab);
-                        if (isResearching && Item.Alives() && Item.type > ItemID.None) {//正在研究则取出终止
+                        if (isResearching && Main.mouseItem.type == ItemID.None && Item.Alives() && Item.type > ItemID.None) {//正在研究则取出终止
                             Main.mouseItem = Item.Clone();
                             Item.TurnToAir();
                             isResearching = false;
                             researchTimer = 0;
                         }
-                        else if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {//放入新物品开始
+                        else {
+                            SoundEngine.PlaySound(CWRSound.ButtonZero);
+                        }
+                    }
+                    else {
+                        SoundEngine.PlaySound(SoundID.Grab);
+                        if (Main.mouseItem.Alives() && Main.mouseItem.type > ItemID.None) {//放入新物品开始
                             Item = Main.mouseItem.Clone();
                             Item.stack = 1;
                             Main.mouseItem.stack--;

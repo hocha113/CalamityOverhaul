@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System.Collections.Generic;
 using Terraria;
@@ -72,6 +73,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
                 tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
             }
+
+            foreach (var scenario in ADVScenarioBase.Instances) {
+                scenario.SaveData(tag);
+            }
         }
 
         public override void LoadData(TagCompound tag) {
@@ -125,6 +130,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
                 }
+            }
+
+            foreach (var scenario in ADVScenarioBase.Instances) {
+                scenario.LoadData(tag);
             }
         }
     }
