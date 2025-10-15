@@ -6,6 +6,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
@@ -63,6 +65,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             int? appearDuration = null, int? holdDuration = null, int? giveDuration = null, bool requireClick = false,
             Func<Vector2> anchorProvider = null, Vector2? offset = null) {
             var inst = Instance;
+
+            if (text == null && itemId > ItemID.None) {
+                text = itemId < ItemID.Count ?
+                    Language.GetText("ItemName." + ItemID.Search.GetName(itemId)).Value
+                    : ItemLoader.GetItem(itemId).GetLocalization("DisplayName").Value;
+            }
+
             inst.queue.Enqueue(new RewardEntry {
                 ItemId = itemId,
                 Stack = stack <= 0 ? 1 : stack,

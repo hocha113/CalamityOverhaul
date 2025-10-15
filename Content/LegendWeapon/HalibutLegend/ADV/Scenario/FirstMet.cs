@@ -99,9 +99,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
                 return;
             }
 
-            ScenarioManager.Reset<FirstMet>();
-            ScenarioManager.Start<FirstMet>();
-            save.FirstMet = true;
+            if (ScenarioManager.Start<FirstMet>()) {
+                save.FirstMet = true;
+            }
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
