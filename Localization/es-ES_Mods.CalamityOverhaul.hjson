@@ -2321,39 +2321,39 @@ Legend: {
 			}
 
 			EyeOfCthulhuGift: {
-				// R1: 比目鱼
-				// L0: 你的动作被那只巨眼拖成了慢镜头……我还以为你在刻意摆造型
-				// L1: 恭喜，你已经进入‘被注视的阶段’。这意味着……更多戏剧性的麻烦
-				// L2: 拿着，这是克苏鲁鱼。它和同名的神话一样，不太讲逻辑
-				// L3: 小心使用，它会让你误以为自己开眼了。其实那不过是血液里多了点兴奋剂
-				// L4: 我很好奇你会不会开始对月亮眨眼
+				// R1: Halibut
+				// L0: That giant eye dragged your movements into slow motion... I thought you were just striking a pose.
+				// L1: Congratulations, you've entered the 'Watched Stage.' This means... more dramatic messes are on the way.
+				// L2: Take this, it's a Cthulhu Fish. Just like its namesake, it doesn't really follow logic.
+				// L3: Be careful with it. It'll make you think you've opened your third eye, but really, it's just a stimulant in your bloodstream.
+				// L4: I'm curious if you'll start winking at the moon now.
 			}
 
 			KingSlimeGift: {
-				// R1: 比目鱼
-				// L0: 刚才那团蓝色的……你称之为史莱姆？看起来更像是一种情绪的实体化
-				// L1: 或许是物质自我意识试图聚集和进化的一次拙劣尝试。可惜，它没有‘记忆’
-				// L2: 请拿好，这是史莱姆鱼。别挤它，它的心情会爆炸
-				// L3: 你有尝试过用这种生物去炖过汤吗?
-				// L4: 我是说......是的，在海底我们也可以炖汤，海底甚至也有海
+				// R1: Halibut
+				// L0: That blue blob... you call it a slime? It looked more like the physical manifestation of an emotion.
+				// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve. A shame it has no 'memory'.
+				// L2: Here you go, a Slimefish. Don't squeeze it, its feelings might just explode.
+				// L3: Have you ever tried making soup with one of these creatures?
+				// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, sea.
 			}
 
 			QueenBeeGift: {
-				// R1: 比目鱼
+				// R1: Halibut
 				// R2: ???
-				// L0: 我差点以为脸要被埋进巢里舀一口
-				// L1: 不过，我刚才从地上堆积的蜂蜜里摸到了一条鱼
-				// L2: 给，新鲜还热乎的蜂蜜鱼
-				// L3: 我觉得它非常适合做糖醋鲤鱼
+				// L0: For a second there, I thought I was about to get a faceful of honeycomb.
+				// L1: Anyway, I managed to pull a fish out of a pile of honey on the ground.
+				// L2: Here, a fresh and still-warm Honeyfish.
+				// L3: I think it would be perfect for a sweet and sour dish.
 			}
 
 			SkeletronGift: {
-				// R1: 比目鱼
-				// L0: 那可真是一大堆钙质!
-				// L1: 那东西的颅骨结构，让我想起一只失控的意念聚合体
-				// L2: 让我枪管冷却一下，我刚才从这周围捡到了一条鱼
-				// L3: 你看，这是‘骷髅王鱼’，据说它体内的磷质能让夜钓的人思考人生
-				// L4: 走吧，前面还有更抽象的骨头在等着你
+				// R1: Halibut
+				// L0: Now that was a whole lot of calcium!
+				// L1: The cranial structure of that thing... it reminded me of a runaway psychic construct.
+				// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
+				// L3: See? A 'Skeletron Fish.' They say the phosphorus inside makes people who fish at night contemplate the meaning of life.
+				// L4: Let's go. There are even more 'abstract' bones waiting for you up ahead.
 			}
 		}
 	}
