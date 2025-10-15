@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2275,20 +2275,37 @@ Legend: {
 			SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
 		}
 
-		DialogueBox: {
-			ContinueHint: 继续
-			FastHint: 加速
-		}
-
 		SeaDialogueBox: {
-			ContinueHint: 继续
-			FastHint: 加速
+			ContinueHint: Continue
+			FastHint: Accelerate
 		}
 
 		ADV: {
 			FirstMet: {
 				Rolename1: ???
-				Rolename2: 比目鱼
+				Rolename2: Halibut
+				Line0: Sir... your fishing technique could still use a little improvement.
+				Line1: You can call me Dr. Halibut.
+				Line2: Or just Halibut, if you prefer.
+				Line3: Thanks to your hook, I was dragged out of that lifeless sea.
+				Line4: Without you, I’d probably still be stuck in a frozen loop—until I truly died.
+				Line5: That fish you caught was meant to be yours... consider it our first meeting gift.
+				Line6: ...
+				Line7: You’re wondering why I’m here, aren’t you?
+				Line8: I used to be a professor at the Sulphur Sea University, in the Department of Abyssal Studies.
+				Line9: A few years ago, we organized a project—“The Abyssal Ecosystem Survey.”
+				Line10: In the end... I was the only one who returned.
+				Line11: Down in the depths, we encountered something... incomprehensible.
+				Line12: It wasn’t alive, nor was it something that could be “killed.” It was... terror given form—an idea that refused to die.
+				Line13: During my escape, I found an eye beneath a coral tree.
+				Line14: Acting on pure instinct, I swallowed it.
+				Line15: With its power, I opened a domain—tore open a rift, and fled the Abyss.
+				Line16: After that... everything went blank. I must have fallen asleep, until you fished me up.
+				Line17: You look like a Terrarian.
+				Line18: If you’re willing—take me with you.
+				Line19: I’ll help you conquer this land.
+				Line20: In return... help me suppress the resurgence of the eyes within me.
+				Line21: If that’s settled, then let’s start by studying this fish, shall we?
 			}
 		}
 	}

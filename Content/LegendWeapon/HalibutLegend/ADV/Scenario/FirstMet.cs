@@ -10,10 +10,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public override string Key => nameof(FirstMet);
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
+        public static LocalizedText Line0 { get; private set; }
+        public static LocalizedText Line1 { get; private set; }
+        public static LocalizedText Line2 { get; private set; }
+        public static LocalizedText Line3 { get; private set; }
+        public static LocalizedText Line4 { get; private set; }
+        public static LocalizedText Line5 { get; private set; }
+        public static LocalizedText Line6 { get; private set; }
+        public static LocalizedText Line7 { get; private set; }
+        public static LocalizedText Line8 { get; private set; }
+        public static LocalizedText Line9 { get; private set; }
+        public static LocalizedText Line10 { get; private set; }
+        public static LocalizedText Line11 { get; private set; }
+        public static LocalizedText Line12 { get; private set; }
+        public static LocalizedText Line13 { get; private set; }
+        public static LocalizedText Line14 { get; private set; }
+        public static LocalizedText Line15 { get; private set; }
+        public static LocalizedText Line16 { get; private set; }
+        public static LocalizedText Line17 { get; private set; }
+        public static LocalizedText Line18 { get; private set; }
+        public static LocalizedText Line19 { get; private set; }
+        public static LocalizedText Line20 { get; private set; }
+        public static LocalizedText Line21 { get; private set; }
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
+            Line0 = this.GetLocalization(nameof(Line0), () => "先生......你的钓鱼技法，还有一些进步空间");
+            Line1 = this.GetLocalization(nameof(Line1), () => "你可以叫我比目鱼博士");
+            Line2 = this.GetLocalization(nameof(Line2), () => "或者，直接叫我比目鱼也行");
+            Line3 = this.GetLocalization(nameof(Line3), () => "多亏了你的鱼钩，我才从那片死寂的水域里被拽了出来");
+            Line4 = this.GetLocalization(nameof(Line4), () => "要不是你，我大概会一直卡在死机状态，直到真的死去吧");
+            Line5 = this.GetLocalization(nameof(Line5), () => "这条鱼本该是你的收获，现在它成了我们的见面礼");
+            Line6 = this.GetLocalization(nameof(Line6), () => "......");
+            Line7 = this.GetLocalization(nameof(Line7), () => "你是不是在想，我为什么会出现在这里？");
+            Line8 = this.GetLocalization(nameof(Line8), () => "我原本是硫磺海大学深渊研究科的教授");
+            Line9 = this.GetLocalization(nameof(Line9), () => "几年前，我们筹备了一场‘深渊生态采样计划’");
+            Line10 = this.GetLocalization(nameof(Line10), () => "最后能回来的，只剩我一个");
+            Line11 = this.GetLocalization(nameof(Line11), () => "我们在深渊底部，遇到了某种......无法被理解的存在");
+            Line12 = this.GetLocalization(nameof(Line12), () => "它不可能是生物，也不是能被‘杀死’的东西......更像是，概念本身的恐怖");
+            Line13 = this.GetLocalization(nameof(Line13), () => "我在逃亡时，从一棵珊瑚树下发现了一只眼睛");
+            Line14 = this.GetLocalization(nameof(Line14), () => "出于求生本能，我吞下了它");
+            Line15 = this.GetLocalization(nameof(Line15), () => "借助那只眼睛的力量，我开启了一个领域，从深渊中撕开了一条逃生的缝隙");
+            Line16 = this.GetLocalization(nameof(Line16), () => "之后的记忆就模糊了......我陷入沉睡，直到被你钓起来");
+            Line17 = this.GetLocalization(nameof(Line17), () => "你看起来是个泰拉人");
+            Line18 = this.GetLocalization(nameof(Line18), () => "如果你愿意，带上我吧");
+            Line19 = this.GetLocalization(nameof(Line19), () => "我会帮你征服这片陆地");
+            Line20 = this.GetLocalization(nameof(Line20), () => "作为交换......帮我解决体内那些眼球的复苏问题");
+            Line21 = this.GetLocalization(nameof(Line21), () => "没有问题的话，我们就从研究这条鱼开始吧");
         }
 
         protected override void Build() {
@@ -21,25 +65,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HeadADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
-            Add(Rolename1.Value, "先生，你的钓鱼技法还有很大进步空间");
-            Add(Rolename2.Value, "你可以叫我比目鱼博士，或者就叫我比目鱼");
-            Add(Rolename2.Value, "很感谢你的鱼钩把我从水里拽了出来，不然我会一直处于死机状态直到真正死去");
-            Add(Rolename2.Value, "这是你本来应该钓上来的鱼，我抓住了它，作为见面礼");
-            Add(Rolename2.Value, "......");
-            Add(Rolename2.Value, "你想问我为什么在这里吗?");
-            Add(Rolename2.Value, "我所在的硫磺海大学筹备了一场深渊的科考行动");
-            Add(Rolename2.Value, "最后回来的只有我一个人");
-            Add(Rolename2.Value, "我们在深渊下面遭遇了无法理解的存在，那是一种......无法被杀死的恐怖");
-            Add(Rolename2.Value, "我碰巧从一棵珊瑚树下得到了一只诡异的眼睛，将它吞进了体内");
-            Add(Rolename2.Value, "借助它的力量所开启的领域，我逃离了深渊，然后就随机出现在了现在这片水域里");
-            Add(Rolename2.Value, "眼睛的力量很诡异，我在使用后便陷入了沉睡，所以我也不知道过去多久了");
-            Add(Rolename2.Value, "你看起来是泰拉人，我想你可以带上我");
-            Add(Rolename2.Value, "你帮我解决体内那些眼球的复苏问题，我帮你征服这片陆地，如何?");
-            Add(Rolename2.Value, "如果没有问题，就先从研究这条鱼开始吧");
+
+            Add(Rolename1.Value, Line0.Value);
+            Add(Rolename2.Value, Line1.Value);
+            Add(Rolename2.Value, Line2.Value);
+            Add(Rolename2.Value, Line3.Value);
+            Add(Rolename2.Value, Line4.Value);
+            Add(Rolename2.Value, Line5.Value);//5 触发奖励
+            Add(Rolename2.Value, Line6.Value);
+            Add(Rolename2.Value, Line7.Value);
+            Add(Rolename2.Value, Line8.Value);
+            Add(Rolename2.Value, Line9.Value);
+            Add(Rolename2.Value, Line10.Value);
+            Add(Rolename2.Value, Line11.Value);
+            Add(Rolename2.Value, Line12.Value);
+            Add(Rolename2.Value, Line13.Value);
+            Add(Rolename2.Value, Line14.Value);
+            Add(Rolename2.Value, Line15.Value);
+            Add(Rolename2.Value, Line16.Value);
+            Add(Rolename2.Value, Line17.Value);
+            Add(Rolename2.Value, Line18.Value);
+            Add(Rolename2.Value, Line19.Value);
+            Add(Rolename2.Value, Line20.Value);
+            Add(Rolename2.Value, Line21.Value);
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            if (args.Index == 3) {
+            if (args.Index == 5) {
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2325,20 +2325,37 @@ Legend: {
 			SummaryFormat: 状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
 		}
 
-		DialogueBox: {
-			// ContinueHint: 继续
-			// FastHint: 加速
-		}
-
 		SeaDialogueBox: {
-			// ContinueHint: 继续
-			// FastHint: 加速
+			ContinueHint: 继续
+			FastHint: 加速
 		}
 
 		ADV: {
 			FirstMet: {
-				// Rolename1: ???
-				// Rolename2: 比目鱼
+				Rolename1: ???
+				Rolename2: 比目鱼
+				Line0: 先生......你的钓鱼技法，还有一些进步空间
+				Line1: 你可以叫我比目鱼博士
+				Line2: 或者，直接叫我比目鱼也行
+				Line3: 多亏了你的鱼钩，我才从那片死寂的水域里被拽了出来
+				Line4: 要不是你，我大概会一直卡在死机状态，直到真的死去吧
+				Line5: 这条鱼本该是你的收获，现在它成了我们的见面礼
+				Line6: ......
+				Line7: 你是不是在想，我为什么会出现在这里？
+				Line8: 我原本是硫磺海大学深渊研究科的教授
+				Line9: 几年前，我们筹备了一场‘深渊生态采样计划’
+				Line10: 最后能回来的，只剩我一个
+				Line11: 我们在深渊底部，遇到了某种......无法被理解的存在
+				Line12: 它不可能是生物，也不是能被‘杀死’的东西......更像是，概念本身的恐怖
+				Line13: 我在逃亡时，从一棵珊瑚树下发现了一只眼睛
+				Line14: 出于求生本能，我吞下了它
+				Line15: 借助那只眼睛的力量，我开启了一个领域，从深渊中撕开了一条逃生的缝隙
+				Line16: 之后的记忆就模糊了......我陷入沉睡，直到被你钓起来
+				Line17: 你看起来是个泰拉人
+				Line18: 如果你愿意，带上我吧
+				Line19: 我会帮你征服这片陆地
+				Line20: 作为交换......帮我解决体内那些眼球的复苏问题
+				Line21: 没有问题的话，我们就从研究这条鱼开始吧
 			}
 		}
 	}
