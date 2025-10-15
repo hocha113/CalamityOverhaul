@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader; //补充ModLoader引用以使用ILocalizedModType扩展
+using Terraria.ModLoader;
 using static CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.HalibutUIAsset;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
@@ -25,6 +25,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static LocalizedText CrashedLabelText;
         internal static LocalizedText[] EyeLayerDescriptions = new LocalizedText[11];//1-10
         public static LocalizedText LayerTitleFormat;
+
+        private readonly List<ExtraTooltipParticle> extraEyeTooltipParticles = [];
+        private int extraEyeTooltipSpawnTimer = 0;
+        private float extraEyeTooltipPulse = 0f;
+        private float extraEyeTooltipRotation = 0f;
+        private float extraEyeTooltipShock = 0f;
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "海域领域");
@@ -795,23 +801,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawExtraEyeTooltip(SpriteBatch spriteBatch, float alpha) {
-            //动态尺寸
+            //动态尺寸 + 炫酷特效
             string title = ExtraEyeTitleText.Value;
             string desc = GetDescription(10);
             float tooltipAlpha = alpha * 0.98f;
 
             //布局常量
             float minWidth = 260f;
-            float maxWidth = 380f;
-            float horizontalPadding = 14f;
-            float rightPadding = 16f;
-            float topPadding = 10f;
-            float bottomPadding = 14f;
-            float titleExtra = 6f;
+            float maxWidth = 420f;
+            float horizontalPadding = 16f;
+            float rightPadding = 18f;
+            float topPadding = 12f;
+            float bottomPadding = 16f;
+            float titleExtra = 8f;
             float dividerSpacing = 8f;
             float textSpacingTop = 10f;
             float lineHeight = 18f;
-            float titleScale = 0.9f;
+            float titleScale = 0.95f;
 
             float workingWidth = minWidth;
             float contentWidth = workingWidth - horizontalPadding - rightPadding;
@@ -824,61 +830,95 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float w = FontAssets.MouseText.Value.MeasureString(l.TrimEnd('-', ' ')).X;
                 if (w > longest) longest = w;
             }
-
             float titleWidth = FontAssets.MouseText.Value.MeasureString(title).X * titleScale;
             longest = Math.Max(longest, titleWidth);
-
             if (longest > contentWidth) {
                 workingWidth = Math.Clamp(longest + horizontalPadding + rightPadding, minWidth, maxWidth);
                 contentWidth = workingWidth - horizontalPadding - rightPadding;
                 lines = Utils.WordwrapString(desc, FontAssets.MouseText.Value, (int)(contentWidth + 40), 20, out _);
             }
-
-            int drawLines = 0;
-            foreach (var l in lines) if (!string.IsNullOrWhiteSpace(l)) drawLines++;
-
+            int drawLines = 0; foreach (var l in lines) if (!string.IsNullOrWhiteSpace(l)) drawLines++;
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * titleScale;
             float dividerHeight = 1.4f;
-
-            float panelHeight = topPadding
-                + titleHeight + titleExtra
-                + dividerSpacing + dividerHeight
-                + textSpacingTop + drawLines * lineHeight
-                + bottomPadding;
-
-            float screenLimit = Main.screenHeight - 40f;
-            if (panelHeight > screenLimit) panelHeight = screenLimit;
+            float panelHeight = topPadding + titleHeight + titleExtra + dividerSpacing + dividerHeight + textSpacingTop + drawLines * lineHeight + bottomPadding;
+            float screenLimit = Main.screenHeight - 40f; if (panelHeight > screenLimit) panelHeight = screenLimit;
             Vector2 panelSize = new Vector2(workingWidth, panelHeight);
 
-            Vector2 basePos = MousePosition + new Vector2(18, -panelSize.Y - 10);
-            if (basePos.X + panelSize.X > Main.screenWidth - 20) basePos.X = Main.screenWidth - panelSize.X - 20;
-            if (basePos.Y < 20) basePos.Y = 20;
-
+            //位置
+            Vector2 basePos = MousePosition + new Vector2(22, -panelSize.Y - 14);
+            if (basePos.X + panelSize.X > Main.screenWidth - 16) basePos.X = Main.screenWidth - panelSize.X - 16;
+            if (basePos.Y < 16) basePos.Y = 16;
             Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
             Texture2D pixel = TextureAssets.MagicPixel.Value;
 
+            //状态更新
+            extraEyeTooltipPulse += 0.04f;
+            extraEyeTooltipRotation += 0.01f;
+            if (extraEyeTooltipShock < 1f) {
+                extraEyeTooltipShock += 0.08f;
+            }
+            float shockEase = 1f - (float)Math.Pow(1f - extraEyeTooltipShock, 3);
+
+            //生成粒子
+            extraEyeTooltipSpawnTimer++;
+            int targetParticles = 42;
+            if (extraEyeTooltipParticles.Count < targetParticles && extraEyeTooltipSpawnTimer % 2 == 0) {
+                var center = panelRect.Center.ToVector2();
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                float rad = Main.rand.NextFloat(12f, panelRect.Width * 0.45f);
+                extraEyeTooltipParticles.Add(new ExtraTooltipParticle(center, ang, rad));
+            }
+            //更新粒子
+            for (int i = extraEyeTooltipParticles.Count - 1; i >= 0; i--) {
+                extraEyeTooltipParticles[i].Update();
+                if (extraEyeTooltipParticles[i].Dead) extraEyeTooltipParticles.RemoveAt(i);
+            }
+
             //阴影
-            Rectangle shadowRect = panelRect; shadowRect.Offset(3, 3);
+            Rectangle shadowRect = panelRect; shadowRect.Offset(4, 4);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (tooltipAlpha * 0.55f));
 
-            Color bgColor = new Color(30, 40, 65) * (tooltipAlpha * 0.95f);
+            //背景渐变 (两层脉动)
+            Color bgA = new Color(20, 32, 58) * (tooltipAlpha * 0.95f);
+            Color bgB = new Color(40, 64, 96) * (tooltipAlpha * 0.25f * (0.6f + 0.4f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f)));
+            Color bgColor = new Color(
+                (byte)Math.Clamp(bgA.R + bgB.R, 0, 255),
+                (byte)Math.Clamp(bgA.G + bgB.G, 0, 255),
+                (byte)Math.Clamp(bgA.B + bgB.B, 0, 255),
+                (byte)Math.Clamp(bgA.A + bgB.A, 0, 255)
+            );
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            Color borderGlow = Color.Gold * (tooltipAlpha * 0.7f);
+            //内部径向辉光 (pulse)
+            float radial = (float)Math.Sin(extraEyeTooltipPulse * 2.2f) * 0.5f + 0.5f;
+            Rectangle innerGlow = panelRect; innerGlow.Inflate(-4, -4);
+            spriteBatch.Draw(pixel, innerGlow, new Rectangle(0, 0, 1, 1), new Color(80, 140, 220) * (tooltipAlpha * 0.07f * radial));
+
+            //外圈脉冲环 (两层旋转渐隐线条)
+            float ringAlpha = 0.18f * tooltipAlpha;
+            DrawRotatingRing(spriteBatch, panelRect, 0.92f + 0.02f * (float)Math.Sin(extraEyeTooltipPulse * 3f), ringAlpha, 34, 2f, 0.8f, 0f);
+            DrawRotatingRing(spriteBatch, panelRect, 0.88f, ringAlpha * 0.8f, 20, 3f, 1.2f, extraEyeTooltipRotation * 1.6f);
+
+            //边框 (动态颜色)
+            float edgeWave = (float)Math.Sin(extraEyeTooltipPulse * 2.5f) * 0.5f + 0.5f;
+            Color borderGlow = Color.Lerp(new Color(120, 200, 255), new Color(255, 210, 90), edgeWave) * (tooltipAlpha * 0.7f);
             DrawFancyBorder(spriteBatch, panelRect, borderGlow, tooltipAlpha);
 
+            //标题
             Vector2 titlePos = new Vector2(panelRect.X + horizontalPadding, panelRect.Y + topPadding);
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4;
-                Vector2 offset = ang.ToRotationVector2() * 1.4f;
-                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, Color.Gold * tooltipAlpha * 0.55f, titleScale);
+                Vector2 offset = ang.ToRotationVector2() * (1.8f + 0.6f * shockEase);
+                Utils.DrawBorderString(spriteBatch, title, titlePos + offset, borderGlow * 0.55f, titleScale);
             }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * tooltipAlpha, titleScale);
 
+            //分割线
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + titleExtra);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - horizontalPadding - rightPadding, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, Color.Gold * tooltipAlpha * 0.85f, Color.Gold * tooltipAlpha * 0.05f, 1.4f);
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, borderGlow * 0.85f, borderGlow * 0.08f, 1.4f);
 
+            //正文
             Vector2 textStart = dividerStart + new Vector2(0, dividerSpacing + textSpacingTop);
             int drawn = 0;
             for (int i = 0; i < lines.Length; i++) {
@@ -887,13 +927,97 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Vector2 lp = textStart + new Vector2(2, drawn * lineHeight);
                 if (lp.Y + (lineHeight - 2f) > panelRect.Bottom - bottomPadding) break;
                 Utils.DrawBorderString(spriteBatch, line, lp + new Vector2(1, 1), Color.Black * tooltipAlpha * 0.5f, 0.75f);
-                Utils.DrawBorderString(spriteBatch, line, lp, Color.White * tooltipAlpha, 0.75f);
+                Utils.DrawBorderString(spriteBatch, line, lp, new Color(235, 245, 255) * tooltipAlpha, 0.75f);
                 drawn++;
             }
 
-            float swirl = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
-            Vector2 star = new Vector2(panelRect.Right - 18, panelRect.Bottom - 18);
-            DrawStar(spriteBatch, star, 4.5f, Color.Gold * (tooltipAlpha * (0.6f + swirl * 0.4f)));
+            //粒子绘制（在内容之上，边框之下）
+            foreach (var p in extraEyeTooltipParticles) {
+                p.Draw(spriteBatch, tooltipAlpha);
+            }
+
+            //角落星芒
+            float starTime = Main.GlobalTimeWrappedHourly * 4f;
+            Vector2 star1 = new Vector2(panelRect.Right - 18, panelRect.Y + 14);
+            Vector2 star2 = new Vector2(panelRect.Left + 18, panelRect.Bottom - 16);
+            float s1Alpha = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * tooltipAlpha;
+            float s2Alpha = ((float)Math.Sin(starTime + MathHelper.PiOver2) * 0.5f + 0.5f) * tooltipAlpha;
+            DrawStar(spriteBatch, star1, 5f, borderGlow * s1Alpha);
+            DrawStar(spriteBatch, star2, 4f, borderGlow * s2Alpha);
+
+            //中心能量脉冲 (轻微)
+            float centerPulse = (float)Math.Sin(extraEyeTooltipPulse * 3.2f) * 0.5f + 0.5f;
+            Rectangle core = panelRect;
+            int shrinkX = (int)(panelRect.Width * 0.45f);
+            int shrinkY = (int)(panelRect.Height * 0.55f);
+            core.Inflate(-shrinkX, -shrinkY);
+            if (core.Width > 2 && core.Height > 2) {
+                spriteBatch.Draw(pixel, core, new Rectangle(0, 0, 1, 1), new Color(120, 210, 255) * (tooltipAlpha * 0.07f * centerPulse));
+            }
+        }
+
+        private static void DrawRotatingRing(SpriteBatch sb, Rectangle rect, float radiusFactor, float alpha, int segments, float thickness, float distortion, float rotationOffset) {
+            if (alpha <= 0f) return;
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Vector2 center = rect.Center.ToVector2();
+            float baseRadius = MathF.Min(rect.Width, rect.Height) * 0.5f * radiusFactor;
+            float time = Main.GlobalTimeWrappedHourly + rotationOffset;
+            float step = MathHelper.TwoPi / segments;
+            Vector2 prev = center + (0f + time).ToRotationVector2() * baseRadius;
+            for (int i = 1; i <= segments; i++) {
+                float ang = i * step + time;
+                float noise = (float)Math.Sin(ang * 3f + time * 4f) * distortion;
+                float r = baseRadius + noise;
+                Vector2 cur = center + ang.ToRotationVector2() * r;
+                Vector2 diff = cur - prev; float len = diff.Length(); if (len > 0.01f) {
+                    float rot = diff.ToRotation();
+                    Color col = new Color(180, 230, 255) * (alpha * (0.6f + 0.4f * (float)Math.Sin(ang * 2f + time * 5f)));
+                    sb.Draw(pixel, prev, new Rectangle(0, 0, 1, 1), col, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
+                }
+                prev = cur;
+            }
+        }
+
+        private class ExtraTooltipParticle
+        {
+            private Vector2 center;
+            private float angle;
+            private float radius;
+            private float speed;
+            private float radialDrift;
+            private float alpha;
+            private float scale;
+            private int life;
+            private int maxLife;
+            public bool Dead => alpha <= 0f || life > maxLife;
+            public ExtraTooltipParticle(Vector2 c, float ang, float r) {
+                center = c;
+                angle = ang;
+                radius = r;
+                speed = Main.rand.NextFloat(0.01f, 0.035f) * (Main.rand.NextBool() ? 1f : -1f);
+                radialDrift = Main.rand.NextFloat(-0.05f, 0.05f);
+                alpha = 0f;
+                scale = Main.rand.NextFloat(1.2f, 2.4f);
+                life = 0;
+                maxLife = Main.rand.Next(90, 160);
+            }
+            public void Update() {
+                life++;
+                angle += speed;
+                radius += radialDrift;
+                if (radius < 6f) radius = 6f;
+                if (life < 20) alpha = MathHelper.Lerp(alpha, 1f, 0.15f);
+                else if (life > maxLife - 25) alpha *= 0.9f;
+                else alpha *= 0.995f;
+            }
+            public void Draw(SpriteBatch sb, float globalAlpha) {
+                if (Dead) return;
+                Texture2D pixel = TextureAssets.MagicPixel.Value;
+                Vector2 pos = center + angle.ToRotationVector2() * radius;
+                Color col = Color.Lerp(new Color(120, 200, 255), new Color(255, 220, 140), (float)Math.Sin(angle * 2f) * 0.5f + 0.5f) * (alpha * globalAlpha * 0.6f);
+                sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), col, angle, new Vector2(0.5f, 0.5f), new Vector2(scale * 3f, scale), SpriteEffects.None, 0f);
+                sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), col * 0.5f, angle + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale * 2f, scale * 0.6f), SpriteEffects.None, 0f);
+            }
         }
 
         private static string GetLayerNumeralText(int i) {
@@ -927,7 +1051,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             };
         }
 
-        private void DrawFancyBorder(SpriteBatch spriteBatch, Rectangle rect, Color glow, float alpha) {
+        private static void DrawFancyBorder(SpriteBatch spriteBatch, Rectangle rect, Color glow, float alpha) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Rectangle top = new Rectangle(rect.X, rect.Y, rect.Width, 1);
             Rectangle bottom = new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1);
@@ -944,7 +1068,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawCorner(spriteBatch, new Vector2(rect.Left, rect.Bottom), corner, MathHelper.Pi + MathHelper.PiOver2);
         }
 
-        private void DrawCorner(SpriteBatch spriteBatch, Vector2 pos, Color color, float rot) {
+        private static void DrawCorner(SpriteBatch spriteBatch, Vector2 pos, Color color, float rot) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             for (int i = 0; i < 3; i++) {
                 float len = 6 - i * 2;
@@ -952,7 +1076,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();

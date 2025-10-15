@@ -450,7 +450,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glowTex = TextureAssets.Extra[98].Value; //发光材质
+            Texture2D glowTex = TextureAssets.Extra[ExtrasID.SharpTears].Value; //发光材质
 
             //绘制发光拖尾
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
@@ -814,7 +814,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glowTex = TextureAssets.Extra[98].Value;
+            Texture2D glowTex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
 
             //绘制闪电拖尾
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
