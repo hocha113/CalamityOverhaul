@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
 {
-    internal class YharonGift : ADVScenarioBase, ILocalizedModType
+    internal class CrabulonGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(YharonGift);
+        public override string Key => nameof(CrabulonGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "丛林龙，嗯......应该叫它焚世之龙，它燃烧的并非肉体，而是执念");
-            L1 = this.GetLocalization(nameof(L1), () => "忠诚到愿意为主人燃尽自己，这种纯粹让我想起海底那些守护珊瑚礁的鱼群");
-            L2 = this.GetLocalization(nameof(L2), () => "猩红虎鱼，从火焰的中心提取的。它的条纹像是被火焰烙印上去的誓言");
-            L3 = this.GetLocalization(nameof(L3), () => "握着它会感觉到一种灼热的决心。那是属于战士的温度");
-            L4 = this.GetLocalization(nameof(L4), () => "你击败了它，但我怀疑……它在倒下的瞬间，是否终于获得了解脱");
+            L0 = this.GetLocalization(nameof(L0), () => "那团蘑菇状的……生物？它的菌盖下藏着的究竟是智慧还是本能");
+            L1 = this.GetLocalization(nameof(L1), () => "你知道吗，蘑菇的菌丝网络可以传递信息。也许它刚才在向同伴求救");
+            L2 = this.GetLocalization(nameof(L2), () => "这是蘑菇鱼，从它身上散发出的孢子里提取的");
+            L3 = this.GetLocalization(nameof(L3), () => "别担心，这些孢子不会让你变成菌类……大概");
+            L4 = this.GetLocalization(nameof(L4), () => "不过如果你突然想在阴暗潮湿的地方扎根，记得告诉我");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.CrimsonTigerfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.AmanitaFungifin, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.YharonGift) {
+            if (save.CrabulonGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed28.Invoke()) {
+            if (!InWorldBossPhase.Downed2.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<YharonGift>()) {
-                save.YharonGift = true;
+            if (ScenarioManager.Start<CrabulonGift>()) {
+                save.CrabulonGift = true;
             }
         }
     }

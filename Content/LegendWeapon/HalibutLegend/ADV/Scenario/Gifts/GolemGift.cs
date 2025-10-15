@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
 {
-    internal class SlimeGodGift : ADVScenarioBase, ILocalizedModType
+    internal class GolemGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SlimeGodGift);
+        public override string Key => nameof(GolemGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "三个史莱姆，呃，或者说一个分裂的神性？这种二元对立的存在形式很有意思");
-            L1 = this.GetLocalization(nameof(L1), () => "腐化与猩红，就像这个世界永恒的矛盾。而你刚才证明了矛盾可以被'解决'");
-            L2 = this.GetLocalization(nameof(L2), () => "这是杂色猪油鱼，从那堆粘液里捞出来的。别问我为什么叫这个名字");
-            L3 = this.GetLocalization(nameof(L3), () => "它的颜色会随着观察者的心情改变，或者说，它在模仿你内心的混乱");
-            L4 = this.GetLocalization(nameof(L4), () => "如果你盯着它看太久，可能会开始思考自己到底属于哪一边");
+            L0 = this.GetLocalization(nameof(L0), () => "一堆会动的石头，古代文明的遗产，或者说是他们失败的证明");
+            L1 = this.GetLocalization(nameof(L1), () => "它守护着什么吗？还是只是在重复一个早已失去意义的程序？");
+            L2 = this.GetLocalization(nameof(L2), () => "岩鱼，从神殿的地基里挖出来的。它的密度高到让我怀疑重力是不是坏了");
+            L3 = this.GetLocalization(nameof(L3), () => "我以前试着煮过它，但我的锅先投降了");
+            L4 = this.GetLocalization(nameof(L4), () => "......有些东西存在的意义就是让人意识到，并非所有问题都需要被解决");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.VariegatedLardfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Rockfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.SlimeGodGift) {
+            if (save.GolemGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed5.Invoke()) {
+            if (!InWorldBossPhase.DownedV7.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<SlimeGodGift>()) {
-                save.SlimeGodGift = true;
+            if (ScenarioManager.Start<GolemGift>()) {
+                save.GolemGift = true;
             }
         }
     }

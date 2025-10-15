@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
 {
-    internal class CryogenGift : ADVScenarioBase, ILocalizedModType
+    internal class BrimstoneElementalGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(CryogenGift);
+        public override string Key => nameof(BrimstoneElementalGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一团被冰冻的灵魂......温度低到连时间都想躺下来休息");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？寒冷的尽头并非死亡，是一种永恒的静止");
-            L2 = this.GetLocalization(nameof(L2), () => "霜鲦鱼，从冰晶碎片里解冻出来的。它还保持着被冻结时的姿态");
-            L3 = this.GetLocalization(nameof(L3), () => "据说吃了它会让你的血液降温，思维变得异常清醒");
-            L4 = this.GetLocalization(nameof(L4), () => "不过别多吃，除非你真的想成为一个冰雕");
+            L0 = this.GetLocalization(nameof(L0), () => "硫磺与火焰的化身，她的存在就是一场燃烧的演讲，不过我们还是成功让她闭嘴了");
+            L1 = this.GetLocalization(nameof(L1), () => "有些元素不是被创造的，而是从世界的裂缝中渗出来的愤怒");
+            L2 = this.GetLocalization(nameof(L2), () => "黑曜鱼，熔岩冷却的瞬间凝固产物。它的鳞片比仇恨还要坚硬");
+            L3 = this.GetLocalization(nameof(L3), () => "小心，它可能会在你手里自燃，不是物理上的，而是概念上的");
+            L4 = this.GetLocalization(nameof(L4), () => "毕竟有些愤怒是会传染的");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.FrostMinnow, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Obsidifish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.CryogenGift) {
+            if (save.BrimstoneElementalGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed6.Invoke()) {
+            if (!InWorldBossPhase.Downed7.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<CryogenGift>()) {
-                save.CryogenGift = true;
+            if (ScenarioManager.Start<BrimstoneElementalGift>()) {
+                save.BrimstoneElementalGift = true;
             }
         }
     }

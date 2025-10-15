@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
 {
-    internal class PlanteraGift : ADVScenarioBase, ILocalizedModType
+    internal class HiveMindGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(PlanteraGift);
+        public override string Key => nameof(HiveMindGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一朵花……如果'花'这个词可以用来形容那种会吃人的藤蔓聚合体");
-            L1 = this.GetLocalization(nameof(L1), () => "丛林的愤怒以植物的形式生长。大自然的报复从来不讲道理");
-            L2 = this.GetLocalization(nameof(L2), () => "双鳕鱼，它有两个头。丛林就像是陆地上的海洋，两者的东西不需要理由就能长出多余的部位");
-            L3 = this.GetLocalization(nameof(L3), () => "据说两个头意味着双倍的智慧，但看起来它们只是在互相争论该往哪游");
-            L4 = this.GetLocalization(nameof(L4), () => "就像减肥和食欲，永远在吵架，但谁也说服不了谁");
+            L0 = this.GetLocalization(nameof(L0), () => "一个由腐败构成的集体意识……真是让人不适的概念");
+            L1 = this.GetLocalization(nameof(L1), () => "它的思维方式一定很特别，无数腐烂的碎片拼凑成一个扭曲的整体");
+            L2 = this.GetLocalization(nameof(L2), () => "给，腐烂鱼。从那堆腐肉里捞出来的，别问我怎么做到的");
+            L3 = this.GetLocalization(nameof(L3), () => "虽然闻起来像是被遗忘在阳光下三天的海鲜");
+            L4 = this.GetLocalization(nameof(L4), () => "但据说它能让人产生一种……与腐败共鸣的感觉。听起来就不太对劲");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.DoubleCod, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.EaterofPlankton, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.PlanteraGift) {
+            if (save.HiveMindGift) {
                 return;
             }
-            if (!InWorldBossPhase.VDownedV7.Invoke()) {
+            if (!InWorldBossPhase.Downed3.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<PlanteraGift>()) {
-                save.PlanteraGift = true;
+            if (ScenarioManager.Start<HiveMindGift>()) {
+                save.HiveMindGift = true;
             }
         }
     }

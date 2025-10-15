@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
 {
-    internal class SupremeCalamitasGift : ADVScenarioBase, ILocalizedModType
+    internal class DevourerOfGodsGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupremeCalamitasGift);
+        public override string Key => nameof(DevourerOfGodsGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "至尊灾厄……她是复仇的化身，是被背叛淬炼出的完美武器");
-            L1 = this.GetLocalization(nameof(L1), () => "我们刚才做的，是终结了一个传说。还是创造了一个新的开始？");
-            L2 = this.GetLocalization(nameof(L2), () => "公主鱼，从灾厄余烬中诞生的。它带着一种矛盾的优雅，就像在废墟上盛开的花");
-            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到自己最想成为的样子，但那个样子往往是最不像自己的");
-            L4 = this.GetLocalization(nameof(L4), () => "恭喜，你站在了力量的顶点，接下来……就是漫长的下坡路了");
+            L0 = this.GetLocalization(nameof(L0), () => "神明吞噬者……一条以神为食的宇宙之蛇。它的胃口和它的野心一样无限");
+            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？当你凝视深渊时，深渊也在凝视你。但这家伙不止凝视，它还想把你当零食");
+            L2 = this.GetLocalization(nameof(L2), () => "霓虹四脚鱼，从虚空裂隙里飘出来的。它发出的光不属于这个维度");
+            L3 = this.GetLocalization(nameof(L3), () => "看着它会让你的大脑尝试理解不该理解的颜色。这是一种……独特的体验");
+            L4 = this.GetLocalization(nameof(L4), () => "如果你开始看到新的颜色，恭喜。如果你开始闻到颜色，那就该休息了");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.PrincessFish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.NeonTetra, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.SupremeCalamitasGift) {
+            if (save.DevourerOfGodsGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed30.Invoke()) {
+            if (!InWorldBossPhase.Downed27.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<SupremeCalamitasGift>()) {
-                save.SupremeCalamitasGift = true;
+            if (ScenarioManager.Start<DevourerOfGodsGift>()) {
+                save.DevourerOfGodsGift = true;
             }
         }
     }
