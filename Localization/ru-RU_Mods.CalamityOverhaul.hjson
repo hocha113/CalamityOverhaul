@@ -5637,7 +5637,7 @@ FishSkill: {
 		// Studied: An ordinary fish with surprisingly extraordinary potential.
 	}
 
-	Sparkling: {
+	FishSparkling: {
 		// DisplayName: Radiant Queen’s Waltz
 		/* Tooltip:
 			'''

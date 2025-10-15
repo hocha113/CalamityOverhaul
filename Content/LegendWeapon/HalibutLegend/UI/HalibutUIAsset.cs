@@ -5,6 +5,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     [VaultLoaden(CWRConstant.UI + "Halibut/")]//用反射标签加载对应文件夹下的所有资源
     internal static class HalibutUIAsset
     {
+        //帽子纹理，大小38*30
+        public static Texture2D Cap = null;
         //奈落之眼纹理，共四帧动画，第一帧是闭眼，第二帧是睁眼，单帧大小40(宽)*30(高)，后面两帧是死机版本，大小和状态同上
         public static Texture2D SeaEye = null;
         //按钮，大小46*26

@@ -74,6 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             spriteBatch.Draw(Head, UIHitBox, Color.White);
 
+            HalibutUILeftSidebar.Instance.PostDraw(spriteBatch);
+
             if (FishSkill == null) {
                 return;
             }
@@ -82,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             GearProgress.Value.Parameters["Rotation"].SetValue(-MathHelper.PiOver2);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, GearProgress.Value, Main.UIScaleMatrix);
-            spriteBatch.Draw(FishSkill.Icon, DrawPosition + new Vector2(14), null, Color.White);//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
+            spriteBatch.Draw(FishSkill.Icon, DrawPosition + new Vector2(28, 22), null, Color.White);//添加一个14的偏移量让这个技能图标刚好覆盖眼睛
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
         }
@@ -109,13 +111,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Size = LeftSidebar.Size();
             int topHeight = (int)((Size.Y - 60) * Sengs);//侧边栏要抬高的距离，减60是为了让侧边栏别完全升出来
-            DrawPosition = new Vector2(0, Main.screenHeight - HalibutUIHead.Instance.Size.Y - 20 - topHeight);//28刚好是侧边栏顶部高礼帽的高度
+            DrawPosition = new Vector2(0, Main.screenHeight - HalibutUIHead.Instance.Size.Y - 14 - topHeight);//14刚好是侧边栏顶部高礼帽的高度
             UIHitBox = DrawPosition.GetRectangle(Size);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
         }
         public override void Draw(SpriteBatch spriteBatch) {
             //他妈的我不知道为什么这里裁剪画布不生效，那么就这么将就着画吧，反正插穿鱼头也没人在意，就像他妈的澳大利亚人要打多少只袋鼠一样无聊
             spriteBatch.Draw(LeftSidebar, UIHitBox, Color.White);
+        }
+        public void PostDraw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(Cap, DrawPosition + new Vector2(4, 0), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
         }
     }
 

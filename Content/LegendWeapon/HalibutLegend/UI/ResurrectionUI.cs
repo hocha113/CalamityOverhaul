@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Vector2 headPos = HalibutUIHead.Instance.DrawPosition;
             Vector2 headSize = HalibutUIHead.Instance.Size;
-            DrawPosition = headPos + new Vector2(headSize.X / 2 + 20, 40);
+            DrawPosition = headPos + new Vector2(headSize.X / 2 + 24, 50);
             Size = HalibutUIAsset.Resurrection.Size();
 
             UIHitBox = DrawPosition.GetRectangle(Size);
