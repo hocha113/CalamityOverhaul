@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
@@ -27,7 +28,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected abstract void Build();
 
         protected override void VaultRegister() => ScenarioManager.Register(this);
-        public override void VaultSetup() => DialogueBoxBase.OnPreProcessSegment += PreProcessSegment;
+        public override void VaultSetup() {
+            DialogueBoxBase.OnPreProcessSegment += PreProcessSegment;
+            SetStaticDefaults();
+        }
         public override void Unload() => DialogueBoxBase.OnPreProcessSegment -= PreProcessSegment;
 
         public virtual void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) { }

@@ -1,32 +1,45 @@
 ﻿using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
 {
-    internal class FirstMet : ADVScenarioBase
+    internal class FirstMet : ADVScenarioBase, ILocalizedModType
     {
         public override string Key => nameof(FirstMet);
-        private bool rewardGiven;
+        public static LocalizedText Rolename1 { get; private set; }
+        public static LocalizedText Rolename2 { get; private set; }
+        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override void SetStaticDefaults() {
+            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
+            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
+        }
+
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait("？？？", ADVAsset.HeadADV);
-            DialogueBoxBase.SetPortraitStyle("？？？", silhouette: true);
-            DialogueBoxBase.RegisterPortrait("哈利鲈特", ADVAsset.HeadADV);
-            DialogueBoxBase.SetPortraitStyle("哈利鲈特", silhouette: false);
-            Add("？？？", "你是谁？");
-            Add("？？？", "你为什么会在这里？");
-            Add("？？？", "你是来救我的？");
-            Add("？？？", "谢谢你！");
-            Add("？？？", "我叫做哈利鲈特，是一条鱼。");
-            Add("哈利鲈特", "我被困在这个地方很久了，能见到人类真是太好了！");
-            Add("哈利鲈特", "你能帮我出去吗？");
-            Add("哈利鲈特", "我知道一个地方，那里有一条通往外界的路。");
-            Add("哈利鲈特", "但是路上有很多危险的怪物，我需要你的帮助。");
-            Add("哈利鲈特", "我们一起去吧！");
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
+            Add(Rolename1.Value, "先生，你的钓鱼技法还有很大进步空间");
+            Add(Rolename2.Value, "你可以叫我比目鱼博士，或者就叫我比目鱼");
+            Add(Rolename2.Value, "很感谢你的鱼钩把我从水里拽了出来，不然我会一直处于死机状态直到真正死去");
+            Add(Rolename2.Value, "这是你本来应该钓上来的鱼，我抓住了它，作为见面礼");
+            Add(Rolename2.Value, "......");
+            Add(Rolename2.Value, "你想问我为什么在这里吗?");
+            Add(Rolename2.Value, "我所在的硫磺海大学筹备了一场深渊的科考行动");
+            Add(Rolename2.Value, "最后回来的只有我一个人");
+            Add(Rolename2.Value, "我们在深渊下面遭遇了无法理解的存在，那是一种......无法被杀死的恐怖");
+            Add(Rolename2.Value, "我碰巧从一棵珊瑚树下得到了一只诡异的眼睛，将它吞进了体内");
+            Add(Rolename2.Value, "借助它的力量所开启的领域，我逃离了深渊，然后就随机出现在了现在这片水域里");
+            Add(Rolename2.Value, "眼睛的力量很诡异，我在使用后便陷入了沉睡，所以我也不知道过去多久了");
+            Add(Rolename2.Value, "你看起来是泰拉人，我想你可以带上我");
+            Add(Rolename2.Value, "你帮我解决体内那些眼球的复苏问题，我帮你征服这片陆地，如何?");
+            Add(Rolename2.Value, "如果没有问题，就先从研究这条鱼开始吧");
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 3) {
-                rewardGiven = true;
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;

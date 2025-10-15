@@ -2334,6 +2334,13 @@ Legend: {
 			// ContinueHint: 继续
 			// FastHint: 加速
 		}
+
+		ADV: {
+			FirstMet: {
+				// Rolename1: ???
+				// Rolename2: 比目鱼
+			}
+		}
 	}
 
 	MuraText: {

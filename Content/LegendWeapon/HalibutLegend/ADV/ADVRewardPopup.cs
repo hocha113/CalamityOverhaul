@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = -0.2f });
         }
         public override void Update() {
-            if (!givingOut) {
+            if (!givingOut && current != null) {
                 float appearT = current.AppearDuration > 0 ? Math.Clamp(stateTimer / (float)current.AppearDuration, 0f, 1f) : 1f;
                 if (appearT >= 1f) {
                     current.Hold++;
