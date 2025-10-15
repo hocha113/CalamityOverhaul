@@ -217,7 +217,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             wrappedLines = allLines.ToArray();
             int textLines = wrappedLines.Length;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
-            float contentHeight = textLines * lineHeight + Padding * 2 + 28;
+            int headerHeight = 36; //与绘制中 textBlockOffsetY = Padding + 36 对齐, 原28会截断导致只能显示一行
+            float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
         public override void Update() { HandleInput(); }
