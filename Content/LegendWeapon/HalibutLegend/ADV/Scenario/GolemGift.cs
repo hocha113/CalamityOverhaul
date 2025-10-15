@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
             L0 = this.GetLocalization(nameof(L0), () => "一堆会动的石头，古代文明的遗产，或者说是他们失败的证明");
             L1 = this.GetLocalization(nameof(L1), () => "它守护着什么吗？还是只是在重复一个早已失去意义的程序？");
             L2 = this.GetLocalization(nameof(L2), () => "岩鱼，从神殿的地基里挖出来的。它的密度高到让我怀疑重力是不是坏了");
-            L3 = this.GetLocalization(nameof(L3), () => "我以前试着试着煮过它，但我的锅先投降了");
+            L3 = this.GetLocalization(nameof(L3), () => "我以前试着煮过它，但我的锅先投降了");
             L4 = this.GetLocalization(nameof(L4), () => "......有些东西存在的意义就是让人意识到，并非所有问题都需要被解决");
         }
         protected override void Build() {
