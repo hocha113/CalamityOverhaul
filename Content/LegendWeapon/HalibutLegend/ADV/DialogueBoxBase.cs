@@ -78,6 +78,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected bool waitingForAdvance = false;
         protected int advanceBlinkTimer = 0;
 
+        //头像切换过渡
+        protected string lastSpeaker;
+        protected float speakerSwitchProgress = 1f; //0-1 新头像出现动画
+        protected float speakerSwitchSpeed = 0.14f;
+
         //外部状态
         public override bool Active => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
 
@@ -149,6 +154,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         #endregion
 
         protected virtual void BeginClose() {
+            if (closing) {
+                return;
+            }
             closing = true;
             hideProgress = 0f;
         }
@@ -174,6 +182,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 current.Speaker = args.Speaker;
                 current.Content = args.Content;
             }
+            //头像切换检测
+            if (current != null) {
+                if (current.Speaker != lastSpeaker) {
+                    lastSpeaker = current.Speaker;
+                    speakerSwitchProgress = 0f;
+                }
+            }
             WrapCurrent();
             visibleCharCount = 0;
             typeTimer = 0;
@@ -184,7 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (playedCount <= 1 || showProgress < 1f) {
                 contentFade = 0f;
             } else {
-                contentFade = 1f; //保持全亮
+                contentFade = 1f;
             }
             if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd)) {
                 foreach (var kv in portraits) {
@@ -242,6 +257,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         queue.Clear();
                         closing = false;
                         showProgress = 0f;
+                        lastSpeaker = null;
+                        speakerSwitchProgress = 1f;
                     }
                 }
             }
@@ -266,6 +283,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 if (contentFade < 1f) {
                     contentFade += 0.12f;
+                }
+            }
+            //头像过渡进度
+            if (speakerSwitchProgress < 1f) {
+                speakerSwitchProgress += speakerSwitchSpeed;
+                if (speakerSwitchProgress > 1f) {
+                    speakerSwitchProgress = 1f;
                 }
             }
             foreach (var kv in portraits) {
@@ -293,6 +317,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (current == null) {
                 return;
             }
+            if (closing) {
+                return; //关闭动画中屏蔽输入避免回弹
+            }
             if (keyLeftPressState == KeyPressState.Pressed) {
                 if (!finishedCurrent) {
                     visibleCharCount = current.Content.Length;
@@ -313,6 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             const float c1 = 1.70158f; const float c3 = c1 + 1f; return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
         }
         protected static float EaseInCubic(float t) => t * t * t;
+        protected static float EaseOutCubic(float t) { return 1f - (float)Math.Pow(1f - t, 3f); }
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {

@@ -33,8 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private int bubbleSpawnTimer = 0;
         private const float BubbleSideMargin = 34f; //泡泡水平边距控制
 
-        //立绘使用 portraits 来自基类
-
         protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize) {
             //背景动画计时器
             panelPulseTimer += 0.035f;
@@ -53,10 +51,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Vector2 p = panelPos + new Vector2(Main.rand.NextFloat(BubbleSideMargin, panelSize.X - BubbleSideMargin), Main.rand.NextFloat(56f, panelSize.Y - 56f));
                 starFx.Add(new StarFx(p));
             }
-            for (int i = starFx.Count - 1; i >= 0; i--) if (starFx[i].Update(panelPos, panelSize)) starFx.RemoveAt(i);
+            for (int i = starFx.Count - 1; i >= 0; i--) {
+                if (starFx[i].Update(panelPos, panelSize)) {
+                    starFx.RemoveAt(i);
+                }
+            }
 
-            //气泡刷新（受UIScale也保持在面板内）
-            float scaleW = Main.UIScale; //用于预留更安全的边界
+            //气泡刷新
+            float scaleW = Main.UIScale;
             bubbleSpawnTimer++;
             if (Active && bubbleSpawnTimer >= 16 && bubbles.Count < 20) {
                 bubbleSpawnTimer = 0;
@@ -65,16 +67,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Vector2 start = new(Main.rand.NextFloat(left, right), panelPos.Y + panelSize.Y - 10f);
                 bubbles.Add(new BubbleFx(start));
             }
-            for (int i = bubbles.Count - 1; i >= 0; i--) if (bubbles[i].Update(panelPos, panelSize)) bubbles.RemoveAt(i);
+            for (int i = bubbles.Count - 1; i >= 0; i--) {
+                if (bubbles[i].Update(panelPos, panelSize)) {
+                    bubbles.RemoveAt(i);
+                }
+            }
         }
 
         protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
             Texture2D px = TextureAssets.MagicPixel.Value;
-            //阴影
             Rectangle shadow = panelRect; shadow.Offset(6, 8);
             spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
 
-            //分段渐变背景
             int segs = 30;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -99,10 +103,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Rectangle inner = panelRect; inner.Inflate(-6, -6);
             spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
-            foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.9f);
-            foreach (var s in starFx) s.Draw(spriteBatch, alpha * 0.45f);
-
-            if (current == null || contentAlpha <= 0.01f) return;
+            foreach (var b in bubbles) {
+                b.Draw(spriteBatch, alpha * 0.9f);
+            }
+            foreach (var s in starFx) {
+                s.Draw(spriteBatch, alpha * 0.45f);
+            }
+            if (current == null || contentAlpha <= 0.01f) {
+                return;
+            }
             DrawPortraitAndText(spriteBatch, panelRect, alpha, contentAlpha);
         }
 
@@ -111,8 +120,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             bool hasPortrait = false;
             PortraitData speakerPortrait = null;
             if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f) {
-                hasPortrait = true; speakerPortrait = pd;
+                hasPortrait = true;
+                speakerPortrait = pd;
             }
+            float switchEase = speakerSwitchProgress;
+            if (switchEase < 1f) {
+                switchEase = EaseOutCubic(switchEase);
+            }
+            float portraitAppearScale = MathHelper.Lerp(0.85f, 1f, switchEase);
+            float portraitExtraAlpha = MathHelper.Clamp(switchEase, 0f, 1f);
+
             float leftOffset = Padding;
             float topNameOffset = 10f;
             float textBlockOffsetY = Padding + 36;
@@ -120,29 +137,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 float availHeight = panelRect.Height - 54f;
                 float maxPortraitHeight = Math.Clamp(availHeight, 90f, 260f);
                 Texture2D ptex = speakerPortrait.Texture;
-                float scale = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
+                float scaleBase = Math.Min(PortraitWidth / ptex.Width, maxPortraitHeight / ptex.Height);
+                float scale = scaleBase * portraitAppearScale;
                 Vector2 pSize = ptex.Size() * scale;
                 Vector2 pPos = new(panelRect.X + Padding + PortraitInnerPadding, panelRect.Y + panelRect.Height - pSize.Y - Padding - 10f);
-                DrawPortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 8), (int)(pPos.Y - 8), (int)(pSize.X + 16), (int)(pSize.Y + 16)), alpha * speakerPortrait.Fade);
-                Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade;
-                if (speakerPortrait.Silhouette) drawColor = new Color(10, 30, 40) * (contentAlpha * speakerPortrait.Fade) * 0.9f;
+                DrawPortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 8), (int)(pPos.Y - 8), (int)(pSize.X + 16), (int)(pSize.Y + 16)), alpha * speakerPortrait.Fade * portraitExtraAlpha);
+                Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
+                if (speakerPortrait.Silhouette) {
+                    drawColor = new Color(10, 30, 40) * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.9f;
+                }
                 spriteBatch.Draw(ptex, pPos, null, drawColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                Color rim = new Color(140, 230, 255) * (contentAlpha * 0.4f * (float)Math.Sin(panelPulseTimer * 1.2f + speakerPortrait.Fade) * speakerPortrait.Fade + 0.4f * speakerPortrait.Fade);
+                Color rim = new Color(140, 230, 255) * (contentAlpha * 0.4f * (float)Math.Sin(panelPulseTimer * 1.2f + speakerPortrait.Fade) * speakerPortrait.Fade + 0.4f * speakerPortrait.Fade) * portraitExtraAlpha;
                 DrawGlowRect(spriteBatch, new Rectangle((int)pPos.X - 4, (int)pPos.Y - 4, (int)pSize.X + 8, (int)pSize.Y + 8), rim);
                 leftOffset += PortraitWidth + 20f;
             }
             if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
-                Vector2 speakerPos = new(panelRect.X + leftOffset, panelRect.Y + topNameOffset);
-                Color nameGlow = new Color(140, 230, 255) * contentAlpha * 0.7f;
+                Vector2 speakerPos = new(panelRect.X + leftOffset, panelRect.Y + topNameOffset - (1f - switchEase) * 6f);
+                float nameAlpha = contentAlpha * switchEase;
+                Color nameGlow = new Color(140, 230, 255) * nameAlpha * 0.7f;
                 for (int i = 0; i < 4; i++) {
                     float a = MathHelper.TwoPi * i / 4f;
-                    Vector2 off = a.ToRotationVector2() * 1.8f;
+                    Vector2 off = a.ToRotationVector2() * 1.8f * switchEase;
                     Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + off, nameGlow * 0.55f, 0.9f);
                 }
-                Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * contentAlpha, 0.9f);
+                Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos, Color.White * nameAlpha, 0.9f);
                 Vector2 divStart = speakerPos + new Vector2(0, 26);
                 Vector2 divEnd = divStart + new Vector2(panelRect.Width - leftOffset - Padding, 0);
-                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (contentAlpha * 0.85f), new Color(70, 180, 230) * (contentAlpha * 0.05f), 1.3f);
+                float lineAlpha = contentAlpha * switchEase;
+                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (lineAlpha * 0.85f), new Color(70, 180, 230) * (lineAlpha * 0.05f), 1.3f);
             }
             Vector2 textStart = new(panelRect.X + leftOffset, panelRect.Y + textBlockOffsetY);
             int remaining = visibleCharCount;
@@ -150,17 +172,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
             for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
-                if (string.IsNullOrEmpty(fullLine)) continue;
+                if (string.IsNullOrEmpty(fullLine)) {
+                    continue;
+                }
                 string visLine;
-                if (finishedCurrent) visLine = fullLine;
-                else {
-                    if (remaining <= 0) break;
+                if (finishedCurrent) {
+                    visLine = fullLine;
+                } else {
+                    if (remaining <= 0) {
+                        break;
+                    }
                     int take = Math.Min(fullLine.Length, remaining);
                     visLine = fullLine[..take];
                     remaining -= take;
                 }
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > panelRect.Bottom - Padding) break;
+                if (linePos.Y + lineHeight > panelRect.Bottom - Padding) {
+                    break;
+                }
                 float wobble = (float)Math.Sin((wavePhase * 2.2f) + i * 0.55f) * 1.2f;
                 Vector2 wobblePos = linePos + new Vector2(wobble, 0);
                 Color lineColor = Color.Lerp(new Color(180, 230, 250), Color.White, 0.35f) * contentAlpha;
@@ -181,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
 
-        #region Style Helpers (从旧类提取)
+        #region 样式工具函数
         private void DrawWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             int bands = 6;
@@ -241,7 +270,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
-            if (length < 1f) return;
+            if (length < 1f) {
+                return;
+            }
             edge.Normalize();
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
             int segments = Math.Max(1, (int)(length / 11f));
@@ -326,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
         #endregion
 
-        #region 公共静态绘制碎片 (给子类也可复用)
+        #region 公共静态绘制碎片
         private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             Color back = new Color(5, 20, 28) * (alpha * 0.85f);
