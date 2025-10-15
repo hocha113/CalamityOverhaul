@@ -128,11 +128,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         // 洪流状态AI
         private void StreamingPhaseAI() {
             // 应用重力和水流浮力
-            Projectile.velocity.Y += Gravity * WaterDensity;
+            Projectile.velocity.Y += Gravity * WaterDensity / 2f;
             Projectile.velocity.Y += BuoyancyForce; // 模拟浮力
 
             // 粘性阻力
-            Projectile.velocity *= WaterViscosity;
+            //Projectile.velocity *= WaterViscosity;
 
             // 生成水滴粒子
             if (particleSpawnCounter++ % 2 == 0 && waterDroplets.Count < MaxDroplets) {
@@ -889,6 +889,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 foam.noGravity = true;
                 foam.fadeIn = 1.1f;
             }
+
+            Projectile.Explode(90, default, false);
         }
 
         public override Color? GetAlpha(Color lightColor) {
