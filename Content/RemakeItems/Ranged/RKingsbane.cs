@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<Kingsbane>();
         public override void SetDefaults(Item item) {
-            item.damage = 115;
+            item.damage = 80;
             item.shoot = ModContent.ProjectileType<KingsbaneHeldProj>();
             item.SetCartridgeGun<KingsbaneHeldProj>(980);
         }
