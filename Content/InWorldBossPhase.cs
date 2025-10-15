@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content
 
         public static bool Level1 => DownedV1.Invoke();
 
-        public static bool Level2 => DownedV2.Invoke() || DownedV3.Invoke();
+        public static bool Level2 => DownedV2.Invoke();
 
         public static bool Level3 => Downed3.Invoke() || Downed4.Invoke();
 
