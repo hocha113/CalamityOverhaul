@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
 {
@@ -25,9 +26,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             //第四段结束时给予奖励 Index=3 (0-based)
-            if (args.Index == 3) {
+            if (args.Index == 3 && !rewardGiven) {
                 rewardGiven = true;
-                ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true);
+                ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f);
+                    }, offset: Vector2.Zero);
             }
         }
     }

@@ -311,6 +311,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             HandleInput();
         }
 
+        public Rectangle GetPanelRect() {
+            if (!Active && showProgress <= 0f) {
+                return Rectangle.Empty;
+            }
+            float progress = closing ? (1f - hideProgress) : showProgress;
+            if (progress <= 0f) {
+                return Rectangle.Empty;
+            }
+            float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
+            float width = PanelWidth;
+            float height = panelHeight;
+            Vector2 panelOrigin = new(width / 2f, height);
+            Vector2 drawPos = anchorPos - panelOrigin;
+            drawPos.Y += (1f - eased) * 90f;
+            Rectangle panelRect = new((int)drawPos.X, (int)drawPos.Y, (int)width, (int)height);
+            return panelRect;
+        }
+
         protected virtual void StyleUpdate(Vector2 panelPos, Vector2 panelSize) { }
 
         protected virtual void HandleInput() {
