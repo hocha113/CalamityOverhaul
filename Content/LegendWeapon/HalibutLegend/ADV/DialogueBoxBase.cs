@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     Index = index,
                     Total = total
                 };
-                // 只调用当前设置的预处理器
+                //只调用当前设置的预处理器
                 PreProcessor?.Invoke(args);
                 current.Speaker = args.Speaker;
                 current.Content = args.Content;

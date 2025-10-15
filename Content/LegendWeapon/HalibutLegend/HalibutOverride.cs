@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
 using Terraria;
@@ -160,6 +161,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (type == ProjectileID.Bullet) {
+                type = ModContent.ProjectileType<TorrentialBullet>();
+            }
+
             var hp = player.GetOverride<HalibutPlayer>();
             //记录克隆需要的射击事件
             if (hp.CloneFishActive) {
@@ -188,8 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
-                int shot = Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
-                Main.projectile[shot].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
+                Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
             }
 
             return false;

@@ -2420,6 +2420,7 @@ RemakeItems: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
 			'''
+			火枪子弹会被转化为海洋射流
 			legend_Text
 			[Lang4]
 			[Text]
