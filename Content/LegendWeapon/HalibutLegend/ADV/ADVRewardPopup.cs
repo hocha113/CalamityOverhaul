@@ -1,4 +1,5 @@
 ﻿using InnoVault.UIHandles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -20,41 +21,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         {
             public int ItemId;
             public int Stack;
-            public string CustomText; //可选自定义文本
-            public int Timer; //内部计时
-            public bool Given; //是否已发放
-            public float Appear; //出现进度 0-1
-            public float Hold; //停留计时
+            public string CustomText;
+            public int Timer;
+            public bool Given;
+            public float Appear;
+            public float Hold;
+            public int AppearDuration;
+            public int HoldDuration;
+            public int GiveDuration;
+            public bool RequireClick; //是否必须点击才发放
         }
 
         private readonly Queue<RewardEntry> queue = new();
         private RewardEntry current;
-        private int stateTimer; //状态计时
-        private const int AppearDuration = 24;
-        private const int HoldDuration = 50;
-        private const int GiveDuration = 16; //给出淡出
+        private int stateTimer;
         private bool givingOut = false;
         private float panelFade = 0f;
         private float panelScale = 0f;
         private bool justOpened = false;
+
+        //默认配置(可在运行时修改)
+        public static int DefaultAppearDuration = 24;
+        public static int DefaultHoldDuration = 50;
+        public static int DefaultGiveDuration = 16;
 
         //外部事件
         public static event Action<RewardEntry> OnRewardGiven;
 
         public override bool Active => current != null || queue.Count > 0 || panelFade > 0.01f;
 
-        public static void ShowReward(int itemId, int stack = 1, string text = null) {
+        public static void ConfigureDefaults(int? appear = null, int? hold = null, int? give = null) {
+            if (appear.HasValue && appear.Value > 0) {
+                DefaultAppearDuration = appear.Value;
+            }
+            if (hold.HasValue) {
+                DefaultHoldDuration = hold.Value; //允许-1表示不自动发放
+            }
+            if (give.HasValue && give.Value > 0) {
+                DefaultGiveDuration = give.Value;
+            }
+        }
+
+        public static void ShowReward(int itemId, int stack = 1, string text = null,
+            int? appearDuration = null, int? holdDuration = null, int? giveDuration = null, bool requireClick = false) {
             var inst = Instance;
             inst.queue.Enqueue(new RewardEntry {
                 ItemId = itemId,
                 Stack = stack <= 0 ? 1 : stack,
-                CustomText = text
+                CustomText = text,
+                AppearDuration = appearDuration.HasValue && appearDuration.Value > 0 ? appearDuration.Value : DefaultAppearDuration,
+                HoldDuration = holdDuration ?? DefaultHoldDuration,
+                GiveDuration = giveDuration.HasValue && giveDuration.Value > 0 ? giveDuration.Value : DefaultGiveDuration,
+                RequireClick = requireClick
             });
         }
 
-        public static void ShowRewards(IEnumerable<(int itemId, int stack, string text)> rewards) {
+        public static void ShowRewards(IEnumerable<(int itemId, int stack, string text, int? appear, int? hold, int? give, bool requireClick)> rewards) {
             foreach (var r in rewards) {
-                ShowReward(r.itemId, r.stack, r.text);
+                ShowReward(r.itemId, r.stack, r.text, r.appear, r.hold, r.give, r.requireClick);
             }
         }
 
@@ -73,14 +97,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             justOpened = true;
         }
 
-        public override void Update() { }
+        public override void Update() {
+        }
 
         public void LogicUpdate() {
             if (current == null && queue.Count > 0) {
                 StartNext();
             }
             if (current == null) {
-                //面板淡出
                 if (panelFade > 0f) {
                     panelFade -= 0.08f;
                     if (panelFade < 0f) {
@@ -89,7 +113,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
                 return;
             }
-            //面板淡入
             if (panelFade < 1f) {
                 panelFade += 0.12f;
                 if (panelFade > 1f) {
@@ -103,27 +126,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             panelScale = MathHelper.Lerp(panelScale, 1f, 0.18f);
             stateTimer++;
             if (!givingOut) {
-                //出现阶段
-                float appearT = Math.Clamp(stateTimer / (float)AppearDuration, 0f, 1f);
+                float appearT = 0f;
+                if (current.AppearDuration > 0) {
+                    appearT = Math.Clamp(stateTimer / (float)current.AppearDuration, 0f, 1f);
+                } else {
+                    appearT = 1f;
+                }
                 current.Appear = appearT;
                 if (appearT >= 1f) {
                     current.Hold++;
-                    if (current.Hold >= HoldDuration || keyLeftPressState == KeyPressState.Pressed) {
+                    bool autoReady = false;
+                    if (current.HoldDuration >= 0) {
+                        if (current.Hold >= current.HoldDuration) {
+                            autoReady = true;
+                        }
+                    }
+                    bool click = keyLeftPressState == KeyPressState.Pressed;
+                    if ((autoReady && !current.RequireClick) || (click && appearT >= 0.95f)) {
                         givingOut = true;
                         stateTimer = 0;
                     }
                 }
             } else {
-                //淡出并发放
-                float t = Math.Clamp(stateTimer / (float)GiveDuration, 0f, 1f);
+                float t = 0f;
+                if (current.GiveDuration > 0) {
+                    t = Math.Clamp(stateTimer / (float)current.GiveDuration, 0f, 1f);
+                } else {
+                    t = 1f;
+                }
                 current.Appear = 1f - t;
                 if (t >= 1f) {
                     GiveCurrent();
                     current = null;
                     StartNext();
-                    if (current == null && queue.Count == 0) {
-                        //全部结束
-                    }
                 }
             }
             player.mouseInterface |= Active;
@@ -139,7 +174,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             var plr = Main.LocalPlayer;
             if (plr != null && plr.active) {
                 int stack = current.Stack <= 0 ? 1 : current.Stack;
-                //使用快速生成给玩家
                 var source = plr.GetSource_GiftOrReward();
                 plr.QuickSpawnItem(source, current.ItemId, stack);
                 SoundEngine.PlaySound(SoundID.Grab);
@@ -175,6 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Vector2 iconCenter = drawPos + panelSize / 2f + new Vector2(0, -10f);
                 Item item = new();
                 item.SetDefaults(current.ItemId);
+                Main.instance.LoadItem(item.type);
                 Texture2D tex = TextureAssets.Item[item.type].Value;
                 Rectangle frame = tex.Bounds;
                 Vector2 origin = frame.Size() / 2f;
@@ -187,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 spriteBatch.Draw(tex, iconCenter, frame, Color.White * (iconAlpha * alpha), 0f, origin, itemScale, SpriteEffects.None, 0f);
                 string name = current.CustomText ?? item.Name;
                 var font = FontAssets.MouseText.Value;
-                Vector2 size = font.MeasureString(name);
+
                 Vector2 namePos = iconCenter + new Vector2(0, 34f);
                 float nameAlpha = iconAlpha * alpha;
                 Color nameGlow = new Color(140, 230, 255) * (nameAlpha * 0.6f);
@@ -197,9 +232,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     Utils.DrawBorderString(spriteBatch, name, namePos + off, nameGlow * 0.55f, 0.8f);
                 }
                 Utils.DrawBorderString(spriteBatch, name, namePos, Color.White * nameAlpha, 0.8f);
+
                 //提示
                 if (a >= 1f) {
-                    string hint = DialogueBoxBase.ContinueHint.Value;
+                    string hint;
+                    if (current.RequireClick) {
+                        hint = "点击领取";
+                    } else if (current.HoldDuration < 0) {
+                        hint = "点击继续";
+                    } else {
+                        hint = "点击/等待继续";
+                    }
                     Vector2 hs = font.MeasureString(hint) * 0.6f;
                     Vector2 hp = drawPos + new Vector2(panelSize.X - hs.X - 12f, panelSize.Y - hs.Y - 10f);
                     float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
