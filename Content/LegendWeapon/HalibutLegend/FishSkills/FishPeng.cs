@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Pengfish;
         public override int DefaultCooldown => 60 * (8 - HalibutData.GetDomainLayer() / 2);
-
+        public override int ResearchDuration => 60 * 18;
         private int spawnTimer = 0;
         private static int MaxActivePenguins => 3 + HalibutData.GetDomainLayer() / 2;
 

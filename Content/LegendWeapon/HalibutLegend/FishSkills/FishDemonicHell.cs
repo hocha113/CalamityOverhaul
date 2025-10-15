@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.DemonicHellfish;
         public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer());
-
+        public override int ResearchDuration => 60 * 28;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (Cooldown <= 0 && player.CountProjectilesOfID<HellRitualCircle>() == 0) {

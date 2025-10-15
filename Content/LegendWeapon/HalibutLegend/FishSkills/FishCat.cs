@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         };
         public override int UnlockFishID => ItemID.Catfish;
         public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer() / 2);
-
+        public override int ResearchDuration => 60 * 30;
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {

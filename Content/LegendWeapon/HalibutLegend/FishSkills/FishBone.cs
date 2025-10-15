@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Bonefish;
 
         public override int DefaultCooldown => 60 - HalibutData.GetDomainLayer() * 4;
-
+        public override int ResearchDuration => 60 * 18;
         //骨头管理系统
         private static readonly List<int> ActiveBones = new();
         private static int MaxBones => 3 + HalibutData.GetDomainLayer() / 2; //最多3-8根骨头

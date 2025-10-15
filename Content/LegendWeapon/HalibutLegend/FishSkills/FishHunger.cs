@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Hungerfish;
         public override int DefaultCooldown => 60 - +HalibutData.GetDomainLayer() * 3;
-
+        public override int ResearchDuration => 60 * 28;
         //恶鬼管理系统
         private static readonly List<int> ActiveHungries = new();
         private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼

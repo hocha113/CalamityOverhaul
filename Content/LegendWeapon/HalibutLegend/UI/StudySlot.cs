@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (Item.Alives() && FishSkill.UnlockFishs.TryGetValue(Item.type, out FishSkill fishSkill)) {
                     return fishSkill.ResearchDuration;
                 }
-                return 7200;
+                return 1200;
             }
         }
         private bool isResearching = false;//是否正在研究

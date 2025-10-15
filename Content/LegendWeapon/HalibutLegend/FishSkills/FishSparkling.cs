@@ -12,11 +12,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    internal class Sparkling : FishSkill
+    internal class FishSparkling : FishSkill
     {
+        internal const float RoingArc = 160f;
         private static int _sparklingVolleyIdSeed = 0;
         public override int DefaultCooldown => 300 - 24 * HalibutData.GetDomainLayer();
-        internal const float RoingArc = 160f;
+        public override int ResearchDuration => 60 * 22;
         internal static int DepartureDelay => 90 - (HalibutData.GetDomainLayer() * 5);//全部发射后延迟进入离场
         internal static int DepartureDuration => 90 - (HalibutData.GetDomainLayer() * 5);//离场动画时长
         internal static int shootDir;
@@ -230,11 +231,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!hp.SparklingDeparturePhase) {
                 Vector2 aimDir = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
                 Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
-                float arc = MathHelper.ToRadians(Sparkling.RoingArc);
+                float arc = MathHelper.ToRadians(FishSparkling.RoingArc);
                 float radius = 190f;
                 float t = hp.SparklingFishCount <= 1 ? 0.5f : FishIndex / (hp.SparklingFishCount - 1);
                 float angOff = (t - 0.5f) * arc;
-                Vector2 offsetDir = behind.RotatedBy(angOff * Sparkling.shootDir * -1);
+                Vector2 offsetDir = behind.RotatedBy(angOff * FishSparkling.shootDir * -1);
                 Vector2 basePos = Owner.Center + offsetDir * radius;
                 float bob = (float)Math.Sin(Main.GameUpdateCount * 0.08f + FishIndex) * 6f;
                 Projectile.Center = Vector2.Lerp(Projectile.Center, basePos + new Vector2(0, bob), 0.25f);
@@ -259,14 +260,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             else {
                 //离场阶段：先等待，再整体向屏幕外飞行并淡出
                 hp.SparklingDepartureTimer++;
-                if (hp.SparklingDepartureTimer < Sparkling.DepartureDelay) {
+                if (hp.SparklingDepartureTimer < FishSparkling.DepartureDelay) {
                     //原地轻微旋转漂浮
                     Projectile.rotation += 0.02f * (FishIndex % 2 == 0 ? 1 : -1);
                 }
                 else {
-                    int flyTime = hp.SparklingDepartureTimer - Sparkling.DepartureDelay;
+                    int flyTime = hp.SparklingDepartureTimer - FishSparkling.DepartureDelay;
                     //平滑加速 0-1
-                    float accelProgress = MathHelper.Clamp(flyTime / (float)Sparkling.DepartureDuration, 0f, 1f);
+                    float accelProgress = MathHelper.Clamp(flyTime / (float)FishSparkling.DepartureDuration, 0f, 1f);
                     accelProgress = MathF.Pow(accelProgress, 0.65f);
 
                     //计算目标离开距离：使用屏幕对角尺寸放大，确保真正飞出屏幕再消失

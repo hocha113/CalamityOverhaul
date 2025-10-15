@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Cloudfish;
 
         public override int DefaultCooldown => 60 * (25 - HalibutData.GetDomainLayer() * 2); // 25-2*领域 秒冷却
-
+        public override int ResearchDuration => 60 * 30;
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {

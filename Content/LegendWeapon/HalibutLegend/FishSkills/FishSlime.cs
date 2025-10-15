@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Slimefish;
         public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;
-
+        public override int ResearchDuration => 60 * 16;
         //凝胶球生成计数器
         private int gelCounter = 0;
         private const int GelInterval = 10;

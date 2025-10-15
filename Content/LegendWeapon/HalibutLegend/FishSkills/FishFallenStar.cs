@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.FallenStarfish;
         public override int DefaultCooldown => 30 - HalibutData.GetDomainLayer() * 2;
-
+        public override int ResearchDuration => 60 * 22;
         // 星星管理系统
         private static int consecutiveShots = 0; // 连续射击计数
         private static int ShotsForStarRain => 20 - HalibutData.GetDomainLayer(); // 每20-10次射击触发一次星雨

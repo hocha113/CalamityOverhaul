@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Harpyfish;
         public override int DefaultCooldown => 30 - HalibutData.GetDomainLayer() * 2;
-
+        public override int ResearchDuration => 60 * 30;
         //羽毛管理系统
         public static List<int> ActiveFeathers = new();
         private static int MaxFeathers => 5 + HalibutData.GetDomainLayer();

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Cursedfish;
         public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
-
+        public override int ResearchDuration => 60 * 25;
         //火焰喷射计数器
         private int flameCounter = 0;
         private static int FlameInterval => 18 - HalibutData.GetDomainLayer();

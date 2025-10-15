@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Ichorfish;
         public override int DefaultCooldown => 120 - HalibutData.GetDomainLayer() * 8;
-
+        public override int ResearchDuration => 60 * 30;
         //射流计数器
         private int streamCounter = 0;
         private static int StreamInterval => 18 - HalibutData.GetDomainLayer();

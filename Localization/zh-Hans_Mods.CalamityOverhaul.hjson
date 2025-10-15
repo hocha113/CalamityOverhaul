@@ -5574,7 +5574,7 @@ FishSkill: {
 		Studied: 平平无奇的鱼，但它颇有潜力
 	}
 
-	Sparkling: {
+	FishSparkling: {
 		DisplayName: 闪光皇舞
 		Tooltip:
 			'''
