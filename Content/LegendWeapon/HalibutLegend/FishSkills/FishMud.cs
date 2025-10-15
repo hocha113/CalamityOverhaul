@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishMud : FishSkill
     {
         public override int UnlockFishID => ItemID.Mudfish;
-        public override int DefaultCooldown => 60;
-        private const int MaxMudfishSentries = 5;
+        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
+        private static int MaxMudfishSentries = 1+ HalibutData.GetDomainLayer()/2;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (!Active(player)) {
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<MudfishSentry>(),
-                (int)(damage * (0.8f + HalibutData.GetDomainLayer() * 0.15f)),
+                (int)(damage * (2.4f + HalibutData.GetDomainLayer() * 0.45f)),
                 knockback * 0.8f,
                 player.whoAmI,
                 0
@@ -653,6 +653,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 240;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 3;
         }
 
         public override void AI() {
