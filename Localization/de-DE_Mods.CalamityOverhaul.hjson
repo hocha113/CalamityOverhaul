@@ -2255,6 +2255,11 @@ Legend: {
 			// ContinueHint: 继续
 			// FastHint: 加速
 		}
+
+		SeaDialogueBox: {
+			// ContinueHint: 继续
+			// FastHint: 加速
+		}
 	}
 
 	MuraText: {

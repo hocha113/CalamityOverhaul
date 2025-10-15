@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -90,9 +92,9 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
-            player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            //ScenarioManager.Reset<FirstMet>();
-            //ScenarioManager.Start<FirstMet>();
+            //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
+            ScenarioManager.Reset<FirstMet>();
+            ScenarioManager.Start<FirstMet>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

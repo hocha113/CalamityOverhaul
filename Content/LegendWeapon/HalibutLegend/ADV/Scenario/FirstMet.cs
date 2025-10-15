@@ -4,10 +4,10 @@
     {
         public override string Key => nameof(FirstMet);
         protected override void Build() {
-            DialogueBox.RegisterPortrait("？？？", ADVAsset.HeadADV);
-            DialogueBox.SetPortraitStyle("？？？", silhouette: true);
-            DialogueBox.RegisterPortrait("哈利鲈特", ADVAsset.HeadADV);
-            DialogueBox.SetPortraitStyle("哈利鲈特", silhouette: false);
+            DialogueBoxBase.RegisterPortrait("？？？", ADVAsset.HeadADV);
+            DialogueBoxBase.SetPortraitStyle("？？？", silhouette: true);
+            DialogueBoxBase.RegisterPortrait("哈利鲈特", ADVAsset.HeadADV);
+            DialogueBoxBase.SetPortraitStyle("哈利鲈特", silhouette: false);
             Add("？？？", "你是谁？");
             Add("？？？", "你为什么会在这里？");
             Add("？？？", "你是来救我的？");

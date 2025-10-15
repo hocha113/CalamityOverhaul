@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2276,6 +2276,11 @@ Legend: {
 		}
 
 		DialogueBox: {
+			ContinueHint: 继续
+			FastHint: 加速
+		}
+
+		SeaDialogueBox: {
 			ContinueHint: 继续
 			FastHint: 加速
 		}
