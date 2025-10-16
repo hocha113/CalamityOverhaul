@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == NPCID.SkeletronHead) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.4f;
                 modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
             }
             if (target.type == NPCID.SkeletronHand) {
