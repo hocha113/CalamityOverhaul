@@ -1,23 +1,15 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Potions.Alcohol;
 using CalamityMod.NPCs.CalClone;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.SkyEffects;
-using CalamityOverhaul.Content.TileModify;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.Graphics.Shaders;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupCal
 {
@@ -154,7 +146,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             if (!FirstMetSupCalNPC.Spawned) {
                 return;
             }
-
+            if (NPC.AnyNPCs(ModContent.NPCType<SupremeCalamitas>())) {
+                FirstMetSupCalNPC.Spawned = false;//如果至尊灾厄已经存在，则重置状态，避免重复触发
+                return;
+            }
+            if (--FirstMetSupCalNPC.RandomTimer > 0) {
+                return;
+            }
             if (ScenarioManager.Start<FirstMetSupCal>()) {
                 save.FirstMetSupCal = true;
                 FirstMetSupCalNPC.Spawned = false;
@@ -165,9 +163,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     internal class FirstMetSupCalNPC : GlobalNPC
     {
         public static bool Spawned = false;
+        public static int RandomTimer;
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<CalamitasClone>()) {
                 Spawned = true;
+                RandomTimer = 60 * Main.rand.Next(6, 12);//给一个6到12秒的缓冲时间
             }
             return false;
         }
