@@ -123,23 +123,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             //确定使用的对话框
             DialogueBoxBase targetBox = null;
 
-            //如果场景有默认样式，使用它
             if (DefaultDialogueStyle != null) {
                 targetBox = DefaultDialogueStyle.Invoke();
+                if (targetBox != null) {
+                    //我他妈的不知道为什么必须要在这里再设置一次解析器，反正不设置就不行
+                    DialogueUIRegistry.SetResolver(() => targetBox);
+                }
             }
 
-            //否则使用全局默认
             targetBox ??= DialogueUIRegistry.Current;
 
-            //设置预处理器
             targetBox.PreProcessor = PreProcessSegment;
 
-            //将所有对话添加到对话框
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
 
-                //构建完成回调
                 Action completeCallback = null;
                 if (line.OnComplete != null || isLast) {
                     completeCallback = () => {
@@ -150,20 +149,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     };
                 }
 
-                //触发开始事件
                 line.OnStart?.Invoke();
-
-                //入队对话（注意：styleOverride 暂时不支持运行时切换，因为需要重构对话框系统）
-                //如果需要支持，请为每个对话框分别调用 Start
                 targetBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback);
             }
         }
-
-        public virtual void SaveData(TagCompound tag) { }
-
-        public virtual void LoadData(TagCompound tag) { }
-
-        public virtual void Update(ADVSave save, HalibutPlayer halibutPlayer) { }
 
         private void Complete() {
             if (!IsCompleted) {
@@ -172,12 +161,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 OnScenarioComplete();
             }
 
-            // 清理预处理器引用
             var box = DialogueUIRegistry.Current;
             if (box != null && box.PreProcessor == PreProcessSegment) {
                 box.PreProcessor = null;
             }
+            // 恢复默认解析器
+            DialogueUIRegistry.SetResolver(null);
         }
+
+        public virtual void SaveData(TagCompound tag) { }
+
+        public virtual void LoadData(TagCompound tag) { }
+
+        public virtual void Update(ADVSave save, HalibutPlayer halibutPlayer) { }
 
         protected virtual void OnComplete() { }
         public void Reset() => IsCompleted = false;
