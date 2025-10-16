@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<CalamitasClone>()) {
                 Spawned = true;
-                RandomTimer = 60 * Main.rand.Next(6, 12);//给一个6到12秒的缓冲时间
+                RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
             }
             return false;
         }
