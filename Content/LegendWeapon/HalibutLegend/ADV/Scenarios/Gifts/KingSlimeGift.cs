@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class SlimeGodGift : ADVScenarioBase, ILocalizedModType
+    internal class KingSlimeGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SlimeGodGift);
+        public override string Key => nameof(KingSlimeGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,24 +17,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "三个史莱姆，呃，或者说一个分裂的神性？这种二元对立的存在形式很有意思");
-            L1 = this.GetLocalization(nameof(L1), () => "腐化与猩红，就像这个世界永恒的矛盾。而你刚才证明了矛盾可以被'解决'");
-            L2 = this.GetLocalization(nameof(L2), () => "这是杂色猪油鱼，从那堆粘液里捞出来的。别问我为什么叫这个名字");
-            L3 = this.GetLocalization(nameof(L3), () => "它的颜色会随着观察者的心情改变，或者说，它在模仿你内心的混乱");
-            L4 = this.GetLocalization(nameof(L4), () => "如果你盯着它看太久，可能会开始思考自己到底属于哪一边");
+            L0 = this.GetLocalization(nameof(L0), () => "刚才那团蓝色的……你称之为史莱姆？看起来更像是一种情绪的实体化");
+            L1 = this.GetLocalization(nameof(L1), () => "或许是物质自我意识试图聚集和进化的一次拙劣尝试。可惜，它没有‘记忆’");
+            L2 = this.GetLocalization(nameof(L2), () => "请拿好，这是史莱姆鱼。别挤它，它的心情会爆炸");
+            L3 = this.GetLocalization(nameof(L3), () => "你有尝试过用这种生物去炖过汤吗?");
+            L4 = this.GetLocalization(nameof(L4), () => "我是说......是的，在海底我们也可以炖汤，海底甚至也有海");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);
-            Add(R1.Value, L2.Value); //奖励
+            Add(R1.Value, L2.Value);//奖励
             Add(R1.Value, L3.Value);
             Add(R1.Value, L4.Value);
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.VariegatedLardfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Slimefish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.SlimeGodGift) {
+            if (save.KingSlimeGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed5.Invoke()) {
+            if (!NPC.downedSlimeKing) {
                 return;
             }
 
-            if (ScenarioManager.Start<SlimeGodGift>()) {
-                save.SlimeGodGift = true;
+            if (ScenarioManager.Start<KingSlimeGift>()) {
+                save.KingSlimeGift = true;
             }
         }
     }

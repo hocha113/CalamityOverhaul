@@ -17,8 +17,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public static void SetResolver(Func<DialogueBoxBase> resolver) => _resolver = resolver;
 
         /// <summary>
+        /// 获取默认对话框实例的提供器
+        /// </summary>
+        internal static Func<DialogueBoxBase> GetDefault => () => SeaDialogueBox.Instance;
+
+        /// <summary>
         /// 获取当前应当使用的对话框实例
         /// </summary>
         public static DialogueBoxBase Current => _resolver?.Invoke() ?? SeaDialogueBox.Instance;
+
+        /// <summary>
+        /// 获取深海风格对话框
+        /// </summary>
+        public static DialogueBoxBase Sea => SeaDialogueBox.Instance;
+
+        /// <summary>
+        /// 获取硫磺火风格对话框
+        /// </summary>
+        public static DialogueBoxBase Brimstone => BrimstoneDialogueBox.Instance;
     }
 }

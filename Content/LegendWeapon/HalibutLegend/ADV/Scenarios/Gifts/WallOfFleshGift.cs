@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class PerforatorGift : ADVScenarioBase, ILocalizedModType
+    internal class WallOfFleshGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(PerforatorGift);
+        public override string Key => nameof(WallOfFleshGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一堆会钻孔的血肉虫……这种生物的存在本身就是对生物学的挑战");
-            L1 = this.GetLocalization(nameof(L1), () => "它们的血液有种奇特的粘稠度，像是某种活体金属");
-            L2 = this.GetLocalization(nameof(L2), () => "从残骸里找到了这个，血腥鱼。它还在蠕动");
-            L3 = this.GetLocalization(nameof(L3), () => "别被它的外表吓到，虽然看起来像是从噩梦里爬出来的");
-            L4 = this.GetLocalization(nameof(L4), () => "但至少它不会在你睡觉时钻进你的耳朵……应该不会");
+            L0 = this.GetLocalization(nameof(L0), () => "一堵由肉和骨组成的墙……这个世界的创造者一定有些特别的想法");
+            L1 = this.GetLocalization(nameof(L1), () => "你刚才打破了某种平衡。感觉到了吗？世界的脉搏开始加速");
+            L2 = this.GetLocalization(nameof(L2), () => "从那堆残骸里找到了这条饥饿鱼，它看起来永远吃不饱");
+            L3 = this.GetLocalization(nameof(L3), () => "就像那堵墙一样，永远在追逐，永远在吞噬");
+            L4 = this.GetLocalization(nameof(L4), () => "欢迎来到'困难模式'……虽然我觉得之前也不算简单");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.BloodyManowar, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.Hungerfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.PerforatorGift) {
+            if (save.WallOfFleshGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed4.Invoke()) {
+            if (!Main.hardMode) {
                 return;
             }
 
-            if (ScenarioManager.Start<PerforatorGift>()) {
-                save.PerforatorGift = true;
+            if (ScenarioManager.Start<WallOfFleshGift>()) {
+                save.WallOfFleshGift = true;
             }
         }
     }

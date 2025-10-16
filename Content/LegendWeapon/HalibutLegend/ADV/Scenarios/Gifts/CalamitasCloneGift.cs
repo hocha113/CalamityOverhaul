@@ -1,13 +1,13 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using CalamityMod.Items.Fishing.BrimstoneCragCatches;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class MoonLordGift : ADVScenarioBase, ILocalizedModType
+    internal class CalamitasCloneGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(MoonLordGift);
+        public override string Key => nameof(CalamitasCloneGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "月球的主宰，哈！或者说，曾经是。现在它只是一堆漂浮的眼球和血肉");
-            L1 = this.GetLocalization(nameof(L1), () => "我们刚才不仅拯救了世界，还关闭了一个从未被正确打开的门");
-            L2 = this.GetLocalization(nameof(L2), () => "云鱼，从天空的裂缝里飘下来的。它在手里像是没有重量");
-            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到未来……但那个未来已经被你改写了");
-            L4 = this.GetLocalization(nameof(L4), () => "我们刚刚证明了，即使是神，也会流血");
+            L0 = this.GetLocalization(nameof(L0), () => "一个影子……但影子不该有自己的意志。除非原型已经强大到开始分裂");
+            L1 = this.GetLocalization(nameof(L1), () => "你击败的不是她，而是她的回声。真正的恐怖还在更深的地方等着");
+            L2 = this.GetLocalization(nameof(L2), () => "硫磺火鱼，从灾厄的余烬中提取的。它在你手里低语着不该被听到的秘密");
+            L3 = this.GetLocalization(nameof(L3), () => "如果你开始听懂它在说什么......恭喜，你已经迈出了疯狂的第一步");
+            L4 = this.GetLocalization(nameof(L4), () => "不过别担心，疯狂也是一种清醒，只是角度不同而已");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.Cloudfish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<Brimlish>(), 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.MoonLordGift) {
+            if (save.CalamitasCloneGift) {
                 return;
             }
-            if (!InWorldBossPhase.VDownedV16.Invoke()) {
+            if (!InWorldBossPhase.Downed10.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<MoonLordGift>()) {
-                save.MoonLordGift = true;
+            if (ScenarioManager.Start<CalamitasCloneGift>()) {
+                save.CalamitasCloneGift = true;
             }
         }
     }

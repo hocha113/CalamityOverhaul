@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class LeviathanGift : ADVScenarioBase, ILocalizedModType
+    internal class EyeOfCthulhuGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(LeviathanGift);
+        public override string Key => nameof(EyeOfCthulhuGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "海洋的暴君……和那个总是跟着她的小跟班。有些友谊超越了物种，也超越了理智");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
-            L2 = this.GetLocalization(nameof(L2), () => "热带梭鱼，从深海漩涡里捞出来的。它看起来很普通，但这正是最可疑的地方");
-            L3 = this.GetLocalization(nameof(L3), () => "越是平凡的外表，越是隐藏着不平凡的过去");
-            L4 = this.GetLocalization(nameof(L4), () => "就像我们一样");
+            L0 = this.GetLocalization(nameof(L0), () => "你的动作被那只巨眼拖成了慢镜头……我还以为你在刻意摆造型");
+            L1 = this.GetLocalization(nameof(L1), () => "恭喜，你已经进入‘被注视的阶段’。这意味着……更多戏剧性的麻烦");
+            L2 = this.GetLocalization(nameof(L2), () => "拿着，这是克苏鲁鱼。它和同名的神话一样，不太讲逻辑");
+            L3 = this.GetLocalization(nameof(L3), () => "小心使用，它会让你误以为自己开眼了。其实那不过是血液里多了点兴奋剂");
+            L4 = this.GetLocalization(nameof(L4), () => "我很好奇你会不会开始对月亮眨眼");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.TropicalBarracuda, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.TheFishofCthulu, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.LeviathanGift) {
+            if (save.EyeOfCthulhuGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed12.Invoke()) {
+            if (!NPC.downedBoss1) {
                 return;
             }
 
-            if (ScenarioManager.Start<LeviathanGift>()) {
-                save.LeviathanGift = true;
+            if (ScenarioManager.Start<EyeOfCthulhuGift>()) {
+                save.EyeOfCthulhuGift = true;
             }
         }
     }

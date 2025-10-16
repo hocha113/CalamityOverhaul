@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
 {
     internal class FirstMet : ADVScenarioBase, ILocalizedModType
     {

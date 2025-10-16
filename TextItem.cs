@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;

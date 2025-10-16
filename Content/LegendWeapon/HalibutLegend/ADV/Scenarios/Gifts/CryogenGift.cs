@@ -3,11 +3,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class SupremeCalamitasGift : ADVScenarioBase, ILocalizedModType
+    internal class CryogenGift : ADVScenarioBase, ILocalizedModType
     {
-        public override string Key => nameof(SupremeCalamitasGift);
+        public override string Key => nameof(CryogenGift);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "至尊灾厄……她是复仇的化身，是被背叛淬炼出的完美武器");
-            L1 = this.GetLocalization(nameof(L1), () => "我们刚才做的，是终结了一个传说。还是创造了一个新的开始？");
-            L2 = this.GetLocalization(nameof(L2), () => "公主鱼，从灾厄余烬中诞生的。它带着一种矛盾的优雅，就像在废墟上盛开的花");
-            L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到自己最想成为的样子，但那个样子往往是最不像自己的");
-            L4 = this.GetLocalization(nameof(L4), () => "恭喜，你站在了力量的顶点，接下来……就是漫长的下坡路了");
+            L0 = this.GetLocalization(nameof(L0), () => "一团被冰冻的灵魂......温度低到连时间都想躺下来休息");
+            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？寒冷的尽头并非死亡，是一种永恒的静止");
+            L2 = this.GetLocalization(nameof(L2), () => "霜鲦鱼，从冰晶碎片里解冻出来的。它还保持着被冻结时的姿态");
+            L3 = this.GetLocalization(nameof(L3), () => "据说吃了它会让你的血液降温，思维变得异常清醒");
+            L4 = this.GetLocalization(nameof(L4), () => "不过别多吃，除非你真的想成为一个冰雕");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
         }
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.PrincessFish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ItemID.FrostMinnow, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenario.Gifts
             if (!save.FirstMet) {
                 return;//必须先触发过初次见面
             }
-            if (save.SupremeCalamitasGift) {
+            if (save.CryogenGift) {
                 return;
             }
-            if (!InWorldBossPhase.Downed30.Invoke()) {
+            if (!InWorldBossPhase.Downed6.Invoke()) {
                 return;
             }
 
-            if (ScenarioManager.Start<SupremeCalamitasGift>()) {
-                save.SupremeCalamitasGift = true;
+            if (ScenarioManager.Start<CryogenGift>()) {
+                save.CryogenGift = true;
             }
         }
     }
