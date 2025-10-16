@@ -237,10 +237,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             int segs = 26;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
-                float t2 = (i + 1) / segs;
+                float t2 = (i + 1) / (float)segs;
                 int y1 = rect.Y + (int)(t * rect.Height);
                 int y2 = rect.Y + (int)(t2 * rect.Height);
-                Rectangle r = new(rect.X, y1, rect.Width, Math.Max(1, y2 - y1) * 10);
+                int height = Math.Max(1, y2 - y1);
+                
+                Rectangle r = new(rect.X, y1, rect.Width, height);
+                
                 Color abyssDeep = new Color(2, 10, 18);
                 Color abyssMid = new Color(6, 32, 48);
                 Color bioEdge = new Color(12, 80, 110);
