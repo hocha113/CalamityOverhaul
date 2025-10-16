@@ -336,8 +336,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 if (sc == null) return false;
                 Register(sc);
             }
-            if (active != null && DialogueUIRegistry.Current.Active) return false;
-            active = sc; sc.Start(); return true;
+            if (active != null && DialogueUIRegistry.Current.Active) {
+                return false;
+            }
+            active = sc; 
+            sc.Start(); 
+            return true;
         }
 
         public static void Reset(string key) { if (scenarios.TryGetValue(key, out var sc)) sc.Reset(); }
