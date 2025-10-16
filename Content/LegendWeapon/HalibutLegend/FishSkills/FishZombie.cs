@@ -122,11 +122,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float DelayTime => ref Projectile.ai[0];
 
         /// <summary>
-        /// 生命计时器
-        /// </summary>
-        private ref float LifeTimer => ref Projectile.ai[1];
-
-        /// <summary>
         /// 状态机：0=延迟等待，1=从地下爬出，2=寻找目标，3=冲刺攻击，4=爆炸
         /// </summary>
         private int State {
@@ -199,8 +194,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            LifeTimer++;
-
             //延迟等待阶段
             if (DelayTime > 0) {
                 DelayTime--;
