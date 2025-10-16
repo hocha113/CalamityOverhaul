@@ -120,23 +120,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             OnScenarioStart();
 
-            //确定使用的对话框
-            DialogueBoxBase targetBox = null;
+            //确定初始对话框
+            DialogueBoxBase initialBox = null;
 
             if (DefaultDialogueStyle != null) {
-                targetBox = DefaultDialogueStyle.Invoke();
-                if (targetBox != null) {
-                    DialogueUIRegistry.SwitchDialogueBox(targetBox, transferQueue: false);
+                initialBox = DefaultDialogueStyle.Invoke();
+                if (initialBox != null) {
+                    DialogueUIRegistry.SwitchDialogueBox(initialBox, transferQueue: false);
                 }
             }
 
-            targetBox ??= DialogueUIRegistry.Current;
+            initialBox ??= DialogueUIRegistry.Current;
+            initialBox.PreProcessor = PreProcessSegment;
 
-            targetBox.PreProcessor = PreProcessSegment;
-
+            // 逐条处理对话，支持中途切换样式
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
+                
+                // 为了正确处理 Index，我们需要捕获当前的索引
+                int currentIndex = i;
 
                 Action completeCallback = null;
                 if (line.OnComplete != null || isLast) {
@@ -157,8 +160,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     if (styleBox != null) {
                         startCallback = () => {
                             // 切换对话框样式并迁移状态
-                            DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
-                            styleBox.PreProcessor = PreProcessSegment;
+                            var oldBox = DialogueUIRegistry.Current;
+                            if (oldBox != styleBox) {
+                                DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
+                                // 确保新对话框也设置预处理器
+                                styleBox.PreProcessor = PreProcessSegment;
+                            }
                             // 触发用户定义的 OnStart
                             line.OnStart?.Invoke();
                         };
@@ -168,7 +175,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     startCallback = line.OnStart;
                 }
 
-                targetBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
+                // 获取当前实际使用的对话框来入队
+                // 注意：这里我们仍然使用初始对话框入队
+                // 样式切换会在 OnStart 回调中处理
+                initialBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
             }
         }
 

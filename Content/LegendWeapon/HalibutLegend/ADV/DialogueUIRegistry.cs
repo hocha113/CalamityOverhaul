@@ -80,6 +80,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             var currentField = typeof(DialogueBoxBase).GetField("current", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var preProcessorField = typeof(DialogueBoxBase).GetProperty("PreProcessor");
+            var playedCountField = typeof(DialogueBoxBase).GetField("playedCount",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             if (queueField == null || currentField == null) {
                 return;
@@ -100,18 +102,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             // 如果有当前对话，重新入队
             if (oldCurrent != null) {
-                to.EnqueueDialogue(oldCurrent.Speaker, oldCurrent.Content, oldCurrent.OnFinish);
+                to.EnqueueDialogue(oldCurrent.Speaker, oldCurrent.Content, oldCurrent.OnFinish, oldCurrent.OnStart);
             }
 
             // 转移剩余队列
             foreach (var segment in oldQueue) {
-                to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish);
+                to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish, segment.OnStart);
             }
 
             // 转移预处理器
             if (preProcessorField != null) {
                 var oldProcessor = preProcessorField.GetValue(from);
                 preProcessorField.SetValue(to, oldProcessor);
+            }
+
+            // 转移播放计数（关键修复）
+            if (playedCountField != null) {
+                var oldPlayedCount = playedCountField.GetValue(from);
+                playedCountField.SetValue(to, oldPlayedCount);
             }
         }
 
