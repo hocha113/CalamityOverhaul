@@ -110,7 +110,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///</summary>
         public int ActiveEyeCount {
             get {
-                int baseCount = activationSequence.Count;
+                int baseCount = 0;
+                if (activationSequence != null) {
+                    foreach (var eye in activationSequence) {
+                        if (eye.IsActive) {
+                            baseCount++;
+                        }
+                    }
+                }               
                 if (extraEye != null && extraEye.IsActive) {
                     baseCount++;
                 }
