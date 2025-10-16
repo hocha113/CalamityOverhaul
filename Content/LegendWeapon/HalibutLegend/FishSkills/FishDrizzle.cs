@@ -212,7 +212,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float glowPulse;
         private float fadeOut;
-        private int nextFireIndex = 0;
+        private bool shouldDepart = false;
+        private int departureTimer = 0;
         private const int FireInterval = 16;
 
         public override void SetDefaults() {
@@ -227,11 +228,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (Owner == null || !Owner.active) { Projectile.Kill(); return; }
-            var hp = Owner.GetOverride<HalibutPlayer>();
 
             glowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.28f + FishIndex) * 0.5f + 0.5f;
 
-            if (!Fired) {
+            if (!shouldDepart) {
+                //环绕阶段
                 Vector2 aimDir = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
                 Vector2 behind = (-aimDir).SafeNormalize(Vector2.UnitX);
                 float arc = MathHelper.ToRadians(140f);
@@ -251,30 +252,76 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     FirePillar();
                     Fired = true;
                     Projectile.netUpdate = true;
-                    nextFireIndex++;
                 }
 
-                //全部发射后进入离场
-                bool allFired = true;
-                for (int i = 0; i < Main.maxProjectiles; i++) {
-                    Projectile p = Main.projectile[i];
-                    if (p.active && p.owner == Owner.whoAmI && p.type == Projectile.type && p.ModProjectile is DrizzleFishHolder h) {
-                        if (!h.Fired) { allFired = false; break; }
+                //检查是否所有鱼都已发射且所有火柱都已消失
+                if (Fired) {
+                    bool allFired = true;
+                    bool anyPillarActive = false;
+
+                    for (int i = 0; i < Main.maxProjectiles; i++) {
+                        Projectile p = Main.projectile[i];
+                        if (p.active && p.owner == Owner.whoAmI) {
+                            if (p.type == Projectile.type && p.ModProjectile is DrizzleFishHolder h) {
+                                if (!h.Fired) { 
+                                    allFired = false; 
+                                }
+                            }
+                            else if (p.type == ModContent.ProjectileType<DrizzleFirePillar>()) {
+                                anyPillarActive = true;
+                            }
+                        }
                     }
-                }
 
-                if (allFired && Owner.ownedProjectileCounts[ModContent.ProjectileType<DrizzleFirePillar>()] == 0) {
-                    StartDeparture();
+                    //只有当所有鱼都发射完毕且所有火柱都消失后才开始离场
+                    if (allFired && !anyPillarActive) {
+                        shouldDepart = true;
+                        departureTimer = 0;
+                    }
                 }
             }
             else {
-                //离场动画
-                fadeOut += 0.018f;
-                Projectile.velocity = Projectile.To(Owner.Center).UnitVector() * -12f;
-                Projectile.Center += Projectile.velocity;
+                //离场阶段
+                departureTimer++;
 
-                if (fadeOut >= 1f || !Main.projectile.Any(p => p.active && p.type == Projectile.type && p.owner == Owner.whoAmI)) {
-                    Projectile.Kill();
+                //先等待一段时间
+                if (departureTimer < FishDrizzle.DepartureDelay) {
+                    //原地轻微浮动
+                    Projectile.rotation += 0.02f * (FishIndex % 2 == 0 ? 1 : -1);
+                    float idleBob = (float)Math.Sin(Main.GameUpdateCount * 0.1f + FishIndex) * 4f;
+                    Projectile.Center += new Vector2(0, idleBob * 0.05f);
+                }
+                else {
+                    //开始真正的离场动画
+                    int flyTime = departureTimer - FishDrizzle.DepartureDelay;
+                    float progress = Math.Clamp(flyTime / (float)FishDrizzle.DepartureDuration, 0f, 1f);
+                    progress = MathF.Pow(progress, 0.65f);
+
+                    //计算离开方向（远离玩家中心）
+                    Vector2 outward = Projectile.Center - Owner.Center;
+                    if (outward.LengthSquared() < 4f) {
+                        outward = new Vector2(FishDrizzle.shootDir * 100, -100);
+                    }
+                    outward = outward.SafeNormalize(Vector2.UnitY);
+
+                    //速度逐渐加快
+                    float baseSpeed = MathHelper.Lerp(3f, 18f, progress);
+                    baseSpeed *= 1f + 0.15f * (float)Math.Sin(flyTime * 0.18f + FishIndex);
+
+                    Projectile.velocity = outward * baseSpeed;
+                    Projectile.Center += Projectile.velocity;
+
+                    //淡出效果
+                    fadeOut = Math.Clamp((progress - 0.5f) / 0.5f, 0f, 1f);
+
+                    //离开屏幕范围检测
+                    Rectangle safeBounds = new((int)Main.screenPosition.X - 200, (int)Main.screenPosition.Y - 200,
+                        Main.screenWidth + 400, Main.screenHeight + 400);
+                    
+                    if (!safeBounds.Contains(Projectile.Center.ToPoint()) || fadeOut >= 0.99f) {
+                        Projectile.Kill();
+                        return;
+                    }
                 }
             }
 
@@ -298,10 +345,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void StartDeparture() {
-            Fired = true;
-        }
-
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
@@ -314,8 +357,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color baseCol = Color.Lerp(Color.OrangeRed, Color.Yellow, 0.3f + 0.4f * glowPulse);
             baseCol *= opacity;
 
+            //绘制外层光晕
             Main.spriteBatch.Draw(value, drawPosition, sourceRect, baseCol * 0.7f, drawRotation, origin, pulseScale * 1.3f, SpriteEffects.None, 0f);
+            //绘制主体
             Main.spriteBatch.Draw(value, drawPosition, sourceRect, Color.White * opacity, drawRotation, origin, pulseScale, SpriteEffects.None, 0f);
+            
             return false;
         }
     }
