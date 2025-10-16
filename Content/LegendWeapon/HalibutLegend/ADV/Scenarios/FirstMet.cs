@@ -74,8 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
             Add(Rolename2.Value, Line2.Value);
             Add(Rolename2.Value, Line3.Value);
             Add(Rolename2.Value, Line4.Value);
-            Add(Rolename2.Value, Line5.Value, styleOverride: () => BrimstoneDialogueBox.Instance);//5 触发奖励
-            Add(Rolename2.Value, Line6.Value, styleOverride: () => SeaDialogueBox.Instance);//一句之后恢复样式
+            Add(Rolename2.Value, Line5.Value);//5 触发奖励
+            Add(Rolename2.Value, Line6.Value);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
