@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                             baseCount++;
                         }
                     }
-                }               
+                }
                 if (extraEye != null && extraEye.IsActive) {
                     baseCount++;
                 }

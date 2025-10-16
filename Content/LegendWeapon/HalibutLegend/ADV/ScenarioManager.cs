@@ -143,12 +143,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     DialogueUIRegistry.SwitchDialogueBox(initialBox, transferQueue: false);
                 }
                 //设置解析器为默认样式
-                //操你妈的得在这里设置一下样式，不然这坨屎会卡住，下面的一堆对话数据会被设置到他妈的另一个样式利
+                //操你妈的得在这里设置一下样式，不然这坨屎会卡住，下面的一堆对话数据会被设置到他妈的另一个样式拿过去
                 //这种情况在前面进行了一次另一个样式的场景后会触发，你妈的我真是服气了，写了一坨屎
                 DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
 
-            
+
             initialBox ??= DialogueUIRegistry.Current;
             initialBox.PreProcessor = PreProcessSegment;
 
@@ -344,8 +344,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (active != null && DialogueUIRegistry.Current.Active) {
                 return false;
             }
-            active = sc; 
-            sc.Start(); 
+            active = sc;
+            sc.Start();
             return true;
         }
 

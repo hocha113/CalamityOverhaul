@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public static LocalizedText Line8 { get; private set; }
         public static LocalizedText Line9 { get; private set; }
         public static LocalizedText Line10 { get; private set; }
-        
+
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "至尊灾厄");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "[Name] & 比目鱼");
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line9 = this.GetLocalization(nameof(Line9), () => "你说亚利姆可以称量我?得让克洛希克来");
             Line10 = this.GetLocalization(nameof(Line10), () => "......");
         }
-        
+
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(hapName, Line9.Value);
             Add(Rolename1.Value, Line10.Value);
         }
-        
+
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
             if (save.SupCalDefeat) {
                 return;
