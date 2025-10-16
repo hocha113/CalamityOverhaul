@@ -24,6 +24,7 @@
         public const string Projectile_Ranged = "CalamityOverhaul/Assets/Projectiles/Ranged/";
         public const string Projectile_Summon = "CalamityOverhaul/Assets/Projectiles/Summon/";
         public const string UI = Asset + "UIs/";
+        public const string ADV = Asset + "ADV/";
         public const string Buff = Asset + "Buffs/";
         public const string NPC = Asset + "NPCs/";
         public const string Sound = Asset + "Sounds/";

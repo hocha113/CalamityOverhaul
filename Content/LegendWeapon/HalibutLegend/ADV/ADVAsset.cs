@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
-    [VaultLoaden(CWRConstant.UI + "Halibut/")]//用反射标签加载对应文件夹下的所有资源
     internal static class ADVAsset
     {
+        [VaultLoaden(CWRConstant.UI + "Halibut/")]
         public static Texture2D HeadADV = null;
-        public static Texture2D SupCalADV = null;
+        [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 1, arrayCount: 6)]
+        public static IList<Texture2D> SupCalADV;
     }
 }

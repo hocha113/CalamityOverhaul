@@ -77,9 +77,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
         protected override void Build() {
             //注册立绘
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
             DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HeadADV);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
