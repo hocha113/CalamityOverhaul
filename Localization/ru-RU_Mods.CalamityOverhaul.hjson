@@ -1221,6 +1221,11 @@ Items: {
 			Stealth strikes unleash a much larger fungal detonation and a swarm of homing spore wisps
 			''' */
 	}
+
+	Pallbearer: {
+		// DisplayName: Pallbearer
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1600,6 +1605,9 @@ Projectiles: {
 	// DrizzleFirePillar.DisplayName: Drizzle Fire Pillar
 	// DrizzleFishHolder.DisplayName: Drizzle Fish Holder
 	// DrizzleSpawnEffect.DisplayName: Drizzle Spawn Effect
+	// PallbearerArrow.DisplayName: Pallbearer Arrow
+	// PallbearerBoomerang.DisplayName: Pallbearer Boomerang
+	// PallbearerHeld.DisplayName: Pallbearer Held
 }
 
 Configs: {

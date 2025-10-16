@@ -1194,6 +1194,11 @@ Items: {
 			发动潜行攻击将触发一场巨大的真菌引爆，并释放出一大群追踪敌人的孢子精魄
 			'''
 	}
+
+	Pallbearer: {
+		// DisplayName: Pallbearer
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1573,6 +1578,9 @@ Projectiles: {
 	// DrizzleFirePillar.DisplayName: Drizzle Fire Pillar
 	// DrizzleFishHolder.DisplayName: Drizzle Fish Holder
 	// DrizzleSpawnEffect.DisplayName: Drizzle Spawn Effect
+	// PallbearerArrow.DisplayName: Pallbearer Arrow
+	// PallbearerBoomerang.DisplayName: Pallbearer Boomerang
+	// PallbearerHeld.DisplayName: Pallbearer Held
 }
 
 Configs: {

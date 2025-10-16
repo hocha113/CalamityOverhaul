@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             //使用动态计算的索引而不是硬编码的5
             if (args.Index == rewardLineIndex) { //Line6 - 奖励物品
-                ADVRewardPopup.ShowReward(ModContent.ItemType<Condemnation>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<Pallbearer>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
