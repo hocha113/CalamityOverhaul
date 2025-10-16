@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public Action OnSelect { get; set; }
         public bool Enabled { get; set; } = true;
         public string DisabledHint { get; set; }
-        
+
         public Choice(string text, Action onSelect, bool enabled = true, string disabledHint = null) {
             Text = text;
             OnSelect = onSelect;
@@ -42,23 +42,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private int hoveredIndex = -1;
         private int selectedIndex = -1;
         private bool isSelecting = false;
-        
+
         // 动画状态
         private float showProgress = 0f;
         private float hideProgress = 0f;
         private const float ShowDuration = 12f;
         private const float HideDuration = 10f;
         private bool closing = false;
-        
+
         // 选项悬停动画
         private readonly float[] choiceHoverProgress = new float[10]; // 支持最多10个选项
         private const float HoverSpeed = 0.15f;
-        
+
         // 位置和尺寸
         private Vector2 anchorPosition;
         private Vector2 panelSize;
         private Rectangle panelRect;
-        
+
         // 布局常量
         private const float MinWidth = 200f;
         private const float MaxWidth = 420f;
@@ -95,12 +95,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             inst.hideProgress = 0f;
             inst.hoveredIndex = -1;
             inst.selectedIndex = -1;
-            
+
             // 重置悬停动画
             for (int i = 0; i < inst.choiceHoverProgress.Length; i++) {
                 inst.choiceHoverProgress[i] = 0f;
             }
-            
+
             // 计算锚点位置
             if (anchorProvider != null) {
                 inst.anchorPosition = anchorProvider();
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             else {
                 inst.anchorPosition = new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
             }
-            
+
             // 计算面板尺寸
             inst.CalculatePanelSize();
         }
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             // 计算标题尺寸
             string title = TitleText.Value;
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
-            
+
             // 计算选项区域所需宽度
             float maxChoiceWidth = 0f;
             foreach (var choice in choices) {
@@ -153,21 +153,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     maxChoiceWidth = width;
                 }
             }
-            
+
             float contentWidth = Math.Max(maxChoiceWidth + ChoicePadding * 2, MinWidth - HorizontalPadding * 2);
             float panelWidth = Math.Clamp(contentWidth + HorizontalPadding * 2, MinWidth, MaxWidth);
-            
+
             // 计算面板高度
             float dividerHeight = 1.3f;
             float choicesHeight = choices.Count * ChoiceHeight + (choices.Count - 1) * ChoiceSpacing;
-            
+
             float panelHeight = TopPadding
                 + titleHeight + TitleExtra
                 + DividerSpacing + dividerHeight
                 + DividerSpacing
                 + choicesHeight
                 + BottomPadding;
-            
+
             panelSize = new Vector2(panelWidth, panelHeight);
         }
 
@@ -181,12 +181,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 showProgress += 1f / ShowDuration;
                 showProgress = Math.Clamp(showProgress, 0f, 1f);
             }
-            
+
             if (closing) {
                 if (hideProgress < 1f) {
                     hideProgress += 1f / HideDuration;
                     hideProgress = Math.Clamp(hideProgress, 0f, 1f);
-                    
+
                     if (hideProgress >= 1f) {
                         choices.Clear();
                         closing = false;
@@ -203,16 +203,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             // 更新面板矩形
             float progress = closing ? (1f - hideProgress) : showProgress;
             float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
-            
+
             Vector2 drawPos = anchorPosition - new Vector2(panelSize.X / 2f, panelSize.Y / 2f);
             drawPos.Y += (1f - eased) * 60f;
-            
+
             panelRect = new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
 
             // 检测鼠标悬停
             Point mousePos = new Point(Main.mouseX, Main.mouseY);
             bool hoverInPanel = panelRect.Contains(mousePos);
-            
+
             if (hoverInPanel) {
                 player.mouseInterface = true;
             }
@@ -222,10 +222,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             if (hoverInPanel && isSelecting) {
                 // 计算每个选项的矩形
-                float startY = drawPos.Y + TopPadding 
-                    + FontAssets.MouseText.Value.MeasureString(TitleText.Value).Y * 0.9f 
+                float startY = drawPos.Y + TopPadding
+                    + FontAssets.MouseText.Value.MeasureString(TitleText.Value).Y * 0.9f
                     + TitleExtra + DividerSpacing * 2 + 1.3f;
-                
+
                 for (int i = 0; i < choices.Count; i++) {
                     float choiceY = startY + i * (ChoiceHeight + ChoiceSpacing);
                     Rectangle choiceRect = new Rectangle(
@@ -234,10 +234,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         (int)(panelSize.X - HorizontalPadding * 2),
                         (int)ChoiceHeight
                     );
-                    
+
                     if (choiceRect.Contains(mousePos)) {
                         hoveredIndex = i;
-                        
+
                         // 点击处理
                         if (keyLeftPressState == KeyPressState.Pressed) {
                             if (choices[i].Enabled) {
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             // 绘制标题
             Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
             string title = TitleText.Value;
-            
+
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
                 Vector2 o = ang.ToRotationVector2() * 1.25f;
@@ -326,11 +326,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         private void DrawChoices(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color edgeColor) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            
+
             for (int i = 0; i < choices.Count; i++) {
                 var choice = choices[i];
                 Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
-                
+
                 // 选项背景
                 Rectangle choiceRect = new Rectangle(
                     (int)choicePos.X,
@@ -338,40 +338,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     (int)(panelSize.X - HorizontalPadding * 2),
                     (int)ChoiceHeight
                 );
-                
+
                 // 悬停效果
                 float hoverProgress = choiceHoverProgress[i];
-                Color choiceBg = choice.Enabled 
+                Color choiceBg = choice.Enabled
                     ? Color.Lerp(new Color(20, 35, 50) * 0.3f, new Color(40, 70, 100) * 0.5f, hoverProgress)
                     : new Color(30, 30, 35) * 0.2f;
-                
+
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
-                
+
                 // 选项边框
                 if (hoverProgress > 0.01f) {
                     DrawChoiceBorder(spriteBatch, choiceRect, edgeColor * (hoverProgress * 0.6f * alpha));
                 }
-                
+
                 // 选项文本
                 string text = choice.Text;
                 Color textColor = choice.Enabled ? Color.White : new Color(120, 120, 130);
-                
+
                 Vector2 textPos = new Vector2(choiceRect.X + ChoicePadding, choiceRect.Y + ChoiceHeight / 2f);
                 Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
                 textPos.Y -= textSize.Y / 2f;
-                
+
                 // 文本发光效果（仅启用的选项）
                 if (choice.Enabled && hoverProgress > 0.3f) {
                     for (int j = 0; j < 4; j++) {
                         float ang = MathHelper.TwoPi * j / 4f;
                         Vector2 offset = ang.ToRotationVector2() * (1f * hoverProgress);
-                        Utils.DrawBorderString(spriteBatch, text, textPos + offset, 
+                        Utils.DrawBorderString(spriteBatch, text, textPos + offset,
                             edgeColor * (0.3f * hoverProgress * alpha), 0.75f);
                     }
                 }
-                
+
                 Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.75f);
-                
+
                 // 禁用提示
                 if (!choice.Enabled && !string.IsNullOrEmpty(choice.DisabledHint)) {
                     string hint = string.Format(DisabledHintFormat.Value, choice.DisabledHint);
@@ -380,34 +380,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         choiceRect.Right - ChoicePadding - hintSize.X,
                         textPos.Y + 2f
                     );
-                    Utils.DrawBorderString(spriteBatch, hint, hintPos, 
+                    Utils.DrawBorderString(spriteBatch, hint, hintPos,
                         new Color(180, 100, 100) * alpha, 0.65f);
                 }
-                
+
                 // 选项序号
                 string indexText = $"{i + 1}.";
                 Vector2 indexPos = new Vector2(
                     choiceRect.X - 18f,
                     textPos.Y
                 );
-                Utils.DrawBorderString(spriteBatch, indexText, indexPos, 
+                Utils.DrawBorderString(spriteBatch, indexText, indexPos,
                     edgeColor * (0.5f + hoverProgress * 0.5f) * alpha, 0.7f);
             }
         }
 
         private void DrawBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            
+
             // 上下左右边框
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2),
                 new Rectangle(0, 0, 1, 1), color);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2),
                 new Rectangle(0, 0, 1, 1), color * 0.7f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.85f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.85f);
-            
+
             // 角落装饰
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 8, rect.Y + 8), color * 0.9f);
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 8, rect.Y + 8), color * 0.9f);
@@ -415,52 +415,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         private void DrawChoiceBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 1), 
+
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 1),
                 new Rectangle(0, 0, 1, 1), color);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
                 new Rectangle(0, 0, 1, 1), color);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 1, rect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 1, rect.Height),
                 new Rectangle(0, 0, 1, 1), color);
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height), 
+            spriteBatch.Draw(pixel, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height),
                 new Rectangle(0, 0, 1, 1), color);
         }
 
-        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, 
+        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end,
             Color startColor, Color endColor, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) return;
-            
+
             edge.Normalize();
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
             int segments = Math.Max(1, (int)(length / 10f));
-            
+
             for (int i = 0; i < segments; i++) {
                 float t = (float)i / segments;
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, 
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation,
                     new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
 
         private void DrawStar(SpriteBatch spriteBatch, Vector2 pos, float size, Color color) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
-            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f, 
+            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
-            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.8f, MathHelper.PiOver2, 
+            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.8f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
         }
 
         private void DrawCornerStar(SpriteBatch spriteBatch, Vector2 pos, Color color) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             float size = 4f;
-            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f, 
+            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
-            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver2, 
+            spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
         }
 

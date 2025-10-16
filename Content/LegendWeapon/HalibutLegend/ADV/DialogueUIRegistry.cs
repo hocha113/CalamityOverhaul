@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             var oldBox = _lastUsedBox ?? Current;
-            
+
             //如果是同一个实例，不需要切换
             if (oldBox == newBox) {
                 return;
@@ -99,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             to.playedCount = from.playedCount;
 
             //=== 转移动画过渡状态，实现平滑切换 ===
-            
+
             //转移显示进度（确保对话框保持显示状态）
             to.showProgress = from.showProgress;
 
@@ -132,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             //清空队列和当前对话
             box.queue.Clear();
             box.current = null;
-            
+
             //重置状态
             box.closing = false;
             box.showProgress = 0f;

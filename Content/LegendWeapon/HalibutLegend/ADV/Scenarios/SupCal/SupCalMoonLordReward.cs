@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     {
         public override string Key => nameof(SupCalMoonLordReward);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
-        
+
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
@@ -27,11 +27,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
-        
+
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "至尊灾厄");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
-            
+
             Line1 = this.GetLocalization(nameof(Line1), () => "呵呵呵");
             Line2 = this.GetLocalization(nameof(Line2), () => "那个家伙已经沦落到这种地步了吗");
             Line3 = this.GetLocalization(nameof(Line3), () => "你知道现在的地底是什么景象吗?");
@@ -40,17 +40,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line6 = this.GetLocalization(nameof(Line6), () => "一把小巧的弩，我需要你拿它干掉下面的那个苟延残喘吸食地热的家伙，记住只能用这个弩");
             Line7 = this.GetLocalization(nameof(Line7), () => "如果你做到了，我们的合作还能继续");
         }
-        
+
         protected override void OnScenarioStart() {
             //开始生成粒子
             SupCalSkyEffect.IsActive = true;
         }
-        
+
         protected override void OnScenarioComplete() {
             //停止粒子生成
             SupCalSkyEffect.IsActive = false;
         }
-        
+
         protected override void Build() {
             //注册立绘
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV);
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(Rolename1.Value, Line3.Value);
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.HasHalubut) {
                 Add(Rolename2.Value, Line4.Value);
-            }              
+            }
             Add(Rolename1.Value, Line5.Value);
             Add(Rolename1.Value, Line6.Value);//奖励
             Add(Rolename1.Value, Line7.Value);

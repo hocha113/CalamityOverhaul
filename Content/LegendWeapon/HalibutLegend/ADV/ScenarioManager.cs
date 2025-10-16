@@ -151,12 +151,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
-                
+
                 // 为了正确处理 Index，我们需要捕获当前的索引
                 int currentIndex = i;
 
                 Action completeCallback = null;
-                
+
                 // 如果有选项，不设置完成回调（由选项触发）
                 if (line.Choices != null && line.Choices.Count > 0) {
                     completeCallback = () => {
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             }
                             return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
                         });
-                        
+
                         //暂停对话推进，等待选择
                         //注意，这里不调用场景完成
                     };
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
                 //构建对话开始回调
                 Action startCallback = null;
-                
+
                 //如果这条对话有自定义样式，在播放前切换样式
                 if (line.StyleOverride != null) {
                     var styleBox = line.StyleOverride.Invoke();

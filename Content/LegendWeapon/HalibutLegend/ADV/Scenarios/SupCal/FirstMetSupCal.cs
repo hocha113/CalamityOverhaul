@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     {
         public override string Key => nameof(FirstMetSupCal);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
-        
+
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
@@ -41,12 +41,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
-        
+
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "至尊灾厄");
             Rolename3 = this.GetLocalization(nameof(Rolename3), () => "比目鱼");
-            
+
             Line1 = this.GetLocalization(nameof(Line1), () => "没想到你这么快就杀掉了我的'妹妹'");
             Line2 = this.GetLocalization(nameof(Line2), () => "你的成长速度确实有些快了");
             Line3 = this.GetLocalization(nameof(Line3), () => "你是......我对你有印象");
@@ -64,17 +64,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "哈，那么便让我来称量称量你吧");
             Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "......真是杂鱼呢，那么给你一个见面礼，我们下次见");
         }
-        
+
         protected override void OnScenarioStart() {
             //开始生成粒子
             SupCalSkyEffect.IsActive = true;
         }
-        
+
         protected override void OnScenarioComplete() {
             //停止粒子生成
             SupCalSkyEffect.IsActive = false;
         }
-        
+
         protected override void Build() {
             //注册立绘
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV);
@@ -125,12 +125,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
                 , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
-            
+
             //标记玩家选择了战斗
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.SupCalChoseToFight = true;
             }
-            
+
             Complete();
         }
 

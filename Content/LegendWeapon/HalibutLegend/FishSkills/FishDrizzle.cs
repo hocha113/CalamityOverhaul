@@ -261,8 +261,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         Projectile p = Main.projectile[i];
                         if (p.active && p.owner == Owner.whoAmI) {
                             if (p.type == Projectile.type && p.ModProjectile is DrizzleFishHolder h) {
-                                if (!h.Fired) { 
-                                    allFired = false; 
+                                if (!h.Fired) {
+                                    allFired = false;
                                 }
                             }
                             else if (p.type == ModContent.ProjectileType<DrizzleFirePillar>()) {
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //离开屏幕范围检测
                     Rectangle safeBounds = new((int)Main.screenPosition.X - 200, (int)Main.screenPosition.Y - 200,
                         Main.screenWidth + 400, Main.screenHeight + 400);
-                    
+
                     if (!safeBounds.Contains(Projectile.Center.ToPoint()) || fadeOut >= 0.99f) {
                         Projectile.Kill();
                         return;
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.spriteBatch.Draw(value, drawPosition, sourceRect, baseCol * 0.7f, drawRotation, origin, pulseScale * 1.3f, SpriteEffects.None, 0f);
             //绘制主体
             Main.spriteBatch.Draw(value, drawPosition, sourceRect, Color.White * opacity, drawRotation, origin, pulseScale, SpriteEffects.None, 0f);
-            
+
             return false;
         }
     }
@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float pillarWidth = 0f;
         private float targetWidth = 140f;
-        
+
         //新增：火焰核心效果参数
         private float coreIntensity = 0f;
         private float heatDistortion = 0f;
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             else {
                 dist = Main.rand.NextFloat(50f, 1400f);
             }
-            
+
             float offsetY = Main.rand.NextFloat(-pillarWidth * 0.4f, pillarWidth * 0.4f);
             Vector2 pos = Projectile.Center + Projectile.rotation.ToRotationVector2() * dist;
             pos += Projectile.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * offsetY;
@@ -539,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //绘制火柱主体
                 DrawPillarMainBody();
             }
-            
+
 
             return false;
         }
@@ -570,14 +570,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             for (int i = 0; i < 80; i++) {
                 float u = i / 80f;
-                
+
                 //使用更亮的核心颜色
                 Color coreColor = Color.Lerp(
                     new Color(255, 240, 200),  //接近白色的亮黄
                     new Color(255, 200, 120),  //金黄色
                     u
                 );
-                
+
                 //根部（u接近0）更亮，远端逐渐变暗
                 float intensityByDistance = MathHelper.Lerp(1.2f, 0.6f, u);
                 coreColor *= coreIntensity * intensityByDistance;
@@ -616,11 +616,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             for (int i = 0; i < 80; i++) {
                 float u = i / 80f;
-                
+
                 //改进颜色插值，使用三重渐变
                 Color colA = Color.Lerp(
-                    Color.Lerp(gradientStart, gradientMid, u), 
-                    Color.Lerp(gradientMid, gradientEnd, u), 
+                    Color.Lerp(gradientStart, gradientMid, u),
+                    Color.Lerp(gradientMid, gradientEnd, u),
                     u
                 );
                 Color colB = Color.Lerp(gradientStart, gradientEnd, u);

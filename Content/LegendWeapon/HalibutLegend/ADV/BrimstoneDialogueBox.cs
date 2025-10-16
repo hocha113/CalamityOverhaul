@@ -35,8 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private int wispSpawnTimer = 0;
         private const float ParticleSideMargin = 30f;
 
-        protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize)
-        {
+        protected override void StyleUpdate(Vector2 panelPos, Vector2 panelSize) {
             //火焰动画计时器
             flameTimer += 0.045f;
             emberGlowTimer += 0.038f;
@@ -49,42 +48,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             //余烬粒子生成
             emberSpawnTimer++;
-            if (Active && emberSpawnTimer >= 8 && embers.Count < 35)
-            {
+            if (Active && emberSpawnTimer >= 8 && embers.Count < 35) {
                 emberSpawnTimer = 0;
                 float xPos = Main.rand.NextFloat(panelPos.X + ParticleSideMargin, panelPos.X + panelSize.X - ParticleSideMargin);
                 Vector2 startPos = new(xPos, panelPos.Y + panelSize.Y - 5f);
                 embers.Add(new EmberParticle(startPos));
             }
-            for (int i = embers.Count - 1; i >= 0; i--)
-            {
-                if (embers[i].Update(panelPos, panelSize))
-                {
+            for (int i = embers.Count - 1; i >= 0; i--) {
+                if (embers[i].Update(panelPos, panelSize)) {
                     embers.RemoveAt(i);
                 }
             }
 
             //灰烬粒子生成
             ashSpawnTimer++;
-            if (Active && ashSpawnTimer >= 12 && ashes.Count < 25)
-            {
+            if (Active && ashSpawnTimer >= 12 && ashes.Count < 25) {
                 ashSpawnTimer = 0;
                 float xPos = Main.rand.NextFloat(panelPos.X + ParticleSideMargin, panelPos.X + panelSize.X - ParticleSideMargin);
                 Vector2 startPos = new(xPos, panelPos.Y + panelSize.Y);
                 ashes.Add(new AshParticle(startPos));
             }
-            for (int i = ashes.Count - 1; i >= 0; i--)
-            {
-                if (ashes[i].Update(panelPos, panelSize))
-                {
+            for (int i = ashes.Count - 1; i >= 0; i--) {
+                if (ashes[i].Update(panelPos, panelSize)) {
                     ashes.RemoveAt(i);
                 }
             }
 
             //火焰精灵生成
             wispSpawnTimer++;
-            if (Active && wispSpawnTimer >= 45 && flameWisps.Count < 8)
-            {
+            if (Active && wispSpawnTimer >= 45 && flameWisps.Count < 8) {
                 wispSpawnTimer = 0;
                 Vector2 startPos = new(
                     Main.rand.NextFloat(panelPos.X + 40f, panelPos.X + panelSize.X - 40f),
@@ -92,17 +84,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 );
                 flameWisps.Add(new FlameWisp(startPos));
             }
-            for (int i = flameWisps.Count - 1; i >= 0; i--)
-            {
-                if (flameWisps[i].Update(panelPos, panelSize))
-                {
+            for (int i = flameWisps.Count - 1; i >= 0; i--) {
+                if (flameWisps[i].Update(panelPos, panelSize)) {
                     flameWisps.RemoveAt(i);
                 }
             }
         }
 
-        protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress)
-        {
+        protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
             Texture2D px = TextureAssets.MagicPixel.Value;
 
             //阴影效果
@@ -112,8 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             //渐变背景 - 硫磺火深红色
             int segments = 35;
-            for (int i = 0; i < segments; i++)
-            {
+            for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
                 float t2 = (i + 1) / (float)segments;
                 int y1 = panelRect.Y + (int)(t * panelRect.Height);
@@ -153,42 +141,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             DrawBrimstoneFrame(spriteBatch, panelRect, alpha, glowPulse);
 
             //绘制粒子（从后到前）
-            foreach (var ash in ashes)
-            {
+            foreach (var ash in ashes) {
                 ash.Draw(spriteBatch, alpha * 0.7f);
             }
-            foreach (var wisp in flameWisps)
-            {
+            foreach (var wisp in flameWisps) {
                 wisp.Draw(spriteBatch, alpha * 0.8f);
             }
-            foreach (var ember in embers)
-            {
+            foreach (var ember in embers) {
                 ember.Draw(spriteBatch, alpha * 0.95f);
             }
 
-            if (current == null || contentAlpha <= 0.01f)
-            {
+            if (current == null || contentAlpha <= 0.01f) {
                 return;
             }
 
             DrawPortraitAndText(spriteBatch, panelRect, alpha, contentAlpha);
         }
 
-        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha)
-        {
+        private void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
             bool hasPortrait = false;
             PortraitData speakerPortrait = null;
-            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f)
-            {
+            if (current != null && !string.IsNullOrEmpty(current.Speaker) && portraits.TryGetValue(current.Speaker, out var pd) && pd.Texture != null && pd.Fade > 0.02f) {
                 hasPortrait = true;
                 speakerPortrait = pd;
             }
 
             float switchEase = speakerSwitchProgress;
-            if (switchEase < 1f)
-            {
+            if (switchEase < 1f) {
                 switchEase = EaseOutCubic(switchEase);
             }
             float portraitAppearScale = MathHelper.Lerp(0.82f, 1f, switchEase);
@@ -198,8 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float topNameOffset = 12f;
             float textBlockOffsetY = Padding + 38;
 
-            if (hasPortrait)
-            {
+            if (hasPortrait) {
                 float availHeight = panelRect.Height - 60f;
                 float maxPortraitHeight = Math.Clamp(availHeight, 95f, 270f);
                 Texture2D ptex = speakerPortrait.Texture;
@@ -211,8 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 DrawBrimstonePortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 9), (int)(pPos.Y - 9), (int)(pSize.X + 18), (int)(pSize.Y + 18)), alpha * speakerPortrait.Fade * portraitExtraAlpha);
 
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
-                if (speakerPortrait.Silhouette)
-                {
+                if (speakerPortrait.Silhouette) {
                     drawColor = new Color(40, 10, 5) * (contentAlpha * speakerPortrait.Fade * portraitExtraAlpha) * 0.85f;
                 }
 
@@ -227,15 +206,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             //绘制说话者名字
-            if (current != null && !string.IsNullOrEmpty(current.Speaker))
-            {
+            if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
                 Vector2 speakerPos = new(panelRect.X + leftOffset, panelRect.Y + topNameOffset - (1f - switchEase) * 7f);
                 float nameAlpha = contentAlpha * switchEase;
 
                 //火焰光晕效果
                 Color nameGlow = new Color(255, 140, 80) * nameAlpha * 0.75f;
-                for (int i = 0; i < 6; i++)
-                {
+                for (int i = 0; i < 6; i++) {
                     float angle = MathHelper.TwoPi * i / 6f + flameTimer * 0.5f;
                     Vector2 offset = angle.ToRotationVector2() * 2.2f * switchEase;
                     Utils.DrawBorderString(spriteBatch, current.Speaker, speakerPos + offset, nameGlow * 0.5f, 0.95f);
@@ -247,8 +224,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Vector2 divStart = speakerPos + new Vector2(0, 28);
                 Vector2 divEnd = divStart + new Vector2(panelRect.Width - leftOffset - Padding, 0);
                 float lineAlpha = contentAlpha * switchEase;
-                DrawFlameGradientLine(spriteBatch, divStart, divEnd, 
-                    new Color(220, 80, 40) * (lineAlpha * 0.9f), 
+                DrawFlameGradientLine(spriteBatch, divStart, divEnd,
+                    new Color(220, 80, 40) * (lineAlpha * 0.9f),
                     new Color(120, 30, 15) * (lineAlpha * 0.1f), 1.5f);
             }
 
@@ -258,23 +235,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
             int maxLines = (int)((panelRect.Height - (textStart.Y - panelRect.Y) - Padding) / lineHeight);
 
-            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++)
-            {
+            for (int i = 0; i < wrappedLines.Length && i < maxLines; i++) {
                 string fullLine = wrappedLines[i];
-                if (string.IsNullOrEmpty(fullLine))
-                {
+                if (string.IsNullOrEmpty(fullLine)) {
                     continue;
                 }
 
                 string visLine;
-                if (finishedCurrent)
-                {
+                if (finishedCurrent) {
                     visLine = fullLine;
                 }
-                else
-                {
-                    if (remaining <= 0)
-                    {
+                else {
+                    if (remaining <= 0) {
                         break;
                     }
                     int take = Math.Min(fullLine.Length, remaining);
@@ -283,8 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
 
                 Vector2 linePos = textStart + new Vector2(0, i * lineHeight);
-                if (linePos.Y + lineHeight > panelRect.Bottom - Padding)
-                {
+                if (linePos.Y + lineHeight > panelRect.Bottom - Padding) {
                     break;
                 }
 
@@ -302,8 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             //继续提示
-            if (waitingForAdvance)
-            {
+            if (waitingForAdvance) {
                 float blink = (float)Math.Sin(advanceBlinkTimer / 10f * MathHelper.TwoPi) * 0.5f + 0.5f;
                 string hint = $"▶ {ContinueHint.Value} ◀";
                 Vector2 hintSize = font.MeasureString(hint) * 0.65f;
@@ -314,8 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             //加速提示
-            if (!finishedCurrent)
-            {
+            if (!finishedCurrent) {
                 string fast = FastHint.Value;
                 Vector2 fastSize = font.MeasureString(fast) * 0.6f;
                 Vector2 fastPos = new(panelRect.Right - Padding - fastSize.X, panelRect.Bottom - Padding - fastSize.Y - 18);
@@ -324,12 +293,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         #region 样式工具函数
-        private void DrawHeatWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha)
-        {
+        private void DrawHeatWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             int waveCount = 8;
-            for (int i = 0; i < waveCount; i++)
-            {
+            for (int i = 0; i < waveCount; i++) {
                 float t = i / (float)waveCount;
                 float baseY = rect.Y + 25 + t * (rect.Height - 50);
                 float amplitude = 5f + (float)Math.Sin((heatWavePhase + t * 1.2f) * 2.5f) * 3.5f;
@@ -337,18 +304,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
                 int segments = 50;
                 Vector2 prevPoint = Vector2.Zero;
-                for (int s = 0; s <= segments; s++)
-                {
+                for (int s = 0; s <= segments; s++) {
                     float progress = s / (float)segments;
                     float waveY = baseY + (float)Math.Sin(heatWavePhase * 3f + progress * MathHelper.TwoPi * 1.5f + t * 2f) * amplitude;
                     Vector2 point = new(rect.X + 12 + progress * (rect.Width - 24), waveY);
 
-                    if (s > 0)
-                    {
+                    if (s > 0) {
                         Vector2 diff = point - prevPoint;
                         float len = diff.Length();
-                        if (len > 0.01f)
-                        {
+                        if (len > 0.01f) {
                             float rot = diff.ToRotation();
                             Color waveColor = new Color(180, 60, 30) * (alpha * 0.08f);
                             sb.Draw(px, prevPoint, new Rectangle(0, 0, 1, 1), waveColor, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
@@ -359,8 +323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
 
-        private static void DrawBrimstoneFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse)
-        {
+        private static void DrawBrimstoneFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = TextureAssets.MagicPixel.Value;
 
             //外框 - 火焰橙红
@@ -386,8 +349,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             DrawFlameMark(sb, new Vector2(rect.Right - 12, rect.Bottom - 12), alpha * 0.65f);
         }
 
-        private static void DrawFlameMark(SpriteBatch sb, Vector2 pos, float alpha)
-        {
+        private static void DrawFlameMark(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             float size = 6f;
             Color flameColor = new Color(255, 150, 70) * alpha;
@@ -399,20 +361,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
         }
 
-        private static void DrawFlameGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness)
-        {
+        private static void DrawFlameGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = TextureAssets.MagicPixel.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
-            if (length < 1f)
-            {
+            if (length < 1f) {
                 return;
             }
             edge.Normalize();
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
             int segments = Math.Max(1, (int)(length / 10f));
-            for (int i = 0; i < segments; i++)
-            {
+            for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
@@ -435,8 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public float RotationSpeed;
             public float Rotation;
 
-            public EmberParticle(Vector2 start)
-            {
+            public EmberParticle(Vector2 start) {
                 Pos = start;
                 Size = Main.rand.NextFloat(2.5f, 5.5f);
                 RiseSpeed = Main.rand.NextFloat(0.4f, 1.1f);
@@ -448,23 +406,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             }
 
-            public bool Update(Vector2 panelPos, Vector2 panelSize)
-            {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 float t = Life / MaxLife;
                 Pos.Y -= RiseSpeed * (1f - t * 0.3f);
                 Pos.X += (float)Math.Sin(Life * 0.06f + Seed) * Drift;
                 Rotation += RotationSpeed;
 
-                if (Life >= MaxLife || Pos.Y < panelPos.Y + 15f)
-                {
+                if (Life >= MaxLife || Pos.Y < panelPos.Y + 15f) {
                     return true;
                 }
                 return false;
             }
 
-            public void Draw(SpriteBatch sb, float alpha)
-            {
+            public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = TextureAssets.MagicPixel.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
@@ -492,8 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public float Seed;
             public float Rotation;
 
-            public AshParticle(Vector2 start)
-            {
+            public AshParticle(Vector2 start) {
                 Pos = start;
                 Size = Main.rand.NextFloat(1.5f, 3.5f);
                 RiseSpeed = Main.rand.NextFloat(0.15f, 0.45f);
@@ -504,22 +458,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             }
 
-            public bool Update(Vector2 panelPos, Vector2 panelSize)
-            {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 float t = Life / MaxLife;
                 Pos.Y -= RiseSpeed * (0.7f + (float)Math.Sin(t * Math.PI) * 0.3f);
                 Pos.X += (float)Math.Sin(Life * 0.04f + Seed) * Drift * 1.5f;
 
-                if (Life >= MaxLife || Pos.Y < panelPos.Y)
-                {
+                if (Life >= MaxLife || Pos.Y < panelPos.Y) {
                     return true;
                 }
                 return false;
             }
 
-            public void Draw(SpriteBatch sb, float alpha)
-            {
+            public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = TextureAssets.MagicPixel.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI) * (1f - t * 0.4f);
@@ -540,8 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public float Seed;
             public float Phase;
 
-            public FlameWisp(Vector2 start)
-            {
+            public FlameWisp(Vector2 start) {
                 Pos = start;
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float speed = Main.rand.NextFloat(0.3f, 0.8f);
@@ -553,8 +503,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Phase = Main.rand.NextFloat(MathHelper.TwoPi);
             }
 
-            public bool Update(Vector2 panelPos, Vector2 panelSize)
-            {
+            public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
                 float t = Life / MaxLife;
 
@@ -567,24 +516,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 Pos += Velocity + drift;
 
                 //边界检查
-                if (Pos.X < panelPos.X + 20f || Pos.X > panelPos.X + panelSize.X - 20f)
-                {
+                if (Pos.X < panelPos.X + 20f || Pos.X > panelPos.X + panelSize.X - 20f) {
                     Velocity.X *= -0.8f;
                 }
-                if (Pos.Y < panelPos.Y + 40f || Pos.Y > panelPos.Y + panelSize.Y - 40f)
-                {
+                if (Pos.Y < panelPos.Y + 40f || Pos.Y > panelPos.Y + panelSize.Y - 40f) {
                     Velocity.Y *= -0.8f;
                 }
 
-                if (Life >= MaxLife)
-                {
+                if (Life >= MaxLife) {
                     return true;
                 }
                 return false;
             }
 
-            public void Draw(SpriteBatch sb, float alpha)
-            {
+            public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = TextureAssets.MagicPixel.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
@@ -605,8 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         #endregion
 
         #region 公共静态绘制函数
-        private static void DrawBrimstonePortraitFrame(SpriteBatch sb, Rectangle rect, float alpha)
-        {
+        private static void DrawBrimstonePortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = TextureAssets.MagicPixel.Value;
 
             //深色背景
@@ -621,8 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
         }
 
-        private static void DrawFlameGlow(SpriteBatch sb, Rectangle rect, Color glow)
-        {
+        private static void DrawFlameGlow(SpriteBatch sb, Rectangle rect, Color glow) {
             Texture2D px = TextureAssets.MagicPixel.Value;
 
             //内部填充

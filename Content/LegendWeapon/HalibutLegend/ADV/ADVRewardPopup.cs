@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public int ItemId;
             public int Stack;
             public string CustomText;
-            public int Timer;
             public bool Given;
             public float Appear;
             public float Hold;
@@ -129,13 +128,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             current.Appear = 0f;
             current.Hold = 0f;
             justOpened = true;
-            
+
             //重置位置过渡状态
             isDialogueClosing = false;
             positionTransitionProgress = 0f;
             cachedAnchorPosition = Vector2.Zero;
             currentDisplayPosition = Vector2.Zero;
-            
+
             //初次播放音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = -0.2f });
         }
@@ -241,23 +240,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             //优先使用自定义锚点提供器
             if (current?.AnchorProvider != null) {
                 Vector2 providedPos = current.AnchorProvider() + current.Offset;
-                
+
                 //检测对话框是否正在关闭
                 if (DialogueUIRegistry.Current != null) {
                     var currentBox = DialogueUIRegistry.Current;
-                    
+
                     //如果对话框刚开始关闭，缓存当前位置
                     if (currentBox.closing && !isDialogueClosing) {
                         isDialogueClosing = true;
                         cachedAnchorPosition = providedPos;
                         positionTransitionProgress = 0f;
                     }
-                    
+
                     //对话框关闭中，使用缓存位置并平滑过渡到屏幕中心
                     if (isDialogueClosing) {
                         positionTransitionProgress += PositionTransitionSpeed;
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
-                        
+
                         //使用缓动函数平滑过渡
                         float easeProgress = EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
@@ -269,42 +268,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         return providedPos;
                     }
                 }
-                
+
                 return providedPos;
             }
-            
+
             //如果没有自定义锚点，尝试使用对话框位置
             if (DialogueUIRegistry.Current != null) {
                 var rect = DialogueUIRegistry.Current.GetPanelRect();
                 if (rect != Rectangle.Empty) {
                     Vector2 dialoguePos = new Vector2(rect.Center.X, rect.Y - 60f);
-                    
+
                     //同样处理对话框关闭的情况
                     var currentBox = DialogueUIRegistry.Current;
-                    
+
                     if (currentBox.closing && !isDialogueClosing) {
                         isDialogueClosing = true;
                         cachedAnchorPosition = dialoguePos;
                         positionTransitionProgress = 0f;
                     }
-                    
+
                     if (isDialogueClosing) {
                         positionTransitionProgress += PositionTransitionSpeed;
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
-                        
+
                         float easeProgress = EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }
-                    
+
                     return dialoguePos;
                 }
             }
-            
+
             //默认返回屏幕中心
             return panelCenter;
         }
-        
+
         ///<summary>
         ///平滑缓出函数
         ///</summary>
@@ -339,9 +338,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 int y1 = rect.Y + (int)(t * rect.Height);
                 int y2 = rect.Y + (int)(t2 * rect.Height);
                 int height = Math.Max(1, y2 - y1);
-                
+
                 Rectangle r = new(rect.X, y1, rect.Width, height);
-                
+
                 Color abyssDeep = new Color(2, 10, 18);
                 Color abyssMid = new Color(6, 32, 48);
                 Color bioEdge = new Color(12, 80, 110);

@@ -121,11 +121,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             SetPortraitStyle(speaker, baseColor, silhouette);
         }
         public virtual void EnqueueDialogue(string speaker, string content, Action onFinish = null, Action onStart = null) {
-            queue.Enqueue(new DialogueSegment { 
-                Speaker = speaker, 
-                Content = content ?? string.Empty, 
+            queue.Enqueue(new DialogueSegment {
+                Speaker = speaker,
+                Content = content ?? string.Empty,
                 OnStart = onStart,
-                OnFinish = onFinish 
+                OnFinish = onFinish
             });
         }
         public virtual void ReplaceDialogue(IEnumerable<(string speaker, string content, Action callback)> segments) {
@@ -149,10 +149,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return;
             }
             current = queue.Dequeue();
-            
+
             // 在处理对话之前触发 OnStart
             current?.OnStart?.Invoke();
-            
+
             playedCount++;
             int index = playedCount - 1;
             int total = playedCount + queue.Count;
@@ -231,14 +231,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             wrappedLines = allLines.ToArray();
             int textLines = wrappedLines.Length;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
-            
+
             // 精确的headerHeight计算：
             // 在子类绘制实现中，textBlockOffsetY 通常设置为 Padding + 36~38
             // 这个值表示从面板顶部到文本区域开始位置的距离
             // 包括：topNameOffset(10-12) + 名字高度(~23) + titleExtra(6) + 分隔线间距(8*2) + 分隔线高度(1-2) ≈ 56-59
             // 为了与实际绘制布局保持一致，使用 textBlockOffsetY 的典型值
             int headerHeight = 38; // 设置为典型的 textBlockOffsetY - Padding 值，即 (Padding + 38) - Padding = 38
-            
+
             float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         showProgress = 0f;
                         lastSpeaker = null;
                         speakerSwitchProgress = 1f;
-                        
+
                         // 淡出动画完成后，恢复默认解析器
                         // 只有当前对话框是通过解析器设置的才恢复
                         if (DialogueUIRegistry.Current == this) {
