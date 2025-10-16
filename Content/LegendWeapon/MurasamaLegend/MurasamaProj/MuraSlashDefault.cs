@@ -206,10 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.BrainofCthulhu) {
-                modifiers.FinalDamage *= 1.75f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 1.75f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == ModContent.NPCType<HiveBlob>() || target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
                 modifiers.FinalDamage *= 2f;

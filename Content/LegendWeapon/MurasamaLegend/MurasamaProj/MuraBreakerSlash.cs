@@ -132,6 +132,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, Main.rand.NextBool() ? DustID.Grass : DustID.JungleGrass);
                 return;
             }
+            if (npc.type == ModContent.NPCType<HiveMind>()) {;
+                return;
+            }
             if (npc.type == NPCID.WallofFlesh || npc.type == NPCID.WallofFleshEye) {
                 spanDust(133, DustID.Blood);
                 owner.velocity += new Vector2(flyVr.X * -2, -1);
