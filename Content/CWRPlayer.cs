@@ -205,6 +205,10 @@ namespace CalamityOverhaul.Content
         /// 毁灭者的存在索引
         /// </summary>
         internal static int TheDestroyer = -1;
+        /// <summary>
+        /// 抬棺人下一发弩箭的伤害倍率，默认为1，回旋镖命中后设置为2并在弩箭发射后恢复
+        /// </summary>
+        public int PallbearerNextArrowDamageMult = 1;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
@@ -251,6 +255,7 @@ namespace CalamityOverhaul.Content
             cwr.RotationResetDuration = RotationResetDuration;
             cwr.CustomCooldownCounter = CustomCooldownCounter;
             cwr.DontUseItemTime = DontUseItemTime;
+            cwr.PallbearerNextArrowDamageMult = PallbearerNextArrowDamageMult;
             return cwr;
         }
 
@@ -262,6 +267,7 @@ namespace CalamityOverhaul.Content
             ReceivingPlatformTime = 0;
             DontUseItemTime = 0;
             ThermalGenerationActiveTime = 0;
+            PallbearerNextArrowDamageMult = 1; //初始化
             Reset();
         }
 

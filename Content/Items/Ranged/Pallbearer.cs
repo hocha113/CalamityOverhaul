@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using InnoVault.GameContent.BaseEntity;
-using Microsoft.Xna.Framework; // Added for Vector2/Color/MathHelper explicit reference
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -15,7 +14,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    //抬棺人 - 一把需要蓄力的强力弩
+    /// <summary>
+    /// 抬棺人
+    /// </summary>
     internal class Pallbearer : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
@@ -67,11 +68,531 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 抬棺人弩发射的强力箭矢，带有华丽的视觉效果和强大的伤害
+    /// 抬棺人弩的手持弹幕，负责蓄力、装填和射击的动画逻辑
+    /// </summary>
+    internal class PallbearerHeld : BaseHeldProj
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "PallbearerHeld";
+
+        //弩的状态机
+        private enum CrossbowState
+        {
+            Idle,           //待机
+            Loading,        //装填箭矢
+            Charged,        //蓄力完成(正在蓄力)
+            Firing,         //发射
+            Throwing        //投掷弩本身 (未使用保留)
+        }
+
+        private CrossbowState State {
+            get => (CrossbowState)Projectile.ai[0];
+            set => Projectile.ai[0] = (float)value;
+        }
+
+        private ref float StateTimer => ref Projectile.ai[1];
+        private ref float ChargeLevel => ref Projectile.localAI[0]; //蓄力等级 0-1
+        private ref float ThrowCooldown => ref Projectile.localAI[1]; //投掷冷却(实例内生效)
+
+        //动画帧控制 (使用Projectile.frame)
+        private float armRotation = 0f;
+
+        //常量配置
+        private const int LoadDuration = 35;        //装填时长
+        private const int MaxChargeDuration = 60;   //最大蓄力时长
+        private const int FireDuration = 15;        //射击动画时长
+        private const int ThrowCooldownTime = 120;  //投掷后的冷却(仅右键)
+
+        //弩弦相关
+        private float bowstringPullback = 0f; //弓弦拉动进度
+
+        public override void SetStaticDefaults() {
+            Main.projFrames[Type] = 4; //4帧动画：0待机 1加载过渡 2满弦 3射击回弹
+        }
+
+        public override void SetDefaults() {
+            Projectile.width = 80;
+            Projectile.height = 32;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.ignoreWater = true;
+            Projectile.timeLeft = 2;
+            Projectile.hide = false;
+        }
+
+        public override void AI() {
+            if (!Owner.active || Owner.dead) {
+                Projectile.Kill();
+                return;
+            }
+
+            Projectile.timeLeft = 2;
+            SetHeld();
+
+            switch (State) {
+                case CrossbowState.Idle:
+                    HandleIdle();
+                    break;
+                case CrossbowState.Loading:
+                    HandleLoading();
+                    break;
+                case CrossbowState.Charged:
+                    HandleCharged();
+                    break;
+                case CrossbowState.Firing:
+                    HandleFiring();
+                    break;
+            }
+
+            UpdateOwnerArms();
+            UpdatePositionAndRotation();
+            StateTimer++;
+        }
+
+        private void HandleIdle() {
+            Projectile.frame = 0;
+            bowstringPullback = 0f;
+            ChargeLevel = 0f;
+
+            if (DownLeft && Owner.HasAmmo(Owner.ActiveItem())) {
+                State = CrossbowState.Loading;
+                StateTimer = 0;
+                SoundEngine.PlaySound(SoundID.Item149, Owner.Center);
+            }
+
+            if (DownRight && ThrowCooldown <= 0) {
+                ThrowCrossbow();
+            }
+        }
+
+        private void HandleLoading() {
+            float loadProgress = StateTimer / LoadDuration;
+            Projectile.frame = loadProgress < 0.5f ? 0 : 1;
+            bowstringPullback = MathHelper.SmoothStep(0f, 1f, loadProgress);
+
+            if (StateTimer % 8 == 0 && !Main.dedServ) {
+                Vector2 dustPos = Projectile.Center + Projectile.velocity * 20f;
+                for (int i = 0; i < 3; i++) {
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.Smoke,
+                        Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);
+                    dust.noGravity = true;
+                }
+            }
+
+            if (StateTimer >= LoadDuration) {
+                State = CrossbowState.Charged;
+                StateTimer = 0;
+                ChargeLevel = 0f;
+                Projectile.frame = 2;
+                SoundEngine.PlaySound(SoundID.Item102 with { Pitch = -0.3f }, Owner.Center);
+                SpawnLoadCompleteEffect();
+            }
+
+            if (!DownLeft) { //取消
+                State = CrossbowState.Idle;
+                StateTimer = 0;
+            }
+        }
+
+        private void HandleCharged() {
+            Projectile.frame = 2;
+            bowstringPullback = 1f;
+
+            if (DownLeft && StateTimer < MaxChargeDuration) {
+                ChargeLevel = StateTimer / MaxChargeDuration;
+                if (StateTimer % 5 == 0) {
+                    SpawnChargeParticle();
+                }
+                if (StateTimer % 15 == 0) {
+                    SoundEngine.PlaySound(SoundID.Item149 with {
+                        Volume = 0.3f,
+                        Pitch = ChargeLevel * 0.5f
+                    }, Owner.Center);
+                }
+            }
+
+            if (!DownLeft || StateTimer >= MaxChargeDuration) {
+                State = CrossbowState.Firing;
+                StateTimer = 0;
+                FireArrow();
+            }
+        }
+
+        private void HandleFiring() {
+            Projectile.frame = 3;
+            float fireProgress = StateTimer / FireDuration;
+            bowstringPullback = 1f - fireProgress;
+
+            if (StateTimer >= FireDuration) {
+                // 直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
+                State = CrossbowState.Idle;
+                StateTimer = 0;
+                ChargeLevel = 0f;
+            }
+        }
+
+        private void FireArrow() {
+            if (!Projectile.IsOwnedByLocalPlayer())
+                return;
+
+            Owner.PickAmmo(Owner.ActiveItem(), out int projToShoot, out float speed,
+                out int damage, out float knockback, out int usedAmmoItemId, false);
+
+            int mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
+            float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; // 最高250% * 触发加成
+            int finalDamage = (int)(Projectile.damage * damageMultiplier);
+
+            Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (Owner.ActiveItem().shootSpeed + ChargeLevel * 5f);
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center + Projectile.velocity * 30f,
+                shootVelocity,
+                ModContent.ProjectileType<PallbearerArrow>(),
+                finalDamage,
+                Projectile.knockBack * (1f + ChargeLevel * 0.5f),
+                Owner.whoAmI,
+                ChargeLevel
+            );
+
+            // Reset multiplier after consumption
+            if (mult > 1) {
+                Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1;
+                // 反馈特效
+                SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
+                if (!Main.dedServ) {
+                    for (int i = 0; i < 16; i++) {
+                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2Circular(4f, 4f), 150, Color.OrangeRed, 1.4f);
+                        d.noGravity = true;
+                    }
+                }
+            }
+
+            SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with {
+                Volume = 0.8f + ChargeLevel * 0.4f,
+                Pitch = -0.1f + ChargeLevel * 0.2f
+            }, Projectile.Center);
+
+            SpawnFireEffect();
+        }
+
+        private void ThrowCrossbow() {
+            if (!Projectile.IsOwnedByLocalPlayer())
+                return;
+
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(),
+                Projectile.Center,
+                Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * 14f,
+                ModContent.ProjectileType<PallbearerBoomerang>(),
+                (int)(Projectile.damage * 0.8f),
+                Projectile.knockBack * 1.2f,
+                Owner.whoAmI
+            );
+
+            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.3f }, Projectile.Center);
+            ThrowCooldown = ThrowCooldownTime;
+            Projectile.Kill();
+        }
+
+        private void UpdateOwnerArms() {
+            int dir = Owner.direction;
+            float targetArmRot = Projectile.rotation;
+            if (dir < 0) {
+                targetArmRot -= MathHelper.PiOver2;
+            }
+            else {
+                targetArmRot -= MathHelper.ToRadians(60);
+            }
+
+            switch (State) {
+                case CrossbowState.Loading:
+                    armRotation = MathHelper.Lerp(armRotation, targetArmRot - 0.5f * dir, 0.15f);
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, targetArmRot);
+                    break;
+                case CrossbowState.Charged:
+                    float vibration = (float)Math.Sin(StateTimer * 0.3f) * 0.03f;
+                    armRotation = targetArmRot - 0.6f * dir + vibration;
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
+                    break;
+                case CrossbowState.Firing:
+                    armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.4f);
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
+                    break;
+                default:
+                    armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.2f);
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, armRotation);
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, targetArmRot);
+                    break;
+            }
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.itemTime = 2;
+            Owner.itemAnimation = 2;
+        }
+
+        private void UpdatePositionAndRotation() {
+            Vector2 ownerCenter = Owner.GetPlayerStabilityCenter();
+            Vector2 aimDir = (Main.MouseWorld - ownerCenter).SafeNormalize(Vector2.UnitX * Owner.direction);
+            Projectile.velocity = aimDir; //稳定的方向向量
+
+            float holdDistance = 20f + ((State == CrossbowState.Loading || State == CrossbowState.Charged) ? bowstringPullback * 8f : 0f);
+            Projectile.Center = ownerCenter + aimDir * holdDistance;
+            Projectile.rotation = aimDir.ToRotation();
+
+            Owner.ChangeDir(aimDir.X > 0 ? 1 : -1);
+            Owner.itemRotation = Projectile.rotation * Owner.direction;
+
+            if (ThrowCooldown > 0) ThrowCooldown--;
+        }
+
+        private void SpawnLoadCompleteEffect() {
+            if (Main.dedServ) return;
+            for (int i = 0; i < 12; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.rotation.ToRotationVector2() * 32, DustID.RedTorch, velocity, 100, Color.Cyan, 1.5f);
+                dust.noGravity = true;
+            }
+        }
+
+        private void SpawnChargeParticle() {
+            if (Main.dedServ) return;
+            Color chargeColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel);
+            Vector2 particlePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 32 + Main.rand.NextVector2Circular(15f, 15f);
+            Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * 2f;
+            Dust charge = Dust.NewDustPerfect(particlePos, DustID.RedTorch, particleVel, 100, chargeColor, 1.2f);
+            charge.noGravity = true;
+            charge.fadeIn = 1.2f;
+        }
+
+        private void SpawnFireEffect() {
+            if (Main.dedServ) return;
+            Vector2 muzzlePos = Projectile.Center + Projectile.velocity * 30f;
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 8f);
+                Dust spark = Dust.NewDustPerfect(muzzlePos, DustID.Torch, velocity, 100, Color.OrangeRed, 1.8f);
+                spark.noGravity = true;
+            }
+            for (int i = 0; i < 8; i++) {
+                Dust smoke = Dust.NewDustPerfect(muzzlePos, DustID.Smoke,
+                    Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 3f), 100, default, 2f);
+                smoke.noGravity = false;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = frame.Size() / 2f;
+            SpriteEffects fx = Owner.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+
+            Main.EntitySpriteDraw(texture, drawPos, frame, lightColor, Projectile.rotation, origin, Projectile.scale, fx, 0);
+
+            if (State == CrossbowState.Charged && ChargeLevel > 0.3f) {
+                Color glowColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);
+                Main.EntitySpriteDraw(texture, drawPos, frame, glowColor * 0.5f,
+                        Projectile.rotation, origin, Projectile.scale, fx, 0);
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 抬棺人弩被投掷后的回旋镖形态，会旋转攻击敌人后返回玩家手中
+    /// </summary>
+    internal class PallbearerBoomerang : ModProjectile
+    {
+        public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
+
+        private enum BoomerangState { Throwing, Returning }
+        private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set => Projectile.ai[0] = (float)value; }
+        private ref float Time => ref Projectile.ai[1];
+        private ref float SpinSpeed => ref Projectile.localAI[0];
+        private ref float ThrowProgress => ref Projectile.localAI[1]; // 0-1 飞出进度
+        private ref float ReturnProgress => ref Projectile.localAI[2]; // 0-1 返回进度
+
+        private const int MaxThrowTime = 30; // 缩短初始加速阶段时间，快速进入最远点
+        private const float MaxDistance = 900f; // 最大距离
+        private const float MaxSpinSpeed = 0.75f;
+        private const float BaseSpeed = 28f; // 初始最大速度
+
+        // 缓动函数（力量感：起步快速 -> 中段平滑滑行 -> 末段减速、回收时反向加速）
+        private float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
+        private float EaseInOutBack(float t) { // 用于旋转与返回的弹力
+            const float c1 = 1.70158f;
+            const float c2 = c1 * 1.525f;
+            return t < 0.5f ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
+                             : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
+        }
+        private float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 10;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
+
+        public override void SetDefaults() {
+            Projectile.width = 80;
+            Projectile.height = 32;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 600;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 12;
+        }
+
+        public override void AI() {
+            Player owner = Main.player[Projectile.owner];
+            if (!owner.active || owner.dead) { Projectile.Kill(); return; }
+
+            Time++;
+            SpinSpeed = MathHelper.Lerp(SpinSpeed, MaxSpinSpeed, 0.06f);
+            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
+            Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() * 0.75f);
+
+            Vector2 centerToPlayer = owner.GetPlayerStabilityCenter() - Projectile.Center;
+            float distanceToOwner = centerToPlayer.Length();
+
+            if (State == BoomerangState.Throwing) {
+                //归一化进度
+                ThrowProgress = MathHelper.Clamp(ThrowProgress + 1f / MaxThrowTime, 0f, 1f);
+                float eased = EaseOutExpo(ThrowProgress); // 蓄力感的加速
+                float distanceFactor = eased * MaxDistance;
+                Vector2 dir = Projectile.velocity.SafeNormalize((Main.MouseWorld - owner.Center).SafeNormalize(Vector2.UnitX));
+                Vector2 targetPos = owner.GetPlayerStabilityCenter() + dir * distanceFactor;
+                Vector2 toTarget = targetPos - Projectile.Center;
+                float speedControl = BaseSpeed * (0.6f + 0.4f * EaseOutQuad(1f - ThrowProgress)); // 前段高速，中段略降速
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speedControl, 0.15f);
+
+                //超出距离或完成进度后进入返回
+                if (ThrowProgress >= 1f || distanceToOwner > MaxDistance * 0.95f) {
+                    State = BoomerangState.Returning;
+                    ReturnProgress = 0f;
+                    Time = 0f;
+                    Projectile.netUpdate = true;
+                    SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.3f, Volume = 0.9f }, Projectile.Center);
+                }
+            }
+            else { //返回
+                ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.015f, 0f, 1f);
+                float backEase = EaseInOutBack(ReturnProgress); //有弹性回收
+                float speed = MathHelper.Lerp(BaseSpeed * 0.4f, BaseSpeed * 1.35f, backEase);
+                Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.25f);
+
+                //轻微横向抖动增强力量感
+                float wobble = (float)Math.Sin(Time * 0.45f) * (1f - ReturnProgress) * 4f;
+                Projectile.velocity += Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2) * wobble * 0.03f;
+
+                if (distanceToOwner < 54f) {
+                    Projectile.Kill();
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.75f }, owner.Center);
+                    return;
+                }
+            }
+
+            // 速度拖尾粒子
+            if (Time % 2 == 0 && !Main.dedServ) {
+                SpawnSpinParticle();
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            // 击中强化下一发弩箭伤害
+            Player owner = Main.player[Projectile.owner];
+            owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
+            // 冲击粒子
+            if (!Main.dedServ) {
+                SpawnHitEffect(target);
+            }
+            // 返回阶段命中加速
+            if (State == BoomerangState.Returning) {
+                Projectile.velocity *= 1.15f;
+            }
+        }
+
+        private void SpawnHitEffect(NPC target) {
+            if (Main.dedServ)
+                return;
+
+            //旋转斩击效果
+            int sparkCount = 12;
+            for (int i = 0; i < sparkCount; i++) {
+                float angle = MathHelper.TwoPi * i / sparkCount + Projectile.rotation;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
+
+                Dust spark = Dust.NewDustPerfect(target.Center, DustID.Electric,
+                    velocity, 100, Color.Cyan, 1.8f);
+                spark.noGravity = true;
+            }
+
+            //冲击波
+            for (int i = 0; i < 3; i++) {
+                Dust shockwave = Dust.NewDustPerfect(target.Center, DustID.Cloud,
+                    Main.rand.NextVector2Circular(5f, 5f), 100, Color.White, 2f);
+                shockwave.noGravity = true;
+            }
+        }
+
+        private void SpawnSpinParticle() {
+            if (Main.dedServ)
+                return;
+
+            //旋转产生的风暴粒子
+            for (int i = 0; i < 2; i++) {
+                float angle = Projectile.rotation + MathHelper.PiOver2 * i;
+                Vector2 offset = angle.ToRotationVector2() * 30f;
+                Vector2 velocity = offset.RotatedBy(MathHelper.PiOver2) * 0.5f;
+
+                Dust wind = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Cloud,
+                    velocity, 100, Color.LightCyan, 1.5f);
+                wind.noGravity = true;
+                wind.fadeIn = 1.1f;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = TextureAssets.Item[ModContent.ItemType<Items.Ranged.Pallbearer>()].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = texture.Size() / 2f;
+            float scale = Projectile.scale;
+
+            // Trail
+            for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) continue;
+                float progress = i / (float)Projectile.oldPos.Length;
+                float fade = 1f - progress;
+                Color trailColor = Color.Cyan * fade * 0.55f;
+                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float trailRot = Projectile.oldRot[i];
+                Main.EntitySpriteDraw(texture, trailPos, null, trailColor, trailRot, origin, scale * (1f - progress * 0.15f), SpriteEffects.None, 0);
+            }
+
+            // Main
+            Main.EntitySpriteDraw(texture, drawPos, null, lightColor, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
+
+            // 动态能量环(强度随速度)
+            float spd = Projectile.velocity.Length();
+            float ringScale = scale * (1.15f + 0.07f * (float)Math.Sin(Time * 0.4f));
+            Color ringColor = Color.Cyan * MathHelper.Clamp(spd / BaseSpeed, 0.3f, 0.9f) * 0.5f;
+            Main.EntitySpriteDraw(texture, drawPos, null, ringColor, Projectile.rotation + MathHelper.PiOver4, origin, ringScale, SpriteEffects.None, 0);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 抬棺人弩发射的强力箭矢
     /// </summary>
     internal class PallbearerArrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Proj_Ranged + "CondemnationArrow";
+        public override string Texture => CWRConstant.Item_Ranged + "PallbearerArrow";
 
         private ref float ChargeLevel => ref Projectile.ai[0];  //蓄力等级
         private ref float Time => ref Projectile.ai[1];
@@ -350,572 +871,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             return Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size(), null, ChargeLevel + 1f);
-        }
-    }
-
-    /// <summary>
-    /// 抬棺人弩被投掷后的回旋镖形态，会旋转攻击敌人后返回玩家手中
-    /// </summary>
-    internal class PallbearerBoomerang : ModProjectile
-    {
-        public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
-
-        private enum BoomerangState
-        {
-            Throwing,   //飞出阶段
-            Returning   //返回阶段
-        }
-
-        private BoomerangState State {
-            get => (BoomerangState)Projectile.ai[0];
-            set => Projectile.ai[0] = (float)value;
-        }
-
-        private ref float Time => ref Projectile.ai[1];
-        private ref float SpinSpeed => ref Projectile.localAI[0];
-
-        private const int MaxThrowTime = 60;        //最大飞行时间
-        private const float ReturnSpeed = 18f;      //返回速度
-        private const float MaxSpinSpeed = 0.6f;    //最大旋转速度
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 8;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
-
-        public override void SetDefaults() {
-            Projectile.width = 80;
-            Projectile.height = 32;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 600;
-            Projectile.ignoreWater = true;
-            Projectile.tileCollide = false;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
-        }
-
-        public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-
-            //检查玩家是否存活
-            if (!owner.active || owner.dead) {
-                Projectile.Kill();
-                return;
-            }
-
-            Time++;
-
-            //旋转速度逐渐加快
-            SpinSpeed = MathHelper.Min(SpinSpeed + 0.02f, MaxSpinSpeed);
-            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X);
-
-            //状态机逻辑
-            switch (State) {
-                case BoomerangState.Throwing:
-                    HandleThrowing(owner);
-                    break;
-                case BoomerangState.Returning:
-                    HandleReturning(owner);
-                    break;
-            }
-
-            //产生旋转风暴粒子效果
-            if (Time % 3 == 0) {
-                SpawnSpinParticle();
-            }
-
-            //光照
-            Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() * 0.6f);
-        }
-
-        private void HandleThrowing(Player owner) {
-            //飞行过程中减速
-            Projectile.velocity *= 0.98f;
-
-            //到达最大距离或时间后开始返回
-            float distanceToOwner = Vector2.Distance(Projectile.Center, owner.GetPlayerStabilityCenter());
-            if (distanceToOwner > 800f || Time > MaxThrowTime) {
-                State = BoomerangState.Returning;
-                Time = 0;
-                SoundEngine.PlaySound(SoundID.Item8, Projectile.Center);
-            }
-        }
-
-        private void HandleReturning(Player owner) {
-            //持续向玩家移动
-            Vector2 toOwner = owner.GetPlayerStabilityCenter() - Projectile.Center;
-            float distance = toOwner.Length();
-
-            if (distance < 50f) {
-                //返回玩家手中
-                Projectile.Kill();
-                //播放回收音效
-                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f }, owner.Center);
-                return;
-            }
-
-            //加速飞向玩家
-            float acceleration = 0.5f;
-            Projectile.velocity = Vector2.Lerp(
-                Projectile.velocity,
-                toOwner.SafeNormalize(Vector2.Zero) * ReturnSpeed,
-                acceleration / distance * 100f
-            );
-
-            //确保速度不会太慢
-            if (Projectile.velocity.LengthSquared() < 4f) {
-                Projectile.velocity = toOwner.SafeNormalize(Vector2.Zero) * 2f;
-            }
-        }
-
-        private void SpawnSpinParticle() {
-            if (Main.dedServ)
-                return;
-
-            //旋转产生的风暴粒子
-            for (int i = 0; i < 2; i++) {
-                float angle = Projectile.rotation + MathHelper.PiOver2 * i;
-                Vector2 offset = angle.ToRotationVector2() * 30f;
-                Vector2 velocity = offset.RotatedBy(MathHelper.PiOver2) * 0.5f;
-
-                Dust wind = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Cloud,
-                    velocity, 100, Color.LightCyan, 1.5f);
-                wind.noGravity = true;
-                wind.fadeIn = 1.1f;
-            }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中音效
-            SoundEngine.PlaySound(SoundID.NPCHit4 with {
-                Volume = 0.5f,
-                Pitch = -0.1f
-            }, Projectile.Center);
-
-            //击中特效 - 旋转斩击
-            SpawnHitEffect(target);
-
-            //返回阶段击中敌人后加速返回
-            if (State == BoomerangState.Returning) {
-                Projectile.velocity *= 1.1f;
-            }
-        }
-
-        private void SpawnHitEffect(NPC target) {
-            if (Main.dedServ)
-                return;
-
-            //旋转斩击效果
-            int sparkCount = 12;
-            for (int i = 0; i < sparkCount; i++) {
-                float angle = MathHelper.TwoPi * i / sparkCount + Projectile.rotation;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
-
-                Dust spark = Dust.NewDustPerfect(target.Center, DustID.Electric,
-                    velocity, 100, Color.Cyan, 1.8f);
-                spark.noGravity = true;
-            }
-
-            //冲击波
-            for (int i = 0; i < 3; i++) {
-                Dust shockwave = Dust.NewDustPerfect(target.Center, DustID.Cloud,
-                    Main.rand.NextVector2Circular(5f, 5f), 100, Color.White, 2f);
-                shockwave.noGravity = true;
-            }
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //碰到墙壁反弹
-            if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
-                Projectile.velocity.X = -oldVelocity.X * 0.8f;
-            }
-            if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon) {
-                Projectile.velocity.Y = -oldVelocity.Y * 0.8f;
-            }
-
-            //播放反弹音效
-            SoundEngine.PlaySound(SoundID.Item10 with {
-                Volume = 0.4f,
-                Pitch = 0.3f
-            }, Projectile.Center);
-
-            //反弹特效
-            for (int i = 0; i < 5; i++) {
-                Dust bounce = Dust.NewDustDirect(Projectile.position, Projectile.width,
-                    Projectile.height, DustID.Cloud, 0f, 0f, 100, default, 1.3f);
-                bounce.velocity = Main.rand.NextVector2Circular(3f, 3f);
-            }
-
-            return false; //不销毁弹幕
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = TextureAssets.Item[ModContent.ItemType<Items.Ranged.Pallbearer>()].Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = texture.Size() / 2f;
-            float scale = Projectile.scale;
-
-            //绘制残影
-            for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero)
-                    continue;
-
-                float progress = i / (float)Projectile.oldPos.Length;
-                Color trailColor = Color.Cyan * (1f - progress) * 0.4f;
-                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float trailRot = Projectile.oldRot[i];
-
-                Main.EntitySpriteDraw(texture, trailPos, null, trailColor,
-                    trailRot, origin, scale * (1f - progress * 0.2f), SpriteEffects.None, 0);
-            }
-
-            //绘制主体
-            Main.EntitySpriteDraw(texture, drawPos, null, lightColor,
-                Projectile.rotation, origin, scale, SpriteEffects.None, 0);
-
-            //绘制旋转能量环
-            if (Time % 6 < 3) {
-                float ringScale = scale * (1.2f + (float)Math.Sin(Time * 0.3f) * 0.2f);
-                Color ringColor = Color.Cyan * 0.3f;
-                Main.EntitySpriteDraw(texture, drawPos, null, ringColor,
-                    Projectile.rotation + MathHelper.PiOver4, origin, ringScale, SpriteEffects.None, 0);
-            }
-
-            return false;
-        }
-
-        public override void OnKill(int timeLeft) {
-            //返回时的光效
-            if (Main.dedServ)
-                return;
-
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                Dust returnDust = Dust.NewDustPerfect(Projectile.Center, DustID.Electric,
-                    velocity, 100, Color.Cyan, 1.8f);
-                returnDust.noGravity = true;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 抬棺人弩的手持弹幕，负责蓄力、装填和射击的动画逻辑
-    /// </summary>
-    internal class PallbearerHeld : BaseHeldProj
-    {
-        public override string Texture => CWRConstant.Item_Ranged + "PallbearerHeld";
-
-        //弩的状态机
-        private enum CrossbowState
-        {
-            Idle,           //待机
-            Loading,        //装填箭矢
-            Charged,        //蓄力完成(正在蓄力)
-            Firing,         //发射
-            Throwing        //投掷弩本身 (未使用保留)
-        }
-
-        private CrossbowState State {
-            get => (CrossbowState)Projectile.ai[0];
-            set => Projectile.ai[0] = (float)value;
-        }
-
-        private ref float StateTimer => ref Projectile.ai[1];
-        private ref float ChargeLevel => ref Projectile.localAI[0]; //蓄力等级 0-1
-        private ref float ThrowCooldown => ref Projectile.localAI[1]; //投掷冷却(实例内生效)
-
-        //动画帧控制 (使用Projectile.frame)
-        private float armRotation = 0f;
-
-        //常量配置
-        private const int LoadDuration = 35;        //装填时长
-        private const int MaxChargeDuration = 60;   //最大蓄力时长
-        private const int FireDuration = 15;        //射击动画时长
-        private const int ThrowCooldownTime = 120;  //投掷后的冷却(仅右键)
-
-        //弩弦相关
-        private float bowstringPullback = 0f; //弓弦拉动进度
-
-        public override void SetStaticDefaults() {
-            Main.projFrames[Type] = 4; //4帧动画：0待机 1加载过渡 2满弦 3射击回弹
-        }
-
-        public override void SetDefaults() {
-            Projectile.width = 80;
-            Projectile.height = 32;
-            Projectile.friendly = true;
-            Projectile.penetrate = -1;
-            Projectile.tileCollide = false;
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.ignoreWater = true;
-            Projectile.timeLeft = 2;
-            Projectile.hide = false;
-        }
-
-        public override void AI() {
-            if (!Owner.active || Owner.dead) {
-                Projectile.Kill();
-                return;
-            }
-
-            Projectile.timeLeft = 2;
-            SetHeld();
-
-            switch (State) {
-                case CrossbowState.Idle:
-                    HandleIdle();
-                    break;
-                case CrossbowState.Loading:
-                    HandleLoading();
-                    break;
-                case CrossbowState.Charged:
-                    HandleCharged();
-                    break;
-                case CrossbowState.Firing:
-                    HandleFiring();
-                    break;
-            }
-
-            UpdateOwnerArms();
-            UpdatePositionAndRotation();
-            StateTimer++;
-        }
-
-        private void HandleIdle() {
-            Projectile.frame = 0;
-            bowstringPullback = 0f;
-            ChargeLevel = 0f;
-
-            if (DownLeft && Owner.HasAmmo(Owner.ActiveItem())) {
-                State = CrossbowState.Loading;
-                StateTimer = 0;
-                SoundEngine.PlaySound(SoundID.Item149, Owner.Center);
-            }
-
-            if (DownRight && ThrowCooldown <= 0) {
-                ThrowCrossbow();
-            }
-        }
-
-        private void HandleLoading() {
-            float loadProgress = StateTimer / LoadDuration;
-            Projectile.frame = loadProgress < 0.5f ? 0 : 1;
-            bowstringPullback = MathHelper.SmoothStep(0f, 1f, loadProgress);
-
-            if (StateTimer % 8 == 0 && !Main.dedServ) {
-                Vector2 dustPos = Projectile.Center + Projectile.velocity * 20f;
-                for (int i = 0; i < 3; i++) {
-                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.Smoke,
-                        Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);
-                }
-            }
-
-            if (StateTimer >= LoadDuration) {
-                State = CrossbowState.Charged;
-                StateTimer = 0;
-                ChargeLevel = 0f;
-                Projectile.frame = 2;
-                SoundEngine.PlaySound(SoundID.Item102 with { Pitch = -0.3f }, Owner.Center);
-                SpawnLoadCompleteEffect();
-            }
-
-            if (!DownLeft) { //取消
-                State = CrossbowState.Idle;
-                StateTimer = 0;
-            }
-        }
-
-        private void HandleCharged() {
-            Projectile.frame = 2;
-            bowstringPullback = 1f;
-
-            if (DownLeft && StateTimer < MaxChargeDuration) {
-                ChargeLevel = StateTimer / MaxChargeDuration;
-                if (StateTimer % 5 == 0) {
-                    SpawnChargeParticle();
-                }
-                if (StateTimer % 15 == 0) {
-                    SoundEngine.PlaySound(SoundID.Item149 with {
-                        Volume = 0.3f,
-                        Pitch = ChargeLevel * 0.5f
-                    }, Owner.Center);
-                }
-            }
-
-            if (!DownLeft || StateTimer >= MaxChargeDuration) {
-                State = CrossbowState.Firing;
-                StateTimer = 0;
-                FireArrow();
-            }
-        }
-
-        private void HandleFiring() {
-            Projectile.frame = 3;
-            float fireProgress = StateTimer / FireDuration;
-            bowstringPullback = 1f - fireProgress;
-
-            if (StateTimer >= FireDuration) {
-                // 直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
-                State = CrossbowState.Idle;
-                StateTimer = 0;
-                ChargeLevel = 0f;
-            }
-        }
-
-        private void FireArrow() {
-            if (!Projectile.IsOwnedByLocalPlayer())
-                return;
-
-            Owner.PickAmmo(Owner.ActiveItem(), out int projToShoot, out float speed,
-                out int damage, out float knockback, out int usedAmmoItemId, false);
-
-            float damageMultiplier = 1f + (ChargeLevel + 1f) * 1.5f; //最高250%伤害
-            int finalDamage = (int)(Projectile.damage * damageMultiplier);
-
-            Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (Owner.ActiveItem().shootSpeed + ChargeLevel * 5f);
-            int arrow = Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center + Projectile.velocity * 30f,
-                shootVelocity,
-                ModContent.ProjectileType<PallbearerArrow>(),
-                finalDamage,
-                Projectile.knockBack * (1f + ChargeLevel * 0.5f),
-                Owner.whoAmI,
-                ChargeLevel
-            );
-
-            SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with {
-                Volume = 0.8f + ChargeLevel * 0.4f,
-                Pitch = -0.1f + ChargeLevel * 0.2f
-            }, Projectile.Center);
-
-            SpawnFireEffect();
-        }
-
-        private void ThrowCrossbow() {
-            if (!Projectile.IsOwnedByLocalPlayer())
-                return;
-
-            Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center,
-                Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * 14f,
-                ModContent.ProjectileType<PallbearerBoomerang>(),
-                (int)(Projectile.damage * 0.8f),
-                Projectile.knockBack * 1.2f,
-                Owner.whoAmI
-            );
-
-            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.3f }, Projectile.Center);
-            ThrowCooldown = ThrowCooldownTime;
-            Projectile.Kill();
-        }
-
-        private void UpdateOwnerArms() {
-            int dir = Owner.direction;
-            float targetArmRot = Projectile.rotation;
-            if (dir < 0) {
-                targetArmRot -= MathHelper.PiOver2;
-            }
-            else {
-                targetArmRot -= MathHelper.ToRadians(60);
-            }
-            
-            switch (State) {
-                case CrossbowState.Loading:
-                    armRotation = MathHelper.Lerp(armRotation, targetArmRot - 0.5f * dir, 0.15f);
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, targetArmRot);
-                    break;
-                case CrossbowState.Charged:
-                    float vibration = (float)Math.Sin(StateTimer * 0.3f) * 0.03f;
-                    armRotation = targetArmRot - 0.6f * dir + vibration;
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
-                    break;
-                case CrossbowState.Firing:
-                    armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.4f);
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
-                    break;
-                default:
-                    armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.2f);
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, armRotation);
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, targetArmRot);
-                    break;
-            }
-            Owner.heldProj = Projectile.whoAmI;
-            Owner.itemTime = 2;
-            Owner.itemAnimation = 2;
-        }
-
-        private void UpdatePositionAndRotation() {
-            Vector2 ownerCenter = Owner.GetPlayerStabilityCenter();
-            Vector2 aimDir = (Main.MouseWorld - ownerCenter).SafeNormalize(Vector2.UnitX * Owner.direction);
-            Projectile.velocity = aimDir; //稳定的方向向量
-
-            float holdDistance = 20f + ((State == CrossbowState.Loading || State == CrossbowState.Charged) ? bowstringPullback * 8f : 0f);
-            Projectile.Center = ownerCenter + aimDir * holdDistance;
-            Projectile.rotation = aimDir.ToRotation();
-
-            Owner.ChangeDir(aimDir.X > 0 ? 1 : -1);
-            Owner.itemRotation = Projectile.rotation * Owner.direction;
-
-            if (ThrowCooldown > 0) ThrowCooldown--;
-        }
-
-        private void SpawnLoadCompleteEffect() {
-            if (Main.dedServ) return;
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, velocity, 100, Color.Cyan, 1.5f);
-                dust.noGravity = true;
-            }
-        }
-
-        private void SpawnChargeParticle() {
-            if (Main.dedServ) return;
-            Color chargeColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel);
-            Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15f, 15f);
-            Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * 2f;
-            Dust charge = Dust.NewDustPerfect(particlePos, DustID.RedTorch, particleVel, 100, chargeColor, 1.2f);
-            charge.noGravity = true;
-            charge.fadeIn = 1.2f;
-        }
-
-        private void SpawnFireEffect() {
-            if (Main.dedServ) return;
-            Vector2 muzzlePos = Projectile.Center + Projectile.velocity * 30f;
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 8f);
-                Dust spark = Dust.NewDustPerfect(muzzlePos, DustID.Torch, velocity, 100, Color.OrangeRed, 1.8f);
-                spark.noGravity = true;
-            }
-            for (int i = 0; i < 8; i++) {
-                Dust smoke = Dust.NewDustPerfect(muzzlePos, DustID.Smoke,
-                    Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 3f), 100, default, 2f);
-                smoke.noGravity = false;
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = TextureAssets.Projectile[Type].Value;
-            Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = frame.Size() / 2f;
-            SpriteEffects fx = Owner.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-
-            Main.EntitySpriteDraw(texture, drawPos, frame, lightColor, Projectile.rotation, origin, Projectile.scale, fx, 0);
-
-            if (State == CrossbowState.Charged && ChargeLevel > 0.3f) {
-                Color glowColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);
-                Main.EntitySpriteDraw(texture, drawPos, frame, glowColor * 0.5f,
-                        Projectile.rotation, origin, Projectile.scale, fx, 0);
-            }
-            return false;
         }
     }
 }
