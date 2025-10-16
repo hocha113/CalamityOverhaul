@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return player.CountProjectilesOfID<DrizzleFishHolder>() > 0;
         }
 
-        private void TriggerDrizzleVolley(Item item, Player player, HalibutPlayer hp, EntitySource_ItemUse_WithAmmo source
+        private static void TriggerDrizzleVolley(Item item, Player player, HalibutPlayer hp, EntitySource_ItemUse_WithAmmo source
             , int damage, float knockback, Vector2 aimVelocity) {
             shootDir = player.direction;
 
@@ -207,7 +206,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public Vector2 AimVelocity;
 
         private const int PreFireDelay = 18;
-        private ref float VolleyId => ref Projectile.ai[0];
         private ref float FishIndex => ref Projectile.ai[1];
 
         private float glowPulse;
