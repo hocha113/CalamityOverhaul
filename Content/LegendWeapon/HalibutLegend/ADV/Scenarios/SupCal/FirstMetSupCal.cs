@@ -74,11 +74,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
         
         protected override void OnScenarioStart() {
-            //激活天空效果
-            if (!SkyManager.Instance[SupCalSky.Name].IsActive()) {
-                SkyManager.Instance.Activate(SupCalSky.Name, Main.LocalPlayer.Center);
-            }
-            
             //开始生成粒子
             SupCalSkyEffect.IsActive = true;
         }
@@ -177,9 +172,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
     }
 
-    /// <summary>
-    /// 至尊灾厄天空效果
-    /// </summary>
+    internal class SupCalSkySceneEffect : ModSceneEffect
+    {
+        public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
+        public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
+        public override bool IsSceneEffectActive(Player player) => SupCalSkyEffect.IsActive;
+        public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(SupCalSky.Name, isActive);
+    }
+
+    ///<summary>
+    ///至尊灾厄天空效果
+    ///</summary>
     internal class SupCalSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:SupCalSky";
@@ -263,9 +266,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
     }
 
-    /// <summary>
-    /// 至尊灾厄场景效果管理器（负责粒子生成）
-    /// </summary>
+    ///<summary>
+    ///至尊灾厄场景效果管理器（负责粒子生成）
+    ///</summary>
     internal class SupCalSkyEffect : ModSystem
     {
         public static bool IsActive = false;
@@ -278,79 +281,136 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
             particleTimer++;
             
-            //生成屏幕底部的火焰和灰烬粒子
-            if (particleTimer % 2 == 0) {
-                SpawnFlameParticles();
+            //更频繁地生成火焰粒子
+            if (particleTimer % 1 == 0) {
+                SpawnBrimstoneFlameParticles();
             }
             
-            if (particleTimer % 4 == 0) {
-                SpawnAshParticles();
+            //生成灰烬粒子
+            if (particleTimer % 2 == 0) {
+                SpawnBrimstoneAshParticles();
+            }
+            
+            //偶尔生成大型火焰团
+            if (particleTimer % 30 == 0) {
+                SpawnLargeFlameBurst();
             }
         }
 
-        private static void SpawnFlameParticles() {
-            //在屏幕底部随机位置生成火焰粒子
-            Vector2 spawnPos = new Vector2(
-                Main.screenPosition.X + Main.rand.Next(0, Main.screenWidth),
+        private static void SpawnBrimstoneFlameParticles() {
+            //在屏幕下半部分随机位置生成多个火焰粒子
+            for (int i = 0; i < 2; i++) {
+                Vector2 spawnPos = new Vector2(
+                    Main.screenPosition.X + Main.rand.Next(-100, Main.screenWidth + 100),
+                    Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-50, 30)
+                );
+
+                //创建硫磺火粒子
+                PRT_LavaFire flamePRT = new PRT_LavaFire {
+                    Position = spawnPos,
+                    Velocity = new Vector2(
+                        Main.rand.NextFloat(-1.5f, 1.5f),
+                        Main.rand.NextFloat(-3.5f, -1.5f)  //更强的上升力
+                    ),
+                    Scale = Main.rand.NextFloat(0.8f, 1.4f),
+                    ai = new float[] { 0, 0 },  //ai[1] = 0 表示使用标准漂浮模式
+                    colors = new Color[] {
+                        new Color(255, 140, 70),   //亮橙色
+                        new Color(200, 80, 40),    //暗橙红
+                        new Color(140, 40, 30)     //深红
+                    },
+                    minLifeTime = 120,
+                    maxLifeTime = 200
+                };
+                
+                PRTLoader.AddParticle(flamePRT);
+            }
+        }
+
+        private static void SpawnBrimstoneAshParticles() {
+            //生成灰烬粒子，覆盖更大范围
+            for (int i = 0; i < 3; i++) {
+                Vector2 spawnPos = new Vector2(
+                    Main.screenPosition.X + Main.rand.Next(-100, Main.screenWidth + 100),
+                    Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-30, 20)
+                );
+
+                //使用 LavaFire 的变体作为灰烬
+                PRT_LavaFire ashPRT = new PRT_LavaFire {
+                    Position = spawnPos,
+                    Velocity = new Vector2(
+                        Main.rand.NextFloat(-2f, 2f),
+                        Main.rand.NextFloat(-2.5f, -0.8f)
+                    ),
+                    Scale = Main.rand.NextFloat(0.5f, 1f),
+                    ai = new float[] { 0, 0 },
+                    colors = new Color[] {
+                        new Color(80, 70, 65),     //灰褐色
+                        new Color(50, 45, 40),     //深灰
+                        new Color(30, 25, 20)      //暗灰黑
+                    },
+                    minLifeTime = 140,
+                    maxLifeTime = 220
+                };
+                
+                PRTLoader.AddParticle(ashPRT);
+            }
+        }
+
+        private static void SpawnLargeFlameBurst() {
+            //在屏幕底部中间区域生成大型火焰爆发
+            Vector2 burstCenter = new Vector2(
+                Main.screenPosition.X + Main.screenWidth * Main.rand.NextFloat(0.3f, 0.7f),
                 Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-20, 10)
             );
 
-            //向上飘动的硫磺火焰
-            Vector2 velocity = new Vector2(
-                Main.rand.NextFloat(-0.5f, 0.5f),
-                Main.rand.NextFloat(-2f, -0.8f)
-            );
+            //生成一组环绕的火焰粒子
+            int flameCount = 8;
+            for (int i = 0; i < flameCount; i++) {
+                float angle = MathHelper.TwoPi * i / flameCount + Main.rand.NextFloat(-0.3f, 0.3f);
+                Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 40f);
+                
+                PRT_LavaFire burstFlame = new PRT_LavaFire {
+                    Position = burstCenter + offset,
+                    Velocity = new Vector2(
+                        offset.X * 0.05f,
+                        Main.rand.NextFloat(-4f, -2f)
+                    ),
+                    Scale = Main.rand.NextFloat(1.2f, 1.8f),
+                    ai = new float[] { 0, 0 },
+                    colors = new Color[] {
+                        new Color(255, 180, 90),   //非常亮的橙黄
+                        new Color(255, 120, 60),   //亮橙
+                        new Color(180, 60, 40)     //深橙红
+                    },
+                    minLifeTime = 100,
+                    maxLifeTime = 160
+                };
+                
+                PRTLoader.AddParticle(burstFlame);
+            }
 
-            //使用硫磺火颜色
-            Color flameColor = Color.Lerp(
-                new Color(200, 80, 40),   //暗橙红
-                new Color(255, 140, 70),  //亮橙
-                Main.rand.NextFloat()
-            );
+            //额外生成一些快速上升的火星
+            for (int i = 0; i < 12; i++) {
+                Vector2 sparkVelocity = new Vector2(
+                    Main.rand.NextFloat(-2f, 2f),
+                    Main.rand.NextFloat(-5f, -3f)
+                );
 
-            //创建火焰粒子
-            PRT_Spark flamePRT = new PRT_Spark(
-                spawnPos,
-                velocity,
-                false,
-                Main.rand.Next(60, 120),
-                Main.rand.NextFloat(0.8f, 1.5f),
-                flameColor
-            );
-            PRTLoader.AddParticle(flamePRT);
-        }
-
-        private static void SpawnAshParticles() {
-            //在屏幕底部随机位置生成灰烬粒子
-            Vector2 spawnPos = new Vector2(
-                Main.screenPosition.X + Main.rand.Next(0, Main.screenWidth),
-                Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-10, 5)
-            );
-
-            //缓慢向上飘动
-            Vector2 velocity = new Vector2(
-                Main.rand.NextFloat(-1f, 1f),
-                Main.rand.NextFloat(-1.5f, -0.3f)
-            );
-
-            //灰黑色
-            float ashBrightness = Main.rand.NextFloat(0.6f, 0.9f);
-            Color ashColor = new Color(
-                (int)(60 * ashBrightness),
-                (int)(50 * ashBrightness),
-                (int)(45 * ashBrightness)
-            );
-
-            //创建灰烬粒子
-            PRT_SparkAlpha ashPRT = new PRT_SparkAlpha(
-                spawnPos,
-                velocity,
-                false,
-                Main.rand.Next(80, 150),
-                Main.rand.NextFloat(0.6f, 1.2f),
-                ashColor
-            );
-            PRTLoader.AddParticle(ashPRT);
+                PRT_Spark spark = new PRT_Spark(
+                    burstCenter + Main.rand.NextVector2Circular(1130f, 130f),
+                    sparkVelocity,
+                    false,
+                    Main.rand.Next(40, 80),
+                    Main.rand.NextFloat(1f, 1.8f),
+                    Color.Lerp(
+                        new Color(255, 200, 100),
+                        new Color(255, 140, 70),
+                        Main.rand.NextFloat()
+                    )
+                );
+                PRTLoader.AddParticle(spark);
+            }
         }
 
         public override void Unload() {
