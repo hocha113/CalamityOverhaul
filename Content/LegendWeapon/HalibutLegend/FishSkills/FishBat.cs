@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Batfish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
-        public override int ResearchDuration => 60 * 22;
+        public override int ResearchDuration => 60 * 12;
         /// <summary>
         /// 蝙蝠群技能最大持续时间
         /// </summary>

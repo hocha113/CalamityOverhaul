@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Fishotron;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
-        public override int ResearchDuration => 60 * 30;
+        public override int ResearchDuration => 60 * 12;
         private static readonly List<int> ActiveHands = new();
         private static int MaxHands => 2 + HalibutData.GetDomainLayer() / 3;
         private int shootCounter = 0;

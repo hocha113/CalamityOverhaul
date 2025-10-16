@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         public static int AttackRecoveryDuration = 60 - HalibutData.GetDomainLayer() * 4;
         public override int DefaultCooldown => 60 * (30 - HalibutData.GetDomainLayer() * 2);
-        public override int ResearchDuration => 60 * 20;
+        public override int ResearchDuration => 60 * 14;
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
             if (player.altFunctionUse == 2) {

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public virtual int ZombieCount => 5 + 1 * HalibutData.GetDomainLayer();//5+1倍领域等级
 
         public override int DefaultCooldown => 60 * (12 - HalibutData.GetDomainLayer());
-        public override int ResearchDuration => 60 * 20;
+        public override int ResearchDuration => 60 * 12;
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
         }

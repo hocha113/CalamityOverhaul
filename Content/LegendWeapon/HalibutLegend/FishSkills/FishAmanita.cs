@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.AmanitaFungifin;
         public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;
-        public override int ResearchDuration => 60 * 30;
+        public override int ResearchDuration => 60 * 20;
         private int sporePhase = 0;
         private int shootCounter = 0;
         private static int PhaseChangeInterval = 1; //每1次射击切换一次孢子形态

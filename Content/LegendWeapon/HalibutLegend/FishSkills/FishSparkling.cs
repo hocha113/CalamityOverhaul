@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal const float RoingArc = 160f;
         private static int _sparklingVolleyIdSeed = 0;
         public override int DefaultCooldown => 300 - 24 * HalibutData.GetDomainLayer();
-        public override int ResearchDuration => 60 * 22;
+        public override int ResearchDuration => 60 * 12;
         internal static int DepartureDelay => 90 - (HalibutData.GetDomainLayer() * 5);//全部发射后延迟进入离场
         internal static int DepartureDuration => 90 - (HalibutData.GetDomainLayer() * 5);//离场动画时长
         internal static int shootDir;

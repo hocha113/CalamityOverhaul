@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Bunnyfish;
         public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer());
-        public override int ResearchDuration => 60 * 18;
+        public override int ResearchDuration => 60 * 12;
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? CanUseItem(Item item, Player player) {

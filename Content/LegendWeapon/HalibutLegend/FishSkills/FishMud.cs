@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.Mudfish;
         public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
-        public override int ResearchDuration => 60 * 25;
+        public override int ResearchDuration => 60 * 16;
         private static int MaxMudfishSentries => 1 + HalibutData.GetDomainLayer() / 2;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

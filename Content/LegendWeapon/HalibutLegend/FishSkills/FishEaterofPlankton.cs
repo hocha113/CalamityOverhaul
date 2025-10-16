@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override int UnlockFishID => ItemID.EaterofPlankton;
         public override int DefaultCooldown => 1;
-        public override int ResearchDuration => 60 * 32;
+        public override int ResearchDuration => 60 * 22;
         /// <summary>每次射击生成的噬魂虫数量</summary>
         private const int BitesPerShot = 1;
 
