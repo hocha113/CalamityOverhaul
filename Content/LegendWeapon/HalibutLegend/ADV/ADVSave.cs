@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public bool DevourerOfGodsGift;
         public bool YharonGift;
         public bool SupremeCalamitasGift;
+        public bool FirstMetSupCal;
 
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
@@ -53,6 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 ["DevourerOfGodsGift"] = DevourerOfGodsGift,
                 ["YharonGift"] = YharonGift,
                 ["SupremeCalamitasGift"] = SupremeCalamitasGift,
+                ["FirstMetSupCal"] = FirstMetSupCal,
             };
             return tag;
         }
@@ -126,6 +128,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             if (tag.TryGet("SupremeCalamitasGift", out bool sc)) {
                 SupremeCalamitasGift = sc;
+            }
+            if (tag.TryGet("FirstMetSupCal", out bool fc)) {
+                FirstMetSupCal = fc;
             }
         }
     }

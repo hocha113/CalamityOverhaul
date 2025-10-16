@@ -2587,6 +2587,12 @@ Legend: {
 			FirstMetSupCal: {
 				// Rolename1: ???
 				// Rolename2: 至尊灾厄
+				// Rolename3: 比目鱼
+			}
+
+			ADVChoiceBox: {
+				// TitleText: 选择
+				// DisabledHintFormat: （{0}）
 			}
 		}
 
