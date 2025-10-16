@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public bool FirstMetSupCal;
         public bool SupCalChoseToFight;
         public bool SupCalMoonLordReward;
+        public bool SupCalDefeat;
 
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
@@ -59,6 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 ["FirstMetSupCal"] = FirstMetSupCal,
                 ["SupCalChoseToFight"] = SupCalChoseToFight,
                 ["SupCalMoonLordReward"] = SupCalMoonLordReward,
+                ["SupCalDefeat"] = SupCalDefeat,
             };
             return tag;
         }
@@ -141,6 +143,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             if (tag.TryGet("SupCalMoonLordReward", out bool scmr)) {
                 SupCalMoonLordReward = scmr;
+            }
+            if (tag.TryGet("SupCalDefeat", out bool scd)) {
+                SupCalDefeat = scd;
             }
         }
     }
