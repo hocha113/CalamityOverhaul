@@ -1588,6 +1588,9 @@ Projectiles: {
 	MudBall.DisplayName: Mud Ball
 	MudfishSentry.DisplayName: Mudfish Sentry
 	FallingPenguin.DisplayName: Falling Penguin
+	DrizzleFirePillar.DisplayName: Drizzle Fire Pillar
+	DrizzleFishHolder.DisplayName: Drizzle Fish Holder
+	DrizzleSpawnEffect.DisplayName: Drizzle Spawn Effect
 }
 
 Configs: {
@@ -2632,6 +2635,18 @@ Legend: {
 			ADVChoiceBox: {
 				TitleText: 选择
 				DisabledHintFormat: （{0}）
+			}
+
+			SupCalMoonLordReward: {
+				Rolename1: 至尊灾厄
+				Rolename2: 比目鱼
+				Line1: 呵呵呵
+				Line2: 那个家伙已经沦落到这种地步了吗
+				Line3: 你知道现在的地底是什么景象吗?
+				Line4: ......所以你这次来是?
+				Line5: 送你点小玩具，顺带有个委托交给你
+				Line6: 一把小巧的弩，我需要你拿它干掉下面的那个苟延残喘吸食地热的家伙，记住只能用这个弩
+				Line7: 如果你做到了，说不定我对你的看法会有所改观
 			}
 		}
 
@@ -6010,6 +6025,12 @@ FishSkill: {
 	}
 
 	FishPeng: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishDrizzle: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
