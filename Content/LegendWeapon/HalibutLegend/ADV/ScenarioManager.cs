@@ -40,8 +40,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public abstract string Key { get; }
         public virtual bool CanRepeat => false;
         public bool IsCompleted { get; private set; }
-
-        private bool built = false;
         private readonly List<DialogueLine> lines = new();
 
         /// <summary>
@@ -131,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         public void Start() {
             if (IsCompleted && !CanRepeat) return;
-            if (!built) { Build(); built = true; }
+            Build();//每次开始都重新构建对话内容，方便自定义内容
             if (lines.Count == 0) { Complete(); return; }
 
             OnScenarioStart();
@@ -171,8 +169,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                             return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
                         });
                         
-                        // 暂停对话推进，等待选择
-                        // 注意：这里不调用场景完成
+                        //暂停对话推进，等待选择
+                        //注意，这里不调用场景完成
                     };
                 }
                 else if (line.OnComplete != null || isLast) {
@@ -184,22 +182,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     };
                 }
 
-                // 构建对话开始回调
+                //构建对话开始回调
                 Action startCallback = null;
                 
-                // 如果这条对话有自定义样式，在播放前切换样式
+                //如果这条对话有自定义样式，在播放前切换样式
                 if (line.StyleOverride != null) {
                     var styleBox = line.StyleOverride.Invoke();
                     if (styleBox != null) {
                         startCallback = () => {
-                            // 切换对话框样式并迁移状态
+                            //切换对话框样式并迁移状态
                             var oldBox = DialogueUIRegistry.Current;
                             if (oldBox != styleBox) {
                                 DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
-                                // 确保新对话框也设置预处理器
+                                //确保新对话框也设置预处理器
                                 styleBox.PreProcessor = PreProcessSegment;
                             }
-                            // 触发用户定义的 OnStart
+                            //触发用户定义的 OnStart
                             line.OnStart?.Invoke();
                         };
                     }
@@ -208,9 +206,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     startCallback = line.OnStart;
                 }
 
-                // 获取当前实际使用的对话框来入队
-                // 注意：这里我们仍然使用初始对话框入队
-                // 样式切换会在 OnStart 回调中处理
+                //获取当前实际使用的对话框来入队
+                //注意：这里我们仍然使用初始对话框入队
+                //样式切换会在 OnStart 回调中处理
                 initialBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
             }
         }
