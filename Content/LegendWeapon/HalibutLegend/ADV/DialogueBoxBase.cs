@@ -242,10 +242,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
-        public override void Update() { }//此处更新在绘制逻辑中
+        public override void Update() { HandleInput(); }//此处更新在绘制逻辑中
         public virtual void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
-            HandleInput();
             if (current == null && queue.Count > 0 && !closing) {
                 StartNext();
             }
