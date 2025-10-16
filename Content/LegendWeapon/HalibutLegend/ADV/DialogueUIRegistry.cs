@@ -50,22 +50,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             var oldBox = _lastUsedBox ?? Current;
             
-            // 如果是同一个实例，不需要切换
+            //如果是同一个实例，不需要切换
             if (oldBox == newBox) {
                 return;
             }
 
-            // 转移队列和当前对话
+            //转移队列和当前对话
             if (transferQueue && oldBox != null && oldBox.Active) {
                 TransferDialogueState(oldBox, newBox);
             }
 
-            // 强制关闭旧对话框（清空状态但不触发完成回调）
+            //强制关闭旧对话框（清空状态但不触发完成回调）
             if (oldBox != null && oldBox != newBox) {
                 ForceCloseBox(oldBox);
             }
 
-            // 更新解析器指向新对话框
+            //更新解析器指向新对话框
             SetResolver(() => newBox);
             _lastUsedBox = newBox;
         }
@@ -74,53 +74,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         /// 转移对话状态从旧对话框到新对话框
         /// </summary>
         private static void TransferDialogueState(DialogueBoxBase from, DialogueBoxBase to) {
-            // 使用反射访问 protected 成员进行状态迁移
-            var queueField = typeof(DialogueBoxBase).GetField("queue", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var currentField = typeof(DialogueBoxBase).GetField("current", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var preProcessorField = typeof(DialogueBoxBase).GetProperty("PreProcessor");
-            var playedCountField = typeof(DialogueBoxBase).GetField("playedCount",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-            if (queueField == null || currentField == null) {
+            if (from == null || to == null || from.queue == null) {
                 return;
             }
 
-            // 获取旧对话框的队列
-            var oldQueue = queueField.GetValue(from) as Queue<DialogueBoxBase.DialogueSegment>;
-            var oldCurrent = currentField.GetValue(from) as DialogueBoxBase.DialogueSegment;
+            //清空新对话框
+            to.queue.Clear();
+            to.current = null;
 
-            if (oldQueue == null) {
-                return;
+            //如果有当前对话，重新入队
+            if (from.current != null) {
+                to.EnqueueDialogue(from.current.Speaker, from.current.Content, from.current.OnFinish, from.current.OnStart);
             }
 
-            // 清空新对话框
-            var newQueue = queueField.GetValue(to) as Queue<DialogueBoxBase.DialogueSegment>;
-            newQueue?.Clear();
-            currentField.SetValue(to, null);
-
-            // 如果有当前对话，重新入队
-            if (oldCurrent != null) {
-                to.EnqueueDialogue(oldCurrent.Speaker, oldCurrent.Content, oldCurrent.OnFinish, oldCurrent.OnStart);
-            }
-
-            // 转移剩余队列
-            foreach (var segment in oldQueue) {
+            //转移剩余队列
+            foreach (var segment in from.queue) {
                 to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish, segment.OnStart);
             }
 
-            // 转移预处理器
-            if (preProcessorField != null) {
-                var oldProcessor = preProcessorField.GetValue(from);
-                preProcessorField.SetValue(to, oldProcessor);
-            }
+            //转移预处理器
+            to.PreProcessor = from.PreProcessor;
 
-            // 转移播放计数（关键修复）
-            if (playedCountField != null) {
-                var oldPlayedCount = playedCountField.GetValue(from);
-                playedCountField.SetValue(to, oldPlayedCount);
-            }
+            //转移播放计数（关键：保证 Index 正确）
+            to.playedCount = from.playedCount;
+
+            //=== 转移动画过渡状态，实现平滑切换 ===
+            
+            //转移显示进度（确保对话框保持显示状态）
+            to.showProgress = from.showProgress;
+
+            //转移隐藏进度
+            to.hideProgress = from.hideProgress;
+
+            //转移内容淡入进度（关键：避免内容重新淡入）
+            //如果已经在显示内容，新对话框也应该直接显示
+            to.contentFade = from.contentFade > 0.5f ? 1f : from.contentFade;
+
+            //转移关闭状态
+            to.closing = from.closing;
+
+            //转移面板高度（避免尺寸跳变）
+            to.panelHeight = from.panelHeight;
+
+            //转移说话人切换状态（避免头像闪烁）
+            to.lastSpeaker = from.lastSpeaker;
+            to.speakerSwitchProgress = from.speakerSwitchProgress;
         }
 
         /// <summary>
@@ -131,27 +129,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return;
             }
 
-            var queueField = typeof(DialogueBoxBase).GetField("queue", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var currentField = typeof(DialogueBoxBase).GetField("current", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var closingField = typeof(DialogueBoxBase).GetField("closing", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var showProgressField = typeof(DialogueBoxBase).GetField("showProgress", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var hideProgressField = typeof(DialogueBoxBase).GetField("hideProgress", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-            // 清空队列和当前对话
-            if (queueField?.GetValue(box) is Queue<DialogueBoxBase.DialogueSegment> queue) {
-                queue.Clear();
-            }
-            currentField?.SetValue(box, null);
+            //清空队列和当前对话
+            box.queue.Clear();
+            box.current = null;
             
-            // 重置状态
-            closingField?.SetValue(box, false);
-            showProgressField?.SetValue(box, 0f);
-            hideProgressField?.SetValue(box, 0f);
+            //重置状态
+            box.closing = false;
+            box.showProgress = 0f;
+            box.hideProgress = 0f;
         }
 
         /// <summary>

@@ -33,32 +33,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public Action OnFinish;
         }
         public abstract string LocalizationCategory { get; }
-        protected readonly Queue<DialogueSegment> queue = new();
-        protected DialogueSegment current;
+        internal readonly Queue<DialogueSegment> queue = new();
+        internal DialogueSegment current;
         protected string[] wrappedLines = Array.Empty<string>();
         protected int visibleCharCount = 0;
         protected int typeTimer = 0;
         protected const int TypeInterval = 2;
         protected bool fastMode = false;
         protected bool finishedCurrent = false;
-        protected int playedCount = 0;
+        internal int playedCount = 0;
         protected Vector2 anchorPos;
-        protected float panelHeight = 160f;
+        internal float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
         protected virtual float MaxHeight => 340f;
         protected virtual int Padding => 18;
         protected virtual int LineSpacing => 6;
         protected abstract float PanelWidth { get; }
-        protected float showProgress = 0f;
-        protected float hideProgress = 0f;
+        internal float showProgress = 0f;
+        internal float hideProgress = 0f;
         protected virtual float ShowDuration => 18f;
         protected virtual float HideDuration => 14f;
-        protected bool closing = false;
-        protected float contentFade = 0f;
+        internal bool closing = false;
+        internal float contentFade = 0f;
         protected bool waitingForAdvance = false;
         protected int advanceBlinkTimer = 0;
-        protected string lastSpeaker;
-        protected float speakerSwitchProgress = 1f;
+        internal string lastSpeaker;
+        internal float speakerSwitchProgress = 1f;
         protected float speakerSwitchSpeed = 0.14f;
         public override bool Active => current != null || queue.Count > 0 || (showProgress > 0f && !closing);
         protected static LocalizedText ContinueHint;
