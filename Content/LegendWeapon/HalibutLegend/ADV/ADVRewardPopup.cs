@@ -384,7 +384,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             itemScale *= (iconScaleEase + bounce) * panelScale;
             float floatOff = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.2f + a) * 4f * iconAlpha;
             Vector2 floatPos = iconCenter + new Vector2(0, floatOff);
-            spriteBatch.Draw(tex, floatPos, frame, Color.White * (iconAlpha * alpha), 0f, origin, itemScale, SpriteEffects.None, 0f);
+
+            VaultUtils.SimpleDrawItem(spriteBatch, current.ItemId, floatPos, 140, itemScale * 6, 0, Color.White * (iconAlpha * alpha));
+
             string name = current.CustomText;
             if (string.IsNullOrEmpty(name)) name = item.Name;
             var font = FontAssets.MouseText.Value;

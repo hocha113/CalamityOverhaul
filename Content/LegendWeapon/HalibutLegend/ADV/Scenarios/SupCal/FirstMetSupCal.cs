@@ -3,8 +3,10 @@ using CalamityMod.Items.Potions.Alcohol;
 using CalamityMod.NPCs.CalClone;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.SkyEffects;
 using CalamityOverhaul.Content.TileModify;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.Graphics.Shaders;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupCal
 {
@@ -68,6 +71,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
             Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "哈，那么便让我来称量称量你吧");
             Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "......真是杂鱼呢，那么给你一个见面礼，我们下次见");
+        }
+        
+        protected override void OnScenarioStart() {
+            //激活天空效果
+            if (!SkyManager.Instance[SupCalSky.Name].IsActive()) {
+                SkyManager.Instance.Activate(SupCalSky.Name, Main.LocalPlayer.Center);
+            }
+            
+            //开始生成粒子
+            SupCalSkyEffect.IsActive = true;
+        }
+        
+        protected override void OnScenarioComplete() {
+            //停止粒子生成
+            SupCalSkyEffect.IsActive = false;
         }
         
         protected override void Build() {
@@ -159,40 +177,184 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
     }
 
-    internal class SupCalSky : CustomSky
+    /// <summary>
+    /// 至尊灾厄天空效果
+    /// </summary>
+    internal class SupCalSky : CustomSky, ICWRLoader
     {
-        public static string Name;
+        internal static string Name => "CWRMod:SupCalSky";
+        private bool active;
+        private float intensity;
+
+        void ICWRLoader.LoadData() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SkyManager.Instance[Name] = this;
+            //创建暗黑滤镜效果
+            Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
+                .UseColor(0.1f, 0.05f, 0.08f)  //深红暗色调
+                .UseOpacity(0.6f), EffectPriority.High);
+        }
 
         public override void Activate(Vector2 position, params object[] args) {
-            throw new NotImplementedException();
+            active = true;
+            intensity = 0f;
         }
 
         public override void Deactivate(params object[] args) {
-            throw new NotImplementedException();
+            active = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            throw new NotImplementedException();
+            if (intensity <= 0.01f) return;
+
+            Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+            
+            //绘制深红暗黑背景
+            spriteBatch.Draw(
+                CWRUtils.GetT2DValue(CWRConstant.Placeholder2),
+                screenRect,
+                new Color(10, 5, 8) * intensity * 0.9f
+            );
         }
 
         public override bool IsActive() {
-            throw new NotImplementedException();
+            return active || intensity > 0;
         }
 
         public override void Reset() {
-            throw new NotImplementedException();
+            active = false;
+            intensity = 0f;
         }
 
         public override void Update(GameTime gameTime) {
-            throw new NotImplementedException();
+            //根据对话场景状态调整强度
+            if (SupCalSkyEffect.IsActive) {
+                if (intensity < 1f) {
+                    intensity += 0.015f;
+                }
+            }
+            else {
+                intensity -= 0.01f;
+                if (intensity <= 0) {
+                    Deactivate();
+                }
+            }
+        }
+
+        public override Color OnTileColor(Color inColor) {
+            //应用暗红色调
+            if (intensity > 0.1f) {
+                float darkR = 0.8f;
+                float darkG = 0.4f;
+                float darkB = 0.5f;
+                
+                Color tintedColor = new Color(
+                    (int)(inColor.R * darkR),
+                    (int)(inColor.G * darkG),
+                    (int)(inColor.B * darkB),
+                    inColor.A
+                );
+                
+                return Color.Lerp(inColor, tintedColor, intensity * 0.5f);
+            }
+            return inColor;
         }
     }
 
-    internal class SupCalSceneEffect : ModSceneEffect
+    /// <summary>
+    /// 至尊灾厄场景效果管理器（负责粒子生成）
+    /// </summary>
+    internal class SupCalSkyEffect : ModSystem
     {
-        public override int Music => -1;
-        public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => NPC.AnyNPCs(NPCID.SkeletronPrime);
-        public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(SupCalSky.Name, isActive);
+        public static bool IsActive = false;
+        private int particleTimer = 0;
+        
+        public override void PostUpdateEverything() {
+            if (!IsActive || Main.gameMenu) {
+                return;
+            }
+
+            particleTimer++;
+            
+            //生成屏幕底部的火焰和灰烬粒子
+            if (particleTimer % 2 == 0) {
+                SpawnFlameParticles();
+            }
+            
+            if (particleTimer % 4 == 0) {
+                SpawnAshParticles();
+            }
+        }
+
+        private static void SpawnFlameParticles() {
+            //在屏幕底部随机位置生成火焰粒子
+            Vector2 spawnPos = new Vector2(
+                Main.screenPosition.X + Main.rand.Next(0, Main.screenWidth),
+                Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-20, 10)
+            );
+
+            //向上飘动的硫磺火焰
+            Vector2 velocity = new Vector2(
+                Main.rand.NextFloat(-0.5f, 0.5f),
+                Main.rand.NextFloat(-2f, -0.8f)
+            );
+
+            //使用硫磺火颜色
+            Color flameColor = Color.Lerp(
+                new Color(200, 80, 40),   //暗橙红
+                new Color(255, 140, 70),  //亮橙
+                Main.rand.NextFloat()
+            );
+
+            //创建火焰粒子
+            PRT_Spark flamePRT = new PRT_Spark(
+                spawnPos,
+                velocity,
+                false,
+                Main.rand.Next(60, 120),
+                Main.rand.NextFloat(0.8f, 1.5f),
+                flameColor
+            );
+            PRTLoader.AddParticle(flamePRT);
+        }
+
+        private static void SpawnAshParticles() {
+            //在屏幕底部随机位置生成灰烬粒子
+            Vector2 spawnPos = new Vector2(
+                Main.screenPosition.X + Main.rand.Next(0, Main.screenWidth),
+                Main.screenPosition.Y + Main.screenHeight + Main.rand.Next(-10, 5)
+            );
+
+            //缓慢向上飘动
+            Vector2 velocity = new Vector2(
+                Main.rand.NextFloat(-1f, 1f),
+                Main.rand.NextFloat(-1.5f, -0.3f)
+            );
+
+            //灰黑色
+            float ashBrightness = Main.rand.NextFloat(0.6f, 0.9f);
+            Color ashColor = new Color(
+                (int)(60 * ashBrightness),
+                (int)(50 * ashBrightness),
+                (int)(45 * ashBrightness)
+            );
+
+            //创建灰烬粒子
+            PRT_SparkAlpha ashPRT = new PRT_SparkAlpha(
+                spawnPos,
+                velocity,
+                false,
+                Main.rand.Next(80, 150),
+                Main.rand.NextFloat(0.6f, 1.2f),
+                ashColor
+            );
+            PRTLoader.AddParticle(ashPRT);
+        }
+
+        public override void Unload() {
+            IsActive = false;
+        }
     }
 }
