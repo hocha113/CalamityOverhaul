@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         /// <summary>
         /// 添加带完成回调的对话
-        /// </summary>
+        /// /// </summary>
         public void Add(string speaker, string content, Action onComplete) {
             var line = new DialogueLine(speaker, content) { OnComplete = onComplete };
             lines.Add(line);
@@ -120,27 +120,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
             OnScenarioStart();
 
-            // 获取当前场景使用的对话框样式
-            var currentStyle = DefaultDialogueStyle ?? DialogueUIRegistry.GetDefault;
-            var box = currentStyle?.Invoke() ?? DialogueUIRegistry.Current;
+            //确定使用的对话框
+            DialogueBoxBase targetBox = null;
 
-            // 设置预处理器
-            box.PreProcessor = PreProcessSegment;
+            //如果场景有默认样式，使用它
+            if (DefaultDialogueStyle != null) {
+                targetBox = DefaultDialogueStyle.Invoke();
+            }
 
+            //否则使用全局默认
+            targetBox ??= DialogueUIRegistry.Current;
+
+            //设置预处理器
+            targetBox.PreProcessor = PreProcessSegment;
+
+            //将所有对话添加到对话框
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
 
-                // 如果该行有样式覆盖，切换对话框
-                if (line.StyleOverride != null) {
-                    var overrideBox = line.StyleOverride.Invoke();
-                    if (overrideBox != null && overrideBox != box) {
-                        box = overrideBox;
-                        box.PreProcessor = PreProcessSegment;
-                    }
-                }
-
-                // 构建完成回调
+                //构建完成回调
                 Action completeCallback = null;
                 if (line.OnComplete != null || isLast) {
                     completeCallback = () => {
@@ -151,11 +150,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     };
                 }
 
-                // 触发开始事件
+                //触发开始事件
                 line.OnStart?.Invoke();
 
-                // 入队对话
-                box.EnqueueDialogue(line.Speaker, line.Content, completeCallback);
+                //入队对话（注意：styleOverride 暂时不支持运行时切换，因为需要重构对话框系统）
+                //如果需要支持，请为每个对话框分别调用 Start
+                targetBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback);
             }
         }
 

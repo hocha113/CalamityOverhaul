@@ -2597,6 +2597,16 @@ Legend: {
 				// ClickToContinue: Click to Continue
 				// ClickOrWaitToContinue: Click or Wait to Continue
 			}
+
+			FirstMetSupCal: {
+				// Rolename1: ???
+				// Rolename2: 至尊灾厄
+			}
+		}
+
+		BrimstoneDialogueBox: {
+			// ContinueHint: 继续
+			// FastHint: 加速
 		}
 	}
 
