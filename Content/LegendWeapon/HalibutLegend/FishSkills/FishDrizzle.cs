@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         [VaultLoaden(CWRConstant.Masking)]
         public static Texture2D Fire = null;//火焰的纹理灰度图，总共4*4帧，也就是四行四列的帧图
         public override int UnlockFishID => ModContent.ItemType<DragoonDrizzlefish>();
-        public override int DefaultCooldown => 240 - HalibutData.GetDomainLayer() * 18;
+        public override int DefaultCooldown => 720 - HalibutData.GetDomainLayer() * 36;
         public override int ResearchDuration => 60 * 16;
 
         private static int _drizzleVolleyIdSeed = 0;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             , int damage, float knockback, Vector2 aimVelocity) {
             shootDir = player.direction;
 
-            int fishCount = 3 + HalibutData.GetDomainLayer();
+            int fishCount = 3 + HalibutData.GetDomainLayer() / 2;
             int volleyId = _drizzleVolleyIdSeed++;
 
             Vector2 aimDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f, Volume = 0.9f }, Projectile.Center);
 
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
-            int damage = (int)(StoredDamage * (2.2f + HalibutData.GetDomainLayer() * 0.65f));
+            int damage = (int)(StoredDamage * (1.2f + HalibutData.GetDomainLayer() * 0.25f));
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 12f, dir * 0.1f,
                 ModContent.ProjectileType<DrizzleFirePillar>(), damage, StoredKnockback * 1.6f, Projectile.owner, Projectile.identity);
@@ -398,7 +398,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = 15;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
