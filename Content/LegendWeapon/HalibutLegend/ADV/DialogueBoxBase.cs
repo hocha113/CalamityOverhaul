@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         protected Vector2 anchorPos;
         internal float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
-        protected virtual float MaxHeight => 340f;
+        protected virtual float MaxHeight => 480f; // 从340f增加到480f以容纳更多文本
         protected virtual int Padding => 18;
         protected virtual int LineSpacing => 6;
         protected abstract float PanelWidth { get; }
@@ -231,7 +231,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             wrappedLines = allLines.ToArray();
             int textLines = wrappedLines.Length;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
-            int headerHeight = 36; //与绘制中 textBlockOffsetY = Padding + 36 对齐, 原28会截断导致只能显示一行
+            
+            // 精确的headerHeight计算：
+            // 在子类绘制实现中，textBlockOffsetY 通常设置为 Padding + 36~38
+            // 这个值表示从面板顶部到文本区域开始位置的距离
+            // 包括：topNameOffset(10-12) + 名字高度(~23) + titleExtra(6) + 分隔线间距(8*2) + 分隔线高度(1-2) ≈ 56-59
+            // 为了与实际绘制布局保持一致，使用 textBlockOffsetY 的典型值
+            int headerHeight = 38; // 设置为典型的 textBlockOffsetY - Padding 值，即 (Padding + 38) - Padding = 38
+            
             float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
