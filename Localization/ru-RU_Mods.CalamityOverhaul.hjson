@@ -2275,16 +2275,108 @@ Legend: {
 			// TitleText: Oceanic Domain
 			// ExtraEyeTitleText: Layer X
 			// CrashedLabelText: Scream
-			// EyeDesc1: The first eye opens, faint tides begin to resonate.
-			// EyeDesc2: With both eyes awakened, water pressure gathers slowly, power emerging.
-			// EyeDesc3: Triple vision locks onto the currents; the domain starts to stabilize.
-			// EyeDesc4: The fourth resonance amplifies, a subtle chill spreads through the waves.
-			// EyeDesc5: Five layers intertwine; a circular whirl forms beneath your feet, offering protection.
-			// EyeDesc6: The sixth pulse surges, revealing clear veins of flowing energy.
-			// EyeDesc7: With seven eyes shining together, the tide’s erosion of the outside world intensifies.
-			// EyeDesc8: The eighth layer compresses the pressure into solidity; strength nears its peak.
-			// EyeDesc9: The ninth boundary unveils the full form of the abyss — great power flows freely.
-			// EyeDesc10: The tenth ascends beyond limit — a realm of gods.
+			/* EyeDesc1:
+				'''
+				The first eye of the domain opens. You feel something dormant within you resonate, as faint tides begin to ripple through reality.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				''' */
+			/* EyeDesc2:
+				'''
+				A second eye opens, overlapping the first. The boundary between reality and the domain blurs.
+				Within the domain, a new domain is forcibly opened, forming a bizarre, double-nested space.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				''' */
+			/* EyeDesc3:
+				'''
+				Three eyes, shimmering with an unholy light, overlap on your forehead. The domains nest, layer by layer, forming a bottomless, triple-layered sea.
+				The abyssal whispers from within you become clearly audible.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				''' */
+			/* EyeDesc4:
+				'''
+				Four eyes split into two pairs, covering your own. These two adjacent, two-layered domains are no longer content with simply nesting.
+				In an unholy light, they begin to merge, becoming a more terrifying four-layered domain.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				''' */
+			/* EyeDesc5:
+				'''
+				Your skin becomes like that of a bloated, drowned corpse. Countless eerie eyes surface and swim beneath your skin before sinking away, like sharks fighting over prey.
+				They finally converge on your forehead, fusing into a single, monstrous eye.
+				The five layers of the domain fully merge, granting you the power to twist causality within it.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] to restart yourself.
+				''' */
+			/* EyeDesc6:
+				'''
+				The sixth eye opens in your heart.
+				Each beat triggers a pulse of energy within the domain, making deep blue energy conduits, like a spider's web, clearly visible within the space.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] to restart yourself.
+				''' */
+			/* EyeDesc7:
+				'''
+				Seven eyes form an eerie array on your forehead, bursting with light in time with the pulse of the universe.
+				The domain begins to frantically erode reality. Wherever its boundary reaches, matter dissolves like sand, and the laws of nature are rewritten by the tides.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] for a large-scale restart.
+				Press [Halibut_Superposition] to use a superpositional strike.
+				''' */
+			/* EyeDesc8:
+				'''
+				The eighth eye becomes a silent vortex in the palm of your hand.
+				The pressure within the domain becomes almost solid. Light bends here, and sound is annihilated.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] for a large-scale restart.
+				Press [Halibut_Superposition] to use a superpositional strike.
+				''' */
+			/* EyeDesc9:
+				'''
+				Nine is the ultimate number. Nine eyes form an illusory abyssal halo above your head, and with it, the last shred of your humanity vanishes.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] for a large-scale restart.
+				Press [Halibut_Superposition] to use a superpositional strike.
+				''' */
+			/* EyeDesc10:
+				'''
+				Layers have lost their meaning. One is infinity.
+				You have become the abyss, and the abyss is you.
+				Where your gaze falls, a new genesis begins.
+				You have reached the end of this shore and become a god on the other.
+				[Line]
+				Press [Halibut_Domain] to open or close the domain.
+				Press [Halibut_Teleport] to teleport within the domain.
+				Press [Halibut_Clone] to make the past invade the present.
+				Press [Halibut_Restart] for a large-scale restart.
+				Press [Halibut_Superposition] to use a superpositional strike.
+				Hold the left mouse button to begin infinite superposition and infinite restarts.
+				''' */
 			// LayerTitleFormat: Layer {0}
 		}
 
