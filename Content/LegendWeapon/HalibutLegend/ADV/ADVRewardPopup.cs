@@ -11,9 +11,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
-    internal class ADVRewardPopup : UIHandle
+    internal class ADVRewardPopup : UIHandle, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend.HalibutText.ADV";
+
         public static ADVRewardPopup Instance => UIHandleLoader.GetUIHandleOfType<ADVRewardPopup>();
+
         public class RewardEntry
         {
             public int ItemId;
@@ -30,6 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             public Func<Vector2> AnchorProvider;
             public Vector2 Offset;
         }
+
         private readonly Queue<RewardEntry> queue = new();
         private RewardEntry current;
         private int stateTimer;
@@ -52,7 +56,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public static int DefaultHoldDuration = 50;
         public static int DefaultGiveDuration = 16;
         public static event Action<RewardEntry> OnRewardGiven;
+
+        // 本地化文本
+        protected static LocalizedText ClickToReceive;
+        protected static LocalizedText ClickToContinue;
+        protected static LocalizedText ClickOrWaitToContinue;
+
         public override bool Active => current != null || queue.Count > 0 || panelFade > 0.01f;
+
+        public override void SetStaticDefaults() {
+            ClickToReceive = this.GetLocalization(nameof(ClickToReceive), () => "点击领取");
+            ClickToContinue = this.GetLocalization(nameof(ClickToContinue), () => "点击继续");
+            ClickOrWaitToContinue = this.GetLocalization(nameof(ClickOrWaitToContinue), () => "点击/等待继续");
+        }
+
         public static void ConfigureDefaults(int? appear = null, int? hold = null, int? give = null) {
             if (appear.HasValue && appear.Value > 0) {
                 DefaultAppearDuration = appear.Value;
@@ -301,7 +318,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Utils.DrawBorderString(spriteBatch, name, namePos, Color.White * nameAlpha, 0.8f);
             if (a >= 1f) {
                 string hint;
-                if (current.RequireClick) hint = "点击领取"; else if (current.HoldDuration < 0) hint = "点击继续"; else hint = "点击/等待继续";
+                if (current.RequireClick) {
+                    hint = ClickToReceive.Value;
+                }
+                else if (current.HoldDuration < 0) {
+                    hint = ClickToContinue.Value;
+                }
+                else {
+                    hint = ClickOrWaitToContinue.Value;
+                }
                 Vector2 hs = font.MeasureString(hint) * 0.6f;
                 Vector2 hp = new(rect.Right - hs.X - 12f, rect.Bottom - hs.Y - 10f);
                 float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;

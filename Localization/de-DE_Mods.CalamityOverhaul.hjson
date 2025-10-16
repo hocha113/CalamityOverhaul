@@ -2214,10 +2214,10 @@ Legend: {
 			// TitleText: Oceanic Domain
 			// ExtraEyeTitleText: Layer X
 			// CrashedLabelText: Scream
-			// EyeDesc1: The first eye opens — faint tides begin to resonate.
+			// EyeDesc1: The first eye opens, faint tides begin to resonate.
 			// EyeDesc2: With both eyes awakened, water pressure gathers slowly, power emerging.
 			// EyeDesc3: Triple vision locks onto the currents; the domain starts to stabilize.
-			// EyeDesc4: The fourth resonance amplifies — a subtle chill spreads through the waves.
+			// EyeDesc4: The fourth resonance amplifies, a subtle chill spreads through the waves.
 			// EyeDesc5: Five layers intertwine; a circular whirl forms beneath your feet, offering protection.
 			// EyeDesc6: The sixth pulse surges, revealing clear veins of flowing energy.
 			// EyeDesc7: With seven eyes shining together, the tide’s erosion of the outside world intensifies.
@@ -2269,7 +2269,7 @@ Legend: {
 				// Line6: ...
 				// Line7: You’re wondering why I’m here, aren’t you?
 				// Line8: I used to be a professor at the Sulphur Sea University, in the Department of Abyssal Studies.
-				// Line9: A few years ago, we organized a project—“The Abyssal Ecosystem Survey.”
+				// Line9: A few years ago, we organized a project “The Abyssal Ecosystem Survey”
 				// Line10: In the end... I was the only one who returned.
 				// Line11: Down in the depths, we encountered something... incomprehensible.
 				// Line12: It wasn’t alive, nor was it something that could be “killed.” It was... terror given form—an idea that refused to die.
@@ -2484,6 +2484,12 @@ Legend: {
 				// L2: A Scarlet Tigerfish, extracted from the heart of the inferno. Its stripes are like vows branded by flame.
 				// L3: Holding it, you can feel a scorching resolve. That is the temperature of a true warrior.
 				// L4: You defeated it, but I suspect... in the moment it fell, it finally found its release.
+			}
+
+			ADVRewardPopup: {
+				// ClickToReceive: Click to Claim
+				// ClickToContinue: Click to Continue
+				// ClickOrWaitToContinue: Click or Wait to Continue
 			}
 		}
 	}

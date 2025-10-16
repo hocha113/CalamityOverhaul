@@ -2555,6 +2555,12 @@ Legend: {
 				L3: 握着它会感觉到一种灼热的决心。那是属于战士的温度
 				L4: 你击败了它，但我怀疑……它在倒下的瞬间，是否终于获得了解脱
 			}
+
+			ADVRewardPopup: {
+				ClickToReceive: 点击领取
+				ClickToContinue: 点击继续
+				ClickOrWaitToContinue: 点击/等待继续
+			}
 		}
 	}
 
