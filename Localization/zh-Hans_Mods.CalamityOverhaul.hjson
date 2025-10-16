@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -5987,8 +5987,6 @@ FishSkill: {
 		Studied: 它们可能来自马达加斯加
 	}
 }
-
-NPCs.TheSpiritofTheAbyss.DisplayName: 渊洋之灵
 
 Resurrections: {
 	ResurrectionDeathSystem: {

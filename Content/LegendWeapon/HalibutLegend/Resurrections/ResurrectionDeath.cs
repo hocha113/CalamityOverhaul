@@ -387,33 +387,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 }
             }
         }
-
-        /// <summary>
-        /// 生成深渊厉鬼
-        /// </summary>
-        private void SpawnAbyssSpirit() {
-            int npcType = ModContent.NPCType<TheSpiritofTheAbyss>();
-
-            // 在死亡位置生成
-            int npcIndex = NPC.NewNPC(
-                Player.GetSource_Death(),
-                (int)Player.Center.X,
-                (int)Player.Center.Y,
-                npcType
-            );
-
-            if (npcIndex >= 0 && npcIndex < Main.maxNPCs) {
-                NPC spirit = Main.npc[npcIndex];
-
-                // 设置目标玩家
-                spirit.ai[2] = Player.whoAmI;
-
-                // 同步到客户端
-                if (Main.netMode == Terraria.ID.NetmodeID.Server) {
-                    NetMessage.SendData(Terraria.ID.MessageID.SyncNPC, -1, -1, null, npcIndex);
-                }
-            }
-        }
         #endregion
 
         #region 冷却阶段
