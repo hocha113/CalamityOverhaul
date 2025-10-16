@@ -126,8 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (DefaultDialogueStyle != null) {
                 targetBox = DefaultDialogueStyle.Invoke();
                 if (targetBox != null) {
-                    //我他妈的不知道为什么必须要在这里再设置一次解析器，反正不设置就不行
-                    DialogueUIRegistry.SetResolver(() => targetBox);
+                    DialogueUIRegistry.SwitchDialogueBox(targetBox, transferQueue: false);
                 }
             }
 
@@ -149,8 +148,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                     };
                 }
 
-                line.OnStart?.Invoke();
-                targetBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback);
+                // 构建对话开始回调
+                Action startCallback = null;
+                
+                // 如果这条对话有自定义样式，在播放前切换样式
+                if (line.StyleOverride != null) {
+                    var styleBox = line.StyleOverride.Invoke();
+                    if (styleBox != null) {
+                        startCallback = () => {
+                            // 切换对话框样式并迁移状态
+                            DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
+                            styleBox.PreProcessor = PreProcessSegment;
+                            // 触发用户定义的 OnStart
+                            line.OnStart?.Invoke();
+                        };
+                    }
+                }
+                else if (line.OnStart != null) {
+                    startCallback = line.OnStart;
+                }
+
+                targetBox.EnqueueDialogue(line.Speaker, line.Content, completeCallback, startCallback);
             }
         }
 

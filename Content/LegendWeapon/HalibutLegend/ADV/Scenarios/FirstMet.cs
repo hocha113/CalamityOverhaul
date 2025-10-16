@@ -74,8 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
             Add(Rolename2.Value, Line2.Value);
             Add(Rolename2.Value, Line3.Value);
             Add(Rolename2.Value, Line4.Value);
-            Add(Rolename2.Value, Line5.Value);//5 触发奖励
-            Add(Rolename2.Value, Line6.Value);
+            Add(Rolename2.Value, Line5.Value, styleOverride: () => BrimstoneDialogueBox.Instance);//5 触发奖励
+            Add(Rolename2.Value, Line6.Value, styleOverride: () => SeaDialogueBox.Instance);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
@@ -109,7 +109,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 5) {
-                DialogueUIRegistry.SetResolver(() => BrimstoneDialogueBox.Instance);
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
@@ -118,9 +117,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
                         }
                         return new Vector2(rect.Center.X, rect.Y - 70f);
                     }, offset: Vector2.Zero);
-            }
-            else {
-                DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
         }
     }

@@ -25,10 +25,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         // 移除静态事件，改为由场景主动设置预处理器
         public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
 
-        protected class DialogueSegment
+        internal class DialogueSegment
         {
             public string Speaker;
             public string Content;
+            public Action OnStart;
             public Action OnFinish;
         }
         public abstract string LocalizationCategory { get; }
@@ -119,8 +120,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             RegisterPortrait(speaker, texture, baseColor, silhouette ?? false);
             SetPortraitStyle(speaker, baseColor, silhouette);
         }
-        public virtual void EnqueueDialogue(string speaker, string content, Action onFinish = null) {
-            queue.Enqueue(new DialogueSegment { Speaker = speaker, Content = content ?? string.Empty, OnFinish = onFinish });
+        public virtual void EnqueueDialogue(string speaker, string content, Action onFinish = null, Action onStart = null) {
+            queue.Enqueue(new DialogueSegment { 
+                Speaker = speaker, 
+                Content = content ?? string.Empty, 
+                OnStart = onStart,
+                OnFinish = onFinish 
+            });
         }
         public virtual void ReplaceDialogue(IEnumerable<(string speaker, string content, Action callback)> segments) {
             queue.Clear();
@@ -143,6 +149,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return;
             }
             current = queue.Dequeue();
+            
+            // 在处理对话之前触发 OnStart
+            current?.OnStart?.Invoke();
+            
             playedCount++;
             int index = playedCount - 1;
             int total = playedCount + queue.Count;
