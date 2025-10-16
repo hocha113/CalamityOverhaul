@@ -6,5 +6,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
     internal static class ADVAsset
     {
         public static Texture2D HeadADV = null;
+        public static Texture2D SupCalADV = null;
     }
 }
