@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -6034,9 +6034,13 @@ FishSkill: {
 	}
 
 	FishDrizzle: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 烈火燎原
+		Tooltip:
+			'''
+			开火时周期性的召唤火焰鱼
+			蓄力完成后发射出一道火焰柱
+			'''
+		Studied: 我认为它们能用来点燃篝火
 	}
 }
 

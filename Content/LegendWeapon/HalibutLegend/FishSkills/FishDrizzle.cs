@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
             float fade = 1f - Projectile.alpha / 255f;
@@ -373,7 +373,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private readonly List<FireParticle> fireParticles = new();
         private const int MaxParticles = 180;
-        private int particleSpawnTimer;
 
         private readonly Vector2[] topEdge = new Vector2[80];
         private readonly Vector2[] botEdge = new Vector2[80];
@@ -385,7 +384,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float pillarWidth = 0f;
         private float targetWidth = 140f;
-        private const float ExpandSpeed = 8f;
+        
+        //新增：火焰核心效果参数
+        private float coreIntensity = 0f;
+        private float heatDistortion = 0f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 10;
@@ -414,15 +416,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //火柱宽度动画
             if (Projectile.timeLeft > 60) {
                 pillarWidth = MathHelper.Lerp(pillarWidth, targetWidth, 0.15f);
+                coreIntensity = MathHelper.Lerp(coreIntensity, 1f, 0.12f);
             }
             else {
                 pillarWidth *= 0.92f;
+                coreIntensity *= 0.88f;
             }
 
+            //热浪扭曲效果
+            heatDistortion = (float)Math.Sin(Projectile.localAI[0] * 0.15f) * 0.5f;
+
             float progress = 1f - Projectile.timeLeft / 85f;
-            gradientStart = Color.Lerp(new Color(255, 100, 30), new Color(255, 140, 60), progress);
-            gradientMid = Color.Lerp(new Color(255, 160, 70), new Color(255, 200, 100), progress);
-            gradientEnd = Color.Lerp(new Color(255, 200, 100), new Color(255, 240, 140), progress);
+            //优化颜色渐变，让火焰更有层次感
+            gradientStart = Color.Lerp(new Color(255, 90, 20), new Color(255, 130, 50), progress);
+            gradientMid = Color.Lerp(new Color(255, 150, 60), new Color(255, 190, 90), progress);
+            gradientEnd = Color.Lerp(new Color(255, 180, 80), new Color(255, 230, 120), progress);
 
             //计算火柱边缘
             for (int i = 0; i < 80; i++) {
@@ -440,19 +448,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.localAI[0] += 1f;
 
-            //生成火焰粒子
-            if (particleSpawnTimer++ % 2 == 0 && fireParticles.Count < MaxParticles) {
+            //生成火焰粒子 - 优化生成频率，靠近根部的区域生成更多粒子
+            if (fireParticles.Count < MaxParticles) {
                 SpawnFireParticle();
+                //额外在根部生成粒子
+                if (Main.rand.NextBool(2)) {
+                    SpawnFireParticle(true);
+                }
             }
 
             UpdateFireParticles();
 
-            //火焰光照
-            Lighting.AddLight(Projectile.Center, 1.2f, 0.8f, 0.3f);
+            //增强火焰光照，添加脉冲效果
+            float lightPulse = (float)Math.Sin(Projectile.localAI[0] * 0.3f) * 0.2f + 1f;
+            Lighting.AddLight(Projectile.Center, 1.4f * lightPulse, 0.9f * lightPulse, 0.4f * lightPulse);
         }
 
-        private void SpawnFireParticle() {
-            float dist = Main.rand.NextFloat(50f, 1400f);
+        private void SpawnFireParticle(bool nearRoot = false) {
+            float dist;
+            if (nearRoot) {
+                //在根部区域生成更密集的粒子
+                dist = Main.rand.NextFloat(20f, 350f);
+            }
+            else {
+                dist = Main.rand.NextFloat(50f, 1400f);
+            }
+            
             float offsetY = Main.rand.NextFloat(-pillarWidth * 0.4f, pillarWidth * 0.4f);
             Vector2 pos = Projectile.Center + Projectile.rotation.ToRotationVector2() * dist;
             pos += Projectile.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * offsetY;
@@ -465,11 +486,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Velocity = vel,
                 Life = 0,
                 MaxLife = Main.rand.Next(35, 60),
-                Scale = Main.rand.NextFloat(1.5f, 3.5f),
+                Scale = Main.rand.NextFloat(nearRoot ? 2f : 1.5f, nearRoot ? 4.5f : 3.5f),
                 Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
                 RotSpeed = Main.rand.NextFloat(-0.15f, 0.15f),
                 Frame = Main.rand.Next(0, 16),
-                Opacity = 1f
+                Opacity = nearRoot ? 1f : 0.85f
             });
         }
 
@@ -511,8 +532,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //绘制火焰粒子
             DrawFireParticles();
 
-            //绘制火柱主体
-            DrawPillarCore();
+            for (int i = 0; i < 3; i++) {
+                //绘制火柱核心
+                DrawPillarCore();
+
+                //绘制火柱主体
+                DrawPillarMainBody();
+            }
+            
 
             return false;
         }
@@ -520,42 +547,97 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawFireParticles() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D fireTex = FishDrizzle.Fire;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
             foreach (var p in fireParticles) {
                 Vector2 drawPos = p.Position - Main.screenPosition;
                 int frameX = (int)p.Frame % 4;
                 int frameY = (int)p.Frame / 4;
                 Rectangle frame = new Rectangle(frameX * (fireTex.Width / 4), frameY * (fireTex.Height / 4), fireTex.Width / 4, fireTex.Height / 4);
 
+                //增强粒子颜色
                 Color color = Color.Lerp(gradientStart, gradientEnd, Main.rand.NextFloat()) * p.Opacity;
                 color.A = 0;
 
-                sb.Draw(fireTex, drawPos, frame, color, p.Rotation, frame.Size() * 0.5f, p.Scale * 0.08f, SpriteEffects.None, 0f);
+                sb.Draw(fireTex, drawPos, frame, color, p.Rotation, frame.Size() * 0.5f, p.Scale * 0.28f, SpriteEffects.None, 0f);
+            }
+        }
+
+        //新增：绘制火柱核心层，提供最强的发光效果
+        private void DrawPillarCore() {
+            List<ColoredVertex> vertices = new();
+
+            //核心层缩小到主体的60%
+            float coreWidthMultiplier = 0.6f;
+
+            for (int i = 0; i < 80; i++) {
+                float u = i / 80f;
+                
+                //使用更亮的核心颜色
+                Color coreColor = Color.Lerp(
+                    new Color(255, 240, 200),  //接近白色的亮黄
+                    new Color(255, 200, 120),  //金黄色
+                    u
+                );
+                
+                //根部（u接近0）更亮，远端逐渐变暗
+                float intensityByDistance = MathHelper.Lerp(1.2f, 0.6f, u);
+                coreColor *= coreIntensity * intensityByDistance;
+
+                Vector2 topCore = topEdge[i] * coreWidthMultiplier;
+                Vector2 botCore = botEdge[i] * coreWidthMultiplier;
+
+                vertices.Add(new ColoredVertex(topCore.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, coreColor, new Vector3(u, 0, 1)));
+                vertices.Add(new ColoredVertex(botCore.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, coreColor, new Vector3(u, 1, 1)));
             }
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+            Vector2 topCoreEnd = topEnd * coreWidthMultiplier;
+            Vector2 botCoreEnd = botEnd * coreWidthMultiplier;
+            Color endCoreColor = new Color(255, 200, 120) * coreIntensity * 0.6f;
+
+            vertices.Add(new ColoredVertex(topCoreEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, endCoreColor, new Vector3(1, 0, 1)));
+            vertices.Add(new ColoredVertex(botCoreEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, endCoreColor, new Vector3(1, 1, 1)));
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            Main.graphics.GraphicsDevice.Textures[0] = CWRAsset.LightShot.Value;
+            if (vertices.Count >= 3) {
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, vertices.ToArray(), 0, vertices.Count - 2);
+            }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        private void DrawPillarCore() {
+        //改进：主体绘制，优化透明度渐变
+        private void DrawPillarMainBody() {
             List<ColoredVertex> vertices = new();
 
             for (int i = 0; i < 80; i++) {
                 float u = i / 80f;
-                Color colA = Color.Lerp(Color.Lerp(gradientStart, gradientMid, u), Color.Lerp(gradientMid, gradientEnd, u), u);
+                
+                //改进颜色插值，使用三重渐变
+                Color colA = Color.Lerp(
+                    Color.Lerp(gradientStart, gradientMid, u), 
+                    Color.Lerp(gradientMid, gradientEnd, u), 
+                    u
+                );
                 Color colB = Color.Lerp(gradientStart, gradientEnd, u);
+
+                //关键改进：根据距离调整透明度，根部（u小）更不透明
+                float alphaMultiplier = MathHelper.Lerp(1.0f, 0.7f, u);  //从100%到70%
+                colA *= alphaMultiplier;
+                colB *= alphaMultiplier;
 
                 vertices.Add(new ColoredVertex(topEdge[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, colA, new Vector3(u, 0, 1 - u)));
                 vertices.Add(new ColoredVertex(botEdge[i].RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, colB, new Vector3(u, 1, 1 - u)));
             }
 
-            vertices.Add(new ColoredVertex(topEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, gradientEnd, new Vector3(1, 0, 1)));
-            vertices.Add(new ColoredVertex(botEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, gradientEnd, new Vector3(1, 1, 1)));
+            //末端颜色保持一定透明度
+            Color endColor = gradientEnd * 0.7f;
+            vertices.Add(new ColoredVertex(topEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, endColor, new Vector3(1, 0, 1)));
+            vertices.Add(new ColoredVertex(botEnd.RotatedBy(Projectile.rotation) + Projectile.Center - Main.screenPosition, endColor, new Vector3(1, 1, 1)));
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp,
