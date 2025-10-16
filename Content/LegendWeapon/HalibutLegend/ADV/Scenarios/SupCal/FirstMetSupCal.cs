@@ -1,7 +1,15 @@
-﻿using CalamityMod.NPCs.CalClone;
+﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Potions.Alcohol;
+using CalamityMod.NPCs.CalClone;
+using CalamityMod.Projectiles.Boss;
+using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Content.TileModify;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -54,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                     DialogueUIRegistry.Current?.EnqueueDialogue(
                         Rolename2.Value,
                         "这么好战的吗？那么便让我来称量称量你吧",
-                        onFinish: () => Complete()
+                        onFinish: () => Choice1()
                     );
                 }),
                 new Choice("撤退", () => {
@@ -62,10 +70,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                     DialogueUIRegistry.Current?.EnqueueDialogue(
                         Rolename2.Value,
                         "......真是杂鱼呢，那么给你一个见面礼，我们下次见",
-                        onFinish: () => Complete()
+                        onFinish: () => Choice2()
                     );
                 }),
             });
+        }
+
+        public void Choice1() {
+            Vector2 spawnPos = Main.LocalPlayer.Center;
+            SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
+            Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
+                , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
+            Complete();
+        }
+
+        public void Choice2() {
+            ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f);
+                    }, offset: Vector2.Zero);
+            Complete();
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
