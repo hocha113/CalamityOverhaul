@@ -165,8 +165,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (box != null && box.PreProcessor == PreProcessSegment) {
                 box.PreProcessor = null;
             }
-            // 恢复默认解析器
-            DialogueUIRegistry.SetResolver(null);
+
+            //他妈的别在这里调用解析器的恢复，会让对话框结束时卡住不动
+            //DialogueUIRegistry.SetResolver(null);
         }
 
         public virtual void SaveData(TagCompound tag) { }

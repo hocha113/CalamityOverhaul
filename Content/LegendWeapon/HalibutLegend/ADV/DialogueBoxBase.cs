@@ -225,9 +225,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             float contentHeight = textLines * lineHeight + Padding * 2 + headerHeight;
             panelHeight = MathHelper.Clamp(contentHeight, MinHeight, MaxHeight);
         }
-        public override void Update() { HandleInput(); }
+        public override void Update() { }//此处更新在绘制逻辑中
         public virtual void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
+            HandleInput();
             if (current == null && queue.Count > 0 && !closing) {
                 StartNext();
             }
@@ -248,6 +249,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                         showProgress = 0f;
                         lastSpeaker = null;
                         speakerSwitchProgress = 1f;
+                        
+                        // 淡出动画完成后，恢复默认解析器
+                        // 只有当前对话框是通过解析器设置的才恢复
+                        if (DialogueUIRegistry.Current == this) {
+                            DialogueUIRegistry.SetResolver(null);
+                        }
                     }
                 }
             }

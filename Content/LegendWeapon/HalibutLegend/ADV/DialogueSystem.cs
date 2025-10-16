@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader;
+﻿using InnoVault.UIHandles;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 {
