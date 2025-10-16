@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -33,6 +34,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
         public static LocalizedText Line20 { get; private set; }
         public static LocalizedText Line21 { get; private set; }
         public string LocalizationCategory => "Legend.HalibutText.ADV";
+        //设置场景默认使用海洋风格
+        protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
@@ -106,6 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 5) {
+                DialogueUIRegistry.SetResolver(() => BrimstoneDialogueBox.Instance);
                 ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
@@ -114,6 +118,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
                         }
                         return new Vector2(rect.Center.X, rect.Y - 70f);
                     }, offset: Vector2.Zero);
+            }
+            else {
+                DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
         }
     }

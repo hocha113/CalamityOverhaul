@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
         
-        // 设置场景默认使用硫磺火风格
+        //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
         
         public override void SetStaticDefaults() {
