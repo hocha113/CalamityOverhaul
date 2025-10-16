@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(Rolename2.Value, Line9.Value);
             Add(Rolename2.Value, Line10.Value);
 
-            AddWithChoices(Rolename2.Value, QuestionLine.Value, new List<Choice> {
-                new Choice(Choice1Text.Value, () => {
+            AddWithChoices(Rolename2.Value, QuestionLine.Value, [
+                new(Choice1Text.Value, () => {
                     //选择后继续对话
-                    Add(Rolename2.Value, Choice1Response.Value);
+                    Add(Rolename2.Value, Choice1Response.Value, styleOverride: DefaultDialogueStyle);
                     //继续推进场景
                     DialogueUIRegistry.Current?.EnqueueDialogue(
                         Rolename2.Value,
@@ -108,15 +108,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                         onFinish: () => Choice1()
                     );
                 }),
-                new Choice(Choice2Text.Value, () => {
-                    Add(Rolename2.Value, Choice2Response.Value);
+                new(Choice2Text.Value, () => {
+                     //选择后继续对话
+                    Add(Rolename2.Value, Choice2Response.Value, styleOverride: DefaultDialogueStyle);
+                    //继续推进场景
                     DialogueUIRegistry.Current?.EnqueueDialogue(
                         Rolename2.Value,
                         Choice2Response.Value,
                         onFinish: () => Choice2()
                     );
                 }),
-            });
+            ]);
         }
 
         public void Choice1() {
