@@ -104,6 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             }
             if (ScenarioManager.Start<SupCalMoonLordReward>()) {
                 save.SupCalMoonLordReward = true;
+                SupCalMoonLordRewardNPC.Spawned = false;
             }
         }
     }

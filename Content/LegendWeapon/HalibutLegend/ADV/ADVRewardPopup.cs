@@ -373,14 +373,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Main.instance.LoadItem(current.ItemId);
             Texture2D tex = TextureAssets.Item[item.type].Value;
             Rectangle frame = tex.Bounds;
-            Vector2 origin = frame.Size() / 2f;
-            float itemScale = 1f;
-            if (frame.Width > 40 || frame.Height > 40) {
-                float maxDim = Math.Max(frame.Width, frame.Height);
-                itemScale = 40f / maxDim;
-            }
             float bounce = (float)Math.Sin(MathHelper.Clamp(ease * 1.2f, 0f, 1f) * MathHelper.Pi) * 0.08f;
-            itemScale *= (iconScaleEase + bounce) * panelScale;
+            float itemScale = (iconScaleEase + bounce) * panelScale;
             float floatOff = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.2f + a) * 4f * iconAlpha;
             Vector2 floatPos = iconCenter + new Vector2(0, floatOff);
 
