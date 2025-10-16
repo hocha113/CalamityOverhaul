@@ -4,7 +4,6 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -126,6 +125,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
             Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
                 , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
+            
+            //标记玩家选择了战斗
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                halibutPlayer.ADCSave.SupCalChoseToFight = true;
+            }
+            
             Complete();
         }
 
