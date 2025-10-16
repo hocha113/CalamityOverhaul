@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework; // Added for Vector2/Color/MathHelper explicit reference
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -90,15 +91,17 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.arrow = true;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = true;
-            Projectile.extraUpdates = 1;
+            Projectile.extraUpdates = (int)(1 + ChargeLevel);
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
         }
 
         public override void AI() {
             Time++;
 
+            Projectile.penetrate = 5 + (int)(ChargeLevel * 5); //最多10次穿透
+            Projectile.extraUpdates = (int)(1 + ChargeLevel * 5);
             //旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
@@ -326,7 +329,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 float trailRot = Projectile.oldRot[i];
 
                 Main.EntitySpriteDraw(texture, trailPos, null, trailColor,
-                    trailRot + MathHelper.PiOver2, origin, Projectile.scale * (1f - progress * 0.3f),
+                    trailRot, origin, Projectile.scale * (1f - progress * 0.3f),
                     SpriteEffects.None, 0);
             }
 
@@ -346,7 +349,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size(), null, ChargeLevel);
+            return Projectile.RotatingHitboxCollision(targetHitbox.TopLeft(), targetHitbox.Size(), null, ChargeLevel + 1f);
         }
     }
 
@@ -603,16 +606,16 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class PallbearerHeld : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
+        public override string Texture => CWRConstant.Item_Ranged + "PallbearerHeld";
 
         //弩的状态机
         private enum CrossbowState
         {
             Idle,           //待机
             Loading,        //装填箭矢
-            Charged,        //蓄力完成
+            Charged,        //蓄力完成(正在蓄力)
             Firing,         //发射
-            Throwing        //投掷弩本身
+            Throwing        //投掷弩本身 (未使用保留)
         }
 
         private CrossbowState State {
@@ -622,23 +625,22 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         private ref float StateTimer => ref Projectile.ai[1];
         private ref float ChargeLevel => ref Projectile.localAI[0]; //蓄力等级 0-1
-        private ref float ThrowCooldown => ref Projectile.localAI[1]; //投掷冷却
+        private ref float ThrowCooldown => ref Projectile.localAI[1]; //投掷冷却(实例内生效)
 
-        //动画帧控制
-        private int animationFrame = 0;
+        //动画帧控制 (使用Projectile.frame)
         private float armRotation = 0f;
 
         //常量配置
         private const int LoadDuration = 35;        //装填时长
         private const int MaxChargeDuration = 60;   //最大蓄力时长
         private const int FireDuration = 15;        //射击动画时长
-        private const int ThrowCooldownTime = 120;  //投掷后的冷却
+        private const int ThrowCooldownTime = 120;  //投掷后的冷却(仅右键)
 
         //弩弦相关
         private float bowstringPullback = 0f; //弓弦拉动进度
 
         public override void SetStaticDefaults() {
-            Main.projFrames[Type] = 4; //4帧动画
+            Main.projFrames[Type] = 4; //4帧动画：0待机 1加载过渡 2满弦 3射击回弹
         }
 
         public override void SetDefaults() {
@@ -650,10 +652,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = 2;
+            Projectile.hide = false;
         }
 
         public override void AI() {
-            //基础设置
             if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
@@ -662,7 +664,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.timeLeft = 2;
             SetHeld();
 
-            //根据当前状态执行对应逻辑
             switch (State) {
                 case CrossbowState.Idle:
                     HandleIdle();
@@ -678,27 +679,22 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     break;
             }
 
-            //更新持有者的手臂动作
             UpdateOwnerArms();
-
-            //更新位置和旋转
             UpdatePositionAndRotation();
-
             StateTimer++;
         }
 
         private void HandleIdle() {
-            animationFrame = 0;
+            Projectile.frame = 0;
             bowstringPullback = 0f;
+            ChargeLevel = 0f;
 
-            //按住左键开始装填
             if (DownLeft && Owner.HasAmmo(Owner.ActiveItem())) {
                 State = CrossbowState.Loading;
                 StateTimer = 0;
-                SoundEngine.PlaySound(SoundID.Item149, Owner.Center); //装填音效
+                SoundEngine.PlaySound(SoundID.Item149, Owner.Center);
             }
 
-            //右键投掷（需要冷却结束）
             if (DownRight && ThrowCooldown <= 0) {
                 ThrowCrossbow();
             }
@@ -706,51 +702,41 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         private void HandleLoading() {
             float loadProgress = StateTimer / LoadDuration;
-            animationFrame = (int)MathHelper.Lerp(0, 2, loadProgress);
+            Projectile.frame = loadProgress < 0.5f ? 0 : 1;
             bowstringPullback = MathHelper.SmoothStep(0f, 1f, loadProgress);
 
-            //装填动画期间的粒子效果
             if (StateTimer % 8 == 0 && !Main.dedServ) {
                 Vector2 dustPos = Projectile.Center + Projectile.velocity * 20f;
                 for (int i = 0; i < 3; i++) {
                     Dust dust = Dust.NewDustPerfect(dustPos, DustID.Smoke,
                         Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);
-                    dust.noGravity = true;
                 }
             }
 
-            //装填完成
             if (StateTimer >= LoadDuration) {
                 State = CrossbowState.Charged;
                 StateTimer = 0;
                 ChargeLevel = 0f;
+                Projectile.frame = 2;
                 SoundEngine.PlaySound(SoundID.Item102 with { Pitch = -0.3f }, Owner.Center);
-
-                //装填完成特效
                 SpawnLoadCompleteEffect();
             }
 
-            //松开按键取消装填
-            if (!DownLeft) {
+            if (!DownLeft) { //取消
                 State = CrossbowState.Idle;
                 StateTimer = 0;
             }
         }
 
         private void HandleCharged() {
-            animationFrame = 2; //保持装填状态帧
+            Projectile.frame = 2;
             bowstringPullback = 1f;
 
-            //持续按住蓄力
             if (DownLeft && StateTimer < MaxChargeDuration) {
                 ChargeLevel = StateTimer / MaxChargeDuration;
-
-                //蓄力粒子效果
                 if (StateTimer % 5 == 0) {
                     SpawnChargeParticle();
                 }
-
-                //蓄力音效
                 if (StateTimer % 15 == 0) {
                     SoundEngine.PlaySound(SoundID.Item149 with {
                         Volume = 0.3f,
@@ -759,7 +745,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            //松开或达到最大蓄力时发射
             if (!DownLeft || StateTimer >= MaxChargeDuration) {
                 State = CrossbowState.Firing;
                 StateTimer = 0;
@@ -768,22 +753,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         private void HandleFiring() {
+            Projectile.frame = 3;
             float fireProgress = StateTimer / FireDuration;
-            animationFrame = 3; //射击帧
             bowstringPullback = 1f - fireProgress;
 
-            //射击完成后判断是否投掷
             if (StateTimer >= FireDuration) {
-                //随机决定是否投掷（70%概率）
-                if (Main.rand.NextBool(7, 10)) {
-                    ThrowCrossbow();
-                }
-                else {
-                    //返回待机状态
-                    State = CrossbowState.Idle;
-                    StateTimer = 0;
-                    ChargeLevel = 0f;
-                }
+                // 直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
+                State = CrossbowState.Idle;
+                StateTimer = 0;
+                ChargeLevel = 0f;
             }
         }
 
@@ -791,16 +769,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!Projectile.IsOwnedByLocalPlayer())
                 return;
 
-            //消耗弹药
             Owner.PickAmmo(Owner.ActiveItem(), out int projToShoot, out float speed,
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
-            //计算伤害加成（基于蓄力等级）
-            float damageMultiplier = 1f + ChargeLevel * 1.5f; //最高250%伤害
+            float damageMultiplier = 1f + (ChargeLevel + 1f) * 1.5f; //最高250%伤害
             int finalDamage = (int)(Projectile.damage * damageMultiplier);
 
-            //发射箭矢
-            Vector2 shootVelocity = Projectile.velocity * (Item.shootSpeed + ChargeLevel * 5f);
+            Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (Owner.ActiveItem().shootSpeed + ChargeLevel * 5f);
             int arrow = Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center + Projectile.velocity * 30f,
@@ -812,13 +787,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 ChargeLevel
             );
 
-            //播放射击音效
             SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with {
                 Volume = 0.8f + ChargeLevel * 0.4f,
                 Pitch = -0.1f + ChargeLevel * 0.2f
             }, Projectile.Center);
 
-            //射击特效
             SpawnFireEffect();
         }
 
@@ -826,62 +799,54 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!Projectile.IsOwnedByLocalPlayer())
                 return;
 
-            //生成回旋镖弹幕
-            int boomerang = Projectile.NewProjectile(
+            Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center,
-                Projectile.velocity * 14f,
+                Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * 14f,
                 ModContent.ProjectileType<PallbearerBoomerang>(),
                 (int)(Projectile.damage * 0.8f),
                 Projectile.knockBack * 1.2f,
                 Owner.whoAmI
             );
 
-            //播放投掷音效
             SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.3f }, Projectile.Center);
-
-            //设置冷却
             ThrowCooldown = ThrowCooldownTime;
-
-            //杀死当前弹幕
             Projectile.Kill();
         }
 
         private void UpdateOwnerArms() {
+            int dir = Owner.direction;
             float targetArmRot = Projectile.rotation;
-
-            //根据状态调整手臂角度
+            if (dir < 0) {
+                targetArmRot -= MathHelper.PiOver2;
+            }
+            else {
+                targetArmRot -= MathHelper.ToRadians(60);
+            }
+            
             switch (State) {
                 case CrossbowState.Loading:
-                    //装填时手臂向后拉
-                    armRotation = MathHelper.Lerp(armRotation, targetArmRot - 0.5f * Owner.direction, 0.15f);
+                    armRotation = MathHelper.Lerp(armRotation, targetArmRot - 0.5f * dir, 0.15f);
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, targetArmRot);
                     break;
-
                 case CrossbowState.Charged:
-                    //蓄力时保持拉弦姿势，轻微震动
                     float vibration = (float)Math.Sin(StateTimer * 0.3f) * 0.03f;
-                    armRotation = targetArmRot - 0.6f * Owner.direction + vibration;
+                    armRotation = targetArmRot - 0.6f * dir + vibration;
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
                     break;
-
                 case CrossbowState.Firing:
-                    //射击时快速前伸
                     armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.4f);
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
                     break;
-
                 default:
-                    //待机状态
                     armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.2f);
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, armRotation);
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, targetArmRot);
                     break;
             }
-
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
@@ -889,37 +854,21 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         private void UpdatePositionAndRotation() {
             Vector2 ownerCenter = Owner.GetPlayerStabilityCenter();
+            Vector2 aimDir = (Main.MouseWorld - ownerCenter).SafeNormalize(Vector2.UnitX * Owner.direction);
+            Projectile.velocity = aimDir; //稳定的方向向量
 
-            //计算弩的持握距离
-            float holdDistance = 20f;
-            if (State == CrossbowState.Loading || State == CrossbowState.Charged) {
-                holdDistance += bowstringPullback * 8f; //装填/蓄力时稍微拉远
-            }
+            float holdDistance = 20f + ((State == CrossbowState.Loading || State == CrossbowState.Charged) ? bowstringPullback * 8f : 0f);
+            Projectile.Center = ownerCenter + aimDir * holdDistance;
+            Projectile.rotation = aimDir.ToRotation();
 
-            //更新位置
-            Projectile.Center = ownerCenter + Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * holdDistance;
-
-            //更新旋转
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            if (Projectile.velocity.X < 0) {
-                Projectile.rotation += MathHelper.Pi;
-            }
-
-            //更新朝向
-            Owner.ChangeDir(Projectile.velocity.X > 0 ? 1 : -1);
+            Owner.ChangeDir(aimDir.X > 0 ? 1 : -1);
             Owner.itemRotation = Projectile.rotation * Owner.direction;
 
-            //冷却倒计时
-            if (ThrowCooldown > 0) {
-                ThrowCooldown--;
-            }
+            if (ThrowCooldown > 0) ThrowCooldown--;
         }
 
-        //生成装填完成特效
         private void SpawnLoadCompleteEffect() {
-            if (Main.dedServ)
-                return;
-
+            if (Main.dedServ) return;
             for (int i = 0; i < 12; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, velocity, 100, Color.Cyan, 1.5f);
@@ -927,35 +876,24 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        //生成蓄力粒子
         private void SpawnChargeParticle() {
-            if (Main.dedServ)
-                return;
-
+            if (Main.dedServ) return;
             Color chargeColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel);
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(15f, 15f);
             Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * 2f;
-
-            Dust charge = Dust.NewDustPerfect(particlePos, DustID.Electric, particleVel, 100, chargeColor, 1.2f);
+            Dust charge = Dust.NewDustPerfect(particlePos, DustID.RedTorch, particleVel, 100, chargeColor, 1.2f);
             charge.noGravity = true;
             charge.fadeIn = 1.2f;
         }
 
-        //生成射击特效
         private void SpawnFireEffect() {
-            if (Main.dedServ)
-                return;
-
+            if (Main.dedServ) return;
             Vector2 muzzlePos = Projectile.Center + Projectile.velocity * 30f;
-
-            //火花爆发
             for (int i = 0; i < 20; i++) {
                 Vector2 velocity = Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 8f);
                 Dust spark = Dust.NewDustPerfect(muzzlePos, DustID.Torch, velocity, 100, Color.OrangeRed, 1.8f);
                 spark.noGravity = true;
             }
-
-            //烟雾
             for (int i = 0; i < 8; i++) {
                 Dust smoke = Dust.NewDustPerfect(muzzlePos, DustID.Smoke,
                     Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 3f), 100, default, 2f);
@@ -965,26 +903,18 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Type].Value;
+            Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = texture.Size() / 2f;
-            float rotation = Projectile.rotation;
-            SpriteEffects effects = Projectile.velocity.X < 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            Vector2 origin = frame.Size() / 2f;
+            SpriteEffects fx = Owner.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-            //绘制弩身
-            Main.EntitySpriteDraw(texture, drawPos, null, lightColor, rotation, origin,
-                Projectile.scale, effects, 0);
+            Main.EntitySpriteDraw(texture, drawPos, frame, lightColor, Projectile.rotation, origin, Projectile.scale, fx, 0);
 
-            //绘制蓄力时的光效
             if (State == CrossbowState.Charged && ChargeLevel > 0.3f) {
                 Color glowColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);
-                for (int i = 0; i < 3; i++) {
-                    float offsetAngle = MathHelper.TwoPi * i / 3f + StateTimer * 0.1f;
-                    Vector2 offset = offsetAngle.ToRotationVector2() * (2f + ChargeLevel * 3f);
-                    Main.EntitySpriteDraw(texture, drawPos + offset, null, glowColor * 0.5f,
-                        rotation, origin, Projectile.scale, effects, 0);
-                }
+                Main.EntitySpriteDraw(texture, drawPos, frame, glowColor * 0.5f,
+                        Projectile.rotation, origin, Projectile.scale, fx, 0);
             }
-
             return false;
         }
     }
