@@ -142,25 +142,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 if (initialBox != null) {
                     DialogueUIRegistry.SwitchDialogueBox(initialBox, transferQueue: false);
                 }
+                //设置解析器为默认样式
+                //操你妈的得在这里设置一下样式，不然这坨屎会卡住，下面的一堆对话数据会被设置到他妈的另一个样式利
+                //这种情况在前面进行了一次另一个样式的场景后会触发，你妈的我真是服气了，写了一坨屎
+                DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
 
+            
             initialBox ??= DialogueUIRegistry.Current;
             initialBox.PreProcessor = PreProcessSegment;
 
-            // 逐条处理对话，支持中途切换样式
+            //逐条处理对话，支持中途切换样式
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
 
-                // 为了正确处理 Index，我们需要捕获当前的索引
+                //为了正确处理 Index，我们需要捕获当前的索引
                 int currentIndex = i;
 
                 Action completeCallback = null;
 
-                // 如果有选项，不设置完成回调（由选项触发）
+                //如果有选项，不设置完成回调（由选项触发）
                 if (line.Choices != null && line.Choices.Count > 0) {
                     completeCallback = () => {
-                        // 显示选项框
+                        //显示选项框
                         ADVChoiceBox.Show(line.Choices, () => {
                             var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                             if (rect != Rectangle.Empty) {
