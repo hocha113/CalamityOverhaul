@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             int level = MurasamaOverride.GetLevel(Item);
             if (target.type == ModContent.NPCType<Crabulon>()) {
-                modifiers.FinalDamage *= 3f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<CrabShroom>()) {
                 modifiers.FinalDamage *= 1.5f;

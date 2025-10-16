@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static readonly List<int> ActiveHands = new();
         private static int MaxHands => 2 + HalibutData.GetDomainLayer() / 3;
         private int shootCounter = 0;
-        private const int HandSpawnInterval = 5;
+        private static int HandSpawnInterval = 1;
         private int justHitCooldown;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
