@@ -62,7 +62,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line4 = this.GetLocalization(nameof(Line4), () => "你是那个焚烧掉了一半海域的女巫");
             Line5 = this.GetLocalization(nameof(Line5), () => "哈?!呵呵，竟然有人...或者鱼认得我，你们倒也算有趣");
             Line6 = this.GetLocalization(nameof(Line6), () => "......你，为什么还活着?我记得你已经在上世纪就已经死了");
-            Line7 = this.GetLocalization(nameof(Line7), () => "呵呵呵，连这事都有听说过吗?和你这条有趣的鱼解释一下也无妨，我的意识早已经熔铸进硫磺火中，这具躯体只不过是被火焰操纵的尸体");
+            Line7 = this.GetLocalization(nameof(Line7), () => "呵呵呵，连这事都有听说过吗?和你这条有趣的鱼解释一下也无妨，" +
+            "我的意识早已经熔铸进硫磺火中，这具躯体只不过是被火焰操纵的尸体");
             Line8 = this.GetLocalization(nameof(Line8), () => "......活人的意识，非人的躯体，依靠媒介行走世间，你成为了异类?!");
             Line9 = this.GetLocalization(nameof(Line9), () => "你的层次太低，理解不了我现在的状态");
             Line10 = this.GetLocalization(nameof(Line10), () => "况且我来这里也不是为了这事儿的......");
