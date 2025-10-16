@@ -57,7 +57,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public static int DefaultGiveDuration = 16;
         public static event Action<RewardEntry> OnRewardGiven;
 
-        // 本地化文本
+        //位置平滑过渡相关
+        private Vector2 cachedAnchorPosition; //缓存的锚点位置
+        private Vector2 currentDisplayPosition; //当前实际显示位置
+        private bool isDialogueClosing = false; //对话框是否正在关闭
+        private float positionTransitionProgress = 0f; //位置过渡进度
+        private const float PositionTransitionSpeed = 0.08f; //位置过渡速度
+
+        //本地化文本
         protected static LocalizedText ClickToReceive;
         protected static LocalizedText ClickToContinue;
         protected static LocalizedText ClickOrWaitToContinue;
@@ -122,6 +129,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             current.Appear = 0f;
             current.Hold = 0f;
             justOpened = true;
+            
+            //重置位置过渡状态
+            isDialogueClosing = false;
+            positionTransitionProgress = 0f;
+            cachedAnchorPosition = Vector2.Zero;
+            currentDisplayPosition = Vector2.Zero;
+            
             //初次播放音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = -0.2f });
         }
@@ -224,13 +238,80 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             OnRewardGiven?.Invoke(current);
         }
         private Vector2 ResolveBasePosition(Vector2 panelCenter) {
-            if (current?.AnchorProvider != null) return current.AnchorProvider() + current.Offset;
+            //优先使用自定义锚点提供器
+            if (current?.AnchorProvider != null) {
+                Vector2 providedPos = current.AnchorProvider() + current.Offset;
+                
+                //检测对话框是否正在关闭
+                if (DialogueUIRegistry.Current != null) {
+                    var currentBox = DialogueUIRegistry.Current;
+                    
+                    //如果对话框刚开始关闭，缓存当前位置
+                    if (currentBox.closing && !isDialogueClosing) {
+                        isDialogueClosing = true;
+                        cachedAnchorPosition = providedPos;
+                        positionTransitionProgress = 0f;
+                    }
+                    
+                    //对话框关闭中，使用缓存位置并平滑过渡到屏幕中心
+                    if (isDialogueClosing) {
+                        positionTransitionProgress += PositionTransitionSpeed;
+                        positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
+                        
+                        //使用缓动函数平滑过渡
+                        float easeProgress = EaseOutCubic(positionTransitionProgress);
+                        currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
+                        return currentDisplayPosition;
+                    }
+                    else {
+                        //对话框正常显示，直接使用提供的位置
+                        currentDisplayPosition = providedPos;
+                        return providedPos;
+                    }
+                }
+                
+                return providedPos;
+            }
+            
+            //如果没有自定义锚点，尝试使用对话框位置
             if (DialogueUIRegistry.Current != null) {
                 var rect = DialogueUIRegistry.Current.GetPanelRect();
-                if (rect != Rectangle.Empty) return new Vector2(rect.Center.X, rect.Y - 60f);
+                if (rect != Rectangle.Empty) {
+                    Vector2 dialoguePos = new Vector2(rect.Center.X, rect.Y - 60f);
+                    
+                    //同样处理对话框关闭的情况
+                    var currentBox = DialogueUIRegistry.Current;
+                    
+                    if (currentBox.closing && !isDialogueClosing) {
+                        isDialogueClosing = true;
+                        cachedAnchorPosition = dialoguePos;
+                        positionTransitionProgress = 0f;
+                    }
+                    
+                    if (isDialogueClosing) {
+                        positionTransitionProgress += PositionTransitionSpeed;
+                        positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
+                        
+                        float easeProgress = EaseOutCubic(positionTransitionProgress);
+                        currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
+                        return currentDisplayPosition;
+                    }
+                    
+                    return dialoguePos;
+                }
             }
+            
+            //默认返回屏幕中心
             return panelCenter;
         }
+        
+        ///<summary>
+        ///平滑缓出函数
+        ///</summary>
+        private static float EaseOutCubic(float t) {
+            return 1f - (float)Math.Pow(1f - t, 3f);
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (panelFade <= 0f) return;
             if (current == null && queue.Count == 0 && panelFade <= 0.01f) return;
