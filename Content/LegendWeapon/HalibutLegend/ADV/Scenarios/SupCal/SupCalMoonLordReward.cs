@@ -25,6 +25,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
 
+        //记录Line6的实际索引，用于PreProcessSegment中准确触发奖励
+        private int rewardLineIndex = -1;
+
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
@@ -59,19 +62,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
             //添加对话（使用本地化文本）
+            //计数器跟踪当前索引
+            int currentIndex = 0;
+
             Add(Rolename1.Value, Line1.Value);
+            currentIndex++; // 0
+
             Add(Rolename1.Value, Line2.Value);
+            currentIndex++; // 1
+
             Add(Rolename1.Value, Line3.Value);
+            currentIndex++; // 2
+
+            //条件对话：只有在特定情况下才添加
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.HasHalubut) {
                 Add(Rolename2.Value, Line4.Value);
+                currentIndex++; // 3 (如果添加)
             }
+
             Add(Rolename1.Value, Line5.Value);
+            currentIndex++; // 3 or 4
+
+            //记录奖励对话的实际索引
+            rewardLineIndex = currentIndex;
             Add(Rolename1.Value, Line6.Value);//奖励
+            currentIndex++; // 4 or 5
+
             Add(Rolename1.Value, Line7.Value);
+            currentIndex++; // 5 or 6
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
-            if (args.Index == 5) { //Line6 - 奖励物品
+            //使用动态计算的索引而不是硬编码的5
+            if (args.Index == rewardLineIndex) { //Line6 - 奖励物品
                 ADVRewardPopup.ShowReward(ModContent.ItemType<Condemnation>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
