@@ -94,8 +94,8 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Reset<FirstMet>();
-            ScenarioManager.Start<FirstMet>();
+            ScenarioManager.Reset<FirstMetSupCal>();
+            ScenarioManager.Start<FirstMetSupCal>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

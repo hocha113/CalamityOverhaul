@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
@@ -26,6 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public Action OnStart { get; set; }
         public Action OnComplete { get; set; }
         public Func<DialogueBoxBase> StyleOverride { get; set; }
+        public List<Choice> Choices { get; set; } // 选项列表
 
         public DialogueLine(string speaker, string content) {
             Speaker = speaker;
@@ -100,6 +102,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         /// <summary>
+        /// 添加带选项的对话
+        /// </summary>
+        public void AddWithChoices(string speaker, string content, List<Choice> choices, Action onStart = null, Func<DialogueBoxBase> styleOverride = null) {
+            var line = new DialogueLine(speaker, content) {
+                OnStart = onStart,
+                StyleOverride = styleOverride,
+                Choices = choices,
+                // 选项对话的完成由选项选择触发
+                OnComplete = null
+            };
+            lines.Add(line);
+        }
+
+        /// <summary>
         /// 使用 DialogueLine 对象添加对话
         /// </summary>
         public void Add(DialogueLine line) {
@@ -142,7 +158,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 int currentIndex = i;
 
                 Action completeCallback = null;
-                if (line.OnComplete != null || isLast) {
+                
+                // 如果有选项，不设置完成回调（由选项触发）
+                if (line.Choices != null && line.Choices.Count > 0) {
+                    completeCallback = () => {
+                        // 显示选项框
+                        ADVChoiceBox.Show(line.Choices, () => {
+                            var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                            if (rect != Rectangle.Empty) {
+                                return new Vector2(rect.Center.X, rect.Bottom + 30f);
+                            }
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.65f);
+                        });
+                        
+                        // 暂停对话推进，等待选择
+                        // 注意：这里不调用场景完成
+                    };
+                }
+                else if (line.OnComplete != null || isLast) {
                     completeCallback = () => {
                         line.OnComplete?.Invoke();
                         if (isLast) {
@@ -182,7 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
 
-        private void Complete() {
+        internal void Complete() {
             if (!IsCompleted) {
                 IsCompleted = true;
                 OnComplete();
@@ -258,6 +291,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         /// </summary>
         public DialogueLineBuilder WithBrimstoneStyle() {
             line.StyleOverride = () => BrimstoneDialogueBox.Instance;
+            return this;
+        }
+
+        /// <summary>
+        /// 添加选项
+        /// </summary>
+        public DialogueLineBuilder WithChoices(params Choice[] choices) {
+            line.Choices = new List<Choice>(choices);
+            return this;
+        }
+
+        /// <summary>
+        /// 添加选项（使用列表）
+        /// </summary>
+        public DialogueLineBuilder WithChoices(List<Choice> choices) {
+            line.Choices = choices;
             return this;
         }
 
