@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using InnoVault.GameContent.BaseEntity;
-using Microsoft.Xna.Framework; // Added for Vector2/MathHelper/Color
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
