@@ -1,14 +1,15 @@
-﻿using Terraria;
+﻿using CalamityMod.NPCs.Cryogen;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class CryogenGift : ADVScenarioBase, ILocalizedModType
+    internal class CryogenGift : GiftScenarioBase
     {
         public override string Key => nameof(CryogenGift);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override int TargetBossID => ModContent.NPCType<Cryogen>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -44,23 +45,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
                     }, offset: Vector2.Zero);
             }
         }
-        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            if (!halibutPlayer.HeldHalibut) {
-                return;
-            }
-            if (!save.FirstMet) {
-                return;//必须先触发过初次见面
-            }
-            if (save.CryogenGift) {
-                return;
-            }
-            if (!InWorldBossPhase.Downed6.Invoke()) {
-                return;
-            }
-
-            if (ScenarioManager.Start<CryogenGift>()) {
-                save.CryogenGift = true;
-            }
+        protected override bool IsGiftCompleted(ADVSave save) {
+            return save.CryogenGift;
+        }
+        protected override void MarkGiftCompleted(ADVSave save) {
+            save.CryogenGift = true;
+        }
+        protected override bool StartScenarioInternal() {
+            return ScenarioManager.Start<CryogenGift>();
         }
     }
 }

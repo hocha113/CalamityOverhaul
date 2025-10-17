@@ -5,10 +5,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class EyeOfCthulhuGift : ADVScenarioBase, ILocalizedModType
+    internal class EyeOfCthulhuGift : GiftScenarioBase
     {
         public override string Key => nameof(EyeOfCthulhuGift);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override int TargetBossID => NPCID.EyeofCthulhu;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -44,23 +44,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
                     }, offset: Vector2.Zero);
             }
         }
-        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            if (!halibutPlayer.HeldHalibut) {
-                return;
-            }
-            if (!save.FirstMet) {
-                return;//必须先触发过初次见面
-            }
-            if (save.EyeOfCthulhuGift) {
-                return;
-            }
-            if (!NPC.downedBoss1) {
-                return;
-            }
-
-            if (ScenarioManager.Start<EyeOfCthulhuGift>()) {
-                save.EyeOfCthulhuGift = true;
-            }
+        protected override bool IsGiftCompleted(ADVSave save) {
+            return save.EyeOfCthulhuGift;
+        }
+        protected override void MarkGiftCompleted(ADVSave save) {
+            save.EyeOfCthulhuGift = true;
+        }
+        protected override bool StartScenarioInternal() {
+            return ScenarioManager.Start<EyeOfCthulhuGift>();
         }
     }
 }

@@ -1,14 +1,15 @@
-﻿using Terraria;
+﻿using CalamityMod.NPCs.Perforator;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class PerforatorGift : ADVScenarioBase, ILocalizedModType
+    internal class PerforatorGift : GiftScenarioBase
     {
         public override string Key => nameof(PerforatorGift);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override int TargetBossID => ModContent.NPCType<PerforatorHive>();
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -44,23 +45,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
                     }, offset: Vector2.Zero);
             }
         }
-        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            if (!halibutPlayer.HeldHalibut) {
-                return;
-            }
-            if (!save.FirstMet) {
-                return;//必须先触发过初次见面
-            }
-            if (save.PerforatorGift) {
-                return;
-            }
-            if (!InWorldBossPhase.Downed4.Invoke()) {
-                return;
-            }
-
-            if (ScenarioManager.Start<PerforatorGift>()) {
-                save.PerforatorGift = true;
-            }
+        protected override bool IsGiftCompleted(ADVSave save) {
+            return save.PerforatorGift;
+        }
+        protected override void MarkGiftCompleted(ADVSave save) {
+            save.PerforatorGift = true;
+        }
+        protected override bool StartScenarioInternal() {
+            return ScenarioManager.Start<PerforatorGift>();
         }
     }
 }
