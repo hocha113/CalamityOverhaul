@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
         public static LocalizedText Line8 { get; private set; }
-        
+        public static LocalizedText Line9 { get; private set; }
+
         private const string expressionDespise = " ";
         private const string expressionCloseEye = " " + " ";
         
@@ -39,10 +40,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line2 = this.GetLocalization(nameof(Line2), () => "呵，我还以为你有多强呢");
             Line3 = this.GetLocalization(nameof(Line3), () => "现在的你还太弱了，连让我认真的资格都没有");
             Line4 = this.GetLocalization(nameof(Line4), () => "等你真正强大起来再来找我吧");
-            Line5 = this.GetLocalization(nameof(Line5), () => "不过......我倒是有些好奇");
-            Line6 = this.GetLocalization(nameof(Line6), () => "你究竟能成长到什么地步呢?");
-            Line7 = this.GetLocalization(nameof(Line7), () => "那么，就让我拭目以待吧");
-            Line8 = this.GetLocalization(nameof(Line8), () => "下次一定要变得更强!");
+            Line5 = this.GetLocalization(nameof(Line5), () => "不过我倒是有些好奇");
+            Line6 = this.GetLocalization(nameof(Line6), () => "如此稚嫩的你也敢向我拔剑，倒有些魄力，我有些好奇你究竟能成长到什么地步了");
+            Line7 = this.GetLocalization(nameof(Line7), () => "现在的你们层次太低，再练练吧");
+            Line8 = this.GetLocalization(nameof(Line8), () => "这家伙有些实力，如果我不顾后果九眼全开，应该有胜算，大不了......");
+            Line9 = this.GetLocalization(nameof(Line9), () => "唉......");
         }
         
         protected override void Build() {
@@ -66,6 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(Rolename1.Value + expressionCloseEye, Line6.Value);
             Add(Rolename1.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
+            Add(Rolename2.Value, Line9.Value);
         }
         
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
@@ -130,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                 
                 //记录玩家死亡
                 Spawned = true;
-                RandomTimer = 60 * Main.rand.Next(15, 25);//15-25秒后触发，给玩家时间复活
+                RandomTimer = 60 * Main.rand.Next(5, 8);//5-8秒后触发，给玩家时间复活
                 hasRecordedDeath = true;
                 break;
             }

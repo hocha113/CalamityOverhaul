@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line4 = this.GetLocalization(nameof(Line4), () => "我可是已经超越了泰拉人的极限......");
             Line5 = this.GetLocalization(nameof(Line5), () => "......看来我确实小看你了");
             Line6 = this.GetLocalization(nameof(Line6), () => "但这不代表结束，我会回来的");
-            Line7 = this.GetLocalization(nameof(Line7), () => "下次......我不会再大意了");
-            Line8 = this.GetLocalization(nameof(Line8), () => "(......她逃走了)");
+            Line7 = this.GetLocalization(nameof(Line7), () => "下次......下次我不会再大意了！");
+            Line8 = this.GetLocalization(nameof(Line8), () => "......她逃走了");
         }
         
         protected override void Build() {
