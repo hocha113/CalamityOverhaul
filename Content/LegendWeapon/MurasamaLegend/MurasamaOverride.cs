@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 {2, 25 },
                 {3, 35 },
                 {4, 45 },
-                {5, 100 },
+                {5, 95 },
                 {6, 130 },
                 {7, 165 },
                 {8, 280 },
