@@ -5800,7 +5800,7 @@ FishSkill: {
 	}
 
 	FishZombie: {
-		DisplayName: 舞蹈僵尸
+		DisplayName: 鱼跃尸群
 		Tooltip:
 			'''
 			右键可以召唤一群溺尸冲向敌人
@@ -5913,7 +5913,7 @@ FishSkill: {
 	}
 
 	FishAmanita: {
-		DisplayName: 轮转菌孢
+		DisplayName: 毒孢鱼泡
 		Tooltip:
 			'''
 			开火时伴随着四种轮换的真菌子弹，每次射击都将切换到下种子弹
@@ -6024,7 +6024,7 @@ FishSkill: {
 	}
 
 	FishPeng: {
-		DisplayName: 企鹅天降
+		DisplayName: 神风鱼鹅
 		Tooltip:
 			'''
 			开火时在敌人头顶召唤企鹅
@@ -6035,7 +6035,7 @@ FishSkill: {
 	}
 
 	FishDrizzle: {
-		DisplayName: 烈火燎原
+		DisplayName: 炼鱼硫火
 		Tooltip:
 			'''
 			开火时周期性的召唤火焰鱼
