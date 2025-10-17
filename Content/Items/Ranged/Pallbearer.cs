@@ -10,6 +10,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
@@ -73,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class PallbearerHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "PallbearerHeld";
-
+        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Pallbearer>()).DisplayName;
         //弩的状态机
         private enum CrossbowState
         {
@@ -406,7 +407,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class PallbearerBoomerang : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
-
+        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Pallbearer>()).DisplayName;
         private enum BoomerangState { Throwing, Returning }
         private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set { if (Projectile.ai[0] != (float)value) { Projectile.ai[0] = (float)value; Projectile.netUpdate = true; } } }
         private ref float Time => ref Projectile.ai[1];
