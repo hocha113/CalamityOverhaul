@@ -161,7 +161,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            bool isBullet = false;
             if (type == ProjectileID.Bullet) {
+                isBullet = true;
                 type = ModContent.ProjectileType<TorrentialBullet>();
             }
 
@@ -190,6 +192,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel()));
+            if (isBullet) {
+                damage = (int)(damage * bulletAmt * 0.5f);
+                bulletAmt = 1;
+            }
+
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
