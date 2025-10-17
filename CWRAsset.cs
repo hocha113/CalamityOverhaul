@@ -42,6 +42,8 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> StarTexture = null;
         [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SoftGlow = null;
+        [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> ThunderTrail = null;//这个纹理来自珊瑚石，谢谢你瓶中微光 :)
         [VaultLoaden(CWRConstant.UI + "Generator/ElectricPower")]
         public static Asset<Texture2D> ElectricPower = null;

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     ///<summary>
-    ///海洋洪流子弹 - 具有真实液体物理和海洋生物特效的弹幕
+    ///海洋洪流子弹-具有真实液体物理和海洋生物特效的弹幕
     ///</summary>
-    internal class TorrentialBullet : ModProjectile
+    internal class TorrentialBullet : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -565,15 +566,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (State == OceanState.Dispersing && Projectile.alpha > 220) {
-                DrawMarineLife();
-                DrawFoamParticles();
-                DrawWaterDroplets();
-                return false;
-            }
+            return false;
+        }
 
-            SpriteBatch sb = Main.spriteBatch;
-
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             //绘制海洋生物
             DrawMarineLife();
 
@@ -585,21 +581,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             //绘制核心水流
             if (State == OceanState.Streaming) {
-                DrawStreamCore(sb);
+                DrawStreamCore();
             }
-
-            return false;
         }
 
-        //绘制水滴粒子 (适配 3x3 Spray 帧图)
+        //绘制水滴粒子(适配3x3 Spray帧图)
         private void DrawWaterDroplets() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.Spray.Value; //3x3 水滴帧图
             Texture2D streamTex = CWRAsset.LightShot.Value;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             int columns = 3;
             int rows = 3;
@@ -612,7 +602,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 //海洋蓝色渐变
                 Color deepColor = Color.Lerp(DeepOcean, ShallowOcean, droplet.ColorVariant);
-                Color waterColor = deepColor * droplet.Opacity * 0.9f;
+                Color waterColor = deepColor * droplet.Opacity;
 
                 //帧源矩形
                 int frameIndex = droplet.Frame % (columns * rows);
@@ -664,20 +654,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     );
                 }
             }
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         //绘制泡沫粒子
         private void DrawFoamParticles() {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
 
             foreach (var foam in foamParticles) {
                 Vector2 drawPos = foam.Position - Main.screenPosition;
@@ -713,20 +695,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     0
                 );
             }
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         //绘制海洋生物
         private void DrawMarineLife() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             foreach (var life in marineLifeParticles) {
                 Vector2 drawPos = life.Position - Main.screenPosition;
@@ -782,21 +756,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     );
                 }
             }
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         //绘制水流核心
-        private void DrawStreamCore(SpriteBatch sb) {
+        private void DrawStreamCore() {
+            SpriteBatch sb = Main.spriteBatch;
             if (coreTrail.Count < 2) return;
 
             Texture2D coreTex = CWRAsset.LightShot.Value;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             //绘制核心拖尾
             for (int i = 0; i < coreTrail.Count - 1; i++) {
@@ -872,10 +839,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SpriteEffects.None,
                 0
             );
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override void OnKill(int timeLeft) {
@@ -938,7 +901,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public float Opacity;
         public bool IsSplash;
         public float ColorVariant; //0-1，用于颜色变化
-        public int Frame; //3x3 Spray 帧索引 0-8
+        public int Frame; //3x3 Spray帧索引0-8
     }
 
     ///<summary>
