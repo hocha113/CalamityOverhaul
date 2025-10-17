@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
@@ -41,7 +42,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
         protected abstract bool StartScenarioInternal();
         public override void SetStaticDefaults() {
             SpawnedDic[this] = false;
-            BossIDToInds[TargetBossID] = this;
+            if (TargetBossID > NPCID.None) {
+                BossIDToInds[TargetBossID] = this;
+            }
         }
         public static void Clear() {
             SpawnedDic.Clear();

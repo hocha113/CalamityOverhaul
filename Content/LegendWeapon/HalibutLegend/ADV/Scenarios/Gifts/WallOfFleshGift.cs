@@ -5,10 +5,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
 {
-    internal class WallOfFleshGift : ADVScenarioBase, ILocalizedModType
+    internal class WallOfFleshGift : GiftScenarioBase
     {
         public override string Key => nameof(WallOfFleshGift);
-        public string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override int TargetBossID => NPCID.WallofFlesh;
         public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
@@ -44,23 +44,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
                     }, offset: Vector2.Zero);
             }
         }
-        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            if (!halibutPlayer.HeldHalibut) {
-                return;
-            }
-            if (!save.FirstMet) {
-                return;//必须先触发过初次见面
-            }
-            if (save.WallOfFleshGift) {
-                return;
-            }
-            if (!Main.hardMode) {
-                return;
-            }
-
-            if (ScenarioManager.Start<WallOfFleshGift>()) {
-                save.WallOfFleshGift = true;
-            }
+        protected override bool IsGiftCompleted(ADVSave save) {
+            return save.WallOfFleshGift;
+        }
+        protected override void MarkGiftCompleted(ADVSave save) {
+            save.WallOfFleshGift = true;
+        }
+        protected override bool StartScenarioInternal() {
+            return ScenarioManager.Start<WallOfFleshGift>();
         }
     }
 }
