@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     dust.scale *= dustType == 56 ? 0.5f : 1;
                 }
 
-                if (Main.netMode != NetmodeID.Server) {
+                if (!VaultUtils.isServer) {
                     for (int i = 0; i < 10; i++)//生成这种粒子不是好主意
                     {
                         Vector2 particleSpeed = VaultUtils.RandVrInAngleRange(60, 120, -8 * (i / 20f));

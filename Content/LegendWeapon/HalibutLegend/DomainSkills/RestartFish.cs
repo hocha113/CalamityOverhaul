@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         public void DrawTrail(float globalAlpha) {
             if (TrailPositions.Count < 2) return;
-            Texture2D tex = TextureAssets.MagicPixel.Value;
+            Texture2D tex = VaultAsset.placeholder2.Value;
 
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
                 float progress = i / (float)TrailPositions.Count;

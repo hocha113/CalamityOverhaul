@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawHoverTooltip(SpriteBatch spriteBatch, ResurrectionSystem system, float ratio) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float alpha = 0.97f;
 
             float minWidth = 220f;
@@ -601,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawTooltipBorder(SpriteBatch sb, Rectangle rect, Color glow) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle top = new Rectangle(rect.X, rect.Y, rect.Width, 1);
             Rectangle bottom = new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1);
             Rectangle left = new Rectangle(rect.X, rect.Y, 1, rect.Height);
@@ -617,7 +617,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawCorner(SpriteBatch sb, Vector2 pos, Color color, float rot) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             for (int i = 0; i < 3; i++) {
                 float len = 6 - i * 2;
                 sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * (0.9f - i * 0.3f), rot, new Vector2(0, 0.5f), new Vector2(len, 1f), SpriteEffects.None, 0f);
@@ -625,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawGradientLine(SpriteBatch sb, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) {
@@ -644,7 +644,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawDashedLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, float dashLength, float gapLength) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 dir = end - start;
             float len = dir.Length();
             if (len < 1f) {
@@ -661,7 +661,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawStar(SpriteBatch sb, Vector2 position, float size, Color color) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
             sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
             sb.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
@@ -701,7 +701,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (IsDead) {
                 return;
             }
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Color drawColor = Color * Alpha;
             spriteBatch.Draw(pixel, Position, new Rectangle(0, 0, 1, 1),
                 drawColor, 0f, new Vector2(0.5f, 0.5f),
@@ -758,7 +758,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (time < delay) {
                 return;
             }
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float alpha = 1f - progress * 0.3f;
             Color col = Color.Lerp(new Color(80, 180, 255), new Color(200, 240, 255), progress) * alpha;
             Vector2 size = new Vector2(6f * scale, 2f * scale);
@@ -797,7 +797,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (Finished) {
                 return;
             }
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float eased = EaseOutCubic(progress);
             float radius = MathHelper.Lerp(10f, 95f, eased);
             float thickness = MathHelper.Lerp(8f, 1.5f, eased);

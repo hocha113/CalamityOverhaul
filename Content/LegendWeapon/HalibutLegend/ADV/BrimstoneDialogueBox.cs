@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             //阴影效果
             Rectangle shadow = panelRect;
@@ -294,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         #region 样式工具函数
         private void DrawHeatWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             int waveCount = 8;
             for (int i = 0; i < waveCount; i++) {
                 float t = i / (float)waveCount;
@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawBrimstoneFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             //外框 - 火焰橙红
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulse) * (alpha * 0.85f);
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawFlameMark(SpriteBatch sb, Vector2 pos, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             float size = 6f;
             Color flameColor = new Color(255, 150, 70) * alpha;
 
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawFlameGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) {
@@ -420,7 +420,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
                 float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
@@ -471,7 +471,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI) * (1f - t * 0.4f);
 
@@ -530,7 +530,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
                 float pulse = (float)Math.Sin(Life * 0.15f + Seed) * 0.5f + 0.5f;
@@ -551,7 +551,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         #region 公共静态绘制函数
         private static void DrawBrimstonePortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             //深色背景
             Color back = new Color(20, 5, 5) * (alpha * 0.88f);
@@ -566,7 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawFlameGlow(SpriteBatch sb, Rectangle rect, Color glow) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             //内部填充
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.2f);

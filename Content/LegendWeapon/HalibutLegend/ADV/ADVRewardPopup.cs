@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Vector2 screenCenter = new(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
             Vector2 anchor = ResolveBasePosition(screenCenter);
             float alpha = panelFade;
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 panelSize = new(240f, 132f);
             float slideIn = 1f - (float)Math.Pow(1f - panelFade, 3f);
             Vector2 drawPos = anchor - panelSize / 2f;
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
         private void DrawFrame(SpriteBatch sb, Rectangle rect, float alpha, float hoverGlow = 0f) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Color edge = new Color(70, 180, 230) * (alpha * (0.85f + hoverGlow * 0.3f));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Bottom - 10), alpha * (0.6f + hoverGlow * 0.3f));
         }
         private void DrawWaveLines(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             int bands = 4;
             for (int i = 0; i < bands; i++) {
                 float t = i / (float)bands;
@@ -451,7 +451,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
         }
         private void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             float size = 5f;
             Color c = new Color(150, 230, 255) * a;
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return false;
             }
             public void Draw(SpriteBatch sb, float a) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * MathHelper.Pi);
                 float scale = R * (0.8f + (float)Math.Sin((Life + Seed * 15f) * 0.08f) * 0.2f);
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return false;
             }
             public void Draw(SpriteBatch sb, float a) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * MathHelper.Pi) * a;
                 float scale = 2.5f + (float)Math.Sin((Life + Seed * 30f) * 0.1f) * 1.2f;

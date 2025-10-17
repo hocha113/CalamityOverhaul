@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
 
-            Texture2D tex = TextureAssets.MagicPixel.Value;
+            Texture2D tex = VaultAsset.placeholder2.Value;
 
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
                 float progress = i / (float)TrailPositions.Count;
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
 
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             int segments = 120;
             float angleStep = MathHelper.TwoPi / segments;
 

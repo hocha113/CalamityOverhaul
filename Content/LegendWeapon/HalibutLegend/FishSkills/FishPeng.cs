@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void DamageNearbyEnemies() {
-            if (Projectile.owner != Main.myPlayer) return;
+            if (!Projectile.IsOwnedByLocalPlayer()) return;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         npc.AddBuff(BuffID.Frostburn, 120);
                         npc.AddBuff(BuffID.Slow, 180);
 
-                        if (Main.netMode != NetmodeID.SinglePlayer) {
+                        if (!VaultUtils.isSinglePlayer) {
                             NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, i, damage,
                                 knockbackForce, Math.Sign(knockbackDir.X));
                         }

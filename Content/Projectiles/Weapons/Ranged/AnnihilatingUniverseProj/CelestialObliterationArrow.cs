@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public static void StarRT(Projectile projectile, Entity target) {
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
                 GeneralParticleHandler.SpawnParticle(new ImpactParticle(Vector2.Lerp(projectile.Center, target.Center, 0.65f), 0.1f, 20, Main.rand.NextFloat(0.4f, 0.5f), color));
                 for (int i = 0; i < 20; i++) {

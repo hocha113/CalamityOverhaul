@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public override void OnKill(int timeLeft) {
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < 16; i++) {
                     Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));

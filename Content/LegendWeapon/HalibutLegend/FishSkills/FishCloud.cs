@@ -968,7 +968,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             Main.spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
+                VaultAsset.placeholder2.Value,
                 drawPos,
                 new Rectangle(0, 0, 1, 1),
                 new Color(180, 220, 255) * (1f - Projectile.alpha / 255f),

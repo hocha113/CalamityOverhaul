@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     }
 
                     //水压伤害处理（服务器侧）
-                    if (doDamageThisTick && Main.netMode != NetmodeID.MultiplayerClient) {
+                    if (doDamageThisTick && !VaultUtils.isClient) {
                         int damage = scaledDamage;
                         if (npc.boss) {
                             damage = (int)(damage * BossDamageFactor);
@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         //伤害归属玩家
                         npc.SimpleStrikeNPC(damage, npc.direction); //移除不存在的 direction 命名参数
                         //轻微视觉反馈（客户端自行处理即可）
-                        if (Main.netMode != NetmodeID.Server) {
+                        if (!VaultUtils.isServer) {
                             SpawnPressureHitDust(npc, damage);
                         }
                     }
@@ -625,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         private void DrawLayerBorder(DomainLayer layer) {
-            Texture2D tex = TextureAssets.MagicPixel.Value;
+            Texture2D tex = VaultAsset.placeholder2.Value;
             int segments = 120; //固定高精度分段
             float angleStep = MathHelper.TwoPi / segments;
 
@@ -885,7 +885,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         public void DrawTrail(float alpha) {
             if (TrailPositions.Count < 2) return;
-            Texture2D tex = TextureAssets.MagicPixel.Value;
+            Texture2D tex = VaultAsset.placeholder2.Value;
 
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
                 float progress = i / (float)TrailPositions.Count;

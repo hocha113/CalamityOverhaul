@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (Main.rand.NextBool(3)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool(3) ? 16 : 174);
             }
-            if (Main.rand.NextBool(5) && Main.netMode != NetmodeID.Server) {
+            if (Main.rand.NextBool(5) && !VaultUtils.isServer) {
                 int smoke = Gore.NewGore(Owner.GetSource_ItemUse(Item), Projectile.position, default, Main.rand.Next(375, 378), 0.75f);
                 Main.gore[smoke].behindTiles = true;
             }

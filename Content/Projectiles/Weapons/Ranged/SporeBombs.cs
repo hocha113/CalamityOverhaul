@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Main.dust[index].scale = 1.5f;
             }
             int sporeAmt = Main.rand.Next(3, 7);
-            if (Projectile.owner == Main.myPlayer) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int s = 0; s < sporeAmt; s++) {
                     Vector2 velocity = CalamityUtils.RandomVelocity(100f, 70f, 100f);
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity

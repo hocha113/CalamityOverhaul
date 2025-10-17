@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Electrified, 120);
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < Main.rand.Next(3, 16); i++) {
                     Vector2 pos = target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(target.width);
                     Vector2 particleSpeed = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(15.5f, 37.7f);

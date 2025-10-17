@@ -586,7 +586,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
                 if (darkness > 0.01f) {
                     Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-                    spriteBatch.Draw(TextureAssets.MagicPixel.Value, screenRect,
+                    spriteBatch.Draw(VaultAsset.placeholder2.Value, screenRect,
                         Color.Black * darkness);
                 }
             }

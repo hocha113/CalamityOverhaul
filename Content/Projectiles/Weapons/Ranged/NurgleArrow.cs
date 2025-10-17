@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 1.57f;
                 addBallTimer--;
                 if (addBallTimer <= 0) {
-                    if (Projectile.owner == Main.myPlayer && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.ai[1] == 0) {
+                    if (Projectile.IsOwnedByLocalPlayer() && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.ai[1] == 0) {
                         _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f
                             , ModContent.ProjectileType<NurgleTheOfBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
                     }

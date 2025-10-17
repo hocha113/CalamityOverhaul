@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (ActiveEyeCount == 0 || expandProgress < 0.5f) {
                 return;
             }
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //获取死机等级
             int crashLevel = 0;
@@ -738,7 +738,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //阴影
             Rectangle shadowRect = panelRect;
@@ -856,7 +856,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (basePos.X + panelSize.X > Main.screenWidth - 16) basePos.X = Main.screenWidth - panelSize.X - 16;
             if (basePos.Y < 16) basePos.Y = 16;
             Rectangle panelRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)panelSize.X, (int)panelSize.Y);
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //状态更新
             extraEyeTooltipPulse += 0.04f;
@@ -965,7 +965,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private static void DrawRotatingRing(SpriteBatch sb, Rectangle rect, float radiusFactor, float alpha, int segments, float thickness, float distortion, float rotationOffset) {
             if (alpha <= 0f) return;
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 center = rect.Center.ToVector2();
             float baseRadius = MathF.Min(rect.Width, rect.Height) * 0.5f * radiusFactor;
             float time = Main.GlobalTimeWrappedHourly + rotationOffset;
@@ -1019,7 +1019,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             public void Draw(SpriteBatch sb, float globalAlpha) {
                 if (Dead) return;
-                Texture2D pixel = TextureAssets.MagicPixel.Value;
+                Texture2D pixel = VaultAsset.placeholder2.Value;
                 Vector2 pos = center + angle.ToRotationVector2() * radius;
                 Color col = Color.Lerp(new Color(120, 200, 255), new Color(255, 220, 140), (float)Math.Sin(angle * 2f) * 0.5f + 0.5f) * (alpha * globalAlpha * 0.6f);
                 sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), col, angle, new Vector2(0.5f, 0.5f), new Vector2(scale * 3f, scale), SpriteEffects.None, 0f);
@@ -1059,7 +1059,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static void DrawFancyBorder(SpriteBatch spriteBatch, Rectangle rect, Color glow, float alpha) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle top = new Rectangle(rect.X, rect.Y, rect.Width, 1);
             Rectangle bottom = new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1);
             Rectangle left = new Rectangle(rect.X, rect.Y, 1, rect.Height);
@@ -1076,7 +1076,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static void DrawCorner(SpriteBatch spriteBatch, Vector2 pos, Color color, float rot) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             for (int i = 0; i < 3; i++) {
                 float len = 6 - i * 2;
                 spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * (0.9f - i * 0.3f), rot, new Vector2(0, 0.5f), new Vector2(len, 1f), SpriteEffects.None, 0f);
@@ -1084,7 +1084,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) {
@@ -1103,7 +1103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);

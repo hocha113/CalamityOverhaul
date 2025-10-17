@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         public void DrawTrail(float globalAlpha) {
             if (TrailPositions.Count < 2) return;
-            Texture2D tex = TextureAssets.MagicPixel.Value;
+            Texture2D tex = VaultAsset.placeholder2.Value;
             float particleAlpha = GetAlpha() * globalAlpha;
 
             for (int i = 0; i < TrailPositions.Count - 1; i++) {
@@ -540,7 +540,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 float rot = diff.ToRotation();
                 float length = diff.Length();
 
-                Texture2D lineTex = TextureAssets.MagicPixel.Value;
+                Texture2D lineTex = VaultAsset.placeholder2.Value;
                 Color lineColor = new Color(120, 230, 255, 0) * alpha * 0.5f;
                 Main.spriteBatch.Draw(lineTex, p1 - Main.screenPosition, new Rectangle(0, 0, 1, 1),
                     lineColor, rot, Vector2.Zero, new Vector2(length, 2f), SpriteEffects.None, 0f);

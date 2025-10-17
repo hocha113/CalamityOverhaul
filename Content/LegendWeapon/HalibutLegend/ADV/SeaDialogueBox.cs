@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Rectangle shadow = panelRect; shadow.Offset(6, 8);
             spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
 
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         #region 样式工具函数
         private void DrawWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             int bands = 6;
             for (int i = 0; i < bands; i++) {
                 float t = i / (float)bands;
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.8f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             float size = 5f;
             Color c = new Color(150, 230, 255) * a;
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) {
@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 float fade = (float)Math.Sin(t * MathHelper.Pi) * alpha;
                 float scale = BaseRadius * (0.6f + (float)Math.Sin((Life + Seed * 33f) * 0.08f) * 0.4f);
                 Color c = Color.Gold * (0.7f * fade);
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
                 sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(scale, scale * 0.25f), SpriteEffects.None, 0f);
             }
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 return false;
             }
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = TextureAssets.MagicPixel.Value;
+                Texture2D px = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
                 float scale = Radius * (0.9f + (float)Math.Sin((Life + Seed * 15f) * 0.1f) * 0.18f);
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         #region 公共静态绘制碎片
         private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Color back = new Color(5, 20, 28) * (alpha * 0.85f);
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), back);
             Color edge = new Color(70, 180, 230) * (alpha * 0.6f);
@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         }
 
         private static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
             int border = 2;
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.6f);

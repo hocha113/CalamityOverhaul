@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.UIs
                 Rectangle hitbox = UIHitBox;
                 int progressHeight = (int)(hitbox.Height * DyeProgress);
                 Rectangle progressBar = new Rectangle(hitbox.X, hitbox.Y + hitbox.Height - progressHeight, hitbox.Width, progressHeight);
-                spriteBatch.Draw(TextureAssets.MagicPixel.Value, progressBar, Color.Green * 0.5f);
+                spriteBatch.Draw(VaultAsset.placeholder2.Value, progressBar, Color.Green * 0.5f);
             }
         }
 

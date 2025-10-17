@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                     Main.item[i] = new Item();
                 }
             }
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < 2; i++) {
                     Vector2 spawnPosition = Projectile.Center;
                     StreamGougeMetaball.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 215f * Projectile.scale);

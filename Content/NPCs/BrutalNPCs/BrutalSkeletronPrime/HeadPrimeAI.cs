@@ -353,7 +353,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             npc.ai[2] += 10f;
-            if (npc.ai[2] <= 50f && Main.netMode == NetmodeID.Server) {
+            if (npc.ai[2] <= 50f && VaultUtils.isServer) {
                 return;
             }
 
@@ -467,7 +467,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //2-初元阶段
             //3-攻击更加猛烈的二阶段
             if (npc.ai[0] == 0f) {
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     npc.TargetClosest();
                     SendExtraAI(npc);
                     NetAISend();

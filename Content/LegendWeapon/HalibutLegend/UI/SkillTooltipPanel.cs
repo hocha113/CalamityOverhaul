@@ -361,7 +361,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 绘制带拖尾效果的星星
         /// </summary>
         private void DrawStarWithTrail(SpriteBatch spriteBatch, Vector2 position, float size, Color color, float rotation) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //绘制拖尾（3个渐弱的残影）
             for (int i = 1; i <= 3; i++) {
@@ -554,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawScrollFades(SpriteBatch spriteBatch, Vector2 tooltipPos, float visibleHeight, float contentAlpha) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float fadeHeight = 24f;
             float width = currentWidth - Padding * 2 + 8;
             Vector2 leftTop = new Vector2(tooltipPos.X + 2, tooltipPos.Y - 8);
@@ -582,7 +582,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 绘制渐变线条
         /// </summary>
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
 
@@ -610,7 +610,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// 绉绘制星星装饰
         /// </summary>
         private static void DrawStar(SpriteBatch spriteBatch, Vector2 position, float size, Color color) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //绘制八芒星
             //横线

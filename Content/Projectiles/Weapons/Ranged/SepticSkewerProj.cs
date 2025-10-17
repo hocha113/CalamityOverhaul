@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.alpha = 0;
             }
 
-            if (Projectile.ai[1] % 8f == 0f && Projectile.owner == Main.myPlayer && Main.rand.NextBool(5)) {
+            if (Projectile.ai[1] % 8f == 0f && Projectile.IsOwnedByLocalPlayer() && Main.rand.NextBool(5)) {
                 Vector2 harpoonVel = -playerDist;
                 harpoonVel.Normalize();
                 harpoonVel *= Main.rand.Next(45, 65) * 0.1f;

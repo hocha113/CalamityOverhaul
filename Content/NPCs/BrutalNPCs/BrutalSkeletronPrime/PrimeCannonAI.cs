@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float targetRot = (float)Math.Atan2(cannonArmTargetY, cannonArmTargetX) - MathHelper.PiOver2;
             npc.EntityToRot(targetRot, 0.2f);
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
+            if (!VaultUtils.isClient && !dontAttack) {
                 npc.localAI[0] += 1f;
                 if (!laserAlive)
                     npc.localAI[0] += 1f;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float targetRot = (float)Math.Atan2(cannonSpreadArmTargetY, cannonSpreadArmTargetX) - MathHelper.PiOver2;
             npc.EntityToRot(targetRot, 0.2f);
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
+            if (!VaultUtils.isClient && !dontAttack) {
                 npc.localAI[0] += 1f;
                 if (!laserAlive)
                     npc.localAI[0] += 0.5f;

@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             pos.X = Math.Clamp(pos.X, 16, Main.screenWidth - size.X - 16);
             pos.Y = Math.Max(16, pos.Y);
             Rectangle rect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float alpha = 0.92f;
             spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), new Color(20, 30, 50) * alpha);
             Color edge = Color.Gold * 0.65f;

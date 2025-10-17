@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
             if (Projectile.ai[0] != 3) {
                 for (int i = 0; i < 3; i++) {
-                    if (Projectile.owner == Main.myPlayer) {
+                    if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile star = CalamityUtils.ProjectileBarrage(Source, Projectile.Center, target.Center, Main.rand.NextBool()
                             , 800f, 800f, 800f, 800f, 10f, ModContent.ProjectileType<AstralStar>(), (int)(Projectile.damage * 0.4), 1f, Projectile.owner, true);
                         if (star.whoAmI.WithinBounds(Main.maxProjectiles)) {

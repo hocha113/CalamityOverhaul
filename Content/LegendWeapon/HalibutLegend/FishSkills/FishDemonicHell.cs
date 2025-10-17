@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 center = Projectile.Center - Main.screenPosition;
 
             float baseScale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.05f;

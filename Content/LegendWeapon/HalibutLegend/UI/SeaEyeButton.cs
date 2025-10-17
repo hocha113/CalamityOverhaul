@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (Alpha < 0.01f) {
                 return;
             }
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             int segments = 48;
             float angleStep = MathHelper.TwoPi / segments;
             float colorProgress = LayerIndex / 9f;
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void DrawPulseRing(SpriteBatch spriteBatch, Vector2 center, float radius, Color color, float thickness) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             int segs = 40;
             float step = MathHelper.TwoPi / segs;
             for (int i = 0; i < segs; i++) {
@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float radius = MathHelper.Lerp(18f, 80f, eased);
             float fade = 1f - eased;
             Color col = new Color(110, 210, 255) * (alpha * fade * 0.6f);
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             int segs = 64;
             float step = MathHelper.TwoPi / segs;
             for (int i = 0; i < segs; i++) {

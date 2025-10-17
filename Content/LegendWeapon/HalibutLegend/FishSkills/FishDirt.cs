@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             else {
                 Projectile.velocity *= 0.85f;
 
-                if (GatherTimer > 20 && Projectile.owner == Main.myPlayer) {
+                if (GatherTimer > 20 && Projectile.IsOwnedByLocalPlayer()) {
                     int convergingCount = 0;
                     int arrivedCount = 0;
 

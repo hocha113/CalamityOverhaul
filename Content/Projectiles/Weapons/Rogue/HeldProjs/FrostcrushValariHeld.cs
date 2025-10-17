@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (stealthStrike && !accompanying) {
                 int icicleAmt = Main.rand.Next(12, 14);
-                if (Projectile.owner == Main.myPlayer) {
+                if (Projectile.IsOwnedByLocalPlayer()) {
                     for (int i = 0; i < icicleAmt; i++) {
                         Vector2 velocity = -Projectile.velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.3f, 0.45f);
                         int shard = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity

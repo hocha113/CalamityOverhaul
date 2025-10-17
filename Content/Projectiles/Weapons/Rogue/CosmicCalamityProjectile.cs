@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             //如果不是服务器模式，创建粒子效果
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 CreateSparkEffect();
             }
 

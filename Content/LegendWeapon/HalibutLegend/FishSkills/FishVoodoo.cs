@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float scale = 1.1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.15f;
 
             //发光脉冲圈
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Color auraColor = Color.Lerp(Color.MediumPurple, Color.HotPink, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
             for (int i = 0; i < 6; i++) {
                 float rot = i / 6f * MathHelper.TwoPi + Main.GlobalTimeWrappedHourly * 2f;

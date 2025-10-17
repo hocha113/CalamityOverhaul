@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float laserArmTargetDist = (float)Math.Sqrt(laserArmTargetX * laserArmTargetX + laserArmTargetY * laserArmTargetY);
             npc.rotation = MathF.Atan2(laserArmTargetY, laserArmTargetX) - MathHelper.PiOver2;
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
+            if (!VaultUtils.isClient && !dontAttack) {
                 npc.localAI[0] += 1f;
                 if (!cannonAlive)
                     npc.localAI[0] += 1f;
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack && num == 0) {
+            if (!VaultUtils.isClient && !dontAttack && num == 0) {
                 npc.localAI[0] += 1f;
                 if (!cannonAlive) {
                     npc.localAI[0] += 0.5f;

@@ -71,8 +71,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 dust.velocity *= 0.05f;
                 inc = i;
             }
-
-            if (Projectile.owner == Main.myPlayer) {
+            
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 13; i++) {
                     _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + VaultUtils.RandVr(222), Vector2.Zero
                         , ModContent.ProjectileType<BrimstoneBoom>(), Projectile.damage, Projectile.knockBack, Projectile.owner);

@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void ShootMudBall(NPC target) {
-            if (Projectile.owner != Main.myPlayer) return;
+            if (!Projectile.IsOwnedByLocalPlayer()) return;
 
             Player owner = Main.player[Projectile.owner];
             float shootAngle = Projectile.rotation;

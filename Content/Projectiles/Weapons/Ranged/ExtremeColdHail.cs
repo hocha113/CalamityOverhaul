@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
             target.AddBuff(BuffID.Frostburn2, 180);
-            if (Projectile.hostile && Main.netMode == NetmodeID.MultiplayerClient)
+            if (Projectile.hostile && VaultUtils.isClient)
                 return;
             Projectile.Kill();
         }
@@ -82,10 +82,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/NPCHit/CryogenHit", 3) with { Volume = 0.55f }, Projectile.Center);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            return base.PreDraw(ref lightColor);
         }
     }
 }

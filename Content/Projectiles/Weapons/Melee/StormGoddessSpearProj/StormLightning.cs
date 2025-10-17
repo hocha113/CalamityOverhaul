@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item94, Projectile.position);
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                     Vector2 pos = Projectile.Center;
                     Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(15.5f, 37.7f);

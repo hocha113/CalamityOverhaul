@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<Plague>(), 300);
-            if (Projectile.owner == Main.myPlayer) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 4; i++) {
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.5f, ModContent.ProjectileType<PlagueSeeker>(), (int)(Projectile.damage * 0.75), Projectile.knockBack, Projectile.owner);
                     Main.projectile[proj].extraUpdates += i;

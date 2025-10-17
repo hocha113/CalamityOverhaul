@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             double startAngle = Math.Atan2(Projectile.velocity.X, Projectile.velocity.Y) - (spread / 2);
             double deltaAngle = spread / 8f;
             double offsetAngle;
-            if (Projectile.owner == Main.myPlayer) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 13; i++) {
                     offsetAngle = startAngle + (deltaAngle * (i + (i * i)) / 2f) + (32f * i);
                     _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y

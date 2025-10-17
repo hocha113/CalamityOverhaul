@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Dust dust = Main.dust[idx];
                 dust.velocity /= 2f;
             }
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 int tail = Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity * 0.8f, 584, 1f);
                 Main.gore[tail].timeLeft /= 10;
                 int body = Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity * 0.9f, 585, 1f);

@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
 
             if (Timer > 60f && Timer < 240f && Timer % 10 == 0) {
                 SoundEngine.PlaySound(IchorShoot, npc.Center);
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     int type = ModContent.ProjectileType<IchorBlob>();
                     int damage = npc.GetProjectileDamage(type);
                     int numBlobs = expertMode ? 2 : 1;
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
 
             //在演出高潮时生成蠕虫
             if (Timer == 120f) {
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                if (!VaultUtils.isClient) {
                     int wormType = 0;
                     if (StateIdentifier == 1) {
                         wormType = ModContent.NPCType<PerforatorHeadSmall>();
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
         //发射扇形弹幕的辅助方法
         private void SpawnProjectileFan(Player target, int numProj, int spread, float velocity, bool isDeathMode) {
             SoundEngine.PlaySound(GeyserShoot, npc.Center);
-            if (Main.netMode == NetmodeID.MultiplayerClient) {
+            if (VaultUtils.isClient) {
                 return;
             }
 

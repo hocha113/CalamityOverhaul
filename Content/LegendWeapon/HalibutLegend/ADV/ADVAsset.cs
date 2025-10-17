@@ -8,6 +8,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         [VaultLoaden(CWRConstant.UI + "Halibut/")]
         public static Texture2D HeadADV = null;
         [VaultLoaden(CWRConstant.ADV + "SupCal/SupCal", startIndex: 1, arrayCount: 6)]
-        public static IList<Texture2D> SupCalADV;
+        public static IList<Texture2D> SupCalADV = null;
     }
 }
