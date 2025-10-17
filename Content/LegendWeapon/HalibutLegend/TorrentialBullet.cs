@@ -9,10 +9,10 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     ///<summary>
-    ///海洋洪流子弹-具有真实液体物理和海洋生物特效的弹幕
+    ///海洋洪流子弹
     ///</summary>
     internal class TorrentialBullet : ModProjectile, IAdditiveDrawable
     {
@@ -60,6 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private float glowPulse = 0f;
         private float wavePhase = 0f;
         private int particleSpawnCounter = 0;
+        private int pcctimer = 0;
 
         //消散宽限控制
         private int dispersalStartLife = -1; //进入消散阶段时记录生命周期计数
@@ -76,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.height = 24;
             Projectile.friendly = true;
             Projectile.alpha = 0;
-            Projectile.penetrate = 3;
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 240;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.tileCollide = true;
@@ -132,6 +133,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             //若即将自然过期且仍在Streaming则提前进入飞溅以开始平滑消散
             if (Projectile.timeLeft < 30 && State == OceanState.Streaming) {
                 EnterSplashState();
+            }
+
+            if (Projectile.numHits > 2) {
+                Projectile.velocity /= 2;
+                Projectile.damage = 0;
+                if (++pcctimer > 60) {
+                    Projectile.Kill();
+                }
             }
         }
 
@@ -632,8 +641,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 //帧源矩形
                 int frameIndex = droplet.Frame % (columns * rows);
-                int fx = (frameIndex % columns) * frameWidth;
-                int fy = (frameIndex / columns) * frameHeight;
+                int fx = frameIndex % columns * frameWidth;
+                int fy = frameIndex / columns * frameHeight;
                 Rectangle source = new(fx, fy, frameWidth, frameHeight);
 
                 //水滴主体
@@ -905,7 +914,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override Color? GetAlpha(Color lightColor) {
-            float alphaMult = 1f - (Projectile.alpha / 255f);
+            float alphaMult = 1f - Projectile.alpha / 255f;
             return Color.Lerp(ShallowOcean, BioluminescentBlue, glowPulse) * alphaMult;
         }
     }

@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems;
 using System.Collections.Generic;
 using Terraria;
@@ -116,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Item.noMelee = true;
             Item.knockBack = 1f;
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
-            Item.UseSound = SoundID.Item38 with { Volume = 0.8f };
+            Item.UseSound = SoundID.Item38 with { Volume = 0.6f };
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 12f;
@@ -126,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool? CanUseItem(Item item, Player player) {
-            item.UseSound = SoundID.Item38 with { Volume = 0.8f };
+            item.UseSound = SoundID.Item38 with { Volume = 0.6f };
             if (FishSkill.IDToInstance.TryGetValue(player.GetOverride<HalibutPlayer>().SkillID, out var fishSkill)) {
                 bool? result = fishSkill.CanUseItem(item, player);
                 if (result.HasValue) {

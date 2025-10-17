@@ -390,6 +390,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             lifeTimer++;
 
+            Projectile.position += OwnerPlayer.velocity * 0.75f;
+
             // 更新动画
             UpdateAnimation();
 
