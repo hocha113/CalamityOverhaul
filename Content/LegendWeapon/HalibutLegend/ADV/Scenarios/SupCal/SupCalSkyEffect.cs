@@ -66,14 +66,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            if (intensity <= 0.01f) return;
-
-            Rectangle screenRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) return;
 
             //绘制深红暗黑背景
             spriteBatch.Draw(
-                CWRUtils.GetT2DValue(CWRConstant.Placeholder2),
-                screenRect,
+                VaultAsset.placeholder2.Value,
+                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 new Color(10, 5, 8) * intensity * 0.9f
             );
         }
