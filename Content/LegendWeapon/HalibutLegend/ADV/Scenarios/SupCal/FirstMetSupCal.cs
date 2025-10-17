@@ -75,12 +75,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             SupCalSkyEffect.IsActive = false;
         }
 
+        //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现了
+        //你麻痹的我为什么要把角色名字和头像强绑定，现在改又不敢改，你妈的被自己的设计坑死了
+        private const string expressionCloseEye = " ";
+        private const string expressionBeTo = " " + " ";
+        private const string expressionDespise = " " + " " + " ";
+
         protected override void Build() {
             //注册立绘
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
+
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionCloseEye, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionBeTo, ADVAsset.SupCalADV[3]);
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionBeTo, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionDespise, silhouette: false);
+
             DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
 
@@ -91,12 +108,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(Rolename3.Value, Line4.Value);
             Add(Rolename2.Value, Line5.Value);
             Add(Rolename3.Value, Line6.Value);
-            Add(Rolename2.Value, Line7.Value);
+            Add(Rolename2.Value + expressionCloseEye, Line7.Value);
             Add(Rolename3.Value, Line8.Value);
-            Add(Rolename2.Value, Line9.Value);
-            Add(Rolename2.Value, Line10.Value);
+            Add(Rolename2.Value + expressionCloseEye, Line9.Value);
+            Add(Rolename2.Value + expressionBeTo, Line10.Value);
 
-            AddWithChoices(Rolename2.Value, QuestionLine.Value, [
+            AddWithChoices(Rolename2.Value + expressionBeTo, QuestionLine.Value, [
                 new(Choice1Text.Value, () => {
                     //选择后继续对话
                     Add(Rolename2.Value, Choice1Response.Value, styleOverride: DefaultDialogueStyle);
@@ -109,10 +126,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                 }),
                 new(Choice2Text.Value, () => {
                      //选择后继续对话
-                    Add(Rolename2.Value, Choice2Response.Value, styleOverride: DefaultDialogueStyle);
+                    Add(Rolename2.Value + expressionDespise, Choice2Response.Value, styleOverride: DefaultDialogueStyle);
                     //继续推进场景
                     DialogueUIRegistry.Current?.EnqueueDialogue(
-                        Rolename2.Value,
+                        Rolename2.Value + expressionDespise,
                         Choice2Response.Value,
                         onFinish: () => Choice2()
                     );
