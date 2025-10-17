@@ -37,13 +37,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
             
             Line1 = this.GetLocalization(nameof(Line1), () => "哈?!就这?");
-            Line2 = this.GetLocalization(nameof(Line2), () => "呵，我还以为你有多强呢");
+            Line2 = this.GetLocalization(nameof(Line2), () => "我以为遇到了一个耐烧点的玩具");
             Line3 = this.GetLocalization(nameof(Line3), () => "现在的你还太弱了，连让我认真的资格都没有");
             Line4 = this.GetLocalization(nameof(Line4), () => "等你真正强大起来再来找我吧");
             Line5 = this.GetLocalization(nameof(Line5), () => "不过我倒是有些好奇");
-            Line6 = this.GetLocalization(nameof(Line6), () => "如此稚嫩的你也敢向我拔剑，倒有些魄力，我有些好奇你究竟能成长到什么地步了");
-            Line7 = this.GetLocalization(nameof(Line7), () => "现在的你们层次太低，再练练吧");
-            Line8 = this.GetLocalization(nameof(Line8), () => "这家伙有些实力，如果我不顾后果九眼全开，应该有胜算，大不了......");
+            Line6 = this.GetLocalization(nameof(Line6), () => "如此稚嫩的你也敢向我拔剑，倒有些魄力，我有些好奇你究竟能走到什么地步了");
+            Line7 = this.GetLocalization(nameof(Line7), () => "(在一阵火焰中消失)");
+            Line8 = this.GetLocalization(nameof(Line8), () => "这家伙实力太过恐怖，如果我不顾后果九眼全开，应该有胜算，大不了......");
             Line9 = this.GetLocalization(nameof(Line9), () => "唉......");
         }
         
