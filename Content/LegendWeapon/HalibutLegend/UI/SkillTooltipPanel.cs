@@ -483,9 +483,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //处理鼠标滚轮输入（仅在鼠标位于面板内部时，并且需要滚动）
             if (needScroll && IsMouseOnPanel()) {
-                int delta = PlayerInput.ScrollWheelDelta; // scroll up positive
-                if (delta != 0) {
-                    scrollVelocity -= delta * (ScrollSpeedPerNotch / 120f); //120 is typical per notch
+                int delta = PlayerInput.ScrollWheelDelta; // 上滚
+                if (delta != 0) {//这里锁定正负1，避免有的人鼠标滚轮灵敏度过高
+                    scrollVelocity -= Math.Sign(delta) * (ScrollSpeedPerNotch / 60f); //60 刻度分母
                 }
             }
 
