@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -301,10 +302,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 if (ev.FrameIndex != replayFrame || !Projectile.IsOwnedByLocalPlayer()) {
                     continue;
                 }
-                for (int j = 0; j < shootNum; j++) {
+
+                int evShootNum = shootNum;
+                int evDamage = ev.Damage;
+                if (ev.Type == ModContent.ProjectileType<TorrentialBullet>()) {
+                    evDamage = (int)(evDamage * (1f + evShootNum * 0.25f));
+                    evShootNum = 1;
+                }
+
+                for (int j = 0; j < evShootNum; j++) {
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
                     , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
-                    , ev.Type, ev.Damage, ev.KnockBack, Owner.whoAmI);
+                    , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
                     Main.projectile[proj].friendly = true;
                 }
             }
