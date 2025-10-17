@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     ///<summary>
     ///海洋洪流子弹
     ///</summary>
-    internal class TorrentialBullet : ModProjectile, IAdditiveDrawable
+    internal class OceanCurrent : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 

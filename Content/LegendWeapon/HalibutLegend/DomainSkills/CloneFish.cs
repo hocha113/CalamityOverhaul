@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
                 int evShootNum = shootNum;
                 int evDamage = ev.Damage;
-                if (ev.Type == ModContent.ProjectileType<TorrentialBullet>()) {
+                if (ev.Type == ModContent.ProjectileType<OceanCurrent>()) {
                     evDamage = (int)(evDamage * (1f + evShootNum * 0.25f));
                     evShootNum = 1;
                 }

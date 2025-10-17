@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1441,7 +1441,7 @@ Projectiles: {
 	TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
 	TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
 	Tornado.DisplayName: Tornado
-	TorrentialBullet.DisplayName: Torrential Bullet
+	OceanCurrent.DisplayName: Ocean Current
 	TsunamiOnSpan.DisplayName: Tsunami On Span
 	TungstenBulletProj.DisplayName: Tungsten Bullet Proj
 	TyphoonOnSpan.DisplayName: Typhoon On Span

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1423,7 +1423,7 @@ Projectiles: {
 	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
 	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
 	// Tornado.DisplayName: Tornado
-	// TorrentialBullet.DisplayName: Torrential Bullet
+	// OceanCurrent.DisplayName: Ocean Current
 	// TsunamiOnSpan.DisplayName: Tsunami On Span
 	// TungstenBulletProj.DisplayName: Tungsten Bullet Proj
 	// TyphoonOnSpan.DisplayName: Typhoon On Span
@@ -1494,12 +1494,6 @@ Projectiles: {
 	// PhasebladeHeld.DisplayName: Phaseblade Held
 	// ForgedLasEXhProjectile.DisplayName: Forged Las EXh Projectile
 	// ForgedLasOrb.DisplayName: Forged Las Orb
-
-	DraedonsRemoteSpawn: {
-		// $parentVal: Draedons Remote Spawn
-		// DisplayName: Draedons Remote Spawn
-	}
-
 	// CollectorArm.DisplayName: Collector Arm
 	// ElectricMinRocketHeld.DisplayName: Electric Min Rocket Held
 	// TeslaBallByAttack.DisplayName: Tesla Ball By Attack

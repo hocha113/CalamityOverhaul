@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             bool isBullet = false;
             if (type == ProjectileID.Bullet) {
                 isBullet = true;
-                type = ModContent.ProjectileType<TorrentialBullet>();
+                type = ModContent.ProjectileType<OceanCurrent>();
             }
 
             var hp = player.GetOverride<HalibutPlayer>();
