@@ -114,8 +114,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             }
             
             //检查是否有玩家死亡
-            foreach (Player player in Main.player) {
-                if (!player.active || !player.dead) {
+            foreach (Player player in Main.ActivePlayers) {
+                if (!player.Alives()) {
                     continue;
                 }
                 
