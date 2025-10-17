@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             L4 = this.GetLocalization(nameof(L4), () => "如果你开始看到新的颜色，恭喜。如果你开始闻到颜色，那就该休息了");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);

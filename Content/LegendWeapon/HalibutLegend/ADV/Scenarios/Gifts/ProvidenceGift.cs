@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             L4 = this.GetLocalization(nameof(L4), () => "不过理解和战争之间的界限，只是一次攻击的距离");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);

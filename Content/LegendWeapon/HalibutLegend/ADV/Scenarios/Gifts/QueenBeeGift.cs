@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             L3 = this.GetLocalization(nameof(L3), () => "我觉得它非常适合做糖醋鲤鱼");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);

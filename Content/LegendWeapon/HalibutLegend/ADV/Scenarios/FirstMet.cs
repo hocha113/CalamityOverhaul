@@ -64,9 +64,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
         }
 
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
             Add(Rolename1.Value, Line0.Value);

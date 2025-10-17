@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: true);
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
 
             //添加对话（使用本地化文本）

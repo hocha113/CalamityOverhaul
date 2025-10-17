@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             L4 = this.GetLocalization(nameof(L4), () => "不过如果你突然想在阴暗潮湿的地方扎根，记得告诉我");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);

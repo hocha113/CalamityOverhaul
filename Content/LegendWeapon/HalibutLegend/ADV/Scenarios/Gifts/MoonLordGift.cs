@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             L4 = this.GetLocalization(nameof(L4), () => "我们刚刚证明了，即使是神，也会流血");
         }
         protected override void Build() {
-            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HeadADV);
+            DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(R1.Value, silhouette: false);
             Add(R1.Value, L0.Value);
             Add(R1.Value, L1.Value);
