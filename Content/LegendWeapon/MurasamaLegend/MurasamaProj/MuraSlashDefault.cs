@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 1.75f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<Leviathan>() || target.type == ModContent.NPCType<Anahita>()) {
                 modifiers.FinalDamage *= 1.75f;
@@ -366,20 +366,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 1.55f;
             }
-
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {
                 modifiers.FinalDamage *= 1.4f;
             }
-
-            if (!target.IsWormBody()) {
-                modifiers.DefenseEffectiveness *= 0f;
-            }
-
             if (target.boss) {
                 float sengsValue = 0.5f + MurasamaOverride.GetLevel(Item) * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
+            modifiers.DefenseEffectiveness *= 0f;
         }
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {
