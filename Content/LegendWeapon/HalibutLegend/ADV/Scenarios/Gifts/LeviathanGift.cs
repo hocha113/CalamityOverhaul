@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
                     }, offset: Vector2.Zero);
             }
         }
-        protected override bool BossDowned() {
-            return !NPC.AnyNPCs(ModContent.NPCType<Anahita>());
+        protected override bool AdditionalConditions(ADVSave save, HalibutPlayer halibutPlayer) {
+            return !NPC.AnyNPCs(ModContent.NPCType<Anahita>());//确保阿纳希塔也嘎了
         }
         protected override bool IsGiftCompleted(ADVSave save) {
             return save.LeviathanGift;

@@ -150,6 +150,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             if (save.FirstMetSupCal) {
                 return;
             }
+            if (!save.CalamitasCloneGift) {//必须先获得过比目鱼小姐给的灾厄克隆的礼物才能触发，避免这两个场景冲突
+                return;
+            }
             if (!FirstMetSupCalNPC.Spawned) {
                 return;
             }

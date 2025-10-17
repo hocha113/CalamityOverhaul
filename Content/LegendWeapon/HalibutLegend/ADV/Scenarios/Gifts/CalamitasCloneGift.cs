@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一个影子……但影子不该有自己的意志。除非原型已经强大到开始分裂");
-            L1 = this.GetLocalization(nameof(L1), () => "你击败的不是她，而是她的回声。真正的恐怖还在更深的地方等着");
-            L2 = this.GetLocalization(nameof(L2), () => "硫磺火鱼，从灾厄的余烬中提取的。它在你手里低语着不该被听到的秘密");
-            L3 = this.GetLocalization(nameof(L3), () => "如果你开始听懂它在说什么......恭喜，你已经迈出了疯狂的第一步");
+            L0 = this.GetLocalization(nameof(L0), () => "一个劣质的影子，让我想起来上大学时自己窝在海沟里捣鼓的基因怪兽，总之制作这个东西的家伙品味很差");
+            L1 = this.GetLocalization(nameof(L1), () => "我有种不详的预感，真正的恐怖还在更深的地方等着，它甚至在靠近");
+            L2 = this.GetLocalization(nameof(L2), () => "说回正事，硫磺火鱼，从灾厄的余烬中捡的。捧在手心里还能听到它在瞎嘀咕些什么");
+            L3 = this.GetLocalization(nameof(L3), () => "如果你开始听懂它在说什么......呃，恭喜，你已经迈出了疯狂的第一步");
             L4 = this.GetLocalization(nameof(L4), () => "不过别担心，疯狂也是一种清醒，只是角度不同而已");
         }
         protected override void Build() {

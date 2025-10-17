@@ -1,9 +1,6 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.GameSystem;
 using InnoVault.PRT;
-using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -11,24 +8,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupCal
 {
-    internal class SupCalSkyPlayer : PlayerOverride, IUpdateAudio
-    {
-        public override IEnumerable<string> GetActiveSceneEffectFullNames() {
-            yield return typeof(SupCalSkySceneEffect).FullName;
-        }
-        public override bool? PreIsSceneEffectActive(ModSceneEffect modSceneEffect) {
-            if (!SupCalSkyEffect.IsActive) {
-                return null;//直接返回，这里算作一次性能优化
-            }
-            return true;
-        }
-        void IUpdateAudio.DecideMusic() {
-            if (SupCalSkyEffect.IsActive) {
-                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
-            }
-        }
-    }
-
     internal class SupCalSkySceneEffect : ModSceneEffect
     {
         public override int Music => -1;//音乐在 SupCalSkyPlayer 里控制
@@ -176,6 +155,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             if (particleTimer % 30 == 0) {
                 SpawnLargeFlameBurst();
             }
+
+            Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
         }
 
         private static void SpawnBrimstoneFlameParticles() {

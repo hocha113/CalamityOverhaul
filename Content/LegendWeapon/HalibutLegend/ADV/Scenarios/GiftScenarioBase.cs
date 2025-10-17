@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gifts
+namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios
 {
     internal class GiftScenarioNPC : GlobalNPC
     {
@@ -40,7 +40,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
         protected abstract bool IsGiftCompleted(ADVSave save);
         protected abstract void MarkGiftCompleted(ADVSave save);
         protected abstract bool StartScenarioInternal();
-        public override void SetStaticDefaults() {
+        public override void VaultSetup() {
+            LoadThis();
+            base.VaultSetup();
+        }
+        public void LoadThis() {
             SpawnedDic[this] = false;
             if (TargetBossID > NPCID.None) {
                 BossIDToInds[TargetBossID] = this;
@@ -71,9 +75,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.Gift
             if (!AdditionalConditions(save, halibutPlayer)) {
                 return;
             }
+            if (!SpawnedDic[this]) {
+                return;//Boss未被击败或礼物场景未生成
+            }
 
             if (!pendingTimers.TryGetValue(Key, out int timer)) {
-                timer = 60 * Main.rand.Next(3, 5);
+                timer = 60 * Main.rand.Next(2, 4);
                 pendingTimers[Key] = timer;//与SupCalMoonLordReward保持一致的随机缓冲时间
                 return;//首次满足条件进入延迟阶段
             }
