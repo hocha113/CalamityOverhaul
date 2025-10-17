@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework; // Added for Vector2/MathHelper/Color
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -408,29 +409,40 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
 
         private enum BoomerangState { Throwing, Returning }
-        private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set => Projectile.ai[0] = (float)value; }
+        private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set { if (Projectile.ai[0] != (float)value) { Projectile.ai[0] = (float)value; Projectile.netUpdate = true; } } }
         private ref float Time => ref Projectile.ai[1];
+        private ref float ReturnProgress => ref Projectile.ai[2]; // 修正：使用 ai[2] 而不是越界的 localAI[2]
         private ref float SpinSpeed => ref Projectile.localAI[0];
-        private ref float ThrowProgress => ref Projectile.localAI[1]; // 0-1 飞出进度
-        private ref float ReturnProgress => ref Projectile.localAI[2]; // 0-1 返回进度
+        private ref float ThrowProgress => ref Projectile.localAI[1]; // 0-1 飞出阶段进度
 
-        private const int MaxThrowTime = 30; // 缩短初始加速阶段时间，快速进入最远点
-        private const float MaxDistance = 900f; // 最大距离
-        private const float MaxSpinSpeed = 0.75f;
-        private const float BaseSpeed = 28f; // 初始最大速度
+        // 基础参数
+        private const int LaunchPhaseFrames = 14;      // 初始爆发加速帧数
+        private const int TotalThrowFrames = 48;       // 前向阶段总帧数（含爆发）
+        private const float MaxDistance = 1000f;       // 最大距离
+        private const float BaseSpeed = 32f;           // 基础巡航速度
+        private const float PeakLaunchSpeed = 52f;     // 初始爆发峰值
+        private const float ReturnMaxSpeed = 58f;      // 回程最大速度
+        private const float ArcAmplitude = 120f;       // 外抛弧线幅度
+        private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0; // 复用一个简单标记
 
-        // 缓动函数（力量感：起步快速 -> 中段平滑滑行 -> 末段减速、回收时反向加速）
-        private float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
-        private float EaseInOutBack(float t) { // 用于旋转与返回的弹力
-            const float c1 = 1.70158f;
-            const float c2 = c1 * 1.525f;
+        // 缓动函数
+        private static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
+        private static float EaseOutCubic(float t) { t = MathHelper.Clamp(t, 0, 1); t = 1 - (float)Math.Pow(1 - t, 3); return t; }
+        private static float EaseInQuad(float t) => t * t;
+        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+        private static float EaseInOutBack(float t) {
+            const float c1 = 1.70158f; const float c2 = c1 * 1.525f; t = MathHelper.Clamp(t, 0, 1);
             return t < 0.5f ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
                              : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
         }
-        private float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+        private static float EaseOvershootSnap(float t) { // 回程末端吸附 + 轻微回拉
+            t = MathHelper.Clamp(t, 0, 1);
+            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f; // 前段轻超出
+            return overshoot * (0.85f + 0.15f * EaseOutQuad(t));
+        }
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 10;
+            ProjectileID.Sets.TrailCacheLength[Type] = 14;
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
 
@@ -453,69 +465,95 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!owner.active || owner.dead) { Projectile.Kill(); return; }
 
             Time++;
-            SpinSpeed = MathHelper.Lerp(SpinSpeed, MaxSpinSpeed, 0.06f);
-            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
-            Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() * 0.75f);
-
-            Vector2 centerToPlayer = owner.GetPlayerStabilityCenter() - Projectile.Center;
-            float distanceToOwner = centerToPlayer.Length();
+            Vector2 playerCenter = owner.GetPlayerStabilityCenter();
+            Vector2 toMouseDir = (Main.MouseWorld - playerCenter).SafeNormalize(Vector2.UnitX * owner.direction);
+            Vector2 centerToPlayer = playerCenter - Projectile.Center;
 
             if (State == BoomerangState.Throwing) {
-                //归一化进度
-                ThrowProgress = MathHelper.Clamp(ThrowProgress + 1f / MaxThrowTime, 0f, 1f);
-                float eased = EaseOutExpo(ThrowProgress); // 蓄力感的加速
-                float distanceFactor = eased * MaxDistance;
-                Vector2 dir = Projectile.velocity.SafeNormalize((Main.MouseWorld - owner.Center).SafeNormalize(Vector2.UnitX));
-                Vector2 targetPos = owner.GetPlayerStabilityCenter() + dir * distanceFactor;
-                Vector2 toTarget = targetPos - Projectile.Center;
-                float speedControl = BaseSpeed * (0.6f + 0.4f * EaseOutQuad(1f - ThrowProgress)); // 前段高速，中段略降速
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speedControl, 0.15f);
+                // 进度（整体）
+                ThrowProgress = MathHelper.Clamp(ThrowProgress + 1f / TotalThrowFrames, 0f, 1f);
 
-                //超出距离或完成进度后进入返回
-                if (ThrowProgress >= 1f || distanceToOwner > MaxDistance * 0.95f) {
+                // 阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
+                float launchT = MathHelper.Clamp(Time / (float)LaunchPhaseFrames, 0f, 1f);
+                float launchSpeedFactor = EaseOutCubic(launchT); // 爆发上升
+                float currentLaunchSpeed = MathHelper.Lerp(BaseSpeed, PeakLaunchSpeed, launchSpeedFactor);
+
+                float cruisePhase = MathHelper.Clamp((Time - LaunchPhaseFrames) / (TotalThrowFrames - LaunchPhaseFrames), 0f, 1f);
+                float cruiseEase = EaseOutQuad(cruisePhase);
+                float distanceFactor = EaseOutExpo(ThrowProgress);
+
+                // 弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
+                Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * owner.direction);
+                float arc = (float)Math.Sin(distanceFactor * MathHelper.Pi) * ArcAmplitude * (1f - cruisePhase * 0.65f);
+                Vector2 targetPos = playerCenter + toMouseDir * (distanceFactor * MaxDistance) + lateral * arc;
+
+                Vector2 desiredVel = (targetPos - Projectile.Center).SafeNormalize(toMouseDir) * currentLaunchSpeed;
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.18f + 0.1f * (1f - cruisePhase));
+
+                // 到顶或时间结束进入回程
+                if (ThrowProgress >= 1f || Vector2.Distance(playerCenter, Projectile.Center) > MaxDistance * 0.97f) {
                     State = BoomerangState.Returning;
                     ReturnProgress = 0f;
                     Time = 0f;
-                    Projectile.netUpdate = true;
-                    SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.3f, Volume = 0.9f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.35f, Volume = 1f }, Projectile.Center);
                 }
             }
-            else { //返回
-                ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.015f, 0f, 1f);
-                float backEase = EaseInOutBack(ReturnProgress); //有弹性回收
-                float speed = MathHelper.Lerp(BaseSpeed * 0.4f, BaseSpeed * 1.35f, backEase);
+            else { // Returning
+                ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.022f, 0f, 1f);
+                float ease = EaseInQuad(ReturnProgress) * 0.35f + EaseInOutBack(ReturnProgress) * 0.65f;
+                float speed = MathHelper.Lerp(BaseSpeed * 0.5f, ReturnMaxSpeed, ease);
                 Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.25f);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.30f + 0.25f * (1f - ReturnProgress));
 
-                //轻微横向抖动增强力量感
-                float wobble = (float)Math.Sin(Time * 0.45f) * (1f - ReturnProgress) * 4f;
-                Projectile.velocity += Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2) * wobble * 0.03f;
+                // 吸附末端加速收手
+                if (ReturnProgress > 0.85f) {
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, centerToPlayer.SafeNormalize(Vector2.Zero) * ReturnMaxSpeed, 0.45f);
+                }
 
-                if (distanceToOwner < 54f) {
+                if (centerToPlayer.Length() < 54f) {
+                    owner.GetModPlayer<CWRPlayer>().GetScreenShake(4f);
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.9f, Pitch = 0.15f }, owner.Center);
                     Projectile.Kill();
-                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.75f }, owner.Center);
                     return;
                 }
             }
 
-            // 速度拖尾粒子
-            if (Time % 2 == 0 && !Main.dedServ) {
+            // 旋转与屏幕震动基于速度
+            float velLen = Projectile.velocity.Length();
+            float targetSpin = 0.15f + velLen / 90f; // 更高速更快旋转
+            SpinSpeed = MathHelper.Lerp(SpinSpeed, targetSpin, 0.15f);
+            Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
+
+            // 中程呼啸音效
+            if (!PlayedMidWhoosh && ThrowProgress > 0.55f && State == BoomerangState.Throwing) {
+                Projectile.miscText = "x"; // 标记已播放
+                SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.55f, Pitch = 0.6f }, Projectile.Center);
+            }
+
+            // 回程尾声掠过音效
+            if (State == BoomerangState.Returning && ReturnProgress > 0.6f && (Time % 18 == 0)) {
+                SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.35f, Pitch = 0.4f }, Projectile.Center);
+            }
+
+            // 装饰性高速离心粒子
+            if (!Main.dedServ && Time % 2 == 0) {
                 SpawnSpinParticle();
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            // 击中强化下一发弩箭伤害
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { // corrected signature
             Player owner = Main.player[Projectile.owner];
             owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
-            // 冲击粒子
-            if (!Main.dedServ) {
-                SpawnHitEffect(target);
+            if (State == BoomerangState.Throwing) {
+                State = BoomerangState.Returning;
+                ReturnProgress = 0f;
+                Time = 0f;
+                Projectile.velocity *= 0.75f;
             }
-            // 返回阶段命中加速
-            if (State == BoomerangState.Returning) {
+            else {
                 Projectile.velocity *= 1.15f;
             }
+            SpawnHitEffect(target);
         }
 
         private void SpawnHitEffect(NPC target) {
@@ -563,25 +601,26 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
             float scale = Projectile.scale;
+            float speedFactor = Math.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
 
-            // Trail
+            // Trail（速度越快 & 越靠近回程末端越亮）
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
                 float progress = i / (float)Projectile.oldPos.Length;
-                float fade = 1f - progress;
-                Color trailColor = Color.Cyan * fade * 0.55f;
+                float fade = (1f - progress) * (0.35f + 0.65f * speedFactor);
+                if (State == BoomerangState.Returning) fade *= 1.1f;
+                Color trailColor = Color.Cyan * fade;
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float trailRot = Projectile.oldRot[i];
-                Main.EntitySpriteDraw(texture, trailPos, null, trailColor, trailRot, origin, scale * (1f - progress * 0.15f), SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(texture, trailPos, null, trailColor, trailRot, origin, scale * (1f - progress * 0.12f), SpriteEffects.None, 0);
             }
 
-            // Main
             Main.EntitySpriteDraw(texture, drawPos, null, lightColor, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
 
-            // 动态能量环(强度随速度)
-            float spd = Projectile.velocity.Length();
-            float ringScale = scale * (1.15f + 0.07f * (float)Math.Sin(Time * 0.4f));
-            Color ringColor = Color.Cyan * MathHelper.Clamp(spd / BaseSpeed, 0.3f, 0.9f) * 0.5f;
+            // 能量环（速度驱动 + 回程加强）
+            float pulse = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.08f;
+            float ringScale = scale * (1.12f + 0.25f * speedFactor) * pulse;
+            Color ringColor = (State == BoomerangState.Returning ? Color.Cyan : Color.LightCyan) * (0.4f + 0.5f * speedFactor);
             Main.EntitySpriteDraw(texture, drawPos, null, ringColor, Projectile.rotation + MathHelper.PiOver4, origin, ringScale, SpriteEffects.None, 0);
             return false;
         }
