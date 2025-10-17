@@ -1258,7 +1258,7 @@ Projectiles: {
 	PowerCoil.DisplayName: Power Coil
 	SaltationSend.DisplayName: Saltation Send
 	SandThorn.DisplayName: Sand Thorn
-	// SporeBoboMagic.DisplayName: Spore Bobo Magic
+	// SporeBoboMagic.DisplayName: Spore Bobo
 	// SporeBobo.DisplayName: Spore Bobo
 	DestroyersBeam.DisplayName: Destroyers Beam
 	// Glomushroom.DisplayName: Glomushroom
@@ -1270,7 +1270,7 @@ Projectiles: {
 	MedicalBoxProj.DisplayName: Medical Box Proj
 	DestroyerGrenade.DisplayName: Destroyer Grenade
 	DicoriaRay.DisplayName: Dicoria Ray
-	// FungiAmmo.DisplayName: Fungi Ammo
+	// FungiAmmo.DisplayName: Fungal Round
 	// PallbearerArrow.DisplayName: Pallbearer Arrow
 	PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon On Span Friendly
 	PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
@@ -1287,8 +1287,8 @@ Projectiles: {
 	SandDaggerThrow.DisplayName: Sand Dagger Throw
 	SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
 	SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
-	// SporeBoboRogue.DisplayName: Spore Bobo Rogue
-	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch Throw
+	// SporeBoboRogue.DisplayName: Rogue Spore Bobo
+	// SporeburstPouchThrow.DisplayName: Sporeburst Pouch
 	WraithKunaiProj.DisplayName: Wraith Kunai Proj
 	WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
 	DestroyerBody.DisplayName: Destroyer Body
@@ -1298,63 +1298,63 @@ Projectiles: {
 	ForgedLashProjectile.DisplayName: Forged Lash Projectile
 	ForgedLasOrb.DisplayName: Forged Las Orb
 	DraedonsRemoteSpawn.DisplayName: Draedons Remote Spawn
-	// FungalFeedProj.DisplayName: Fungal Feed Proj
-	// CannonFishSwarmHitbox.DisplayName: Cannon Fish Swarm Hitbox
-	// ClonePlayer.DisplayName: Clone Player
-	// FishTeleportProj.DisplayName: Fish Teleport Proj
-	// RestartEffectProj.DisplayName: Restart Effect Proj
-	// SeaDomainProj.DisplayName: Sea Domain Proj
+	// FungalFeedProj.DisplayName: Fungal Feed
+	// CannonFishSwarmHitbox.DisplayName: Cannonfish Barrage
+	// ClonePlayer.DisplayName: Echo Self
+	// FishTeleportProj.DisplayName: Fish Teleport
+	// RestartEffectProj.DisplayName: Causality Reset
+	// SeaDomainProj.DisplayName: Tidal Domain
 	// SuperpositionCannon.DisplayName: Superposition Cannon
-	// SuperpositionProj.DisplayName: Superposition Proj
-	// YourLevelIsTooLowProj.DisplayName: Your Level Is Too Low Proj
-	// AmanitaExplosiveMushroom.DisplayName: Amanita Explosive Mushroom
-	// AmanitaHomingSpore.DisplayName: Amanita Homing Spore
-	// AmanitaLightningSpore.DisplayName: Amanita Lightning Spore
-	// AmanitaToxicMushroom.DisplayName: Amanita Toxic Mushroom
-	// BatSwarmController.DisplayName: Bat Swarm Controller
-	// BatSwarmMinion.DisplayName: Bat Swarm Minion
-	// BonefishOrbit.DisplayName: Bonefish Orbit
-	// BunnyfishHopper.DisplayName: Bunnyfish Hopper
-	// CatfishLeaper.DisplayName: Catfish Leaper
-	// CloudRain.DisplayName: Cloud Rain
-	// CloudRide.DisplayName: Cloud Ride
-	// CursedFlameStream.DisplayName: Cursed Flame Stream
+	// SuperpositionProj.DisplayName: Quantum Singularity
+	// YourLevelIsTooLowProj.DisplayName: Aura of Overwhelming Power
+	// AmanitaExplosiveMushroom.DisplayName: Explosive Amanita
+	// AmanitaHomingSpore.DisplayName: Homing Amanita Spore
+	// AmanitaLightningSpore.DisplayName: Lightning Amanita Spore
+	// AmanitaToxicMushroom.DisplayName: Toxic Amanita
+	// BatSwarmController.DisplayName: Bat Swarm
+	// BatSwarmMinion.DisplayName: Swarm Bat
+	// BonefishOrbit.DisplayName: Orbiting Bonefish
+	// BunnyfishHopper.DisplayName: Bunnyfish
+	// CatfishLeaper.DisplayName: Catfish
+	// CloudRain.DisplayName: Rain Cloud
+	// CloudRide.DisplayName: Nimbus Cloud
+	// CursedFlameStream.DisplayName: Cursed Flamestream
 	// DirtBall.DisplayName: Dirt Ball
-	// DirtFishFollower.DisplayName: Dirt Fish Follower
+	// DirtFishFollower.DisplayName: Dirtfish
 	// DrizzleFirePillar.DisplayName: Drizzle Fire Pillar
-	// DrizzleFishHolder.DisplayName: Drizzle Fish Holder
-	// DrizzleSpawnEffect.DisplayName: Drizzle Spawn Effect
-	// DynamiteExplosionEffect.DisplayName: Dynamite Explosion Effect
-	// DynamiteFishProjectile.DisplayName: Dynamite Fish Projectile
+	// DrizzleFishHolder.DisplayName: Drizzlefish
+	// DrizzleSpawnEffect.DisplayName: Drizzle Summon
+	// DynamiteExplosionEffect.DisplayName: Dynamite Fish Explosion
+	// DynamiteFishProjectile.DisplayName: Dynamite Fish
 	// FallingPenguin.DisplayName: Falling Penguin
-	// FallingStarProjectile.DisplayName: Falling Star Projectile
+	// FallingStarProjectile.DisplayName: Falling Star
 	// FishingFly.DisplayName: Fishing Fly
-	// FishSwarmController.DisplayName: Fish Swarm Controller
+	// FishSwarmController.DisplayName: Fish Swarm
 	// FishVoodooMark.DisplayName: Fish Voodoo Mark
-	// HarpyFeatherOrbit.DisplayName: Harpy Feather Orbit
-	// HellFireBlast.DisplayName: Hell Fire Blast
+	// HarpyFeatherOrbit.DisplayName: Orbiting Harpy Feather
+	// HellFireBlast.DisplayName: Hellfire Blast
 	// HellRitualCircle.DisplayName: Hell Ritual Circle
-	// HoneyBeeMinion.DisplayName: Honey Bee Minion
-	// HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm Core
-	// HungryCompanionProjectile.DisplayName: Hungry Companion Projectile
+	// HoneyBeeMinion.DisplayName: Honey Bee
+	// HoneyBeeSwarmCore.DisplayName: Honey Bee Swarm
+	// HungryCompanionProjectile.DisplayName: The Hungry
 	// IchorStream.DisplayName: Ichor Stream
 	// MudBall.DisplayName: Mud Ball
 	// MudfishSentry.DisplayName: Mudfish Sentry
-	// SkeletronHandExplode.DisplayName: Skeletron Hand Explode
-	// SkeletronHandMinion.DisplayName: Skeletron Hand Minion
+	// SkeletronHandExplode.DisplayName: Skeletron Hand
+	// SkeletronHandMinion.DisplayName: Skeletron Hand
 	// SlimeGelOrb.DisplayName: Slime Gel Orb
-	// SoulEaterBite.DisplayName: Soul Eater Bite
-	// SparklingFishHolder.DisplayName: Sparkling Fish Holder
+	// SoulEaterBite.DisplayName: Soul Eater
+	// SparklingFishHolder.DisplayName: Sparkling Fish
 	// SparklingRay.DisplayName: Sparkling Ray
-	// SparklingSpawnEffect.DisplayName: Sparkling Spawn Effect
-	// SpiralStarProjectile.DisplayName: Spiral Star Projectile
-	// WaterZombie.DisplayName: Water Zombie
+	// SparklingSpawnEffect.DisplayName: Sparkling Summon
+	// SpiralStarProjectile.DisplayName: Spiral Star
+	// WaterZombie.DisplayName: Drowned Zombie
 	// OceanCurrent.DisplayName: Ocean Current
 	PowerSoundEgg.DisplayName: Power Sound Egg
 	PhaseEnergySphere.DisplayName: Phase Energy Sphere
 	PhaseLaser.DisplayName: Phase Laser
 	EarlierSwordHeld.DisplayName: Earlier Sword Held
-	// CrabulonFriendHitbox.DisplayName: Crabulon Friend Hitbox
+	// CrabulonFriendHitbox.DisplayName: Crabulon Spore
 	ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
 	ArmourPiercerHeld.DisplayName: Armour Piercer Held
 	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
