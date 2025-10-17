@@ -583,7 +583,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         // 绘制水滴粒子
         private void DrawWaterDroplets() {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
+            Texture2D glowTex = CWRAsset.Spray.Value;//原来是CWRAsset.StarTexture_White.Value;
             Texture2D streamTex = CWRAsset.LightShot.Value;
 
             sb.End();

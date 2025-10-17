@@ -36,6 +36,8 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Extra_193 = null;
         [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Spray = null;
+        [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> StarTexture_White = null;
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> StarTexture = null;
