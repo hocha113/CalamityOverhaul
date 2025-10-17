@@ -412,6 +412,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 || target.type == CWRLoad.StormWeaverHead || target.type == CWRLoad.StormWeaverTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
+            if (target.type == NPCID.TheDestroyer) {
+                modifiers.FinalDamage *= 2.33f;
+            }
             if (target.type == ModContent.NPCType<StormWeaverBody>()) {
                 modifiers.FinalDamage *= 0.35f;
             }

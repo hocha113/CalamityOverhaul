@@ -277,6 +277,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 || target.type == CWRLoad.StormWeaverHead || target.type == CWRLoad.StormWeaverTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
+            if (target.type == NPCID.TheDestroyer) {
+                modifiers.FinalDamage *= 2.33f;
+            }
             if (target.type == ModContent.NPCType<StormWeaverBody>()) {
                 modifiers.FinalDamage *= 0.35f;
             }
@@ -352,7 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             if (target.type == CWRLoad.AresBody || target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon
                 || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon) {
-                modifiers.FinalDamage *= 0.9f;
+                modifiers.FinalDamage *= 1.175f;
             }
             if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
                 modifiers.FinalDamage *= 1.666666f;
