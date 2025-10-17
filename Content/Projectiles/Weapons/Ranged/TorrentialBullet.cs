@@ -10,19 +10,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    /// <summary>
-    /// 海洋洪流子弹 - 具有真实液体物理和海洋生物特效的弹幕
-    /// </summary>
+    ///<summary>
+    ///海洋洪流子弹 - 具有真实液体物理和海洋生物特效的弹幕
+    ///</summary>
     internal class TorrentialBullet : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        // 液体状态
+        //液体状态
         private enum OceanState
         {
-            Streaming,      // 洪流状态
-            Splashing,      // 飞溅状态
-            Dispersing      // 消散状态
+            Streaming,      //洪流状态
+            Splashing,      //飞溅状态
+            Dispersing      //消散状态
         }
 
         private OceanState State {
@@ -32,35 +32,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         private ref float StreamLife => ref Projectile.ai[1];
 
-        // 海洋液体粒子系统
+        //海洋液体粒子系统
         private readonly List<OceanDroplet> waterDroplets = new();
         private const int MaxDroplets = 120;
 
-        // 海洋泡沫粒子
+        //海洋泡沫粒子
         private readonly List<SeaFoam> foamParticles = new();
         private const int MaxFoam = 80;
 
-        // 海洋生物粒子（鱼群、海藻）
+        //海洋生物粒子（鱼群、海藻）
         private readonly List<MarineLife> marineLifeParticles = new();
         private const int MaxMarineLife = 15;
 
-        // 核心水流拖尾
+        //核心水流拖尾
         private readonly List<Vector2> coreTrail = new();
         private const int MaxCoreTrail = 20;
 
-        // 物理参数
+        //物理参数
         private const float WaterViscosity = 0.985f;
         private const float Gravity = 0.28f;
         private const float SurfaceTension = 0.18f;
         private const float WaterDensity = 1.0f;
         private const float BuoyancyForce = -0.05f;
 
-        // 视觉效果
+        //视觉效果
         private float glowPulse = 0f;
         private float wavePhase = 0f;
         private int particleSpawnCounter = 0;
 
-        // 海洋颜色主题
+        //海洋颜色主题
         private static readonly Color DeepOcean = new Color(15, 50, 90);
         private static readonly Color ShallowOcean = new Color(40, 120, 180);
         private static readonly Color OceanFoam = new Color(200, 230, 255);
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             StreamLife++;
 
-            // 状态机
+            //状态机
             switch (State) {
                 case OceanState.Streaming:
                     StreamingPhaseAI();
@@ -98,25 +98,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     break;
             }
 
-            // 更新所有粒子系统
+            //更新所有粒子系统
             UpdateCoreTrail();
             UpdateWaterDroplets();
             UpdateFoamParticles();
             UpdateMarineLife();
 
-            // 动画效果
+            //动画效果
             glowPulse = (float)Math.Sin(StreamLife * 0.2f) * 0.4f + 0.6f;
             wavePhase += 0.15f;
             if (wavePhase > MathHelper.TwoPi) wavePhase -= MathHelper.TwoPi;
 
-            // 海洋蓝色照明
+            //海洋蓝色照明
             float lightIntensity = MathHelper.Lerp(0.4f, 0.9f, glowPulse);
             Lighting.AddLight(Projectile.Center,
                 0.3f * lightIntensity,
                 0.7f * lightIntensity,
                 1.2f * lightIntensity);
 
-            // 水下音效
+            //水下音效
             if (StreamLife % 35 == 0 && State == OceanState.Streaming) {
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Volume = 0.3f,
@@ -125,45 +125,45 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 洪流状态AI
+        //洪流状态AI
         private void StreamingPhaseAI() {
-            // 应用重力和水流浮力
+            //应用重力和水流浮力
             Projectile.velocity.Y += Gravity * WaterDensity / 2f;
-            Projectile.velocity.Y += BuoyancyForce; // 模拟浮力
+            Projectile.velocity.Y += BuoyancyForce; //模拟浮力
 
-            // 粘性阻力
+            //粘性阻力
             //Projectile.velocity *= WaterViscosity;
 
-            // 生成水滴粒子
+            //生成水滴粒子
             if (particleSpawnCounter++ % 2 == 0 && waterDroplets.Count < MaxDroplets) {
                 SpawnWaterDroplet();
             }
 
-            // 生成泡沫粒子
+            //生成泡沫粒子
             if (StreamLife % 3 == 0 && foamParticles.Count < MaxFoam) {
                 SpawnFoamParticle();
             }
 
-            // 周期性生成海洋生物粒子
+            //周期性生成海洋生物粒子
             if (StreamLife % 25 == 0 && marineLifeParticles.Count < MaxMarineLife) {
                 SpawnMarineLife();
             }
 
-            // 水流波纹效果
+            //水流波纹效果
             if (StreamLife % 6 == 0) {
                 SpawnWaterRipple();
             }
 
-            // 转换到飞溅状态
+            //转换到飞溅状态
             if (StreamLife > 180 || Projectile.velocity.Length() < 1.5f) {
                 EnterSplashState();
             }
 
-            // 旋转效果（模拟水流旋涡）
+            //旋转效果（模拟水流旋涡）
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        // 飞溅状态AI
+        //飞溅状态AI
         private void SplashingPhaseAI() {
             Projectile.velocity *= 0.92f;
             Projectile.alpha += 10;
@@ -172,13 +172,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 State = OceanState.Dispersing;
             }
 
-            // 继续生成少量粒子
+            //继续生成少量粒子
             if (StreamLife % 4 == 0 && waterDroplets.Count < MaxDroplets / 2) {
                 SpawnWaterDroplet();
             }
         }
 
-        // 消散状态AI
+        //消散状态AI
         private void DispersingPhaseAI() {
             Projectile.alpha += 20;
             if (Projectile.alpha >= 255) {
@@ -188,14 +188,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.velocity *= 0.85f;
         }
 
-        // 生成水滴粒子
+        //生成水滴粒子
         private void SpawnWaterDroplet() {
             Vector2 baseVel = Projectile.velocity;
             Vector2 particleVel = baseVel + Main.rand.NextVector2Circular(3f, 3f);
 
-            // 添加波动效果
+            //添加波动效果
             float waveOffset = (float)Math.Sin(wavePhase + waterDroplets.Count * 0.3f) * 0.5f;
             particleVel += Projectile.velocity.RotatedBy(MathHelper.PiOver2) * waveOffset;
+
+            //根据速度与是否为溅射决定帧（3x3 共9帧）
+            int frame = 0;
+            float spd = particleVel.Length();
+            if (spd < 2f) frame = Main.rand.Next(0, 3);           //慢速：上排
+            else if (spd < 5f) frame = Main.rand.Next(3, 6);       //中速：中排
+            else frame = Main.rand.Next(6, 9);                     //快速：下排
 
             OceanDroplet droplet = new OceanDroplet {
                 Position = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
@@ -207,17 +214,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 RotationSpeed = Main.rand.NextFloat(-0.18f, 0.18f),
                 Opacity = 1f,
                 IsSplash = false,
-                ColorVariant = Main.rand.NextFloat(0f, 1f)
+                ColorVariant = Main.rand.NextFloat(0f, 1f),
+                Frame = frame
             };
 
             waterDroplets.Add(droplet);
         }
 
-        // 生成泡沫粒子
+        //生成泡沫粒子
         private void SpawnFoamParticle() {
             Vector2 offset = Main.rand.NextVector2Circular(12f, 12f);
             Vector2 foamVel = -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(2f, 2f);
-            foamVel.Y -= Main.rand.NextFloat(0.5f, 1.5f); // 泡沫向上漂浮
+            foamVel.Y -= Main.rand.NextFloat(0.5f, 1.5f); //泡沫向上漂浮
 
             SeaFoam foam = new SeaFoam {
                 Position = Projectile.Center + offset,
@@ -234,9 +242,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             foamParticles.Add(foam);
         }
 
-        // 生成海洋生物粒子（鱼、海藻等）
+        //生成海洋生物粒子（鱼、海藻等）
         private void SpawnMarineLife() {
-            // 随机选择生物类型
+            //随机选择生物类型
             MarineLifeType type = Main.rand.NextBool() ? MarineLifeType.Fish : MarineLifeType.Seaweed;
 
             Vector2 offset = Main.rand.NextVector2Circular(20f, 20f);
@@ -260,7 +268,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             marineLifeParticles.Add(life);
         }
 
-        // 生成水流波纹
+        //生成水流波纹
         private void SpawnWaterRipple() {
             for (int i = 0; i < 6; i++) {
                 float angle = MathHelper.TwoPi * i / 6f;
@@ -279,20 +287,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 更新水滴粒子
+        //更新水滴粒子
         private void UpdateWaterDroplets() {
             for (int i = waterDroplets.Count - 1; i >= 0; i--) {
                 OceanDroplet droplet = waterDroplets[i];
                 droplet.Life++;
 
-                // 物理更新
+                //物理更新
                 if (!droplet.IsSplash) {
-                    // 正常水流粒子
+                    //正常水流粒子
                     droplet.Velocity.Y += Gravity * WaterDensity;
                     droplet.Velocity.Y += BuoyancyForce * 0.5f;
                     droplet.Velocity *= WaterViscosity;
 
-                    // 表面张力
+                    //表面张力
                     Vector2 toCore = Projectile.Center - droplet.Position;
                     float distToCore = toCore.Length();
                     if (distToCore > 18f && distToCore < 80f) {
@@ -300,11 +308,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
                 else {
-                    // 飞溅粒子
+                    //飞溅粒子
                     droplet.Velocity.Y += Gravity * 1.8f;
                     droplet.Velocity.X *= 0.96f;
 
-                    // 地面碰撞
+                    //地面碰撞
                     if (Framing.GetTileSafely(droplet.Position.ToTileCoordinates()).HasTile) {
                         droplet.Velocity.Y *= -0.35f;
                         droplet.Velocity.X *= 0.6f;
@@ -317,16 +325,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 droplet.Position += droplet.Velocity;
                 droplet.Rotation += droplet.RotationSpeed;
 
-                // 透明度衰减
+                //透明度衰减
                 float lifeRatio = droplet.Life / (float)droplet.MaxLife;
                 droplet.Opacity = 1f - lifeRatio;
 
-                // 尺寸变化
+                //尺寸变化
                 if (droplet.IsSplash) {
                     droplet.Size *= 0.97f;
                 }
 
-                // 移除消逝的粒子
+                //移除消逝的粒子
                 if (droplet.Life >= droplet.MaxLife || droplet.Opacity <= 0.05f) {
                     waterDroplets.RemoveAt(i);
                     continue;
@@ -336,29 +344,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 更新泡沫粒子
+        //更新泡沫粒子
         private void UpdateFoamParticles() {
             for (int i = foamParticles.Count - 1; i >= 0; i--) {
                 SeaFoam foam = foamParticles[i];
                 foam.Life++;
 
-                // 泡沫向上漂浮
+                //泡沫向上漂浮
                 foam.Velocity.Y -= 0.08f;
                 foam.Velocity *= 0.98f;
                 foam.Position += foam.Velocity;
                 foam.Rotation += foam.RotationSpeed;
 
-                // 透明度和尺寸
+                //透明度和尺寸
                 float lifeRatio = foam.Life / (float)foam.MaxLife;
                 foam.Opacity = (1f - lifeRatio) * 0.9f;
-                foam.Size *= 1.01f; // 泡沫膨胀
+                foam.Size *= 1.01f; //泡沫膨胀
 
-                // 破裂阶段
+                //破裂阶段
                 if (lifeRatio > 0.8f) {
                     foam.PopPhase = (lifeRatio - 0.8f) / 0.2f;
                 }
 
-                // 移除消逝的粒子
+                //移除消逝的粒子
                 if (foam.Life >= foam.MaxLife || foam.Opacity <= 0.05f) {
                     foamParticles.RemoveAt(i);
                     continue;
@@ -368,37 +376,37 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 更新海洋生物粒子
+        //更新海洋生物粒子
         private void UpdateMarineLife() {
             for (int i = marineLifeParticles.Count - 1; i >= 0; i--) {
                 MarineLife life = marineLifeParticles[i];
                 life.Life++;
 
-                // 游动物理
+                //游动物理
                 life.Velocity.Y += Gravity * 0.5f;
-                life.Velocity.Y += BuoyancyForce * 2f; // 更强浮力
+                life.Velocity.Y += BuoyancyForce * 2f; //更强浮力
                 life.Velocity *= 0.97f;
 
-                // 游动动画
+                //游动动画
                 life.SwimPhase += 0.15f;
                 if (life.SwimPhase > MathHelper.TwoPi) life.SwimPhase -= MathHelper.TwoPi;
 
-                // 添加游动波动
+                //添加游动波动
                 float swimOffset = (float)Math.Sin(life.SwimPhase) * 0.8f;
                 Vector2 swimDirection = life.Velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
                 life.Position += life.Velocity + swimDirection * swimOffset;
 
                 life.Rotation += life.RotationSpeed;
 
-                // 发光闪烁（生物发光）
+                //发光闪烁（生物发光）
                 life.FlickerPhase += 0.12f;
                 if (life.FlickerPhase > MathHelper.TwoPi) life.FlickerPhase -= MathHelper.TwoPi;
 
-                // 透明度衰减
+                //透明度衰减
                 float lifeRatio = life.Life / (float)life.MaxLife;
                 life.Opacity = (1f - lifeRatio) * 0.8f;
 
-                // 移除消逝的粒子
+                //移除消逝的粒子
                 if (life.Life >= life.MaxLife || life.Opacity <= 0.05f) {
                     marineLifeParticles.RemoveAt(i);
                     continue;
@@ -408,7 +416,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 更新核心拖尾
+        //更新核心拖尾
         private void UpdateCoreTrail() {
             coreTrail.Insert(0, Projectile.Center);
             if (coreTrail.Count > MaxCoreTrail) {
@@ -416,19 +424,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        // 进入飞溅状态
+        //进入飞溅状态
         private void EnterSplashState() {
             State = OceanState.Splashing;
             Projectile.velocity *= 0.4f;
             Projectile.timeLeft = 80;
         }
 
-        // 碰撞处理
+        //碰撞处理
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == OceanState.Streaming) {
                 CreateOceanSplash(Projectile.Center, oldVelocity);
 
-                // 飞溅音效
+                //飞溅音效
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Volume = 0.7f,
                     Pitch = -0.1f
@@ -446,21 +454,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
 
-        // 击中NPC
+        //击中NPC
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             CreateOceanSplash(Projectile.Center, Projectile.velocity);
 
-            // 潮湿debuff
+            //潮湿debuff
             target.AddBuff(BuffID.Wet, 300);
 
-            // 击中音效
+            //击中音效
             SoundEngine.PlaySound(SoundID.Item85 with {
                 Volume = 0.6f,
                 Pitch = 0.1f
             }, Projectile.Center);
         }
 
-        // 创建海洋飞溅效果
+        //创建海洋飞溅效果
         private void CreateOceanSplash(Vector2 hitPosition, Vector2 impactVelocity) {
             Vector2 normal = -impactVelocity.SafeNormalize(Vector2.Zero);
             float impactSpeed = impactVelocity.Length();
@@ -476,6 +484,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 velocity = angle.ToRotationVector2() * speed;
 
                 if (waterDroplets.Count < MaxDroplets * 2) {
+                    //飞溅水滴使用更混乱的帧（随机整张9帧）
+                    int frame = Main.rand.Next(0, 9);
                     OceanDroplet splash = new OceanDroplet {
                         Position = hitPosition + Main.rand.NextVector2Circular(10f, 10f),
                         Velocity = velocity,
@@ -486,12 +496,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         RotationSpeed = Main.rand.NextFloat(-0.25f, 0.25f),
                         Opacity = 1f,
                         IsSplash = true,
-                        ColorVariant = Main.rand.NextFloat(0f, 1f)
+                        ColorVariant = Main.rand.NextFloat(0f, 1f),
+                        Frame = frame
                     };
                     waterDroplets.Add(splash);
                 }
 
-                // 原版水尘埃
+                //原版水尘埃
                 if (i % 3 == 0) {
                     Dust water = Dust.NewDustPerfect(
                         hitPosition,
@@ -506,7 +517,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
 
-            // 飞溅泡沫
+            //飞溅泡沫
             for (int i = 0; i < 20; i++) {
                 float angle = mainAngle + Main.rand.NextFloat(-1f, 1f);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
@@ -527,11 +538,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
 
-            // 飞溅环
+            //飞溅环
             CreateSplashRing(hitPosition, mainAngle, impactSpeed);
         }
 
-        // 创建飞溅环
+        //创建飞溅环
         private void CreateSplashRing(Vector2 center, float direction, float intensity) {
             int ringCount = (int)(intensity * 1.2f);
             ringCount = Math.Clamp(ringCount, 20, 40);
@@ -563,16 +574,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             SpriteBatch sb = Main.spriteBatch;
 
-            // 绘制海洋生物
+            //绘制海洋生物
             DrawMarineLife();
 
-            // 绘制泡沫
+            //绘制泡沫
             DrawFoamParticles();
 
-            // 绘制水滴
+            //绘制水滴
             DrawWaterDroplets();
 
-            // 绘制核心水流
+            //绘制核心水流
             if (State == OceanState.Streaming) {
                 DrawStreamCore(sb);
             }
@@ -580,52 +591,63 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return false;
         }
 
-        // 绘制水滴粒子
+        //绘制水滴粒子 (适配 3x3 Spray 帧图)
         private void DrawWaterDroplets() {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
+            Texture2D glowTex = CWRAsset.Spray.Value; //3x3 水滴帧图
             Texture2D streamTex = CWRAsset.LightShot.Value;
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+            int columns = 3;
+            int rows = 3;
+            int frameWidth = glowTex.Width / columns;
+            int frameHeight = glowTex.Height / rows;
+
             foreach (var droplet in waterDroplets) {
                 Vector2 drawPos = droplet.Position - Main.screenPosition;
                 float scale = droplet.Size * 0.09f;
 
-                // 海洋蓝色渐变
+                //海洋蓝色渐变
                 Color deepColor = Color.Lerp(DeepOcean, ShallowOcean, droplet.ColorVariant);
                 Color waterColor = deepColor * droplet.Opacity * 0.9f;
 
-                // 水滴主体
+                //帧源矩形
+                int frameIndex = droplet.Frame % (columns * rows);
+                int fx = (frameIndex % columns) * frameWidth;
+                int fy = (frameIndex / columns) * frameHeight;
+                Rectangle source = new Rectangle(fx, fy, frameWidth, frameHeight);
+
+                //水滴主体
                 sb.Draw(
                     glowTex,
                     drawPos,
-                    null,
+                    source,
                     waterColor,
                     droplet.Rotation,
-                    glowTex.Size() / 2f,
+                    new Vector2(frameWidth / 2f, frameHeight / 2f),
                     scale * 1.3f,
                     SpriteEffects.None,
                     0
                 );
 
-                // 水滴高光
+                //水滴高光 (同一帧, 缩放与颜色变化)
                 Color highlightColor = BioluminescentBlue * droplet.Opacity * 0.7f;
                 sb.Draw(
                     glowTex,
                     drawPos,
-                    null,
+                    source,
                     highlightColor,
                     droplet.Rotation * 1.5f,
-                    glowTex.Size() / 2f,
+                    new Vector2(frameWidth / 2f, frameHeight / 2f),
                     scale * 0.7f,
                     SpriteEffects.None,
                     0
                 );
 
-                // 拉伸效果（快速移动的水滴）
+                //拉伸效果（快速移动的水滴）
                 if (!droplet.IsSplash && droplet.Velocity.Length() > 5f) {
                     float rotation = droplet.Velocity.ToRotation();
                     Color trailColor = waterColor * 0.5f;
@@ -648,7 +670,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        // 绘制泡沫粒子
+        //绘制泡沫粒子
         private void DrawFoamParticles() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.StarTexture_White.Value;
@@ -661,10 +683,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 drawPos = foam.Position - Main.screenPosition;
                 float scale = foam.Size * 0.06f;
 
-                // 泡沫白色
+                //泡沫白色
                 Color foamColor = OceanFoam * foam.Opacity * (1f - foam.PopPhase * 0.5f);
 
-                // 泡沫主体
+                //泡沫主体
                 sb.Draw(
                     glowTex,
                     drawPos,
@@ -677,7 +699,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     0
                 );
 
-                // 泡沫边缘
+                //泡沫边缘
                 Color edgeColor = new Color(150, 200, 255) * foam.Opacity * 0.5f;
                 sb.Draw(
                     glowTex,
@@ -697,7 +719,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        // 绘制海洋生物
+        //绘制海洋生物
         private void DrawMarineLife() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.StarTexture_White.Value;
@@ -710,13 +732,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 drawPos = life.Position - Main.screenPosition;
                 float scale = life.Size * 0.05f;
 
-                // 生物发光效果
+                //生物发光效果
                 float flicker = (float)Math.Sin(life.FlickerPhase) * 0.3f + 0.7f;
                 Color lifeColor = life.Type == MarineLifeType.Fish
                     ? BioluminescentBlue * life.Opacity * flicker
                     : new Color(50, 150, 100) * life.Opacity * flicker;
 
-                // 主体
+                //主体
                 sb.Draw(
                     glowTex,
                     drawPos,
@@ -729,7 +751,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     0
                 );
 
-                // 发光核心
+                //发光核心
                 Color coreColor = Color.White * life.Opacity * flicker * 0.6f;
                 sb.Draw(
                     glowTex,
@@ -743,7 +765,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     0
                 );
 
-                // 游动拖尾（仅鱼类）
+                //游动拖尾（仅鱼类）
                 if (life.Type == MarineLifeType.Fish) {
                     Vector2 tailOffset = -life.Velocity.SafeNormalize(Vector2.Zero) * scale * 30f;
                     Color tailColor = lifeColor * 0.4f;
@@ -766,7 +788,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        // 绘制水流核心
+        //绘制水流核心
         private void DrawStreamCore(SpriteBatch sb) {
             if (coreTrail.Count < 2) return;
 
@@ -776,14 +798,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            // 绘制核心拖尾
+            //绘制核心拖尾
             for (int i = 0; i < coreTrail.Count - 1; i++) {
                 float progress = 1f - i / (float)coreTrail.Count;
                 Vector2 drawPos = coreTrail[i] - Main.screenPosition;
                 Vector2 toNext = coreTrail[i + 1] - coreTrail[i];
                 float rotation = toNext.ToRotation();
 
-                // 海洋蓝色渐变
+                //海洋蓝色渐变
                 Color coreColor = Color.Lerp(
                     BioluminescentBlue,
                     ShallowOcean,
@@ -804,7 +826,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     0
                 );
 
-                // 外层光晕
+                //外层光晕
                 Color glowColor = new Color(100, 180, 255) * progress * glowPulse * 0.5f;
                 sb.Draw(
                     coreTex,
@@ -819,7 +841,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 );
             }
 
-            // 绘制水流头部
+            //绘制水流头部
             Vector2 headPos = Projectile.Center - Main.screenPosition;
             Color headColor = BioluminescentBlue * glowPulse;
 
@@ -835,7 +857,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 0
             );
 
-            // 头部强光核心（波动效果）
+            //头部强光核心（波动效果）
             Texture2D starTex = CWRAsset.StarTexture_White.Value;
             float pulseScale = 0.1f + (float)Math.Sin(wavePhase) * 0.02f;
             Color starColor = Color.White * glowPulse * 0.9f;
@@ -857,12 +879,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            // 死亡时残留飞溅
+            //死亡时残留飞溅
             if (State == OceanState.Streaming) {
                 CreateOceanSplash(Projectile.Center, Projectile.velocity * 0.6f);
             }
 
-            // 残留水效果
+            //残留水效果
             for (int i = 0; i < 25; i++) {
                 Dust water = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
@@ -876,7 +898,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 water.fadeIn = 1.3f;
             }
 
-            // 泡沫爆发
+            //泡沫爆发
             for (int i = 0; i < 15; i++) {
                 Dust foam = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -901,9 +923,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
     #region 粒子数据结构
 
-    /// <summary>
-    /// 海洋水滴粒子
-    /// </summary>
+    ///<summary>
+    ///海洋水滴粒子
+    ///</summary>
     internal struct OceanDroplet
     {
         public Vector2 Position;
@@ -915,12 +937,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public float RotationSpeed;
         public float Opacity;
         public bool IsSplash;
-        public float ColorVariant; // 0-1，用于颜色变化
+        public float ColorVariant; //0-1，用于颜色变化
+        public int Frame; //3x3 Spray 帧索引 0-8
     }
 
-    /// <summary>
-    /// 海洋泡沫粒子
-    /// </summary>
+    ///<summary>
+    ///海洋泡沫粒子
+    ///</summary>
     internal struct SeaFoam
     {
         public Vector2 Position;
@@ -931,21 +954,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public float Rotation;
         public float RotationSpeed;
         public float Opacity;
-        public float PopPhase; // 0-1，破裂阶段
+        public float PopPhase; //0-1，破裂阶段
     }
 
-    /// <summary>
-    /// 海洋生物类型
-    /// </summary>
+    ///<summary>
+    ///海洋生物类型
+    ///</summary>
     internal enum MarineLifeType
     {
-        Fish,       // 小鱼
-        Seaweed     // 海藻
+        Fish,       //小鱼
+        Seaweed     //海藻
     }
 
-    /// <summary>
-    /// 海洋生物粒子
-    /// </summary>
+    ///<summary>
+    ///海洋生物粒子
+    ///</summary>
     internal struct MarineLife
     {
         public Vector2 Position;
@@ -957,8 +980,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public float RotationSpeed;
         public float Opacity;
         public MarineLifeType Type;
-        public float SwimPhase;     // 游动动画相位
-        public float FlickerPhase;  // 闪烁相位（生物发光）
+        public float SwimPhase;     //游动动画相位
+        public float FlickerPhase;  //闪烁相位（生物发光）
     }
 
     #endregion
