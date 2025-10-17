@@ -61,11 +61,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private float wavePhase = 0f;
         private int particleSpawnCounter = 0;
 
+        //消散宽限控制
+        private int dispersalStartLife = -1; //进入消散阶段时记录生命周期计数
+        private const int MaxGraceTicks = 90; //最大宽限时间（保证粒子能自然淡出）
+
         //海洋颜色主题
-        private static readonly Color DeepOcean = new Color(15, 50, 90);
-        private static readonly Color ShallowOcean = new Color(40, 120, 180);
-        private static readonly Color OceanFoam = new Color(200, 230, 255);
-        private static readonly Color BioluminescentBlue = new Color(80, 180, 255);
+        private static readonly Color DeepOcean = new(15, 50, 90);
+        private static readonly Color ShallowOcean = new(40, 120, 180);
+        private static readonly Color OceanFoam = new(200, 230, 255);
+        private static readonly Color BioluminescentBlue = new(80, 180, 255);
 
         public override void SetDefaults() {
             Projectile.width = 24;
@@ -124,6 +128,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Pitch = Main.rand.NextFloat(-0.3f, 0.1f)
                 }, Projectile.Center);
             }
+
+            //若即将自然过期且仍在Streaming则提前进入飞溅以开始平滑消散
+            if (Projectile.timeLeft < 30 && State == OceanState.Streaming) {
+                EnterSplashState();
+            }
         }
 
         //洪流状态AI
@@ -181,12 +190,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         //消散状态AI
         private void DispersingPhaseAI() {
-            Projectile.alpha += 20;
-            if (Projectile.alpha >= 255) {
-                Projectile.Kill();
-            }
+            if (dispersalStartLife < 0) dispersalStartLife = (int)StreamLife;
 
             Projectile.velocity *= 0.85f;
+
+            //更柔和的透明度增加
+            Projectile.alpha = Math.Min(255, Projectile.alpha + 12);
+
+            bool anyParticles = waterDroplets.Count > 0 || foamParticles.Count > 0 || marineLifeParticles.Count > 0;
+            int elapsed = (int)StreamLife - dispersalStartLife;
+
+            //当粒子尚未完全淡出且宽限时间未结束时持续续命(保持timeLeft低值避免被清理)
+            if (Projectile.alpha >= 255) {
+                if (anyParticles && elapsed < MaxGraceTicks) {
+                    Projectile.timeLeft = Math.Max(Projectile.timeLeft, 2);
+                }
+                else {
+                    Projectile.Kill();
+                }
+            }
+            else {
+                //尚未全透明也保持续命直到透明度达到
+                if (anyParticles) {
+                    Projectile.timeLeft = Math.Max(Projectile.timeLeft, 2);
+                }
+            }
         }
 
         //生成水滴粒子
@@ -429,7 +457,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private void EnterSplashState() {
             State = OceanState.Splashing;
             Projectile.velocity *= 0.4f;
-            Projectile.timeLeft = 80;
+            Projectile.timeLeft = Math.Max(Projectile.timeLeft, 80);
         }
 
         //碰撞处理
@@ -452,7 +480,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return false;
             }
 
-            return true;
+            Projectile.velocity = Vector2.Zero;
+            return false;
         }
 
         //击中NPC
@@ -545,8 +574,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         //创建飞溅环
         private void CreateSplashRing(Vector2 center, float direction, float intensity) {
-            int ringCount = (int)(intensity * 1.2f);
-            ringCount = Math.Clamp(ringCount, 20, 40);
+            int ringCount = Math.Clamp((int)(intensity * 1.2f), 20, 40);
 
             for (int i = 0; i < ringCount; i++) {
                 float angle = direction + MathHelper.Lerp(-MathHelper.Pi, MathHelper.Pi, i / (float)ringCount);
@@ -565,9 +593,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return false;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             //绘制海洋生物
@@ -608,7 +634,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 int frameIndex = droplet.Frame % (columns * rows);
                 int fx = (frameIndex % columns) * frameWidth;
                 int fy = (frameIndex / columns) * frameHeight;
-                Rectangle source = new Rectangle(fx, fy, frameWidth, frameHeight);
+                Rectangle source = new(fx, fy, frameWidth, frameHeight);
 
                 //水滴主体
                 sb.Draw(
