@@ -610,7 +610,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
                 bubble.noGravity = false;
             }
-            
+
             if (!VaultUtils.isServer) {
                 //主要尸块（3-5块）
                 int mainGoreCount = Main.rand.Next(3, 6);
@@ -650,7 +650,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
                 blood.noGravity = false;
             }
-            
+
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(-0.2f, 0.2f);
                 Vector2 smokeVel = new Vector2(

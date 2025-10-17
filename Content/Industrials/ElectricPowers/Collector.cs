@@ -632,7 +632,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 if (Projectile.Distance(targetItem.Center) < 32) {
                     graspItem = targetItem.Clone();
                     targetItem.TurnToAir();
-                    
+
                     if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
                     }
