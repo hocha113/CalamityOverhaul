@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -86,6 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         }
 
         public override void Update(GameTime gameTime) {
+            _ = SupCalSkyEffect.Cek();
             //根据对话场景状态调整强度
             if (SupCalSkyEffect.IsActive) {
                 if (intensity < 1f) {
@@ -125,11 +127,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     ///</summary>
     internal class SupCalSkyEffect : ModSystem
     {
-        public static bool IsActive = false;
+        public static bool IsActive;
+        public static int CekTimer = 0;
         private int particleTimer = 0;
 
+        public static bool Cek() {
+            if (!IsActive) {
+                CekTimer = 0;
+                return false;
+            }
+
+            if (Main.gameMenu) {//主菜单界面自动关闭效果
+                IsActive = false;
+                //如果退出到主菜单，重置对话场景状态
+                FirstMetSupCalNPC.Spawned = false;
+                FirstMetSupCalNPC.RandomTimer = 0;
+                SupCalDefeatNPC.Spawned = false;
+                SupCalDefeatNPC.RandomTimer = 0;
+                return false;
+            }
+
+            return true;
+        }
+
         public override void PostUpdateEverything() {
-            if (!IsActive || Main.gameMenu) {
+            if (!Cek()) {
+                return;
+            }
+
+            if (++CekTimer > 60 * 60 * 3) {//一次开启后最多持续3分钟
+                IsActive = false;
                 return;
             }
 
