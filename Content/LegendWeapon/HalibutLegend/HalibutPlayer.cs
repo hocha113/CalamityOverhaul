@@ -247,8 +247,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 ResurrectionSystem.Update();
             }
 
-            foreach (var scenario in ADVScenarioBase.Instances) {
-                scenario.Update(ADCSave, this);
+            if (Player.whoAmI == Main.myPlayer) {//关于ADV场景的更新只在本地玩家上进行
+                foreach (var scenario in ADVScenarioBase.Instances) {
+                    scenario.Update(ADCSave, this);
+                }
             }
 
             //克隆技能记录
