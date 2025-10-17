@@ -229,10 +229,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 2.25f;
             }
             if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.65f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.45f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 1.1f;
