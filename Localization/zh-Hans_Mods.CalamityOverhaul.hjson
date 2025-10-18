@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1559,6 +1559,7 @@ Projectiles: {
 	IceBoomerangHeld.DisplayName: 冰雪回旋镖
 	TrimarangHeld.DisplayName: 三叶回旋镖
 	DeathSickleThrowable.DisplayName: 死亡镰刀
+	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 }
 
 Configs: {
@@ -6089,6 +6090,12 @@ FishSkill: {
 			开火期间冷却时间不会减少
 			'''
 		Studied: 我认为它不止能用来点燃篝火
+	}
+
+	FishofCthulu: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

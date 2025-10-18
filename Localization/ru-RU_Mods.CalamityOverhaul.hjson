@@ -1586,6 +1586,7 @@ Projectiles: {
 	IceBoomerangHeld.DisplayName: Ice Boomerang Held
 	TrimarangHeld.DisplayName: Trimarang Held
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 }
 
 Configs: {
@@ -6182,6 +6183,12 @@ FishSkill: {
 	}
 
 	FishDrizzle: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishofCthulu: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
