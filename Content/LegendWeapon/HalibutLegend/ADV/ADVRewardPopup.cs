@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.Projectiles.Others;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -372,26 +373,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             item.SetDefaults(current.ItemId);
             Main.instance.LoadItem(current.ItemId);
             Texture2D tex = TextureAssets.Item[item.type].Value;
-            Rectangle frame = tex.Bounds;
+
             float bounce = (float)Math.Sin(MathHelper.Clamp(ease * 1.2f, 0f, 1f) * MathHelper.Pi) * 0.08f;
             float itemScale = (iconScaleEase + bounce) * panelScale;
             float floatOff = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.2f + a) * 4f * iconAlpha;
             Vector2 floatPos = iconCenter + new Vector2(0, floatOff);
 
             VaultUtils.SimpleDrawItem(spriteBatch, current.ItemId, floatPos, 10, itemScale * 6, 0, Color.White * (iconAlpha * alpha));
+            if (current.Stack > 1) {
+                Vector2 hs = FontAssets.MouseText.Value.MeasureString(current.Stack.ToString());
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, current.Stack.ToString()
+                , floatPos.X - hs.X / 2, floatPos.Y + hs.Y, Color.White * (iconAlpha * alpha), Color.Black, new Vector2(0.2f), 0.8f);
+            }
 
             string name = current.CustomText;
             if (string.IsNullOrEmpty(name)) name = item.Name;
             var font = FontAssets.MouseText.Value;
+            Vector2 hs2 = font.MeasureString(name) * 0.8f;
+            Vector2 hsOffset = new Vector2(hs2.X / -2, hs2.Y / 2);
             Vector2 namePos = iconCenter + new Vector2(0, 40f);
             float nameAlpha = iconAlpha * alpha;
             Color nameGlow = new Color(140, 230, 255) * (nameAlpha * 0.6f);
+            
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
                 Vector2 off = ang.ToRotationVector2() * 1.7f;
-                Utils.DrawBorderString(spriteBatch, name, namePos + off, nameGlow * 0.55f, 0.8f);
+                Utils.DrawBorderString(spriteBatch, name, namePos + off + hsOffset, nameGlow * 0.55f, 0.8f);
             }
-            Utils.DrawBorderString(spriteBatch, name, namePos, Color.White * nameAlpha, 0.8f);
+
+            Utils.DrawBorderString(spriteBatch, name, namePos + hsOffset, Color.White * nameAlpha, 0.8f);
+
             if (a >= 1f) {
                 string hint;
                 if (current.RequireClick) {
