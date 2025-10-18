@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1224,6 +1224,16 @@ Items: {
 			“Also known as the Coffin Bearer.”
 			'''
 	}
+
+	EncyclopediaofOceanicKnowledge: {
+		DisplayName: Encyclopediaof Oceanic Knowledge
+		Tooltip: ""
+	}
+
+	TheForgottenTome: {
+		DisplayName: The Forgotten Tome
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1588,6 +1598,7 @@ Projectiles: {
 	CthulhuEye.DisplayName: Cthulhu Eye
 	JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
 	JewelGemProjectile.DisplayName: Jewel Gem Projectile
+	EncyclopediaEffect.DisplayName: Encyclopedia Effect
 }
 
 Configs: {

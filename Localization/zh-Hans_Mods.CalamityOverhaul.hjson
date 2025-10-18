@@ -1205,6 +1205,21 @@ Items: {
 			"也叫抬棺人"
 			'''
 	}
+
+	EncyclopediaofOceanicKnowledge: {
+		DisplayName: 海洋知识百科全书
+		Tooltip:
+			'''
+			使用后瞬间领悟所有鱼类知识
+			解锁全部鱼类技能
+			[c/FFD700:海洋的智慧将汇聚于你]
+			'''
+	}
+
+	TheForgottenTome: {
+		// DisplayName: The Forgotten Tome
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1569,6 +1584,7 @@ Projectiles: {
 	// CthulhuEye.DisplayName: Cthulhu Eye
 	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
 	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
+	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
 }
 
 Configs: {
