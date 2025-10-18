@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV;
+using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameSystem;
