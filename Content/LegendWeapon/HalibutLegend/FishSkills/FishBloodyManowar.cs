@@ -182,7 +182,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (PhaseTimer >= GatherDuration) {
                 Phase = AxePhase.Raising;
                 PhaseTimer = 0;
-                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.4f }, handlePosition);
             }
         }
 
