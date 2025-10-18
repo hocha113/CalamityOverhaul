@@ -231,6 +231,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //创建技能槽位，但标记为未激活状态
             SkillSlot newSlot = AddSkillSlot(fishSkill, 0f);
             halibutUISkillSlots.Add(newSlot);
+            if (player.Alives() && player.TryGetModPlayer<HalibutSave>(out var save)) {
+                save.unlockSkills.Add(fishSkill);
+            }
 
             //记录这个槽位需要等待对应的粒子
             int particleIndex = flyingParticles.Count - 1;
