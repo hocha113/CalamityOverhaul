@@ -106,7 +106,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //追踪目标
         private int targetNPC = -1;
-        private float homingStrength = 0f;
 
         //环绕参数
         private float orbitAngle = 0f;
@@ -164,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 40;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 8;
+            Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
@@ -175,6 +174,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             orbitAngle = EyeID * MathHelper.TwoPi / 4f;
             randOrbitRadius = Main.rand.NextFloat(-20f, 20f);
         }
+
+        public override bool? CanDamage() => AIState != (int)EyeState.Orbiting;
 
         public override void AI() {
             AITimer++;
@@ -269,7 +270,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 AIState = (float)EyeState.Orbiting;
                 AITimer = 0;
                 orbitDuration = 0;
-                homingStrength = 0.03f;
                 isOrbiting = true;
 
                 //播放锁定音效
