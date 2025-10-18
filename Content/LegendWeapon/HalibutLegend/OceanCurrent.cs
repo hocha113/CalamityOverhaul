@@ -94,6 +94,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         //    }
         //}
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            Projectile.damage = (int)(Projectile.damage * 0.6f);
+            if (target.IsWormBody()) {
+                Projectile.damage *= (int)0.8f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+        }
+
         public override void AI() {
             StreamLife++;
 
