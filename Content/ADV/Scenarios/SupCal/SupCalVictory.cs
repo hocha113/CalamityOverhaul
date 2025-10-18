@@ -91,6 +91,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 return;//玩家没有选择战斗
             }
 
+            if (NPC.downedMoonlord) {
+                return;//月球领主后不会触发
+            }
+
             if (!SupCalVictoryNPC.Spawned) {
                 return;
             }

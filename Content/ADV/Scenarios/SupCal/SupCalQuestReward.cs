@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Line1 = this.GetLocalization(nameof(Line1), () => "做的不错");
             Line2 = this.GetLocalization(nameof(Line2), () => "这把弩挺适合你的");
             Line3 = this.GetLocalization(nameof(Line3), () => "你帮我解决了一个麻烦");
-            Line4 = this.GetLocalization(nameof(Line4), () => "作为奖励，这些灾厄余烬就归你了");
+            Line4 = this.GetLocalization(nameof(Line4), () => "作为奖励，这些就归你了");
             Line5 = this.GetLocalization(nameof(Line5), () => "还有这把刀，我需要你拿着它去干掉那只虫子，放心，报酬会更丰富");
             Line6 = this.GetLocalization(nameof(Line6), () => "我施加了一部分硫火灵异在上面，可以让你轻松一些");
             Line7 = this.GetLocalization(nameof(Line7), () => "......");
