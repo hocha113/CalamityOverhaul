@@ -1611,6 +1611,9 @@ Projectiles: {
 	ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
 	TunabeardDashProj.DisplayName: Tunabeard Dash Proj
 	TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
+	BloodyAxeController.DisplayName: Bloody Axe Controller
+	BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
+	BloodyStrikeWave.DisplayName: Bloody Strike Wave
 }
 
 Configs: {
@@ -6131,6 +6134,12 @@ FishSkill: {
 	}
 
 	FishTunabeard: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishBloodyManowar: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""

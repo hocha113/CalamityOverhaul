@@ -1596,6 +1596,9 @@ Projectiles: {
 	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
 	// TunabeardDashProj.DisplayName: Tunabeard Dash Proj
 	// TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
+	// BloodyAxeController.DisplayName: Bloody Axe Controller
+	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
+	// BloodyStrikeWave.DisplayName: Bloody Strike Wave
 }
 
 Configs: {
@@ -6156,6 +6159,12 @@ FishSkill: {
 			突刺期间全程无敌并且可以穿墙
 			'''
 		Studied: 对鱼来说海盗和强盗有区别吗？
+	}
+
+	FishBloodyManowar: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 
