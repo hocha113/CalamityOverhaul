@@ -1602,6 +1602,7 @@ Projectiles: {
 	// BloodyAxeController.DisplayName: Bloody Axe Controller
 	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
 	// BloodyStrikeWave.DisplayName: Bloody Strike Wave
+	// UnicornFishDashProj.DisplayName: Unicorn Fish Dash Proj
 }
 
 Configs: {
@@ -6055,6 +6056,12 @@ FishSkill: {
 	}
 
 	FishBloodyManowar: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishUnicorn: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
