@@ -188,6 +188,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                Projectile.damage *= (int)0.7f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.43f;
+            }
+        }
 
         public override void AI() {
             GelLife++;

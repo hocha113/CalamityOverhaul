@@ -59,6 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
+
         private static void CleanupInactiveBones() {
             ActiveBones.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
         }
@@ -165,6 +166,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 10086;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 3;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                Projectile.damage *= (int)0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
         }
 
         public override void AI() {

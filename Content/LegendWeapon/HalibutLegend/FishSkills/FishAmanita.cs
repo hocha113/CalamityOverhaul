@@ -509,6 +509,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                Projectile.damage *= (int)0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
+        }
 
         public override void AI() {
             if (!deployed) {
@@ -694,6 +702,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                Projectile.damage *= (int)0.75f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.33f;
+            }
         }
 
         public override void AI() {
