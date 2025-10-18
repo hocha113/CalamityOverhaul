@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 隐藏玩家计时器
         /// </summary>
         public int HidePlayerTime;
+        /// <summary>
+        /// 锁定控制面板的时间
+        /// </summary>
+        public int IsInteractionLockedTime;
 
         #region 深渊复苏系统
         /// <summary>
@@ -313,6 +318,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             if (VaultUtils.isServer || !HeldHalibut) {
                 return;
+            }
+
+            if (IsInteractionLockedTime > 0) {
+                IsInteractionLockedTime--;
+                if (!DomainUI.Instance.IsInteractionLocked) {
+                    DomainUI.Instance.IsInteractionLocked = true;
+                }
+            }
+            else {
+                if (DomainUI.Instance.IsInteractionLocked) {
+                    DomainUI.Instance.IsInteractionLocked = false;
+                }
             }
 
             YourLevelIsTooLow.TryAutoActivate(Player);

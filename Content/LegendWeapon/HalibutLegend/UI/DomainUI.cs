@@ -32,6 +32,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float extraEyeTooltipRotation = 0f;
         private float extraEyeTooltipShock = 0f;
 
+        //操控禁止相关
+        private bool isInteractionLocked = false;
+        private float lockOverlayAlpha = 0f;
+        private float lockPulseTimer = 0f;
+        private readonly List<LockParticle> lockParticles = [];
+        private float lockIconRotation = 0f;
+        private float lockShakeOffset = 0f;
+        private int lockShakeTimer = 0;
+
+        ///<summary>
+        ///设置或获取面板是否禁止操控
+        ///</summary>
+        public bool IsInteractionLocked {
+            get => isInteractionLocked;
+            set {
+                if (isInteractionLocked != value) {
+                    isInteractionLocked = value;
+                    if (value) {
+                        OnInteractionLocked();
+                    }
+                    else {
+                        OnInteractionUnlocked();
+                    }
+                }
+            }
+        }
+
+        ///<summary>
+        ///锁定时触发的效果
+        ///</summary>
+        private void OnInteractionLocked() {
+            lockShakeTimer = 15;
+            SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f, Pitch = -0.3f });
+            //生成锁定粒子效果
+            for (int i = 0; i < 20; i++) {
+                float angle = (i / 20f) * MathHelper.TwoPi;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
+                lockParticles.Add(new LockParticle(halibutCenter, velocity, new Color(200, 100, 100)));
+            }
+        }
+
+        ///<summary>
+        ///解锁时触发的效果
+        ///</summary>
+        private void OnInteractionUnlocked() {
+            SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.2f });
+            //生成解锁粒子效果
+            for (int i = 0; i < 15; i++) {
+                float angle = (i / 15f) * MathHelper.TwoPi;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 2.5f);
+                lockParticles.Add(new LockParticle(halibutCenter, velocity, new Color(100, 255, 150)));
+            }
+        }
+
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "海域领域");
             ExtraEyeTitleText = this.GetLocalization(nameof(ExtraEyeTitleText), () => "第 十 层");
@@ -236,6 +290,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 contentFadeProgress = Math.Clamp(contentFadeProgress, 0f, 1f);
             }
 
+            //更新锁定状态动画
+            UpdateLockAnimation();
+
             //更新眼睛
             hoveredEye = null;
             foreach (var eye in eyes) {
@@ -243,8 +300,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (eye.IsHovered && hoveringPanel) {
                     hoveredEye = eye;
                 }
-                if (eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
+                //锁定时禁止点击
+                if (!isInteractionLocked && eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
                     HandleEyeToggle(eye);
+                }
+                else if (isInteractionLocked && eye.IsHovered && Main.mouseLeft && Main.mouseLeftRelease) {
+                    //触发锁定反馈
+                    TriggerLockedFeedback();
                 }
             }
 
@@ -263,12 +325,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             extraEye.Update(halibutCenter, canShowExtra, easedProgress);
             extraEyeHovered = extraEye.IsHovered && hoveringPanel;
-            if (extraEyeHovered && Main.mouseLeft && Main.mouseLeftRelease && canShowExtra) {
+            //锁定时禁止点击
+            if (!isInteractionLocked && extraEyeHovered && Main.mouseLeft && Main.mouseLeftRelease && canShowExtra) {
                 extraEye.Toggle();
                 SoundEngine.PlaySound(SoundID.MenuTick);
                 if (extraEye.IsActive) {
                     halibutPulses.Add(new HalibutPulseEffect(halibutCenter));
                 }
+            }
+            else if (isInteractionLocked && extraEyeHovered && Main.mouseLeft && Main.mouseLeftRelease && canShowExtra) {
+                //触发锁定反馈
+                TriggerLockedFeedback();
             }
 
             int currentActiveCount = ActiveEyeCount;
@@ -313,6 +380,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (halibutPulses[i].Finished) {
                     halibutPulses.RemoveAt(i);
                 }
+            }
+        }
+
+        ///<summary>
+        ///更新锁定动画效果
+        ///</summary>
+        private void UpdateLockAnimation() {
+            //更新覆盖层透明度
+            if (isInteractionLocked) {
+                lockOverlayAlpha = Math.Min(lockOverlayAlpha + 0.08f, 0.65f);
+                lockPulseTimer += 0.05f;
+                lockIconRotation += 0.02f;
+            }
+            else {
+                lockOverlayAlpha = Math.Max(lockOverlayAlpha - 0.12f, 0f);
+            }
+
+            //更新震动效果
+            if (lockShakeTimer > 0) {
+                lockShakeTimer--;
+                lockShakeOffset = (float)Math.Sin(lockShakeTimer * 0.8f) * (lockShakeTimer * 0.3f);
+            }
+            else {
+                lockShakeOffset = 0f;
+            }
+
+            //更新锁定粒子
+            for (int i = lockParticles.Count - 1; i >= 0; i--) {
+                lockParticles[i].Update();
+                if (lockParticles[i].Life >= lockParticles[i].MaxLife) {
+                    lockParticles.RemoveAt(i);
+                }
+            }
+        }
+
+        ///<summary>
+        ///触发锁定反馈（玩家尝试在锁定时操作）
+        ///</summary>
+        private void TriggerLockedFeedback() {
+            lockShakeTimer = 12;
+            SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.4f, Pitch = -0.5f });
+            //生成少量警告粒子
+            for (int i = 0; i < 8; i++) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 4f);
+                lockParticles.Add(new LockParticle(Main.MouseScreen, velocity, new Color(255, 150, 150)));
             }
         }
 
@@ -472,6 +585,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             foreach (var anim in activationAnimations) {
                 anim.Draw(spriteBatch, alpha);
             }
+            //绘制锁定效果
+            if (lockOverlayAlpha > 0.01f) {
+                DrawLockOverlay(spriteBatch, alpha);
+            }
+            //绘制锁定粒子
+            foreach (var lockParticle in lockParticles) {
+                lockParticle.Draw(spriteBatch, alpha);
+            }
             if (expandProgress > 0.8f) {
                 DrawTitle(spriteBatch, alpha);
             }
@@ -481,6 +602,178 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             else if (extraEyeHovered && expandProgress >= 0.4f) {
                 DrawExtraEyeTooltip(spriteBatch, alpha);
             }
+        }
+
+        ///<summary>
+        ///绘制锁定覆盖层效果
+        ///</summary>
+        private void DrawLockOverlay(SpriteBatch spriteBatch, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            
+            //计算面板区域（带震动偏移）
+            Vector2 shakeOffset = new Vector2(lockShakeOffset, 0);
+            Rectangle panelRect = new Rectangle(
+                (int)(DrawPosition.X + shakeOffset.X),
+                (int)(DrawPosition.Y + shakeOffset.Y),
+                (int)Size.X,
+                (int)Size.Y
+            );
+
+            //绘制半透明红色覆盖层（脉动效果）
+            float pulseValue = (float)Math.Sin(lockPulseTimer * 3f) * 0.15f + 0.35f;
+            Color overlayColor = new Color(180, 60, 60) * (lockOverlayAlpha * pulseValue * alpha);
+            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), overlayColor);
+
+            //绘制扫描线效果
+            int scanLineCount = 8;
+            for (int i = 0; i < scanLineCount; i++) {
+                float lineY = panelRect.Y + (panelRect.Height / (float)scanLineCount) * i;
+                float lineOffset = ((Main.GlobalTimeWrappedHourly * 2f + i * 0.3f) % 1f) * panelRect.Height;
+                Rectangle scanLine = new Rectangle(
+                    panelRect.X,
+                    (int)(lineY + lineOffset) % (panelRect.Y + panelRect.Height),
+                    panelRect.Width,
+                    1
+                );
+                if (scanLine.Y >= panelRect.Y && scanLine.Y <= panelRect.Bottom) {
+                    Color scanColor = new Color(220, 100, 100) * (lockOverlayAlpha * 0.4f * alpha);
+                    spriteBatch.Draw(pixel, scanLine, new Rectangle(0, 0, 1, 1), scanColor);
+                }
+            }
+
+            //绘制中心锁定图标
+            Vector2 lockIconPos = halibutCenter + shakeOffset;
+            float iconSize = 32f;
+            float iconPulse = (float)Math.Sin(lockPulseTimer * 4f) * 0.2f + 1f;
+            
+            //绘制锁定图标外发光
+            for (int i = 0; i < 3; i++) {
+                float glowSize = iconSize * (1.3f + i * 0.15f) * iconPulse;
+                DrawLockIcon(spriteBatch, lockIconPos, glowSize, 
+                    new Color(200, 80, 80) * (lockOverlayAlpha * (0.3f - i * 0.08f) * alpha),
+                    lockIconRotation + i * 0.1f);
+            }
+            
+            //绘制锁定图标主体
+            DrawLockIcon(spriteBatch, lockIconPos, iconSize * iconPulse,
+                new Color(255, 120, 120) * (lockOverlayAlpha * alpha),
+                lockIconRotation);
+
+            //绘制警告边框
+            DrawWarningBorder(spriteBatch, panelRect, lockOverlayAlpha * alpha);
+        }
+
+        ///<summary>
+        ///绘制锁定图标（简化的锁形状）
+        ///</summary>
+        private static void DrawLockIcon(SpriteBatch spriteBatch, Vector2 center, float size, Color color, float rotation) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            
+            //锁身（矩形）
+            Rectangle lockBody = new Rectangle(
+                (int)(center.X - size * 0.25f),
+                (int)(center.Y - size * 0.1f),
+                (int)(size * 0.5f),
+                (int)(size * 0.4f)
+            );
+            spriteBatch.Draw(pixel, lockBody, new Rectangle(0, 0, 1, 1), color);
+
+            //锁孔（小矩形）
+            Rectangle lockHole = new Rectangle(
+                (int)(center.X - size * 0.08f),
+                (int)(center.Y),
+                (int)(size * 0.16f),
+                (int)(size * 0.2f)
+            );
+            Color holeColor = Color.Black * (color.A / 255f);
+            spriteBatch.Draw(pixel, lockHole, new Rectangle(0, 0, 1, 1), holeColor);
+
+            //锁环（半圆弧，用多段线模拟）
+            int segments = 12;
+            float arcRadius = size * 0.28f;
+            for (int i = 0; i <= segments; i++) {
+                float angle = MathHelper.Pi + (i / (float)segments) * MathHelper.Pi;
+                Vector2 pos1 = center + new Vector2(0, -size * 0.1f) + angle.ToRotationVector2() * arcRadius;
+                if (i > 0) {
+                    float prevAngle = MathHelper.Pi + ((i - 1) / (float)segments) * MathHelper.Pi;
+                    Vector2 pos0 = center + new Vector2(0, -size * 0.1f) + prevAngle.ToRotationVector2() * arcRadius;
+                    DrawLine(spriteBatch, pos0, pos1, color, size * 0.12f);
+                }
+            }
+
+            //锁环两侧加粗
+            Vector2 leftArc = center + new Vector2(-arcRadius, -size * 0.1f);
+            Vector2 rightArc = center + new Vector2(arcRadius, -size * 0.1f);
+            DrawLine(spriteBatch, leftArc, lockBody.Location.ToVector2() + new Vector2(0, size * 0.1f), color, size * 0.12f);
+            DrawLine(spriteBatch, rightArc, lockBody.Location.ToVector2() + new Vector2(lockBody.Width, size * 0.1f), color, size * 0.12f);
+        }
+
+        ///<summary>
+        ///绘制警告边框
+        ///</summary>
+        private static void DrawWarningBorder(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float thickness = 2f;
+            float dashLength = 10f;
+            float gapLength = 6f;
+            float offset = (Main.GlobalTimeWrappedHourly * 60f) % (dashLength + gapLength);
+
+            Color warningColor = new Color(255, 100, 100) * alpha;
+
+            //上边框
+            DrawDashedLine(spriteBatch, new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top),
+                warningColor, thickness, dashLength, gapLength, offset);
+            //下边框
+            DrawDashedLine(spriteBatch, new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom),
+                warningColor, thickness, dashLength, gapLength, offset);
+            //左边框
+            DrawDashedLine(spriteBatch, new Vector2(rect.Left, rect.Top), new Vector2(rect.Left, rect.Bottom),
+                warningColor, thickness, dashLength, gapLength, offset);
+            //右边框
+            DrawDashedLine(spriteBatch, new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom),
+                warningColor, thickness, dashLength, gapLength, offset);
+        }
+
+        ///<summary>
+        ///绘制虚线
+        ///</summary>
+        private static void DrawDashedLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color,
+            float thickness, float dashLength, float gapLength, float offset) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Vector2 diff = end - start;
+            float totalLength = diff.Length();
+            if (totalLength < 0.1f) {
+                return;
+            }
+            diff.Normalize();
+            float rotation = (float)Math.Atan2(diff.Y, diff.X);
+            int segments = Math.Max(1, (int)(totalLength / 10f));
+            float currentPos = -offset;
+
+            while (currentPos < totalLength) {
+                float dashStart = Math.Max(0, currentPos);
+                float dashEnd = Math.Min(totalLength, currentPos + dashLength);
+                if (dashEnd > dashStart) {
+                    Vector2 drawPos = start + diff * dashStart;
+                    float drawLength = dashEnd - dashStart;
+                    spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), color,
+                        rotation, new Vector2(0, 0.5f), new Vector2(drawLength, thickness), SpriteEffects.None, 0f);
+                }
+                currentPos += dashLength + gapLength;
+            }
+        }
+
+        ///<summary>
+        ///绘制线段
+        ///</summary>
+        private static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Vector2 diff = end - start;
+            float length = diff.Length();
+            if (length < 0.1f) return;
+            float rotation = diff.ToRotation();
+            spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), color,
+                rotation, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
         private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
@@ -1108,6 +1401,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0);
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
             spriteBatch.Draw(pixel, position, new Rectangle(0, 0, 1, 1), color * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.7f, size * 0.2f), SpriteEffects.None, 0);
+        }
+
+        ///<summary>
+        ///锁定粒子类
+        ///</summary>
+        private class LockParticle
+        {
+            public Vector2 Position;
+            public Vector2 Velocity;
+            public float Life;
+            public float MaxLife;
+            public float Scale;
+            public float Rotation;
+            public Color Color;
+
+            public LockParticle(Vector2 pos, Vector2 vel, Color color) {
+                Position = pos;
+                Velocity = vel;
+                Life = 0;
+                MaxLife = Main.rand.Next(30, 50);
+                Scale = Main.rand.NextFloat(0.6f, 1.2f);
+                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                Color = color;
+            }
+
+            public void Update() {
+                Life++;
+                Position += Velocity;
+                Velocity *= 0.95f;
+                Rotation += 0.08f;
+            }
+
+            public void Draw(SpriteBatch spriteBatch, float panelAlpha) {
+                float lifeProgress = Life / MaxLife;
+                float fadeAlpha = 1f - lifeProgress;
+                Texture2D pixel = VaultAsset.placeholder2.Value;
+                Color drawColor = Color * (fadeAlpha * panelAlpha);
+                spriteBatch.Draw(pixel, Position, new Rectangle(0, 0, 1, 1), drawColor,
+                    Rotation, new Vector2(0.5f, 0.5f), new Vector2(Scale * 4f, Scale * 4f), SpriteEffects.None, 0f);
+            }
         }
     }
 }
