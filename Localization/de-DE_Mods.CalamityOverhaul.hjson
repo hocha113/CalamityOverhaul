@@ -1566,6 +1566,8 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle
 	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 	// CthulhuEye.DisplayName: Cthulhu Eye
+	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
+	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 }
 
 Configs: {
@@ -6049,6 +6051,12 @@ FishSkill: {
 	}
 
 	FishofCthulu: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishJewel: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

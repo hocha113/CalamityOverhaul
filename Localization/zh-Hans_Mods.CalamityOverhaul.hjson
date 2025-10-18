@@ -1561,6 +1561,8 @@ Projectiles: {
 	DeathSickleThrowable.DisplayName: 死亡镰刀
 	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 	// CthulhuEye.DisplayName: Cthulhu Eye
+	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
+	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 }
 
 Configs: {
@@ -6101,6 +6103,12 @@ FishSkill: {
 			凝视之瞳靠近敌人时将变换形态进行冲刺
 			'''
 		Studied: 它一直盯着你...
+	}
+
+	FishJewel: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 
