@@ -15,9 +15,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 抬棺人
-    /// </summary>
+    ///<summary>
+    ///抬棺人
+    ///</summary>
     internal class Pallbearer : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.width = 80;
             Item.height = 32;
             Item.damage = 285;
-            Item.DamageType = DamageClass.Ranged;
+            Item.DamageType = DamageClass.Generic;
             Item.useTime = 45;
             Item.useAnimation = 45;
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -48,10 +48,32 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool AltFunctionUse(Player player) => true;
 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            if (InWorldBossPhase.Level9) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level10) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level11) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level12) {
+                damage *= 1.25f;
+            }
+        }
+
         public override bool CanUseItem(Player player) {
             //确保同时只有一个手持弹幕存在
             return player.ownedProjectileCounts[Item.shoot] == 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<PallbearerBoomerang>()] == 0;
+        }
+
+        public override bool CanConsumeAmmo(Item ammo, Player player) {
+            if (player.ownedProjectileCounts[Item.shoot] == 0) {
+                return false;//是0说明正在发射手持弹幕本身，也不消耗弹药
+            }
+            return player.altFunctionUse != 2;//右键不消耗弹药
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
@@ -128,7 +150,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            Projectile.timeLeft = 2;
+            if (DownLeft) {
+                Projectile.timeLeft = 60;
+            }
             SetHeld();
 
             switch (State) {
@@ -226,7 +250,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bowstringPullback = 1f - fireProgress;
 
             if (StateTimer >= FireDuration) {
-                // 直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
+                //直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
                 State = CrossbowState.Idle;
                 StateTimer = 0;
                 ChargeLevel = 0f;
@@ -241,25 +265,25 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
             int mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
-            float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; // 最高250% * 触发加成
-            int finalDamage = (int)(Projectile.damage * damageMultiplier);
+            float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; //最高250% * 触发加成
+            int finalDamage = (int)(damage * damageMultiplier);
 
-            Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (Owner.ActiveItem().shootSpeed + ChargeLevel * 5f);
+            Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (speed + ChargeLevel * 5f);
             Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center + Projectile.velocity * 30f,
                 shootVelocity,
                 ModContent.ProjectileType<PallbearerArrow>(),
                 finalDamage,
-                Projectile.knockBack * (1f + ChargeLevel * 0.5f),
+                knockback * (1f + ChargeLevel * 0.5f),
                 Owner.whoAmI,
                 ChargeLevel
             );
 
-            // Reset multiplier after consumption
+            //Reset multiplier after consumption
             if (mult > 1) {
                 Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1;
-                // 反馈特效
+                //反馈特效
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 16; i++) {
@@ -411,21 +435,21 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private enum BoomerangState { Throwing, Returning }
         private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set { if (Projectile.ai[0] != (float)value) { Projectile.ai[0] = (float)value; Projectile.netUpdate = true; } } }
         private ref float Time => ref Projectile.ai[1];
-        private ref float ReturnProgress => ref Projectile.ai[2]; // 修正：使用 ai[2] 而不是越界的 localAI[2]
+        private ref float ReturnProgress => ref Projectile.ai[2]; //修正：使用 ai[2] 而不是越界的 localAI[2]
         private ref float SpinSpeed => ref Projectile.localAI[0];
-        private ref float ThrowProgress => ref Projectile.localAI[1]; // 0-1 飞出阶段进度
+        private ref float ThrowProgress => ref Projectile.localAI[1]; //0-1 飞出阶段进度
 
-        // 基础参数
-        private const int LaunchPhaseFrames = 14;      // 初始爆发加速帧数
-        private const int TotalThrowFrames = 48;       // 前向阶段总帧数（含爆发）
-        private const float MaxDistance = 1000f;       // 最大距离
-        private const float BaseSpeed = 32f;           // 基础巡航速度
-        private const float PeakLaunchSpeed = 52f;     // 初始爆发峰值
-        private const float ReturnMaxSpeed = 58f;      // 回程最大速度
-        private const float ArcAmplitude = 120f;       // 外抛弧线幅度
-        private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0; // 复用一个简单标记
+        //基础参数
+        private const int LaunchPhaseFrames = 14;      //初始爆发加速帧数
+        private const int TotalThrowFrames = 48;       //前向阶段总帧数（含爆发）
+        private const float MaxDistance = 1000f;       //最大距离
+        private const float BaseSpeed = 32f;           //基础巡航速度
+        private const float PeakLaunchSpeed = 52f;     //初始爆发峰值
+        private const float ReturnMaxSpeed = 58f;      //回程最大速度
+        private const float ArcAmplitude = 120f;       //外抛弧线幅度
+        private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0; //复用一个简单标记
 
-        // 缓动函数
+        //缓动函数
         private static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
         private static float EaseOutCubic(float t) { t = MathHelper.Clamp(t, 0, 1); t = 1 - (float)Math.Pow(1 - t, 3); return t; }
         private static float EaseInQuad(float t) => t * t;
@@ -435,9 +459,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return t < 0.5f ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
                              : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
         }
-        private static float EaseOvershootSnap(float t) { // 回程末端吸附 + 轻微回拉
+        private static float EaseOvershootSnap(float t) { //回程末端吸附 + 轻微回拉
             t = MathHelper.Clamp(t, 0, 1);
-            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f; // 前段轻超出
+            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f; //前段轻超出
             return overshoot * (0.85f + 0.15f * EaseOutQuad(t));
         }
 
@@ -470,19 +494,19 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Vector2 centerToPlayer = playerCenter - Projectile.Center;
 
             if (State == BoomerangState.Throwing) {
-                // 进度（整体）
+                //进度（整体）
                 ThrowProgress = MathHelper.Clamp(ThrowProgress + 1f / TotalThrowFrames, 0f, 1f);
 
-                // 阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
+                //阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
                 float launchT = MathHelper.Clamp(Time / (float)LaunchPhaseFrames, 0f, 1f);
-                float launchSpeedFactor = EaseOutCubic(launchT); // 爆发上升
+                float launchSpeedFactor = EaseOutCubic(launchT); //爆发上升
                 float currentLaunchSpeed = MathHelper.Lerp(BaseSpeed, PeakLaunchSpeed, launchSpeedFactor);
 
                 float cruisePhase = MathHelper.Clamp((Time - LaunchPhaseFrames) / (TotalThrowFrames - LaunchPhaseFrames), 0f, 1f);
                 float cruiseEase = EaseOutQuad(cruisePhase);
                 float distanceFactor = EaseOutExpo(ThrowProgress);
 
-                // 弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
+                //弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
                 Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * owner.direction);
                 float arc = (float)Math.Sin(distanceFactor * MathHelper.Pi) * ArcAmplitude * (1f - cruisePhase * 0.65f);
                 Vector2 targetPos = playerCenter + toMouseDir * (distanceFactor * MaxDistance) + lateral * arc;
@@ -490,7 +514,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Vector2 desiredVel = (targetPos - Projectile.Center).SafeNormalize(toMouseDir) * currentLaunchSpeed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.18f + 0.1f * (1f - cruisePhase));
 
-                // 到顶或时间结束进入回程
+                //到顶或时间结束进入回程
                 if (ThrowProgress >= 1f || Vector2.Distance(playerCenter, Projectile.Center) > MaxDistance * 0.97f) {
                     State = BoomerangState.Returning;
                     ReturnProgress = 0f;
@@ -498,14 +522,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.35f, Volume = 1f }, Projectile.Center);
                 }
             }
-            else { // Returning
+            else { //Returning
                 ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.022f, 0f, 1f);
                 float ease = EaseInQuad(ReturnProgress) * 0.35f + EaseInOutBack(ReturnProgress) * 0.65f;
                 float speed = MathHelper.Lerp(BaseSpeed * 0.5f, ReturnMaxSpeed, ease);
                 Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.30f + 0.25f * (1f - ReturnProgress));
 
-                // 吸附末端加速收手
+                //吸附末端加速收手
                 if (ReturnProgress > 0.85f) {
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, centerToPlayer.SafeNormalize(Vector2.Zero) * ReturnMaxSpeed, 0.45f);
                 }
@@ -518,30 +542,30 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            // 旋转与屏幕震动基于速度
+            //旋转与屏幕震动基于速度
             float velLen = Projectile.velocity.Length();
-            float targetSpin = 0.15f + velLen / 90f; // 更高速更快旋转
+            float targetSpin = 0.15f + velLen / 90f; //更高速更快旋转
             SpinSpeed = MathHelper.Lerp(SpinSpeed, targetSpin, 0.15f);
             Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
 
-            // 中程呼啸音效
+            //中程呼啸音效
             if (!PlayedMidWhoosh && ThrowProgress > 0.55f && State == BoomerangState.Throwing) {
-                Projectile.miscText = "x"; // 标记已播放
+                Projectile.miscText = "x"; //标记已播放
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.55f, Pitch = 0.6f }, Projectile.Center);
             }
 
-            // 回程尾声掠过音效
+            //回程尾声掠过音效
             if (State == BoomerangState.Returning && ReturnProgress > 0.6f && (Time % 18 == 0)) {
                 SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.35f, Pitch = 0.4f }, Projectile.Center);
             }
 
-            // 装饰性高速离心粒子
+            //装饰性高速离心粒子
             if (!Main.dedServ && Time % 2 == 0) {
                 SpawnSpinParticle();
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { // corrected signature
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { //corrected signature
             Player owner = Main.player[Projectile.owner];
             owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
             if (State == BoomerangState.Throwing) {
@@ -603,7 +627,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             float scale = Projectile.scale;
             float speedFactor = Math.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
 
-            // Trail（速度越快 & 越靠近回程末端越亮）
+            //Trail（速度越快 & 越靠近回程末端越亮）
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
                 float progress = i / (float)Projectile.oldPos.Length;
@@ -617,7 +641,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             Main.EntitySpriteDraw(texture, drawPos, null, lightColor, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
 
-            // 能量环（速度驱动 + 回程加强）
+            //能量环（速度驱动 + 回程加强）
             float pulse = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.08f;
             float ringScale = scale * (1.12f + 0.25f * speedFactor) * pulse;
             Color ringColor = (State == BoomerangState.Returning ? Color.Cyan : Color.LightCyan) * (0.4f + 0.5f * speedFactor);
@@ -661,7 +685,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Time++;
 
             Projectile.penetrate = 5 + (int)(ChargeLevel * 5); //最多10次穿透
-            Projectile.extraUpdates = (int)(1 + ChargeLevel * 5);
+            Projectile.extraUpdates = (int)(0 + ChargeLevel * 5);
             //旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
