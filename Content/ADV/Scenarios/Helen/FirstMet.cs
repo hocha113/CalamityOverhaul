@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 {
     internal class FirstMet : ADVScenarioBase, ILocalizedModType
     {
