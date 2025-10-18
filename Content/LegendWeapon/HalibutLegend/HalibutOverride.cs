@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel()));
             if (isBullet) {
-                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.4/Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 28f));
+                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.4 / Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 28f));
                 bulletAmt = 1;
             }
 

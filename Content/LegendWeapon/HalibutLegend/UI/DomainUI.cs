@@ -635,7 +635,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///</summary>
         private void DrawLockOverlay(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //计算面板区域（带震动偏移）
             Vector2 shakeOffset = new Vector2(lockShakeOffset, 0);
             Rectangle panelRect = new Rectangle(
@@ -671,15 +671,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 lockIconPos = halibutCenter + shakeOffset;
             float iconSize = 32f;
             float iconPulse = (float)Math.Sin(lockPulseTimer * 4f) * 0.2f + 1f;
-            
+
             //绘制锁定图标外发光
             for (int i = 0; i < 3; i++) {
                 float glowSize = iconSize * (1.3f + i * 0.15f) * iconPulse;
-                DrawLockIcon(spriteBatch, lockIconPos, glowSize, 
+                DrawLockIcon(spriteBatch, lockIconPos, glowSize,
                     new Color(200, 80, 80) * (lockOverlayAlpha * (0.3f - i * 0.08f) * alpha),
                     lockIconRotation + i * 0.1f);
             }
-            
+
             //绘制锁定图标主体
             DrawLockIcon(spriteBatch, lockIconPos, iconSize * iconPulse,
                 new Color(255, 120, 120) * (lockOverlayAlpha * alpha),
@@ -751,10 +751,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             string unitText = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese ? "秒" : "s";
             Vector2 unitSize = FontAssets.MouseText.Value.MeasureString(unitText) * 0.6f;
             Vector2 unitPos = ringCenter + new Vector2(ringRadius * 0.7f, textSize.Y * countdownScale * 0.3f);
-            
-            Utils.DrawBorderString(spriteBatch, unitText, unitPos + new Vector2(1, 1), 
+
+            Utils.DrawBorderString(spriteBatch, unitText, unitPos + new Vector2(1, 1),
                 Color.Black * (lockOverlayAlpha * alpha * 0.5f), 0.6f);
-            Utils.DrawBorderString(spriteBatch, unitText, unitPos, 
+            Utils.DrawBorderString(spriteBatch, unitText, unitPos,
                 new Color(255, 200, 200) * (lockOverlayAlpha * alpha * 0.8f), 0.6f);
 
             //剩余时间很短时（<=3秒）添加警告效果
@@ -786,7 +786,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             for (int i = 1; i <= actualSegments; i++) {
                 float angle = startAngle + angleStep * i;
                 Vector2 currentPoint = center + angle.ToRotationVector2() * radius;
-                
+
                 Vector2 diff = currentPoint - prevPoint;
                 float length = diff.Length();
                 if (length > 0.1f) {
@@ -803,7 +803,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///</summary>
         private static void DrawLockIcon(SpriteBatch spriteBatch, Vector2 center, float size, Color color, float rotation) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //锁身（矩形）
             Rectangle lockBody = new Rectangle(
                 (int)(center.X - size * 0.25f),

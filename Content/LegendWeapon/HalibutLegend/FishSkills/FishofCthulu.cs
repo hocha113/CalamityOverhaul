@@ -711,7 +711,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //绘制残影轨迹
             bool showTrail = isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash;
             int trailLength = showTrail ? Projectile.oldPos.Length : Projectile.oldPos.Length / 2;
-            
+
             for (int i = 1; i < trailLength; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 

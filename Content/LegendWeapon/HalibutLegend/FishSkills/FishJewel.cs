@@ -58,12 +58,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        private void SpawnMainGem(IEntitySource source, Player player, Vector2 position, 
+        private void SpawnMainGem(IEntitySource source, Player player, Vector2 position,
             Vector2 velocity, int damage, float knockback, int gemType) {
-            
+
             //稍微加快速度，增加节奏感
             Vector2 boostedVelocity = velocity * 1.15f;
-            
+
             Projectile.NewProjectile(
                 source,
                 position,
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnGemFragments(IEntitySource source, Player player, Vector2 position,
             Vector2 velocity, int damage, float knockback, int count, int gemType) {
-            
+
             for (int i = 0; i < count; i++) {
                 float angleOffset = MathHelper.Lerp(-0.35f, 0.35f, i / (float)Math.Max(1, count - 1));
                 Vector2 fragmentVel = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(1.0f, 1.25f);
@@ -144,11 +144,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         ///</summary>
         private void SpawnRhythmicEffect(Vector2 position, int gemType) {
             Color gemColor = GetGemColor(gemType);
-            
+
             //主脉冲环 - 随节奏扩散
             int pulseCount = 15;
             float pulseIntensity = 1.0f;
-            
+
             //每4次射击增强一次视觉效果
             if (gemCycle % 4 == 0) {
                 pulseCount = 25;
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 for (int i = 0; i < 30; i++) {
                     float angle = MathHelper.TwoPi * i / 30f;
                     Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 15f);
-                    
+
                     Dust burst = Dust.NewDustPerfect(
                         position,
                         DustID.RainbowMk2,
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //璀璨照明 - 随音乐节奏脉动
             Color gemColor = FishJewel.GetGemColor((int)GemType);
             float pulse = 0.7f + musicPulse * 0.8f; //更强的脉动
-            Lighting.AddLight(Projectile.Center, 
+            Lighting.AddLight(Projectile.Center,
                 gemColor.R / 255f * pulse * 2.0f,
                 gemColor.G / 255f * pulse * 2.0f,
                 gemColor.B / 255f * pulse * 2.0f);
@@ -309,9 +309,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnRhythmicParticles(bool isBeat) {
             Color gemColor = FishJewel.GetGemColor((int)GemType);
-            
+
             int particleCount = isBeat ? 3 : 1; //拍点时生成更多粒子
-            
+
             for (int i = 0; i < particleCount; i++) {
                 Dust trail = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
@@ -539,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //节奏性追踪
             float rhythmPulse = (float)Math.Sin(Time * 0.4f + rhythmPhase) * 0.5f + 0.5f;
-            
+
             if (Time > 15 && Time < 120) {
                 NPC target = Projectile.Center.FindClosestNPC(400f);
                 if (target != null) {
