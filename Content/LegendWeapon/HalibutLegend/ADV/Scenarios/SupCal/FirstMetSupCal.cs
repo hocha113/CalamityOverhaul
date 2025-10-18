@@ -84,6 +84,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         private const string expressionBeTo = " " + " ";
         private const string expressionDespise = " " + " " + " ";
 
+        //比目鱼的表情常量
+        private const string helenAmazed = " ";
+        private const string helenSolemn = " " + " ";
+
         protected override void Build() {
             //注册立绘
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[4]);
@@ -101,18 +105,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionDespise, silhouette: false);
 
+            // 注册比目鱼的不同表情
             DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenAmazed, ADVAsset.Helen_amazeADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenAmazed, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenSolemn, ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenSolemn, silhouette: false);
 
             //添加对话（使用本地化文本）
             Add(Rolename1.Value, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
-            Add(Rolename3.Value, Line3.Value);
-            Add(Rolename3.Value, Line4.Value);
+            Add(Rolename3.Value + helenSolemn, Line3.Value); //严肃表情 - 认出对方
+            Add(Rolename3.Value + helenSolemn, Line4.Value); //严肃表情 - 说出对方身份
             Add(Rolename2.Value, Line5.Value);
-            Add(Rolename3.Value, Line6.Value);
+            Add(Rolename3.Value + helenAmazed, Line6.Value); //惊讶表情 - 质疑为何还活着
             Add(Rolename2.Value + expressionCloseEye, Line7.Value);
-            Add(Rolename3.Value, Line8.Value);
+            Add(Rolename3.Value + helenAmazed, Line8.Value); //惊讶表情 - 震惊于异类状态
             Add(Rolename2.Value + expressionCloseEye, Line9.Value);
             Add(Rolename2.Value + expressionBeTo, Line10.Value);
 
