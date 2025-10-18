@@ -13,22 +13,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishBloodyManowar : FishSkill
     {
         public override int UnlockFishID => ItemID.BloodyManowar;
-        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
+        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 10;
         public override int ResearchDuration => 60 * 18;
 
-        public override bool? AltFunctionUse(Item item, Player player) => true;
-
-        public override bool? CanUseItem(Item item, Player player) {
-            if (player.altFunctionUse == 2) {
-                if (Cooldown > 0) {
-                    return false;
-                }
-
-                item.UseSound = null;
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (Cooldown <= 0) {
                 Use(item, player);
-                return false;
             }
-            return null;
+            return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
         public override void Use(Item item, Player player) {
@@ -78,13 +71,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Player Owner => Main.player[Projectile.owner];
 
         private List<int> jellyfishList = new List<int>();
-        private Vector2 axeDirection;
-        public Vector2 axeCenter;//公开给水母访问
+        private Vector2 initialDirection;//初始方向
+        public Vector2 handlePosition;//斧柄位置（旋转支点）
+        public float currentRotation;//当前旋转角度
+        private float swingDirection;//挥舞方向（1或-1）
 
         private const int GatherDuration = 30;//聚集时长
-        private const int RaiseDuration = 18;//抬起时长
-        private const int StrikeDuration = 22;//劈砍时长
+        private const int RaiseDuration = 20;//抬起时长
+        private const int StrikeDuration = 25;//劈砍时长
         private const int DissipateDuration = 35;//消散时长
+
+        //斧头尺寸参数
+        private const float AxeLength = 180f;//斧头总长度
+        private const float HandleLength = 50f;//柄部长度
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 200;
@@ -103,7 +102,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             PhaseTimer++;
-            axeDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+
+            //初始化方向
+            if (PhaseTimer == 1) {
+                initialDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                swingDirection = initialDirection.X > 0 ? 1 : -1;
+            }
 
             switch (Phase) {
                 case AxePhase.Gathering:
@@ -121,14 +125,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //更新弹幕中心位置供网络同步
-            Projectile.Center = axeCenter;
+            Projectile.Center = handlePosition;
         }
 
         private void GatheringPhaseAI() {
             if (PhaseTimer == 1) {
                 //生成水母组成斧头形状
                 int jellyfishCount = 35 + HalibutData.GetDomainLayer() * 5;
-                Vector2 spawnCenter = Owner.Center + axeDirection * 150f;
 
                 //斧头形状的水母分布
                 for (int i = 0; i < jellyfishCount; i++) {
@@ -157,6 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
 
                 //聚集特效
+                Vector2 spawnCenter = Owner.Center + initialDirection * 150f;
                 for (int i = 0; i < 30; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                     Dust gather = Dust.NewDustPerfect(
@@ -171,62 +175,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //聚集阶段保持在玩家前方
-            axeCenter = Owner.Center + axeDirection * 150f;
+            //聚集阶段：斧柄在玩家前方，斧头向前延伸
+            handlePosition = Owner.Center + initialDirection * 80f;
+            currentRotation = initialDirection.ToRotation();//斧头朝向前方
 
             if (PhaseTimer >= GatherDuration) {
                 Phase = AxePhase.Raising;
                 PhaseTimer = 0;
-                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.4f }, axeCenter);
+                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.4f }, handlePosition);
             }
         }
 
         private void RaisingPhaseAI() {
-            //抬起斧头到玩家上方
+            //抬起阶段：斧柄移动到玩家上方，斧头旋转到举起姿势
             float progress = PhaseTimer / RaiseDuration;
             float easeProgress = MathF.Pow(progress, 0.6f);
 
-            Vector2 startPos = Owner.Center + axeDirection * 150f;
-            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 60f, -200f);
-            axeCenter = Vector2.Lerp(startPos, endPos, easeProgress);
+            //柄部位置：从前方移动到上方
+            Vector2 startHandlePos = Owner.Center + initialDirection * 80f;
+            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 40f, -160f);
+            handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, easeProgress);
+
+            //旋转角度：从前方(0°)旋转到举起(-110°左或110°右)
+            float startAngle = initialDirection.ToRotation();
+            float endAngle = -110f * swingDirection * MathHelper.Pi / 180f;//举起角度
+            currentRotation = MathHelper.Lerp(startAngle, endAngle, easeProgress);
 
             //抬起粒子
             if (PhaseTimer % 3 == 0) {
-                Vector2 dustPos = axeCenter + Main.rand.NextVector2Circular(80f, 80f);
-                Dust raise = Dust.NewDustPerfect(
-                    dustPos,
-                    DustID.Blood,
-                    new Vector2(0, -Main.rand.NextFloat(2f, 4f)),
-                    100,
-                    Color.Red,
-                    Main.rand.NextFloat(1f, 1.5f)
-                );
-                raise.noGravity = true;
+                SpawnRaiseParticles();
             }
 
             if (PhaseTimer >= RaiseDuration) {
                 Phase = AxePhase.Striking;
                 PhaseTimer = 0;
-                SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = -0.5f }, axeCenter);
+                SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = -0.5f }, handlePosition);
             }
         }
 
         private void StrikingPhaseAI() {
-            //劈砍动作
+            //劈砍阶段：快速向下挥舞
             float progress = PhaseTimer / StrikeDuration;
             float strikeProgress = 1f - MathF.Pow(1f - progress, 3f);//加速曲线
 
-            Vector2 startPos = Owner.Center + new Vector2(axeDirection.X * 60f, -200f);
-            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
-            axeCenter = Vector2.Lerp(startPos, endPos, strikeProgress);
+            //柄部位置：从上方移动到前下方
+            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 40f, -160f);
+            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 80f, 100f);
+            handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, strikeProgress);
+
+            //旋转角度：从举起(-110°)旋转到劈下(70°)，总共旋转约180°
+            float startAngle = -110f * swingDirection * MathHelper.Pi / 180f;
+            float endAngle = 70f * swingDirection * MathHelper.Pi / 180f;
+            currentRotation = MathHelper.Lerp(startAngle, endAngle, strikeProgress);
 
             //劈砍音效
             if (PhaseTimer == 5) {
-                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.8f, Pitch = -0.3f }, axeCenter);
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.8f, Pitch = -0.3f }, handlePosition);
             }
 
             //冲击波效果
-            if (PhaseTimer == 12) {
+            if (PhaseTimer == 15) {
                 CreateStrikeImpact();
             }
 
@@ -242,8 +250,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void DissipatingPhaseAI() {
-            //保持在最终位置
-            axeCenter = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
+            //保持在最终位置和角度
+            handlePosition = Owner.Center + new Vector2(swingDirection * 80f, 100f);
+            currentRotation = 70f * swingDirection * MathHelper.Pi / 180f;
 
             //消散所有水母
             if (PhaseTimer == 1) {
@@ -260,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private Vector2 CalculateAxeShapeOffset(int index, int total) {
-            //斧头形状：上窄下宽的三角形
+            //斧头形状：以柄部底端为原点(0,0)，向上延伸
             float t = index / (float)total;
 
             //分成三部分：刃部、身部、柄部
@@ -268,26 +277,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float bladeT = t / 0.35f;
                 float width = MathHelper.Lerp(10f, 100f, bladeT);//从10宽到100宽
                 float x = (bladeT - 0.5f) * width * 2f;
-                float y = -bladeT * 140f;//向上延伸
+                float y = -(HandleLength + 90f + bladeT * 90f);//刃部在最上方
                 return new Vector2(x, y);
             }
             else if (t < 0.65f) {//身部(30%)
                 float bodyT = (t - 0.35f) / 0.3f;
                 float width = MathHelper.Lerp(100f, 50f, bodyT);//从100宽到50宽
                 float x = (bodyT - 0.5f) * width * 2f;
-                float y = -140f + bodyT * 100f;
+                float y = -(HandleLength + bodyT * 90f);//身部在中间
                 return new Vector2(x, y);
             }
             else {//柄部(35%)
                 float handleT = (t - 0.65f) / 0.35f;
                 float x = (handleT - 0.5f) * 30f;//柄部较窄
-                float y = -40f + handleT * 80f;
+                float y = -handleT * HandleLength;//柄部在底部
                 return new Vector2(x, y);
             }
         }
 
+        private void SpawnRaiseParticles() {
+            //计算斧头刃部位置（用于生成粒子）
+            Vector2 bladeOffset = new Vector2(0, -AxeLength).RotatedBy(currentRotation);
+            Vector2 bladePos = handlePosition + bladeOffset;
+
+            Dust raise = Dust.NewDustPerfect(
+                bladePos + Main.rand.NextVector2Circular(40f, 40f),
+                DustID.Blood,
+                new Vector2(0, -Main.rand.NextFloat(2f, 4f)),
+                100,
+                Color.Red,
+                Main.rand.NextFloat(1f, 1.5f)
+            );
+            raise.noGravity = true;
+        }
+
         private void CreateStrikeImpact() {
-            Vector2 impactPos = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
+            //计算斧头刃部撞击位置
+            Vector2 bladeOffset = new Vector2(0, -AxeLength).RotatedBy(currentRotation);
+            Vector2 impactPos = handlePosition + bladeOffset;
 
             //生成冲击波弹幕
             Projectile.NewProjectile(
@@ -304,10 +331,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.8f, Pitch = -0.3f }, impactPos);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = -0.4f }, impactPos);
 
-            //冲击粒子
-            for (int i = 0; i < 40; i++) {
-                float angle = MathHelper.Lerp(-MathHelper.PiOver2, MathHelper.PiOver2, i / 40f);
-                Vector2 velocity = new Vector2(axeDirection.X, 0).RotatedBy(angle) * Main.rand.NextFloat(8f, 16f);
+            //冲击粒子（以撞击点为中心向外扩散）
+            for (int i = 0; i < 50; i++) {
+                float angle = MathHelper.TwoPi * i / 50f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 18f);
 
                 Dust impact = Dust.NewDustPerfect(
                     impactPos,
@@ -321,28 +348,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //地面裂纹效果
-            for (int i = 0; i < 20; i++) {
-                Vector2 crackVel = new Vector2(axeDirection.X * Main.rand.NextFloat(6f, 12f), Main.rand.NextFloat(-2f, 1f));
+            for (int i = 0; i < 25; i++) {
+                Vector2 crackVel = new Vector2(
+                    Main.rand.NextFloat(-12f, 12f),
+                    Main.rand.NextFloat(-3f, 2f)
+                );
                 Dust crack = Dust.NewDustPerfect(
-                    impactPos + new Vector2(Main.rand.NextFloat(-40f, 40f), 0),
+                    impactPos + new Vector2(Main.rand.NextFloat(-60f, 60f), 0),
                     DustID.Stone,
                     crackVel,
                     100,
                     Color.Gray,
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    Main.rand.NextFloat(1.2f, 2f)
                 );
                 crack.noGravity = false;
+            }
+
+            //斧刃轨迹血雾
+            Vector2 trailStart = handlePosition;
+            Vector2 trailEnd = impactPos;
+            for (int i = 0; i < 20; i++) {
+                float t = i / 20f;
+                Vector2 trailPos = Vector2.Lerp(trailStart, trailEnd, t);
+                Dust trail = Dust.NewDustPerfect(
+                    trailPos + Main.rand.NextVector2Circular(30f, 30f),
+                    DustID.Blood,
+                    Main.rand.NextVector2Circular(3f, 3f),
+                    100,
+                    Color.Red,
+                    Main.rand.NextFloat(1.5f, 2.2f)
+                );
+                trail.noGravity = true;
             }
         }
 
         private void SpawnStrikeParticles() {
-            //劈砍轨迹粒子
-            Vector2 particlePos = axeCenter + Main.rand.NextVector2Circular(80f, 80f);
+            //沿着斧头轨迹生成粒子
+            float bladeProgress = Main.rand.NextFloat(0.5f, 1f);
+            Vector2 bladeOffset = new Vector2(0, -AxeLength * bladeProgress).RotatedBy(currentRotation);
+            Vector2 particlePos = handlePosition + bladeOffset;
 
             Dust trail = Dust.NewDustPerfect(
-                particlePos,
+                particlePos + Main.rand.NextVector2Circular(20f, 20f),
                 DustID.Blood,
-                Main.rand.NextVector2Circular(4f, 4f),
+                Main.rand.NextVector2Circular(5f, 5f),
                 100,
                 Color.Red,
                 Main.rand.NextFloat(1.2f, 2f)
@@ -371,7 +420,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float UnitIndex => ref Projectile.ai[1];
         private ref float IsDissipating => ref Projectile.ai[2];
 
-        public Vector2 localOffset;//水母在斧头上的相对位置偏移
+        public Vector2 localOffset;//水母在斧头上的相对位置偏移（未旋转）
         private float rotation;
         private float pulsePhase;
         private float dissipateAlpha = 1f;
@@ -401,21 +450,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             if (controller.ModProjectile is BloodyAxeController axeCtrl) {
                 if (IsDissipating == 0) {
-                    //根据控制器的axeDirection旋转localOffset
-                    Vector2 axeDir = controller.velocity.SafeNormalize(Vector2.UnitX);
-                    float axeRotation = axeDir.ToRotation() - MathHelper.PiOver2;//斧头朝向
+                    //使用旋转矩阵变换localOffset到世界坐标
+                    //localOffset是相对于柄部(0,0)的偏移，需要旋转currentRotation角度
+                    Vector2 rotatedOffset = localOffset.RotatedBy(axeCtrl.currentRotation);
 
-                    //将局部偏移旋转到世界坐标
-                    Vector2 rotatedOffset = localOffset.RotatedBy(axeRotation);
-
-                    //目标位置 = 控制器中心 + 旋转后的偏移
-                    Vector2 targetPos = axeCtrl.axeCenter + rotatedOffset;
+                    //目标位置 = 柄部位置 + 旋转后的偏移
+                    Vector2 targetPos = axeCtrl.handlePosition + rotatedOffset;
 
                     //平滑移动到目标位置
-                    Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.25f);
+                    Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.3f);
 
-                    //水母朝向斧头的前方
-                    Projectile.rotation = axeRotation + MathHelper.PiOver4;
+                    //水母朝向斧头的旋转方向
+                    Projectile.rotation = axeCtrl.currentRotation + MathHelper.PiOver4;
                 }
                 else {
                     //消散状态：向外飞散
@@ -454,7 +500,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
 
-            Color drawColor = Color.Lerp(Color.DarkRed, Color.Red, 0.5f) * dissipateAlpha;
+            Color drawColor = lightColor * dissipateAlpha;
 
             //绘制阴影
             for (int i = 0; i < 2; i++) {
@@ -514,28 +560,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override string Texture => CWRConstant.Placeholder;
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 320;
+            Projectile.width = Projectile.height = 360;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 30;
+            Projectile.timeLeft = 35;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
-            Projectile.scale += 0.15f;
-            Projectile.alpha += 10;
+            Projectile.scale += 0.18f;
+            Projectile.alpha += 8;
+            Projectile.rotation += 0.05f;
 
             //扩散血雾
-            if (Main.rand.NextBool(3)) {
+            if (Main.rand.NextBool(2)) {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2);
                 Dust mist = Dust.NewDustPerfect(
                     pos,
                     DustID.Blood,
-                    Main.rand.NextVector2Circular(2f, 2f),
+                    Main.rand.NextVector2Circular(3f, 3f),
                     100,
                     Color.DarkRed,
                     Main.rand.NextFloat(1.5f, 2.5f)
@@ -550,20 +597,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //血腥减速效果
-            target.velocity *= 0.5f;
+            target.velocity *= 0.4f;
 
             //血液飞溅
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 12; i++) {
                 Dust blood = Dust.NewDustDirect(
                     target.position,
                     target.width,
                     target.height,
                     DustID.Blood,
-                    Main.rand.NextFloat(-4f, 4f),
-                    Main.rand.NextFloat(-4f, 4f),
+                    Main.rand.NextFloat(-5f, 5f),
+                    Main.rand.NextFloat(-5f, 5f),
                     100,
                     default,
-                    Main.rand.NextFloat(1.2f, 2f)
+                    Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 blood.noGravity = false;
             }
@@ -571,20 +618,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
-            Color warpColor = new Color(80, 0, 0) * (1f - Projectile.alpha / 255f);
+            Color warpColor = new Color(100, 0, 0) * (1f - Projectile.alpha / 255f);
             warpColor.A = 0;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = warpTex.Size() / 2f;
 
-            for (int i = 0; i < 3; i++) {
+            //多层旋转绘制增强冲击感
+            for (int i = 0; i < 4; i++) {
                 Main.spriteBatch.Draw(
                     warpTex,
                     drawPos,
                     null,
-                    warpColor * 0.8f,
-                    Projectile.rotation + i * MathHelper.TwoPi / 3f,
+                    warpColor * 0.7f,
+                    Projectile.rotation + i * MathHelper.TwoPi / 4f,
                     origin,
-                    Projectile.scale * (1f + i * 0.1f),
+                    Projectile.scale * (1f + i * 0.08f),
                     SpriteEffects.None,
                     0f
                 );
