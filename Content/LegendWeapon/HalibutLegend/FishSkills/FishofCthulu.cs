@@ -111,6 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //环绕参数
         private float orbitAngle = 0f;
         private float orbitRadius = 0f;
+        private float randOrbitRadius = 0f;
         private bool isOrbiting = false;
         private int orbitDuration = 0; // 环绕持续时间
 
@@ -172,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //初始化环绕参数
             orbitAngle = EyeID * MathHelper.TwoPi / 4f;
-            orbitRadius = 120f + Main.rand.NextFloat(-20f, 20f);
+            randOrbitRadius = Main.rand.NextFloat(-20f, 20f);
         }
 
         public override void AI() {
@@ -305,6 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float orbitSpeed = 0.08f + HalibutData.GetDomainLayer() * 0.01f;
             orbitAngle += orbitSpeed;
 
+            orbitRadius = target.width / 2f + 40f + randOrbitRadius;
             //计算环绕位置
             Vector2 idealPosition = target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
 
@@ -526,6 +528,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[targetNPC];
 
+            orbitRadius = target.width / 2f + 40f + randOrbitRadius;
             //计算目标环绕位置
             Vector2 orbitPosition = target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
             Vector2 toOrbit = orbitPosition - Projectile.Center;
@@ -552,6 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //设置朝向为面向目标
             desiredRotation = (target.Center - Projectile.Center).ToRotation();
 
+            orbitRadius = target.width / 2f + 40f + randOrbitRadius;
             //距离目标较近且速度较低时重新进入环绕
             if (distanceToOrbit < orbitRadius * 1.2f && Projectile.velocity.Length() < 10f) {
                 AIState = (float)EyeState.Orbiting;
