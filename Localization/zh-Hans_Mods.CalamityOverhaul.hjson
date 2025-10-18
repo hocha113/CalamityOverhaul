@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1230,8 +1230,13 @@ Items: {
 	}
 
 	Fishoil: {
-		// DisplayName: Fishoil
-		// Tooltip: ""
+		DisplayName: 瓶装鱼油
+		Tooltip:
+			'''
+			增加10%渔力
+			允许水下呼吸
+			对一些诡异的事物有着额外的压制效果
+			'''
 	}
 }
 
@@ -1812,8 +1817,8 @@ Buffs: {
 	}
 
 	FishoilBuff: {
-		// DisplayName: Fishoil Buff
-		// Description: Mods.CalamityOverhaul.Buffs.FishoilBuff.Description
+		DisplayName: 鱼油
+		Description: 你感觉自己的皮肤在变得油腻
 	}
 }
 

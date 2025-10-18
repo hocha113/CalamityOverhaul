@@ -1,9 +1,4 @@
-﻿using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.rare = ItemRarityID.Blue;
             Item.value = Item.buyPrice(0, 0, 2, 50);
             Item.buffType = ModContent.BuffType<FishoilBuff>();
-            Item.buffTime = 60 * 60 * 8; //8分钟持续时间
+            Item.buffTime = 60 * 60 * 3; //3分钟持续时间
         }
 
         public override bool? UseItem(Player player) {
@@ -68,17 +63,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void Update(Player player, ref int buffIndex) {
             //提供多种增益效果
-            player.moveSpeed += 0.15f; //移动速度提升15%
             player.fishingSkill += 10; //渔力+10
-            player.statLifeMax2 += 20; //最大生命+20
-            player.statManaMax2 += 20; //最大魔力+20
-            player.lifeRegen += 2; //生命再生+2
-
-            //每秒恢复少量生命和魔力
-            if (player.miscCounter % 60 == 0) {
-                player.statLife += 1;
-                player.statMana += 1;
-            }
 
             //水下呼吸
             player.gills = true;

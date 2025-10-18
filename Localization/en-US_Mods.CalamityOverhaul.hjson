@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1227,7 +1227,12 @@ Items: {
 
 	EncyclopediaofOceanicKnowledge: {
 		DisplayName: Encyclopediaof Oceanic Knowledge
-		Tooltip: ""
+		Tooltip:
+			'''
+			Instantly gain knowledge of all fish species
+			Unlock all fish-related skills
+			[c/FFD700: The wisdom of the ocean will converge upon you]
+			'''
 		Text1: You have mastered all the knowledge
 		Text2: You have acquired [NUM] kinds of fish knowledge!
 	}
@@ -1245,8 +1250,13 @@ Items: {
 	}
 
 	Fishoil: {
-		DisplayName: Fishoil
-		Tooltip: ""
+		DisplayName: Bottled Fish Oil
+		Tooltip:
+			'''
+			Increases fishing power by 10%
+			Allows breathing underwater
+			Grants additional resistance against certain eerie entities
+			'''
 	}
 }
 
@@ -1828,8 +1838,8 @@ Buffs: {
 	}
 
 	FishoilBuff: {
-		DisplayName: Fishoil Buff
-		Description: Mods.CalamityOverhaul.Buffs.FishoilBuff.Description
+		DisplayName: Fishoil
+		Description: You feel that your skin is becoming oily
 	}
 }
 
