@@ -79,12 +79,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private List<int> jellyfishList = new List<int>();
         private Vector2 axeDirection;
-        private Vector2 axeCenter;
+        public Vector2 axeCenter;//公开给水母访问
 
-        private const int GatherDuration = 25;//聚集时长
-        private const int RaiseDuration = 15;//抬起时长
-        private const int StrikeDuration = 20;//劈砍时长
-        private const int DissipateDuration = 30;//消散时长
+        private const int GatherDuration = 30;//聚集时长
+        private const int RaiseDuration = 18;//抬起时长
+        private const int StrikeDuration = 22;//劈砍时长
+        private const int DissipateDuration = 35;//消散时长
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 200;
@@ -119,22 +119,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     DissipatingPhaseAI();
                     break;
             }
+
+            //更新弹幕中心位置供网络同步
+            Projectile.Center = axeCenter;
         }
 
         private void GatheringPhaseAI() {
             if (PhaseTimer == 1) {
                 //生成水母组成斧头形状
                 int jellyfishCount = 35 + HalibutData.GetDomainLayer() * 5;
-                Vector2 spawnCenter = Owner.Center + axeDirection * 120f;
+                Vector2 spawnCenter = Owner.Center + axeDirection * 150f;
 
                 //斧头形状的水母分布
                 for (int i = 0; i < jellyfishCount; i++) {
+                    //计算该水母在斧头上的相对偏移
                     Vector2 offset = CalculateAxeShapeOffset(i, jellyfishCount);
-                    Vector2 spawnPos = spawnCenter + offset.RotatedBy(axeDirection.ToRotation() - MathHelper.PiOver2);
 
                     int proj = Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
-                        spawnPos,
+                        Owner.Center,//初始在玩家位置
                         Vector2.Zero,
                         ModContent.ProjectileType<BloodyJellyfishUnit>(),
                         Projectile.damage,
@@ -146,6 +149,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                     if (proj >= 0) {
                         jellyfishList.Add(proj);
+                        //设置水母的目标偏移
+                        if (Main.projectile[proj].ModProjectile is BloodyJellyfishUnit unit) {
+                            unit.localOffset = offset;
+                        }
                     }
                 }
 
@@ -164,7 +171,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            axeCenter = Owner.Center + axeDirection * 120f;
+            //聚集阶段保持在玩家前方
+            axeCenter = Owner.Center + axeDirection * 150f;
 
             if (PhaseTimer >= GatherDuration) {
                 Phase = AxePhase.Raising;
@@ -178,9 +186,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = PhaseTimer / RaiseDuration;
             float easeProgress = MathF.Pow(progress, 0.6f);
 
-            Vector2 startPos = Owner.Center + axeDirection * 120f;
-            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 50f, -180f);
+            Vector2 startPos = Owner.Center + axeDirection * 150f;
+            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 60f, -200f);
             axeCenter = Vector2.Lerp(startPos, endPos, easeProgress);
+
+            //抬起粒子
+            if (PhaseTimer % 3 == 0) {
+                Vector2 dustPos = axeCenter + Main.rand.NextVector2Circular(80f, 80f);
+                Dust raise = Dust.NewDustPerfect(
+                    dustPos,
+                    DustID.Blood,
+                    new Vector2(0, -Main.rand.NextFloat(2f, 4f)),
+                    100,
+                    Color.Red,
+                    Main.rand.NextFloat(1f, 1.5f)
+                );
+                raise.noGravity = true;
+            }
 
             if (PhaseTimer >= RaiseDuration) {
                 Phase = AxePhase.Striking;
@@ -194,8 +216,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = PhaseTimer / StrikeDuration;
             float strikeProgress = 1f - MathF.Pow(1f - progress, 3f);//加速曲线
 
-            Vector2 startPos = Owner.Center + new Vector2(axeDirection.X * 50f, -180f);
-            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 80f, 120f);
+            Vector2 startPos = Owner.Center + new Vector2(axeDirection.X * 60f, -200f);
+            Vector2 endPos = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
             axeCenter = Vector2.Lerp(startPos, endPos, strikeProgress);
 
             //劈砍音效
@@ -204,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //冲击波效果
-            if (PhaseTimer == 10) {
+            if (PhaseTimer == 12) {
                 CreateStrikeImpact();
             }
 
@@ -220,10 +242,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void DissipatingPhaseAI() {
+            //保持在最终位置
+            axeCenter = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
+
             //消散所有水母
-            foreach (int projIndex in jellyfishList) {
-                if (Main.projectile.IndexInRange(projIndex) && Main.projectile[projIndex].active) {
-                    Main.projectile[projIndex].ai[2] = 1f;//触发消散
+            if (PhaseTimer == 1) {
+                foreach (int projIndex in jellyfishList) {
+                    if (Main.projectile.IndexInRange(projIndex) && Main.projectile[projIndex].active) {
+                        Main.projectile[projIndex].ai[2] = 1f;//触发消散
+                    }
                 }
             }
 
@@ -237,30 +264,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float t = index / (float)total;
 
             //分成三部分：刃部、身部、柄部
-            if (t < 0.4f) {//刃部(40%)
-                float bladeT = t / 0.4f;
-                float width = MathHelper.Lerp(0f, 80f, bladeT);//从0宽到80宽
-                float x = (bladeT - 0.5f) * width;
-                float y = -bladeT * 120f;//向上延伸
+            if (t < 0.35f) {//刃部(35%)
+                float bladeT = t / 0.35f;
+                float width = MathHelper.Lerp(10f, 100f, bladeT);//从10宽到100宽
+                float x = (bladeT - 0.5f) * width * 2f;
+                float y = -bladeT * 140f;//向上延伸
                 return new Vector2(x, y);
             }
-            else if (t < 0.7f) {//身部(30%)
-                float bodyT = (t - 0.4f) / 0.3f;
-                float width = MathHelper.Lerp(80f, 40f, bodyT);//从80宽到40宽
-                float x = (bodyT - 0.5f) * width;
-                float y = -120f + bodyT * 80f;
+            else if (t < 0.65f) {//身部(30%)
+                float bodyT = (t - 0.35f) / 0.3f;
+                float width = MathHelper.Lerp(100f, 50f, bodyT);//从100宽到50宽
+                float x = (bodyT - 0.5f) * width * 2f;
+                float y = -140f + bodyT * 100f;
                 return new Vector2(x, y);
             }
-            else {//柄部(30%)
-                float handleT = (t - 0.7f) / 0.3f;
-                float x = (handleT - 0.5f) * 25f;//柄部较窄
-                float y = -40f + handleT * 60f;
+            else {//柄部(35%)
+                float handleT = (t - 0.65f) / 0.35f;
+                float x = (handleT - 0.5f) * 30f;//柄部较窄
+                float y = -40f + handleT * 80f;
                 return new Vector2(x, y);
             }
         }
 
         private void CreateStrikeImpact() {
-            Vector2 impactPos = Owner.Center + new Vector2(axeDirection.X * 80f, 120f);
+            Vector2 impactPos = Owner.Center + new Vector2(axeDirection.X * 100f, 140f);
 
             //生成冲击波弹幕
             Projectile.NewProjectile(
@@ -310,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnStrikeParticles() {
             //劈砍轨迹粒子
-            Vector2 particlePos = axeCenter + Main.rand.NextVector2Circular(60f, 60f);
+            Vector2 particlePos = axeCenter + Main.rand.NextVector2Circular(80f, 80f);
 
             Dust trail = Dust.NewDustPerfect(
                 particlePos,
@@ -344,7 +371,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float UnitIndex => ref Projectile.ai[1];
         private ref float IsDissipating => ref Projectile.ai[2];
 
-        private Vector2 targetOffset;
+        public Vector2 localOffset;//水母在斧头上的相对位置偏移
         private float rotation;
         private float pulsePhase;
         private float dissipateAlpha = 1f;
@@ -357,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 200;
         }
 
         public override void AI() {
@@ -367,41 +394,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //重置生命时间
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 200;
 
-            pulsePhase += 0.15f;
-            float pulse = MathF.Sin(pulsePhase + UnitIndex * 0.5f);
+            pulsePhase += 0.12f;
+            float pulse = MathF.Sin(pulsePhase + UnitIndex * 0.3f);
 
-            //跟随控制器
             if (controller.ModProjectile is BloodyAxeController axeCtrl) {
-                Projectile.Center = Vector2.Lerp(Projectile.Center, controller.Center, 0.3f);
-            }
+                if (IsDissipating == 0) {
+                    //根据控制器的axeDirection旋转localOffset
+                    Vector2 axeDir = controller.velocity.SafeNormalize(Vector2.UnitX);
+                    float axeRotation = axeDir.ToRotation() - MathHelper.PiOver2;//斧头朝向
 
-            //旋转动画
-            rotation += 0.08f * (UnitIndex % 2 == 0 ? 1 : -1);
+                    //将局部偏移旋转到世界坐标
+                    Vector2 rotatedOffset = localOffset.RotatedBy(axeRotation);
 
-            //脉动效果
-            Projectile.scale = 0.9f + pulse * 0.15f;
+                    //目标位置 = 控制器中心 + 旋转后的偏移
+                    Vector2 targetPos = axeCtrl.axeCenter + rotatedOffset;
 
-            //消散效果
-            if (IsDissipating > 0) {
-                dissipateAlpha -= 0.05f;
-                Projectile.velocity = Main.rand.NextVector2Circular(3f, 3f);
+                    //平滑移动到目标位置
+                    Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.25f);
 
-                if (dissipateAlpha <= 0) {
-                    Projectile.Kill();
+                    //水母朝向斧头的前方
+                    Projectile.rotation = axeRotation + MathHelper.PiOver4;
+                }
+                else {
+                    //消散状态：向外飞散
+                    dissipateAlpha -= 0.035f;
+                    Projectile.velocity = Main.rand.NextVector2Circular(4f, 4f);
+                    Projectile.rotation += 0.15f;
+
+                    if (dissipateAlpha <= 0) {
+                        Projectile.Kill();
+                    }
                 }
             }
 
+            //旋转动画
+            rotation += 0.06f * (UnitIndex % 2 == 0 ? 1 : -1);
+
+            //脉动效果
+            Projectile.scale = 0.85f + pulse * 0.12f;
+
             //周期性粒子
-            if (Main.rand.NextBool(8) && IsDissipating == 0) {
+            if (Main.rand.NextBool(10) && IsDissipating == 0) {
                 Dust d = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
                     DustID.Blood,
                     Vector2.Zero,
                     100,
                     Color.DarkRed,
-                    Main.rand.NextFloat(0.6f, 1f)
+                    Main.rand.NextFloat(0.5f, 0.8f)
                 );
                 d.noGravity = true;
             }
@@ -415,14 +457,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color drawColor = Color.Lerp(Color.DarkRed, Color.Red, 0.5f) * dissipateAlpha;
 
             //绘制阴影
-            for (int i = 0; i < 3; i++) {
-                Vector2 shadowOffset = new Vector2(i * 2f, i * 2f);
+            for (int i = 0; i < 2; i++) {
+                Vector2 shadowOffset = new Vector2(i * 1.5f, i * 1.5f);
                 Main.EntitySpriteDraw(
                     texture,
                     drawPos + shadowOffset,
                     null,
-                    Color.Black * 0.3f * dissipateAlpha,
-                    rotation,
+                    Color.Black * 0.25f * dissipateAlpha,
+                    Projectile.rotation + rotation,
                     origin,
                     Projectile.scale * 0.95f,
                     SpriteEffects.None,
@@ -436,7 +478,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 drawPos,
                 null,
                 drawColor,
-                rotation,
+                Projectile.rotation + rotation,
                 origin,
                 Projectile.scale,
                 SpriteEffects.None,
@@ -444,19 +486,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
 
             //发光层
-            Color glowColor = Color.Red * 0.4f * dissipateAlpha;
-            glowColor.A = 0;
-            Main.EntitySpriteDraw(
-                texture,
-                drawPos,
-                null,
-                glowColor,
-                rotation,
-                origin,
-                Projectile.scale * 1.1f,
-                SpriteEffects.None,
-                0
-            );
+            if (IsDissipating == 0) {
+                Color glowColor = Color.Red * 0.35f * dissipateAlpha;
+                glowColor.A = 0;
+                Main.EntitySpriteDraw(
+                    texture,
+                    drawPos,
+                    null,
+                    glowColor,
+                    Projectile.rotation + rotation,
+                    origin,
+                    Projectile.scale * 1.12f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
 
             return false;
         }
