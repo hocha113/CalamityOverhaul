@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
 
                 //聚集特效
-                Vector2 spawnCenter = Owner.Center + initialDirection * 150f;
+                Vector2 spawnCenter = Owner.Center + initialDirection * 100f + new Vector2(0, 80f);
                 for (int i = 0; i < 30; i++) {
                     Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
                     Dust gather = Dust.NewDustPerfect(
@@ -175,9 +175,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //聚集阶段：斧柄在玩家前方，斧头向前延伸
-            handlePosition = Owner.Center + initialDirection * 80f;
-            currentRotation = initialDirection.ToRotation();//斧头朝向前方
+            //聚集阶段：斧柄在玩家前下方，斧头向下斜指
+            handlePosition = Owner.Center + new Vector2(swingDirection * 70f, 80f);
+            //初始角度：斧头向前下方倾斜约45度
+            currentRotation = (swingDirection > 0 ? 1 : -1) * 45f * MathHelper.Pi / 180f;
 
             if (PhaseTimer >= GatherDuration) {
                 Phase = AxePhase.Raising;
@@ -186,23 +187,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void RaisingPhaseAI() {
-            //抬起阶段：斧柄移动到玩家上方，斧头旋转到举起姿势
+            //抬起阶段：从前下方抬起到头顶上方
             float progress = PhaseTimer / RaiseDuration;
-            float easeProgress = MathF.Pow(progress, 0.6f);
+            float easeProgress = 1f - MathF.Pow(1f - progress, 2f);//先快后慢的曲线
 
-            //柄部位置：从前方移动到上方
-            Vector2 startHandlePos = Owner.Center + initialDirection * 80f;
-            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 40f, -160f);
+            //柄部位置：从前下方移动到头顶上方
+            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 70f, 80f);
+            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 30f, -180f);
             handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, easeProgress);
 
-            //旋转角度：从前方(0°)旋转到举起(-110°左或110°右)
-            float startAngle = initialDirection.ToRotation();
-            float endAngle = -110f * swingDirection * MathHelper.Pi / 180f;//举起角度
+            //旋转角度：从前下方45°抬起到头顶-120°（总共旋转约165度）
+            float startAngle = (swingDirection > 0 ? 1 : -1) * 45f * MathHelper.Pi / 180f;
+            float endAngle = -120f * swingDirection * MathHelper.Pi / 180f;//举起角度
             currentRotation = MathHelper.Lerp(startAngle, endAngle, easeProgress);
 
             //抬起粒子
             if (PhaseTimer % 3 == 0) {
                 SpawnRaiseParticles();
+            }
+
+            //抬起轨迹血雾
+            if (PhaseTimer % 2 == 0) {
+                Vector2 bladeOffset = new Vector2(0, -AxeLength * 0.8f).RotatedBy(currentRotation);
+                Vector2 bladePos = handlePosition + bladeOffset;
+                Dust trail = Dust.NewDustPerfect(
+                    bladePos + Main.rand.NextVector2Circular(25f, 25f),
+                    DustID.Blood,
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    100,
+                    Color.Red,
+                    Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                trail.noGravity = true;
             }
 
             if (PhaseTimer >= RaiseDuration) {
@@ -213,18 +229,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void StrikingPhaseAI() {
-            //劈砍阶段：快速向下挥舞
+            //劈砍阶段：从头顶快速向前下方挥舞
             float progress = PhaseTimer / StrikeDuration;
             float strikeProgress = 1f - MathF.Pow(1f - progress, 3f);//加速曲线
 
-            //柄部位置：从上方移动到前下方
-            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 40f, -160f);
-            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 80f, 100f);
+            //柄部位置：从头顶上方移动到前下方
+            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 30f, -180f);
+            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 90f, 110f);
             handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, strikeProgress);
 
-            //旋转角度：从举起(-110°)旋转到劈下(70°)，总共旋转约180°
-            float startAngle = -110f * swingDirection * MathHelper.Pi / 180f;
-            float endAngle = 70f * swingDirection * MathHelper.Pi / 180f;
+            //旋转角度：从举起(-120°)旋转到劈下(80°)，总共旋转约200度
+            float startAngle = -120f * swingDirection * MathHelper.Pi / 180f;
+            float endAngle = 80f * swingDirection * MathHelper.Pi / 180f;
             currentRotation = MathHelper.Lerp(startAngle, endAngle, strikeProgress);
 
             //劈砍音效
@@ -233,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //冲击波效果
-            if (PhaseTimer == 15) {
+            if (PhaseTimer == 16) {
                 CreateStrikeImpact();
             }
 
@@ -250,8 +266,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void DissipatingPhaseAI() {
             //保持在最终位置和角度
-            handlePosition = Owner.Center + new Vector2(swingDirection * 80f, 100f);
-            currentRotation = 70f * swingDirection * MathHelper.Pi / 180f;
+            handlePosition = Owner.Center + new Vector2(swingDirection * 90f, 110f);
+            currentRotation = 80f * swingDirection * MathHelper.Pi / 180f;
 
             //消散所有水母
             if (PhaseTimer == 1) {
