@@ -132,12 +132,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int MinOrbitTime = 60; // 最小环绕时间（1秒）
         private const int MaxOrbitTime = 150; // 最大环绕时间（2.5秒）
 
+        //动画参数
+        private float frameTransition = 0f; // 帧过渡进度 (0-1)
+        private int targetMinFrame = 0; // 目标最小帧
+        private const float TransitionSpeed = 0.15f; // 过渡速度
+        private const int PreDashTime = 12; // 冲刺前蓄力时间（帧）
+        private const int PostDashTime = 20; // 冲刺后恢复时间（帧）
+
         //状态枚举
         private enum EyeState
         {
             Seeking,      //寻找目标
             Orbiting,     //环绕目标
+            PreDash,      //冲刺前蓄力
             Dashing,      //冲刺攻击
+            PostDash,     //冲刺后恢复
             Returning     //返回环绕
         }
 
@@ -175,22 +184,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dashCooldown--;
             }
 
-            int minFrame = 0;
             //状态机
             EyeState currentState = (EyeState)AIState;
             switch (currentState) {
                 case EyeState.Seeking:
+                    targetMinFrame = 0;
                     SeekingAI();
                     break;
                 case EyeState.Orbiting:
+                    targetMinFrame = 0;
                     OrbitingAI();
                     break;
+                case EyeState.PreDash:
+                    targetMinFrame = 2; // 开始张嘴
+                    PreDashAI();
+                    break;
                 case EyeState.Dashing:
-                    minFrame = 2;
+                    targetMinFrame = 2; // 保持张嘴
                     DashingAI();
                     break;
+                case EyeState.PostDash:
+                    targetMinFrame = 2; // 保持张嘴一小段时间
+                    PostDashAI();
+                    break;
                 case EyeState.Returning:
-                    minFrame = 2;
+                    targetMinFrame = 0; // 开始闭嘴
                     ReturningAI();
                     break;
             }
@@ -208,8 +226,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新瞳孔朝向
             UpdatePupilRotation();
 
-            //帧动画
-            VaultUtils.ClockFrame(ref Projectile.frame, 5, 2 + minFrame, minFrame);
+            //平滑更新帧动画
+            UpdateFrameTransition();
 
             //生成粒子效果
             if (Main.rand.NextBool(isDashing ? 2 : 4)) {
@@ -220,6 +238,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Projectile.timeLeft < 30) {
                 Projectile.alpha = (int)((1f - Projectile.timeLeft / 30f) * 255);
             }
+        }
+
+        /// <summary>
+        /// 平滑更新帧过渡
+        /// </summary>
+        private void UpdateFrameTransition() {
+            //计算当前帧过渡进度
+            float targetTransition = targetMinFrame / 2f; // 0或1 (因为minFrame是0或2)
+            frameTransition = MathHelper.Lerp(frameTransition, targetTransition, TransitionSpeed);
+
+            //根据过渡进度计算实际的最小帧
+            int actualMinFrame = (int)Math.Round(frameTransition * 2);
+
+            //更新帧动画（在minFrame和minFrame+1之间循环）
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, actualMinFrame + 2, actualMinFrame);
         }
 
         private void SeekingAI() {
@@ -301,6 +334,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
+        /// 冲刺前蓄力阶段
+        /// </summary>
+        private void PreDashAI() {
+            AITimer++;
+
+            //蓄力期间减速并调整朝向
+            Projectile.velocity *= 0.88f;
+
+            //保持朝向冲刺方向
+            desiredRotation = dashDirection.ToRotation();
+
+            //蓄力完成，进入冲刺
+            if (AITimer >= PreDashTime) {
+                AIState = (float)EyeState.Dashing;
+                AITimer = 0;
+                isDashing = true;
+
+                //播放冲刺开始音效
+                SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
+                    Volume = 0.5f,
+                    Pitch = 0.3f
+                }, Projectile.Center);
+            }
+        }
+
+        /// <summary>
         /// 智能判断是否应该冲刺
         /// </summary>
         private bool ShouldDash(NPC target) {
@@ -375,9 +434,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void StartDash(NPC target, bool forced = false) {
-            AIState = (float)EyeState.Dashing;
+            AIState = (float)EyeState.PreDash; // 先进入蓄力状态
             AITimer = 0;
-            isDashing = true;
             totalDashes++;
             noActionTimer = 0; // 重置无行动计时器
 
@@ -392,10 +450,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //设置朝向为冲刺方向
             desiredRotation = dashDirection.ToRotation();
 
-            //播放冲刺音效
+            //播放蓄力音效
             SoundEngine.PlaySound(SoundID.NPCHit1 with { 
-                Volume = forced ? 0.8f : 0.6f, 
-                Pitch = forced ? 0.7f : 0.5f 
+                Volume = forced ? 0.5f : 0.4f, 
+                Pitch = forced ? 0.2f : 0.0f 
             }, Projectile.Center);
 
             //重置冷却，强制冲刺后冷却更长
@@ -436,10 +494,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
             else {
-                //冲刺结束，进入返回状态
-                AIState = (float)EyeState.Returning;
+                //冲刺结束，进入后摇恢复状态
+                AIState = (float)EyeState.PostDash;
                 AITimer = 0;
                 isDashing = false;
+            }
+        }
+
+        /// <summary>
+        /// 冲刺后恢复阶段
+        /// </summary>
+        private void PostDashAI() {
+            AITimer++;
+
+            //快速减速
+            Projectile.velocity *= 0.90f;
+
+            //恢复完成，进入返回状态
+            if (AITimer >= PostDashTime) {
+                AIState = (float)EyeState.Returning;
+                AITimer = 0;
             }
         }
 
@@ -602,14 +676,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //冲刺击中时造成debuff
-            if (isDashing) {
+            if (isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash) {
                 target.AddBuff(BuffID.ShadowFlame, 180);
             }
 
-            //击中后如果在冲刺状态，立即进入返回状态
+            //击中后如果在冲刺相关状态，立即进入后摇恢复状态
             if (isDashing) {
-                AIState = (float)EyeState.Returning;
+                AIState = (float)EyeState.PostDash;
                 isDashing = false;
+                AITimer = 0;
+            }
+            else if (AIState == (float)EyeState.PreDash) {
+                //蓄力时被打断，直接进入返回
+                AIState = (float)EyeState.Returning;
                 AITimer = 0;
             }
         }
@@ -627,15 +706,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float fadeAlpha = 1f - Projectile.alpha / 255f;
 
             //绘制残影轨迹
-            int trailLength = isDashing ? Projectile.oldPos.Length : Projectile.oldPos.Length / 2;
+            bool showTrail = isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash;
+            int trailLength = showTrail ? Projectile.oldPos.Length : Projectile.oldPos.Length / 2;
+            
             for (int i = 1; i < trailLength; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
                 float trailProgress = 1f - i / (float)trailLength;
                 float trailAlpha = trailProgress * 0.5f * fadeAlpha;
 
-                if (isDashing) {
-                    trailAlpha *= 1.5f; // 冲刺时更亮
+                if (showTrail) {
+                    trailAlpha *= 1.5f; // 冲刺相关状态时更亮
                 }
 
                 Color trailColor = new Color(200, 50, 50) * trailAlpha;
@@ -673,11 +754,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
 
             //发光效果
-            if (isDashing || isOrbiting) {
+            if (showTrail || isOrbiting) {
                 Color glowColor = new Color(255, 100, 100, 0) * 0.4f * fadeAlpha;
                 
-                if (isDashing) {
-                    glowColor *= 1.5f; // 冲刺时更亮
+                if (showTrail) {
+                    glowColor *= 1.5f; // 冲刺相关状态时更亮
                 }
 
                 Main.EntitySpriteDraw(
