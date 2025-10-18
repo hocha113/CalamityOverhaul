@@ -1220,7 +1220,13 @@ Items: {
 
 	TheForgottenTome: {
 		DisplayName: 遗忘世界之书
-		Tooltip: ""
+		Tooltip:
+			'''
+			使用后瞬间遗忘所有世间的经历
+			人生鬼相，永堕无间，众生皆孽，无往来世
+			我叫[NAME]，当你看到这句话的时候，我已经死了
+			'''
+		CompletionText: 你已经遗忘所有
 	}
 }
 
@@ -1587,6 +1593,7 @@ Projectiles: {
 	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
 	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
+	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
 }
 
 Configs: {

@@ -1215,13 +1215,20 @@ Items: {
 	EncyclopediaofOceanicKnowledge: {
 		// DisplayName: Encyclopediaof Oceanic Knowledge
 		// Tooltip: ""
-		// Text1: 你已经掌握了所有知识
-		// Text2: 习得了[NUM]种鱼类知识！
+		// Text1: You have mastered all the knowledge
+		// Text2: You have acquired [NUM] kinds of fish knowledge!
 	}
 
 	TheForgottenTome: {
 		// DisplayName: The Forgotten Tome
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			When used, it erases every trace of your worldly memories.
+			A life turned specter, condemned to eternal descent
+			all beings are burdened with sin, and no soul shall return to the next life.
+			My name is [NAME]. If you are reading this, I have already perished.
+			''' */
+		// CompletionText: You have forgotten everything
 	}
 }
 
@@ -1588,6 +1595,7 @@ Projectiles: {
 	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
 	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
+	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
 }
 
 Configs: {
