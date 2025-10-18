@@ -6173,9 +6173,13 @@ FishSkill: {
 	}
 
 	FishUnicorn: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 虹光穿刺
+		Tooltip:
+			'''
+			右键将向水平方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 传说只有纯洁的少女才能钓到它！
 	}
 }
 
