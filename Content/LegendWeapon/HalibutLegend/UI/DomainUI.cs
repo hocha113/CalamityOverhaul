@@ -40,6 +40,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float lockIconRotation = 0f;
         private float lockShakeOffset = 0f;
         private int lockShakeTimer = 0;
+        private int remainingLockTime = 0;//剩余锁定时间（帧数）
+        private float countdownScale = 1f;//倒计时数字缩放动画
+        private int lastSecond = -1;//上一秒的值，用于触发动画
 
         ///<summary>
         ///设置或获取面板是否禁止操控
@@ -84,6 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 2.5f);
                 lockParticles.Add(new LockParticle(halibutCenter, velocity, new Color(100, 255, 150)));
             }
+            remainingLockTime = 0;
+            lastSecond = -1;
         }
 
         public override void SetStaticDefaults() {
@@ -387,14 +392,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///更新锁定动画效果
         ///</summary>
         private void UpdateLockAnimation() {
+            //获取锁定时间
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                remainingLockTime = halibutPlayer.IsInteractionLockedTime;
+            }
+
             //更新覆盖层透明度
             if (isInteractionLocked) {
                 lockOverlayAlpha = Math.Min(lockOverlayAlpha + 0.08f, 0.65f);
                 lockPulseTimer += 0.05f;
                 lockIconRotation += 0.02f;
+
+                //倒计时动画
+                int currentSecond = (int)Math.Ceiling(remainingLockTime / 60f);
+                if (currentSecond != lastSecond && currentSecond > 0) {
+                    lastSecond = currentSecond;
+                    countdownScale = 1.5f;//触发缩放动画
+                    //播放滴答音效
+                    if (currentSecond <= 3) {
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f, Pitch = 0.3f });
+                    }
+                }
+                //缩放动画衰减
+                if (countdownScale > 1f) {
+                    countdownScale = MathHelper.Lerp(countdownScale, 1f, 0.15f);
+                }
             }
             else {
                 lockOverlayAlpha = Math.Max(lockOverlayAlpha - 0.12f, 0f);
+                countdownScale = 1f;
             }
 
             //更新震动效果
@@ -659,8 +685,117 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 new Color(255, 120, 120) * (lockOverlayAlpha * alpha),
                 lockIconRotation);
 
+            //绘制倒计时
+            if (remainingLockTime > 0) {
+                DrawLockCountdown(spriteBatch, lockIconPos, iconSize, alpha);
+            }
+
             //绘制警告边框
             DrawWarningBorder(spriteBatch, panelRect, lockOverlayAlpha * alpha);
+        }
+
+        ///<summary>
+        ///绘制锁定倒计时（环形进度条+数字）
+        ///</summary>
+        private void DrawLockCountdown(SpriteBatch spriteBatch, Vector2 center, float iconSize, float alpha) {
+            if (remainingLockTime <= 0) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float remainingSeconds = remainingLockTime / 60f;
+            int displaySeconds = (int)Math.Ceiling(remainingSeconds);
+
+            //计算进度比例（假设最大锁定时间为10秒）
+            float maxLockSeconds = 10f;
+            float progress = Math.Clamp(remainingSeconds / maxLockSeconds, 0f, 1f);
+
+            //绘制环形进度条
+            Vector2 ringCenter = center + new Vector2(0, iconSize * 0.8f);
+            float ringRadius = iconSize * 0.65f;
+            int segments = 48;
+            float startAngle = -MathHelper.PiOver2;//从顶部开始
+            float endAngle = startAngle + MathHelper.TwoPi * progress;
+
+            //背景环（暗色）
+            DrawCircularRing(spriteBatch, ringCenter, ringRadius, startAngle, startAngle + MathHelper.TwoPi,
+                new Color(80, 40, 40) * (lockOverlayAlpha * 0.4f * alpha), 2.5f, segments);
+
+            //进度环（亮色，带脉动）
+            float ringPulse = (float)Math.Sin(lockPulseTimer * 5f) * 0.15f + 0.85f;
+            Color progressColor = Color.Lerp(new Color(255, 100, 100), new Color(255, 180, 180), ringPulse);
+            DrawCircularRing(spriteBatch, ringCenter, ringRadius, startAngle, endAngle,
+                progressColor * (lockOverlayAlpha * alpha), 3f, segments);
+
+            //进度环外发光
+            DrawCircularRing(spriteBatch, ringCenter, ringRadius + 2f, startAngle, endAngle,
+                progressColor * (lockOverlayAlpha * alpha * 0.5f), 1.5f, segments);
+
+            //绘制倒计时数字
+            string timeText = displaySeconds.ToString();
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(timeText);
+            Vector2 textPos = ringCenter - textSize * countdownScale / 2;
+
+            //数字外发光（脉动）
+            float textGlowPulse = (float)Math.Sin(lockPulseTimer * 6f) * 0.3f + 0.7f;
+            Color glowColor = new Color(255, 120, 120) * (lockOverlayAlpha * alpha * textGlowPulse);
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4f;
+                Vector2 offset = angle.ToRotationVector2() * (2f * countdownScale);
+                Utils.DrawBorderString(spriteBatch, timeText, textPos + offset, glowColor, countdownScale);
+            }
+
+            //数字主体
+            Color textColor = Color.White * (lockOverlayAlpha * alpha);
+            Utils.DrawBorderString(spriteBatch, timeText, textPos, textColor, countdownScale);
+
+            //绘制"秒"字或"s"（小字）
+            string unitText = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese ? "秒" : "s";
+            Vector2 unitSize = FontAssets.MouseText.Value.MeasureString(unitText) * 0.6f;
+            Vector2 unitPos = ringCenter + new Vector2(ringRadius * 0.7f, textSize.Y * countdownScale * 0.3f);
+            
+            Utils.DrawBorderString(spriteBatch, unitText, unitPos + new Vector2(1, 1), 
+                Color.Black * (lockOverlayAlpha * alpha * 0.5f), 0.6f);
+            Utils.DrawBorderString(spriteBatch, unitText, unitPos, 
+                new Color(255, 200, 200) * (lockOverlayAlpha * alpha * 0.8f), 0.6f);
+
+            //剩余时间很短时（<=3秒）添加警告效果
+            if (displaySeconds <= 3) {
+                float warningPulse = (float)Math.Sin(lockPulseTimer * 10f) * 0.5f + 0.5f;
+                //绘制警告光环
+                for (int i = 0; i < 3; i++) {
+                    float waveRadius = ringRadius + (i + 1) * 8f * warningPulse;
+                    Color waveColor = new Color(255, 80, 80) * (lockOverlayAlpha * alpha * (0.4f - i * 0.1f) * warningPulse);
+                    DrawCircularRing(spriteBatch, ringCenter, waveRadius, 0, MathHelper.TwoPi,
+                        waveColor, 1.5f, 32);
+                }
+            }
+        }
+
+        ///<summary>
+        ///绘制环形线段
+        ///</summary>
+        private static void DrawCircularRing(SpriteBatch spriteBatch, Vector2 center, float radius,
+            float startAngle, float endAngle, Color color, float thickness, int segments) {
+            if (Math.Abs(endAngle - startAngle) < 0.01f) return;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float angleRange = endAngle - startAngle;
+            int actualSegments = Math.Max(3, (int)(segments * Math.Abs(angleRange) / MathHelper.TwoPi));
+            float angleStep = angleRange / actualSegments;
+
+            Vector2 prevPoint = center + startAngle.ToRotationVector2() * radius;
+            for (int i = 1; i <= actualSegments; i++) {
+                float angle = startAngle + angleStep * i;
+                Vector2 currentPoint = center + angle.ToRotationVector2() * radius;
+                
+                Vector2 diff = currentPoint - prevPoint;
+                float length = diff.Length();
+                if (length > 0.1f) {
+                    float rotation = diff.ToRotation();
+                    spriteBatch.Draw(pixel, prevPoint, new Rectangle(0, 0, 1, 1), color,
+                        rotation, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
+                }
+                prevPoint = currentPoint;
+            }
         }
 
         ///<summary>
