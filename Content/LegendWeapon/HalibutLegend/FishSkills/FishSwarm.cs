@@ -454,7 +454,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 3;
             Projectile.timeLeft = FishSwarm.FishSwarmDuration + 60; //额外时间用于淡出
         }
 
@@ -467,7 +467,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             surgeDirection = direction;
             surgeTimer = 0;
             Projectile.friendly = true;
-            Projectile.damage = (int)(shootState.WeaponDamage * (0.5 + HalibutData.GetDomainLayer() / 5));
+            Projectile.damage = (int)(shootState.WeaponDamage * (0.35 + HalibutData.GetDomainLayer() * 0.15f));
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }

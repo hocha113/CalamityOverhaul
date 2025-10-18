@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<SkeletronHandMinion>(),
-                (int)(damage * (4 + HalibutData.GetDomainLayer() * 0.75)),
+                (int)(damage * (5 + HalibutData.GetDomainLayer() * 0.8)),
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count

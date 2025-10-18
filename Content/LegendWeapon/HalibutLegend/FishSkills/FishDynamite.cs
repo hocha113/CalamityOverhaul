@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //大量爆炸粒子
             SpawnExplosionParticles();
 
-            Projectile.damage = Main.player[Projectile.owner].GetShootState().WeaponDamage * (10 + HalibutData.GetDomainLayer() * 9);//实际爆炸伤害
+            Projectile.damage = Main.player[Projectile.owner].GetShootState().WeaponDamage * (7 + HalibutData.GetDomainLayer() * 6);//实际爆炸伤害
             Projectile.Explode(350, default, false);
 
             //爆炸音效

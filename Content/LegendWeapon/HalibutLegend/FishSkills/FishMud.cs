@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<MudfishSentry>(),
-                (int)(damage * (2.4f + HalibutData.GetDomainLayer() * 0.45f)),
+                (int)(damage * (1.8f + HalibutData.GetDomainLayer() * 0.45f)),
                 knockback * 0.8f,
                 player.whoAmI,
                 0
@@ -166,6 +166,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.hide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 9;
         }
 
         public override void AI() {
@@ -655,7 +657,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 3;
+            Projectile.localNPCHitCooldown = 6;
         }
 
         public override void AI() {

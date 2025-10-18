@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         gelVelocity,
                         ModContent.ProjectileType<SlimeGelOrb>(),
-                        (int)(shootState.WeaponDamage * (3f + HalibutData.GetDomainLayer() * 0.8f)),
+                        (int)(shootState.WeaponDamage * (2f + HalibutData.GetDomainLayer() * 0.6f)),
                         shootState.WeaponKnockback * 1.5f,
                         player.whoAmI
                     );

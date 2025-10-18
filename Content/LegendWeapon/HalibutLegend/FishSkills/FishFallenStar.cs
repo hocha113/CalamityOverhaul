@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 12;
         // 星星管理系统
         private static int consecutiveShots = 0; // 连续射击计数
-        private static int ShotsForStarRain => 20 - HalibutData.GetDomainLayer(); // 每20-10次射击触发一次星雨
+        private static int ShotsForStarRain => 15 - HalibutData.GetDomainLayer(); // 每20-10次射击触发一次星雨
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 // 发射螺旋星星
                 Vector2 direction = velocity.SafeNormalize(Vector2.Zero);
-                int starDamage = (int)(damage * (1 + HalibutData.GetDomainLayer() * 0.15));
+                int starDamage = (int)(damage * (0.55 + HalibutData.GetDomainLayer() * 0.15));
 
                 // 生成主星星弹幕
                 int mainStar = Projectile.NewProjectile(
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<FallingStarProjectile>(),
-                    (int)(baseDamage * (1 + HalibutData.GetDomainLayer() * 0.25) * 3.00),
+                    (int)(baseDamage * (1.5 + HalibutData.GetDomainLayer() * 0.3) * 3.00),
                     8f,
                     player.whoAmI,
                     ai0: delay
