@@ -6163,9 +6163,13 @@ FishSkill: {
 	}
 
 	FishBloodyManowar: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 猩红裁决
+		Tooltip:
+			'''
+			开火时召唤血腥水母形成一把战斧劈向敌人
+			血腥水母斧的挥砍造成大范围伤害
+			'''
+		Studied: 它们的关系是共生还是上下级？
 	}
 
 	FishUnicorn: {

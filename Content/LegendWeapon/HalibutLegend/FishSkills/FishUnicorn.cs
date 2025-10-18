@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishUnicorn : FishSkill
     {
         public override int UnlockFishID => ItemID.UnicornFish;
-        public override int DefaultCooldown => 10 * (15 - HalibutData.GetDomainLayer());
+        public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer() / 2);
         public override int ResearchDuration => 60 * 14;
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.Center,
                 new Vector2(horizontalDirection * 28f, 0), //纯水平速度
                 ModContent.ProjectileType<UnicornFishDashProj>(),
-                (int)(shootState.WeaponDamage * (4.5f + HalibutData.GetDomainLayer() * 1.5f)),
+                (int)(shootState.WeaponDamage * (2.5f + HalibutData.GetDomainLayer() * 0.75f)),
                 shootState.WeaponKnockback * 2.5f,
                 player.whoAmI,
                 ai0: 0,
