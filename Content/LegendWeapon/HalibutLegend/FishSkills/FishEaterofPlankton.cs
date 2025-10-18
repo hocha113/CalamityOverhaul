@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
-                Projectile.damage *= (int)0.5f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 2f;

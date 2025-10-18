@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         gelVelocity,
                         ModContent.ProjectileType<SlimeGelOrb>(),
-                        (int)(shootState.WeaponDamage * (2f + HalibutData.GetDomainLayer() * 0.6f)),
+                        (int)(shootState.WeaponDamage * (1.2f + HalibutData.GetDomainLayer() * 0.3f)),
                         shootState.WeaponKnockback * 1.5f,
                         player.whoAmI
                     );
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
-                Projectile.damage *= (int)0.7f;
+                modifiers.FinalDamage *= 0.7f;
             }
             if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.43f;

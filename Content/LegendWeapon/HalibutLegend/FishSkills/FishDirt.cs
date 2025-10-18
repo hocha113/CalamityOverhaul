@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                                 ballCenter,
                                 shootDirection * 16f,
                                 ModContent.ProjectileType<DirtBall>(),
-                                (int)(storedDamage * (2.7f + HalibutData.GetDomainLayer() * 0.55f)),
+                                (int)(storedDamage * (1.7f + HalibutData.GetDomainLayer() * 0.45f)),
                                 storedKnockback * 1.8f,
                                 owner.whoAmI,
                                 convergingCount

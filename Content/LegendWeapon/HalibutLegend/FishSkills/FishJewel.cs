@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 position,
                 boostedVelocity,
                 ModContent.ProjectileType<JewelGemProjectile>(),
-                (int)(damage * (0.2f + HalibutData.GetDomainLayer() * 0.05f)),
+                (int)(damage * (0.5f + HalibutData.GetDomainLayer() * 0.15f)),
                 knockback * 1.2f,
                 player.whoAmI,
                 ai0: gemType
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position + Main.rand.NextVector2Circular(15f, 15f),
                     fragmentVel,
                     ModContent.ProjectileType<JewelFragmentProjectile>(),
-                    (int)(damage * (1.3f + HalibutData.GetDomainLayer() * 0.25f)),
+                    (int)(damage * (0.2f + HalibutData.GetDomainLayer() * 0.05f)),
                     knockback * 0.8f,
                     player.whoAmI,
                     ai0: gemType,

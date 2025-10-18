@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishFallenStar : FishSkill
     {
         public override int UnlockFishID => ItemID.FallenStarfish;
-        public override int DefaultCooldown => 30 - HalibutData.GetDomainLayer() * 2;
+        public override int DefaultCooldown => 39 - HalibutData.GetDomainLayer() * 3;
         public override int ResearchDuration => 60 * 12;
         // 星星管理系统
         private static int consecutiveShots = 0; // 连续射击计数

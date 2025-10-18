@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     throwVelocity,
                     ModContent.ProjectileType<BunnyfishHopper>(),
-                    (int)(damage * (1.75f + HalibutData.GetDomainLayer() * 0.45f)),
+                    (int)(damage * (1.5f + HalibutData.GetDomainLayer() * 0.35f)),
                     knockback * 2f,
                     player.whoAmI
                 );

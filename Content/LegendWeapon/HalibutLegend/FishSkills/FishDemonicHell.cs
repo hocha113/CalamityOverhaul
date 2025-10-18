@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void FireBlast() {
             //发射主爆炸弹幕
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitY);
-            int damage = (int)(Owner.GetShootState().WeaponDamage * (4f + HalibutData.GetDomainLayer()));
+            int damage = (int)(Owner.GetShootState().WeaponDamage * (2f + HalibutData.GetDomainLayer() * 0.5f));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 6f,
                 ModContent.ProjectileType<HellFireBlast>(), damage, 6f, Owner.whoAmI);
 
@@ -372,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
-                Projectile.damage *= (int)0.75f;
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
