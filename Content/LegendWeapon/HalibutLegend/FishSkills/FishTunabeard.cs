@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishTunabeard : FishSkill
     {
         public override int UnlockFishID => ItemID.CapnTunabeard;
-        public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 6;//冷却时间随领域层数减少
+        public override int DefaultCooldown => 60 * (24 - HalibutData.GetDomainLayer());//冷却时间随领域层数减少
         public override int ResearchDuration => 60 * 15;
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.Center,
                 dashDirection * 45f,//初始高速
                 ModContent.ProjectileType<TunabeardDashProj>(),
-                (int)(shootState.WeaponDamage * (3f + HalibutData.GetDomainLayer() * 0.5f)),//强力伤害倍率
+                (int)(shootState.WeaponDamage * (5f + HalibutData.GetDomainLayer() * 1.25f)),//强力伤害倍率
                 shootState.WeaponKnockback * 2f,
                 player.whoAmI,
                 ai0: 0,
