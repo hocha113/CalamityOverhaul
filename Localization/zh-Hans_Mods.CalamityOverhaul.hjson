@@ -5893,7 +5893,7 @@ FishSkill: {
 			右键可以召唤一群溺尸冲向敌人
 			靠近敌人后造成一次爆炸
 			'''
-		Studied: 散发着臭味的鱼，它还活着吗?
+		Studied: 散发着臭味的鱼，它还活着吗？
 	}
 
 	FishCloud: {
@@ -5996,7 +5996,7 @@ FishSkill: {
 			开火时射出小噬魂虫
 			小噬魂虫将会不停的蠕动并攻击敌人
 			'''
-		Studied: 这条鱼长虫子了!
+		Studied: 这条鱼长虫子了！
 	}
 
 	FishAmanita: {
@@ -6030,7 +6030,7 @@ FishSkill: {
 			远距离时骷髅王之手将会蓄力丢出骨头
 			近距离时骷髅王之手将会蓄力拍向目标
 			'''
-		Studied: 它不止四手!
+		Studied: 它不止四手！
 	}
 
 	FishIchorn: {
@@ -6040,7 +6040,7 @@ FishSkill: {
 			开火时会伴随着散射灵液射流
 			灵液射流命中时将给予目标灵液效果
 			'''
-		Studied: 这条鱼的口水十分有用!
+		Studied: 这条鱼的口水十分有用！
 	}
 
 	FishCursed: {
@@ -6050,7 +6050,7 @@ FishSkill: {
 			开火时会伴随着散射诅咒火焰
 			诅咒火焰射出后将反重力下坠
 			'''
-		Studied: 它居然不会烧坏钓竿!?
+		Studied: 它居然不会烧坏钓竿！？
 	}
 
 	FishSlime: {
@@ -6138,19 +6138,27 @@ FishSkill: {
 			开火时召唤凝视之瞳观察敌人
 			凝视之瞳靠近敌人时将变换形态进行冲刺
 			'''
-		Studied: 它一直盯着你...
+		Studied: 它一直盯着你…
 	}
 
 	FishJewel: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 虹彩序曲
+		Tooltip:
+			'''
+			开火时按顺序发射散射宝石弹
+			不同宝石弹在发射时有不同的音效
+			'''
+		Studied: 六色序曲……也许真能用它演奏一曲彩虹乐章
 	}
 
 	FishTunabeard: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 激流一闪
+		Tooltip:
+			'''
+			右键将向鼠标方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 对鱼来说海盗和强盗有区别吗？
 	}
 
 	FishBloodyManowar: {

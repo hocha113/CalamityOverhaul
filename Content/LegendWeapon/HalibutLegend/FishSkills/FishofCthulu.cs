@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position + Main.rand.NextVector2Circular(30f, 30f),
                     eyeVelocity,
                     ModContent.ProjectileType<CthulhuEye>(),
-                    (int)(damage * (1.8f + HalibutData.GetDomainLayer() * 0.4f)),
+                    (int)(damage * (1.5f + HalibutData.GetDomainLayer() * 0.35f)),
                     knockback * 0.6f,
                     player.whoAmI,
                     ai0: i //用于区分不同眼球
@@ -163,12 +163,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 40;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 600;
+            Projectile.penetrate = 6;
+            Projectile.timeLeft = 1200;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 30;
 
             //初始化环绕参数
             orbitAngle = EyeID * MathHelper.TwoPi / 4f;

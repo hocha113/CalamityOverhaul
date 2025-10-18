@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishJewel : FishSkill
     {
         public override int UnlockFishID => ItemID.Jewelfish;
-        public override int DefaultCooldown => 12 - HalibutData.GetDomainLayer() / 2; //更快的射击节奏
+        public override int DefaultCooldown => (int)(21 - HalibutData.GetDomainLayer() *1.3f); //更快的射击节奏
         public override int ResearchDuration => 60 * 18;
 
         private int gemCycle = 0; //宝石循环计数
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpawnMainGem(source, player, position, velocity, damage, knockback, currentGemType);
 
                 //根据领域等级生成额外的宝石碎片
-                int fragmentCount = 2 + HalibutData.GetDomainLayer() / 2;
+                int fragmentCount = 2 + HalibutData.GetDomainLayer() / 5;
                 SpawnGemFragments(source, player, position, velocity, damage, knockback, fragmentCount, currentGemType);
 
                 //播放音乐化的宝石音效
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 position,
                 boostedVelocity,
                 ModContent.ProjectileType<JewelGemProjectile>(),
-                (int)(damage * (2.2f + HalibutData.GetDomainLayer() * 0.45f)),
+                (int)(damage * (0.2f + HalibutData.GetDomainLayer() * 0.05f)),
                 knockback * 1.2f,
                 player.whoAmI,
                 ai0: gemType
@@ -520,7 +520,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 16;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.penetrate = 2;
+            Projectile.penetrate = 1;
             Projectile.timeLeft = 240;
             Projectile.tileCollide = true;
             Projectile.extraUpdates = 1;
