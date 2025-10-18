@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishBloodyManowar : FishSkill
     {
         public override int UnlockFishID => ItemID.BloodyManowar;
-        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 10;
+        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
         public override int ResearchDuration => 60 * 18;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.Center,
                 targetDirection,
                 ModContent.ProjectileType<BloodyAxeController>(),
-                (int)(shootState.WeaponDamage * (2.8f + HalibutData.GetDomainLayer() * 0.6f)),
+                (int)(shootState.WeaponDamage * (2.4f + HalibutData.GetDomainLayer() * 0.6f)),
                 shootState.WeaponKnockback * 2.5f,
                 player.whoAmI
             );
