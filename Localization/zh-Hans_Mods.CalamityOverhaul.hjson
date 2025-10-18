@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1197,7 +1197,13 @@ Items: {
 
 	Pallbearer: {
 		DisplayName: 扶柩者
-		Tooltip: ""
+		Tooltip:
+			'''
+			左键长按蓄力，松开后发射出护柩者之箭
+			蓄力时间越长，箭矢越强大
+			右键可以将弩投掷出去，命中敌人后大幅加强下一次发射的箭矢
+			"也叫抬棺人"
+			'''
 	}
 }
 

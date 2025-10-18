@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.width = 80;
             Item.height = 32;
-            Item.damage = 285;
+            Item.damage = 355;
             Item.DamageType = DamageClass.Generic;
             Item.useTime = 45;
             Item.useAnimation = 45;
