@@ -9,7 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// 至尊灾厄硫磺火风格对话框，深红色系与火焰灰烬特效
+    /// 至尊灾厄硫磺火风格对话框
     /// </summary>
     internal class BrimstoneDialogueBox : DialogueBoxBase
     {
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV
         private float flameTimer = 0f;
         private float emberGlowTimer = 0f;
         private float heatWavePhase = 0f;
-        private float infernoPulse = 0f; //地狱脉冲
+        private float infernoPulse = 0f;
 
         //粒子系统
         private readonly List<EmberParticle> embers = new();
