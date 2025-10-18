@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<FallingPenguin>(),
-                (int)(damage * (1.75f + HalibutData.GetDomainLayer() * 0.4f)),
+                (int)(damage * (2.25f + HalibutData.GetDomainLayer() * 0.55f)),
                 knockback * 1.5f,
                 player.whoAmI,
                 0
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 5;
+            Projectile.localNPCHitCooldown = 9;
         }
 
         public override void AI() {

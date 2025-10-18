@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 16;
 
         private static int _drizzleVolleyIdSeed = 0;
-        internal static int DepartureDelay => 75 - (HalibutData.GetDomainLayer() * 4);
-        internal static int DepartureDuration => 75 - (HalibutData.GetDomainLayer() * 4);
+        internal static int DepartureDelay => 90 - (HalibutData.GetDomainLayer() * 3);
+        internal static int DepartureDuration => 90 - (HalibutData.GetDomainLayer() * 3);
         internal static int shootDir;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f, Volume = 0.9f }, Projectile.Center);
 
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
-            int damage = (int)(StoredDamage * (0.95f + HalibutData.GetDomainLayer() * 0.2f));
+            int damage = (int)(StoredDamage * (0.75f + HalibutData.GetDomainLayer() * 0.2f));
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 12f, dir * 0.1f,
                 ModContent.ProjectileType<DrizzleFirePillar>(), damage, StoredKnockback * 1.6f, Projectile.owner, Projectile.identity);

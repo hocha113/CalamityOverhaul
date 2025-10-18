@@ -56,11 +56,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
-                {1, 5 },
-                {2, 7 },
-                {3, 9 },
-                {4, 12 },
-                {5, 15 },
+                {1, 4 },
+                {2, 6 },
+                {3, 8 },
+                {4, 11 },
+                {5, 14 },
                 {6, 18 },
                 {7, 23 },
                 {8, 35 },
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel()));
             if (isBullet) {
-                damage = (int)(damage * (1.2 + (bulletAmt - 1) * (1 - 0.4/Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1 + HalibutData.GetLevel() / 35f));
+                damage = (int)(damage * (0.8 + (bulletAmt - 1) * (0.9 - 0.4/Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (0.7 + HalibutData.GetLevel() / 35f));
                 bulletAmt = 1;
             }
 
