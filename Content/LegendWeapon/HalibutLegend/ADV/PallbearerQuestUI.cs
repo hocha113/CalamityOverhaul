@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
 
         public override void SetStaticDefaults() {
             QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：亵渎天神");
-            QuestDesc = this.GetLocalization(nameof(QuestDesc), () => "使用扶柩者击杀亵渎天神，证明你配得上这份力量。\n\n当你准备好后，她将会等待你的答复。");
+            QuestDesc = this.GetLocalization(nameof(QuestDesc), () => "使用扶柩者击杀亵渎天神");
             AcceptText = this.GetLocalization(nameof(AcceptText), () => "接受");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");
         }
