@@ -52,8 +52,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         private bool hoveringDecline;
 
         public override void SetStaticDefaults() {
-            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀亵渎天神");
-            QuestDesc = this.GetLocalization(nameof(QuestDesc), () => "使用扶柩者击杀亵渎天神");
+            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：亵渎天神");
+            QuestDesc = this.GetLocalization(nameof(QuestDesc), () => "使用扶柩者击杀亵渎天神，证明你配得上这份力量。\n\n当你准备好后，她将会等待你的答复。");
             AcceptText = this.GetLocalization(nameof(AcceptText), () => "接受");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");
         }
@@ -68,6 +68,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 }
 
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    return false;
+                }
+
+                //如果玩家已经接受了任务（通过存档标记），就不再显示UI
+                if (halibutPlayer.ADCSave.SupCalQuestAccepted) {
                     return false;
                 }
 
@@ -93,6 +98,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             if (sengs < 0.01f) {
                 if (questAccepted) {
                     questAccepted = false;
+                    //标记玩家接受了任务
+                    if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                        halibutPlayer.ADCSave.SupCalQuestAccepted = true;
+                    }
                 }
                 if (questDeclined) {
                     questDeclined = false;
@@ -339,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
 
             //检查是否接受了任务
-            if (!halibutPlayer.ADCSave.SupCalMoonLordReward || halibutPlayer.ADCSave.SupCalQuestDeclined) {
+            if (!halibutPlayer.ADCSave.SupCalQuestAccepted || halibutPlayer.ADCSave.SupCalQuestDeclined) {
                 return;
             }
 
