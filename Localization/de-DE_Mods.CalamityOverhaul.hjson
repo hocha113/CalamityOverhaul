@@ -1781,6 +1781,7 @@ Keybinds: {
 	// Halibut_Restart.DisplayName: Halibut: Reboot
 	// Halibut_Superposition.DisplayName: Halibut: Superposition
 	// Halibut_Teleport.DisplayName: Halibut: Domain Teleport
+	// Halibut_UIControl.DisplayName: Halibut: UI Control
 }
 
 TextContent: {

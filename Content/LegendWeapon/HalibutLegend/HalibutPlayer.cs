@@ -7,6 +7,7 @@ using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
@@ -333,6 +334,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             YourLevelIsTooLow.TryAutoActivate(Player);
+
+            if (CWRKeySystem.Halibut_UIControl.JustPressed && HalibutUIHead.Instance != null && HalibutUIHead.Instance.Active) {
+                SoundEngine.PlaySound(CWRSound.ButtonZero);
+                HalibutUIHead.Instance.Open = !HalibutUIHead.Instance.Open;
+            }
 
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {

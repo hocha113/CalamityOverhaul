@@ -1777,6 +1777,7 @@ Keybinds: {
 	Halibut_Restart.DisplayName: 大比目鱼:重启
 	Halibut_Superposition.DisplayName: 大比目鱼:叠加
 	Halibut_Teleport.DisplayName: 大比目鱼:领域传送
+	Halibut_UIControl.DisplayName: 大比目鱼:面板开关
 }
 
 TextContent: {

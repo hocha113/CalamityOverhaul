@@ -335,12 +335,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
             //执行真正的死亡
             ExecuteDeath();
-
-            if (Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
-                foreach (var save in halibutSave.activationSequence) {
-                    save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
-                }
-            }
         }
 
         /// <summary>
@@ -465,6 +459,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 }
             }
             ResetState();
+        }
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
+            if (Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
+                foreach (var save in halibutSave.activationSequence) {
+                    save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
+                }
+            }
         }
         #endregion
 
