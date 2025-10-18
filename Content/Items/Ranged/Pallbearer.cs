@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<PallbearerHeld>();
             Item.shootSpeed = 15f;
             Item.useAmmo = AmmoID.Arrow;
-            Item.channel = true;//允许持续按住
+            Item.channel = true; //允许持续按住
         }
 
         public override bool AltFunctionUse(Player player) => true;
@@ -78,11 +78,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
         //弩的状态机
         private enum CrossbowState
         {
-            Idle,//待机
-            Loading,//装填箭矢
-            Charged,//蓄力完成(正在蓄力)
-            Firing,//发射
-            Throwing//投掷弩本身 (未使用保留)
+            Idle,           //待机
+            Loading,        //装填箭矢
+            Charged,        //蓄力完成(正在蓄力)
+            Firing,         //发射
+            Throwing        //投掷弩本身 (未使用保留)
         }
 
         private CrossbowState State {
@@ -91,23 +91,23 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         private ref float StateTimer => ref Projectile.ai[1];
-        private ref float ChargeLevel => ref Projectile.localAI[0];//蓄力等级 0-1
-        private ref float ThrowCooldown => ref Projectile.localAI[1];//投掷冷却(实例内生效)
+        private ref float ChargeLevel => ref Projectile.localAI[0]; //蓄力等级 0-1
+        private ref float ThrowCooldown => ref Projectile.localAI[1]; //投掷冷却(实例内生效)
 
         //动画帧控制 (使用Projectile.frame)
         private float armRotation = 0f;
 
         //常量配置
-        private const int LoadDuration = 35;//装填时长
-        private const int MaxChargeDuration = 60;//最大蓄力时长
-        private const int FireDuration = 15;//射击动画时长
-        private const int ThrowCooldownTime = 120;//投掷后的冷却(仅右键)
+        private const int LoadDuration = 35;        //装填时长
+        private const int MaxChargeDuration = 60;   //最大蓄力时长
+        private const int FireDuration = 15;        //射击动画时长
+        private const int ThrowCooldownTime = 120;  //投掷后的冷却(仅右键)
 
         //弩弦相关
-        private float bowstringPullback = 0f;//弓弦拉动进度
+        private float bowstringPullback = 0f; //弓弦拉动进度
 
         public override void SetStaticDefaults() {
-            Main.projFrames[Type] = 4;//4帧动画：0待机 1加载过渡 2满弦 3射击回弹
+            Main.projFrames[Type] = 4; //4帧动画：0待机 1加载过渡 2满弦 3射击回弹
         }
 
         public override void SetDefaults() {
@@ -174,17 +174,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             if (StateTimer % 8 == 0 && !Main.dedServ) {
                 Vector2 dustPos = Projectile.Center + Projectile.velocity * 20f;
-                //硫磺火风格的装填特效
                 for (int i = 0; i < 3; i++) {
-                    //橙红色火焰粒子
-                    Vector2 particleVelocity = Main.rand.NextVector2Circular(3f, 3f);
-                    Color flameColor = Main.rand.NextBool() ? Color.OrangeRed : Color.DarkOrange;
-                    SparkParticle flameSpark = new SparkParticle(dustPos, particleVelocity, false, Main.rand.Next(15, 25), Main.rand.NextFloat(0.8f, 1.3f), flameColor);
-                    GeneralParticleHandler.SpawnParticle(flameSpark);
+                    Dust dust = Dust.NewDustPerfect(dustPos, DustID.Smoke,
+                        Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);
+                    dust.noGravity = true;
                 }
-                //烟雾效果
-                Dust smoke = Dust.NewDustPerfect(dustPos, DustID.Smoke, Main.rand.NextVector2Circular(2f, 2f), 100, default, 1.2f);
-                smoke.noGravity = true;
             }
 
             if (StateTimer >= LoadDuration) {
@@ -196,7 +190,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 SpawnLoadCompleteEffect();
             }
 
-            if (!DownLeft) {//取消
+            if (!DownLeft) { //取消
                 State = CrossbowState.Idle;
                 StateTimer = 0;
             }
@@ -232,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bowstringPullback = 1f - fireProgress;
 
             if (StateTimer >= FireDuration) {
-                //直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
+                // 直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
                 State = CrossbowState.Idle;
                 StateTimer = 0;
                 ChargeLevel = 0f;
@@ -247,7 +241,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
             int mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
-            float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult;//最高250% * 触发加成
+            float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; // 最高250% * 触发加成
             int finalDamage = (int)(Projectile.damage * damageMultiplier);
 
             Vector2 shootVelocity = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction) * (Owner.ActiveItem().shootSpeed + ChargeLevel * 5f);
@@ -262,27 +256,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 ChargeLevel
             );
 
-            //Reset multiplier after consumption
+            // Reset multiplier after consumption
             if (mult > 1) {
                 Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1;
-                //反馈特效：硫磺火爆发
+                // 反馈特效
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
                 if (!Main.dedServ) {
-                    for (int i = 0; i < 20; i++) {
-                        Color explosionColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                        SparkParticle explosionSpark = new SparkParticle(
-                            Projectile.Center,
-                            Main.rand.NextVector2Circular(6f, 6f),
-                            false,
-                            Main.rand.Next(20, 35),
-                            Main.rand.NextFloat(1.2f, 2.0f),
-                            explosionColor
-                        );
-                        GeneralParticleHandler.SpawnParticle(explosionSpark);
-                    }
-                    //额外的烟雾效果
-                    for (int i = 0; i < 8; i++) {
-                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke, Main.rand.NextVector2Circular(4f, 4f), 150, default, 1.8f);
+                    for (int i = 0; i < 16; i++) {
+                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2Circular(4f, 4f), 150, Color.OrangeRed, 1.4f);
                         d.noGravity = true;
                     }
                 }
@@ -356,7 +337,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private void UpdatePositionAndRotation() {
             Vector2 ownerCenter = Owner.GetPlayerStabilityCenter();
             Vector2 aimDir = (Main.MouseWorld - ownerCenter).SafeNormalize(Vector2.UnitX * Owner.direction);
-            Projectile.velocity = aimDir;//稳定的方向向量
+            Projectile.velocity = aimDir; //稳定的方向向量
 
             float holdDistance = 20f + ((State == CrossbowState.Loading || State == CrossbowState.Charged) ? bowstringPullback * 8f : 0f);
             Projectile.Center = ownerCenter + aimDir * holdDistance;
@@ -370,82 +351,35 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         private void SpawnLoadCompleteEffect() {
             if (Main.dedServ) return;
-            //硫磺火风格的装填完成特效
-            for (int i = 0; i < 16; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Color particleColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                SparkParticle spark = new SparkParticle(
-                    Projectile.Center + Projectile.rotation.ToRotationVector2() * 32,
-                    velocity,
-                    false,
-                    Main.rand.Next(20, 30),
-                    Main.rand.NextFloat(1.2f, 1.8f),
-                    particleColor
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
-            }
-            //能量环特效
-            for (int i = 0; i < 2; i++) {
-                PulseRing pulse = new PulseRing(
-                    Projectile.Center + Projectile.rotation.ToRotationVector2() * 32,
-                    Vector2.Zero,
-                    Color.OrangeRed,
-                    0.1f,
-                    1.5f + i * 0.3f,
-                    15
-                );
-                GeneralParticleHandler.SpawnParticle(pulse);
+            for (int i = 0; i < 12; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+                Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.rotation.ToRotationVector2() * 32, DustID.RedTorch, velocity, 100, Color.Cyan, 1.5f);
+                dust.noGravity = true;
             }
         }
 
         private void SpawnChargeParticle() {
             if (Main.dedServ) return;
             Color chargeColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel);
-            Vector2 particlePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 32 + Main.rand.NextVector2Circular(18f, 18f);
-            Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 3.5f);
-            
-            //主要火花
-            SparkParticle charge = new SparkParticle(particlePos, particleVel, false, Main.rand.Next(15, 25), Main.rand.NextFloat(1.0f, 1.5f), chargeColor);
-            GeneralParticleHandler.SpawnParticle(charge);
-            
-            //额外的小火花环绕
-            if (Main.rand.NextBool(3)) {
-                Vector2 orbitalVel = particleVel.RotatedByRandom(0.5f) * 0.6f;
-                SparkParticle miniCharge = new SparkParticle(particlePos, orbitalVel, false, Main.rand.Next(10, 18), Main.rand.NextFloat(0.6f, 1.0f), chargeColor);
-                GeneralParticleHandler.SpawnParticle(miniCharge);
-            }
+            Vector2 particlePos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 32 + Main.rand.NextVector2Circular(15f, 15f);
+            Vector2 particleVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * 2f;
+            Dust charge = Dust.NewDustPerfect(particlePos, DustID.RedTorch, particleVel, 100, chargeColor, 1.2f);
+            charge.noGravity = true;
+            charge.fadeIn = 1.2f;
         }
 
         private void SpawnFireEffect() {
             if (Main.dedServ) return;
             Vector2 muzzlePos = Projectile.Center + Projectile.velocity * 30f;
-            
-            //主要的火焰爆发
-            for (int i = 0; i < 25; i++) {
-                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f, 10f);
-                Color sparkColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                SparkParticle spark = new SparkParticle(muzzlePos, velocity, false, Main.rand.Next(20, 35), Main.rand.NextFloat(1.3f, 2.2f), sparkColor);
-                GeneralParticleHandler.SpawnParticle(spark);
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 8f);
+                Dust spark = Dust.NewDustPerfect(muzzlePos, DustID.Torch, velocity, 100, Color.OrangeRed, 1.8f);
+                spark.noGravity = true;
             }
-            
-            //脉冲环
-            PulseRing mainPulse = new PulseRing(muzzlePos, Projectile.velocity * 0.5f, Color.OrangeRed, 0.15f, 2.0f, 12);
-            GeneralParticleHandler.SpawnParticle(mainPulse);
-            
-            //烟雾效果
-            for (int i = 0; i < 12; i++) {
-                Dust smoke = Dust.NewDustPerfect(muzzlePos,
-                    DustID.Smoke,
-                    Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1.5f, 4f),
-                    100, default, Main.rand.NextFloat(1.8f, 2.5f));
-                smoke.noGravity = true;
-            }
-            
-            //额外的火焰残留
             for (int i = 0; i < 8; i++) {
-                Vector2 flameVel = Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f, 2f);
-                Dust flame = Dust.NewDustPerfect(muzzlePos, DustID.Torch, flameVel, 100, Color.OrangeRed, Main.rand.NextFloat(1.5f, 2.0f));
-                flame.noGravity = true;
+                Dust smoke = Dust.NewDustPerfect(muzzlePos, DustID.Smoke,
+                    Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 3f), 100, default, 2f);
+                smoke.noGravity = false;
             }
         }
 
@@ -459,7 +393,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Main.EntitySpriteDraw(texture, drawPos, frame, lightColor, Projectile.rotation, origin, Projectile.scale, fx, 0);
 
             if (State == CrossbowState.Charged && ChargeLevel > 0.3f) {
-                Color glowColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);
+                Color glowColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (0.4f + ChargeLevel * 0.6f);
                 Main.EntitySpriteDraw(texture, drawPos, frame, glowColor * 0.5f,
                         Projectile.rotation, origin, Projectile.scale, fx, 0);
             }
@@ -477,21 +411,21 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private enum BoomerangState { Throwing, Returning }
         private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set { if (Projectile.ai[0] != (float)value) { Projectile.ai[0] = (float)value; Projectile.netUpdate = true; } } }
         private ref float Time => ref Projectile.ai[1];
-        private ref float ReturnProgress => ref Projectile.ai[2];//修正：使用 ai[2] 而不是越界的 localAI[2]
+        private ref float ReturnProgress => ref Projectile.ai[2]; // 修正：使用 ai[2] 而不是越界的 localAI[2]
         private ref float SpinSpeed => ref Projectile.localAI[0];
-        private ref float ThrowProgress => ref Projectile.localAI[1];//0-1 飞出阶段进度
+        private ref float ThrowProgress => ref Projectile.localAI[1]; // 0-1 飞出阶段进度
 
-        //基础参数
-        private const int LaunchPhaseFrames = 14;//初始爆发加速帧数
-        private const int TotalThrowFrames = 48;//前向阶段总帧数（含爆发）
-        private const float MaxDistance = 1000f;//最大距离
-        private const float BaseSpeed = 32f;//基础巡航速度
-        private const float PeakLaunchSpeed = 52f;//初始爆发峰值
-        private const float ReturnMaxSpeed = 58f;//回程最大速度
-        private const float ArcAmplitude = 120f;//外抛弧线幅度
-        private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0;//复用一个简单标记
+        // 基础参数
+        private const int LaunchPhaseFrames = 14;      // 初始爆发加速帧数
+        private const int TotalThrowFrames = 48;       // 前向阶段总帧数（含爆发）
+        private const float MaxDistance = 1000f;       // 最大距离
+        private const float BaseSpeed = 32f;           // 基础巡航速度
+        private const float PeakLaunchSpeed = 52f;     // 初始爆发峰值
+        private const float ReturnMaxSpeed = 58f;      // 回程最大速度
+        private const float ArcAmplitude = 120f;       // 外抛弧线幅度
+        private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0; // 复用一个简单标记
 
-        //缓动函数
+        // 缓动函数
         private static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
         private static float EaseOutCubic(float t) { t = MathHelper.Clamp(t, 0, 1); t = 1 - (float)Math.Pow(1 - t, 3); return t; }
         private static float EaseInQuad(float t) => t * t;
@@ -501,9 +435,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return t < 0.5f ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
                              : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
         }
-        private static float EaseOvershootSnap(float t) {//回程末端吸附 + 轻微回拉
+        private static float EaseOvershootSnap(float t) { // 回程末端吸附 + 轻微回拉
             t = MathHelper.Clamp(t, 0, 1);
-            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f;//前段轻超出
+            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f; // 前段轻超出
             return overshoot * (0.85f + 0.15f * EaseOutQuad(t));
         }
 
@@ -536,19 +470,19 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Vector2 centerToPlayer = playerCenter - Projectile.Center;
 
             if (State == BoomerangState.Throwing) {
-                //进度（整体）
+                // 进度（整体）
                 ThrowProgress = MathHelper.Clamp(ThrowProgress + 1f / TotalThrowFrames, 0f, 1f);
 
-                //阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
+                // 阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
                 float launchT = MathHelper.Clamp(Time / (float)LaunchPhaseFrames, 0f, 1f);
-                float launchSpeedFactor = EaseOutCubic(launchT);//爆发上升
+                float launchSpeedFactor = EaseOutCubic(launchT); // 爆发上升
                 float currentLaunchSpeed = MathHelper.Lerp(BaseSpeed, PeakLaunchSpeed, launchSpeedFactor);
 
                 float cruisePhase = MathHelper.Clamp((Time - LaunchPhaseFrames) / (TotalThrowFrames - LaunchPhaseFrames), 0f, 1f);
                 float cruiseEase = EaseOutQuad(cruisePhase);
                 float distanceFactor = EaseOutExpo(ThrowProgress);
 
-                //弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
+                // 弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
                 Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * owner.direction);
                 float arc = (float)Math.Sin(distanceFactor * MathHelper.Pi) * ArcAmplitude * (1f - cruisePhase * 0.65f);
                 Vector2 targetPos = playerCenter + toMouseDir * (distanceFactor * MaxDistance) + lateral * arc;
@@ -556,7 +490,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Vector2 desiredVel = (targetPos - Projectile.Center).SafeNormalize(toMouseDir) * currentLaunchSpeed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.18f + 0.1f * (1f - cruisePhase));
 
-                //到顶或时间结束进入回程
+                // 到顶或时间结束进入回程
                 if (ThrowProgress >= 1f || Vector2.Distance(playerCenter, Projectile.Center) > MaxDistance * 0.97f) {
                     State = BoomerangState.Returning;
                     ReturnProgress = 0f;
@@ -564,14 +498,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.35f, Volume = 1f }, Projectile.Center);
                 }
             }
-            else {//Returning
+            else { // Returning
                 ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.022f, 0f, 1f);
                 float ease = EaseInQuad(ReturnProgress) * 0.35f + EaseInOutBack(ReturnProgress) * 0.65f;
                 float speed = MathHelper.Lerp(BaseSpeed * 0.5f, ReturnMaxSpeed, ease);
                 Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.30f + 0.25f * (1f - ReturnProgress));
 
-                //吸附末端加速收手
+                // 吸附末端加速收手
                 if (ReturnProgress > 0.85f) {
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, centerToPlayer.SafeNormalize(Vector2.Zero) * ReturnMaxSpeed, 0.45f);
                 }
@@ -584,30 +518,30 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            //旋转与屏幕震动基于速度
+            // 旋转与屏幕震动基于速度
             float velLen = Projectile.velocity.Length();
-            float targetSpin = 0.15f + velLen / 90f;//更高速更快旋转
+            float targetSpin = 0.15f + velLen / 90f; // 更高速更快旋转
             SpinSpeed = MathHelper.Lerp(SpinSpeed, targetSpin, 0.15f);
             Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? owner.direction : Projectile.velocity.X);
 
-            //中程呼啸音效
+            // 中程呼啸音效
             if (!PlayedMidWhoosh && ThrowProgress > 0.55f && State == BoomerangState.Throwing) {
-                Projectile.miscText = "x";//标记已播放
+                Projectile.miscText = "x"; // 标记已播放
                 SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.55f, Pitch = 0.6f }, Projectile.Center);
             }
 
-            //回程尾声掠过音效
+            // 回程尾声掠过音效
             if (State == BoomerangState.Returning && ReturnProgress > 0.6f && (Time % 18 == 0)) {
                 SoundEngine.PlaySound(SoundID.Item32 with { Volume = 0.35f, Pitch = 0.4f }, Projectile.Center);
             }
 
-            //装饰性高速离心粒子
+            // 装饰性高速离心粒子
             if (!Main.dedServ && Time % 2 == 0) {
                 SpawnSpinParticle();
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { // corrected signature
             Player owner = Main.player[Projectile.owner];
             owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
             if (State == BoomerangState.Throwing) {
@@ -626,27 +560,22 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Main.dedServ)
                 return;
 
-            //硫磺火风格的击中效果
-            //火焰爆发
-            for (int i = 0; i < 16; i++) {
-                float angle = MathHelper.TwoPi * i / 16 + Projectile.rotation;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-                Color flameColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
+            //旋转斩击效果
+            int sparkCount = 12;
+            for (int i = 0; i < sparkCount; i++) {
+                float angle = MathHelper.TwoPi * i / sparkCount + Projectile.rotation;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
 
-                SparkParticle spark = new SparkParticle(target.Center, velocity, false, Main.rand.Next(20, 35), Main.rand.NextFloat(1.3f, 2.2f), flameColor);
-                GeneralParticleHandler.SpawnParticle(spark);
+                Dust spark = Dust.NewDustPerfect(target.Center, DustID.Electric,
+                    velocity, 100, Color.Cyan, 1.8f);
+                spark.noGravity = true;
             }
 
-            //冲击环
-            for (int i = 0; i < 2; i++) {
-                PulseRing shockwave = new PulseRing(target.Center, Vector2.Zero, Color.OrangeRed, 0.15f, 1.8f + i * 0.3f, 12);
-                GeneralParticleHandler.SpawnParticle(shockwave);
-            }
-            
-            //烟雾效果
-            for (int i = 0; i < 10; i++) {
-                Dust smoke = Dust.NewDustPerfect(target.Center, DustID.Smoke, Main.rand.NextVector2Circular(6f, 6f), 100, default, Main.rand.NextFloat(1.5f, 2.2f));
-                smoke.noGravity = true;
+            //冲击波
+            for (int i = 0; i < 3; i++) {
+                Dust shockwave = Dust.NewDustPerfect(target.Center, DustID.Cloud,
+                    Main.rand.NextVector2Circular(5f, 5f), 100, Color.White, 2f);
+                shockwave.noGravity = true;
             }
         }
 
@@ -654,21 +583,16 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Main.dedServ)
                 return;
 
-            //旋转产生的硫磺火焰拖尾
+            //旋转产生的风暴粒子
             for (int i = 0; i < 2; i++) {
                 float angle = Projectile.rotation + MathHelper.PiOver2 * i;
-                Vector2 offset = angle.ToRotationVector2() * 35f;
+                Vector2 offset = angle.ToRotationVector2() * 30f;
                 Vector2 velocity = offset.RotatedBy(MathHelper.PiOver2) * 0.5f;
-                Color flameColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
 
-                SparkParticle flameSpark = new SparkParticle(Projectile.Center + offset, velocity, false, Main.rand.Next(12, 20), Main.rand.NextFloat(0.8f, 1.3f), flameColor);
-                GeneralParticleHandler.SpawnParticle(flameSpark);
-            }
-            
-            //额外的烟雾
-            if (Main.rand.NextBool(3)) {
-                Dust smoke = Dust.NewDustPerfect(Projectile.Center, DustID.Smoke, Projectile.velocity * 0.1f, 100, default, Main.rand.NextFloat(1.0f, 1.5f));
-                smoke.noGravity = true;
+                Dust wind = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Cloud,
+                    velocity, 100, Color.LightCyan, 1.5f);
+                wind.noGravity = true;
+                wind.fadeIn = 1.1f;
             }
         }
 
@@ -679,13 +603,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             float scale = Projectile.scale;
             float speedFactor = Math.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
 
-            //Trail（速度越快 & 越靠近回程末端越亮）
+            // Trail（速度越快 & 越靠近回程末端越亮）
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
                 float progress = i / (float)Projectile.oldPos.Length;
                 float fade = (1f - progress) * (0.35f + 0.65f * speedFactor);
                 if (State == BoomerangState.Returning) fade *= 1.1f;
-                Color trailColor = Color.Lerp(Color.OrangeRed, Color.Gold, progress * 0.5f) * fade;
+                Color trailColor = Color.Cyan * fade;
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float trailRot = Projectile.oldRot[i];
                 Main.EntitySpriteDraw(texture, trailPos, null, trailColor, trailRot, origin, scale * (1f - progress * 0.12f), SpriteEffects.None, 0);
@@ -693,10 +617,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             Main.EntitySpriteDraw(texture, drawPos, null, lightColor, Projectile.rotation, origin, scale, SpriteEffects.None, 0);
 
-            //能量环（速度驱动 + 回程加强）
+            // 能量环（速度驱动 + 回程加强）
             float pulse = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.08f;
             float ringScale = scale * (1.12f + 0.25f * speedFactor) * pulse;
-            Color ringColor = (State == BoomerangState.Returning ? Color.OrangeRed : Color.Gold) * (0.4f + 0.5f * speedFactor);
+            Color ringColor = (State == BoomerangState.Returning ? Color.Cyan : Color.LightCyan) * (0.4f + 0.5f * speedFactor);
             Main.EntitySpriteDraw(texture, drawPos, null, ringColor, Projectile.rotation + MathHelper.PiOver4, origin, ringScale, SpriteEffects.None, 0);
             return false;
         }
@@ -709,7 +633,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Item_Ranged + "PallbearerArrow";
 
-        private ref float ChargeLevel => ref Projectile.ai[0];//蓄力等级
+        private ref float ChargeLevel => ref Projectile.ai[0];  //蓄力等级
         private ref float Time => ref Projectile.ai[1];
 
         public override void SetStaticDefaults() {
@@ -722,7 +646,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.height = 14;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.penetrate = 5 + (int)(ChargeLevel * 5);//最多10次穿透
+            Projectile.penetrate = 5 + (int)(ChargeLevel * 5); //最多10次穿透
             Projectile.timeLeft = 600;
             Projectile.arrow = true;
             Projectile.ignoreWater = true;
@@ -736,7 +660,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void AI() {
             Time++;
 
-            Projectile.penetrate = 5 + (int)(ChargeLevel * 5);//最多10次穿透
+            Projectile.penetrate = 5 + (int)(ChargeLevel * 5); //最多10次穿透
             Projectile.extraUpdates = (int)(1 + ChargeLevel * 5);
             //旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
@@ -757,18 +681,18 @@ namespace CalamityOverhaul.Content.Items.Ranged
             //缩放脉冲效果
             Projectile.scale = 1f + (float)Math.Sin(Time * 0.2f) * 0.1f * ChargeLevel;
 
-            //硫磺火光照
+            //光照
             float lightIntensity = 0.5f + ChargeLevel * 0.8f;
-            Color lightColor = Color.Lerp(Color.OrangeRed, Color.Gold, ChargeLevel);
+            Color lightColor = Color.Lerp(Color.Yellow, Color.OrangeRed, ChargeLevel);
             Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * lightIntensity);
 
-            //硫磺火焰拖尾
-            if (Time % 2 == 0) {
+            //粒子拖尾
+            if (Time % 3 == 0) {
                 SpawnTrailParticle();
             }
 
-            //满蓄力时每隔一段时间释放火焰环
-            if (ChargeLevel >= 0.9f && Time % 15 == 0) {
+            //满蓄力时每隔一段时间释放能量环
+            if (ChargeLevel >= 0.9f && Time % 20 == 0) {
                 SpawnEnergyRing();
             }
         }
@@ -777,38 +701,29 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Main.dedServ)
                 return;
 
-            Color particleColor = Color.Lerp(Color.OrangeRed, Color.Gold, ChargeLevel);
+            Color particleColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel);
             Vector2 particlePos = Projectile.Center - Projectile.velocity * 0.5f;
 
-            SparkParticle trail = new SparkParticle(particlePos, -Projectile.velocity * 0.3f, false, Main.rand.Next(15, 25), Main.rand.NextFloat(1.2f, 1.8f) + ChargeLevel * 0.5f, particleColor);
-            GeneralParticleHandler.SpawnParticle(trail);
-            
-            //额外的烟雾效果
-            if (Main.rand.NextBool(3)) {
-                Dust smoke = Dust.NewDustPerfect(particlePos, DustID.Smoke, -Projectile.velocity * 0.2f, 100, default, Main.rand.NextFloat(1.0f, 1.5f));
-                smoke.noGravity = true;
-            }
+            Dust trail = Dust.NewDustPerfect(particlePos, DustID.Torch,
+                -Projectile.velocity * 0.3f, 100, particleColor, 1.5f + ChargeLevel * 0.5f);
+            trail.noGravity = true;
+            trail.fadeIn = 1.2f;
         }
 
         private void SpawnEnergyRing() {
             if (Main.dedServ)
                 return;
 
-            //火焰环
             int dustCount = 12;
             for (int i = 0; i < dustCount; i++) {
                 float angle = MathHelper.TwoPi * i / dustCount;
-                Vector2 offset = angle.ToRotationVector2() * 18f;
+                Vector2 offset = angle.ToRotationVector2() * 15f;
                 Vector2 velocity = offset * 0.3f;
 
-                Color flameColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                SparkParticle energy = new SparkParticle(Projectile.Center + offset, velocity, false, Main.rand.Next(18, 28), Main.rand.NextFloat(1.3f, 2.0f), flameColor);
-                GeneralParticleHandler.SpawnParticle(energy);
+                Dust energy = Dust.NewDustPerfect(Projectile.Center + offset, DustID.Electric,
+                    velocity, 100, Color.OrangeRed, 1.8f);
+                energy.noGravity = true;
             }
-            
-            //脉冲环
-            PulseRing pulse = new PulseRing(Projectile.Center, Projectile.velocity * 0.1f, Color.OrangeRed, 0.12f, 1.5f, 10);
-            GeneralParticleHandler.SpawnParticle(pulse);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -839,28 +754,30 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Main.dedServ)
                 return;
 
-            //硫磺火冲击火花
-            int sparkCount = 10 + (int)(ChargeLevel * 15);
+            //冲击火花
+            int sparkCount = 8 + (int)(ChargeLevel * 12);
             for (int i = 0; i < sparkCount; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Color sparkColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
+                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+                Color sparkColor = Color.Lerp(Color.Yellow, Color.Red, Main.rand.NextFloat());
 
-                SparkParticle spark = new SparkParticle(target.Center, velocity, false, Main.rand.Next(20, 30), Main.rand.NextFloat(1.3f, 2.0f) + ChargeLevel, sparkColor);
-                GeneralParticleHandler.SpawnParticle(spark);
+                Dust spark = Dust.NewDustPerfect(target.Center, DustID.Torch, velocity,
+                    100, sparkColor, 1.5f + ChargeLevel);
+                spark.noGravity = true;
             }
 
-            //能量脉冲
+            //能量波纹
             if (ChargeLevel > 0.5f) {
-                for (int i = 0; i < 2; i++) {
-                    PulseRing pulse = new PulseRing(target.Center, Main.rand.NextVector2Circular(2f, 2f), Color.OrangeRed, 0.1f + ChargeLevel * 0.05f, 1.5f + ChargeLevel * 0.5f, (int)(15 + ChargeLevel * 10));
-                    GeneralParticleHandler.SpawnParticle(pulse);
+                for (int i = 0; i < 3; i++) {
+                    LineParticle line = new LineParticle(
+                        target.Center,
+                        Main.rand.NextVector2Circular(8f, 8f),
+                        false,
+                        (int)(15 + ChargeLevel * 10),
+                        1.2f + ChargeLevel * 0.8f,
+                        Color.OrangeRed
+                    );
+                    GeneralParticleHandler.SpawnParticle(line);
                 }
-            }
-            
-            //烟雾效果
-            for (int i = 0; i < 8; i++) {
-                Dust smoke = Dust.NewDustPerfect(target.Center, DustID.Smoke, Main.rand.NextVector2Circular(5f, 5f), 100, default, Main.rand.NextFloat(1.3f, 2.0f));
-                smoke.noGravity = true;
             }
         }
 
@@ -884,24 +801,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            //硫磺火爆炸特效
-            for (int i = 0; i < 25; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                Color explosionColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                SparkParticle explosion = new SparkParticle(target.Center, velocity, false, Main.rand.Next(25, 40), Main.rand.NextFloat(1.5f, 2.5f), explosionColor);
-                GeneralParticleHandler.SpawnParticle(explosion);
-            }
-            
-            //脉冲环
-            for (int i = 0; i < 3; i++) {
-                PulseRing explosionPulse = new PulseRing(target.Center, Vector2.Zero, Color.OrangeRed, 0.15f, 2.0f + i * 0.3f, 15);
-                GeneralParticleHandler.SpawnParticle(explosionPulse);
-            }
-            
-            //烟雾爆发
-            for (int i = 0; i < 15; i++) {
-                Dust smoke = Dust.NewDustPerfect(target.Center, DustID.Smoke, Main.rand.NextVector2Circular(8f, 8f), 100, default, Main.rand.NextFloat(1.5f, 2.5f));
-                smoke.noGravity = true;
+            //爆炸特效
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Dust explosion = Dust.NewDustPerfect(target.Center, DustID.Torch,
+                    velocity, 100, Color.OrangeRed, 2f);
+                explosion.noGravity = true;
             }
 
             //爆炸音效
@@ -926,7 +831,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     Projectile.damage / 3,
                     Projectile.knockBack * 0.5f,
                     Projectile.owner,
-                    0.7f//中等蓄力等级
+                    0.7f //中等蓄力等级
                 );
 
                 if (arrow >= 0 && arrow < Main.maxProjectiles) {
@@ -937,36 +842,31 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            //死亡时的硫磺火焰效果
+            //死亡时的烟雾效果
             if (Main.dedServ)
                 return;
 
-            for (int i = 0; i < 12; i++) {
-                Color smokeColor = Color.Lerp(Color.OrangeRed, Color.DarkRed, Main.rand.NextFloat());
+            for (int i = 0; i < 10; i++) {
                 Dust smoke = Dust.NewDustDirect(Projectile.position, Projectile.width,
-                    Projectile.height, DustID.Smoke, 0f, 0f, 100, smokeColor, Main.rand.NextFloat(1.3f, 2.0f));
-                smoke.velocity = Main.rand.NextVector2Circular(3f, 3f);
+                    Projectile.height, DustID.Smoke, 0f, 0f, 100, default, 1.5f);
+                smoke.velocity = Main.rand.NextVector2Circular(2f, 2f);
                 smoke.noGravity = true;
             }
 
             //高蓄力箭矢死亡时额外的能量释放
             if (ChargeLevel > 0.7f) {
-                for (int i = 0; i < 18; i++) {
-                    Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                    Color energyColor = Color.Lerp(Color.OrangeRed, Color.Gold, Main.rand.NextFloat());
-                    SparkParticle energy = new SparkParticle(Projectile.Center, velocity, false, Main.rand.Next(20, 35), Main.rand.NextFloat(1.5f, 2.3f), energyColor);
-                    GeneralParticleHandler.SpawnParticle(energy);
+                for (int i = 0; i < 15; i++) {
+                    Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+                    Dust energy = Dust.NewDustPerfect(Projectile.Center, DustID.Electric,
+                        velocity, 100, Color.OrangeRed, 2f);
+                    energy.noGravity = true;
                 }
-                
-                //脉冲环
-                PulseRing pulse = new PulseRing(Projectile.Center, Vector2.Zero, Color.OrangeRed, 0.15f, 2.0f, 12);
-                GeneralParticleHandler.SpawnParticle(pulse);
             }
         }
 
         public override Color? GetAlpha(Color lightColor) {
             //根据蓄力等级调整颜色
-            Color baseColor = Color.Lerp(Color.White, Color.OrangeRed, ChargeLevel * 0.6f);
+            Color baseColor = Color.Lerp(Color.White, Color.Orange, ChargeLevel * 0.6f);
             return baseColor * Projectile.Opacity;
         }
 
@@ -978,13 +878,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
 
-            //绘制硫磺火焰残影
+            //绘制残影
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero)
                     continue;
 
                 float progress = i / (float)Projectile.oldPos.Length;
-                Color trailColor = Color.Lerp(Color.OrangeRed, Color.Gold, ChargeLevel) * (1f - progress) * 0.5f;
+                Color trailColor = Color.Lerp(Color.Yellow, Color.Red, ChargeLevel) * (1f - progress) * 0.5f;
                 Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float trailRot = Projectile.oldRot[i];
 
