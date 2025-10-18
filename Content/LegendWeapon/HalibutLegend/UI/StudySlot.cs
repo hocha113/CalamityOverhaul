@@ -120,6 +120,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         }
                     }
                 }
+                if (Item.Alives()) {
+                    Main.HoverItem = Item.Clone();
+                    Main.hoverItemName = Item.Name;
+                }
             }
         }
 
