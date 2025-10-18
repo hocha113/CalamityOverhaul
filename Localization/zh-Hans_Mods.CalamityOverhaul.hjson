@@ -1214,11 +1214,13 @@ Items: {
 			解锁全部鱼类技能
 			[c/FFD700:海洋的智慧将汇聚于你]
 			'''
+		Text1: 你已经掌握了所有知识
+		Text2: 习得了[NUM]种鱼类知识！
 	}
 
 	TheForgottenTome: {
-		// DisplayName: The Forgotten Tome
-		// Tooltip: ""
+		DisplayName: 遗忘世界之书
+		Tooltip: ""
 	}
 }
 

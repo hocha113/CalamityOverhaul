@@ -8,6 +8,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
@@ -15,9 +16,12 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class EncyclopediaofOceanicKnowledge : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/EncyclopediaofOceanicKnowledge";
-
+        public static LocalizedText Text1;
+        public static LocalizedText Text2;
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 1;
+            Text1 = this.GetLocalization(nameof(Text1), () => "你已经掌握了所有知识");
+            Text2 = this.GetLocalization(nameof(Text2), () => "习得了[NUM]种鱼类知识！");
         }
 
         public override void SetDefaults() {
@@ -40,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             int totalSkills = FishSkill.UnlockFishs.Count;
             if (save.unlockSkills.Count >= totalSkills) {
                 SoundEngine.PlaySound(SoundID.MenuClose);
-                string text = $"你已经学习了所有知识";
+                string text = Text1.Value;
                 CombatText.NewText(player.Hitbox, new Color(100, 200, 255), text, true);
                 return false;//已经全部解锁
             }
@@ -359,7 +363,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //播放消息
             if (Main.netMode != NetmodeID.Server) {
-                string text = $"习得了 {unlockedSkills.Count} 种鱼类知识！";
+                string text = EncyclopediaofOceanicKnowledge.Text2.Value.Replace("[NUM]", unlockedSkills.Count.ToString());
                 CombatText.NewText(owner.Hitbox, new Color(100, 200, 255), text, true);
             }
         }

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1228,6 +1228,8 @@ Items: {
 	EncyclopediaofOceanicKnowledge: {
 		DisplayName: Encyclopediaof Oceanic Knowledge
 		Tooltip: ""
+		Text1: You have mastered all the knowledge
+		Text2: You have acquired [NUM] kinds of fish knowledge!
 	}
 
 	TheForgottenTome: {
