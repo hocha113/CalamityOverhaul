@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1594,6 +1594,8 @@ Projectiles: {
 	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
 	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
+	// TunabeardDashProj.DisplayName: Tunabeard Dash Proj
+	// TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
 }
 
 Configs: {
@@ -6137,6 +6139,12 @@ FishSkill: {
 	}
 
 	FishJewel: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishTunabeard: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

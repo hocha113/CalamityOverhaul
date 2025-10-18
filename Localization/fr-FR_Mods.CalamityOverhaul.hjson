@@ -1597,6 +1597,8 @@ Projectiles: {
 	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
 	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
 	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
+	// TunabeardDashProj.DisplayName: Tunabeard Dash Proj
+	// TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
 }
 
 Configs: {
@@ -6038,6 +6040,12 @@ FishSkill: {
 	}
 
 	FishJewel: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishTunabeard: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
