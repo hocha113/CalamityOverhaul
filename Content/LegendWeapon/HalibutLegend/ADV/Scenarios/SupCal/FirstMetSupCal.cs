@@ -16,7 +16,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     {
         public override string Key => nameof(FirstMetSupCal);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
-
+        /// <summary>
+        /// 玩家是否选择了战斗，并且正在进入战斗场景
+        /// </summary>
+        public static bool ThisIsToFight;
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
@@ -148,6 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                 halibutPlayer.ADCSave.SupCalChoseToFight = true;
             }
 
+            ThisIsToFight = true;
             Complete();
         }
 

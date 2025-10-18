@@ -36,14 +36,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "至尊灾厄");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
             
-            Line1 = this.GetLocalization(nameof(Line1), () => "哈?!就这?");
+            Line1 = this.GetLocalization(nameof(Line1), () => "一碰就碎，你是纸做的吗");
             Line2 = this.GetLocalization(nameof(Line2), () => "我以为遇到了一个耐烧点的玩具");
             Line3 = this.GetLocalization(nameof(Line3), () => "现在的你还太弱了，连让我认真的资格都没有");
             Line4 = this.GetLocalization(nameof(Line4), () => "等你真正强大起来再来找我吧");
             Line5 = this.GetLocalization(nameof(Line5), () => "不过我倒是有些好奇");
             Line6 = this.GetLocalization(nameof(Line6), () => "如此稚嫩的你也敢向我拔剑，倒有些魄力，我有些好奇你究竟能走到什么地步了");
             Line7 = this.GetLocalization(nameof(Line7), () => "(在一阵火焰中消失)");
-            Line8 = this.GetLocalization(nameof(Line8), () => "这家伙实力太过恐怖，如果我不顾后果九眼全开，应该有胜算，大不了......");
+            Line8 = this.GetLocalization(nameof(Line8), () => "她的实力不低，如果我不顾后果九眼全开，应该有胜算，大不了......");
             Line9 = this.GetLocalization(nameof(Line9), () => "唉......");
         }
         
@@ -103,42 +103,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
         public override bool InstancePerEntity => true;
         
         private bool hasRecordedDeath = false;
-        
-        public override void AI(NPC npc) {
+
+        public override bool PreAI(NPC npc) {
+            if (!FirstMetSupCal.ThisIsToFight) {
+                return true;
+            }
+
             if (npc.type != ModContent.NPCType<SupremeCalamitas>()) {
-                return;
+                return true;
             }
-            
+
             if (!npc.active || hasRecordedDeath) {
-                return;
+                return true;
             }
-            
+
             //检查是否有玩家死亡
             foreach (Player player in Main.ActivePlayers) {
-                if (!player.Alives()) {
+                if (player == null) {
                     continue;
                 }
-                
+
                 if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     continue;
                 }
-                
+
                 if (!halibutPlayer.ADCSave.SupCalChoseToFight) {
                     continue;
                 }
-                
+
                 if (halibutPlayer.ADCSave.SupCalDefeat) {
                     continue;//已经击败过，不再触发
                 }
-                
+
+                if (!player.dead) {
+                    continue;
+                }
+
                 //记录玩家死亡
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(5, 8);//5-8秒后触发，给玩家时间复活
                 hasRecordedDeath = true;
                 break;
             }
+            return true;
         }
-        
+
         public override void OnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
                 //Boss被击杀时重置状态

@@ -1,5 +1,6 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod;
 using CalamityMod.Items.Materials;
+using CalamityMod.NPCs.SupremeCalamitas;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -108,9 +109,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     {
         public static bool Spawned = false;
         public static int RandomTimer;
-        
+
+        public override bool PreAI(NPC npc) {
+            if (!FirstMetSupCal.ThisIsToFight) {
+                return true;
+            }
+            if (npc.type != ModContent.NPCType<SupremeCalamitas>()) {
+                return true;
+            }
+            if (npc.ModNPC is SupremeCalamitas supCal) {
+                if (supCal.gettingTired5) {//进入最后的哔哔阶段，如果处于应该触发场景的时机，那么设置一下状态，避免哔哔
+                    DownedBossSystem.downedCalamitas = true;//把这个设置了就可以跳过哔哔了
+                }
+            }
+            return true;
+        }
+
         public override void OnKill(NPC npc) {
-            if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
+            if (FirstMetSupCal.ThisIsToFight && npc.type == ModContent.NPCType<SupremeCalamitas>()) {
                 Player player = Main.LocalPlayer;
                 if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     if (halibutPlayer.ADCSave.SupCalChoseToFight) {
@@ -118,6 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                         RandomTimer = 60 * Main.rand.Next(2, 4);
                     }
                 }
+                FirstMetSupCal.ThisIsToFight = false;
             }
         }
     }
