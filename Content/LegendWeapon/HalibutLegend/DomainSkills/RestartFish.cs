@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.RestartFishToggleCD > 0 || hp.RestartFishCooldown > 0) return;
             Activate(player);
-            hp.IsInteractionLockedTime = 600;//锁定交互10秒
+            hp.IsInteractionLockedTime = 60 * 30;//锁定交互30秒
             hp.RestartFishToggleCD = ToggleCD;
             hp.RestartFishCooldown = RestartCooldown;
         }
