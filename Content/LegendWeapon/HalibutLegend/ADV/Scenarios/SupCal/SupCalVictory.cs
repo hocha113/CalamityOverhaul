@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                         RandomTimer = 60 * Main.rand.Next(2, 4);
                     }
                 }
-                FirstMetSupCal.ThisIsToFight = false;
+                FirstMetSupCal.ThisIsToFight = false;//战斗结束
             }
         }
     }

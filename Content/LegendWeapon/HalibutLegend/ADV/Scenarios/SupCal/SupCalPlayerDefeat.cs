@@ -143,6 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(5, 8);//5-8秒后触发，给玩家时间复活
                 hasRecordedDeath = true;
+                FirstMetSupCal.ThisIsToFight = false;//战斗结束
                 break;
             }
             return true;
