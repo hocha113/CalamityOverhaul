@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 1.75f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == ModContent.NPCType<Leviathan>() || target.type == ModContent.NPCType<Anahita>()) {
                 modifiers.FinalDamage *= 1.75f;
@@ -501,10 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.TheHungry) {
                 modifiers.FinalDamage *= 0.7f;
             }
-
-            if (!target.IsWormBody()) {
-                modifiers.DefenseEffectiveness *= 0.5f;
-            }
+            modifiers.DefenseEffectiveness *= 0f;
         }
 
         public override bool PreDraw(ref Color lightColor) {
