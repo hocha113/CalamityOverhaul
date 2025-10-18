@@ -13,12 +13,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
     {
         public override string Key => nameof(SupCalPlayerDefeat);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
-        
+
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
-        
+
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
-        
+
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
         private const string expressionDespise = " ";
         private const string expressionCloseEye = " " + " ";
-        
+
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "至尊灾厄");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
-            
+
             Line1 = this.GetLocalization(nameof(Line1), () => "一碰就碎，你是纸做的吗");
             Line2 = this.GetLocalization(nameof(Line2), () => "我以为遇到了一个耐烧点的玩具");
             Line3 = this.GetLocalization(nameof(Line3), () => "现在的你还太弱了，连让我认真的资格都没有");
@@ -46,20 +46,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Line8 = this.GetLocalization(nameof(Line8), () => "她的实力不低，如果我不顾后果九眼全开，应该有胜算，大不了......");
             Line9 = this.GetLocalization(nameof(Line9), () => "唉......");
         }
-        
+
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.SupCalADV[0]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value, silhouette: false);
-            
+
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionDespise, ADVAsset.SupCalADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionDespise, silhouette: false);
-            
+
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
-            
+
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
-            
+
             Add(Rolename1.Value + expressionDespise, Line1.Value);
             Add(Rolename1.Value + expressionDespise, Line2.Value);
             Add(Rolename1.Value, Line3.Value);
@@ -70,38 +70,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             Add(Rolename2.Value, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
         }
-        
+
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
             //这个场景可以重复触发，因为玩家可能会多次尝试
             if (!save.SupCalChoseToFight) {
                 return;//玩家没有选择战斗
             }
-            
+
             if (save.SupCalDefeat) {
                 return;//如果已经击败过至尊灾厄，就不再触发此场景
             }
-            
+
             if (!SupCalPlayerDefeatTracker.Spawned) {
                 return;
             }
-            
+
             if (--SupCalPlayerDefeatTracker.RandomTimer > 0) {
                 return;
             }
-            
+
             if (ScenarioManager.Start<SupCalPlayerDefeat>()) {
                 SupCalPlayerDefeatTracker.Spawned = false;
             }
         }
     }
-    
+
     internal class SupCalPlayerDefeatTracker : GlobalNPC
     {
         public static bool Spawned = false;
         public static int RandomTimer;
-        
+
         public override bool InstancePerEntity => true;
-        
+
         private bool hasRecordedDeath = false;
 
         public override bool PreAI(NPC npc) {

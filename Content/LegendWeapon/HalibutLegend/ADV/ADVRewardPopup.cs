@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Others;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -394,7 +393,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             Vector2 namePos = iconCenter + new Vector2(0, 40f);
             float nameAlpha = iconAlpha * alpha;
             Color nameGlow = new Color(140, 230, 255) * (nameAlpha * 0.6f);
-            
+
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
                 Vector2 off = ang.ToRotationVector2() * 1.7f;

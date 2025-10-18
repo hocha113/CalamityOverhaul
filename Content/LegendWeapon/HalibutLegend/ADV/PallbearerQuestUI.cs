@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityMod.NPCs.Providence;
+﻿using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using InnoVault.UIHandles;
