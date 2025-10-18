@@ -2688,6 +2688,25 @@ Legend: {
 				// Line7: 下次......下次我不会再大意了！
 				// Line8: ......她逃走了
 			}
+
+			PallbearerQuestUI: {
+				// QuestTitle: 委托：猎杀亵渎天神
+				// QuestDesc: 使用扶柩者击杀亵渎天神
+				// AcceptText: 接受
+				// DeclineText: 拒绝
+			}
+
+			SupCalQuestReward: {
+				// Rolename1: 至尊灾厄
+				// Rolename2: 比目鱼
+				// Line1: 做的不错
+				// Line2: 这把弩挺适合你的
+				// Line3: 你帮我解决了一个麻烦
+				// Line4: 作为奖励，这些灾厄余烬就归你了
+				// Line5: 还有这把刀，我需要你拿着它去干掉那只虫子，放心，报酬会更丰富
+				// Line6: 我施加了一部分硫火灵异在上面，可以让你轻松一些
+				// Line7: ......
+			}
 		}
 
 		BrimstoneDialogueBox: {

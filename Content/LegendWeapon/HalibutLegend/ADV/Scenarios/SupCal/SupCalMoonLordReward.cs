@@ -110,15 +110,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             if (save.SupCalMoonLordReward) {
                 return;
             }
-            // 必须先触发过FirstMetSupCal场景
+            //必须先触发过FirstMetSupCal场景
             if (!save.FirstMetSupCal) {
                 return;
             }
-            // 必须选择了Choice1（拔出武器）
+            //必须选择了Choice1（拔出武器）
             if (!save.SupCalChoseToFight) {
                 return;
             }
-            // 必须击败了月球领主
+            //必须击败了月球领主
             if (!SupCalMoonLordRewardNPC.Spawned) {
                 return;
             }

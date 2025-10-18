@@ -31,6 +31,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
         public bool SupCalChoseToFight;
         public bool SupCalMoonLordReward;
         public bool SupCalDefeat;
+        //任务相关字段
+        public bool SupCalQuestDeclined;//玩家是否拒绝了任务
+        public bool SupCalQuestReward;//玩家是否完成了任务（击杀了Providence）
+        public bool SupCalQuestRewardSceneComplete;//任务完成后的奖励场景是否已播放
 
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
@@ -61,6 +65,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
                 ["SupCalChoseToFight"] = SupCalChoseToFight,
                 ["SupCalMoonLordReward"] = SupCalMoonLordReward,
                 ["SupCalDefeat"] = SupCalDefeat,
+                ["SupCalQuestDeclined"] = SupCalQuestDeclined,
+                ["SupCalQuestReward"] = SupCalQuestReward,
+                ["SupCalQuestRewardSceneComplete"] = SupCalQuestRewardSceneComplete,
             };
             return tag;
         }
@@ -146,6 +153,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV
             }
             if (tag.TryGet("SupCalDefeat", out bool scd)) {
                 SupCalDefeat = scd;
+            }
+            if (tag.TryGet("SupCalQuestDeclined", out bool scqd)) {
+                SupCalQuestDeclined = scqd;
+            }
+            if (tag.TryGet("SupCalQuestReward", out bool scqr)) {
+                SupCalQuestReward = scqr;
+            }
+            if (tag.TryGet("SupCalQuestRewardSceneComplete", out bool scqrc)) {
+                SupCalQuestRewardSceneComplete = scqrc;
             }
         }
     }
