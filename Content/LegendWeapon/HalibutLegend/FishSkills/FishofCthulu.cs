@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,594 +15,529 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.TheFishofCthulu;
         public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
         public override int ResearchDuration => 60 * 25;
-        //触手生成计时器
-        private int tentacleSpawnTimer = 0;
-        //触手生成间隔
-        private static int TentacleSpawnInterval => 60 - HalibutData.GetDomainLayer() * 4;
 
-        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player)
-        {
-            if (Active(player))
-            {
-                tentacleSpawnTimer++;
+        /// <summary>每次射击生成的眼球数量</summary>
+        private int EyesPerShot => 1 + HalibutData.GetDomainLayer() / 3; // 1-4个眼球
 
-                //周期性生成触手
-                if (tentacleSpawnTimer >= TentacleSpawnInterval)
-                {
-                    tentacleSpawnTimer = 0;
-                    SpawnTentacles(player);
-                }
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, 
+            Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            
+            //检查技能是否在冷却中
+            if (Cooldown > 0) {
+                return null;
             }
-            return true;
+
+            //生成多个眼球
+            for (int i = 0; i < EyesPerShot; i++) {
+                //计算随机偏移角度
+                float angleOffset = MathHelper.Lerp(-0.4f, 0.4f, i / (float)Math.Max(1, EyesPerShot - 1));
+                Vector2 eyeVelocity = velocity.RotatedBy(angleOffset) * Main.rand.NextFloat(0.9f, 1.1f);
+
+                //生成眼球
+                int proj = Projectile.NewProjectile(
+                    source,
+                    position + Main.rand.NextVector2Circular(30f, 30f),
+                    eyeVelocity,
+                    ModContent.ProjectileType<CthulhuEye>(),
+                    (int)(damage * (1.8f + HalibutData.GetDomainLayer() * 0.4f)),
+                    knockback * 0.6f,
+                    player.whoAmI,
+                    ai0: i //用于区分不同眼球
+                );
+            }
+
+            //播放克苏鲁之眼召唤音效
+            SoundEngine.PlaySound(SoundID.NPCHit1 with { 
+                Volume = 0.7f, 
+                Pitch = -0.5f,
+                MaxInstances = 3
+            }, position);
+
+            //召唤特效
+            SpawnSummonEffect(position);
+
+            SetCooldown();
+
+            return null;
         }
 
-        //生成触手
-        private static void SpawnTentacles(Player player)
-        {
-            int tentacleCount = 2 + HalibutData.GetDomainLayer() / 2;
+        private void SpawnSummonEffect(Vector2 position) {
+            //召唤时的暗红色能量粒子
+            for (int i = 0; i < 20; i++) {
+                float angle = MathHelper.TwoPi * i / 20f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
 
-            for (int i = 0; i < tentacleCount; i++)
-            {
-                //在玩家周围寻找地面位置
-                Vector2 spawnPos = FindGroundPosition(player);
-
-                if (spawnPos != Vector2.Zero)
-                {
-                    //寻找附近的敌人作为目标
-                    NPC target = spawnPos.FindClosestNPC(800f);
-                    int targetID = target?.whoAmI ?? -1;
-
-                    Projectile.NewProjectile(
-                        player.GetSource_FromThis(),
-                        spawnPos,
-                        Vector2.Zero,
-                        ModContent.ProjectileType<CthulhuTentacle>(),
-                        (int)(player.GetWeaponDamage(player.GetItem()) * (0.8f + HalibutData.GetDomainLayer() * 0.15f)),
-                        4f,
-                        player.whoAmI,
-                        targetID
-                    );
-                }
+                Dust eye = Dust.NewDustPerfect(
+                    position,
+                    DustID.Blood,
+                    velocity,
+                    100,
+                    new Color(200, 50, 50),
+                    Main.rand.NextFloat(1.5f, 2.2f)
+                );
+                eye.noGravity = true;
+                eye.fadeIn = 1.3f;
             }
 
-            //音效
-            SoundEngine.PlaySound(SoundID.NPCHit13 with
-            {
-                Volume = 0.6f,
-                Pitch = -0.5f
-            }, player.Center);
-        }
-
-        //寻找玩家周围的地面位置
-        private static Vector2 FindGroundPosition(Player player)
-        {
-            //在玩家周围随机选择一个角度
-            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float distance = Main.rand.NextFloat(200f, 400f);
-            Vector2 testPos = player.Center + angle.ToRotationVector2() * distance;
-
-            //向下搜索地面
-            for (int y = (int)(testPos.Y / 16); y < Main.maxTilesY && y < (int)(testPos.Y / 16) + 30; y++)
-            {
-                int x = (int)(testPos.X / 16);
-                if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY)
-                    continue;
-
-                Tile tile = Main.tile[x, y];
-                if (tile.HasTile && Main.tileSolid[tile.TileType])
-                {
-                    return new Vector2(x * 16 + 8, y * 16);
-                }
+            //额外的暗影粒子
+            for (int i = 0; i < 12; i++) {
+                Dust shadow = Dust.NewDustPerfect(
+                    position + Main.rand.NextVector2Circular(20f, 20f),
+                    DustID.Shadowflame,
+                    Main.rand.NextVector2Circular(4f, 4f),
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                shadow.noGravity = true;
             }
-
-            return Vector2.Zero;
         }
     }
 
-    //克苏鲁触手弹幕
-    internal class CthulhuTentacle : ModProjectile
+    /// <summary>
+    /// 克苏鲁之眼弹幕，具有追踪、冲刺和环绕能力
+    /// </summary>
+    internal class CthulhuEye : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => "Terraria/Images/NPC_" + NPCID.EyeofCthulhu;
 
-        //触手状态枚举
-        private enum TentacleState
+        private ref float EyeID => ref Projectile.ai[0];
+        private ref float AIState => ref Projectile.ai[1];
+        private ref float AITimer => ref Projectile.localAI[0];
+        private ref float DashCooldown => ref Projectile.localAI[1];
+
+        //追踪目标
+        private int targetNPC = -1;
+        private float homingStrength = 0f;
+
+        //环绕参数
+        private float orbitAngle = 0f;
+        private float orbitRadius = 0f;
+        private bool isOrbiting = false;
+
+        //冲刺参数
+        private bool isDashing = false;
+        private Vector2 dashDirection = Vector2.Zero;
+        private int dashTimer = 0;
+
+        //状态枚举
+        private enum EyeState
         {
-            Emerging,//钻出地面
-            Idle,//待机摇摆
-            Attacking,//攻击
-            Retracting//收回
+            Seeking,      //寻找目标
+            Orbiting,     //环绕目标
+            Dashing,      //冲刺攻击
+            Returning,    //返回环绕
+            Idle          //待机
         }
 
-        private TentacleState State
-        {
-            get => (TentacleState)Projectile.ai[0];
-            set => Projectile.ai[0] = (float)value;
+        //眼球瞳孔旋转
+        private float pupilRotation = 0f;
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 4; // 使用4帧动画
         }
 
-        private ref float TargetNPCID => ref Projectile.ai[1];
-        private ref float StateTimer => ref Projectile.ai[2];
-
-        //触手节点数量
-        private const int SegmentCount = 15;
-        //触手节点列表
-        private readonly List<TentacleSegment> segments = new();
-        //触手宽度
-        private float tentacleWidth = 28f;
-
-        //IK相关参数
-        private Vector2 tipPosition;//触手尖端位置
-        private Vector2 tipVelocity;//触手尖端速度
-        private Vector2 targetPosition;//目标位置
-
-        //动画相关
-        private float swayPhase = 0f;//摇摆相位
-        private float attackForce = 0f;//攻击力量
-
-        //生命周期
-        private const int EmergeDuration = 30;
-        private const int IdleDuration = 240;
-        private const int AttackDuration = 60;
-        private const int RetractDuration = 20;
-
-        public override void SetDefaults()
-        {
-            Projectile.width = 60;
-            Projectile.height = 60;
+        public override void SetDefaults() {
+            Projectile.width = 40;
+            Projectile.height = 40;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = EmergeDuration + IdleDuration + AttackDuration + RetractDuration;
+            Projectile.penetrate = 8; //可穿透8个敌人
+            Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 10;
+
+            //初始化环绕参数
+            orbitAngle = EyeID * MathHelper.TwoPi / 4f; // 错开初始角度
+            orbitRadius = 120f + Main.rand.NextFloat(-20f, 20f);
         }
 
-        public override void AI()
-        {
-            //初始化触手节点
-            if (segments.Count == 0)
-            {
-                InitializeSegments();
-            }
+        public override void AI() {
+            AITimer++;
+            DashCooldown--;
 
-            StateTimer++;
-
-            //状态机更新
-            switch (State)
-            {
-                case TentacleState.Emerging:
-                    EmergingAI();
+            //状态机
+            EyeState currentState = (EyeState)AIState;
+            switch (currentState) {
+                case EyeState.Seeking:
+                    SeekingAI();
                     break;
-                case TentacleState.Idle:
+                case EyeState.Orbiting:
+                    OrbitingAI();
+                    break;
+                case EyeState.Dashing:
+                    DashingAI();
+                    break;
+                case EyeState.Returning:
+                    ReturningAI();
+                    break;
+                case EyeState.Idle:
                     IdleAI();
                     break;
-                case TentacleState.Attacking:
-                    AttackingAI();
-                    break;
-                case TentacleState.Retracting:
-                    RetractingAI();
-                    break;
             }
 
-            //更新触手节点位置（IK算法）
-            UpdateTentacleIK();
+            //更新瞳孔朝向
+            UpdatePupilRotation();
+
+            //帧动画
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
 
             //生成粒子效果
-            SpawnTentacleParticles();
-
-            //照明效果
-            Lighting.AddLight(Projectile.Center, 0.3f, 0.1f, 0.4f);
-        }
-
-        //初始化触手节点
-        private void InitializeSegments()
-        {
-            float segmentLength = 16f;
-
-            for (int i = 0; i < SegmentCount; i++)
-            {
-                segments.Add(new TentacleSegment
-                {
-                    Position = Projectile.Center - new Vector2(0, i * segmentLength),
-                    Length = segmentLength
-                });
+            if (Main.rand.NextBool(4)) {
+                SpawnTrailParticles();
             }
 
-            tipPosition = segments[0].Position;
-            tipVelocity = Vector2.Zero;
-            swayPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            //淡出效果
+            if (Projectile.timeLeft < 30) {
+                Projectile.alpha = (int)((1f - Projectile.timeLeft / 30f) * 255);
+            }
+
+            Projectile.rotation = Projectile.velocity.ToRotation();
         }
 
-        //钻出地面状态AI
-        private void EmergingAI()
-        {
-            float progress = StateTimer / EmergeDuration;
-            float emergeHeight = MathHelper.Lerp(0f, 240f, EaseOutBack(progress));
+        private void SeekingAI() {
+            //寻找目标阶段
+            if (targetNPC == -1 || !Main.npc[targetNPC].active) {
+                var npc = Projectile.Center.FindClosestNPC(1000f);
+                if (npc != null) {
+                    targetNPC = npc.whoAmI;
+                }
+            }
 
-            //更新尖端目标位置
-            targetPosition = Projectile.Center - new Vector2(0, emergeHeight);
+            if (targetNPC != -1) {
+                //找到目标，进入环绕状态
+                AIState = (float)EyeState.Orbiting;
+                AITimer = 0;
+                homingStrength = 0.03f;
+                isOrbiting = true;
 
-            //添加震动效果
-            float shake = (float)Math.Sin(progress * MathHelper.Pi * 8f) * 3f * (1f - progress);
-            targetPosition.X += shake;
-
-            //阶段结束，进入待机状态
-            if (StateTimer >= EmergeDuration)
-            {
-                State = TentacleState.Idle;
-                StateTimer = 0;
-
-                //震动音效
-                SoundEngine.PlaySound(SoundID.Item14 with
-                {
-                    Volume = 0.4f,
-                    Pitch = -0.6f
+                //播放锁定音效
+                SoundEngine.PlaySound(SoundID.NPCHit1 with { 
+                    Volume = 0.4f, 
+                    Pitch = 0.3f 
                 }, Projectile.Center);
-
-                //尘埃效果
-                for (int i = 0; i < 20; i++)
-                {
-                    Dust.NewDust(Projectile.Center, 30, 30, DustID.Shadowflame,
-                        Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, -1f), 0, default, 1.5f);
-                }
+            }
+            else {
+                //没有目标时缓慢移动
+                Projectile.velocity *= 0.98f;
             }
         }
 
-        //待机摇摆状态AI
-        private void IdleAI()
-        {
-            //更新摇摆相位
-            swayPhase += 0.05f;
-
-            //摇摆运动
-            float swayX = (float)Math.Sin(swayPhase) * 40f;
-            float swayY = (float)Math.Sin(swayPhase * 0.7f) * 15f;
-
-            targetPosition = Projectile.Center - new Vector2(swayX, 220f + swayY);
-
-            //检测是否有目标，如果有则进入攻击状态
-            if (TargetNPCID >= 0 && TargetNPCID < Main.maxNPCs)
-            {
-                NPC target = Main.npc[(int)TargetNPCID];
-                if (target.active && !target.dontTakeDamage && Vector2.Distance(Projectile.Center, target.Center) < 600f)
-                {
-                    State = TentacleState.Attacking;
-                    StateTimer = 0;
-                    return;
-                }
-                else
-                {
-                    //重新寻找目标
-                    NPC newTarget = Projectile.Center.FindClosestNPC(600f);
-                    TargetNPCID = newTarget?.whoAmI ?? -1;
-                }
-            }
-            else
-            {
-                //寻找新目标
-                NPC newTarget = Projectile.Center.FindClosestNPC(600f);
-                TargetNPCID = newTarget?.whoAmI ?? -1;
-            }
-
-            //待机时间结束，进入收回状态
-            if (StateTimer >= IdleDuration)
-            {
-                State = TentacleState.Retracting;
-                StateTimer = 0;
-            }
-        }
-
-        //攻击状态AI
-        private void AttackingAI()
-        {
-            float attackProgress = StateTimer / AttackDuration;
-
-            //获取目标
-            if (TargetNPCID >= 0 && TargetNPCID < Main.maxNPCs)
-            {
-                NPC target = Main.npc[(int)TargetNPCID];
-
-                if (target.active && !target.dontTakeDamage)
-                {
-                    //分为三个阶段：后拉-快速攻击-回收
-                    if (attackProgress < 0.3f)
-                    {
-                        //后拉蓄力阶段
-                        float pullbackRatio = attackProgress / 0.3f;
-                        Vector2 pullbackOffset = (Projectile.Center - target.Center).SafeNormalize(Vector2.Zero) * 100f;
-                        targetPosition = Projectile.Center - new Vector2(0, 200f) + pullbackOffset * EaseInQuad(pullbackRatio);
-                        attackForce = 0f;
-                    }
-                    else if (attackProgress < 0.6f)
-                    {
-                        //快速攻击阶段
-                        float strikeRatio = (attackProgress - 0.3f) / 0.3f;
-                        targetPosition = Vector2.Lerp(targetPosition, target.Center, EaseOutCubic(strikeRatio));
-                        attackForce = MathHelper.Lerp(0f, 1f, strikeRatio);
-
-                        //在攻击峰值播放音效
-                        if (StateTimer == (int)(AttackDuration * 0.45f))
-                        {
-                            SoundEngine.PlaySound(SoundID.NPCHit1 with
-                            {
-                                Volume = 0.7f,
-                                Pitch = -0.4f
-                            }, targetPosition);
-
-                            //生成冲击波粒子
-                            for (int i = 0; i < 15; i++)
-                            {
-                                Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
-                                Dust.NewDust(targetPosition, 20, 20, DustID.Shadowflame, velocity.X, velocity.Y, 0, default, 2f);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //回收阶段
-                        float retractRatio = (attackProgress - 0.6f) / 0.4f;
-                        Vector2 idlePos = Projectile.Center - new Vector2(0, 200f);
-                        targetPosition = Vector2.Lerp(target.Center, idlePos, EaseInQuad(retractRatio));
-                        attackForce = MathHelper.Lerp(1f, 0f, retractRatio);
-                    }
-                }
-                else
-                {
-                    //目标无效，返回待机
-                    State = TentacleState.Idle;
-                    StateTimer = 0;
-                    return;
-                }
-            }
-            else
-            {
-                //没有目标，返回待机
-                State = TentacleState.Idle;
-                StateTimer = 0;
+        private void OrbitingAI() {
+            //环绕目标阶段
+            if (targetNPC < 0 || !Main.npc[targetNPC].active) {
+                //目标丢失，返回寻找状态
+                AIState = (float)EyeState.Seeking;
+                targetNPC = -1;
+                isOrbiting = false;
                 return;
             }
 
-            //攻击阶段结束，返回待机
-            if (StateTimer >= AttackDuration)
-            {
-                State = TentacleState.Idle;
-                StateTimer = 0;
+            NPC target = Main.npc[targetNPC];
+
+            //环绕角度递增
+            orbitAngle += 0.08f + HalibutData.GetDomainLayer() * 0.01f;
+
+            //计算环绕位置
+            Vector2 idealPosition = target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
+
+            //平滑移动到环绕位置
+            Vector2 toIdeal = idealPosition - Projectile.Center;
+            float distance = toIdeal.Length();
+
+            if (distance > 20f) {
+                Projectile.velocity = Vector2.Lerp(
+                    Projectile.velocity,
+                    toIdeal.SafeNormalize(Vector2.Zero) * Math.Min(distance * 0.15f, 18f),
+                    0.15f
+                );
             }
-        }
 
-        //收回状态AI
-        private void RetractingAI()
-        {
-            float progress = StateTimer / RetractDuration;
-            float retractHeight = MathHelper.Lerp(240f, 0f, EaseInBack(progress));
+            //判断是否可以发起冲刺
+            if (DashCooldown <= 0 && AITimer > 40) {
+                float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
+                
+                //距离合适且有视线时冲刺
+                if (distanceToTarget > 80f && distanceToTarget < 400f) {
+                    AIState = (float)EyeState.Dashing;
+                    AITimer = 0;
+                    isDashing = true;
+                    dashTimer = 25; // 冲刺持续时间
 
-            targetPosition = Projectile.Center - new Vector2(0, retractHeight);
+                    //计算冲刺方向（预判目标移动）
+                    Vector2 predictedPos = target.Center + target.velocity * 15f;
+                    dashDirection = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
 
-            //收回完成，杀死弹幕
-            if (StateTimer >= RetractDuration)
-            {
-                Projectile.Kill();
-            }
-        }
+                    //播放冲刺音效
+                    SoundEngine.PlaySound(SoundID.NPCHit1 with { 
+                        Volume = 0.6f, 
+                        Pitch = 0.5f 
+                    }, Projectile.Center);
 
-        //更新触手IK（逆向运动学）
-        private void UpdateTentacleIK()
-        {
-            //FABRIK（Forward And Backward Reaching Inverse Kinematics）算法
-
-            //向目标移动尖端（带有平滑过渡）
-            Vector2 toTarget = targetPosition - tipPosition;
-            tipVelocity += toTarget * 0.15f;
-            tipVelocity *= 0.85f;//阻尼
-            tipPosition += tipVelocity;
-
-            //前向阶段：从尖端向根部
-            segments[0].Position = tipPosition;
-            for (int i = 1; i < segments.Count; i++)
-            {
-                Vector2 direction = (segments[i].Position - segments[i - 1].Position).SafeNormalize(Vector2.Zero);
-                segments[i].Position = segments[i - 1].Position + direction * segments[i - 1].Length;
-
-                //添加重力影响
-                float gravityStrength = 0.3f * (i / (float)segments.Count);
-                segments[i].Position += new Vector2(0, gravityStrength);
-
-                //添加摇摆效果
-                if (State == TentacleState.Idle || State == TentacleState.Emerging)
-                {
-                    float swayOffset = (float)Math.Sin(swayPhase + i * 0.3f) * (3f + i * 0.5f);
-                    segments[i].Position += new Vector2(swayOffset, 0);
+                    //重置冷却
+                    DashCooldown = 80 - HalibutData.GetDomainLayer() * 5;
                 }
             }
-
-            //后向阶段：从根部向尖端
-            segments[segments.Count - 1].Position = Projectile.Center;
-            for (int i = segments.Count - 2; i >= 0; i--)
-            {
-                Vector2 direction = (segments[i].Position - segments[i + 1].Position).SafeNormalize(Vector2.Zero);
-                segments[i].Position = segments[i + 1].Position + direction * segments[i].Length;
-            }
-
-            //更新尖端位置
-            tipPosition = segments[0].Position;
-
-            //更新碰撞箱
-            Projectile.Center = segments[segments.Count / 2].Position;
         }
 
-        //生成触手粒子效果
-        private void SpawnTentacleParticles()
-        {
-            if (Main.rand.NextBool(3))
-            {
-                int particleIndex = Main.rand.Next(segments.Count);
-                Vector2 particlePos = segments[particleIndex].Position;
+        private void DashingAI() {
+            //冲刺攻击阶段
+            dashTimer--;
 
-                Dust dust = Dust.NewDustPerfect(particlePos, DustID.Shadowflame, Main.rand.NextVector2Circular(1f, 1f), 0, default, 1.2f);
-                dust.noGravity = true;
-            }
+            if (dashTimer > 0) {
+                //高速冲刺
+                float dashSpeed = 28f + HalibutData.GetDomainLayer() * 2f;
+                Projectile.velocity = Vector2.Lerp(
+                    Projectile.velocity,
+                    dashDirection * dashSpeed,
+                    0.25f
+                );
 
-            //在攻击时生成更多粒子
-            if (State == TentacleState.Attacking && attackForce > 0.5f && Main.rand.NextBool(2))
-            {
-                Dust dust = Dust.NewDustPerfect(tipPosition, DustID.Shadowflame, Main.rand.NextVector2Circular(3f, 3f), 0, default, 1.5f);
-                dust.noGravity = true;
-            }
-        }
-
-        //碰撞检测
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-        {
-            //只在攻击状态且攻击力量足够时才造成伤害
-            if (State != TentacleState.Attacking || attackForce < 0.7f)
-                return false;
-
-            //检测触手前半段的碰撞
-            for (int i = 0; i < segments.Count / 2; i++)
-            {
-                float collisionPoint = 0f;
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                    segments[i].Position, segments[i + 1].Position, tentacleWidth * 0.5f, ref collisionPoint))
-                {
-                    return true;
+                //冲刺粒子特效
+                if (Main.rand.NextBool(2)) {
+                    SpawnDashParticles();
                 }
             }
-
-            return false;
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        {
-            target.AddBuff(BuffID.ShadowFlame, 180);
-
-            //击中时的视觉反馈
-            for (int i = 0; i < 10; i++)
-            {
-                Dust.NewDust(target.position, target.width, target.height, DustID.Shadowflame,
-                    Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-4f, 4f), 0, default, 1.8f);
+            else {
+                //冲刺结束，返回环绕
+                AIState = (float)EyeState.Returning;
+                AITimer = 0;
+                isDashing = false;
             }
         }
 
-        //绘制触手
-        public override bool PreDraw(ref Color lightColor)
-        {
-            if (segments.Count < 2)
-                return false;
-
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D maskTexture = CWRAsset.DiffusionCircle.Value;
-
-            //使用加法混合增强效果
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            //绘制触手本体
-            for (int i = 0; i < segments.Count - 1; i++)
-            {
-                Vector2 start = segments[i].Position;
-                Vector2 end = segments[i + 1].Position;
-                Vector2 direction = end - start;
-                float rotation = direction.ToRotation();
-                float distance = direction.Length();
-
-                //计算宽度（根部更粗）
-                float widthRatio = 1f - (i / (float)segments.Count);
-                float currentWidth = tentacleWidth * widthRatio * (0.8f + attackForce * 0.4f);
-
-                //颜色随深度变化
-                Color segmentColor = Color.Lerp(new Color(80, 30, 100), new Color(120, 50, 140), widthRatio);
-                segmentColor *= 0.8f;
-
-                //绘制触手段落
-                Vector2 scale = new Vector2(distance / maskTexture.Width, currentWidth / maskTexture.Height);
-                Vector2 origin = new Vector2(0, maskTexture.Height / 2f);
-
-                sb.Draw(maskTexture, start - Main.screenPosition, null, segmentColor,
-                    rotation, origin, scale, SpriteEffects.None, 0);
+        private void ReturningAI() {
+            //返回环绕状态
+            if (targetNPC < 0 || !Main.npc[targetNPC].active) {
+                AIState = (float)EyeState.Seeking;
+                targetNPC = -1;
+                return;
             }
 
-            //绘制触手光晕层
-            for (int i = 0; i < segments.Count - 1; i++)
-            {
-                Vector2 start = segments[i].Position;
-                Vector2 end = segments[i + 1].Position;
-                Vector2 direction = end - start;
-                float rotation = direction.ToRotation();
-                float distance = direction.Length();
+            NPC target = Main.npc[targetNPC];
 
-                float widthRatio = 1f - (i / (float)segments.Count);
-                float currentWidth = tentacleWidth * widthRatio * 1.5f;
+            //减速
+            Projectile.velocity *= 0.92f;
 
-                Color glowColor = new Color(150, 80, 180, 0) * 0.5f * widthRatio;
-
-                Vector2 scale = new Vector2(distance / maskTexture.Width, currentWidth / maskTexture.Height);
-                Vector2 origin = new Vector2(0, maskTexture.Height / 2f);
-
-                sb.Draw(maskTexture, start - Main.screenPosition, null, glowColor,
-                    rotation, origin, scale, SpriteEffects.None, 0);
+            //距离目标较近时重新进入环绕
+            float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
+            if (distanceToTarget < orbitRadius * 1.5f && Projectile.velocity.Length() < 10f) {
+                AIState = (float)EyeState.Orbiting;
+                AITimer = 0;
+                isOrbiting = true;
             }
-
-            //绘制触手尖端
-            Color tipColor = new Color(180, 100, 200) * (0.8f + attackForce * 0.4f);
-            sb.Draw(maskTexture, tipPosition - Main.screenPosition, null, tipColor, 0f,
-                maskTexture.Size() / 2f, 0.3f + attackForce * 0.2f, SpriteEffects.None, 0);
-
-            //恢复正常混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            return false;
         }
 
-        public override void OnKill(int timeLeft)
-        {
-            //死亡时生成粒子
-            for (int i = 0; i < 30; i++)
-            {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(5f, 5f);
-                Dust.NewDust(Projectile.Center, 40, 40, DustID.Shadowflame, velocity.X, velocity.Y, 0, default, 1.5f);
-            }
+        private void IdleAI() {
+            //待机状态
+            Projectile.velocity *= 0.95f;
 
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with
-            {
-                Volume = 0.5f,
-                Pitch = -0.5f
+            if (AITimer > 60) {
+                AIState = (float)EyeState.Seeking;
+                AITimer = 0;
+            }
+        }
+
+        private void UpdatePupilRotation() {
+            //瞳孔朝向最近的敌人或鼠标
+            if (targetNPC >= 0 && Main.npc[targetNPC].active) {
+                pupilRotation = (Main.npc[targetNPC].Center - Projectile.Center).ToRotation();
+            }
+            else {
+                pupilRotation = (Main.MouseWorld - Projectile.Center).ToRotation();
+            }
+        }
+
+        private void SpawnTrailParticles() {
+            //轨迹粒子
+            Dust trail = Dust.NewDustPerfect(
+                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
+                DustID.Blood,
+                -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f),
+                100,
+                new Color(200, 50, 50),
+                Main.rand.NextFloat(1f, 1.5f)
+            );
+            trail.noGravity = true;
+            trail.fadeIn = 1f;
+        }
+
+        private void SpawnDashParticles() {
+            //冲刺粒子特效
+            for (int i = 0; i < 2; i++) {
+                Dust dash = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
+                    DustID.Shadowflame,
+                    -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f),
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.3f, 2f)
+                );
+                dash.noGravity = true;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //击中效果
+            SoundEngine.PlaySound(SoundID.NPCHit1 with { 
+                Pitch = 0.2f 
             }, Projectile.Center);
+
+            //血液粒子
+            for (int i = 0; i < 10; i++) {
+                Vector2 particleVel = Main.rand.NextVector2Circular(5f, 5f);
+                Dust blood = Dust.NewDustDirect(
+                    target.position,
+                    target.width,
+                    target.height,
+                    DustID.Blood,
+                    particleVel.X,
+                    particleVel.Y,
+                    100,
+                    default,
+                    1.8f
+                );
+                blood.noGravity = true;
+            }
+
+            //暗影粒子
+            for (int i = 0; i < 6; i++) {
+                Dust shadow = Dust.NewDustDirect(
+                    target.position,
+                    target.width,
+                    target.height,
+                    DustID.Shadowflame,
+                    0, -2f,
+                    100,
+                    default,
+                    1.5f
+                );
+                shadow.noGravity = true;
+            }
+
+            //冲刺击中时造成更高伤害
+            if (isDashing && hit.Crit) {
+                //额外伤害已在基础伤害中体现
+                target.AddBuff(BuffID.ShadowFlame, 180);
+            }
+
+            //击中后继续返回环绕
+            if (isDashing) {
+                AIState = (float)EyeState.Returning;
+                isDashing = false;
+                dashTimer = 0;
+            }
         }
 
-        //缓动函数
-        private static float EaseOutBack(float t)
-        {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1f, 3f) + c1 * (float)Math.Pow(t - 1f, 2f);
+        public override bool PreDraw(ref Color lightColor) {
+            //加载眼球纹理
+            Main.instance.LoadNPC(NPCID.EyeofCthulhu);
+            Texture2D texture = TextureAssets.Npc[NPCID.EyeofCthulhu].Value;
+
+            //计算纹理参数
+            int frameHeight = texture.Height / Main.npcFrameCount[NPCID.EyeofCthulhu];
+            Rectangle sourceRect = new Rectangle(0, Projectile.frame * frameHeight, texture.Width, frameHeight);
+            Vector2 origin = sourceRect.Size() / 2f;
+
+            //绘制残影轨迹（冲刺时更明显）
+            int trailLength = isDashing ? Projectile.oldPos.Length : Projectile.oldPos.Length / 2;
+            for (int i = 1; i < trailLength; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) continue;
+
+                float trailProgress = 1f - i / (float)trailLength;
+                float trailAlpha = trailProgress * 0.5f * (1f - Projectile.alpha / 255f);
+
+                if (isDashing) trailAlpha *= 1.5f; // 冲刺时更亮
+
+                Color trailColor = new Color(200, 50, 50) * trailAlpha;
+
+                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float rotation = Projectile.oldRot[i];
+
+                Main.EntitySpriteDraw(
+                    texture,
+                    drawPos,
+                    sourceRect,
+                    trailColor,
+                    rotation,
+                    origin,
+                    Projectile.scale * 0.6f * (0.8f + trailProgress * 0.2f),
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制主体眼球
+            Vector2 mainDrawPos = Projectile.Center - Main.screenPosition;
+            Color mainColor = lightColor * (1f - Projectile.alpha / 255f);
+
+            Main.EntitySpriteDraw(
+                texture,
+                mainDrawPos,
+                sourceRect,
+                mainColor,
+                Projectile.rotation,
+                origin,
+                Projectile.scale * 0.6f,
+                SpriteEffects.None,
+                0
+            );
+
+            //发光效果
+            if (isDashing || isOrbiting) {
+                Color glowColor = new Color(255, 100, 100, 0) * 0.4f * (1f - Projectile.alpha / 255f);
+                
+                if (isDashing) {
+                    glowColor *= 1.5f; // 冲刺时更亮
+                }
+
+                Main.EntitySpriteDraw(
+                    texture,
+                    mainDrawPos,
+                    sourceRect,
+                    glowColor,
+                    Projectile.rotation,
+                    origin,
+                    Projectile.scale * 0.7f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //绘制瞳孔（简化版）
+            DrawPupil(mainDrawPos, origin);
+
+            return false;
         }
 
-        private static float EaseInBack(float t)
-        {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return c3 * t * t * t - c1 * t * t;
+        private void DrawPupil(Vector2 drawPos, Vector2 origin) {
+            //使用简单的圆形表示瞳孔
+            Texture2D pupilTex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
+            
+            //瞳孔偏移（朝向目标）
+            Vector2 pupilOffset = pupilRotation.ToRotationVector2() * 8f;
+
+            Color pupilColor = new Color(50, 10, 10) * (1f - Projectile.alpha / 255f);
+
+            Main.EntitySpriteDraw(
+                pupilTex,
+                drawPos + pupilOffset,
+                null,
+                pupilColor,
+                0f,
+                pupilTex.Size() / 2f,
+                0.3f,
+                SpriteEffects.None,
+                0
+            );
         }
 
-        private static float EaseInQuad(float t)
-        {
-            return t * t;
+        public override Color? GetAlpha(Color lightColor) {
+            return new Color(255, 200, 200, 200) * (1f - Projectile.alpha / 255f);
         }
-
-        private static float EaseOutCubic(float t)
-        {
-            return 1f - (float)Math.Pow(1f - t, 3f);
-        }
-    }
-
-    //触手节点数据结构
-    internal class TentacleSegment
-    {
-        public Vector2 Position;
-        public float Length;
     }
 }

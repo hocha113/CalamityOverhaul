@@ -1587,6 +1587,7 @@ Projectiles: {
 	TrimarangHeld.DisplayName: Trimarang Held
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
+	// CthulhuEye.DisplayName: Cthulhu Eye
 }
 
 Configs: {
