@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 3) {//在Line4时发放奖励
-                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 199, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofAnnihilation>(), 199, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
