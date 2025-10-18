@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,15 +12,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishofCthulu : FishSkill
     {
         public override int UnlockFishID => ItemID.TheFishofCthulu;
-        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 12;
+        public override int DefaultCooldown => 60 * 11 - HalibutData.GetDomainLayer() / 2;
         public override int ResearchDuration => 60 * 25;
 
         /// <summary>每次射击生成的眼球数量</summary>
         private int EyesPerShot => 1 + HalibutData.GetDomainLayer() / 3; // 1-4个眼球
 
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, 
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            
+
             //检查技能是否在冷却中
             if (Cooldown > 0) {
                 return null;
@@ -47,8 +46,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //播放克苏鲁之眼召唤音效
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { 
-                Volume = 0.7f, 
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = 0.7f,
                 Pitch = -0.5f,
                 MaxInstances = 3
             }, position);
@@ -179,7 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             AITimer++;
             noActionTimer++;
-            
+
             if (dashCooldown > 0) {
                 dashCooldown--;
             }
@@ -273,15 +272,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 isOrbiting = true;
 
                 //播放锁定音效
-                SoundEngine.PlaySound(SoundID.NPCHit1 with { 
-                    Volume = 0.4f, 
-                    Pitch = 0.3f 
+                SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                    Volume = 0.4f,
+                    Pitch = 0.3f
                 }, Projectile.Center);
             }
             else {
                 //没有目标时缓慢移动并逐渐减速
                 Projectile.velocity *= 0.98f;
-                
+
                 //设置朝向为速度方向
                 if (Projectile.velocity.LengthSquared() > 1f) {
                     desiredRotation = Projectile.velocity.ToRotation();
@@ -450,15 +449,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //设置朝向为冲刺方向
             desiredRotation = dashDirection.ToRotation();
 
-            //播放蓄力音效
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { 
-                Volume = forced ? 0.5f : 0.4f, 
-                Pitch = forced ? 0.2f : 0.0f 
+            //播放冲刺音效
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = forced ? 0.8f : 0.6f,
+                Pitch = forced ? 0.7f : 0.5f
             }, Projectile.Center);
 
             //重置冷却，强制冲刺后冷却更长
             dashCooldown = (forced ? 110 : 90) - HalibutData.GetDomainLayer() * 6;
-            
+
             //重置环绕持续时间
             orbitDuration = 0;
         }
@@ -574,7 +573,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void UpdateRotation() {
             //平滑插值旋转角度
             float angleDiff = MathHelper.WrapAngle(desiredRotation - Projectile.rotation);
-            
+
             //根据状态调整旋转速度
             float currentRotSpeed = rotationSpeed;
             if (isDashing) {
@@ -604,7 +603,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnTrailParticles() {
             //轨迹粒子
             Vector2 particleVelocity = -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f);
-            
+
             Dust trail = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
                 DustID.Blood,
@@ -621,7 +620,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冲刺粒子特效
             for (int i = 0; i < 2; i++) {
                 Vector2 particleVelocity = -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f);
-                
+
                 Dust dash = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
                     DustID.Shadowflame,
@@ -636,8 +635,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //击中效果
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { 
-                Pitch = 0.2f 
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Pitch = 0.2f
             }, Projectile.Center);
 
             //重置无行动计时器（击中算有效行动）
@@ -756,9 +755,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //发光效果
             if (showTrail || isOrbiting) {
                 Color glowColor = new Color(255, 100, 100, 0) * 0.4f * fadeAlpha;
-                
-                if (showTrail) {
-                    glowColor *= 1.5f; // 冲刺相关状态时更亮
+
+                if (isDashing) {
+                    glowColor *= 1.5f; // 冲刺时更亮
                 }
 
                 Main.EntitySpriteDraw(
@@ -783,7 +782,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawPupil(Vector2 drawPos, float alpha) {
             //使用简单的圆形表示瞳孔
             Texture2D pupilTex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
-            
+
             //瞳孔偏移（朝向目标）
             Vector2 pupilOffset = pupilRotation.ToRotationVector2() * 8f;
 

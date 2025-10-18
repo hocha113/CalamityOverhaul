@@ -6094,9 +6094,13 @@ FishSkill: {
 	}
 
 	FishofCthulu: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 深渊凝视
+		Tooltip:
+			'''
+			开火时召唤凝视之瞳观察敌人
+			凝视之瞳靠近敌人时将变换形态进行冲刺
+			'''
+		Studied: 它一直盯着你...
 	}
 }
 
