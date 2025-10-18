@@ -1228,6 +1228,11 @@ Items: {
 			'''
 		CompletionText: 你已经遗忘所有
 	}
+
+	Fishoil: {
+		// DisplayName: Fishoil
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1600,6 +1605,7 @@ Projectiles: {
 	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
 	// BloodyStrikeWave.DisplayName: Bloody Strike Wave
 	// UnicornFishDashProj.DisplayName: Unicorn Fish Dash Proj
+	// FishoilDrinkEffect.DisplayName: Fishoil Drink Effect
 }
 
 Configs: {
@@ -1803,6 +1809,11 @@ Buffs: {
 	FrenziedMachineSoul: {
 		DisplayName: 狂热机魂
 		Description: 机魂大悦!
+	}
+
+	FishoilBuff: {
+		// DisplayName: Fishoil Buff
+		// Description: Mods.CalamityOverhaul.Buffs.FishoilBuff.Description
 	}
 }
 

@@ -143,10 +143,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             else if (Projectile.ai[0] == 30) {
                 SpawnBurstEffect(owner);
             }
-            //阶段3：淡出 (60-90帧)
-            else if (Projectile.ai[0] > 60) {
-                SpawnFadeParticles(owner);
-            }
 
             //照明效果
             float lightIntensity = (float)System.Math.Sin(progress * System.Math.PI) * 1.5f;
@@ -171,13 +167,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 spawnPos = owner.Center + angle.ToRotationVector2() * distance;
                 Vector2 velocity = (owner.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f);
 
-                //使用水波粒子
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(spawnPos, velocity);
-                if (prt != null) {
-                    prt.Scale = Main.rand.NextFloat(0.6f, 1.0f);
-                    prt.Color = new Color(100, 200, 255);
-                }
-
                 //水尘埃
                 Dust dust = Dust.NewDustPerfect(spawnPos, DustID.Water, velocity, 100, new Color(100, 200, 255), 1.2f);
                 dust.noGravity = true;
@@ -190,12 +179,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             for (int i = 0; i < 32; i++) {
                 float angle = MathHelper.TwoPi * i / 32f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(owner.Center, velocity);
-                if (prt != null) {
-                    prt.Scale = Main.rand.NextFloat(0.8f, 1.3f);
-                    prt.Color = new Color(150, 220, 255);
-                }
 
                 //水花尘埃
                 Dust dust = Dust.NewDustPerfect(owner.Center, DustID.Water, velocity, 100, new Color(100, 200, 255), 1.5f);
@@ -215,24 +198,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 bubblePos = owner.Center + Main.rand.NextVector2Circular(owner.width * 0.5f, owner.height * 0.5f);
                 Dust bubble = Dust.NewDustPerfect(bubblePos, DustID.SilverCoin, new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(2f, 4f)), 100, new Color(200, 230, 255), Main.rand.NextFloat(0.8f, 1.5f));
                 bubble.noGravity = true;
-            }
-        }
-
-        //淡出粒子效果
-        private void SpawnFadeParticles(Player owner) {
-            if (Projectile.ai[0] % 5 != 0) return;
-
-            for (int i = 0; i < 2; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(2f, 2f) + new Vector2(0, -2f);
-                
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(
-                    owner.Center + Main.rand.NextVector2Circular(owner.width * 0.5f, owner.height * 0.5f),
-                    velocity
-                );
-                if (prt != null) {
-                    prt.Scale = Main.rand.NextFloat(0.4f, 0.7f);
-                    prt.Color = new Color(100, 200, 255);
-                }
             }
         }
 
