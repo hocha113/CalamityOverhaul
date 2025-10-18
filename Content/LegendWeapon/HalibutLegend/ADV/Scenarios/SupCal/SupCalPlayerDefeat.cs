@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.ADV.Scenarios.SupC
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + expressionCloseEye, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + expressionCloseEye, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.HelenADV);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
             Add(Rolename1.Value + expressionDespise, Line1.Value);
