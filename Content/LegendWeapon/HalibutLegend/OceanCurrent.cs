@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Projectile.friendly = true;
             Projectile.alpha = 0;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = 420;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
