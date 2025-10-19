@@ -22,12 +22,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public static LocalizedText Line7 { get; private set; }
         public static LocalizedText Line8 { get; private set; }
         public static LocalizedText Line9 { get; private set; }
-        public static LocalizedText Line9_1 { get; private set; }
         public static LocalizedText Line10 { get; private set; }
         public static LocalizedText Line11 { get; private set; }
         public static LocalizedText Line12 { get; private set; }
-        public static LocalizedText Line12_1 { get; private set; }
-        public static LocalizedText Line12_2 { get; private set; }
         public static LocalizedText Line13 { get; private set; }
         public static LocalizedText Line14 { get; private set; }
         public static LocalizedText Line15 { get; private set; }
@@ -36,8 +33,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public static LocalizedText Line18 { get; private set; }
         public static LocalizedText Line19 { get; private set; }
         public static LocalizedText Line20 { get; private set; }
-        public static LocalizedText Line20_1 { get; private set; }
-        public static LocalizedText Line20_2 { get; private set; }
         public static LocalizedText Line21 { get; private set; }
         public string LocalizationCategory => "Legend.HalibutText.ADV";
         //设置场景默认使用海洋风格
@@ -85,12 +80,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
             Add(Rolename2.Value, Line9.Value);
-            Add(Rolename2.Value, Line9_1.Value);
             Add(Rolename2.Value, Line10.Value);
             Add(Rolename2.Value, Line11.Value);
             Add(Rolename2.Value, Line12.Value);
-            Add(Rolename2.Value, Line12_1.Value);
-            Add(Rolename2.Value, Line12_1.Value);
             Add(Rolename2.Value, Line13.Value);
             Add(Rolename2.Value, Line14.Value);
             Add(Rolename2.Value, Line15.Value);
@@ -99,8 +91,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line18.Value);
             Add(Rolename2.Value, Line19.Value);
             Add(Rolename2.Value, Line20.Value);
-            Add(Rolename2.Value, Line20_1.Value);
-            Add(Rolename2.Value, Line20_1.Value);
             Add(Rolename2.Value, Line21.Value);
         }
 
