@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<HungryCompanionProjectile>(),
-                        (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
+                        (int)(damage * 1.6f + HalibutData.GetDomainLayer() * 0.4f),
                         knockback * 0.1f,
                         player.whoAmI,
                         ai0: ActiveHungries.Count //传递索引
