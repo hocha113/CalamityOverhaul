@@ -63,6 +63,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             if (save.SupCalDefeat) {
                 return;
             }
+            if (!halibutPlayer.HeldHalibut) {
+                return;//必须持有比目鱼才能触发
+            }
+            if (halibutPlayer.SeaDomainLayers < 10) {
+                return;//必须海域层数达到10层才能触发
+            }
             if (!SupCalDefeatNPC.Spawned) {
                 return;
             }
