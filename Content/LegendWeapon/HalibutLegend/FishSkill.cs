@@ -64,6 +64,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             SetDefaults(true);
         }
 
+        public override void Unload() {
+            TypeToID.Clear();
+            TypeToTex.Clear();
+            UnlockFishs.Clear();
+            IDToInstance.Clear();
+            NameToInstance.Clear();
+        }
+
         public static T GetT<T>() where T : FishSkill {
             if (IDToInstance.TryGetValue(TypeToID[typeof(T)], out var skill) && skill is T t) {
                 return t;

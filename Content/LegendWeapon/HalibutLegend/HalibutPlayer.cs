@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// </summary>
         /// <returns></returns>
         public static bool TheOnlyBornOfAnEra() {
-            return InWorldBossPhase.Downed31.Invoke();
+            return InWorldBossPhase.Halibut_Level() == 14;
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
