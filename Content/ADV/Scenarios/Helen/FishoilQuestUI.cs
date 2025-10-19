@@ -27,52 +27,68 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public static LocalizedText SubmitHint { get; private set; }
         public static LocalizedText DeclineText { get; private set; }
         public static LocalizedText CompletedText { get; private set; }
-        public static LocalizedText RewardText { get; private set; }
+        public static LocalizedText QuickPutText { get; private set; }
 
         //需求配置(复用)
         private readonly List<QuestMaterialSlot> RequiredItems = new();
 
         //状态
-        private float showProgress;
-        private float contentFade;
-        private float pulseTimer;
-        private Rectangle declineButtonRect;
+        private float showProgress; //展开进度
+        private float contentFade; //内容淡入
+        private float pulseTimer; //背景脉冲
         private bool hoverDecline;
-        private bool rewarded; //是否已经发放奖励
+        private bool hoverQuickPut;
+        private bool rewarded; //是否已发放奖励
+        private bool closing; //完成后关闭动画
+        private float hideProgress; //关闭插值
 
-        //布局常量
-        private const int PanelWidth = 260;
-        private const int PanelHeight = 230;
-        private const int Padding = 12;
-        private const int SlotSize = 40;
-        private const int SlotSpacing = 10;
+        //布局常量(缩小尺寸)
+        private const int PanelWidth = 240;
+        private const int PanelHeight = 190;
+        private const int Padding = 10;
+        private const int SlotSize = 36;
+        private const int SlotSpacing = 8;
+
+        //按钮区域
+        private Rectangle declineButtonRect;
+        private Rectangle quickPutButtonRect;
+
+        //换行缓存
+        private string[] wrappedDescLines;
+        private const float DescScale = 0.65f;
 
         public override bool Active {
             get {
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) return false;
                 if (hp.ADCSave.FishoilQuestDeclined) return false;
                 if (!hp.ADCSave.FishoilQuestAccepted) return false;
-                if (hp.ADCSave.FishoilQuestCompleted && showProgress <= 0f && rewarded) return false;
+                if (hp.ADCSave.FishoilQuestCompleted && rewarded && hideProgress >= 1f) return false; //完全关闭后隐藏
                 return true;
             }
         }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "采集:鲈鱼");
-            DescText = this.GetLocalization(nameof(DescText), () => "放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油");
-            SubmitHint = this.GetLocalization(nameof(SubmitHint), () => "点击放置/取出");
+            DescText = this.GetLocalization(nameof(DescText), () => "放入足够数量的鲈鱼,我会立刻提炼一瓶鱼油返还给你,过程很快,不需要你等待");
+            SubmitHint = this.GetLocalization(nameof(SubmitHint), () => "左键放入/右键取出,Shift批量");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");
-            CompletedText = this.GetLocalization(nameof(CompletedText), () => "完成");
-            RewardText = this.GetLocalization(nameof(RewardText), () => "领取奖励");
+            CompletedText = this.GetLocalization(nameof(CompletedText), () => "提炼完成");
+            QuickPutText = this.GetLocalization(nameof(QuickPutText), () => "快速放入");
         }
 
         public void OpenPersistent() {
             if (RequiredItems.Count == 0) InitDefaultRequirement();
+            ResetVisualState();
             showProgress = Math.Max(showProgress, 0.01f);
         }
 
+        private void ResetVisualState() {
+            contentFade = 0f; hideProgress = 0f; closing = false; rewarded = false;
+            foreach (var slot in RequiredItems) slot.ResetCount();
+        }
+
         private void InitDefaultRequirement() {
-            //默认需求:鲈鱼 30(可调整)
+            //默认需求:鲈鱼 30
             RequiredItems.Clear();
             RequiredItems.Add(new QuestMaterialSlot(ItemID.Bass, 30));
         }
@@ -80,35 +96,58 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public override void Update() {
             if (RequiredItems.Count == 0) InitDefaultRequirement();
 
-            float target = Active ? 1f : 0f;
-            showProgress = MathHelper.Lerp(showProgress, target, 0.15f);
+            //展开或关闭动画
+            float target = (Active && !closing) ? 1f : 0f;
+            showProgress = MathHelper.Lerp(showProgress, target, 0.12f);
             if (Math.Abs(showProgress - target) < 0.01f) showProgress = target;
-            if (showProgress <= 0f) return;
+
+            if (closing) {
+                hideProgress += 0.08f;
+                if (hideProgress > 1f) hideProgress = 1f;
+            }
+
+            if (showProgress <= 0f && !closing) return; //完全未展开
 
             if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) return;
 
-            if (showProgress > 0.3f) contentFade = Math.Min(1f, contentFade + 0.08f);
-            else contentFade = Math.Max(0f, contentFade - 0.15f);
+            //内容淡入
+            if (!closing) {
+                if (showProgress > 0.25f && contentFade < 1f) contentFade = Math.Min(1f, contentFade + 0.08f);
+                else if (showProgress <= 0.25f && contentFade > 0f) contentFade = Math.Max(0f, contentFade - 0.15f);
+            }
+            else contentFade = 1f; //关闭时仍保持内容显示用于演出
 
             pulseTimer += 0.03f;
 
+            //布局
             Size = new Vector2(PanelWidth, PanelHeight);
-            DrawPosition = new Vector2(Main.screenWidth - PanelWidth - 20, Main.screenHeight * 0.35f);
+            DrawPosition = new Vector2(Main.screenWidth - PanelWidth - 14, Main.screenHeight * 0.34f);
             UIHitBox = DrawPosition.GetRectangle(Size);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
             if (hoverInMainPage) player.mouseInterface = true;
 
-            declineButtonRect = new Rectangle((int)(DrawPosition.X + PanelWidth - Padding - 64), (int)(DrawPosition.Y + PanelHeight - Padding - 28), 64, 24);
+            //按钮布局: 底部两个按钮 左:快速放入 右:拒绝
+            int buttonHeight = 22; int buttonWidth = 74;
+            quickPutButtonRect = new Rectangle((int)(DrawPosition.X + Padding), (int)(DrawPosition.Y + PanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
+            declineButtonRect = new Rectangle((int)(DrawPosition.X + PanelWidth - Padding - buttonWidth), (int)(DrawPosition.Y + PanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
+            hoverQuickPut = quickPutButtonRect.Contains(MouseHitBox);
             hoverDecline = declineButtonRect.Contains(MouseHitBox);
 
-            Vector2 slotsStart = DrawPosition + new Vector2(Padding, 76);
+            //槽位区域
+            Vector2 slotsStart = DrawPosition + new Vector2(Padding, 70);
             for (int i = 0; i < RequiredItems.Count; i++) {
                 var slot = RequiredItems[i];
                 slot.Update(slotsStart + new Vector2(i * (SlotSize + SlotSpacing), 0), SlotSize, player, hoverInMainPage);
             }
 
-            //拒绝任务(未完成时可拒绝,完成后隐藏按钮)
-            if (keyLeftPressState == KeyPressState.Pressed && hoverDecline && !hp.ADCSave.FishoilQuestCompleted) {
+            //快速放入逻辑(在未完成且不关闭时)
+            if (!hp.ADCSave.FishoilQuestCompleted && !closing && hoverQuickPut && keyLeftPressState == KeyPressState.Pressed) {
+                SoundEngine.PlaySound(SoundID.Grab);
+                QuickDepositInventoryFish();
+            }
+
+            //拒绝任务(未完成时可拒绝)
+            if (!hp.ADCSave.FishoilQuestCompleted && hoverDecline && keyLeftPressState == KeyPressState.Pressed) {
                 hp.ADCSave.FishoilQuestDeclined = true;
                 SoundEngine.PlaySound(SoundID.MenuClose);
             }
@@ -119,39 +158,65 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 foreach (var s in RequiredItems) if (!s.IsSatisfied) { allDone = false; break; }
                 if (allDone) {
                     hp.ADCSave.FishoilQuestCompleted = true;
-                    SoundEngine.PlaySound(SoundID.Research);
+                    GiveReward();
                 }
             }
 
-            //发放奖励(只发一次)
-            if (hp.ADCSave.FishoilQuestCompleted && !rewarded) {
-                //点击奖励按钮领取,使用槽位置文本做提示
-                Rectangle rewardRect = new Rectangle((int)(DrawPosition.X + Padding), (int)(DrawPosition.Y + PanelHeight - 58), 120, 20);
-                if (rewardRect.Contains(MouseHitBox)) {
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        rewarded = true;
-                        Item reward = new Item(ModContent.ItemType<Fishoil>());
-                        reward.stack = 1;
-                        Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("FishoilQuestReward"), reward, reward.stack);
-                        SoundEngine.PlaySound(SoundID.Item4);
-                    }
+            //关闭后等待动画结束再彻底隐藏(Active 属性控制)
+        }
+
+        private void QuickDepositInventoryFish() {
+            Player p = Main.LocalPlayer;
+            foreach (var slot in RequiredItems) {
+                if (slot.IsSatisfied) continue;
+                //先处理鼠标物品
+                if (Main.mouseItem.type == slot.ItemType && Main.mouseItem.stack > 0) {
+                    int need = slot.Need - slot.Current;
+                    int move = Math.Min(need, Main.mouseItem.stack);
+                    slot.Current += move;
+                    Main.mouseItem.stack -= move;
+                    if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
+                }
+                //再处理背包
+                for (int i = 0; i < p.inventory.Length && !slot.IsSatisfied; i++) {
+                    Item inv = p.inventory[i];
+                    if (inv.type != slot.ItemType || inv.stack <= 0) continue;
+                    int need = slot.Need - slot.Current;
+                    int move = Math.Min(need, inv.stack);
+                    slot.Current += move;
+                    inv.stack -= move;
+                    if (inv.stack <= 0) inv.TurnToAir();
                 }
             }
         }
 
+        private void GiveReward() {
+            if (rewarded) return;
+            rewarded = true;
+            SoundEngine.PlaySound(SoundID.Research);
+            Item reward = new Item(ModContent.ItemType<Fishoil>()); reward.stack = 1;
+            Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("FishoilQuestReward"), reward, reward.stack);
+            closing = true; //启动关闭动画
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
-            if (showProgress <= 0.01f) return;
-            float alpha = Math.Min(showProgress * 1.6f, 1f);
+            if (showProgress <= 0.01f && !closing) return;
+            //展开/关闭复合插值
+            float openAlpha = closing ? (1f - hideProgress) : showProgress;
+            float alpha = Math.Min(openAlpha * 1.6f, 1f);
             Texture2D px = VaultAsset.placeholder2.Value;
             Rectangle panelRect = UIHitBox;
+
+            //关闭阶段下移动画
+            float closeOffsetY = closing ? hideProgress * 40f : 0f;
+            panelRect.Y += (int)closeOffsetY;
 
             Rectangle shadow = panelRect; shadow.Offset(4, 5);
             spriteBatch.Draw(px, shadow, new Rectangle(0,0,1,1), Color.Black * (alpha * 0.55f));
 
-            int segs = 20;
+            int segs = 16;
             for (int i = 0; i < segs; i++) {
-                float t = i / (float)segs;
-                float t2 = (i+1)/(float)segs;
+                float t = i / (float)segs; float t2 = (i+1)/(float)segs;
                 int y1 = panelRect.Y + (int)(t * panelRect.Height);
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1,y2 - y1));
@@ -165,46 +230,82 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f;
             spriteBatch.Draw(px, panelRect, new Rectangle(0,0,1,1), new Color(30,120,150) * (alpha * 0.08f * pulse));
-
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
 
-            if (contentFade <= 0.01f) return;
+            if (contentFade <= 0.01f && !closing) return;
             float ca = contentFade;
 
-            Vector2 titlePos = DrawPosition + new Vector2(Padding, Padding);
+            Vector2 titlePos = new Vector2(panelRect.X + Padding, panelRect.Y + Padding);
             string title = TitleText.Value;
             Color glow = new Color(140,230,255) * (ca * 0.7f);
-            for(int i=0;i<4;i++){ float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.6f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
+            for(int i=0;i<4;i++){ float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * ca, 0.9f);
 
-            Utils.DrawBorderString(spriteBatch, DescText.Value, titlePos + new Vector2(0, 30), new Color(180,230,250) * ca, 0.65f);
+            //描述换行
+            WrapDescriptionIfNeed();
+            float lineY = titlePos.Y + 26f;
+            foreach (var line in wrappedDescLines) {
+                Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, lineY), new Color(180,230,250) * ca, DescScale);
+                lineY += FontAssets.MouseText.Value.MeasureString("A").Y * DescScale + 2f;
+                if (lineY > panelRect.Bottom - 70) break; //避免溢出
+            }
 
-            Vector2 divStart = titlePos + new Vector2(0, 52);
+            //分隔线
+            Vector2 divStart = new Vector2(titlePos.X, panelRect.Y + 60);
             Vector2 divEnd = divStart + new Vector2(PanelWidth - Padding * 2, 0);
             DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70,180,230)*(ca * 0.85f), new Color(70,180,230)*(ca * 0.05f), 1.2f);
 
+            //绘制槽位
+            Vector2 slotsStart = new Vector2(panelRect.X + Padding, panelRect.Y + 70);
             foreach(var slot in RequiredItems) slot.Draw(spriteBatch, ca);
 
+            //底部提示或完成演出
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
                 if (!hp.ADCSave.FishoilQuestCompleted) {
-                    Utils.DrawBorderString(spriteBatch, SubmitHint.Value, DrawPosition + new Vector2(Padding, PanelHeight - 40), new Color(120,200,235)*(ca*0.7f), 0.7f);
-                } else {
-                    Utils.DrawBorderString(spriteBatch, CompletedText.Value, DrawPosition + new Vector2(Padding, PanelHeight - 40), new Color(150,230,255)* ca, 0.7f);
-                    //奖励按钮提示
-                    if (!rewarded) {
-                        Rectangle rewardRect = new Rectangle((int)(DrawPosition.X + Padding), (int)(DrawPosition.Y + PanelHeight - 58), 120, 20);
-                        Color rrC = rewardRect.Contains(MouseHitBox) ? new Color(30,120,170) : new Color(12,60,90);
-                        spriteBatch.Draw(px, rewardRect, new Rectangle(0,0,1,1), rrC * (ca * 0.9f));
-                        Utils.DrawBorderString(spriteBatch, RewardText.Value, new Vector2(rewardRect.X + 6, rewardRect.Y + 2), Color.White * ca, 0.65f);
-                    }
+                    Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 52), new Color(120,200,235)*(ca*0.7f), 0.65f);
+                }
+                else {
+                    float donePulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
+                    Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 52), Color.Lerp(new Color(150,230,255), new Color(200,240,255), donePulse) * ca, 0.7f);
                 }
             }
 
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted) {
-                Color btnBase = hoverDecline ? new Color(100,40,40) : new Color(70,30,30);
-                spriteBatch.Draw(px, declineButtonRect, new Rectangle(0,0,1,1), btnBase * (ca * 0.9f));
-                Utils.DrawBorderString(spriteBatch, DeclineText.Value, new Vector2(declineButtonRect.X + 6, declineButtonRect.Y + 4), Color.White * ca, 0.7f);
+            //按钮(完成或关闭中不显示交互按钮)
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted && !closing) {
+                DrawButton(spriteBatch, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca, new Color(30,90,120));
+                DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoverDecline, ca, new Color(100,40,40));
             }
+        }
+
+        private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text, bool hover, float alpha, Color baseColor) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Color bg = baseColor * (alpha * (hover ? 0.95f : 0.75f));
+            spriteBatch.Draw(px, rect, new Rectangle(0,0,1,1), bg);
+            Color edge = Color.Lerp(baseColor, Color.White, 0.35f) * alpha;
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0,0,1,1), edge);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0,0,1,1), edge * 0.6f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.8f);
+            spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.8f);
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.7f;
+            Vector2 textPos = new Vector2(rect.X + rect.Width / 2f - textSize.X / 2f, rect.Y + rect.Height / 2f - textSize.Y / 2f);
+            Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.7f);
+        }
+
+        private void WrapDescriptionIfNeed() {
+            string raw = DescText.Value;
+            float maxWidth = PanelWidth - Padding * 2f;
+            List<string> lines = new List<string>();
+            string current = string.Empty;
+            foreach (char ch in raw) {
+                string test = current + ch;
+                float w = FontAssets.MouseText.Value.MeasureString(test).X * DescScale;
+                if (w > maxWidth && current.Length > 0) {
+                    lines.Add(current);
+                    current = ch.ToString();
+                } else current = test;
+            }
+            if (current.Length > 0) lines.Add(current);
+            wrappedDescLines = lines.ToArray();
         }
 
         private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
@@ -231,23 +332,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         private class QuestMaterialSlot {
             public int ItemType; public int Need; public int Current; public Vector2 Pos; public Rectangle Hit; public bool Hover; public bool IsSatisfied => Current >= Need;
             public QuestMaterialSlot(int itemType, int need) { ItemType = itemType; Need = need; }
+            public void ResetCount() { Current = 0; }
             public void Update(Vector2 drawPos, int size, Player player, bool uiHover) {
                 Pos = drawPos; Hit = new Rectangle((int)Pos.X, (int)Pos.Y, size, size); Hover = uiHover && Hit.Contains(Main.mouseX, Main.mouseY);
                 if (Hover) player.mouseInterface = true;
-                if (Hover && Main.mouseLeft && Main.mouseLeftRelease) {
-                    if (Main.mouseItem.type == ItemType) {
-                        if (IsSatisfied) return; Current += 1; if (Current > Need) Current = Need; Main.mouseItem.stack -= 1; if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir(); SoundEngine.PlaySound(SoundID.Grab);
+                if (Hover) {
+                    //左键放入一份, Shift左键放入尽量多, Ctrl左键放入背包所有该物品
+                    bool leftClick = Main.mouseLeft && Main.mouseLeftRelease;
+                    if (leftClick && Main.mouseItem.type == ItemType && !IsSatisfied) {
+                        int add = 1;
+                        if (Main.keyState.PressingShift()) add = Math.Min(Main.mouseItem.stack, Need - Current);
+                        if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) add = Need - Current;
+                        add = Math.Min(add, Main.mouseItem.stack);
+                        Current += add; Main.mouseItem.stack -= add; if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir(); SoundEngine.PlaySound(SoundID.Grab);
                     }
-                    else if (Main.mouseItem.IsAir && Current > 0) {
-                        Item give = new Item(ItemType); give.stack = 1; Main.mouseItem = give; Current -= 1; SoundEngine.PlaySound(SoundID.Grab);
+                    //右键取出一份
+                    bool rightClick = Main.mouseRight && Main.mouseRightRelease;
+                    if (rightClick && Current > 0 && Main.mouseItem.IsAir) {
+                        Current -= 1; Item give = new Item(ItemType); give.stack = 1; Main.mouseItem = give; SoundEngine.PlaySound(SoundID.Grab);
                     }
                 }
             }
             public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = VaultAsset.placeholder2.Value; Rectangle r = new Rectangle((int)Pos.X, (int)Pos.Y, Hit.Width, Hit.Height); Color back = new Color(6,32,48) * (alpha * 0.9f); if (Hover) back *= 1.15f; sb.Draw(px, r, new Rectangle(0,0,1,1), back);
                 Color edge = IsSatisfied ? new Color(70,180,230) : new Color(40,100,140); sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0,0,1,1), edge); sb.Draw(px, new Rectangle(r.X, r.Bottom -2, r.Width, 2), new Rectangle(0,0,1,1), edge * 0.7f); sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f); sb.Draw(px, new Rectangle(r.Right -2, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width/2f, r.Y + r.Height/2f); float scale = Math.Min((r.Width - 10f)/frame.Width, (r.Height - 10f)/frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
-                string text = $"{Current}/{Need}"; Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 18), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.65f);
+                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width/2f, r.Y + r.Height/2f); float scale = Math.Min((r.Width - 8f)/frame.Width, (r.Height - 8f)/frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
+                string text = $"{Current}/{Need}"; Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 16), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.6f);
             }
         }
     }

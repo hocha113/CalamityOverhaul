@@ -2755,6 +2755,7 @@ Legend: {
 				// DeclineText: 拒绝
 				// CompletedText: 完成
 				// RewardText: 领取奖励
+				// QuickPutText: 快速放入
 			}
 		}
 
