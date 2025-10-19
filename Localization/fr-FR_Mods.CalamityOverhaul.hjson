@@ -6183,7 +6183,7 @@ FishSkill: {
 }
 
 Resurrections: {
-	ResurrectionDeathSystem: {
+	ResurrectionDeath: {
 		// DeathText: "{0} was consumed by the Abyssal Resurgence"
 		// WarningCombatText: The Abyss is devouring you...
 		// DeathNoticeText: You have been swallowed by the Abyss...

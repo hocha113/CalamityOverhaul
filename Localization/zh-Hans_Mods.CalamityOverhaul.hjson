@@ -6214,7 +6214,7 @@ FishSkill: {
 }
 
 Resurrections: {
-	ResurrectionDeathSystem: {
+	ResurrectionDeath: {
 		DeathText: "{0}死于深渊复苏"
 		WarningCombatText: 深渊正在吞噬你...
 		DeathNoticeText: 你被深渊吞噬了...
