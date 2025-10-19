@@ -94,12 +94,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 20;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 3; //可穿透3个敌人
+            Projectile.penetrate = 5; //可穿透5个敌人
             Projectile.timeLeft = 480;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
         }
 
         public override void AI() {

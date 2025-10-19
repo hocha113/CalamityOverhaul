@@ -78,21 +78,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Projectile.friendly = true;
             Projectile.alpha = 0;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = 420;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            Projectile.localNPCHitCooldown = 9;
             Projectile.arrow = true;
             Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
         }
 
-        //public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-        //    if (target.IsWormBody()) {
-        //        Projectile.damage = (int)(Projectile.damage * 0.75f);
-        //    }
-        //}
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.8f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            Projectile.damage = (int)(Projectile.damage * 0.8f);
+        }
 
         public override void AI() {
             StreamLife++;

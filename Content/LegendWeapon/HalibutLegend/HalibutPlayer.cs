@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
@@ -235,8 +236,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 低于或者等于这个等级的眼睛会进入死机状态
         /// </summary>
         public int CrashesLevel() {
-            //return 10;//测试用，所有眼睛都死机，或者返回想要的死机等级
-            return GetCrashesLevel(Main.LocalPlayer.GetItem());
+            int level = GetCrashesLevel(Main.LocalPlayer.GetItem());
+            if (Player.HasBuff<FishoilBuff>()) {
+                level++;//鱼油加持下可以临时的多死机一只眼
+            }
+            return (int)MathHelper.Clamp(level, 0, 10);
         }
 
         /// <summary>

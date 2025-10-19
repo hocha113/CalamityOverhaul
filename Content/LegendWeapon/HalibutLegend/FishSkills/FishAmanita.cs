@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaExplosiveMushroom>(),
-                    (int)(damage * 2.5 + HalibutData.GetDomainLayer() * 0.6),
+                    (int)(damage * 2.2f + HalibutData.GetDomainLayer() * 0.55f),
                     2f,
                     player.whoAmI
                 );
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     randomVel,
                     ModContent.ProjectileType<AmanitaHomingSpore>(),
-                    (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
+                    (int)(damage * 1.2f + HalibutData.GetDomainLayer() * 0.3f),
                     1.5f,
                     player.whoAmI
                 );
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaToxicMushroom>(),
-                    (int)(damage * 1.75 * +HalibutData.GetDomainLayer() * 0.55),
+                    (int)(damage * 1.2f * +HalibutData.GetDomainLayer() * 0.3f),
                     3f,
                     player.whoAmI
                 );
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     spawnVel,
                     ModContent.ProjectileType<AmanitaLightningSpore>(),
-                    (int)(damage * 1.75f + HalibutData.GetDomainLayer() * 0.55),
+                    (int)(damage * 1.6f + HalibutData.GetDomainLayer() * 0.4f),
                     2f,
                     player.whoAmI
                 );
@@ -509,6 +509,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
+        }
 
         public override void AI() {
             if (!deployed) {
@@ -694,6 +702,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.33f;
+            }
         }
 
         public override void AI() {

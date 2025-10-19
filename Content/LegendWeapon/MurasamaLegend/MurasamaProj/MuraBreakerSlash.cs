@@ -153,6 +153,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.BlueTorch);
                 return;
             }
+            if (npc.type == ModContent.NPCType<AquaticScourgeBody>() || npc.type == ModContent.NPCType<AquaticScourgeHead>() || npc.type == ModContent.NPCType<AquaticScourgeTail>()) {
+                spanDust(33, DustID.Blood);
+                return;
+            }
             if (npc.type == ModContent.NPCType<CeaselessVoid>()) {
                 spanDust(33, DustID.BlueTorch);
                 return;

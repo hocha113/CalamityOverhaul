@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center,
                         Vector2.Zero, //初始速度为0
                         ModContent.ProjectileType<BonefishOrbit>(),
-                        (int)(damage * (2f + HalibutData.GetDomainLayer() * 1.25f)),
+                        (int)(damage * (2.4f + HalibutData.GetDomainLayer() * 0.9f)),
                         knockback * 0.25f,
                         player.whoAmI,
                         ai0: ActiveBones.Count //传递索引用于错开动画
@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             return null;
         }
+
 
         private static void CleanupInactiveBones() {
             ActiveBones.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
@@ -164,7 +165,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.penetrate = -1;
             Projectile.timeLeft = 10086;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 3;
+            Projectile.localNPCHitCooldown = 5;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
         }
 
         public override void AI() {

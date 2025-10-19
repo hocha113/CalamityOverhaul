@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float spreadBase = 0.25f;
 
                 //根据领域层数增加火焰数量和扩散
-                int flameCount = 1 + HalibutData.GetDomainLayer() / 2;
+                int flameCount = 2 + HalibutData.GetDomainLayer() / 2;
 
                 for (int i = 0; i < flameCount; i++) {
                     float spreadAngle = MathHelper.Lerp(-spreadBase, spreadBase, i / (float)Math.Max(1, flameCount - 1));
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         flameVelocity,
                         ModContent.ProjectileType<CursedFlameStream>(),
-                        (int)(damage * (2f + HalibutData.GetDomainLayer() * 0.7f)),
+                        (int)(damage * (2.8f + HalibutData.GetDomainLayer() * 0.7f)),
                         knockback * 2f,
                         player.whoAmI
                     );

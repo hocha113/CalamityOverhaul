@@ -1203,7 +1203,48 @@ Items: {
 
 	Pallbearer: {
 		// DisplayName: Pallbearer
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Hold left click to charge, then release to fire the Arrow of the Pallbearer.
+			The longer you charge, the stronger the arrow becomes.
+			Right click to throw the crossbow, if it hits an enemy, 
+			your next shot will be greatly empowered.
+			“Also known as the Coffin Bearer.”
+			''' */
+	}
+
+	EncyclopediaofOceanicKnowledge: {
+		// DisplayName: Encyclopediaof Oceanic Knowledge
+		/* Tooltip:
+			'''
+			Instantly gain knowledge of all fish species
+			Unlock all fish-related skills
+			[c/FFD700: The wisdom of the ocean will converge upon you]
+			''' */
+		// Text1: You have mastered all the knowledge
+		// Text2: You have acquired [NUM] kinds of fish knowledge!
+	}
+
+	TheForgottenTome: {
+		// DisplayName: The Forgotten Tome
+		/* Tooltip:
+			'''
+			When used, it erases every trace of your worldly memories.
+			A life turned specter, condemned to eternal descent
+			all beings are burdened with sin, and no soul shall return to the next life.
+			My name is [NAME]. If you are reading this, I have already perished.
+			''' */
+		// CompletionText: You have forgotten everything
+	}
+
+	Fishoil: {
+		// DisplayName: Bottled Fish Oil
+		/* Tooltip:
+			'''
+			Increases fishing power by 10%
+			Allows breathing underwater
+			Grants additional resistance against certain eerie entities
+			''' */
 	}
 }
 
@@ -1460,8 +1501,8 @@ Projectiles: {
 	// BarrenOrb.DisplayName: Barren Orb
 	// BloodVerdict.DisplayName: Blood Verdict
 	// BMGBullet.DisplayName: BMG Round
-	// BMGFIRE.DisplayName: BMG Fire
-	// BMGFIRE2.DisplayName: BMG Fire
+	// BMGFIRE.DisplayName: BMG Round
+	// BMGFIRE2.DisplayName: BMG Round
 	// Crystal.DisplayName: Crystal
 	// CursedDartRemake.DisplayName: Cursed Dart
 	// DeadWave.DisplayName: Deathly Wave
@@ -1565,8 +1606,18 @@ Projectiles: {
 	// IceBoomerangHeld.DisplayName: Ice Boomerang
 	// TrimarangHeld.DisplayName: Trimarang
 	// DeathSickleThrowable.DisplayName: Death Sickle
-	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 	// CthulhuEye.DisplayName: Cthulhu Eye
+	// JewelFragmentProjectile.DisplayName: Jewel Fragment
+	// JewelGemProjectile.DisplayName: Jewel Star
+	// EncyclopediaEffect.DisplayName: Aura of Knowledge
+	// ForgottenTomeEffect.DisplayName: Forgotten Runes
+	// TunabeardDashProj.DisplayName: Tuna Rush
+	// TunabeardImpactWave.DisplayName: Tidal Slam
+	// BloodyAxeController.DisplayName: Crimson Cyclone
+	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish
+	// BloodyStrikeWave.DisplayName: Wave of Blood
+	// UnicornFishDashProj.DisplayName: Horn Charge
+	// FishoilDrinkEffect.DisplayName: Vitality Surge
 }
 
 Configs: {
@@ -1769,6 +1820,11 @@ Buffs: {
 	FrenziedMachineSoul: {
 		// DisplayName: Frenzied Machine Soul
 		// Description: The Machine Spirit is overjoyed!
+	}
+
+	FishoilBuff: {
+		// DisplayName: Fishoil
+		// Description: You feel that your skin is becoming oily
 	}
 }
 
@@ -6002,6 +6058,30 @@ FishSkill: {
 	}
 
 	FishofCthulu: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishJewel: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishTunabeard: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishBloodyManowar: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishUnicorn: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

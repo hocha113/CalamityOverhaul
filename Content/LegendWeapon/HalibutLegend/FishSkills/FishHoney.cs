@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<HoneyBeeSwarmCore>(),
-                player.GetShootState().WeaponDamage,
+                (int)(player.GetShootState().WeaponDamage * (0.3f + HalibutData.GetDomainLayer() * 0.07f)),
                 2f,
                 player.whoAmI
             );

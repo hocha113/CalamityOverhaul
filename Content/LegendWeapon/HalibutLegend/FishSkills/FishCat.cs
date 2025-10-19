@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     position,
                     throwVelocity,
                     ModContent.ProjectileType<CatfishLeaper>(),
-                    (int)(damage * (1.5f + HalibutData.GetDomainLayer() * 0.3f)),
+                    (int)(damage * (1.2f + HalibutData.GetDomainLayer() * 0.3f)),
                     knockback * 2.2f,
                     player.whoAmI
                 );

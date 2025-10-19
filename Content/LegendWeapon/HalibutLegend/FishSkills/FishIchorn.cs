@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         streamVelocity,
                         ModContent.ProjectileType<IchorStream>(),
-                        (int)(damage * (2.5f + HalibutData.GetDomainLayer() * 0.75f)),
+                        (int)(damage * (2f + HalibutData.GetDomainLayer() * 0.5f)),
                         knockback * 1.5f,
                         player.whoAmI
                     );

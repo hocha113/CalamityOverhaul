@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
     /// <summary>
     /// 扶柩者任务UI

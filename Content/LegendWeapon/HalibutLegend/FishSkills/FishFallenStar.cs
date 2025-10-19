@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishFallenStar : FishSkill
     {
         public override int UnlockFishID => ItemID.FallenStarfish;
-        public override int DefaultCooldown => 30 - HalibutData.GetDomainLayer() * 2;
+        public override int DefaultCooldown => 39 - HalibutData.GetDomainLayer() * 3;
         public override int ResearchDuration => 60 * 12;
         // 星星管理系统
         private static int consecutiveShots = 0; // 连续射击计数
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 // 发射螺旋星星
                 Vector2 direction = velocity.SafeNormalize(Vector2.Zero);
-                int starDamage = (int)(damage * (0.55 + HalibutData.GetDomainLayer() * 0.15));
+                int starDamage = (int)(damage * (0.45f + HalibutData.GetDomainLayer() * 0.12f));
 
                 // 生成主星星弹幕
                 int mainStar = Projectile.NewProjectile(

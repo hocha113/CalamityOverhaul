@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //大量爆炸粒子
             SpawnExplosionParticles();
 
-            Projectile.damage = Main.player[Projectile.owner].GetShootState().WeaponDamage * (7 + HalibutData.GetDomainLayer() * 6);//实际爆炸伤害
+            Projectile.damage = (int)(Main.player[Projectile.owner].GetShootState().WeaponDamage * (7f + HalibutData.GetDomainLayer() * 6f));//实际爆炸伤害
             Projectile.Explode(350, default, false);
 
             //爆炸音效
@@ -319,6 +319,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //延迟杀死弹幕以确保伤害判定
             Projectile.timeLeft = 3;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.6f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 3.33f;
+            }
         }
 
         private void SpawnExplosionParticles() {

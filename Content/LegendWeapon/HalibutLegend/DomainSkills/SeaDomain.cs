@@ -36,17 +36,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (hp.SeaDomainActive) return;
             hp.SeaDomainActive = true;
 
-            //播放领域开启音效：瀑布+深海氛围+水流涌动
+            //播放领域开启音效，瀑布+水流
             if (Main.myPlayer == player.whoAmI) {
-                //叠加雷鸣音效（营造威严感）
+                //叠加雷鸣音效
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Volume = 0.4f,
-                    Pitch = -0.5f,  //低沉的雷鸣
+                    Pitch = -0.5f,//雷鸣
                     MaxInstances = 1
                 }, player.Center);
 
                 //深海回响音效
-                SoundEngine.PlaySound(SoundID.Item29 with {  //水晶音效
+                SoundEngine.PlaySound(SoundID.Item29 with { //水晶音效
                     Volume = 0.6f,
                     Pitch = -0.8f,  //极低音调
                     MaxInstances = 1

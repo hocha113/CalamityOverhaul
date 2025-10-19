@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1197,7 +1197,46 @@ Items: {
 
 	Pallbearer: {
 		DisplayName: 扶柩者
-		Tooltip: ""
+		Tooltip:
+			'''
+			左键长按蓄力，松开后发射出护柩者之箭
+			蓄力时间越长，箭矢越强大
+			右键可以将弩投掷出去，命中敌人后大幅加强下一次发射的箭矢
+			"也叫抬棺人"
+			'''
+	}
+
+	EncyclopediaofOceanicKnowledge: {
+		DisplayName: 海洋知识百科全书
+		Tooltip:
+			'''
+			使用后瞬间领悟所有鱼类知识
+			解锁全部鱼类技能
+			[c/FFD700:海洋的智慧将汇聚于你]
+			'''
+		Text1: 你已经掌握了所有知识
+		Text2: 习得了[NUM]种鱼类知识！
+	}
+
+	TheForgottenTome: {
+		DisplayName: 遗忘世界之书
+		Tooltip:
+			'''
+			使用后瞬间遗忘所有世间的经历
+			人生鬼相，永堕无间，众生皆孽，无往来世
+			我叫[NAME]，当你看到这句话的时候，我已经死了
+			'''
+		CompletionText: 你已经遗忘所有
+	}
+
+	Fishoil: {
+		DisplayName: 瓶装鱼油
+		Tooltip:
+			'''
+			增加10%渔力
+			允许水下呼吸
+			对一些诡异的事物有着额外的压制效果
+			'''
 	}
 }
 
@@ -1454,8 +1493,8 @@ Projectiles: {
 	BarrenOrb.DisplayName: 贫瘠法球
 	BloodVerdict.DisplayName: 鲜血裁决
 	BMGBullet.DisplayName: B.M.G.子弹
-	BMGFIRE.DisplayName: B.M.G.开火
-	BMGFIRE2.DisplayName: B.M.G.开火
+	BMGFIRE.DisplayName: B.M.G.子弹
+	BMGFIRE2.DisplayName: B.M.G.子弹
 	Crystal.DisplayName: 水晶
 	CursedDartRemake.DisplayName: 诅咒吹箭
 	DeadWave.DisplayName: 死亡波纹
@@ -1559,8 +1598,18 @@ Projectiles: {
 	IceBoomerangHeld.DisplayName: 冰雪回旋镖
 	TrimarangHeld.DisplayName: 三叶回旋镖
 	DeathSickleThrowable.DisplayName: 死亡镰刀
-	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
-	// CthulhuEye.DisplayName: Cthulhu Eye
+	CthulhuEye.DisplayName: 克苏鲁之眼
+	JewelFragmentProjectile.DisplayName: 宝石碎片
+	JewelGemProjectile.DisplayName: 宝石之星
+	EncyclopediaEffect.DisplayName: 博学光环
+	ForgottenTomeEffect.DisplayName: 遗忘符文
+	TunabeardDashProj.DisplayName: 金枪鱼猛冲
+	TunabeardImpactWave.DisplayName: 怒涛冲击
+	BloodyAxeController.DisplayName: 血斧风暴
+	BloodyJellyfishUnit.DisplayName: 血色水母
+	BloodyStrikeWave.DisplayName: 鲜血冲击
+	UnicornFishDashProj.DisplayName: 独角冲锋
+	FishoilDrinkEffect.DisplayName: 活力涌现
 }
 
 Configs: {
@@ -1764,6 +1813,11 @@ Buffs: {
 	FrenziedMachineSoul: {
 		DisplayName: 狂热机魂
 		Description: 机魂大悦!
+	}
+
+	FishoilBuff: {
+		DisplayName: 鱼油
+		Description: 你感觉自己的皮肤在变得油腻
 	}
 }
 
@@ -5860,7 +5914,7 @@ FishSkill: {
 			右键可以召唤一群溺尸冲向敌人
 			靠近敌人后造成一次爆炸
 			'''
-		Studied: 散发着臭味的鱼，它还活着吗?
+		Studied: 散发着臭味的鱼，它还活着吗？
 	}
 
 	FishCloud: {
@@ -5963,7 +6017,7 @@ FishSkill: {
 			开火时射出小噬魂虫
 			小噬魂虫将会不停的蠕动并攻击敌人
 			'''
-		Studied: 这条鱼长虫子了!
+		Studied: 这条鱼长虫子了！
 	}
 
 	FishAmanita: {
@@ -5997,7 +6051,7 @@ FishSkill: {
 			远距离时骷髅王之手将会蓄力丢出骨头
 			近距离时骷髅王之手将会蓄力拍向目标
 			'''
-		Studied: 它不止四手!
+		Studied: 它不止四手！
 	}
 
 	FishIchorn: {
@@ -6007,7 +6061,7 @@ FishSkill: {
 			开火时会伴随着散射灵液射流
 			灵液射流命中时将给予目标灵液效果
 			'''
-		Studied: 这条鱼的口水十分有用!
+		Studied: 这条鱼的口水十分有用！
 	}
 
 	FishCursed: {
@@ -6017,7 +6071,7 @@ FishSkill: {
 			开火时会伴随着散射诅咒火焰
 			诅咒火焰射出后将反重力下坠
 			'''
-		Studied: 它居然不会烧坏钓竿!?
+		Studied: 它居然不会烧坏钓竿！？
 	}
 
 	FishSlime: {
@@ -6099,9 +6153,53 @@ FishSkill: {
 	}
 
 	FishofCthulu: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 深渊凝视
+		Tooltip:
+			'''
+			开火时召唤凝视之瞳观察敌人
+			凝视之瞳靠近敌人时将变换形态进行冲刺
+			'''
+		Studied: 它一直盯着你…
+	}
+
+	FishJewel: {
+		DisplayName: 虹彩序曲
+		Tooltip:
+			'''
+			开火时按顺序发射散射宝石弹
+			不同宝石弹在发射时有不同的音效
+			'''
+		Studied: 六色序曲……也许真能用它演奏一曲彩虹乐章
+	}
+
+	FishTunabeard: {
+		DisplayName: 激流一闪
+		Tooltip:
+			'''
+			右键将向鼠标方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 对鱼来说海盗和强盗有区别吗？
+	}
+
+	FishBloodyManowar: {
+		DisplayName: 猩红裁决
+		Tooltip:
+			'''
+			开火时召唤血腥水母形成一把战斧劈向敌人
+			血腥水母斧的挥砍造成大范围伤害
+			'''
+		Studied: 它们的关系是共生还是上下级？
+	}
+
+	FishUnicorn: {
+		DisplayName: 虹光穿刺
+		Tooltip:
+			'''
+			右键将向水平方向进行一次长距离快速突刺
+			突刺期间全程无敌并且可以穿墙
+			'''
+		Studied: 传说只有纯洁的少女才能钓到它！
 	}
 }
 
