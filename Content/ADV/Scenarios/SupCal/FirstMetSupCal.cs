@@ -79,8 +79,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             SupCalSkyEffect.IsActive = false;
         }
 
-        //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现了
-        //你麻痹的我为什么要把角色名字和头像强绑定，现在改又不敢改，你妈的被自己的设计坑死了
+        //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现
+        //你麻痹的为什么要把角色名字和头像强绑定，现在改又不敢改，妈的被自己的设计坑死了
         private const string expressionCloseEye = " ";
         private const string expressionBeTo = " " + " ";
         private const string expressionDespise = " " + " " + " ";
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionDespise, silhouette: false);
 
-            // 注册比目鱼的不同表情
+            //注册比目鱼的不同表情
             DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
             DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
 

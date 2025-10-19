@@ -309,14 +309,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             Item item = Player.GetItem();
+            bool wasHeldHalibut = HeldHalibut;//记录上一帧状态
             HeldHalibut = item.Alives() && item.type == HalibutOverride.ID;
             HasHalubut = Player.inventory.Any(i => i.Alives() && i.type == HalibutOverride.ID);
 
             if (!HeldHalibut) {
+                //当切换走武器时，如果领域或过去身处于激活状态，标记需要在重新拿起时恢复
                 if (SeaDomainActive) {
+                    OnStartSeaDomain = true;//重新拿起后触发底部的启动检测恢复
                     SeaDomain.Deactivate(Player);
                 }
                 if (CloneFishActive) {
+                    OnStartClone = true;//重新拿起后触发底部的启动检测恢复
                     CloneFish.Deactivate(Player);
                 }
             }
