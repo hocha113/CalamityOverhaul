@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System;
 using Terraria;
@@ -75,11 +76,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                     if (!HalibutUIHead.Instance.Open) {
                         HalibutUIHead.Instance.Open = true;//打开比目鱼UI以便展示
                     }
-                    if (halibutPlayer.Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
-                        foreach (var eye in halibutSave.activationSequence) {
-                            eye.IsActive = false;//关掉所有眼球
-                        }
-                    }
+                    ResurrectionDeath.CloseEyes(halibutPlayer.Player);
                     save.FirstResurrectionWarning = true;
                 }
             }

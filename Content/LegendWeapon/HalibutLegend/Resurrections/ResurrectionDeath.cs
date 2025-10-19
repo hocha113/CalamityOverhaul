@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
     /// <summary>
     /// 深渊复苏死亡系统，处理复苏满时的死亡机制和演出
     /// </summary>
-    public class ResurrectionDeathSystem : ModPlayer, ILocalizedModType
+    public class ResurrectionDeath : ModPlayer, ILocalizedModType
     {
         #region 死亡状态枚举
         /// <summary>
@@ -461,8 +461,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             ResetState();
         }
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
-            if (Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
+            CloseEyes(Player);
+        }
+        public static void CloseEyes(Player player) {
+            if (player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
                 foreach (var save in halibutSave.activationSequence) {
+                    if (save.IsCrashed) {
+                        continue;//死机状态的眼睛不受影响
+                    }
                     save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
                 }
             }

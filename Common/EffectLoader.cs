@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Common
 
             foreach (Player player in Main.ActivePlayers) {
                 if (player.active && !player.DeadOrGhost &&
-                    player.TryGetModPlayer(out ResurrectionDeathSystem deathSystem)) {
+                    player.TryGetModPlayer(out ResurrectionDeath deathSystem)) {
                     deathSystem.DrawDeathEffects(Main.spriteBatch);
                 }
             }
