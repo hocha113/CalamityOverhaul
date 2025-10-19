@@ -5891,235 +5891,318 @@ Arcanes: {
 
 FishSkill: {
 	FishSwarm: {
-		// DisplayName: Shoal Mirage
+		// DisplayName: Phantom Swarm
 		/* Tooltip:
 			'''
-			Right-click to morph into a swarm of fish and phase through obstacles.
-			Left-click to launch the swarm toward your cursor.
+			Right-click to transform into a fish swarm and dash.
+			Left-click to launch the swarm towards the cursor.
 			''' */
-		// Studied: An ordinary fish with surprisingly extraordinary potential.
+		// Studied: An unremarkable fish, but it shows considerable potential.
 	}
 
 	FishSparkling: {
-		// DisplayName: Radiant Queen’s Waltz
+		// DisplayName: Regal Spark-dance
 		/* Tooltip:
 			'''
-			While firing, periodically summons several “Queenfish” to shoot in formation.
-			Cooldown does not recover during continuous fire.
+			Periodically summons several Sparkling Queenfish for a volley while firing.
+			Cooldown does not recharge while firing.
 			''' */
-		// Studied: I believe studying this fish could advance laser technology dramatically.
+		// Studied: I believe research into this specimen could lead to advancements in laser pointer technology.
 	}
 
 	FishZombie: {
-		// DisplayName: Dancing Dead
+		// DisplayName: Risen Tide
 		/* Tooltip:
 			'''
-			Right-click to summon a horde of drowned corpses that rush toward enemies.
-			They explode upon contact.
+			Right-click to summon a horde of drowned dead that rush enemies.
+			They explode upon nearing a target.
 			''' */
-		// Studied: A foul-smelling fish… is it truly still alive?
+		// Studied: A foul-smelling fish. Is it even... animate?
 	}
 
 	FishCloud: {
-		// DisplayName: Soaring Nimbus
+		// DisplayName: Cloudsurfer
 		/* Tooltip:
 			'''
-			Right-click to ride a raincloud and move at high speed.
-			You can pass through walls and attack while mounted.
-			Raindrops will fall along your path.
+			Right-click to ride a rain cloud for high-speed movement.
+			While riding, you can pass through walls and use weapons.
+			Leaves a trail of rain along your path.
 			''' */
-		// Studied: It looks like a fish—but swims like a cloud.
+		// Studied: It appears to be a fish, but it's technically a swimming cloud.
 	}
 
 	FishVoodoo: {
-		// DisplayName: Voodoo Substitute
+		// DisplayName: Voodoo Ward
 		/* Tooltip:
 			'''
-			When equipped, prevents death by transferring incoming damage
-			to nearby enemies, then enters cooldown.
-			Within your domain, damage transfers to all enemies inside.
+			When equipped, this skill prevents death on a fatal blow,
+			transferring the damage to a nearby enemy instead. Triggers a cooldown.
+			If a Domain is active, damage is transferred to *all* enemies within it.
 			''' */
-		// Studied: A fine specimen—its properties inspire some rather dangerous experiments.
+		// Studied: A useful specimen. It gives me... interesting ideas for new experiments.
 	}
 
 	FishDemonicHell: {
-		// DisplayName: Infernal Burst
+		// DisplayName: Inferno Burst
 		/* Tooltip:
 			'''
-			While firing, periodically summons a ring of hellfire.
-			Upon charging, releases a blazing inferno orb.
-			The orb explodes after traveling a short distance.
+			Periodically summons an inferno sigil while firing.
+			When fully charged, the sigil launches a hellfire ball
+			that explodes after a short flight.
 			''' */
-		// Studied: This fish still burns, even in the depths of Hell.
+		// Studied: It burns in the inferno.
 	}
 
 	FishDynamite: {
-		// DisplayName: Flashbang Torpedo
+		// DisplayName: Dynamite Fish
 		/* Tooltip:
 			'''
-			Right-click to throw a gravity-affected “torpedo fish.”
-			It explodes upon contact with an enemy—or after a brief delay.
+			Right-click to lob a Dynamite Fish, which is affected by gravity.
+			The fish explodes on contact with an enemy or after a short time.
 			''' */
-		// Studied: Its internal anatomy is intricate—mostly composed of the “boom” part.
+		// Studied: Its internal anatomy is highly complex. It's composed primarily of the part that goes 'BOOM'.
 	}
 
 	FishBone: {
-		// DisplayName: Bone Recurve
+		// DisplayName: Bone Cyclone
 		/* Tooltip:
 			'''
-			While firing, periodically generates orbiting bones around you.
-			After circling for a time, they launch outward and return.
-			If you take damage, the bones shatter instantly.
+			Periodically generates orbiting bones while firing.
+			After circling, they fly out towards enemies and return.
+			The bones will shatter if you take damage.
 			''' */
-		// Studied: Might make a fine soup—rich in calcium and poor in mercy.
+		// Studied: Might be good for a broth. Delicious and high in calcium.
 	}
 
 	FishHarpy: {
-		// DisplayName: Winged Harpyfish
+		// DisplayName: Feather Typhoon
 		/* Tooltip:
 			'''
-			While firing, generates orbiting harpy feathers.
-			With continuous fire, the feathers spiral before scattering outward.
+			Periodically generates orbiting harpy feathers while firing.
+			With sustained fire, the feathers will eventually launch outwards.
 			''' */
-		// Studied: I doubt it can fly… yet it undeniably has wings.
+		// Studied: I doubt this fish can actually fly, but it does, technically, have wings.
 	}
 
 	FishFallenStar: {
-		// DisplayName: Starry Shoal
+		// DisplayName: Star-spawn
 		/* Tooltip:
 			'''
-			Each shot releases a star surrounded by smaller companion stars.
-			After firing enough stars, a meteor shower will descend.
+			Firing is accompanied by stars, which are orbited by smaller starlets.
+			Every set number of shots summons a starfall.
 			''' */
-		// Studied: Perhaps in daylight, it would simply vanish—returning to the sky.
+		// Studied: In the daylight, it might just... vanish.
 	}
 
 	FishHunger: {
-		// DisplayName: Glutton of the Deep
+		// DisplayName: Famished Maw
 		/* Tooltip:
 			'''
-			Periodically spawns hungry spirits that orbit around you.
-			Once they reach their limit, they rush forth to tear at your foes.
+			Periodically spawns an orbiting Hungry Maw while firing.
+			At maximum capacity, the Maws will follow your aim to tear at enemies.
 			''' */
-		// Studied: It always looks hungry… perhaps it always is.
+		// Studied: It appears... famished.
 	}
 
 	FishBat: {
-		// DisplayName: Bat Swarm Drift
+		// DisplayName: Phantom Echo
 		/* Tooltip:
 			'''
-			Right-click to transform into a swarm of bats and dash through space.
-			Attacking breaks the transformation.
+			Right-click to transform into a bat swarm for a rapid dash.
+			Attacking will exit the form.
 			''' */
-		// Studied: I wonder… does it sleep while hanging upside down?
+		// Studied: I wonder, if one hangs this fish upside down, will it fall asleep?
 	}
 
 	FishEaterofPlankton: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Eater's Spawn
+		/* Tooltip:
+			'''
+			Firing also launches a miniature Eater of Souls
+			that will wriggle and attack enemies.
+			''' */
+		// Studied: This fish has worms!
 	}
 
 	FishAmanita: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Fungal Cycle
+		/* Tooltip:
+			'''
+			Firing cycles through four different fungal shots. Each shot switches to the next type.
+			Explosive Mushroom: Scatters 3 explosive mushrooms that deal area damage.
+			Homing Spore: Scatters 5 spores that track the nearest target.
+			Toxin Mushroom: Scatters 2 toxin mushrooms that create a damaging cloud.
+			Lightning Spore: Scatters 5 lightning spores that chain once on hit.
+			''' */
+		// Studied: This fish represents an entire fungal ecosystem.
 	}
 
 	FishHoney: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Bee-caller
+		/* Tooltip:
+			'''
+			Right-click to summon a swarm of bees that orbit you.
+			Bees will automatically attack enemies on sight.
+			''' */
+		// Studied: For some reason, it seems terrified of catfish.
 	}
 
 	Fishotroning: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Bony Grasp
+		/* Tooltip:
+			'''
+			Firing grows Skeletron Hands to assist in combat. You lose a hand when damaged.
+			At long range, hands charge to throw bones.
+			At close range, hands charge to slap the target.
+			''' */
+		// Studied: It has more than four hands!
 	}
 
 	FishIchorn: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Ichor Stream
+		/* Tooltip:
+			'''
+			Firing is accompanied by a scattering spray of ichor.
+			Hits inflict the 'Ichor' debuff.
+			''' */
+		// Studied: This fish's... 'saliva'... is remarkably useful!
 	}
 
 	FishCursed: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Cursed Burst
+		/* Tooltip:
+			'''
+			Firing is accompanied by a scattering of cursed flames.
+			The flames fall with an unnatural, arcing trajectory.
+			''' */
+		// Studied: And it somehow doesn't incinerate the fishing rod!?
 	}
 
 	FishSlime: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Viscous Trail
+		/* Tooltip:
+			'''
+			Throws slime gel as you move.
+			The gel will stick to any target it touches.
+			''' */
+		// Studied: It seems very... 'attached'.
 	}
 
 	FishBunny: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Bouncing Bombs
+		/* Tooltip:
+			'''
+			Right-click to toss a cluster of bouncing, gravity-affected Bunny Fish.
+			They explode on contact with an enemy or after a short time.
+			''' */
+		// Studied: Dangerously fluffy!
 	}
 
 	FishCat: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Bouncing Catfish
+		/* Tooltip:
+			'''
+			Right-Toss a cluster of bouncing, gravity-affected Catfish.
+			They meow on each bounce and explode on contact or after a short time.
+			''' */
+		// Studied: This fish seems to have a particular fondness for honey.
 	}
 
 	FishDirt: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Earthen Swarm
+		/* Tooltip:
+			'''
+			Summons a swarm of Dirt Fish that orbit you while moving.
+			At full capacity, you can fire a Dirt Ball.
+			The ball bounces, then rolls, dealing continuous damage.
+			Only one ball can be active at a time.
+			''' */
+		/* Studied:
+			'''
+			The scent of the soil reminds me of the seabed...
+			These little ones are quite good at huddling for warmth.
+			''' */
 	}
 
 	FishMud: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Mud Sentries
+		/* Tooltip:
+			'''
+			Firing summons Mud Sentries from the ground.
+			Sentries emerge, fire a gravity-affected mud ball at enemies,
+			then submerge and disappear.
+			''' */
+		// Studied: These creatures are masters of concealment.
 	}
 
 	FishPeng: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Penguin Strike
+		/* Tooltip:
+			'''
+			Firing summons penguins from the sky above enemies.
+			The penguins plummet, dealing area damage and knockback.
+			''' */
+		// Studied: They might be from Madagascar.
 	}
 
 	FishDrizzle: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Sulphuric Drizzle
+		/* Tooltip:
+			'''
+			Periodically summons several brimstone-spitting fish while firing.
+			Cooldown does not recharge while firing.
+			''' */
+		// Studied: I suspect this is useful for more than just lighting a campfire.
 	}
 
 	FishofCthulu: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Abyssal Gaze
+		/* Tooltip:
+			'''
+			Firing summons a Gazing Eye to observe enemies.
+			When close, the eye transforms and dashes.
+			''' */
+		// Studied: It's... staring at you.
 	}
 
 	FishJewel: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Prismatic Overture
+		/* Tooltip:
+			'''
+			Firing scatters gem projectiles in a set sequence.
+			Each gem type produces a different sound.
+			''' */
+		// Studied: A six-color overture... Perhaps one could truly compose a rainbow symphony with it.
 	}
 
 	FishTunabeard: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Torrent Dash
+		/* Tooltip:
+			'''
+			Right-click to perform a long-distance, high-speed dash towards the cursor.
+			Grants invincibility and phases through walls during the dash.
+			''' */
+		// Studied: For a fish, is there really a difference between a pirate and a robber?
 	}
 
 	FishBloodyManowar: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Crimson Judgment
+		/* Tooltip:
+			'''
+			Firing summons Bloody Manowars that form a battle-axe
+			to chop enemies, dealing heavy area damage.
+			''' */
+		// Studied: Is their relationship symbiotic, or... hierarchical?
 	}
 
 	FishUnicorn: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Prismatic Lancer
+		/* Tooltip:
+			'''
+			Right-click to perform a long-distance, horizontal dash.
+			Grants invincibility and phases through walls during the dash.
+			''' */
+		// Studied: Legend says only a pure maiden can catch this one!
 	}
 }
 
