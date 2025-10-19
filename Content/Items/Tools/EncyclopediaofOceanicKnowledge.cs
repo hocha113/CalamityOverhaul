@@ -539,7 +539,8 @@ namespace CalamityOverhaul.Content.Items.Tools
             //缩放动画
             if (Progress < 0.5f) {
                 Scale = MathHelper.Lerp(0.8f, 1.2f, Progress * 2f);
-            } else {
+            }
+            else {
                 Scale = MathHelper.Lerp(1.2f, 0.3f, (Progress - 0.5f) * 2f);
             }
         }
@@ -625,7 +626,8 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             if (Type == ParticleType.Gather || Type == ParticleType.Absorb) {
                 Velocity *= 0.98f;
-            } else {
+            }
+            else {
                 Velocity *= 0.95f;
             }
 

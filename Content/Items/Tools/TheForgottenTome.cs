@@ -492,7 +492,8 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             if (Type == ParticleType.Gather || Type == ParticleType.Rewind) {
                 Velocity *= 0.98f;
-            } else {
+            }
+            else {
                 Velocity *= 0.96f;
             }
 

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishJewel : FishSkill
     {
         public override int UnlockFishID => ItemID.Jewelfish;
-        public override int DefaultCooldown => (int)(21 - HalibutData.GetDomainLayer() *1.3f); //更快的射击节奏
+        public override int DefaultCooldown => (int)(21 - HalibutData.GetDomainLayer() * 1.3f); //更快的射击节奏
         public override int ResearchDuration => 60 * 18;
 
         private int gemCycle = 0; //宝石循环计数
