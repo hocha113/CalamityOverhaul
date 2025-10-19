@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System;
 using Terraria;
 using Terraria.Localization;

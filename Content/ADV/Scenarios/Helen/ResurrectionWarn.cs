@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System;
-using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -39,11 +38,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Line9 = this.GetLocalization(nameof(Line9), () => "如果想要无代价使用这些力量......");
             Line10 = this.GetLocalization(nameof(Line10), () => "就必须想办法让那些眼睛死机");
         }
-        
+
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
-            
+
             Add(Rolename.Value, Line0.Value);
             Add(Rolename.Value, Line1.Value);
             Add(Rolename.Value, Line2.Value);
@@ -56,21 +55,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename.Value, Line9.Value);
             Add(Rolename.Value, Line10.Value);
         }
-        
+
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
             if (!save.FirstMet) {
                 return;
             }
-            
+
             if (save.FirstResurrectionWarning) {
                 return;
             }
-            
+
             var resurrectionSystem = halibutPlayer.ResurrectionSystem;
             if (resurrectionSystem == null) {
                 return;
             }
-            
+
             if (resurrectionSystem.Ratio >= 0.7f) {
                 if (ScenarioManager.Start<ResurrectionWarn>()) {
                     if (!HalibutUIHead.Instance.Open) {

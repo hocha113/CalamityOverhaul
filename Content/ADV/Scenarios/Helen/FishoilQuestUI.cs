@@ -160,8 +160,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             //拖拽逻辑: 在标题栏内按住左键开始拖拽
             if (UIHitBox.Contains(MouseHitBox)) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    dragging = true; 
-                    dragOffset = DrawPosition - MousePosition; 
+                    dragging = true;
+                    dragOffset = DrawPosition - MousePosition;
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.1f });
                 }
             }
@@ -241,61 +241,62 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, BasePanelWidth, currentPanelHeight);
             panelRect.Y += (int)(closing ? hideProgress * 40f : 0f);
             Rectangle shadow = panelRect; shadow.Offset(4, 5);
-            spriteBatch.Draw(px, shadow, new Rectangle(0,0,1,1), Color.Black * (alpha * 0.55f));
+            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.55f));
 
             int segs = 16;
             for (int i = 0; i < segs; i++) {
-                float t = i / (float)segs; float t2 = (i+1)/(float)segs; int y1 = panelRect.Y + (int)(t * panelRect.Height); int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1,y2 - y1)); Color deep = new Color(4,18,30); Color mid = new Color(10,42,60); Color edge = new Color(20,90,120); float osc = (float)Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f; Color c = Color.Lerp(Color.Lerp(deep, mid, osc), edge, t * 0.55f); spriteBatch.Draw(px, r, new Rectangle(0,0,1,1), c * alpha);
+                float t = i / (float)segs; float t2 = (i + 1) / (float)segs; int y1 = panelRect.Y + (int)(t * panelRect.Height); int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
+                Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1)); Color deep = new Color(4, 18, 30); Color mid = new Color(10, 42, 60); Color edge = new Color(20, 90, 120); float osc = (float)Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f; Color c = Color.Lerp(Color.Lerp(deep, mid, osc), edge, t * 0.55f); spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c * alpha);
             }
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f; spriteBatch.Draw(px, panelRect, new Rectangle(0,0,1,1), new Color(30,120,150) * (alpha * 0.08f * pulse)); DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f; spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.08f * pulse)); DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
 
             if (contentFade <= 0.01f && !closing) return;
             float ca = contentFade;
 
             //标题
             Vector2 titlePos = new Vector2(panelRect.X + Padding, panelRect.Y + Padding);
-            string title = TitleText.Value; Color glow = new Color(140,230,255) * (ca * 0.7f);
-            for(int i=0;i<4;i++){ float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
+            string title = TitleText.Value; Color glow = new Color(140, 230, 255) * (ca * 0.7f);
+            for (int i = 0; i < 4; i++) { float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * ca, 0.9f);
 
             //收起按钮(箭头随进度缩放淡出)
             char arrow = collapseProgress < 0.5f ? '\u25B2' : '\u25BC';
             float arrowScale = 0.6f + 0.2f * (1f - collapseProgress);
-            Color arrowColor = Color.Lerp(new Color(120,200,235), new Color(200,240,255), 0.5f) * ca;
+            Color arrowColor = Color.Lerp(new Color(120, 200, 235), new Color(200, 240, 255), 0.5f) * ca;
             Utils.DrawBorderString(spriteBatch, arrow.ToString(), new Vector2(collapseButtonRect.X, collapseButtonRect.Y), arrowColor * (0.9f - collapseProgress * 0.4f), arrowScale);
 
             if (collapseProgress < 0.99f) {
                 //描述
                 float lineY = titlePos.Y + 26f + elementYOffset;
                 foreach (var line in wrappedDescLines) {
-                    Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, lineY), new Color(180,230,250) * ca * elementAlpha, DescScale);
+                    Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, lineY), new Color(180, 230, 250) * ca * elementAlpha, DescScale);
                     lineY += FontAssets.MouseText.Value.MeasureString("A").Y * DescScale + 2f;
                     if (lineY > panelRect.Bottom - 70) break;
                 }
                 //分隔线
                 Vector2 divStart = new Vector2(titlePos.X, titlePos.Y + 26 + descUsedHeight + elementYOffset);
                 Vector2 divEnd = divStart + new Vector2(BasePanelWidth - Padding * 2, 0);
-                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70,180,230)*(ca * 0.85f * elementAlpha), new Color(70,180,230)*(ca * 0.05f * elementAlpha), 1.2f);
+                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (ca * 0.85f * elementAlpha), new Color(70, 180, 230) * (ca * 0.05f * elementAlpha), 1.2f);
 
                 //槽位绘制
                 Vector2 slotsStart = new Vector2(panelRect.X + Padding, divStart.Y + 8);
-                foreach(var slot in RequiredItems) slot.Draw(spriteBatch, ca * elementAlpha);
+                foreach (var slot in RequiredItems) slot.Draw(spriteBatch, ca * elementAlpha);
 
                 //底部提示 / 完成
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
                     if (!hp.ADCSave.FishoilQuestCompleted) {
-                        Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), new Color(120,200,235)*(ca*0.7f*elementAlpha), 0.6f);
-                    } else {
+                        Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), new Color(120, 200, 235) * (ca * 0.7f * elementAlpha), 0.6f);
+                    }
+                    else {
                         float donePulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
-                        Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), Color.Lerp(new Color(150,230,255), new Color(200,240,255), donePulse) * ca * elementAlpha, 0.7f);
+                        Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), Color.Lerp(new Color(150, 230, 255), new Color(200, 240, 255), donePulse) * ca * elementAlpha, 0.7f);
                     }
                 }
 
                 //按钮
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted && !closing) {
-                    DrawButton(spriteBatch, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca * elementAlpha, new Color(30,90,120));
-                    DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoverDecline, ca * elementAlpha, new Color(100,40,40));
+                    DrawButton(spriteBatch, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca * elementAlpha, new Color(30, 90, 120));
+                    DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoverDecline, ca * elementAlpha, new Color(100, 40, 40));
                 }
             }
         }
@@ -303,12 +304,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         private void DrawButton(SpriteBatch spriteBatch, Rectangle rect, string text, bool hover, float alpha, Color baseColor) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Color bg = baseColor * (alpha * (hover ? 0.95f : 0.75f));
-            spriteBatch.Draw(px, rect, new Rectangle(0,0,1,1), bg);
+            spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), bg);
             Color edge = Color.Lerp(baseColor, Color.White, 0.35f) * alpha;
-            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0,0,1,1), edge);
-            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0,0,1,1), edge * 0.6f);
-            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.8f);
-            spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.8f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.6f);
+            spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+            spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.7f;
             Vector2 textPos = new Vector2(rect.X + rect.Width / 2f - textSize.X / 2f, rect.Y + rect.Height / 2f - textSize.Y / 2f);
             Utils.DrawBorderString(spriteBatch, text, textPos, Color.White * alpha, 0.7f);
@@ -331,17 +332,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
         private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            Color edge = Color.Lerp(new Color(30,140,190), new Color(90,210,255), pulse) * (alpha * 0.85f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0,0,1,1), edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0,0,1,1), edge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-            Rectangle inner = rect; inner.Inflate(-5,-5);
-            Color innerC = new Color(120,220,255) * (alpha * 0.18f * pulse);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0,0,1,1), innerC);
-            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0,0,1,1), innerC * 0.65f);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0,0,1,1), innerC * 0.85f);
-            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0,0,1,1), innerC * 0.85f);
+            Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.85f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            Rectangle inner = rect; inner.Inflate(-5, -5);
+            Color innerC = new Color(120, 220, 255) * (alpha * 0.18f * pulse);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
+            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.65f);
+            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
         }
 
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
@@ -351,16 +352,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             edge.Normalize();
             float rotation = (float)Math.Atan2(edge.Y, edge.X);
             int segments = Math.Max(1, (int)(length / 11f));
-            for(int i=0;i<segments;i++) {
-                float t = i/(float)segments;
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color c = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0,0,1,1), c, rotation, new Vector2(0,0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), c, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
 
-        private class QuestMaterialSlot {
+        private class QuestMaterialSlot
+        {
             public int ItemType; public int Need; public int Current; public Vector2 Pos; public Rectangle Hit; public bool Hover; public bool IsSatisfied => Current >= Need;
             public QuestMaterialSlot(int itemType, int need) { ItemType = itemType; Need = need; }
             public void ResetCount() { Current = 0; }
@@ -380,13 +382,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = VaultAsset.placeholder2.Value;
                 Rectangle r = new Rectangle((int)Pos.X, (int)Pos.Y, Hit.Width, Hit.Height);
-                Color back = new Color(6,32,48) * (alpha * 0.9f); if (Hover) back *= 1.15f; sb.Draw(px, r, new Rectangle(0,0,1,1), back);
-                Color edge = IsSatisfied ? new Color(70,180,230) : new Color(40,100,140);
-                sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0,0,1,1), edge);
-                sb.Draw(px, new Rectangle(r.X, r.Bottom -2, r.Width, 2), new Rectangle(0,0,1,1), edge * 0.7f);
-                sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-                sb.Draw(px, new Rectangle(r.Right -2, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width/2f, r.Y + r.Height/2f); float scale = Math.Min((r.Width - 8f)/frame.Width, (r.Height - 8f)/frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
+                Color back = new Color(6, 32, 48) * (alpha * 0.9f); if (Hover) back *= 1.15f; sb.Draw(px, r, new Rectangle(0, 0, 1, 1), back);
+                Color edge = IsSatisfied ? new Color(70, 180, 230) : new Color(40, 100, 140);
+                sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+                sb.Draw(px, new Rectangle(r.X, r.Bottom - 2, r.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+                sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+                sb.Draw(px, new Rectangle(r.Right - 2, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width / 2f, r.Y + r.Height / 2f); float scale = Math.Min((r.Width - 8f) / frame.Width, (r.Height - 8f) / frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
                 string text = $"{Current}/{Need}"; Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 16), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.6f);
             }
         }

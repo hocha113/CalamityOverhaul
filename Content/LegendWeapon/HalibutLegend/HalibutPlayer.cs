@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 OnStartSeaDomain = false;
                 if (SeaDomainLayers > 0) {
                     SeaDomain.AltUse(item, Player);
-                } 
+                }
             }
             if (!CloneFishActive && OnStartClone && Player.CountProjectilesOfID<ClonePlayer>() == 0) {
                 OnStartClone = false;
