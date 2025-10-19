@@ -2452,345 +2452,341 @@ Legend: {
 			// SummaryFormat: State: {0}. Current trend: {1}. The abyss shifts — adapt your domain before it consumes all.
 		}
 
-		SeaDialogueBox: {
-			// ContinueHint: Continue
-			// FastHint: Accelerate
-		}
-
 		ADV: {
 			FirstMet: {
 				// Rolename1: ???
 				// Rolename2: Halibut
-				// Line0: Sir... your fishing technique could still use a little improvement.
-				// Line1: You can call me Dr. Halibut.
-				// Line2: Or just Halibut, if you prefer.
-				// Line3: Thanks to your hook, I was dragged out of that lifeless sea.
-				// Line4: Without you, I’d probably still be stuck in a frozen loop—until I truly died.
-				// Line5: That fish you caught was meant to be yours... consider it our first meeting gift.
-				// Line6: ...
-				// Line7: You’re wondering why I’m here, aren’t you?
-				// Line8: I used to be a professor at the Sulphur Sea University, in the Department of Abyssal Studies.
-				// Line9: A few years ago, we organized a project “The Abyssal Ecosystem Survey”
-				// Line10: In the end... I was the only one who returned.
-				// Line11: Down in the depths, we encountered something... incomprehensible.
-				// Line12: It wasn’t alive, nor was it something that could be “killed.” It was... terror given form—an idea that refused to die.
-				// Line13: During my escape, I found an eye beneath a coral tree.
-				// Line14: Acting on pure instinct, I swallowed it.
-				// Line15: With its power, I opened a domain—tore open a rift, and fled the Abyss.
-				// Line16: After that... everything went blank. I must have fallen asleep, until you fished me up.
+				// Line0: Sir... your fishing technique... leaves something to be desired.
+				// Line1: You may call me Dr. Halibut.
+				// Line2: Or, just Halibut is fine.
+				// Line3: Thanks to your hook, I was pulled out of that silent, dead water.
+				// Line4: If it weren't for you, I'd probably have been stuck in a system crash... until I truly expired.
+				// Line5: This fish should have been your catch. Now, it's a gift to mark our meeting.
+				// Line6: ......
+				// Line7: You're wondering why I'm here, aren't you.
+				// Line8: I was a professor at the Sulphurous Sea University, Department of Abyssal Research.
+				// Line9: A few years ago, we organized an 'Abyssal Ecological Sampling Project.'
+				// Line10: I was the only one who made it back.
+				// Line11: At the bottom of the abyss, we encountered... an existence that cannot be understood.
+				// Line12: It couldn't have been a living thing, nor something that could be 'killed.' It was more like... terror, in its conceptual form.
+				// Line13: As I fled, I found an eye beneath a coral tree.
+				// Line14: On pure survival instinct, I swallowed it.
+				// Line15: Using the power of that eye, I opened a domain... and tore a fissure in the abyss to escape.
+				// Line16: After that, my memory blurs... I fell into a deep slumber, until you fished me up.
 				// Line17: You look like a Terrarian.
-				// Line18: If you’re willing—take me with you.
-				// Line19: I’ll help you conquer this land.
-				// Line20: In return... help me suppress the resurgence of the eyes within me.
-				// Line21: If that’s settled, then let’s start by studying this fish, shall we?
+				// Line18: If you'll have me, take me with you.
+				// Line19: I will help you conquer this land.
+				// Line20: In exchange... help me solve this... 'revival' problem with the eyes inside me.
+				// Line21: If there are no objections, let's begin by... studying this fish.
 			}
 
 			EyeOfCthulhuGift: {
 				// R1: Halibut
 				// L0: That giant eye dragged your movements into slow motion... I thought you were just striking a pose.
-				// L1: Congratulations, you've entered the 'Watched Stage.' This means... more dramatic messes are on the way.
-				// L2: Take this, it's a Cthulhu Fish. Just like its namesake, it doesn't really follow logic.
-				// L3: Be careful with it. It'll make you think you've opened your third eye, but really, it's just a stimulant in your bloodstream.
+				// L1: We've entered the 'Watched Stage.' This means more... dramatic messes are on the way.
+				// L2: I found this in the eye's great maw. Here, a Cthulhu Fish. Much like its namesake, it doesn't really follow logic.
+				// L3: Be careful with it. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
 				// L4: I'm curious if you'll start winking at the moon now.
 			}
 
 			KingSlimeGift: {
 				// R1: Halibut
-				// L0: That blue blob... you call it a slime? It looked more like the physical manifestation of an emotion.
-				// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve. A shame it has no 'memory'.
-				// L2: Here you go, a Slimefish. Don't squeeze it, its feelings might just explode.
-				// L3: Have you ever tried making soup with one of these creatures?
-				// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, sea.
+				// L0: That blue blob... a 'slime,' you call it? It looked more like... solidified emotion.
+				// L1: A clumsy attempt by matter to gain self-awareness and evolve, perhaps.
+				// L2: Please, take this. A Slimefish. Don't squeeze it. Its feelings might explode.
+				// L3: Have you ever tried to make soup from one of these?
+				// L4: I mean... yes, we make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
 			}
 
 			QueenBeeGift: {
 				// R1: Halibut
 				// R2: ???
-				// L0: For a second there, I thought I was about to get a faceful of honeycomb.
-				// L1: Anyway, I managed to pull a fish out of a pile of honey on the ground.
-				// L2: Here, a fresh and still-warm Honeyfish.
+				// L0: I almost got a faceful of honey back there.
+				// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
+				// L2: Here, a fresh... and still-warm Honeyfish.
 				// L3: I think it would be perfect for a sweet and sour dish.
 			}
 
 			SkeletronGift: {
 				// R1: Halibut
-				// L0: Now that was a whole lot of calcium!
-				// L1: The cranial structure of that thing... it reminded me of a runaway psychic construct.
+				// L0: Now that was a significant amount of calcium.
+				// L1: Its cranial structure reminded me of a runaway psychic construct.
 				// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
-				// L3: See? A 'Skeletron Fish.' They say the phosphorus inside makes people who fish at night contemplate the meaning of life.
-				// L4: Let's go. There are even more 'abstract' bones waiting for you up ahead.
+				// L3: Look, a 'Skeletron Fish.' They say the phosphorus inside makes night-fishers contemplate their existence.
+				// L4: Let's move. More... 'abstract' bones await.
 			}
 
 			AquaticScourgeGift: {
 				// R1: Halibut
-				/* L0:
-					'''
-					It reminds me of the less-friendly neighbors from my hometown. This one was surprisingly pleasant, though. 
-					It used to be the head of security at the Sulphurous Sea University where I worked. Always said hello.
-					''' */
-				// L1: The Sulphurous Sea is an interesting place. Every creature there is asking the same question: 'Why am I still alive?'
-				// L2: A Prismfish. Its scales refract colors you've never seen before, mainly because they shouldn't exist.
-				// L3: Staring at it will reboot your visual system. It's kind of like a forced software update, but more painful.
-				// L4: Lastly, try not to look at it in bright light. Otherwise, you'll feel like you're tripping.
+				// L0: It reminds me of the less-friendly neighbors from my hometown... though this one was quite amicable. Used to be the head of security at Sulphurous Sea University. Always said hello.
+				// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
+				// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
+				// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
+				// L4: Finally, use it in dim light. Otherwise, you'll feel... high.
 			}
 
 			BrimstoneElementalGift: {
 				// R1: Halibut
-				// L0: The embodiment of brimstone and fire. Her very existence was a burning speech, but I think we managed to shut her up.
-				// L1: Some elementals aren't created. They're just rage seeping out of the world's cracks.
-				// L2: An Obsidianfish, a product of instantly cooled lava. Its scales are harder than hatred.
-				// L3: Be careful, it might combust in your hands. Not physically, but conceptually.
+				// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
+				// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
+				// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
+				// L3: Careful, it might spontaneously combust in your hand. Not physically... emotionally.
 				// L4: After all, some kinds of anger are contagious.
 			}
 
 			CalamitasCloneGift: {
 				// R1: Halibut
-				// L0: A shadow... but shadows shouldn't have their own will. Unless the original has become so powerful it's starting to fracture.
-				// L1: You didn't defeat her, just her echo. The real terror is still waiting in the depths.
-				// L2: A Brimstone Fish, extracted from the embers of Calamitas. It whispers secrets in your hand that were never meant to be heard.
-				// L3: If you start to understand what it's saying... congratulations, you've taken the first step into madness.
-				// L4: But don't worry. Madness is just another kind of clarity, seen from a different angle.
+				// L0: A cheap shadow. Reminds me of the genetic monstrosities I used to cook up in my trench back in university. In any case, the one who made this has terrible taste.
+				// L1: I have a bad feeling. The real terror is still waiting... deeper. It's even getting closer.
+				// L2: Back to business. A Brimstone Fish, picked from her embers. You can still hear it muttering nonsense if you hold it close.
+				// L3: If you start to understand what it's saying... well, congratulations. You've taken the first step into madness.
+				// L4: But don't worry. Madness is just another form of clarity, seen from a different angle.
 			}
 
 			CrabulonGift: {
 				// R1: Halibut
-				// L0: That mushroom-like... creature? I wonder if there's wisdom or just pure instinct hidden under its cap.
-				// L1: Did you know that a mushroom's mycelial network can transmit information? Maybe it was calling for help just now.
-				// L2: This is a Fungi-fish, extracted from the spores it emits.
-				// L3: Don't worry, the spores won't turn you into a fungus... probably.
-				// L4: But if you suddenly get the urge to put down roots in a dark, damp place, let me know.
+				// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
+				// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
+				// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
+				// L3: Don't worry, these spores won't turn a human into a fungus... probably.
+				// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
 			}
 
 			CryogenGift: {
 				// R1: Halibut
 				// L0: A frozen soul... a temperature so low that time itself wants to lie down and rest.
 				// L1: You know, the end of cold isn't death. It's a state of eternal stillness.
-				// L2: A Cryo-minnow, thawed from shards of its ice. It's still holding the pose it was frozen in.
-				// L3: They say eating it will lower your blood temperature and make your thoughts exceptionally clear.
-				// L4: Just don't eat too many, unless you actually want to become an ice sculpture.
+				// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
+				// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
+				// L4: Eat too many, and you might just become an ice sculpture.
 			}
 
 			DevourerOfGodsGift: {
 				// R1: Halibut
 				// L0: The Devourer of Gods... a cosmic serpent that dines on deities. Its appetite is as infinite as its ambition.
-				// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze, it tries to eat you for a snack.
-				// L2: A Void-fin, it drifted out of a dimensional rift. The light it gives off isn't from around here.
+				// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze. It wants you for a snack.
+				// L2: A Neon Tetra. It floated out of a void rift. The light it emits isn't from this dimension.
 				// L3: Looking at it makes your brain try to comprehend colors it shouldn't. It's a... unique experience.
-				// L4: If you start seeing new colors, congratulations. If you start smelling colors, it's time for a break.
+				// L4: If you start seeing new colors, congratulations. If you start *smelling* colors, you need a rest.
 			}
 
 			GolemGift: {
 				// R1: Halibut
-				// L0: A moving pile of stones. A legacy of an ancient civilization, or perhaps, proof of their failure.
-				// L1: Was it guarding something? Or just repeating a program that lost its meaning long ago?
-				// L2: A Rockfish, dug out from the temple's foundation. It's so dense I'm starting to think gravity is broken.
+				// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
+				// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
+				// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my life.
 				// L3: I tried to boil it once. My pot surrendered first.
-				// L4: ...Some things exist just to make you realize that not all problems need to be solved.
+				// L4: ...Some things exist just to make us realize that not all problems need to be solved.
 			}
 
 			HiveMindGift: {
 				// R1: Halibut
-				// L0: A collective consciousness made of corruption... a truly distasteful concept.
-				// L1: Its way of thinking must be peculiar. Countless rotten fragments pieced together into a single twisted whole.
-				// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask me how.
-				// L3: It smells like seafood that's been forgotten in the sun for three days.
-				// L4: But they say it allows you to... resonate with the corruption. That just sounds wrong.
+				// L0: A collective consciousness made of corruption... what a disgusting concept.
+				// L1: Its thought process must be... unique. Countless rotten fragments pieced together into a single, twisted whole.
+				// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask how.
+				// L3: It smells like seafood that's been left in the sun for three days.
+				// L4: But they say it lets you... resonate with the corruption. That just sounds wrong.
 			}
 
 			LeviathanGift: {
 				// R1: Halibut
-				// L0: The ocean's tyrant... and that little sidekick who's always with her. Some friendships transcend species, and also logic.
-				// L1: You know, what lives in the deepest trenches isn't fear, it's loneliness. They were just looking for company.
-				// L2: A Tropic-cuda, fished out of a deep-sea vortex. It looks normal, which is precisely what makes it so suspicious.
-				// L3: The more ordinary the appearance, the more extraordinary the past.
+				// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
+				// L1: You know, what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
+				// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
+				// L3: The more mundane the exterior, the more extraordinary the past.
 				// L4: Just like us.
 			}
 
 			MoonLordGift: {
 				// R1: Halibut
-				// L0: The Lord of the Moon, ha! Or, formerly. Now it's just a floating pile of eyeballs and gore.
-				// L1: We didn't just save the world; we closed a door that was never meant to be opened in the first place.
-				// L2: A Cloudfish, it floated down from a crack in the sky. It feels weightless in your hand.
-				// L3: They say it can let you see the future... but you've already rewritten that future.
+				// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
+				// L1: We didn't just save the world; we closed a door that was never meant to be opened correctly.
+				// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
+				// L3: They say it lets you see the future... but you've already rewritten that future.
 				// L4: We just proved that even gods can bleed.
 			}
 
 			PerforatorGift: {
 				// R1: Halibut
-				// L0: A pile of flesh worms that drill holes... the existence of this creature is a challenge to biology itself.
-				// L1: Their blood has a peculiar viscosity, like some kind of living metal.
+				// L0: A pile of drilling flesh-worms... this creature's existence is a challenge to biology.
+				// L1: Their blood has a strange viscosity, like some kind of living metal.
 				// L2: Found this in the wreckage. A Gore-fish. It's still wriggling.
-				// L3: Don't let its appearance frighten you, even if it looks like it crawled out of a nightmare.
+				// L3: Don't be scared by its looks, even if it looks like it crawled out of a nightmare.
 				// L4: At least it won't crawl into your ear while you sleep... probably.
 			}
 
 			PlaguebringerGift: {
 				// R1: Halibut
-				// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? Must be a real bastard, daring to enslave bees.
-				// L1: A virus doesn't care about right or wrong. It just wants to survive. Just like us, but with more direct methods.
-				// L2: An Amethyst Fish. It was infected and then miraculously cured. Its immune system is more experienced than you are.
-				// L3: People say eating it boosts your resistance. I think that's just another way of saying 'what doesn't kill you makes you stronger.'
-				// L4: But since you just walked out of a plague-ridden beehive, a little risk like this should be nothing.
+				// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
+				// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
+				// L2: A Jewel-fish. It was infected and miraculously recovered. Its immune system is more experienced than you are.
+				// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
+				// L4: But since you just walked out of a plague-hive, this little risk should be nothing.
 			}
 
 			PlanteraGift: {
 				// R1: Halibut
-				// L0: A flower... if the word 'flower' can be used to describe a man-eating aggregate of vines.
-				// L1: The jungle's rage grows in plant form. Nature's revenge is never rational.
-				// L2: A Twin-headed Cod. It has two heads. The jungle is like the ocean of the land; things don't need a reason to grow extra parts.
-				// L3: They say two heads mean twice the wisdom, but it looks like they're just arguing about which way to swim.
-				// L4: Like diet and appetite. Always fighting, but neither one can ever convince the other.
+				// L0: A flower... if 'flower' is the word for a man-eating vine conglomerate.
+				// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
+				// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
+				// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
+				// L4: Like 'diet' and 'appetite.' Always fighting. My appetite always wins, though.
 			}
 
 			ProvidenceGift: {
 				// R1: Halibut
-				// L0: The Profaned Goddess... a contradiction made of faith and flame. What was she protecting? Or was she just burning?
-				// L1: You didn't just extinguish a holy flame, but the embers of an entire era.
+				// L0: The Profaned Goddess... a contradiction of faith and flame. Quite pitiful.
+				// L1: We didn't just extinguish a holy flame, but the embers of an entire era.
 				// L2: A Demon-Hell Fish, reborn from her ashes. Its temperature is permanently fixed at 'just hot enough not to burn you.'
-				// L3: That level of precise control makes me suspect that maybe she just wanted to be understood.
+				// L3: That precise control makes me suspect... maybe she just wanted to be understood.
 				// L4: But the line between understanding and war is only one attack away.
 			}
 
 			SlimeGodGift: {
 				// R1: Halibut
-				// L0: Three slimes, er, or a single fractured divinity? This kind of dualistic existence is quite interesting.
-				// L1: Corruption and Crimson, like the eternal conflict of this world. And you just proved that conflict can be 'resolved.'
-				// L2: This is a Variegated Lardfish, scooped from that pile of goo. Don't ask me why it's called that.
-				// L3: Its color changes based on the observer's mood. Or rather, it mimics your inner chaos.
-				// L4: If you stare at it for too long, you might start to wonder which side you're really on.
+				// L0: Three slimes... or, a fractured divinity? This dualistic existence is... interesting.
+				// L1: Corruption and Crimson. The eternal conflict of this world. And we just proved that conflict can be 'resolved.'
+				// L2: A Variegated Lardfish. Scooped from the goo. Don't ask about the name.
+				// L3: Its color changes with the observer's mood. Or perhaps, it's mimicking your inner chaos.
+				// L4: Stare too long, and you might start to wonder which side you're really on.
 			}
 
 			SupremeCalamitasGift: {
 				// R1: Halibut
-				// L0: Supreme Calamitas... she is the avatar of vengeance, a perfect weapon forged by betrayal.
-				// L1: What we just did... did we end a legend? Or create a new one?
-				// L2: A Princess Fish, born from the embers of Calamity. It carries a conflicted grace, like a flower blooming in ruins.
-				// L3: They say it shows you the person you most want to be. But that version of you is often the one least like yourself.
-				// L4: Congratulations. You're standing at the apex of power. From here on out... it's a long way down.
+				// L0: Supreme Calamitas... an avenger. The most powerful magic-wielder of the last century.
+				// L1: What we just did... did we end a legend, or create a new one?
+				// L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
+				// L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
+				// L4: You're nearing the peak of Terrarian power. From here on... it's a long way down.
 			}
 
 			WallOfFleshGift: {
 				// R1: Halibut
-				// L0: A wall made of flesh and bone... the creator of this world must have had some peculiar ideas.
-				// L1: You've just shattered some kind of balance. Feel that? The world's pulse is starting to quicken.
-				// L2: I found this Hungering Fish in the remains. It looks like it can never be full.
+				// L0: A wall of flesh and bone... this world's creator must have had some peculiar ideas.
+				// L1: You just broke some kind of balance. Feel that? The world's pulse is quickening.
+				// L2: Found this Hungering Fish in the remains. It looks eternally starved.
 				// L3: Just like that wall. Always chasing, always consuming.
-				// L4: Welcome to 'Hardmode'... though I don't think it was exactly easy before.
+				// L4: Welcome to 'Hard Mode'... though I didn't think it was 'easy' before.
 			}
 
 			YharonGift: {
 				// R1: Halibut
 				// L0: The Jungle Dragon... no, the World-Burning Dragon. It burns not with flesh, but with obsession.
-				// L1: A loyalty so pure it would burn itself to ash for its master. It reminds me of the schools of fish that guard coral reefs back home.
-				// L2: A Scarlet Tigerfish, extracted from the heart of the inferno. Its stripes are like vows branded by flame.
-				// L3: Holding it, you can feel a scorching resolve. That is the temperature of a true warrior.
-				// L4: You defeated it, but I suspect... in the moment it fell, it finally found its release.
+				// L1: A loyalty so pure it would burn itself to ash for its master... reminds me of the fish schools that guard the coral reefs back home.
+				// L2: A Scarlet Tigerfish. Just caught it. I'm quite fond of its stripes.
+				// L3: Holding it, you feel a scorching resolve. That is the temperature of a warrior.
+				// L4: You defeated that dragon, but I have to wonder... in the moment it fell, did it finally find... release?
 			}
 
 			ADVRewardPopup: {
-				// ClickToReceive: Click to Claim
+				// ClickToReceive: Click to Receive
 				// ClickToContinue: Click to Continue
-				// ClickOrWaitToContinue: Click or Wait to Continue
+				// ClickOrWaitToContinue: Click/Wait to Continue
 			}
 
 			FirstMetSupCal: {
 				// Rolename1: ???
-				// Rolename2: 至尊灾厄
-				// Rolename3: 比目鱼
-				// Line1: 没想到你这么快就杀掉了我的'妹妹'
-				// Line2: 你的成长速度确实有些快了
-				// Line3: 你是......我对你有印象
-				// Line4: 你是那个焚烧掉了一半海域的女巫
-				// Line5: 哈?!呵呵，竟然有人...或者鱼认得我，你们倒也算有趣
-				// Line6: ......你，为什么还活着?我记得你在上世纪就已经死了
-				// Line7: 呵呵呵，连这事都有听说过吗?和你这条有趣的鱼解释一下也无妨，我的意识早已经熔铸进硫磺火中，这具躯体只不过是被火焰操纵的尸体
-				// Line8: ......活人的意识，非人的躯体，依靠媒介行走世间，你成为了异类?!
-				// Line9: 你的层次太低，理解不了我现在的状态
-				// Line10: 况且我来这里也不是为了这事儿的......
-				// QuestionLine: 那么，你的选择是？
-				// Choice1Text: (拔出武器)
-				// Choice2Text: (保持沉默)
-				// Choice1Response: 哈，那么便让我来称量称量你吧
-				// Choice2Response: ......真是杂鱼呢，那么给你一个见面礼，我们下次见
+				// Rolename2: Supreme Calamitas
+				// Rolename3: Halibut
+				// Line1: I didn't expect you to 'finish' my 'sister' so quickly.
+				// Line2: Your growth rate is... concerningly fast.
+				// Line3: You are... I recognize you.
+				// Line4: You are the witch who burned half the ocean.
+				// Line5: Ha?! Heh... To think someone... or some*fish*... still recognizes me. How amusing.
+				// Line6: ...You. Why are you still alive? I remember you died last century.
+				// Line7: Hahaha... you've even heard of that? Very well, I'll humor an interesting fish. My consciousness was fused into the brimstone fire long ago. This body is merely a corpse... piloted by the flames.
+				// Line8: ...A living consciousness in an inhuman body, walking the world by a medium... You've become an 'aberration'?!
+				// Line9: Your dimension is too low. You cannot comprehend my current state.
+				// Line10: Besides, that's not why I'm here...
+				// QuestionLine: So, what is your choice?
+				// Choice1Text: (Draw weapon)
+				// Choice2Text: (Remain silent)
+				// Choice1Response: Ha. Then let me weigh your worth.
+				// Choice2Response: ...What a trash fish. Here, a little 'greeting gift'. I'll see you next time.
 			}
 
 			ADVChoiceBox: {
-				// TitleText: 选择
-				// DisabledHintFormat: （{0}）
+				// TitleText: Choose
+				// DisabledHintFormat: ({0})
 			}
 
 			SupCalMoonLordReward: {
-				// Rolename1: 至尊灾厄
-				// Rolename2: 比目鱼
-				// Line1: 呵呵呵
-				// Line2: 那个家伙已经沦落到这种地步了吗
-				// Line3: 你知道现在的地底是什么景象吗?
-				// Line4: ......所以你这次来是?
-				// Line5: 送你点小玩具，顺带有个委托交给你
-				// Line6: 一把小巧的弩，我需要你拿它干掉下面的那个苟延残喘吸食地热的家伙，记住只能用这个弩
-				// Line7: 如果你做到了，我们的合作还能继续
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut
+				// Line1: Hahaha...
+				// Line2: So that's what's become of him?
+				// Line3: Do you have any idea what the underground looks like right now?
+				// Line4: ...So, why are you here this time?
+				// Line5: A little toy for you. And a small commission.
+				// Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
+				// Line7: If you succeed, our... 'partnership'... can continue.
 			}
 
 			SupCalDefeat: {
-				// Rolename1: 至尊灾厄
-				// Rolename2: 比目鱼&[Name]
-				// Line1: 你竟然已经到达这种地步了吗......呵，是我技不如人了
-				// Line2: 但你并非最强，你或许很不错，但那个人绝对不会比你差
-				// Line3: 亚利姆已经走到了那条道路的尽头，到达了泰拉人的极致，没人会比他强
-				// Line4: 可惜，你们不能见面......
-				// Line5: 你的层次太低，永远无法理解我现在的状态
-				// Line6: ......我层次太低?
-				// Line7: (活这么多年，还是第一次被说层次太低)
-				// Line8: 我是一个时代孕育出来的唯一，既然敢舍弃泰拉人的身份，自封为神，自然是无所不能
-				// Line9: 你说亚利姆可以称量我?得让克洛希克来
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut & [Name]
+				// Line1: To think you've already reached this level... Heh. I was outmatched.
+				// Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
+				// Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
+				// Line4: A pity you two cannot meet...
+				// Line5: Your dimension is too low. You will never understand my state.
+				// Line6: ...My dimension is too low?
+				// Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
+				// Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
+				// Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
 				// Line10: ......
 			}
 
 			SupCalPlayerDefeat: {
-				// Rolename1: 至尊灾厄
-				// Rolename2: 比目鱼
-				// Line1: 哈?!就这?
-				// Line2: 我以为遇到了一个耐烧点的玩具
-				// Line3: 现在的你还太弱了，连让我认真的资格都没有
-				// Line4: 等你真正强大起来再来找我吧
-				// Line5: 不过我倒是有些好奇
-				// Line6: 如此稚嫩的你也敢向我拔剑，倒有些魄力，我有些好奇你究竟能走到什么地步了
-				// Line7: (在一阵火焰中消失)
-				// Line8: 这家伙实力太过恐怖，如果我不顾后果九眼全开，应该有胜算，大不了......
-				// Line9: 唉......
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut
+				// Line1: You shatter at a touch. Are you made of paper?
+				// Line2: I thought I'd found a toy that would last a bit longer in the fire.
+				// Line3: You are too weak. You don't even have the right to make me get serious.
+				// Line4: Wait until you are truly strong, then find me.
+				// Line5: But... I am curious.
+				// Line6: For someone so... *green*... to dare draw a sword on me... You have guts. I wonder just how far you can go.
+				// Line7: (Vanishes in a burst of flame)
+				// Line8: She's strong. If I opened the ninth eye, consequences be damned, I *should* have a chance... at worst...
+				// Line9: Sigh...
 			}
 
 			SupCalVictory: {
-				// Rolename1: 至尊灾厄
-				// Rolename2: 比目鱼
-				// Line1: 什么......怎么可能!
-				// Line2: 你竟然......打败了我?!
-				// Line3: 不可能，这绝不可能......
-				// Line4: 我可是已经超越了泰拉人的极限......
-				// Line5: ......看来我确实小看你了
-				// Line6: 但这不代表结束，我会回来的
-				// Line7: 下次......下次我不会再大意了！
-				// Line8: ......她逃走了
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut
+				// Line1: What... How is this possible!
+				// Line2: You... You defeated me?!
+				// Line3: Impossible... This is absolutely impossible...
+				// Line4: I have already surpassed the limits of a Terrarian...
+				// Line5: ...It seems I truly underestimated you.
+				// Line6: But this is not the end. I will return.
+				// Line7: Next time... Next time, I will not be so careless!
+				// Line8: ...She fled.
 			}
 
 			PallbearerQuestUI: {
-				// QuestTitle: 委托：猎杀亵渎天神
-				// QuestDesc: 使用扶柩者击杀亵渎天神
-				// AcceptText: 接受
-				// DeclineText: 拒绝
+				// QuestTitle: Commission: Hunt the Profaned Goddess
+				// QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
+				// AcceptText: Accept
+				// DeclineText: Decline
 			}
 
 			SupCalQuestReward: {
-				// Rolename1: 至尊灾厄
-				// Rolename2: 比目鱼
-				// Line1: 做的不错
-				// Line2: 这把弩挺适合你的
-				// Line3: 你帮我解决了一个麻烦
-				// Line4: 作为奖励，这些就归你了
-				// Line5: 还有这把刀，我需要你拿着它去干掉那只虫子，放心，报酬会更丰富
-				// Line6: 我施加了一部分硫火灵异在上面，可以让你轻松一些
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut
+				// Line1: Well done.
+				// Line2: This crossbow suits you.
+				// Line3: You've solved a problem for me.
+				// Line4: As a reward, these are yours.
+				// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
+				// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
 				// Line7: ......
 			}
+		}
+
+		SeaDialogueBox: {
+			// ContinueHint: Continue
+			// FastHint: Accelerate
 		}
 
 		BrimstoneDialogueBox: {

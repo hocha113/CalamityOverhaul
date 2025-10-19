@@ -2371,11 +2371,6 @@ Legend: {
 			SummaryFormat: 状态：{0}。当前增长趋势：{1}。请根据态势调整领域或研究策略
 		}
 
-		SeaDialogueBox: {
-			ContinueHint: 继续
-			FastHint: 加速
-		}
-
 		ADV: {
 			FirstMet: {
 				Rolename1: ???
@@ -2706,6 +2701,11 @@ Legend: {
 				Line6: 我施加了一部分硫火灵异在上面，可以让你轻松一些
 				Line7: ......
 			}
+		}
+
+		SeaDialogueBox: {
+			ContinueHint: 继续
+			FastHint: 加速
 		}
 
 		BrimstoneDialogueBox: {
