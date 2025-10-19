@@ -41,13 +41,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         private bool rewarded; //是否已发放奖励
         private bool closing; //完成后关闭动画
         private float hideProgress; //关闭插值
+        private bool collapsed; //是否收起内容
+        private float collapseProgress; //收起动画插值(0展开 1收起)
+        private bool dragging; //拖拽中
+        private Vector2 dragOffset; //拖拽偏移
+        private Rectangle headerRect; //标题栏矩形
+        private Rectangle collapseButtonRect; //收起按钮矩形
 
         //布局常量(缩小尺寸)
-        private const int PanelWidth = 240;
-        private const int PanelHeight = 190;
+        private const int BasePanelWidth = 240;
+        private const int BasePanelHeight = 190; //最大高度(展开)
+        private const int HeaderHeight = 36; //收起后的高度
         private const int Padding = 10;
         private const int SlotSize = 36;
         private const int SlotSpacing = 8;
+
+        //实时尺寸(受收起影响)
+        private int currentPanelHeight;
 
         //按钮区域
         private Rectangle declineButtonRect;
@@ -56,6 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         //换行缓存
         private string[] wrappedDescLines;
         private const float DescScale = 0.65f;
+        private float descUsedHeight; //描述实际高度
 
         public override bool Active {
             get {
@@ -83,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         }
 
         private void ResetVisualState() {
-            contentFade = 0f; hideProgress = 0f; closing = false; rewarded = false;
+            contentFade = 0f; hideProgress = 0f; closing = false; rewarded = false; collapsed = false; collapseProgress = 0f;
             foreach (var slot in RequiredItems) slot.ResetCount();
         }
 
@@ -106,48 +117,99 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 if (hideProgress > 1f) hideProgress = 1f;
             }
 
-            if (showProgress <= 0f && !closing) return; //完全未展开
+            if (showProgress <= 0f && !closing) return;
 
             if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) return;
+
+            //收起插值
+            float collapseTarget = collapsed ? 1f : 0f;
+            collapseProgress = MathHelper.Lerp(collapseProgress, collapseTarget, 0.18f);
+            if (Math.Abs(collapseProgress - collapseTarget) < 0.01f) collapseProgress = collapseTarget;
 
             //内容淡入
             if (!closing) {
                 if (showProgress > 0.25f && contentFade < 1f) contentFade = Math.Min(1f, contentFade + 0.08f);
                 else if (showProgress <= 0.25f && contentFade > 0f) contentFade = Math.Max(0f, contentFade - 0.15f);
             }
-            else contentFade = 1f; //关闭时仍保持内容显示用于演出
+            else contentFade = 1f;
 
             pulseTimer += 0.03f;
 
-            //布局
-            Size = new Vector2(PanelWidth, PanelHeight);
-            DrawPosition = new Vector2(Main.screenWidth - PanelWidth - 14, Main.screenHeight * 0.34f);
+            //包装描述获取高度(每帧更新便于语言切换)
+            WrapDescriptionIfNeed();
+            descUsedHeight = 0f;
+            foreach (var line in wrappedDescLines) {
+                descUsedHeight += FontAssets.MouseText.Value.MeasureString("A").Y * DescScale + 2f;
+            }
+            if (wrappedDescLines.Length > 0) descUsedHeight += -2f; //最后一行去掉多余间隙
+
+            //根据描述动态计算面板高度(不超过基准高度)
+            int dynamicContentBottom = Padding + 26 + (int)descUsedHeight + 8 + SlotSize + 60; //标题+描述+间距+槽位+底部按钮与提示空间
+            int targetHeight = Math.Clamp(dynamicContentBottom, HeaderHeight, BasePanelHeight);
+            //应用收起动画(线性): collapseProgress 1 时只保留 HeaderHeight
+            currentPanelHeight = (int)MathHelper.Lerp(targetHeight, HeaderHeight, collapseProgress);
+
+            Size = new Vector2(BasePanelWidth, currentPanelHeight);
+            if (!dragging && DrawPosition == default) {
+                //初始位置保持右侧不改变
+                DrawPosition = new Vector2(Main.screenWidth - BasePanelWidth - 14, Main.screenHeight * 0.34f);
+            }
             UIHitBox = DrawPosition.GetRectangle(Size);
+            headerRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Size.X, (int)Size.Y);
+            collapseButtonRect = new Rectangle(headerRect.Right - 22, headerRect.Y + 10, 14, 14);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
             if (hoverInMainPage) player.mouseInterface = true;
 
-            //按钮布局: 底部两个按钮 左:快速放入 右:拒绝
-            int buttonHeight = 22; int buttonWidth = 74;
-            quickPutButtonRect = new Rectangle((int)(DrawPosition.X + Padding), (int)(DrawPosition.Y + PanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
-            declineButtonRect = new Rectangle((int)(DrawPosition.X + PanelWidth - Padding - buttonWidth), (int)(DrawPosition.Y + PanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
-            hoverQuickPut = quickPutButtonRect.Contains(MouseHitBox);
-            hoverDecline = declineButtonRect.Contains(MouseHitBox);
-
-            //槽位区域
-            Vector2 slotsStart = DrawPosition + new Vector2(Padding, 70);
-            for (int i = 0; i < RequiredItems.Count; i++) {
-                var slot = RequiredItems[i];
-                slot.Update(slotsStart + new Vector2(i * (SlotSize + SlotSpacing), 0), SlotSize, player, hoverInMainPage);
+            //拖拽逻辑: 在标题栏内按住左键开始拖拽
+            if (headerRect.Contains(MouseHitBox)) {
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    dragging = true; 
+                    dragOffset = DrawPosition - MousePosition; 
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.1f });
+                }
+            }
+            if (dragging) {
+                DrawPosition = MousePosition + dragOffset;
+                UIHitBox = DrawPosition.GetRectangle(Size);
+                headerRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Size.X, HeaderHeight);
+                collapseButtonRect = new Rectangle(headerRect.Right - 22, headerRect.Y + 10, 14, 14);
+                if (keyLeftPressState == KeyPressState.Released) dragging = false;
             }
 
-            //快速放入逻辑(在未完成且不关闭时)
-            if (!hp.ADCSave.FishoilQuestCompleted && !closing && hoverQuickPut && keyLeftPressState == KeyPressState.Pressed) {
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, 0, Main.screenWidth - Size.X);
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, 0, Main.screenHeight - Size.Y);
+
+            //收起按钮点击
+            if (collapseButtonRect.Contains(MouseHitBox) && keyLeftPressState == KeyPressState.Pressed) {
+                collapsed = !collapsed; SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = collapsed ? -0.3f : 0.3f });
+            }
+
+            bool fullyCollapsed = collapseProgress >= 0.99f;
+
+            //按钮布局(仅展开时才显示内容按钮)
+            int buttonHeight = 22; int buttonWidth = 74;
+            quickPutButtonRect = new Rectangle((int)(DrawPosition.X + Padding), (int)(DrawPosition.Y + currentPanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
+            declineButtonRect = new Rectangle((int)(DrawPosition.X + BasePanelWidth - Padding - buttonWidth), (int)(DrawPosition.Y + currentPanelHeight - Padding - buttonHeight), buttonWidth, buttonHeight);
+            hoverQuickPut = !fullyCollapsed && quickPutButtonRect.Contains(MouseHitBox);
+            hoverDecline = !fullyCollapsed && declineButtonRect.Contains(MouseHitBox);
+
+            //槽位区域(根据描述高度调整位置)
+            Vector2 slotsStart = DrawPosition + new Vector2(Padding, Padding + 26 + descUsedHeight + 8);
+            if (!fullyCollapsed) {
+                for (int i = 0; i < RequiredItems.Count; i++) {
+                    var slot = RequiredItems[i];
+                    slot.Update(slotsStart + new Vector2(i * (SlotSize + SlotSpacing), 0), SlotSize, player, hoverInMainPage && !fullyCollapsed);
+                }
+            }
+
+            //快速放入逻辑
+            if (!hp.ADCSave.FishoilQuestCompleted && !closing && !fullyCollapsed && hoverQuickPut && keyLeftPressState == KeyPressState.Pressed) {
                 SoundEngine.PlaySound(SoundID.Grab);
                 QuickDepositInventoryFish();
             }
 
-            //拒绝任务(未完成时可拒绝)
-            if (!hp.ADCSave.FishoilQuestCompleted && hoverDecline && keyLeftPressState == KeyPressState.Pressed) {
+            //拒绝任务
+            if (!hp.ADCSave.FishoilQuestCompleted && !fullyCollapsed && hoverDecline && keyLeftPressState == KeyPressState.Pressed) {
                 hp.ADCSave.FishoilQuestDeclined = true;
                 SoundEngine.PlaySound(SoundID.MenuClose);
             }
@@ -161,8 +223,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                     GiveReward();
                 }
             }
-
-            //关闭后等待动画结束再彻底隐藏(Active 属性控制)
         }
 
         private void QuickDepositInventoryFish() {
@@ -205,9 +265,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             float openAlpha = closing ? (1f - hideProgress) : showProgress;
             float alpha = Math.Min(openAlpha * 1.6f, 1f);
             Texture2D px = VaultAsset.placeholder2.Value;
-            Rectangle panelRect = UIHitBox;
-
-            //关闭阶段下移动画
+            Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, BasePanelWidth, currentPanelHeight);
             float closeOffsetY = closing ? hideProgress * 40f : 0f;
             panelRect.Y += (int)closeOffsetY;
 
@@ -223,57 +281,64 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Color deep = new Color(4,18,30);
                 Color mid = new Color(10,42,60);
                 Color edge = new Color(20,90,120);
-                float osc = (float)Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f;
+                float osc = (float)System.Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f;
                 Color c = Color.Lerp(Color.Lerp(deep, mid, osc), edge, t * 0.55f);
                 spriteBatch.Draw(px, r, new Rectangle(0,0,1,1), c * alpha);
             }
-
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f;
+            float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f;
             spriteBatch.Draw(px, panelRect, new Rectangle(0,0,1,1), new Color(30,120,150) * (alpha * 0.08f * pulse));
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
 
             if (contentFade <= 0.01f && !closing) return;
             float ca = contentFade;
 
+            //标题区
             Vector2 titlePos = new Vector2(panelRect.X + Padding, panelRect.Y + Padding);
             string title = TitleText.Value;
             Color glow = new Color(140,230,255) * (ca * 0.7f);
             for(int i=0;i<4;i++){ float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * ca, 0.9f);
 
-            //描述换行
-            WrapDescriptionIfNeed();
-            float lineY = titlePos.Y + 26f;
-            foreach (var line in wrappedDescLines) {
-                Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, lineY), new Color(180,230,250) * ca, DescScale);
-                lineY += FontAssets.MouseText.Value.MeasureString("A").Y * DescScale + 2f;
-                if (lineY > panelRect.Bottom - 70) break; //避免溢出
-            }
+            //收起按钮绘制(简单箭头)
+            char arrow = collapseProgress < 0.5f ? '\u25B2' : '\u25BC'; //▲/▼
+            Color arrowColor = Color.Lerp(new Color(120,200,235), Color.White, 0.5f) * ca;
+            Utils.DrawBorderString(spriteBatch, arrow.ToString(), new Vector2(collapseButtonRect.X, collapseButtonRect.Y), arrowColor, 0.6f);
 
-            //分隔线
-            Vector2 divStart = new Vector2(titlePos.X, panelRect.Y + 60);
-            Vector2 divEnd = divStart + new Vector2(PanelWidth - Padding * 2, 0);
-            DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70,180,230)*(ca * 0.85f), new Color(70,180,230)*(ca * 0.05f), 1.2f);
-
-            //绘制槽位
-            Vector2 slotsStart = new Vector2(panelRect.X + Padding, panelRect.Y + 70);
-            foreach(var slot in RequiredItems) slot.Draw(spriteBatch, ca);
-
-            //底部提示或完成演出
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
-                if (!hp.ADCSave.FishoilQuestCompleted) {
-                    Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 52), new Color(120,200,235)*(ca*0.7f), 0.65f);
+            bool fullyCollapsed = collapseProgress >= 0.99f;
+            if (!fullyCollapsed) {
+                //描述换行
+                WrapDescriptionIfNeed();
+                float lineY = titlePos.Y + 26f;
+                foreach (var line in wrappedDescLines) {
+                    Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, lineY), new Color(180,230,250) * ca, DescScale);
+                    lineY += FontAssets.MouseText.Value.MeasureString("A").Y * DescScale + 2f;
+                    if (lineY > panelRect.Bottom - 70) break;
                 }
-                else {
-                    float donePulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
-                    Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 52), Color.Lerp(new Color(150,230,255), new Color(200,240,255), donePulse) * ca, 0.7f);
-                }
-            }
+                //分隔线
+                Vector2 divStart = new Vector2(titlePos.X, titlePos.Y + 26 + descUsedHeight);
+                Vector2 divEnd = divStart + new Vector2(BasePanelWidth - Padding * 2, 0);
+                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70,180,230)*(ca * 0.85f), new Color(70,180,230)*(ca * 0.05f), 1.2f);
 
-            //按钮(完成或关闭中不显示交互按钮)
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted && !closing) {
-                DrawButton(spriteBatch, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca, new Color(30,90,120));
-                DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoverDecline, ca, new Color(100,40,40));
+                //槽位绘制
+                Vector2 slotsStart = new Vector2(panelRect.X + Padding, divStart.Y + 8);
+                foreach(var slot in RequiredItems) slot.Draw(spriteBatch, ca);
+
+                //底部提示或完成
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
+                    if (!hp.ADCSave.FishoilQuestCompleted) {
+                        Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), new Color(120,200,235)*(ca*0.7f), 0.6f);
+                    }
+                    else {
+                        float donePulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
+                        Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), Color.Lerp(new Color(150,230,255), new Color(200,240,255), donePulse) * ca, 0.7f);
+                    }
+                }
+
+                //按钮
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp2) && !hp2.ADCSave.FishoilQuestCompleted && !closing) {
+                    DrawButton(spriteBatch, quickPutButtonRect, QuickPutText.Value, hoverQuickPut, ca, new Color(30,90,120));
+                    DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoverDecline, ca, new Color(100,40,40));
+                }
             }
         }
 
@@ -293,7 +358,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
         private void WrapDescriptionIfNeed() {
             string raw = DescText.Value;
-            float maxWidth = PanelWidth - Padding * 2f;
+            float maxWidth = BasePanelWidth - Padding * 2f;
             List<string> lines = new List<string>();
             string current = string.Empty;
             foreach (char ch in raw) {
@@ -325,7 +390,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value; Vector2 edge = end - start; float length = edge.Length(); if (length < 1f) return; edge.Normalize();
-            float rotation = (float)Math.Atan2(edge.Y, edge.X); int segments = Math.Max(1, (int)(length / 11f));
+            float rotation = (float)System.Math.Atan2(edge.Y, edge.X); int segments = System.Math.Max(1, (int)(length / 11f));
             for(int i=0;i<segments;i++){ float t = i/(float)segments; Vector2 segPos = start + edge * (length * t); float segLength = length / segments; Color c = Color.Lerp(startColor, endColor, t); spriteBatch.Draw(pixel, segPos, new Rectangle(0,0,1,1), c, rotation, new Vector2(0,0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0); }
         }
 
@@ -341,9 +406,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                     bool leftClick = Main.mouseLeft && Main.mouseLeftRelease;
                     if (leftClick && Main.mouseItem.type == ItemType && !IsSatisfied) {
                         int add = 1;
-                        if (Main.keyState.PressingShift()) add = Math.Min(Main.mouseItem.stack, Need - Current);
+                        if (Main.keyState.PressingShift()) add = System.Math.Min(Main.mouseItem.stack, Need - Current);
                         if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) add = Need - Current;
-                        add = Math.Min(add, Main.mouseItem.stack);
+                        add = System.Math.Min(add, Main.mouseItem.stack);
                         Current += add; Main.mouseItem.stack -= add; if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir(); SoundEngine.PlaySound(SoundID.Grab);
                     }
                     //右键取出一份
@@ -356,7 +421,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = VaultAsset.placeholder2.Value; Rectangle r = new Rectangle((int)Pos.X, (int)Pos.Y, Hit.Width, Hit.Height); Color back = new Color(6,32,48) * (alpha * 0.9f); if (Hover) back *= 1.15f; sb.Draw(px, r, new Rectangle(0,0,1,1), back);
                 Color edge = IsSatisfied ? new Color(70,180,230) : new Color(40,100,140); sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0,0,1,1), edge); sb.Draw(px, new Rectangle(r.X, r.Bottom -2, r.Width, 2), new Rectangle(0,0,1,1), edge * 0.7f); sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f); sb.Draw(px, new Rectangle(r.Right -2, r.Y, 2, r.Height), new Rectangle(0,0,1,1), edge * 0.85f);
-                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width/2f, r.Y + r.Height/2f); float scale = Math.Min((r.Width - 8f)/frame.Width, (r.Height - 8f)/frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
+                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width/2f, r.Y + r.Height/2f); float scale = System.Math.Min((r.Width - 8f)/frame.Width, (r.Height - 8f)/frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
                 string text = $"{Current}/{Need}"; Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 16), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.6f);
             }
         }

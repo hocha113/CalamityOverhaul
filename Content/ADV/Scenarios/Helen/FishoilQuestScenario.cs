@@ -131,7 +131,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             if (ScenarioManager.Start<FishoilQuestScenario>()) {
                 scenarioStarted = true; //防止重复
                 Spwand = false; //消耗标记
-                if (!HalibutUIHead.Instance.Open) HalibutUIHead.Instance.Open = true;
             }
         }
     }
