@@ -1620,19 +1620,18 @@ Projectiles: {
 	// IceBoomerangHeld.DisplayName: Ice Boomerang
 	// TrimarangHeld.DisplayName: Trimarang
 	// DeathSickleThrowable.DisplayName: Death Sickle
-	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
 	// CthulhuEye.DisplayName: Cthulhu Eye
-	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
-	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
-	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
-	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
-	// TunabeardDashProj.DisplayName: Tunabeard Dash Proj
-	// TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
-	// BloodyAxeController.DisplayName: Bloody Axe Controller
-	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
-	// BloodyStrikeWave.DisplayName: Bloody Strike Wave
-	// UnicornFishDashProj.DisplayName: Unicorn Fish Dash Proj
-	// FishoilDrinkEffect.DisplayName: Fishoil Drink Effect
+	// JewelFragmentProjectile.DisplayName: Jewel Fragment
+	// JewelGemProjectile.DisplayName: Jewel Star
+	// EncyclopediaEffect.DisplayName: Aura of Knowledge
+	// ForgottenTomeEffect.DisplayName: Forgotten Runes
+	// TunabeardDashProj.DisplayName: Tuna Rush
+	// TunabeardImpactWave.DisplayName: Tidal Slam
+	// BloodyAxeController.DisplayName: Crimson Cyclone
+	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish
+	// BloodyStrikeWave.DisplayName: Wave of Blood
+	// UnicornFishDashProj.DisplayName: Horn Charge
+	// FishoilDrinkEffect.DisplayName: Vitality Surge
 }
 
 Configs: {

@@ -1598,19 +1598,18 @@ Projectiles: {
 	IceBoomerangHeld.DisplayName: 冰雪回旋镖
 	TrimarangHeld.DisplayName: 三叶回旋镖
 	DeathSickleThrowable.DisplayName: 死亡镰刀
-	// CthulhuTentacle.DisplayName: Cthulhu Tentacle
-	// CthulhuEye.DisplayName: Cthulhu Eye
-	// JewelFragmentProjectile.DisplayName: Jewel Fragment Projectile
-	// JewelGemProjectile.DisplayName: Jewel Gem Projectile
-	// EncyclopediaEffect.DisplayName: Encyclopedia Effect
-	// ForgottenTomeEffect.DisplayName: Forgotten Tome Effect
-	// TunabeardDashProj.DisplayName: Tunabeard Dash Proj
-	// TunabeardImpactWave.DisplayName: Tunabeard Impact Wave
-	// BloodyAxeController.DisplayName: Bloody Axe Controller
-	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish Unit
-	// BloodyStrikeWave.DisplayName: Bloody Strike Wave
-	// UnicornFishDashProj.DisplayName: Unicorn Fish Dash Proj
-	// FishoilDrinkEffect.DisplayName: Fishoil Drink Effect
+	CthulhuEye.DisplayName: 克苏鲁之眼
+	JewelFragmentProjectile.DisplayName: 宝石碎片
+	JewelGemProjectile.DisplayName: 宝石之星
+	EncyclopediaEffect.DisplayName: 博学光环
+	ForgottenTomeEffect.DisplayName: 遗忘符文
+	TunabeardDashProj.DisplayName: 金枪鱼猛冲
+	TunabeardImpactWave.DisplayName: 怒涛冲击
+	BloodyAxeController.DisplayName: 血斧风暴
+	BloodyJellyfishUnit.DisplayName: 血色水母
+	BloodyStrikeWave.DisplayName: 鲜血冲击
+	UnicornFishDashProj.DisplayName: 独角冲锋
+	FishoilDrinkEffect.DisplayName: 活力涌现
 }
 
 Configs: {
