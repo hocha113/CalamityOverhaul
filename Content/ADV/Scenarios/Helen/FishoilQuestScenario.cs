@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             //首次达到门槛时设置延迟
             if (!Spwand) {
                 Spwand = true;
-                spawnDelayTimer = Main.rand.Next(11, 63);
+                spawnDelayTimer = Main.rand.Next(60, 160);
             }
 
             //延迟倒计时

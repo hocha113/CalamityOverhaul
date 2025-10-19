@@ -2752,24 +2752,24 @@ Legend: {
 			}
 
 			FishoilQuestScenario: {
-				// Rolename: 比目鱼
-				// Line0: 你最近好像捕到了不少普通的鱼
-				// Line1: 给我一批做实验，我可以提炼一瓶新鲜的鱼油
-				// Line2: 过程不难但很枯燥
-				// Line3: 鱼油很有潜力,比你想的更有用
-				// Line4: 愿意吗?
-				// ChoiceAccept: 可以
-				// ChoiceDecline: 没兴趣
+				// Rolename: Halibut
+				// Line0: You seem to have caught a fair amount of common fish recently.
+				// Line1: Give me some for my research, and I can refine them into a bottle of fresh fish oil.
+				// Line2: The process isn't difficult, just... tedious.
+				// Line3: This fish oil has potential. It's more useful than you might think.
+				// Line4: Interested?
+				// ChoiceAccept: Alright.
+				// ChoiceDecline: Not interested.
 			}
 
 			FishoilQuestUI: {
-				// TitleText: 采集:鲈鱼
-				// DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
-				// SubmitHint: 点击放置/取出
-				// DeclineText: 拒绝
-				// CompletedText: 完成
-				// RewardText: 领取奖励
-				// QuickPutText: 快速放入
+				// TitleText: Collect: Bass
+				// DescText: Deposit enough Bass, and I will refine them into a bottle of fish oil.
+				// SubmitHint: Click to Deposit/Withdraw
+				// DeclineText: Decline
+				// CompletedText: Completed
+				// RewardText: Claim Reward
+				// QuickPutText: Quick Stack
 			}
 		}
 

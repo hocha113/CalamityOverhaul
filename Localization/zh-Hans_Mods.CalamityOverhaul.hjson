@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2706,7 +2706,7 @@ Legend: {
 				Rolename: 比目鱼
 				Line0: 等等，你感觉到了吗？
 				Line1: 复苏状态正在接近危险临界点
-				Line2: 我必须警告你，这不是闹着玩的
+				Line2: 这不是闹着玩的
 				Line3: 当完全复苏时......后果会很严重
 				Line4: 那将会是被深渊吞噬的结局
 				Line5: 我体内那些眼睛，每睁开一个，复苏速度就会加快
@@ -2718,24 +2718,24 @@ Legend: {
 			}
 
 			FishoilQuestScenario: {
-				// Rolename: 比目鱼
-				// Line0: 你最近好像捕到了不少普通的鱼
-				// Line1: 给我一批做实验，我可以提炼一瓶新鲜的鱼油
-				// Line2: 过程不难但很枯燥
-				// Line3: 鱼油很有潜力,比你想的更有用
-				// Line4: 愿意吗?
-				// ChoiceAccept: 可以
-				// ChoiceDecline: 没兴趣
+				Rolename: 比目鱼
+				Line0: 你最近好像捕到了不少普通的鱼
+				Line1: 给我一些做实验，我可以提炼出一瓶新鲜的鱼油
+				Line2: 过程不难但很枯燥
+				Line3: 鱼油很有潜力,比你想的更有用
+				Line4: 愿意吗?
+				ChoiceAccept: 可以
+				ChoiceDecline: 没兴趣
 			}
 
 			FishoilQuestUI: {
-				// TitleText: 采集:鲈鱼
-				// DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
-				// SubmitHint: 点击放置/取出
-				// DeclineText: 拒绝
-				// CompletedText: 完成
-				// RewardText: 领取奖励
-				// QuickPutText: 快速放入
+				TitleText: 采集:鲈鱼
+				DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
+				SubmitHint: 点击放置/取出
+				DeclineText: 拒绝
+				CompletedText: 完成
+				RewardText: 领取奖励
+				QuickPutText: 快速放入
 			}
 		}
 
