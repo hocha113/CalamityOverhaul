@@ -614,7 +614,20 @@ namespace CalamityOverhaul.Content
                 }
                 recipe.AddBlockingSynthesisEvent()
                     .AddTile(TileType<TransmutationOfMatter>())
+                    .DisableDecraft()
                     .Register();
+
+                recipe = Recipe.Create(snyContent.Key);
+                recipe.AddIngredient(snyContent.Key);//他妈的这么写是你们这些逼微光接口逼我的
+                //进行一下排序，让是终焉物品的材料排在前面
+                foreach (var ingredientPair in ingredientDic.OrderByDescending(pair => CWRLoad.ItemIDToOmigaSnyContent[pair.Key] != null)) {
+                    if (ingredientPair.Key == ItemID.None || ingredientPair.Value <= 0) {
+                        continue;
+                    }
+                    recipe.AddCustomShimmerResult(ingredientPair.Key, ingredientPair.Value);
+                }
+                recipe.AddTile(TileType<TransmutationOfMatter>());
+                recipe.Register();
             }
         }
 
