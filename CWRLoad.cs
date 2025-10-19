@@ -99,7 +99,7 @@ namespace CalamityOverhaul
         public static int SepulcherBody;
         public static int SepulcherTail;
         /// <summary>
-        /// 风暴吞噬者
+        /// 风暴编织者
         /// </summary>
         public static List<int> targetNpcTypes2;
         public static int StormWeaverHead;

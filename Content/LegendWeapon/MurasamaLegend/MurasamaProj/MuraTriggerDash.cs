@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 overValue = level * 0.2f;
             }
             Item.Initialize();
-            return 2.2f + Item.CWR().ai[0] * 0.2f + level * 0.15f + overValue;
+            return 2.5f + Item.CWR().ai[0] * 0.2f + level * 0.2f + overValue;
         }
 
         public override void AI() {

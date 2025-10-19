@@ -2,19 +2,15 @@
 using CalamityMod.Dusts;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.CeaselessVoid;
-using CalamityMod.NPCs.Crabulon;
-using CalamityMod.NPCs.Cryogen;
-using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.HiveMind;
-using CalamityMod.NPCs.Leviathan;
 using CalamityMod.NPCs.NormalNPCs;
-using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
+using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.SlimeGod;
-using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Particles;
@@ -177,6 +173,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 spanDust(33, DustID.Blood);
                 return;
             }
+            if (npc.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+                spanDust(33, DustID.Blood);
+                return;
+            }
             if (CWRLoad.targetNpcTypes14.Contains(npc.type)) {
                 spanDust(33, DustID.BlueTorch);
                 return;
@@ -222,9 +222,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 return;
             }
             if (npc.type == ModContent.NPCType<SupremeCalamitas>() || npc.type == ModContent.NPCType<SupremeCataclysm>() || npc.type == ModContent.NPCType<SupremeCatastrophe>()) {
-                return;
-            }
-            if (npc.type == ModContent.NPCType<SuperDummyNPC>()) {
                 return;
             }
 
@@ -314,196 +311,111 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 OnHitNPCs.Add(target);
             }
         }
+        public bool IsBossActive() {
+            foreach (NPC npc in Main.npc) {
+                if (npc.active && npc.boss) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             int level = MurasamaOverride.GetLevel(Item);
-            if (target.type == ModContent.NPCType<Crabulon>() || target.type == ModContent.NPCType<CrabShroom>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<DesertScourgeBody>()) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<DesertScourgeHead>() || target.type == ModContent.NPCType<DesertScourgeTail>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<DesertNuisanceHead>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<DesertNuisanceHead>() || target.type == ModContent.NPCType<DesertNuisanceTail>()) {
-                modifiers.FinalDamage *= 2.5f;
-            }
-            if (target.type == ModContent.NPCType<DesertNuisanceHeadYoung>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<DesertNuisanceHeadYoung>() || target.type == ModContent.NPCType<DesertNuisanceTailYoung>()) {
-                modifiers.FinalDamage *= 2.5f;
-            }
-            if (target.type == NPCID.KingSlime) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == NPCID.EyeofCthulhu) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == NPCID.BrainofCthulhu) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<BloodlettingServant>() || target.type == NPCID.ServantofCthulhu) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelEmerald>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == NPCID.EaterofWorldsBody || target.type == NPCID.EaterofWorldsHead || target.type == NPCID.EaterofWorldsTail) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<HiveBlob>() || target.type == ModContent.NPCType<HiveBlob2>() || target.type == ModContent.NPCType<DarkHeart>() || target.type == ModContent.NPCType<DankCreeper>()) {
-                modifiers.FinalDamage *= 1.75f;
-            }
-            if (target.type == NPCID.QueenBee) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == NPCID.SkeletronHead) {
-                modifiers.FinalDamage *= 1.4f;
-                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
-            }
-            if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 1.1f;
-                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
-            }
-            if (target.type == ModContent.NPCType<CorruptSlimeSpawn>() || target.type == ModContent.NPCType<CorruptSlimeSpawn2>() || target.type == ModContent.NPCType<CrimsonSlimeSpawn>() || target.type == ModContent.NPCType<CrimsonSlimeSpawn2>()) {
-                modifiers.FinalDamage *= 1.75f;
-            }
-            if (target.type == NPCID.WallofFlesh) {
+            // boss存活时对非Boss单位造成2倍伤害
+            if (IsBossActive() && !target.boss) {
                 modifiers.FinalDamage *= 2f;
             }
-            if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<Cryogen>()) {
-                modifiers.FinalDamage *= 1.2f;
-            }
-            if (target.type == ModContent.NPCType<CryogenShield>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<AquaticScourgeBody>()) {
-                modifiers.FinalDamage *= 0.5f;
-            }
-            if (target.type == ModContent.NPCType<AquaticScourgeHead>() || target.type == ModContent.NPCType<AquaticScourgeTail>()) {
-                modifiers.FinalDamage *= 1.15f;
-            }
-            if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
+            // 对红宝石，蓝宝石仅造成1.5倍
+            if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 2f;
+            // 对飞眼怪仅造成0.5倍伤害
+            if (target.type == NPCID.Creeper) {
+                modifiers.FinalDamage *= 0.25f;
             }
-            if (target.type == ModContent.NPCType<Leviathan>() || target.type == ModContent.NPCType<Anahita>()) {
-                modifiers.FinalDamage *= 1.75f;
+            // 对骷髅王之手仅造成1倍伤害
+            if (target.type == NPCID.SkeletronHand) {
+                modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == NPCID.GolemHeadFree || target.type == NPCID.Golem) {
-                modifiers.FinalDamage *= 1.75f;
+            // 对史神护卫仅造成1倍伤害
+            if (target.type == ModContent.NPCType<EbonianPaladin>() || target.type == ModContent.NPCType<CrimulanPaladin>()) {
+                modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == NPCID.DukeFishron) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
-                || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail
-                || target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail
-                || target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail
-                || target.type == CWRLoad.StormWeaverHead || target.type == CWRLoad.StormWeaverTail) {
-                modifiers.FinalDamage *= 1.33f;
-            }
-            if (target.type == NPCID.TheDestroyer) {
-                modifiers.FinalDamage *= 2.33f;
-            }
-            if (target.type == ModContent.NPCType<StormWeaverBody>()) {
-                modifiers.FinalDamage *= 0.35f;
-            }
-            if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 1.1f;
-                modifiers.SetMaxDamage((int)(target.lifeMax * (0.3f + level * 0.1f)));
-            }
+            // 对史神小护卫仅造成0.5倍伤害
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
-                modifiers.FinalDamage *= 0.45f;
-                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.1f)));
+                modifiers.FinalDamage *= 0.25f;
             }
-            if (target.type == CWRLoad.PlaguebringerGoliath) {
+            // 对肉山眼仅造成1倍伤害
+            if (target.type == NPCID.WallofFleshEye) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            // 对灾眼兄弟仅造成1.5倍伤害
+            if (target.type == ModContent.NPCType<Cataclysm>() || target.type == ModContent.NPCType<Catastrophe>()) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            // 对毁灭魔像飞出的头仅造成50%伤害
+            if (target.type == ModContent.NPCType<RavagerHead2>()) {
+                modifiers.FinalDamage *= 0.25f;
+            }
+            // 对暗能量仅造成1倍伤害
+            if (target.type == ModContent.NPCType<DarkEnergy>()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            // 对幽花复制体仅造成1.5倍伤害
+            if (target.type == ModContent.NPCType<PolterghastHook>()) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            // 对蠕虫只造成33%伤害
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.33f;
+            }
+            // 对渊海灾虫仅造成10%伤害
+            if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.3f;
+            }
+            if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+                modifiers.FinalDamage *= 0.1f;
+            }
+            // 对风编仅造成16.5%伤害
+            if (CWRLoad.targetNpcTypes2.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            // 对塔纳托斯体节仅造成66%伤害
+            if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2 || target.type == CWRLoad.ThanatosTail) {
                 modifiers.FinalDamage *= 2f;
             }
-            if (target.type == CWRLoad.RavagerBody) {
+            // 神明吞噬者头尾，塔纳托斯头，风编尾不受上述影响
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 3f;
             }
+            if (target.type == CWRLoad.StormWeaverTail) {
+                modifiers.FinalDamage *= 6f;
+            }
+            // 对塔纳托斯头造成2.85倍伤害
+            if (target.type == CWRLoad.ThanatosHead) {
+                modifiers.FinalDamage *= 8.57f;
+            }
+            // 对肉山造成1.5倍伤害
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            // 对世纪之花造成66%伤害
+            if (target.type == NPCID.Plantera) {
+                modifiers.FinalDamage *= 0.66f;
+            }
+            // 对毁灭魔像身体部位造成50%伤害
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
                 || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
-                modifiers.SetMaxDamage(target.lifeMax / 4);
-            }
-            if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<ProfanedGuardianHealer>() || target.type == ModContent.NPCType<ProfanedGuardianDefender>()) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<ProfanedRocks>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<Providence>()) {
-                modifiers.FinalDamage *= 0.8f;
-            }
-            if (target.type == ModContent.NPCType<DarkEnergy>()) {
-                modifiers.FinalDamage *= 0.6f;
-            }
-            if (target.type == ModContent.NPCType<PolterghastHook>()) {
-                modifiers.FinalDamage *= 1.33f;
-            }
-            if (target.type == CWRLoad.StormWeaverTail || target.type == CWRLoad.StormWeaverHead) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == CWRLoad.Polterghast) {
-                modifiers.FinalDamage *= 1.25f;
-            }
-            if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
-                modifiers.FinalDamage *= 2f;
-            }
-            if (target.type == CWRLoad.DevourerofGodsHead) {
-                modifiers.FinalDamage *= 1.33f;
-            }
-            if (target.type == CWRLoad.DevourerofGodsBody) {
-                modifiers.FinalDamage *= 0.75f;
-            }
-            if (target.type == CWRLoad.AresBody || target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon
-                || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRLoad.ThanatosHead) {
-                modifiers.FinalDamage *= 5.71f;
+            // 对星流双子造成1.25倍伤害
+            if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
+                modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
-                modifiers.FinalDamage *= 2f;
-            }
+            // 对终灾造成1.33倍伤害
             if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
-                modifiers.FinalDamage *= 1.666666f;
-            }
-            if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
-                modifiers.FinalDamage *= 1.4f;
-            }
-            //饿鬼(被触手连接在肉山身上的状态)
-            if (target.type == NPCID.TheHungry) {
-                modifiers.FinalDamage *= 0.7f;
+                modifiers.FinalDamage *= 1.33f;
             }
             modifiers.DefenseEffectiveness *= 0f;
         }

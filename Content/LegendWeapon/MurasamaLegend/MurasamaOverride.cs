@@ -123,16 +123,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
-                {0, 12 },
-                {1, 18 },
-                {2, 25 },
-                {3, 35 },
-                {4, 45 },
-                {5, 95 },
-                {6, 130 },
-                {7, 165 },
-                {8, 280 },
-                {9, 450 },
+                {0, 10 },
+                {1, 15 },
+                {2, 19 },
+                {3, 24 },
+                {4, 35 },
+                {5, 70 },
+                {6, 90 },
+                {7, 130 },
+                {8, 190 },
+                {9, 320 },
                 {10, 650 },
                 {11, 1350 },
                 {12, 1900 },
@@ -157,21 +157,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 {14, 1.5f }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
-                {0, 2 },
-                {1, 5 },
-                {2, 8 },
-                {3, 10 },
-                {4, 12 },
-                {5, 15 },
-                {6, 18 },
-                {7, 20 },
-                {8, 22 },
-                {9, 24 },
-                {10, 28 },
-                {11, 32 },
-                {12, 36 },
-                {13, 40 },
-                {14, 46 }
+                {0, 6 },
+                {1, 8 },
+                {2, 10 },
+                {3, 12 },
+                {4, 14 },
+                {5, 21 },
+                {6, 24 },
+                {7, 27 },
+                {8, 31 },
+                {9, 35 },
+                {10, 39 },
+                {11, 43 },
+                {12, 47 },
+                {13, 51 },
+                {14, 61 }
             };
             RDCDDictionary = new Dictionary<int, int>(){
                 {0, 400 },

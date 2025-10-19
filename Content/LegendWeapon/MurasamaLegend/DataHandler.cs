@@ -11,9 +11,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (index != 4) {
                 return;
             }
-            //击败了史莱姆之神但是没有击败肉山
+            //完成试炼5但是没有进入困难模式
             if (Level4 && !Main.hardMode) {
-                damage += 10;
+                damage += 5;
             }
             else {
                 damage += 0;
@@ -32,15 +32,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的选择
             do {
                 if (!NPC.downedMechBoss1) {//毁灭者
-                    damage += 5;
+                    damage += 4;
                     break;
                 }
                 if (!NPC.downedMechBoss2) {//双子魔眼
-                    damage += 10;
+                    damage += 8;
                     break;
                 }
                 if (!NPC.downedMechBoss3) {//机械统帅
-                    damage += 15;
+                    damage += 12;
                     break;
                 }
             } while (false);
