@@ -1493,8 +1493,8 @@ Projectiles: {
 	BarrenOrb.DisplayName: 贫瘠法球
 	BloodVerdict.DisplayName: 鲜血裁决
 	BMGBullet.DisplayName: B.M.G.子弹
-	BMGFIRE.DisplayName: B.M.G.开火
-	BMGFIRE2.DisplayName: B.M.G.开火
+	BMGFIRE.DisplayName: B.M.G.子弹
+	BMGFIRE2.DisplayName: B.M.G.子弹
 	Crystal.DisplayName: 水晶
 	CursedDartRemake.DisplayName: 诅咒吹箭
 	DeadWave.DisplayName: 死亡波纹

@@ -1515,8 +1515,8 @@ Projectiles: {
 	// BarrenOrb.DisplayName: Barren Orb
 	// BloodVerdict.DisplayName: Blood Verdict
 	// BMGBullet.DisplayName: BMG Round
-	// BMGFIRE.DisplayName: BMG Fire
-	// BMGFIRE2.DisplayName: BMG Fire
+	// BMGFIRE.DisplayName: BMG Round
+	// BMGFIRE2.DisplayName: BMG Round
 	// Crystal.DisplayName: Crystal
 	// CursedDartRemake.DisplayName: Cursed Dart
 	// DeadWave.DisplayName: Deathly Wave
