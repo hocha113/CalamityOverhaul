@@ -29,10 +29,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
-            if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.HasHalubut) {
-                return;//如果背包里已经拥有大比目鱼则不再触发钓鱼获得大比目鱼
-            })
-
             if (HasCaughtHalibut) {
                 if (Main.rand.NextBool(500)) {
                     itemDrop = HalibutOverride.ID;
