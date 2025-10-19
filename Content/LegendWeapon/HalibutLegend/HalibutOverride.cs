@@ -59,10 +59,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 {1, 4 },
                 {2, 6 },
                 {3, 8 },
-                {4, 11 },
-                {5, 14 },
-                {6, 18 },
-                {7, 23 },
+                {4, 12 },
+                {5, 15 },
+                {6, 20 },
+                {7, 25 },
                 {8, 35 },
                 {9, 45 },
                 {10, 65 },
@@ -190,9 +190,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 2), (1 + HalibutData.GetLevel()));
+            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 3), (1 + HalibutData.GetLevel() / 2));
             if (isBullet) {
-                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.4 / Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 28f));
+                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.3 / Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 14f));
                 bulletAmt = 1;
             }
 

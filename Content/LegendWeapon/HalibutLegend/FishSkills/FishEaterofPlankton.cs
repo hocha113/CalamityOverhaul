@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 20;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 3; //可穿透3个敌人
+            Projectile.penetrate = 5; //可穿透5个敌人
             Projectile.timeLeft = 480;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;

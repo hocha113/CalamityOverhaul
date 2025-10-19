@@ -29,6 +29,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //清理失效恶鬼
                 CleanupInactiveHungries();
 
+                List<int> list = [];
+                foreach (var item1 in ActiveHungries) {
+                    if (item1.TryGetProjectile(out var proj) && proj.Alives()) {
+                        list.Add(item1);
+                    }
+                }
+                ActiveHungries.Clear();
+                foreach (var index in list) {
+                    ActiveHungries.Add(index);
+                }
+
                 //如果恶鬼数量未满，生成新恶鬼
                 if (ActiveHungries.Count < MaxHungries) {
                     //在玩家附近生成恶鬼
@@ -39,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<HungryCompanionProjectile>(),
-                        (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
+                        (int)(damage * 1.6f + HalibutData.GetDomainLayer() * 0.4f),
                         knockback * 0.1f,
                         player.whoAmI,
                         ai0: ActiveHungries.Count //传递索引
@@ -176,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 60 * (10 + HalibutData.GetDomainLayer() * 2); //10-30秒生命期
+            Projectile.timeLeft = 20; //20秒生命期
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
 
