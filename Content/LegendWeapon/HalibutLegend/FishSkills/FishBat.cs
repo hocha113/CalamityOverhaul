@@ -216,11 +216,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 10;
             Projectile.friendly = false;
             Projectile.hostile = false;
-            Projectile.tileCollide = false;
+            Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = FishBat.BatSwarmDuration;
             Projectile.alpha = 255; // 完全透明
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            return false;
         }
 
         public override void AI() {
@@ -236,9 +240,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Kill();
                 return;
             }
-
-            // 弹幕位置跟随玩家
-            Projectile.Center = Owner.Center;
 
             // 玩家飞行控制
             Owner.noFallDmg = true;
@@ -271,8 +272,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             // 平滑插值
             float lerpSpeed = 0.22f;
-            Owner.velocity = Vector2.Lerp(Owner.velocity, targetVelocity, lerpSpeed);
+            Projectile.velocity = Owner.velocity = Vector2.Lerp(Owner.velocity, targetVelocity, lerpSpeed);
             Owner.direction = Math.Sign(Owner.velocity.X);
+            Owner.Center = Projectile.Center;
 
             // 飞行粒子效果
             if (Main.rand.NextBool(8)) {

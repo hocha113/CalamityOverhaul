@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 LimitingAngle(20, 160);
             }
             VaultUtils.ClockFrame(ref Projectile.frame, 5, 8);
+            MaxFrame = 8;
         }
 
         public override void BowShoot() {
