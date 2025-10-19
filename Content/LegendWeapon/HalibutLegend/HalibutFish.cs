@@ -17,8 +17,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             tag["HasCaughtHalibut"] = HasCaughtHalibut;
         }
         public override void LoadData(TagCompound tag) {
-            //读取是否曾钓到大比目鱼
-            HasCaughtHalibut = tag.GetBool("HasCaughtHalibut");
+            try {
+                //读取是否曾钓到大比目鱼
+                if (tag.TryGet("HasCaughtHalibut", out bool hasCaughtHalibut)) {
+                    HasCaughtHalibut = hasCaughtHalibut;
+                }
+            } catch { }
         }
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
             if (!CWRServerConfig.Instance.WeaponOverhaul || attempt.inHoney || attempt.inLava) {
