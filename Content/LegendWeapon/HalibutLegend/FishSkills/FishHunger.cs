@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 18;
         //恶鬼管理系统
         private static readonly List<int> ActiveHungries = new();
-        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3);//最多1-4个恶鬼
+        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -39,10 +39,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<HungryCompanionProjectile>(),
-                        (int)(damage * 1.6f + HalibutData.GetDomainLayer() * 0.4f),
+                        (int)(damage * 1.25 + HalibutData.GetDomainLayer() * 0.35),
                         knockback * 0.1f,
                         player.whoAmI,
-                        ai0: ActiveHungries.Count//传递索引
+                        ai0: ActiveHungries.Count //传递索引
                     );
 
                     if (hungryProj >= 0 && hungryProj < Main.maxProjectiles) {
@@ -68,9 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void CleanupInactiveHungries() {
-            //只移除真正失效的弹幕
-            ActiveHungries.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active 
-                || Main.projectile[id].type != ModContent.ProjectileType<HungryCompanionProjectile>());
+            ActiveHungries.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
         }
 
         private void CommandHungriesToAttack(Player player) {
@@ -178,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 20; //20秒生命期
+            Projectile.timeLeft = 60 * (10 + HalibutData.GetDomainLayer() * 2); //10-30秒生命期
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
 
