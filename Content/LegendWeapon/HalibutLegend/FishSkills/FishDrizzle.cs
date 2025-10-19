@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f, Volume = 0.9f }, Projectile.Center);
 
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX);
-            int damage = (int)(StoredDamage * (0.6f + HalibutData.GetDomainLayer() * 0.15f));
+            int damage = (int)(StoredDamage * (0.6f + HalibutData.GetDomainLayer() * 0.25f));
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + dir * 12f, dir * 0.1f,
                 ModContent.ProjectileType<DrizzleFirePillar>(), damage, StoredKnockback * 1.6f, Projectile.owner, Projectile.identity);

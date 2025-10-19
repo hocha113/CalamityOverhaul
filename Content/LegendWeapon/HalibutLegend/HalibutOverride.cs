@@ -57,19 +57,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 3 },
                 {1, 4 },
-                {2, 6 },
-                {3, 8 },
-                {4, 12 },
+                {2, 5 },
+                {3, 7 },
+                {4, 11 },
                 {5, 15 },
                 {6, 20 },
-                {7, 25 },
+                {7, 27 },
                 {8, 35 },
-                {9, 45 },
+                {9, 48 },
                 {10, 65 },
-                {11, 80 },
-                {12, 110 },
-                {13, 170 },
-                {14, 280 }
+                {11, 90 },
+                {12, 125 },
+                {13, 190 },
+                {14, 320 }
             };
             SetLevelCritDictionary = new Dictionary<int, int>(){
                 {0, 0 },
@@ -190,9 +190,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            int bulletAmt = Main.rand.Next((1 + HalibutData.GetLevel() / 3), (1 + HalibutData.GetLevel() / 2));
+            int bulletAmt = Main.rand.Next((int)(1 + HalibutData.GetLevel() * 0.45f), (int)(1 + HalibutData.GetLevel() * 0.85f));
             if (isBullet) {
-                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.3 / Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 14f));
+                damage = (int)(damage * (1f + (bulletAmt - 1) * (1f - 0.3 / Main.LocalPlayer.GetDamage<RangedDamageClass>().Additive)) * (1f + HalibutData.GetLevel() / 28f));
                 bulletAmt = 1;
             }
 
