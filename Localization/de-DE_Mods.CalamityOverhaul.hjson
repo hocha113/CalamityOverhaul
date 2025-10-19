@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
 Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
@@ -2764,9 +2764,9 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Verwandelt Gewehrkugeln in Meeresgeschosse
-			"Schau dir diesen Fisch an, trägt ein Monokel und einen Zylinder. Glaubst du, er hat eine Universität besucht?"
-			"Es stimmt, mein Herr, ich habe einen Doktortitel in Ozeanographie und Tiefsee-Botanik. Ich habe auch zweimal den Angelwettbewerb der Schwefelmeer-Universität gewonnen.
-			Diese Heilbutts sind nicht nur weise über die Geheimnisse des Meeres, sondern können auch die Krone der Ozeanwelt gewinnen." sagte der Heilbutt
+			legend_Text
+			[Lang4]
+			[Text]
 			'''
 	}
 

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
 Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
 
 Items: {
@@ -2800,9 +2800,9 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Convierte balas de mosquete en proyectiles oceánicos.
-			"Observa este pez, con gafas de una sola lente y un sombrero de copa. ¿Crees que fue a la universidad?"
-			"Es cierto, señor, soy doctor en Oceanografía y Botánica Abisal, gané dos competencias de pesca en la Universidad de Sulfur Sea.
-			Este halibut no solo conoce los secretos del fondo marino, también es el campeón del mundo oceánico," dice el halibut.
+			legend_Text
+			[Lang4]
+			[Text]
 			'''
 	}
 

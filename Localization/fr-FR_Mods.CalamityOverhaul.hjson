@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 Tools.RecipesLoseText: Vous ne pouvez pas faire cet objet directement
 
 Items: {
@@ -2778,9 +2778,9 @@ RemakeItems: {
 		Tooltip:
 			'''
 			Transforme les balles de fusil en projectiles marins
-			"Regarde ce poisson, avec une seule paire de lunettes et un haut-de-forme sur la tête. Crois-tu qu'il a fait des études universitaires ?"
-			"C'est un fait, monsieur. Je suis docteur en océanographie et botanique abyssale, double champion des tournois de pêche à l'université de la Mer de Soufre.
-			Ici, le hippoglosse, non seulement il comprend les mystères des fonds marins, mais il peut aussi conquérir le royaume marin." dit le hippoglosse.
+			legend_Text
+			[Lang4]
+			[Text]
 			'''
 	}
 

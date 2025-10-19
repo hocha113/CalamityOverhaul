@@ -2787,10 +2787,7 @@ RemakeItems: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
-			Converts Musket balls into a stream of sea bullets
-			"Look at this fish with a monocle and a top hat on his head. Can you believe he went to college?"
-			"The truth is, Sir, I have a PhD in Oceanography and Abyssal Botany, and I won the Sulphurous Sea University Fishing Competition twice.
-			This Halibut here not only knows the secrets of the sea, but also takes the crown of the sea." - Said the Halibut
+			Converts Musket balls into a stream of Ocean Current
 			legend_Text
 			[Lang4]
 			[Text]
