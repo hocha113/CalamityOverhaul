@@ -14,7 +14,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
     {
         public override string Key => nameof(FishoilQuestScenario);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
-        public static bool Spwand;
+
+        //触发控制
+        public static bool Spwand; //外部可置 true 来允许尝试触发
+        private static bool scenarioStarted; //已进入对话(等待玩家选择)
+        private static int spawnDelayTimer; //延迟计时器
+        private const int BassNeedThreshold = 10; //需要的初始鲈鱼数量门槛
+
         public static LocalizedText Rolename { get; private set; }
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
@@ -56,6 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 halibutPlayer.ADCSave.FishoilQuestAccepted = true;
                 FishoilQuestUI.Instance.OpenPersistent();
             }
+            scenarioStarted = false; //结束占用
             Complete();
         }
 
@@ -63,42 +70,68 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.FishoilQuestDeclined = true;
             }
+            scenarioStarted = false;
             Complete();
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            //必须击败蜂后后才有兴趣让你收集最普通的鱼
             if (!NPC.downedQueenBee) {
                 Spwand = false;
-                return;//必须击败蜂后
-            }
-
-            if (!Spwand) {
                 return;
             }
+
             if (!save.FirstMet) {
                 return;
             }
+
+            //已经完成或拒绝就不再尝试
             if (save.FishoilQuestAccepted || save.FishoilQuestDeclined) {
                 return;
             }
 
-            bool hasFish = false;
-            for (int i = 0; i < Main.LocalPlayer.inventory.Length; i++) {
-                if (Main.LocalPlayer.inventory[i].type == Terraria.ID.ItemID.Bass) {
-                    hasFish = true;
-                    break; 
+            //对话已经开始(正在选项中)时不重复尝试
+            if (scenarioStarted) {
+                return;
+            }
+
+            Player player = halibutPlayer.Player;
+            int bassCount = 0;
+            for (int i = 0; i < player.inventory.Length; i++) {
+                if (player.inventory[i].type == Terraria.ID.ItemID.Bass) {
+                    bassCount += player.inventory[i].stack;
+                    if (bassCount >= BassNeedThreshold) {
+                        break;
+                    }
                 }
             }
 
-            if (!hasFish) {
+            //未达到门槛
+            if (bassCount < BassNeedThreshold) {
+                return;
+            }
+
+            //首次达到门槛时设置延迟
+            if (!Spwand) {
+                Spwand = true;
+                spawnDelayTimer = Main.rand.Next(11, 63);
+            }
+
+            //延迟倒计时
+            if (spawnDelayTimer > 0) {
+                spawnDelayTimer--;
+                return;
+            }
+
+            //排除混乱事件
+            if (VaultUtils.IsInvasion()) {
                 return;
             }
 
             if (ScenarioManager.Start<FishoilQuestScenario>()) {
-                if (!HalibutUIHead.Instance.Open) {
-                    HalibutUIHead.Instance.Open = true;
-                    Spwand = false;
-                }
+                scenarioStarted = true; //防止重复
+                Spwand = false; //消耗标记
+                if (!HalibutUIHead.Instance.Open) HalibutUIHead.Instance.Open = true;
             }
         }
     }
