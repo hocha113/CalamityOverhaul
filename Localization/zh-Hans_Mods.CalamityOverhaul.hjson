@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2715,6 +2715,26 @@ Legend: {
 				Line8: 我们需要学会权衡，战斗时开启多少眼睛才是安全的
 				Line9: 如果想要无代价使用这些力量......
 				Line10: 就必须想办法让那些眼睛死机
+			}
+
+			FishoilQuestScenario: {
+				// Rolename: 比目鱼
+				// Line0: 你最近好像捕到了不少普通的鱼
+				// Line1: 给我一批做实验，我可以提炼一瓶新鲜的鱼油
+				// Line2: 过程不难但很枯燥
+				// Line3: 鱼油很有潜力,比你想的更有用
+				// Line4: 愿意吗?
+				// ChoiceAccept: 可以
+				// ChoiceDecline: 没兴趣
+			}
+
+			FishoilQuestUI: {
+				// TitleText: 采集:鲈鱼
+				// DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
+				// SubmitHint: 点击放置/取出
+				// DeclineText: 拒绝
+				// CompletedText: 完成
+				// RewardText: 领取奖励
 			}
 		}
 

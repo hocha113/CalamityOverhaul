@@ -2797,6 +2797,26 @@ Legend: {
 				// Line9: If we want to use this power without consequence...
 				// Line10: ...we have to find a way to make these eyes 'crash.'
 			}
+
+			FishoilQuestScenario: {
+				// Rolename: 比目鱼
+				// Line0: 你最近好像捕到了不少普通的鱼
+				// Line1: 给我一批做实验，我可以提炼一瓶新鲜的鱼油
+				// Line2: 过程不难但很枯燥
+				// Line3: 鱼油很有潜力,比你想的更有用
+				// Line4: 愿意吗?
+				// ChoiceAccept: 可以
+				// ChoiceDecline: 没兴趣
+			}
+
+			FishoilQuestUI: {
+				// TitleText: 采集:鲈鱼
+				// DescText: 放入足够数量的鲈鱼，我就可以提炼出一瓶鱼油
+				// SubmitHint: 点击放置/取出
+				// DeclineText: 拒绝
+				// CompletedText: 完成
+				// RewardText: 领取奖励
+			}
 		}
 
 		SeaDialogueBox: {

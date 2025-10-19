@@ -5,6 +5,9 @@ namespace CalamityOverhaul.Content.ADV
     internal class ADVSave
     {
         public bool FirstMet;
+        public bool FishoilQuestDeclined;
+        public bool FishoilQuestAccepted;
+        public bool FishoilQuestCompleted;
         public bool FirstResurrectionWarning;
         public bool QueenBeeGift;
         public bool SkeletronGift;
@@ -41,6 +44,9 @@ namespace CalamityOverhaul.Content.ADV
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
                 ["FirstMet"] = FirstMet,
+                ["FishoilQuestDeclined"] = FishoilQuestDeclined,
+                ["FishoilQuestAccepted"] = FishoilQuestAccepted,
+                ["FishoilQuestCompleted"] = FishoilQuestCompleted,
                 ["FirstResurrectionWarning"] = FirstResurrectionWarning,
                 ["QueenBeeGift"] = QueenBeeGift,
                 ["SkeletronGift"] = SkeletronGift,
@@ -79,6 +85,15 @@ namespace CalamityOverhaul.Content.ADV
         public virtual void LoadData(TagCompound tag) {
             if (tag.TryGet("FirstMet", out bool firstMet)) {
                 FirstMet = firstMet;
+            }
+            if (tag.TryGet("FishoilQuestDeclined", out bool fishoilQuestDeclined)) {
+                FishoilQuestDeclined = fishoilQuestDeclined;
+            }
+            if (tag.TryGet("FishoilQuestAccepted", out bool fishoilQuestAccepted)) {
+                FishoilQuestAccepted = fishoilQuestAccepted;
+            }
+            if (tag.TryGet("FishoilQuestCompleted", out bool fishoilQuestCompleted)) {
+                FishoilQuestCompleted = fishoilQuestCompleted;
             }
             if (tag.TryGet("FirstResurrectionWarning", out bool firstResurrectionWarning)) {
                 FirstResurrectionWarning = firstResurrectionWarning;
