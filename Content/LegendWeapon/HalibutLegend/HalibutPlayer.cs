@@ -352,8 +352,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
             //封锁过去，埋葬现在，截断未来...难道我今天真的要被孟小董杀死？不，现在还不能放弃...
             else if (CWRKeySystem.Halibut_Clone.JustPressed) {
-                CloneCount = SeaDomainLayers;
-                CloneFish.AltUse(item, Player);
+                if (SeaDomainLayers > 0) {
+                    CloneCount = SeaDomainLayers;
+                    CloneFish.AltUse(item, Player);
+                }
             }
             //既然总部认为我已经死了，那么就让你们看看，我死后，到底会发生什么事情
             else if (CWRKeySystem.Halibut_Restart.JustPressed) {
@@ -380,7 +382,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
             if (!CloneFishActive && OnStartClone && Player.CountProjectilesOfID<ClonePlayer>() == 0) {
                 OnStartClone = false;
-                CloneFish.AltUse(item, Player);
+                if (SeaDomainLayers > 0) {
+                    CloneCount = SeaDomainLayers;
+                    CloneFish.AltUse(item, Player);
+                }
             }
         }
 
