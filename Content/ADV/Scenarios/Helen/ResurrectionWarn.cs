@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -30,12 +31,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Line2 = this.GetLocalization(nameof(Line2), () => "我必须警告你，这不是闹着玩的");
             Line3 = this.GetLocalization(nameof(Line3), () => "当完全复苏时......后果会很严重");
             Line4 = this.GetLocalization(nameof(Line4), () => "那将会是被深渊吞噬的结局");
-            Line5 = this.GetLocalization(nameof(Line5), () => "我体内那些眼睛，每开启一个，复苏速度就会加快");
-            Line6 = this.GetLocalization(nameof(Line6), () => "开的越多，积累越快，危险越大");
-            Line7 = this.GetLocalization(nameof(Line7), () => "但这也是驱使深渊力量的代价，没开启眼睛的我，力量会大打折扣");
+            Line5 = this.GetLocalization(nameof(Line5), () => "我体内那些眼睛，每睁开一个，复苏速度就会加快");
+            Line6 = this.GetLocalization(nameof(Line6), () => "睁开的越多，积累越快，危险越大");
+            Line7 = this.GetLocalization(nameof(Line7), () => "这也是驱使深渊力量的代价，没开启眼睛的我，实力会大打折扣");
             Line8 = this.GetLocalization(nameof(Line8), () => "我们需要学会权衡，战斗时开启多少眼睛才是安全的");
             Line9 = this.GetLocalization(nameof(Line9), () => "如果想要无代价使用这些力量......");
-            Line10 = this.GetLocalization(nameof(Line10), () => "就必须想办法让那些眼睛停止运作，也就是死机");
+            Line10 = this.GetLocalization(nameof(Line10), () => "就必须想办法让那些眼睛死机");
         }
         
         protected override void Build() {
@@ -71,6 +72,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             
             if (resurrectionSystem.Ratio >= 0.7f) {
                 if (ScenarioManager.Start<ResurrectionWarn>()) {
+                    if (!HalibutUIHead.Instance.Open) {
+                        HalibutUIHead.Instance.Open = true;//打开比目鱼UI以便展示
+                    }
+                    if (halibutPlayer.Player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
+                        foreach (var eye in halibutSave.activationSequence) {
+                            eye.IsActive = false;//关掉所有眼球
+                        }
+                    }
                     save.FirstResurrectionWarning = true;
                 }
             }

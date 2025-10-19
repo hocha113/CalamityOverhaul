@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
 Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
@@ -2720,6 +2720,21 @@ Legend: {
 				// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
 				// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
 				// Line7: ......
+			}
+
+			ResurrectionWarn: {
+				// Rolename: Halibut
+				// Line0: Wait... did you feel that?
+				// Line1: The 'resurrection' state is approaching a critical threshold.
+				// Line2: I have to warn you, this isn't a game.
+				// Line3: If the resurrection completes... the consequences will be dire.
+				// Line4: The end result... is being consumed by the abyss.
+				// Line5: Every one of these eyes that opens inside me... it accelerates the resurrection process.
+				// Line6: The more that are open, the faster it builds, and the greater the danger.
+				// Line7: This is the price for wielding abyssal power. If I don't have the eyes open, my own abilities are severely diminished.
+				// Line8: We need to learn how to balance it—to determine how many eyes are 'safe' to have open during combat.
+				// Line9: If we want to use this power without consequence...
+				// Line10: ...we have to find a way to make these eyes 'crash.'
 			}
 		}
 
