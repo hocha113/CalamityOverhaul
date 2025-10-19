@@ -5,6 +5,7 @@ namespace CalamityOverhaul.Content.ADV
     internal class ADVSave
     {
         public bool FirstMet;
+        public bool FirstResurrectionWarning;
         public bool QueenBeeGift;
         public bool SkeletronGift;
         public bool EyeOfCthulhuGift;
@@ -40,6 +41,7 @@ namespace CalamityOverhaul.Content.ADV
         public virtual TagCompound SaveData() {
             TagCompound tag = new TagCompound {
                 ["FirstMet"] = FirstMet,
+                ["FirstResurrectionWarning"] = FirstResurrectionWarning,
                 ["QueenBeeGift"] = QueenBeeGift,
                 ["SkeletronGift"] = SkeletronGift,
                 ["EyeOfCthulhuGift"] = EyeOfCthulhuGift,
@@ -77,6 +79,9 @@ namespace CalamityOverhaul.Content.ADV
         public virtual void LoadData(TagCompound tag) {
             if (tag.TryGet("FirstMet", out bool firstMet)) {
                 FirstMet = firstMet;
+            }
+            if (tag.TryGet("FirstResurrectionWarning", out bool firstResurrectionWarning)) {
+                FirstResurrectionWarning = firstResurrectionWarning;
             }
             if (tag.TryGet("QueenBeeGift", out bool q)) {
                 QueenBeeGift = q;
