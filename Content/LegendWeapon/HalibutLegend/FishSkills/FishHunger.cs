@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 18;
         //恶鬼管理系统
         private static readonly List<int> ActiveHungries = new();
-        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
+        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3);//最多1-4个恶鬼
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -28,17 +28,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //清理失效恶鬼
                 CleanupInactiveHungries();
-
-                List<int> list = [];
-                foreach (var item1 in ActiveHungries) {
-                    if (item1.TryGetProjectile(out var proj) && proj.Alives()) {
-                        list.Add(item1);
-                    }
-                }
-                ActiveHungries.Clear();
-                foreach (var index in list) {
-                    ActiveHungries.Add(index);
-                }
 
                 //如果恶鬼数量未满，生成新恶鬼
                 if (ActiveHungries.Count < MaxHungries) {
@@ -53,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (int)(damage * 1.6f + HalibutData.GetDomainLayer() * 0.4f),
                         knockback * 0.1f,
                         player.whoAmI,
-                        ai0: ActiveHungries.Count //传递索引
+                        ai0: ActiveHungries.Count//传递索引
                     );
 
                     if (hungryProj >= 0 && hungryProj < Main.maxProjectiles) {
@@ -79,7 +68,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void CleanupInactiveHungries() {
-            ActiveHungries.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
+            //只移除真正失效的弹幕
+            ActiveHungries.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active 
+                || Main.projectile[id].type != ModContent.ProjectileType<HungryCompanionProjectile>());
         }
 
         private void CommandHungriesToAttack(Player player) {
