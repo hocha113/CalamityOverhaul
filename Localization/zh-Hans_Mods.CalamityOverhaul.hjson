@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1237,6 +1237,11 @@ Items: {
 			允许水下呼吸
 			对一些诡异的事物有着额外的压制效果
 			'''
+	}
+
+	SirenMusicalBox: {
+		DisplayName: 海妖八音盒
+		Tooltip: ""
 	}
 }
 

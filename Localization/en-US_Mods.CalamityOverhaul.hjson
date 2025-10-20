@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1257,6 +1257,11 @@ Items: {
 			Allows breathing underwater
 			Grants additional resistance against certain eerie entities
 			'''
+	}
+
+	SirenMusicalBox: {
+		DisplayName: Siren Musical Box
+		Tooltip: ""
 	}
 }
 

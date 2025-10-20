@@ -1260,6 +1260,11 @@ Items: {
 			Grants additional resistance against certain eerie entities
 			''' */
 	}
+
+	SirenMusicalBox: {
+		// DisplayName: Siren Musical Box
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
