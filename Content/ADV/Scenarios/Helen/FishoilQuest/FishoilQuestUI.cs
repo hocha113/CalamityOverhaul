@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
 {
     /// <summary>
     /// 提供普通鱼以换取一瓶鱼油的任务窗口
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             if (RequiredItems.Count == 0) InitDefaultRequirement();
 
             //展开或关闭动画
-            float target = (Active && !closing) ? 1f : 0f;
+            float target = Active && !closing ? 1f : 0f;
             showProgress = MathHelper.Lerp(showProgress, target, 0.12f);
             if (Math.Abs(showProgress - target) < 0.01f) showProgress = target;
 
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) return;
             //展开/关闭复合插值
-            float openAlpha = closing ? (1f - hideProgress) : showProgress;
+            float openAlpha = closing ? 1f - hideProgress : showProgress;
             float alpha = Math.Min(openAlpha * 1.6f, 1f);
             Texture2D px = VaultAsset.placeholder2.Value;
             Rectangle panelRect = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, BasePanelWidth, currentPanelHeight);
