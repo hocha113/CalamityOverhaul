@@ -2676,8 +2676,14 @@ Legend: {
 				// QuestionLine: So, what is your choice?
 				// Choice1Text: (Draw weapon)
 				// Choice2Text: (Remain silent)
-				// Choice1Response: Ha. Then let me weigh your worth.
+				// Choice1Response: Then let me weigh your worth.
 				// Choice2Response: ...What a trash fish. Here, a little 'greeting gift'. I'll see you next time.
+				// NoFishLine1: 没想到你这么快就杀掉了我的'妹妹'，独自一人来的？
+				// NoFishLine2: 你的成长速度比我预期的要快
+				// NoFishLine3: 看来你已经开始触碰那些不该知道的东西
+				// NoFishLine4: 我的意识早已熔铸进硫磺火，这具躯体只是被火焰驱动的外壳
+				// NoFishLine5: ......异类？你的层次太低，无法理解我现在的状态
+				// NoFishLine6: 我现身也不是为了解释这些的
 			}
 
 			ADVChoiceBox: {

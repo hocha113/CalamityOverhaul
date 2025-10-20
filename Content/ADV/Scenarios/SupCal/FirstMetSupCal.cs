@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Line9 = this.GetLocalization(nameof(Line9), () => "你的层次太低，理解不了我现在的状态");
             Line10 = this.GetLocalization(nameof(Line10), () => "况且我来这里也不是为了这事儿的......");
 
-            //无比目鱼版本（更直接，删去比目鱼的对话与互动）
+            //无比目鱼版本
             NoFishLine1 = this.GetLocalization(nameof(NoFishLine1), () => "没想到你这么快就杀掉了我的'妹妹'，独自一人来的？");
             NoFishLine2 = this.GetLocalization(nameof(NoFishLine2), () => "你的成长速度比我预期的要快");
             NoFishLine3 = this.GetLocalization(nameof(NoFishLine3), () => "看来你已经开始触碰那些不该知道的东西");
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "那么，你的选择是？");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(拔出武器)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
-            Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "哈，那么便让我来称量称量你吧");
+            Choice1Response = this.GetLocalization(nameof(Choice1Response), () => "那么便让我来称量称量你吧");
             Choice2Response = this.GetLocalization(nameof(Choice2Response), () => "......真是杂鱼呢，那么给你一个见面礼，我们下次见");
         }
 
