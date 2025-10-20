@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.InWorldBossPhase;
 using static CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaOverride;
@@ -13,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
             //完成试炼5但是没有进入困难模式
             if (Level4 && !Main.hardMode) {
-                damage += 5;
+                damage += 3;
             }
             else {
                 damage += 0;
@@ -32,15 +33,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的选择
             do {
                 if (!NPC.downedMechBoss1) {//毁灭者
-                    damage += 4;
+                    damage += 5;
                     break;
                 }
                 if (!NPC.downedMechBoss2) {//双子魔眼
-                    damage += 8;
+                    damage += 10;
                     break;
                 }
                 if (!NPC.downedMechBoss3) {//机械统帅
-                    damage += 12;
+                    damage += 15;
                     break;
                 }
             } while (false);
@@ -51,8 +52,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             ModifyWallSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
             CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
-            float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);//获取攻速分母，刚好可以作为增幅系数
-            damage *= meleeSpeedRoad;//对Base也就是基本伤害进行相乘，避免出现独立乘区的情况
+            float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);
+            float SpeedToMelee = 1f + (float)Math.Log(meleeSpeedRoad) * 0.48f;
+            damage *= SpeedToMelee;
         }
     }
 }

@@ -330,19 +330,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            // 对飞眼怪仅造成0.5倍伤害
+            // 对飞眼怪仅造成30%伤害
             if (target.type == NPCID.Creeper) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.15f;
+            }
+            // 对血肉蠕虫仅造成15%伤害
+            if (CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type) || CWRLoad.targetNpcTypes17.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
             }
             // 对骷髅王之手仅造成1倍伤害
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.5f;
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.075f)));
             }
             // 对史神护卫仅造成1倍伤害
             if (target.type == ModContent.NPCType<EbonianPaladin>() || target.type == ModContent.NPCType<CrimulanPaladin>()) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对史神小护卫仅造成0.5倍伤害
+            // 对史神小护卫仅造成50%伤害
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
                 modifiers.FinalDamage *= 0.25f;
             }
@@ -350,13 +355,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.WallofFleshEye) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对灾眼兄弟仅造成1.5倍伤害
+            // 对灾眼兄弟仅造成1倍伤害
             if (target.type == ModContent.NPCType<Cataclysm>() || target.type == ModContent.NPCType<Catastrophe>()) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.5f;
             }
-            // 对毁灭魔像飞出的头仅造成50%伤害
+            // 对石巨人之拳仅造成1倍伤害
+            if (target.type == NPCID.GolemFistLeft || target.type == NPCID.GolemFistLeft) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            // 对毁灭魔像飞出的头仅造成1倍伤害
             if (target.type == ModContent.NPCType<RavagerHead2>()) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.5f;
             }
             // 对暗能量仅造成1倍伤害
             if (target.type == ModContent.NPCType<DarkEnergy>()) {
@@ -366,43 +375,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == ModContent.NPCType<PolterghastHook>()) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            // 对蠕虫只造成33%伤害
+            // 对蠕虫只造成25%伤害
             if (target.IsWormBody()) {
-                modifiers.FinalDamage *= 0.33f;
+                modifiers.FinalDamage *= 0.25f;
             }
             // 对渊海灾虫仅造成10%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.3f;
+                modifiers.FinalDamage *= 0.4f;
             }
             if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
                 modifiers.FinalDamage *= 0.1f;
             }
-            // 对风编仅造成16.5%伤害
-            if (CWRLoad.targetNpcTypes2.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
-            }
-            // 对塔纳托斯体节仅造成66%伤害
+            // 对塔纳托斯体节仅造成50%伤害
             if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2 || target.type == CWRLoad.ThanatosTail) {
                 modifiers.FinalDamage *= 2f;
             }
             // 神明吞噬者头尾，塔纳托斯头，风编尾不受上述影响
-            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
-                modifiers.FinalDamage *= 3f;
-            }
-            if (target.type == CWRLoad.StormWeaverTail) {
-                modifiers.FinalDamage *= 6f;
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail
+                || target.type == CWRLoad.StormWeaverTail) {
+                modifiers.FinalDamage *= 4f;
             }
             // 对塔纳托斯头造成2.85倍伤害
             if (target.type == CWRLoad.ThanatosHead) {
-                modifiers.FinalDamage *= 8.57f;
-            }
-            // 对肉山造成1.5倍伤害
-            if (target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            // 对世纪之花造成66%伤害
-            if (target.type == NPCID.Plantera) {
-                modifiers.FinalDamage *= 0.66f;
+                modifiers.FinalDamage *= 11.4f;
             }
             // 对毁灭魔像身体部位造成50%伤害
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead

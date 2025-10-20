@@ -67,6 +67,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             base.ModifyHitNPC(target, ref modifiers);
+            // 对蠕虫只造成15%伤害
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.15f;
+            }
         }
 
         public override void AI() {

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content
     public static class InWorldBossPhase
     {
         #region Data
-        public static bool Level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
+        public static bool Level0 => DownedV0.Invoke() && Downed0.Invoke();
 
         public static bool Level1 => DownedV1.Invoke();
 
@@ -18,14 +18,12 @@ namespace CalamityOverhaul.Content
         public static bool Level3 => Downed3.Invoke() || Downed4.Invoke();
 
         public static bool Level4 => Downed5.Invoke() || DownedV4.Invoke();
-        /// <summary>
-        /// 任意灾厄三王
-        /// </summary>
-        public static bool Level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
+
+        public static bool Level5 => Downed6.Invoke() && Downed7.Invoke() && Downed8.Invoke();
 
         public static bool Level6 => Downed10.Invoke() || VDownedV7.Invoke();
 
-        public static bool Level7 => DownedV7.Invoke() || Downed14.Invoke();
+        public static bool Level7 => DownedV7.Invoke();
 
         public static bool Level8 => VDownedV16.Invoke();
 
@@ -469,6 +467,7 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;
             }
+            return 8;
             if (Level0) {
                 level = 1;
             }
