@@ -92,12 +92,12 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //阴影效果
             Rectangle shadow = panelRect;
             shadow.Offset(7, 9);
-            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
+            spriteBatch.Draw(vaule, shadow, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
 
             //渐变背景 - 硫磺火深红色
             int segments = 35;
@@ -120,13 +120,13 @@ namespace CalamityOverhaul.Content.ADV
                 Color finalColor = Color.Lerp(baseColor, brimstoneHot, t * 0.5f * (0.3f + breathing * 0.7f));
                 finalColor *= alpha * 0.92f;
 
-                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
+                spriteBatch.Draw(vaule, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
             //火焰脉冲叠加层
             float pulseBrightness = (float)Math.Sin(infernoPulse * 1.8f) * 0.5f + 0.5f;
             Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
-            spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
+            spriteBatch.Draw(vaule, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
 
             //热浪扭曲效果层
             DrawHeatWaveOverlay(spriteBatch, panelRect, alpha * 0.85f);
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV
             float glowPulse = (float)Math.Sin(emberGlowTimer * 1.5f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-7, -7);
-            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(180, 60, 30) * (alpha * 0.12f * (0.5f + glowPulse * 0.5f)));
+            spriteBatch.Draw(vaule, inner, new Rectangle(0, 0, 1, 1), new Color(180, 60, 30) * (alpha * 0.12f * (0.5f + glowPulse * 0.5f)));
 
             //绘制火焰边框
             DrawBrimstoneFrame(spriteBatch, panelRect, alpha, glowPulse);
@@ -188,7 +188,8 @@ namespace CalamityOverhaul.Content.ADV
                 Vector2 pSize = ptex.Size() * scale;
                 Vector2 pPos = new(panelRect.X + Padding + PortraitInnerPadding, panelRect.Y + panelRect.Height - pSize.Y - Padding - 12f);
 
-                DrawBrimstonePortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 9), (int)(pPos.Y - 9), (int)(pSize.X + 18), (int)(pSize.Y + 18)), alpha * speakerPortrait.Fade * portraitExtraAlpha);
+                DrawBrimstonePortraitFrame(spriteBatch, new Rectangle((int)(pPos.X - 9), (int)(pPos.Y - 9), (int)(pSize.X + 18), (int)(pSize.Y + 18))
+                    , alpha * speakerPortrait.Fade * portraitExtraAlpha);
 
                 Color drawColor = speakerPortrait.BaseColor * contentAlpha * speakerPortrait.Fade * portraitExtraAlpha;
                 if (speakerPortrait.Silhouette) {
@@ -294,7 +295,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 样式工具函数
         private void DrawHeatWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             int waveCount = 8;
             for (int i = 0; i < waveCount; i++) {
                 float t = i / (float)waveCount;
@@ -315,7 +316,7 @@ namespace CalamityOverhaul.Content.ADV
                         if (len > 0.01f) {
                             float rot = diff.ToRotation();
                             Color waveColor = new Color(180, 60, 30) * (alpha * 0.08f);
-                            sb.Draw(px, prevPoint, new Rectangle(0, 0, 1, 1), waveColor, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
+                            sb.Draw(vaule, prevPoint, new Rectangle(0, 0, 1, 1), waveColor, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
                         }
                     }
                     prevPoint = point;
@@ -324,23 +325,23 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private static void DrawBrimstoneFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //外框 - 火焰橙红
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), pulse) * (alpha * 0.85f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
-            sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
+            sb.Draw(vaule, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
             //内框发光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color innerGlow = new Color(220, 100, 50) * (alpha * 0.22f * pulse);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow);
-            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow * 0.7f);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
-            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerGlow * 0.7f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
             //角落火焰标记
             DrawFlameMark(sb, new Vector2(rect.X + 12, rect.Y + 12), alpha * 0.95f);
@@ -350,19 +351,19 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private static void DrawFlameMark(SpriteBatch sb, Vector2 pos, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             float size = 6f;
             Color flameColor = new Color(255, 150, 70) * alpha;
 
             //交叉火焰标记
-            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), flameColor, 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 1.2f, size * 0.3f), SpriteEffects.None, 0f);
-            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.85f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size * 1.2f, size * 0.3f), SpriteEffects.None, 0f);
-            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
-            sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
+            sb.Draw(vaule, pos, new Rectangle(0, 0, 1, 1), flameColor, 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 1.2f, size * 0.3f), SpriteEffects.None, 0f);
+            sb.Draw(vaule, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.85f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size * 1.2f, size * 0.3f), SpriteEffects.None, 0f);
+            sb.Draw(vaule, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
+            sb.Draw(vaule, pos, new Rectangle(0, 0, 1, 1), flameColor * 0.7f, -MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(size * 0.9f, size * 0.25f), SpriteEffects.None, 0f);
         }
 
         private static void DrawFlameGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
             float length = edge.Length();
             if (length < 1f) {
@@ -376,35 +377,23 @@ namespace CalamityOverhaul.Content.ADV
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+                spriteBatch.Draw(vaule, segPos, new Rectangle(0, 0, 1, 1), color, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
         #endregion
 
         #region 粒子内部类
-        private class EmberParticle
+        private class EmberParticle(Vector2 start)
         {
-            public Vector2 Pos;
-            public float Size;
-            public float RiseSpeed;
-            public float Drift;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public float RotationSpeed;
-            public float Rotation;
-
-            public EmberParticle(Vector2 start) {
-                Pos = start;
-                Size = Main.rand.NextFloat(2.5f, 5.5f);
-                RiseSpeed = Main.rand.NextFloat(0.4f, 1.1f);
-                Drift = Main.rand.NextFloat(-0.25f, 0.25f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(70f, 130f);
-                Seed = Main.rand.NextFloat(10f);
-                RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
+            public Vector2 Pos = start;
+            public float Size = Main.rand.NextFloat(2.5f, 5.5f);
+            public float RiseSpeed = Main.rand.NextFloat(0.4f, 1.1f);
+            public float Drift = Main.rand.NextFloat(-0.25f, 0.25f);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(70f, 130f);
+            public float Seed = Main.rand.NextFloat(10f);
+            public float RotationSpeed = Main.rand.NextFloat(-0.05f, 0.05f);
+            public float Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
@@ -420,7 +409,7 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
+                Texture2D vaule = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
                 float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
@@ -430,33 +419,22 @@ namespace CalamityOverhaul.Content.ADV
                 Color emberGlow = Color.Lerp(new Color(255, 140, 60), new Color(180, 40, 20), t) * (alpha * 0.5f * fade);
 
                 //光晕
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
+                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
                 //核心
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
+                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
             }
         }
 
-        private class AshParticle
+        private class AshParticle(Vector2 start)
         {
-            public Vector2 Pos;
-            public float Size;
-            public float RiseSpeed;
-            public float Drift;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public float Rotation;
-
-            public AshParticle(Vector2 start) {
-                Pos = start;
-                Size = Main.rand.NextFloat(1.5f, 3.5f);
-                RiseSpeed = Main.rand.NextFloat(0.15f, 0.45f);
-                Drift = Main.rand.NextFloat(-0.35f, 0.35f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(100f, 180f);
-                Seed = Main.rand.NextFloat(10f);
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
+            public Vector2 Pos = start;
+            public float Size = Main.rand.NextFloat(1.5f, 3.5f);
+            public float RiseSpeed = Main.rand.NextFloat(0.15f, 0.45f);
+            public float Drift = Main.rand.NextFloat(-0.35f, 0.35f);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(100f, 180f);
+            public float Seed = Main.rand.NextFloat(10f);
+            public float Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
@@ -481,27 +459,15 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        private class FlameWisp
+        private class FlameWisp(Vector2 start)
         {
-            public Vector2 Pos;
-            public Vector2 Velocity;
-            public float Size;
-            public float Life;
-            public float MaxLife;
-            public float Seed;
-            public float Phase;
-
-            public FlameWisp(Vector2 start) {
-                Pos = start;
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(0.3f, 0.8f);
-                Velocity = angle.ToRotationVector2() * speed;
-                Size = Main.rand.NextFloat(8f, 16f);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(120f, 200f);
-                Seed = Main.rand.NextFloat(10f);
-                Phase = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
+            public Vector2 Pos = start;
+            public Vector2 Velocity = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(0.3f, 0.8f);
+            public float Size = Main.rand.NextFloat(8f, 16f);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(120f, 200f);
+            public float Seed = Main.rand.NextFloat(10f);
+            public float Phase = Main.rand.NextFloat(MathHelper.TwoPi);
 
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++;
@@ -530,7 +496,7 @@ namespace CalamityOverhaul.Content.ADV
             }
 
             public void Draw(SpriteBatch sb, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
+                Texture2D vaule = VaultAsset.placeholder2.Value;
                 float t = Life / MaxLife;
                 float fade = (float)Math.Sin(t * Math.PI);
                 float pulse = (float)Math.Sin(Life * 0.15f + Seed) * 0.5f + 0.5f;
@@ -542,41 +508,41 @@ namespace CalamityOverhaul.Content.ADV
                 Color wispGlow = new Color(255, 120, 60) * (alpha * 0.3f * fade);
 
                 //外层光晕
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), wispGlow, 0f, new Vector2(0.5f, 0.5f), scale * 3f, SpriteEffects.None, 0f);
+                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), wispGlow, 0f, new Vector2(0.5f, 0.5f), scale * 3f, SpriteEffects.None, 0f);
                 //内层核心
-                sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), wispCore, 0f, new Vector2(0.5f, 0.5f), scale * 1.2f, SpriteEffects.None, 0f);
+                sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), wispCore, 0f, new Vector2(0.5f, 0.5f), scale * 1.2f, SpriteEffects.None, 0f);
             }
         }
         #endregion
 
         #region 公共静态绘制函数
         private static void DrawBrimstonePortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //深色背景
             Color back = new Color(20, 5, 5) * (alpha * 0.88f);
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), back);
+            sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), back);
 
             //火焰边框
             Color edge = new Color(200, 80, 40) * (alpha * 0.75f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), edge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-            sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
         }
 
         private static void DrawFlameGlow(SpriteBatch sb, Rectangle rect, Color glow) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //内部填充
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.2f);
+            sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), glow * 0.2f);
 
             //发光边框
             int border = 2;
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.5f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.6f);
-            sb.Draw(px, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.6f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.7f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.5f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.6f);
+            sb.Draw(vaule, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.6f);
         }
         #endregion
     }

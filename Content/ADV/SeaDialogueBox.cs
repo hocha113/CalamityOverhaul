@@ -9,7 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// 特化的深海风格 GalGame 对话框，实现视觉与特效
+    /// 特化的深海风格 GalGame 对话框
     /// </summary>
     internal class SeaDialogueBox : DialogueBoxBase
     {
@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.ADV
         private float abyssPulse = 0f; //深渊呼吸相位
 
         //视觉粒子
-        private readonly List<StarFx> starFx = new();
+        private readonly List<StarFx> starFx = [];
         private int starSpawnTimer = 0;
-        private readonly List<BubbleFx> bubbles = new();
+        private readonly List<BubbleFx> bubbles = [];
         private int bubbleSpawnTimer = 0;
         private const float BubbleSideMargin = 34f; //泡泡水平边距控制
 
@@ -75,9 +75,9 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         protected override void DrawStyle(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha, float easedProgress) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             Rectangle shadow = panelRect; shadow.Offset(6, 8);
-            spriteBatch.Draw(px, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
+            spriteBatch.Draw(vaule, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.50f));
 
             int segs = 30;
             for (int i = 0; i < segs; i++) {
@@ -93,15 +93,15 @@ namespace CalamityOverhaul.Content.ADV
                 Color blendBase = Color.Lerp(abyssDeep, abyssMid, (float)Math.Sin(panelPulseTimer * 0.4f + t * 1.6f) * 0.5f + 0.5f);
                 Color c = Color.Lerp(blendBase, bioEdge, t * 0.6f * (0.4f + breathing * 0.6f));
                 c *= alpha * 0.95f;
-                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
+                spriteBatch.Draw(vaule, r, new Rectangle(0, 0, 1, 1), c);
             }
             float darkPulse = (float)Math.Sin(abyssPulse * 1.3f) * 0.5f + 0.5f;
             Color vignette = new Color(0, 20, 28) * (alpha * 0.35f * darkPulse);
-            spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), vignette);
+            spriteBatch.Draw(vaule, panelRect, new Rectangle(0, 0, 1, 1), vignette);
             DrawWaveOverlay(spriteBatch, panelRect, alpha * 0.9f);
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 1.8f) * 0.5f + 0.5f;
             Rectangle inner = panelRect; inner.Inflate(-6, -6);
-            spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
+            spriteBatch.Draw(vaule, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.07f * (0.4f + pulse * 0.6f)));
             DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
             foreach (var b in bubbles) {
                 b.Draw(spriteBatch, alpha * 0.9f);
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 样式工具函数
         private void DrawWaveOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             int bands = 6;
             for (int i = 0; i < bands; i++) {
                 float t = i / (float)bands;
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.ADV
                         if (len > 0.01f) {
                             float rot = diff.ToRotation();
                             Color c = new Color(30, 120, 170) * (alpha * 0.07f);
-                            sb.Draw(px, prev, new Rectangle(0, 0, 1, 1), c, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
+                            sb.Draw(vaule, prev, new Rectangle(0, 0, 1, 1), c, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
                         }
                     }
                     prev = point;
@@ -241,18 +241,18 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.8f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
             Rectangle inner = rect; inner.Inflate(-5, -5);
             Color innerC = new Color(120, 220, 255) * (alpha * 0.18f * pulse);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
-            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.65f);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
-            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.65f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.6f);
@@ -288,17 +288,15 @@ namespace CalamityOverhaul.Content.ADV
         #endregion
 
         #region 粒子内部类
-        private class StarFx
+        private class StarFx(Vector2 p)
         {
-            public Vector2 Pos; public float BaseRadius; public float Rot; public float Life; public float MaxLife; public float Seed;
-            public StarFx(Vector2 p) {
-                Pos = p;
-                BaseRadius = Main.rand.NextFloat(2f, 4f);
-                Rot = Main.rand.NextFloat(MathHelper.TwoPi);
-                Life = 0f;
-                MaxLife = Main.rand.NextFloat(60f, 140f);
-                Seed = Main.rand.NextFloat(10f);
-            }
+            public Vector2 Pos = p; 
+            public float BaseRadius = Main.rand.NextFloat(2f, 4f); 
+            public float Rot = Main.rand.NextFloat(MathHelper.TwoPi); 
+            public float Life = 0f; 
+            public float MaxLife = Main.rand.NextFloat(60f, 140f); 
+            public float Seed = Main.rand.NextFloat(10f);
+
             public bool Update(Vector2 panelPos, Vector2 panelSize) {
                 Life++; Rot += 0.02f; float t = Life / MaxLife;
                 float drift = (float)Math.Sin((Life + Seed * 20f) * 0.03f) * 6f; Pos.X += drift * 0.02f; if (Life >= MaxLife) return true;
@@ -362,24 +360,24 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 公共静态绘制碎片
         private static void DrawPortraitFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             Color back = new Color(5, 20, 28) * (alpha * 0.85f);
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), back);
+            sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), back);
             Color edge = new Color(70, 180, 230) * (alpha * 0.6f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
-            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+            sb.Draw(vaule, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
         }
 
         private static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
+            Texture2D vaule = VaultAsset.placeholder2.Value;
+            sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
             int border = 2;
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.6f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.4f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
-            sb.Draw(px, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.6f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - border, rect.Width, border), new Rectangle(0, 0, 1, 1), glow * 0.4f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
+            sb.Draw(vaule, new Rectangle(rect.Right - border, rect.Y, border, rect.Height), new Rectangle(0, 0, 1, 1), glow * 0.5f);
         }
         #endregion
     }
