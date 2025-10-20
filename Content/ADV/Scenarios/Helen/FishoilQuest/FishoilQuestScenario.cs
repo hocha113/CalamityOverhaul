@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -16,10 +17,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         public string LocalizationCategory => "Legend.HalibutText.ADV";
 
         //触发控制
-        public static bool Spwand; //外部可置 true 来允许尝试触发
-        private static bool scenarioStarted; //已进入对话(等待玩家选择)
-        private static int spawnDelayTimer; //延迟计时器
-        private const int BassNeedThreshold = 10; //需要的初始鲈鱼数量门槛
+        public static bool Spwand;//外部可置 true 来允许尝试触发
+        private static bool scenarioStarted;//已进入对话(等待玩家选择)
+        private static int spawnDelayTimer;//延迟计时器
+
+        //鱼类需求总量(所有候选鱼的总和达到此数量才会触发)
+        private const int FishNeedThreshold = 10;
+
+        //可计入的普通鱼ID表
+        private static readonly int[] CandidateFishTypes = [
+            ItemID.Bass,
+            ItemID.Trout,
+            ItemID.Salmon,
+            ItemID.Tuna,
+            ItemID.RedSnapper,
+            ItemID.NeonTetra,
+            ItemID.Damselfish,
+            ItemID.ArmoredCavefish,
+            ItemID.Hemopiranha,//血腥生态常见
+            ItemID.Ebonkoi,//腐化生态常见
+            ItemID.SpecularFish,//洞穴/地下水域常见
+            ItemID.Prismite//稀有
+        ];
 
         public static LocalizedText Rolename { get; private set; }
         public static LocalizedText Line0 { get; private set; }
@@ -35,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             Line0 = this.GetLocalization(nameof(Line0), () => "你最近好像捕到了不少普通的鱼");
-            Line1 = this.GetLocalization(nameof(Line1), () => "给我一批做实验，我可以提炼一瓶新鲜的鱼油");
+            Line1 = this.GetLocalization(nameof(Line1), () => "给我一批做实验,我可以提炼一瓶新鲜的鱼油");
             Line2 = this.GetLocalization(nameof(Line2), () => "过程不难但很枯燥");
             Line3 = this.GetLocalization(nameof(Line3), () => "鱼油很有潜力,比你想的更有用");
             Line4 = this.GetLocalization(nameof(Line4), () => "愿意吗?");
@@ -46,12 +65,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
-
             Add(Rolename.Value, Line0.Value);
             Add(Rolename.Value, Line1.Value);
             Add(Rolename.Value, Line2.Value);
             Add(Rolename.Value, Line3.Value);
-            AddWithChoices(Rolename.Value, Line4.Value, new System.Collections.Generic.List<Choice>{
+            AddWithChoices(Rolename.Value, Line4.Value, new System.Collections.Generic.List<Choice> {
                 new Choice(ChoiceAccept.Value, OnAccept, enabled: true),
                 new Choice(ChoiceDecline.Value, OnDecline, enabled: true)
             });
@@ -62,7 +80,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 halibutPlayer.ADCSave.FishoilQuestAccepted = true;
                 FishoilQuestUI.Instance.OpenPersistent();
             }
-            scenarioStarted = false; //结束占用
+            scenarioStarted = false;
             Complete();
         }
 
@@ -75,66 +93,55 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
-            //必须击败蜂后后才有兴趣让你收集最普通的鱼
             if (!NPC.downedQueenBee) {
                 Spwand = false;
                 return;
             }
-
             if (!save.FirstMet) {
                 return;
             }
-
-            //已经完成或拒绝就不再尝试
             if (save.FishoilQuestAccepted || save.FishoilQuestDeclined) {
                 return;
             }
-
-            //对话已经开始(正在选项中)时不重复尝试
             if (scenarioStarted) {
                 return;
             }
 
             Player player = halibutPlayer.Player;
-            int bassCount = 0;
+            int totalFishCount = 0;
+            //统计所有候选鱼的总数量
             for (int i = 0; i < player.inventory.Length; i++) {
-                if (player.inventory[i].type == Terraria.ID.ItemID.Bass) {
-                    bassCount += player.inventory[i].stack;
-                    if (bassCount >= BassNeedThreshold) {
+                Item item = player.inventory[i];
+                if (item != null && item.stack > 0 && CandidateFishTypes.Contains(item.type)) {
+                    totalFishCount += item.stack;
+                    if (totalFishCount >= FishNeedThreshold) {
                         break;
                     }
                 }
             }
 
-            //未达到门槛
-            if (bassCount < BassNeedThreshold) {
+            if (totalFishCount < FishNeedThreshold) {
                 return;
             }
 
-            //首次达到门槛时设置延迟
             if (!Spwand) {
                 Spwand = true;
-                spawnDelayTimer = Main.rand.Next(60, 160);
+                spawnDelayTimer = Main.rand.Next(60, 160);//随机延迟保证自然感
             }
-
-            //延迟倒计时
             if (spawnDelayTimer > 0) {
                 spawnDelayTimer--;
                 return;
             }
-
-            //排除混乱事件
             if (VaultUtils.IsInvasion()) {
                 return;
             }
-
             if (CWRWorld.HasBoss) {
-                return;//有Boss战时不触发
+                return;
             }
 
             if (ScenarioManager.Start<FishoilQuestScenario>()) {
-                scenarioStarted = true; //防止重复
-                Spwand = false; //消耗标记
+                scenarioStarted = true;
+                Spwand = false;
             }
         }
     }
