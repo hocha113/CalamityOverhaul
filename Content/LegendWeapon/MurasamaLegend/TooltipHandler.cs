@@ -14,13 +14,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (index != 4) {
                 return;
             }
-            //击败了史莱姆之神但是没有击败肉山
             if (Level4 && !Main.hardMode) {
                 newContent = MuraText.GetTextValue("Subtest_Text0");
                 num += "-1";
-            }
-            else {
-                num += "-0";
             }
         }
 
@@ -36,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 newContent = MuraText.GetTextValue("Subtest_Text2");
                 num += "-3";
             }
-            else if (NPC.downedMechBoss2 &&!NPC.downedMechBoss1) {
+            else if (NPC.downedMechBoss2 && !NPC.downedMechBoss1) {
                 newContent = MuraText.GetTextValue("Subtest_Text1");
                 num += "-2";
             }

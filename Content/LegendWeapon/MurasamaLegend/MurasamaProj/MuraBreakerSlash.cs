@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.CeaselessVoid;
-using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.Polterghast;
 using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.SlimeGod;
@@ -160,17 +159,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (IsBossActive() && !target.boss) {
                 modifiers.FinalDamage *= 2f;
             }
-            // 对红宝石，蓝宝石仅造成1.5倍
-            if (target.type == ModContent.NPCType<KingSlimeJewelRuby>() || target.type == ModContent.NPCType<KingSlimeJewelSapphire>()) {
-                modifiers.FinalDamage *= 0.75f;
-            }
             // 对飞眼怪仅造成30%伤害
             if (target.type == NPCID.Creeper) {
                 modifiers.FinalDamage *= 0.15f;
             }
-            // 对血肉蠕虫仅造成15%伤害
+            // 对血肉蠕虫仅造成33%伤害
             if (CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type) || CWRLoad.targetNpcTypes17.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.66f;
             }
             // 对骷髅王之手仅造成1倍伤害
             if (target.type == NPCID.SkeletronHand) {
