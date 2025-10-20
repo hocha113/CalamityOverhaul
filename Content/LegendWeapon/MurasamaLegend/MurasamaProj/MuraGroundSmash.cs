@@ -393,32 +393,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         private void DealAreaDamage() {
-            if (!Projectile.IsOwnedByLocalPlayer()) return;
-
-            float damageRadius = 400f + MurasamaOverride.GetLevel(Item) * 30f;
-            int baseDamage = Projectile.damage;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || !npc.CanBeChasedBy() || npc.friendly) continue;
-
-                float distance = Vector2.Distance(impactPosition, npc.Center);
-                if (distance < damageRadius) {
-                    //距离越近伤害越高
-                    float damageMultiplier = 1.5f - (distance / damageRadius) * 0.7f;
-                    int damage = (int)(baseDamage * damageMultiplier);
-
-                    Vector2 knockbackDir = (npc.Center - impactPosition).SafeNormalize(Vector2.Zero);
-                    float knockbackForce = Projectile.knockBack * (2f - distance / damageRadius);
-
-                    npc.SimpleStrikeNPC(damage, Math.Sign(knockbackDir.X), false, knockbackForce);
-
-                    if (!VaultUtils.isSinglePlayer) {
-                        NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, i, damage,
-                            knockbackForce, Math.Sign(knockbackDir.X));
-                    }
-                }
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
             }
+
+            Projectile.Explode(300 + MurasamaOverride.GetLevel(Item) * 30);
         }
 
         private void SpawnGroundCracks() {
