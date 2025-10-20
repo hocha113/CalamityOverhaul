@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.ADV
         public bool SupCalQuestRewardSceneComplete;//任务完成后的奖励场景是否已播放
 
         public virtual TagCompound SaveData() {
-            TagCompound tag = new TagCompound {
+            TagCompound tag = new() {
                 ["FirstMet"] = FirstMet,
                 ["FishoilQuestDeclined"] = FishoilQuestDeclined,
                 ["FishoilQuestAccepted"] = FishoilQuestAccepted,

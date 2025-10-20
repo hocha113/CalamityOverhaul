@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.ADV
                     allLines.Add(l.TrimEnd('-', ' '));
                 }
             }
-            wrappedLines = allLines.ToArray();
+            wrappedLines = [.. allLines];
             int textLines = wrappedLines.Length;
             int lineHeight = (int)(font.MeasureString("A").Y * 0.8f) + LineSpacing;
 

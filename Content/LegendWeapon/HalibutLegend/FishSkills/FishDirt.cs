@@ -526,7 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity = LimitVector(Projectile.velocity, MaxSpeed);
         }
 
-        private Vector2 LimitVector(Vector2 vec, float max) {
+        private static Vector2 LimitVector(Vector2 vec, float max) {
             if (vec.LengthSquared() > max * max) {
                 return vec.SafeNormalize(Vector2.Zero) * max;
             }
