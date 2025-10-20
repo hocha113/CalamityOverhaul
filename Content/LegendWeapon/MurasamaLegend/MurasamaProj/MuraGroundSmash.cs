@@ -40,7 +40,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         //视觉特效变量
         private float auraIntensity = 0f;
-        private float screenShakeIntensity = 0f;
         private readonly List<LightningParticle> lightningEffects = new();
         private readonly List<ShockwaveRing> shockwaves = new();
         private Vector2 impactPosition = Vector2.Zero;
@@ -64,6 +63,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override bool? CanDamage() {
             //只在下落和冲击阶段造成伤害
             return State == GroundSmashState.Descending || State == GroundSmashState.Impact;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            base.ModifyHitNPC(target, ref modifiers);
         }
 
         public override void AI() {
@@ -101,9 +104,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.25f);
                 Owner.velocity = Vector2.Zero;
             }
-
-            //屏幕震动衰减
-            screenShakeIntensity *= 0.9f;
         }
 
         private void ChargeUpPhase() {
@@ -290,7 +290,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //屏幕震动
             if (CWRServerConfig.Instance.ScreenVibration) {
-                screenShakeIntensity = 20f;
                 PunchCameraModifier modifier = new PunchCameraModifier(
                     impactPosition,
                     new Vector2(0, Main.rand.NextFloat(-3, 3)),
