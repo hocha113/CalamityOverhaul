@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Rolename3 { get; private set; }
 
-        //对话文本本地化
+        //对话文本本地化(有比目鱼版本)
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -37,6 +37,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         public static LocalizedText Line8 { get; private set; }
         public static LocalizedText Line9 { get; private set; }
         public static LocalizedText Line10 { get; private set; }
+
+        //无比目鱼版本文本
+        public static LocalizedText NoFishLine1 { get; private set; }
+        public static LocalizedText NoFishLine2 { get; private set; }
+        public static LocalizedText NoFishLine3 { get; private set; }
+        public static LocalizedText NoFishLine4 { get; private set; }
+        public static LocalizedText NoFishLine5 { get; private set; }
+        public static LocalizedText NoFishLine6 { get; private set; }
+
         public static LocalizedText QuestionLine { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
@@ -51,6 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "至尊灾厄");
             Rolename3 = this.GetLocalization(nameof(Rolename3), () => "比目鱼");
 
+            //有比目鱼版本
             Line1 = this.GetLocalization(nameof(Line1), () => "没想到你这么快就杀掉了我的'妹妹'");
             Line2 = this.GetLocalization(nameof(Line2), () => "你的成长速度确实有些快了");
             Line3 = this.GetLocalization(nameof(Line3), () => "你是......我对你有印象");
@@ -62,6 +72,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Line8 = this.GetLocalization(nameof(Line8), () => "......活人的意识，非人的躯体，依靠媒介行走世间，你成为了异类?!");
             Line9 = this.GetLocalization(nameof(Line9), () => "你的层次太低，理解不了我现在的状态");
             Line10 = this.GetLocalization(nameof(Line10), () => "况且我来这里也不是为了这事儿的......");
+
+            //无比目鱼版本（更直接，删去比目鱼的对话与互动）
+            NoFishLine1 = this.GetLocalization(nameof(NoFishLine1), () => "没想到你这么快就杀掉了我的'妹妹'，独自一人来的？");
+            NoFishLine2 = this.GetLocalization(nameof(NoFishLine2), () => "你的成长速度比我预期的要快");
+            NoFishLine3 = this.GetLocalization(nameof(NoFishLine3), () => "看来你已经开始触碰那些不该知道的东西");
+            NoFishLine4 = this.GetLocalization(nameof(NoFishLine4), () => "我的意识早已熔铸进硫磺火，这具躯体只是被火焰驱动的外壳");
+            NoFishLine5 = this.GetLocalization(nameof(NoFishLine5), () => "......异类？你的层次太低，无法理解我现在的状态");
+            NoFishLine6 = this.GetLocalization(nameof(NoFishLine6), () => "我现身也不是为了解释这些的");
+
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "那么，你的选择是？");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(拔出武器)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
@@ -106,28 +125,48 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             DialogueBoxBase.RegisterPortrait(Rolename2.Value + expressionDespise, ADVAsset.SupCalADV[5]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + expressionDespise, silhouette: false);
 
-            //注册比目鱼的不同表情
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
-            DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
+            bool hasHalibut = false;
+            try {
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    hasHalibut = halibutPlayer.HasHalubut;
+                }
+            } catch {
+                hasHalibut = false;
+            }
 
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenAmazed, ADVAsset.Helen_amazeADV);
-            DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenAmazed, silhouette: false);
+            if (hasHalibut) {
+                //注册比目鱼的不同表情
+                DialogueBoxBase.RegisterPortrait(Rolename3.Value, ADVAsset.HelenADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename3.Value, silhouette: false);
 
-            DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenSolemn, ADVAsset.Helen_solemnADV);
-            DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenSolemn, silhouette: false);
+                DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenAmazed, ADVAsset.Helen_amazeADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenAmazed, silhouette: false);
 
-            //添加对话（使用本地化文本）
-            Add(Rolename1.Value, Line1.Value);
-            Add(Rolename1.Value, Line2.Value);
-            Add(Rolename3.Value + helenSolemn, Line3.Value); //严肃表情 - 认出对方
-            Add(Rolename3.Value + helenSolemn, Line4.Value); //严肃表情 - 说出对方身份
-            Add(Rolename2.Value, Line5.Value);
-            Add(Rolename3.Value + helenAmazed, Line6.Value); //惊讶表情 - 质疑为何还活着
-            Add(Rolename2.Value + expressionCloseEye, Line7.Value);
-            Add(Rolename3.Value + helenAmazed, Line8.Value); //惊讶表情 - 震惊于异类状态
-            Add(Rolename2.Value + expressionCloseEye, Line9.Value);
-            Add(Rolename2.Value + expressionBeTo, Line10.Value);
+                DialogueBoxBase.RegisterPortrait(Rolename3.Value + helenSolemn, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename3.Value + helenSolemn, silhouette: false);
 
+                //添加对话（使用本地化文本）
+                Add(Rolename1.Value, Line1.Value);
+                Add(Rolename1.Value, Line2.Value);
+                Add(Rolename3.Value + helenSolemn, Line3.Value); //严肃表情，认出对方
+                Add(Rolename3.Value + helenSolemn, Line4.Value); //严肃表情，说出对方身份
+                Add(Rolename2.Value, Line5.Value);
+                Add(Rolename3.Value + helenAmazed, Line6.Value); //惊讶表情，质疑为何还活着
+                Add(Rolename2.Value + expressionCloseEye, Line7.Value);
+                Add(Rolename3.Value + helenAmazed, Line8.Value); //惊讶表情，震惊于异类状态
+                Add(Rolename2.Value + expressionCloseEye, Line9.Value);
+                Add(Rolename2.Value + expressionBeTo, Line10.Value);
+            } else {
+                //无比目鱼版本添加对话
+                Add(Rolename1.Value, NoFishLine1.Value);
+                Add(Rolename1.Value, NoFishLine2.Value);
+                Add(Rolename2.Value + expressionCloseEye, NoFishLine3.Value);
+                Add(Rolename2.Value + expressionCloseEye, NoFishLine4.Value);
+                Add(Rolename2.Value + expressionBeTo, NoFishLine5.Value);
+                Add(Rolename2.Value + expressionBeTo, NoFishLine6.Value);
+            }
+
+            //统一的选择部分
             AddWithChoices(Rolename2.Value + expressionBeTo, QuestionLine.Value, [
                 new(Choice1Text.Value, () => {
                     //选择后继续对话
