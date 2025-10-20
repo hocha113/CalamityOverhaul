@@ -283,8 +283,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             for (int layer = 0; layer < 5; layer++) {
                 int particlesPerRing = 24;
                 float ringRadius = 40f + layer * 35f;
-                float layerDelay = layer * 0.2f;
-                
                 for (int j = 0; j < particlesPerRing; j++) {
                     float angle = MathHelper.TwoPi / particlesPerRing * j;
                     Vector2 pos = Player.Center + angle.ToRotationVector2() * ringRadius;
