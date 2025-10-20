@@ -126,8 +126,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const float MinWidth = 8f;//最小宽度（完全收起时）
 
         //九只奈落之眼 + 额外中心第十眼
-        internal List<SeaEyeButton> eyes => player.GetModPlayer<HalibutSave>().eyes;
-        internal List<SeaEyeButton> activationSequence => player.GetModPlayer<HalibutSave>().activationSequence;
+        internal static List<SeaEyeButton> Eyes => player.GetModPlayer<HalibutSave>().eyes;
+        internal static List<SeaEyeButton> ActivationSequence => player.GetModPlayer<HalibutSave>().activationSequence;
         internal const int MaxEyes = 9;//外圈仍然是9
         internal const float EyeOrbitRadius = 75f;//眼睛轨道半径
         private ExtraSeaEyeButton extraEye = new();//第十只中心额外之眼
@@ -170,8 +170,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public int ActiveEyeCount {
             get {
                 int baseCount = 0;
-                if (activationSequence != null) {
-                    foreach (var eye in activationSequence) {
+                if (ActivationSequence != null) {
+                    foreach (var eye in ActivationSequence) {
                         if (eye.IsActive) {
                             baseCount++;
                         }
@@ -202,10 +202,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Update() {
-            if (eyes.Count == 0) {
+            if (Eyes.Count == 0) {
                 for (int i = 0; i < MaxEyes; i++) {
                     float angle = (i / (float)MaxEyes) * MathHelper.TwoPi - MathHelper.PiOver2;
-                    eyes.Add(new SeaEyeButton(i, angle));
+                    Eyes.Add(new SeaEyeButton(i, angle));
                 }
             }
 
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //更新眼睛
             hoveredEye = null;
-            foreach (var eye in eyes) {
+            foreach (var eye in Eyes) {
                 eye.Update(halibutCenter, EyeOrbitRadius * easedProgress, easedProgress);
                 if (eye.IsHovered && hoveringPanel) {
                     hoveredEye = eye;
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             //第十眼出现条件：外圈9全部激活 且 TheOnlyBornOfAnEra 条件满足
             bool canShowExtra = false;
-            if (activationSequence.Count >= 9) {
+            if (ActivationSequence.Count >= 9) {
                 if (HalibutPlayer.TheOnlyBornOfAnEra()) {
                     canShowExtra = true;
                 }
@@ -453,8 +453,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float rate = 0f;
             int crashLevel = halibutPlayer.CrashesLevel();
 
-            for (int i = 0; i < activationSequence.Count; i++) {
-                SeaEyeButton eye = activationSequence[i];
+            for (int i = 0; i < ActivationSequence.Count; i++) {
+                SeaEyeButton eye = ActivationSequence[i];
                 if (!eye.IsActive) {
                     continue;
                 }
@@ -485,19 +485,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void HandleEyeToggle(SeaEyeButton eye) {
-            bool wasActive = eye.IsActive;
-            eye.Toggle();
             SoundEngine.PlaySound(SoundID.MenuTick);
+            eye.Toggle();
+
+            bool wasActive = eye.IsActive;          
+            
             if (!wasActive && eye.IsActive) {
-                if (!activationSequence.Contains(eye)) {
-                    activationSequence.Add(eye);
-                    eye.LayerNumber = activationSequence.Count;
+                if (!ActivationSequence.Contains(eye)) {
+                    ActivationSequence.Add(eye);
+                    eye.LayerNumber = ActivationSequence.Count;
                 }
                 activationAnimations.Add(new EyeActivationAnimation(eye.Position, eye.LayerNumber ?? 1));
                 SpawnEyeToggleParticles(eye, true);
             }
             else if (wasActive && !eye.IsActive) {
-                activationSequence.Remove(eye);
+                ActivationSequence.Remove(eye);
                 RecalculateLayerNumbers();
                 SpawnEyeToggleParticles(eye, false);
             }
@@ -519,8 +521,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void RecalculateLayerNumbers() {
-            for (int i = 0; i < activationSequence.Count; i++) {
-                activationSequence[i].LayerNumber = i + 1;
+            for (int i = 0; i < ActivationSequence.Count; i++) {
+                ActivationSequence[i].LayerNumber = i + 1;
             }
         }
 
@@ -588,7 +590,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 pulse.Draw(spriteBatch, alpha);
             }
             DrawHalibut(spriteBatch, alpha);
-            foreach (var eye in eyes) {
+            foreach (var eye in Eyes) {
                 eye.Draw(spriteBatch, alpha);
             }
             DrawExtraEye(spriteBatch, alpha);
@@ -946,7 +948,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 crashLevel = halibutPlayer.CrashesLevel();
             }
 
-            foreach (var eye in activationSequence) {
+            foreach (var eye in ActivationSequence) {
                 if (!eye.IsActive) {
                     continue;
                 }
@@ -1018,7 +1020,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (extraEye == null) {
                 return;
             }
-            bool canShow = activationSequence.Count >= 9 && HalibutPlayer.TheOnlyBornOfAnEra();
+            bool canShow = ActivationSequence.Count >= 9 && HalibutPlayer.TheOnlyBornOfAnEra();
             if (!canShow) {
                 return;
             }
