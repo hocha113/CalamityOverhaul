@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
 
         private void InitDefaultRequirement() {
             RequiredItems.Clear();
-            RequiredItems.Add(new QuestMaterialSlot(ItemID.Bass, 30));
+            RequiredItems.Add(new QuestMaterialSlot(ItemID.Bass, 300));
         }
 
         public override void Update() {
@@ -219,17 +219,26 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 if (slot.IsSatisfied) continue;
                 //先处理鼠标物品
                 if (Main.mouseItem.type == slot.ItemType && Main.mouseItem.stack > 0) {
-                    int need = slot.Need - slot.Current; int move = Math.Min(need, Main.mouseItem.stack); slot.Current += move; Main.mouseItem.stack -= move; if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
+                    int need = slot.Need - slot.Current; int move = Math.Min(need, Main.mouseItem.stack); 
+                    slot.Current += move; Main.mouseItem.stack -= move; 
+                    if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
                 }
                 //再处理背包
                 for (int i = 0; i < p.inventory.Length && !slot.IsSatisfied; i++) {
-                    Item inv = p.inventory[i]; if (inv.type != slot.ItemType || inv.stack <= 0) continue; int need = slot.Need - slot.Current; int move = Math.Min(need, inv.stack); slot.Current += move; inv.stack -= move; if (inv.stack <= 0) inv.TurnToAir();
+                    Item inv = p.inventory[i]; if (inv.type != slot.ItemType || inv.stack <= 0) continue; 
+                    int need = slot.Need - slot.Current; int move = Math.Min(need, inv.stack); 
+                    slot.Current += move; inv.stack -= move; if (inv.stack <= 0) inv.TurnToAir();
                 }
             }
         }
 
         private void GiveReward() {
-            if (rewarded) return; rewarded = true; SoundEngine.PlaySound(SoundID.Research); Item reward = new Item(ModContent.ItemType<Fishoil>()); reward.stack = 1; Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("FishoilQuestReward"), reward, reward.stack); closing = true;
+            if (rewarded) return; rewarded = true; 
+            SoundEngine.PlaySound(SoundID.Research); 
+            Item reward = new Item(ModContent.ItemType<Fishoil>()); 
+            reward.stack = 5; 
+            Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_Misc("FishoilQuestReward"), reward, reward.stack); 
+            closing = true;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -246,9 +255,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             int segs = 16;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs; float t2 = (i + 1) / (float)segs; int y1 = panelRect.Y + (int)(t * panelRect.Height); int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1)); Color deep = new Color(4, 18, 30); Color mid = new Color(10, 42, 60); Color edge = new Color(20, 90, 120); float osc = (float)Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f; Color c = Color.Lerp(Color.Lerp(deep, mid, osc), edge, t * 0.55f); spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c * alpha);
+                Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1)); 
+                Color deep = new Color(4, 18, 30); 
+                Color mid = new Color(10, 42, 60); 
+                Color edge = new Color(20, 90, 120); 
+                float osc = (float)Math.Sin(pulseTimer * 1.2f + t * 3f) * 0.5f + 0.5f; 
+                Color c = Color.Lerp(Color.Lerp(deep, mid, osc), edge, t * 0.55f); 
+                spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c * alpha);
             }
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f; spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.08f * pulse)); DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f; 
+            spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * 0.08f * pulse)); 
+            DrawFrameOcean(spriteBatch, panelRect, alpha, pulse);
 
             if (contentFade <= 0.01f && !closing) return;
             float ca = contentFade;
@@ -256,14 +273,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             //标题
             Vector2 titlePos = new Vector2(panelRect.X + Padding, panelRect.Y + Padding);
             string title = TitleText.Value; Color glow = new Color(140, 230, 255) * (ca * 0.7f);
-            for (int i = 0; i < 4; i++) { float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
+            for (int i = 0; i < 4; i++) { float ang = MathHelper.TwoPi * i / 4f; Vector2 off = ang.ToRotationVector2() * 1.3f; 
+                Utils.DrawBorderString(spriteBatch, title, titlePos + off, glow * 0.55f, 0.9f); }
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * ca, 0.9f);
 
             //收起按钮(箭头随进度缩放淡出)
             char arrow = collapseProgress < 0.5f ? '\u25B2' : '\u25BC';
             float arrowScale = 0.6f + 0.2f * (1f - collapseProgress);
             Color arrowColor = Color.Lerp(new Color(120, 200, 235), new Color(200, 240, 255), 0.5f) * ca;
-            Utils.DrawBorderString(spriteBatch, arrow.ToString(), new Vector2(collapseButtonRect.X, collapseButtonRect.Y), arrowColor * (0.9f - collapseProgress * 0.4f), arrowScale);
+            Utils.DrawBorderString(spriteBatch, arrow.ToString(), new Vector2(collapseButtonRect.X, collapseButtonRect.Y)
+                , arrowColor * (0.9f - collapseProgress * 0.4f), arrowScale);
 
             if (collapseProgress < 0.99f) {
                 //描述
@@ -276,7 +295,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 //分隔线
                 Vector2 divStart = new Vector2(titlePos.X, titlePos.Y + 26 + descUsedHeight + elementYOffset);
                 Vector2 divEnd = divStart + new Vector2(BasePanelWidth - Padding * 2, 0);
-                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (ca * 0.85f * elementAlpha), new Color(70, 180, 230) * (ca * 0.05f * elementAlpha), 1.2f);
+                DrawGradientLine(spriteBatch, divStart, divEnd, new Color(70, 180, 230) * (ca * 0.85f * elementAlpha)
+                    , new Color(70, 180, 230) * (ca * 0.05f * elementAlpha), 1.2f);
 
                 //槽位绘制
                 Vector2 slotsStart = new Vector2(panelRect.X + Padding, divStart.Y + 8);
@@ -285,11 +305,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 //底部提示 / 完成
                 if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
                     if (!hp.ADCSave.FishoilQuestCompleted) {
-                        Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), new Color(120, 200, 235) * (ca * 0.7f * elementAlpha), 0.6f);
+                        Utils.DrawBorderString(spriteBatch, SubmitHint.Value, new Vector2(panelRect.X + Padding
+                            , panelRect.Bottom - 54), new Color(120, 200, 235) * (ca * 0.7f * elementAlpha), 0.6f);
                     }
                     else {
                         float donePulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.5f + 0.5f;
-                        Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding, panelRect.Bottom - 54), Color.Lerp(new Color(150, 230, 255), new Color(200, 240, 255), donePulse) * ca * elementAlpha, 0.7f);
+                        Utils.DrawBorderString(spriteBatch, CompletedText.Value, new Vector2(panelRect.X + Padding
+                            , panelRect.Bottom - 54), Color.Lerp(new Color(150, 230, 255), new Color(200, 240, 255), donePulse) * ca * elementAlpha, 0.7f);
                     }
                 }
 
@@ -357,39 +379,70 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color c = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), c, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), c, rotation
+                    , new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
 
         private class QuestMaterialSlot
         {
-            public int ItemType; public int Need; public int Current; public Vector2 Pos; public Rectangle Hit; public bool Hover; public bool IsSatisfied => Current >= Need;
+            public int ItemType; 
+            public int Need; 
+            public int Current; 
+            public Vector2 Pos; 
+            public Rectangle Hit; 
+            public bool Hover; 
+            public bool IsSatisfied => Current >= Need;
             public QuestMaterialSlot(int itemType, int need) { ItemType = itemType; Need = need; }
             public void ResetCount() { Current = 0; }
             public void Update(Vector2 drawPos, int size, Player player, bool uiHover) {
-                Pos = drawPos; Hit = new Rectangle((int)Pos.X, (int)Pos.Y, size, size); Hover = uiHover && Hit.Contains(Main.mouseX, Main.mouseY);
-                if (Hover) player.mouseInterface = true;
+                Pos = drawPos; 
+                Hit = new Rectangle((int)Pos.X, (int)Pos.Y, size, size); 
+                Hover = uiHover && Hit.Contains(Main.mouseX, Main.mouseY);
+                if (Hover) 
+                    player.mouseInterface = true;
                 if (Hover) {
                     bool leftClick = Main.mouseLeft && Main.mouseLeftRelease;
                     if (leftClick && Main.mouseItem.type == ItemType && !IsSatisfied) {
-                        int add = 1; if (Main.keyState.PressingShift()) add = Math.Min(Main.mouseItem.stack, Need - Current); if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) add = Need - Current; add = Math.Min(add, Main.mouseItem.stack);
-                        Current += add; Main.mouseItem.stack -= add; if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir(); SoundEngine.PlaySound(SoundID.Grab);
+                        int add = 1; 
+                        if (Main.keyState.PressingShift()) 
+                            add = Math.Min(Main.mouseItem.stack, Need - Current); 
+                        if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)) 
+                            add = Need - Current; 
+                        add = Math.Min(add, Main.mouseItem.stack);
+                        Current += add; Main.mouseItem.stack -= add; 
+                        if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir(); 
+                        SoundEngine.PlaySound(SoundID.Grab);
                     }
                     bool rightClick = Main.mouseRight && Main.mouseRightRelease;
-                    if (rightClick && Current > 0 && Main.mouseItem.IsAir) { Current -= 1; Item give = new Item(ItemType); give.stack = 1; Main.mouseItem = give; SoundEngine.PlaySound(SoundID.Grab); }
+                    if (rightClick && Current > 0 && Main.mouseItem.IsAir) { 
+                        Current -= 1; 
+                        Item give = new Item(ItemType); give.stack = 1; 
+                        Main.mouseItem = give; 
+                        SoundEngine.PlaySound(SoundID.Grab); 
+                    }
                 }
             }
             public void Draw(SpriteBatch sb, float alpha) {
                 Texture2D px = VaultAsset.placeholder2.Value;
                 Rectangle r = new Rectangle((int)Pos.X, (int)Pos.Y, Hit.Width, Hit.Height);
-                Color back = new Color(6, 32, 48) * (alpha * 0.9f); if (Hover) back *= 1.15f; sb.Draw(px, r, new Rectangle(0, 0, 1, 1), back);
+                Color back = new Color(6, 32, 48) * (alpha * 0.9f); 
+                if (Hover) back *= 1.15f; 
+                sb.Draw(px, r, new Rectangle(0, 0, 1, 1), back);
                 Color edge = IsSatisfied ? new Color(70, 180, 230) : new Color(40, 100, 140);
                 sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0, 0, 1, 1), edge);
                 sb.Draw(px, new Rectangle(r.X, r.Bottom - 2, r.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
                 sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
                 sb.Draw(px, new Rectangle(r.Right - 2, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); Texture2D tex = TextureAssets.Item[ItemType].Value; Rectangle frame = tex.Frame(); Vector2 center = new Vector2(r.X + r.Width / 2f, r.Y + r.Height / 2f); float scale = Math.Min((r.Width - 8f) / frame.Width, (r.Height - 8f) / frame.Height); Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
-                string text = $"{Current}/{Need}"; Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 16), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.6f);
+                if (ItemType > ItemID.None) { Main.instance.LoadItem(ItemType); 
+                Texture2D tex = TextureAssets.Item[ItemType].Value; 
+                    Rectangle frame = tex.Frame(); 
+                    Vector2 center = new Vector2(r.X + r.Width / 2f, r.Y + r.Height / 2f); 
+                    float scale = Math.Min((r.Width - 8f) / frame.Width, (r.Height - 8f) / frame.Height); 
+                    Color itemColor = IsSatisfied ? Color.White : Color.White * 0.9f; 
+                    sb.Draw(tex, center, frame, itemColor * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f); }
+                string text = $"{Current}/{Need}"; 
+                Utils.DrawBorderString(sb, text, new Vector2(r.X + 4, r.Bottom - 16), IsSatisfied ? Color.Cyan * alpha : Color.White * alpha, 0.6f);
             }
         }
     }
