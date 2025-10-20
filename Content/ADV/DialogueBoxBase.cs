@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.ADV
         }
         protected virtual void WrapCurrent() {
             if (current == null) {
-                wrappedLines = Array.Empty<string>();
+                wrappedLines = [];
                 return;
             }
             string raw = current.Content.Replace("\r", string.Empty);
