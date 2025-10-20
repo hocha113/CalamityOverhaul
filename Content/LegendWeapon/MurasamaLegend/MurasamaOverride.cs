@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.height = 134;
             Item.width = 90;
             Item.damage = GetStartDamage;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.channel = true;

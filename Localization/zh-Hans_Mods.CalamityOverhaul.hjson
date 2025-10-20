@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1904,19 +1904,13 @@ TextContent: {
 			愚蠢的蜥蜴族只会信奉这些冥顽不灵的石头，让我们把它斩为齑粉，摧毁他们的信仰，我们才是它们应该供奉的
 			血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
 			'''
-		Murasama_TextDictionary_Content_8:
-			'''
-			击杀月亮领主
-			'''
+		Murasama_TextDictionary_Content_8: 击杀月亮领主
 		Murasama_TextDictionary_Content_9:
 			'''
 			靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
 			击杀噬魂幽花
 			'''
-		Murasama_TextDictionary_Content_10:
-			'''
-			那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
-			'''
+		Murasama_TextDictionary_Content_10: 那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
 		Murasama_TextDictionary_Content_11:
 			'''
 			丛林巨龙，泰拉大陆仅存的金源龙裔，与其他异形迥然不同，它值得我们的尊重
