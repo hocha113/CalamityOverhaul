@@ -67,7 +67,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             base.ModifyHitNPC(target, ref modifiers);
-
         }
 
         public override void AI() {
