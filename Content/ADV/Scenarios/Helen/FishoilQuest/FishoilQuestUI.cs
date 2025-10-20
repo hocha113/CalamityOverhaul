@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 float slotScale = MathHelper.Lerp(0.6f, 1f, slotEase);
                 float slotAlpha = MathHelper.Lerp(0f, 1f, slotEase) * elementAlpha;
                 float slotYOffset = (1f - slotEase) * 20f;
-                if (slotAlpha < 0.5f) {
+                if (slotAlpha < 0.75f) {
                     continue;
                 }
                 slot.DrawCustom(sb, slotsStart + new Vector2(i * (SlotSize + SlotSpacing), slotYOffset), SlotSize, slotScale, slotAlpha);
