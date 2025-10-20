@@ -266,13 +266,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
                 }
             }
+            
+            bool tryGroundSmash = false;
+            // 专用键触发（向下键）
             if (fodingDownKey && MurasamaOverride.UnlockSkill2(Item) && noHasDownSkillProj
-                && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
+                && noHasBreakOutProj && nolegendStart) {
+                tryGroundSmash = true;
+            }
+            
+            // 执行下砸
+            if (tryGroundSmash) {
                 Item.Initialize();
                 if (Item.CWR().ai[0] >= 1) {
                     SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaOverride.ActualTrueMeleeDamage(Item) * (2 + Level * 1f)), 0, Owner.whoAmI);
                     }
 
