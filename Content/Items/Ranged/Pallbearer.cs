@@ -448,23 +448,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private const float ReturnMaxSpeed = 58f;      //回程最大速度
         private const float ArcAmplitude = 120f;       //外抛弧线幅度
         private bool PlayedMidWhoosh => (Projectile.miscText?.Length ?? 0) > 0; //复用一个简单标记
-
-        //缓动函数
-        private static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
-        private static float EaseOutCubic(float t) { t = MathHelper.Clamp(t, 0, 1); t = 1 - (float)Math.Pow(1 - t, 3); return t; }
-        private static float EaseInQuad(float t) => t * t;
-        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
-        private static float EaseInOutBack(float t) {
-            const float c1 = 1.70158f; const float c2 = c1 * 1.525f; t = MathHelper.Clamp(t, 0, 1);
-            return t < 0.5f ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
-                             : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
-        }
-        private static float EaseOvershootSnap(float t) { //回程末端吸附 + 轻微回拉
-            t = MathHelper.Clamp(t, 0, 1);
-            float overshoot = 1.08f - (float)Math.Cos(t * MathHelper.Pi) * 0.08f; //前段轻超出
-            return overshoot * (0.85f + 0.15f * EaseOutQuad(t));
-        }
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 14;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -499,12 +482,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
                 //阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
                 float launchT = MathHelper.Clamp(Time / (float)LaunchPhaseFrames, 0f, 1f);
-                float launchSpeedFactor = EaseOutCubic(launchT); //爆发上升
+                float launchSpeedFactor = CWRUtils.EaseOutCubic(launchT); //爆发上升
                 float currentLaunchSpeed = MathHelper.Lerp(BaseSpeed, PeakLaunchSpeed, launchSpeedFactor);
 
                 float cruisePhase = MathHelper.Clamp((Time - LaunchPhaseFrames) / (TotalThrowFrames - LaunchPhaseFrames), 0f, 1f);
-                float cruiseEase = EaseOutQuad(cruisePhase);
-                float distanceFactor = EaseOutExpo(ThrowProgress);
+                float cruiseEase = CWRUtils.EaseOutQuad(cruisePhase);
+                float distanceFactor = CWRUtils.EaseOutExpo(ThrowProgress);
 
                 //弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
                 Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * owner.direction);
@@ -524,7 +507,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             else { //Returning
                 ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.022f, 0f, 1f);
-                float ease = EaseInQuad(ReturnProgress) * 0.35f + EaseInOutBack(ReturnProgress) * 0.65f;
+                float ease = CWRUtils.EaseInQuad(ReturnProgress) * 0.35f + CWRUtils.EaseInOutBack(ReturnProgress) * 0.65f;
                 float speed = MathHelper.Lerp(BaseSpeed * 0.5f, ReturnMaxSpeed, ease);
                 Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.30f + 0.25f * (1f - ReturnProgress));

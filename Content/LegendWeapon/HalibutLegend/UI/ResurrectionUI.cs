@@ -745,10 +745,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 t = 1f;
                 Arrived = true;
             }
-            progress = EaseOutCubic(t);
+            progress = CWRUtils.EaseOutCubic(t);
             Vector2 target = ui.GetBarCenter();
             Vector2 mid = (startPos + target) / 2f + new Vector2(0, -40f - Main.rand.NextFloat(30f));
-            currentPos = Bezier(startPos, mid, target, progress);
+            currentPos = CWRUtils.Bezier(startPos, mid, target, progress);
             rotation += 0.15f;
         }
         public void Draw(SpriteBatch spriteBatch) {
@@ -764,13 +764,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 size = new Vector2(6f * scale, 2f * scale);
             spriteBatch.Draw(pixel, currentPos, new Rectangle(0, 0, 1, 1), col, rotation, new Vector2(0.5f, 0.5f), size, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, currentPos, new Rectangle(0, 0, 1, 1), col * 0.5f, rotation + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), size * 0.6f, SpriteEffects.None, 0f);
-        }
-        private static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t) {
-            float u = 1f - t;
-            return u * u * a + 2f * u * t * b + t * t * c;
-        }
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
         }
     }
 
@@ -798,7 +791,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float eased = EaseOutCubic(progress);
+            float eased = CWRUtils.EaseOutCubic(progress);
             float radius = MathHelper.Lerp(10f, 95f, eased);
             float thickness = MathHelper.Lerp(8f, 1.5f, eased);
             float alpha = 1f - eased;
@@ -815,9 +808,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float rot = diff.ToRotation();
                 spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, 1, 1), col, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
             }
-        }
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
         }
     }
 }

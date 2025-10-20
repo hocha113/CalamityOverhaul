@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.alpha = (int)((1f - alpha) * 255f);
 
             //缩放效果（从小到正常）
-            scale = MathHelper.Lerp(0.5f, 1f, EaseOutBack(emergeProgress));
+            scale = MathHelper.Lerp(0.5f, 1f, CWRUtils.EaseOutBack(emergeProgress));
 
             //地面粒子效果强度
             groundEffectIntensity = MathHelper.Lerp(1f, 0f, emergeProgress);
@@ -782,15 +782,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// 缓动函数：回弹效果
-        /// </summary>
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1f, 3f) + c1 * (float)Math.Pow(t - 1f, 2f);
         }
     }
 }

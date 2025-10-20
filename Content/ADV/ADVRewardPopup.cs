@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content.ADV
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
 
                         //使用缓动函数平滑过渡
-                        float easeProgress = EaseOutCubic(positionTransitionProgress);
+                        float easeProgress = CWRUtils.EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.ADV
                         positionTransitionProgress += PositionTransitionSpeed;
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
 
-                        float easeProgress = EaseOutCubic(positionTransitionProgress);
+                        float easeProgress = CWRUtils.EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }
@@ -302,13 +302,6 @@ namespace CalamityOverhaul.Content.ADV
 
             //默认返回屏幕中心
             return panelCenter;
-        }
-
-        ///<summary>
-        ///平滑缓出函数
-        ///</summary>
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -460,7 +453,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
             }
         }
-        private void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
+        private static void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float size = 5f;
             Color c = new Color(150, 230, 255) * a;

@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (layers != null) {
                 foreach (var layer in layers) {
                     float minRadius = 80f;
-                    layer.Radius = MathHelper.Lerp(minRadius, layer.TargetRadius, EaseOutCubic(progress));
+                    layer.Radius = MathHelper.Lerp(minRadius, layer.TargetRadius, CWRUtils.EaseOutCubic(progress));
                 }
             }
 
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             if (layers != null) {
                 foreach (var layer in layers) {
-                    layer.Radius = MathHelper.Lerp(layer.TargetRadius, 80f, EaseInCubic(progress));
+                    layer.Radius = MathHelper.Lerp(layer.TargetRadius, 80f, CWRUtils.EaseInCubic(progress));
                 }
             }
 
@@ -564,9 +564,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = (domainCenter - pos).SafeNormalize(Vector2.Zero) * 3.5f;
         }
-
-        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
-        private static float EaseInCubic(float t) => t * t * t;
 
         public override bool PreDraw(ref Color lightColor) {
             if (layers == null) {

@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //更新光环
             float progress = Timer / GatherDuration;
-            auraRadius = MathHelper.Lerp(0f, 400f, EaseOutCubic(progress));
+            auraRadius = MathHelper.Lerp(0f, 400f, CWRUtils.EaseOutCubic(progress));
             auraIntensity = MathHelper.Lerp(0f, 1f, progress);
 
             //生成环境粒子
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             float progress = Timer / AbsorbDuration;
 
             //光环收缩
-            auraRadius = MathHelper.Lerp(400f, 0f, EaseInCubic(progress));
+            auraRadius = MathHelper.Lerp(400f, 0f, CWRUtils.EaseInCubic(progress));
             auraIntensity = MathHelper.Lerp(1f, 0.3f, progress);
 
             //强化的吸收粒子
@@ -397,31 +397,27 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         //音效方法
-        private void PlayGatherSound(Player owner) {
+        private static void PlayGatherSound(Player owner) {
             SoundEngine.PlaySound(SoundID.Item84 with {
                 Volume = 0.8f,
                 Pitch = -0.3f
             }, owner.Center);
         }
 
-        private void PlayAbsorbSound(Player owner) {
+        private static void PlayAbsorbSound(Player owner) {
             SoundEngine.PlaySound(SoundID.Item105 with {
                 Volume = 0.8f,
                 Pitch = 0.2f
             }, owner.Center);
         }
 
-        private void PlayCompleteSound(Player owner) {
+        private static void PlayCompleteSound(Player owner) {
             SoundEngine.PlaySound(SoundID.Item4 with {
                 Volume = 0.8f,
                 Pitch = 0.5f
             }, owner.Center);
             SoundEngine.PlaySound(SoundID.ResearchComplete, owner.Center);
         }
-
-        //缓动函数
-        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
-        private static float EaseInCubic(float t) => t * t * t;
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
@@ -531,7 +527,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Vector2 control1 = StartPosition + new Vector2(0, -200f);
             Vector2 control2 = mid + new Vector2(Main.rand.NextFloat(-100f, 100f), -300f);
 
-            Position = CubicBezier(Progress, StartPosition, control1, control2, targetPos);
+            Position = CWRUtils.CubicBezier(Progress, StartPosition, control1, control2, targetPos);
 
             //旋转
             Rotation += 0.05f;
@@ -563,21 +559,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             //绘制主体
             sb.Draw(Skill.Icon, Position - Main.screenPosition, null, drawColor,
                 Rotation, origin, Scale, SpriteEffects.None, 0f);
-        }
-
-        private static Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) {
-            float u = 1f - t;
-            float tt = t * t;
-            float uu = u * u;
-            float uuu = uu * u;
-            float ttt = tt * t;
-
-            Vector2 p = uuu * p0;
-            p += 3f * uu * t * p1;
-            p += 3f * u * tt * p2;
-            p += ttt * p3;
-
-            return p;
         }
     }
 

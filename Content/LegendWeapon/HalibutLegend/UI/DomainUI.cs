@@ -187,23 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         ///<summary>
         ///是否应该显示面板
         ///</summary>
-        public bool ShouldShow => HalibutUIPanel.Instance.Sengs >= 1f;
-
-        ///<summary>
-        ///EaseOutBack缓动 - 带回弹效果
-        ///</summary>
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
-        ///<summary>
-        ///EaseInCubic缓动 - 快速收起
-        ///</summary>
-        private static float EaseInCubic(float t) {
-            return t * t * t;
-        }
+        public static bool ShouldShow => HalibutUIPanel.Instance.Sengs >= 1f;
 
         ///<summary>
         ///纯逻辑更新 (由系统层调用)
@@ -255,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             //使用缓动函数
-            float easedProgress = ShouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
+            float easedProgress = ShouldShow ? CWRUtils.EaseOutBack(expandProgress) : CWRUtils.EaseInCubic(expandProgress);
 
             //计算当前宽度（从右到左展开）
             targetWidth = PanelWidth;

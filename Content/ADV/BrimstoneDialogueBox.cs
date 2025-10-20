@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.ADV
 
             float switchEase = speakerSwitchProgress;
             if (switchEase < 1f) {
-                switchEase = EaseOutCubic(switchEase);
+                switchEase = CWRUtils.EaseOutCubic(switchEase);
             }
             float portraitAppearScale = MathHelper.Lerp(0.82f, 1f, switchEase);
             float portraitExtraAlpha = MathHelper.Clamp(switchEase, 0f, 1f);

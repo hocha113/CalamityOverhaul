@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
             //使用EaseOutCubic缓动，创造有力的冲刺感
-            float easeProgress = EaseOutCubic(progress);
+            float easeProgress = CWRUtils.EaseOutCubic(progress);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.4f);
 
             //提前开始旋转
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / OrbitDuration;
 
             //加速旋转（使用EaseInQuad）
-            float speedProgress = EaseInQuad(progress);
+            float speedProgress = CWRUtils.EaseInQuad(progress);
             orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.6f, speedProgress);
 
             //半径脉冲（营造能量聚集感）
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / ChargeDuration;
 
             //达到最高旋转速度
-            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, EaseInOutQuad(progress));
+            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
 
             //半径脉动（蓄力震荡感）
             float radiusOscillation = (float)Math.Sin(StateTimer * 0.5f) * 15f * progress;
@@ -610,20 +610,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 scatter.noGravity = true;
                 scatter.fadeIn = 1.2f;
             }
-        }
-
-        //===== 缓动函数 =====
-
-        private float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3);
-        }
-
-        private float EaseInQuad(float t) {
-            return t * t;
-        }
-
-        private float EaseInOutQuad(float t) {
-            return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

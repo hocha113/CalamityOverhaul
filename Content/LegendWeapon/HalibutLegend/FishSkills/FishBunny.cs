@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 兔子鱼跳跃弹幕-模拟兔子行为
+    /// 兔子鱼跳跃弹幕，蹦蹦跳跳的很可爱的不是吗
     /// </summary>
     internal class BunnyfishHopper : ModProjectile
     {

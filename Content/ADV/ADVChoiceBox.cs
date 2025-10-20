@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.ADV
 
             // 更新面板矩形
             float progress = closing ? 1f - hideProgress : showProgress;
-            float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
+            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
 
             Vector2 drawPos = anchorPosition - new Vector2(panelSize.X / 2f, panelSize.Y / 2f);
             drawPos.Y += (1f - eased) * 60f;
@@ -395,7 +395,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        private void DrawBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
+        private static void DrawBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             // 上下左右边框
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.ADV
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 8, rect.Y + 8), color * 0.9f);
         }
 
-        private void DrawChoiceBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
+        private static void DrawChoiceBorder(SpriteBatch spriteBatch, Rectangle rect, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 1),
@@ -426,7 +426,7 @@ namespace CalamityOverhaul.Content.ADV
                 new Rectangle(0, 0, 1, 1), color);
         }
 
-        private void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end,
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end,
             Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        private void DrawStar(SpriteBatch spriteBatch, Vector2 pos, float size, Color color) {
+        private static void DrawStar(SpriteBatch spriteBatch, Vector2 pos, float size, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
@@ -455,23 +455,13 @@ namespace CalamityOverhaul.Content.ADV
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
         }
 
-        private void DrawCornerStar(SpriteBatch spriteBatch, Vector2 pos, Color color) {
+        private static void DrawCornerStar(SpriteBatch spriteBatch, Vector2 pos, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float size = 4f;
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
-        }
-
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
-        private static float EaseInCubic(float t) {
-            return t * t * t;
         }
     }
 }

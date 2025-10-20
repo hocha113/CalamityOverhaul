@@ -179,16 +179,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             scrollVelocity = 0f;
         }
 
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
-        private static float EaseInCubic(float t) {
-            return t * t * t;
-        }
-
         public override void Update() {
             // 意图推断：判断鼠标是否仍在技能浏览区域
             bool inBrowse = MouseInBrowseArea(out Rectangle browseRect);
@@ -261,7 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             //计算当前宽度（使用缓动函数）
-            float easedProgress = shouldShow ? EaseOutBack(expandProgress) : EaseInCubic(expandProgress);
+            float easedProgress = shouldShow ? CWRUtils.EaseOutBack(expandProgress) : CWRUtils.EaseInCubic(expandProgress);
             currentWidth = MinWidth + (targetWidth - MinWidth) * easedProgress;
 
             //更新位置和尺寸（保持与主面板右侧对齐）

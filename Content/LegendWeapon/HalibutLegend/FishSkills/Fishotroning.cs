@@ -516,7 +516,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float swingAngle = MathHelper.Lerp(
                 MathHelper.PiOver2 * 1.2f,
                 -MathHelper.PiOver4 * 1.5f,
-                EaseInOutCubic(progress)
+                CWRUtils.EaseInOutCubic(progress)
             );
 
             Vector2 swingOffset = new Vector2(
@@ -549,7 +549,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 slamStart = attackTargetPos + new Vector2(0, -250f);
             Vector2 slamEnd = attackTargetPos + new Vector2(0, 50f);
 
-            float easeProgress = EaseInCubic(progress);
+            float easeProgress = CWRUtils.EaseInCubic(progress);
             Projectile.Center = Vector2.Lerp(slamStart, slamEnd, easeProgress);
 
             Projectile.velocity = Vector2.Lerp(
@@ -580,7 +580,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float sweepAngle = MathHelper.Lerp(
                 -MathHelper.Pi * 1.1f,
                 MathHelper.Pi * 1.1f,
-                EaseInOutQuad(progress)
+                CWRUtils.EaseInOutQuad(progress)
             );
 
             float radius = 220f;
@@ -625,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             else if (StateTimer < ThrowDuration * 0.7f) {
                 //中40%-快速前冲投掷动作
                 float throwProgress = (StateTimer - ThrowDuration * 0.3f) / (ThrowDuration * 0.4f);
-                float easeProgress = EaseOutCubic(throwProgress);
+                float easeProgress = CWRUtils.EaseOutCubic(throwProgress);
 
                 //手臂快速向前冲
                 Vector2 currentPos = Vector2.Lerp(throwStartPos, throwEndPos, easeProgress);
@@ -1066,25 +1066,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<SkeletronHandExplode>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
             }
-        }
-
-        //缓动函数
-        private static float EaseInOutCubic(float t) {
-            return t < 0.5f
-                ? 4f * t * t * t
-                : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
-        }
-
-        private static float EaseInCubic(float t) {
-            return t * t * t;
-        }
-
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3);
-        }
-
-        private static float EaseInOutQuad(float t) {
-            return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

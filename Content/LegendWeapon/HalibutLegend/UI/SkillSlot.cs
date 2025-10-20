@@ -100,15 +100,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             hoverSengs = Math.Clamp(hoverSengs, 0f, 1f);
         }
 
-        ///<summary>
-        ///缓动函数：EaseOutBack - 带有回弹效果的缓出
-        ///</summary>
-        private float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
         public override void Draw(SpriteBatch spriteBatch) {
             if (FishSkill == null) {
                 return;
@@ -117,7 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float scale = 1f;
             float rotation = 0f;
             if (appearProgress < 1f) {
-                float easedProgress = EaseOutBack(appearProgress);
+                float easedProgress = CWRUtils.EaseOutBack(appearProgress);
                 scale = 0.3f + easedProgress * 0.7f;
                 finalAlpha *= appearProgress;
                 rotation = (1f - appearProgress) * 0.5f;

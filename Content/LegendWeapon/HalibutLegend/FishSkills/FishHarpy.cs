@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
-            float easeProgress = EaseOutSine(progress);
+            float easeProgress = CWRUtils.EaseOutSine(progress);
 
             Vector2 driftOffset = new Vector2(
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + floatPhase) * 15f * (1f - easeProgress),
@@ -387,7 +387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void OrbitingPhaseAI(Player owner) {
             float timeProgress = MathHelper.Clamp(StateTimer / 60f, 0f, 1f);
 
-            float speedProgress = EaseInOutQuad(timeProgress);
+            float speedProgress = CWRUtils.EaseInOutQuad(timeProgress);
             orbitSpeed = MathHelper.Lerp(0.03f, MaxOrbitSpeed, speedProgress);
 
             float radiusScale = MathHelper.Lerp(1f, 0.92f, MathHelper.Clamp(speedProgress, 0f, 1f));
@@ -658,14 +658,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trail.noGravity = true;
             trail.fadeIn = 1f;
             trail.alpha = 120;
-        }
-
-        private float EaseOutSine(float t) {
-            return (float)Math.Sin(t * MathHelper.PiOver2);
-        }
-
-        private float EaseInOutQuad(float t) {
-            return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

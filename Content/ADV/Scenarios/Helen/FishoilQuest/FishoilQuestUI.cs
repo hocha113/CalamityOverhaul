@@ -164,8 +164,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             }
 
             //元素透明度与偏移(使用缓动让过渡更自然)
-            elementAlpha = 1f - EaseInQuad(collapseProgress);
-            elementYOffset = EaseOutQuad(collapseProgress) * 30f; //内容整体上移
+            elementAlpha = 1f - CWRUtils.EaseInQuad(collapseProgress);
+            elementYOffset = CWRUtils.EaseOutQuad(collapseProgress) * 30f; //内容整体上移
 
             if (!closing) {
                 if (showProgress > 0.25f && contentFade < 1f) {
@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             if (collapseProgress >= 0.99f) {
                 return;
             }
-            float slotEase = EaseOutQuad(1f - collapseProgress); //槽位单独缓动
+            float slotEase = CWRUtils.EaseOutQuad(1f - collapseProgress); //槽位单独缓动
 
             //描述
             float lineY = panelRect.Y + Padding + 26f + elementYOffset;
@@ -472,26 +472,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             if (current.Length > 0) {
                 lines.Add(current);
             }
-            wrappedDescLines = lines.ToArray();
+            wrappedDescLines = [.. lines];
         }
 
-        private static float EaseInQuad(float t) => t * t;
-        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
-
         private static void DrawFrameOcean(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+            Texture2D vaule = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(30, 140, 190), new Color(90, 210, 255), pulse) * (alpha * 0.85f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+            sb.Draw(vaule, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+            sb.Draw(vaule, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(120, 220, 255) * (alpha * 0.18f * pulse);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
-            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.65f);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
-            sb.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.65f);
+            sb.Draw(vaule, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
+            sb.Draw(vaule, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.85f);
         }
 
         private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
@@ -509,27 +506,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color c = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), c, rotation, new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), c, rotation
+                    , new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }
 
-        private class QuestMaterialSlot {
-            public int ItemType;
-            public int Need;
+        private class QuestMaterialSlot(int itemType, int need)
+        {
+            public int ItemType = itemType;
+            public int Need = need;
             public int Current;
             public Vector2 Pos;
             public Rectangle Hit;
             public bool Hover;
             public bool IsSatisfied => Current >= Need;
 
-            public QuestMaterialSlot(int itemType, int need) {
-                ItemType = itemType;
-                Need = need;
-            }
-
-            public void ResetCount() {
-                Current = 0;
-            }
+            public void ResetCount() => Current = 0;
 
             public void Update(Vector2 drawPos, int size, Player player, bool uiHover) {
                 Pos = drawPos;
@@ -567,23 +559,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 }
             }
 
-            public void Draw(SpriteBatch sb, float alpha) {
-                DrawCustom(sb, Pos, Hit.Width, 1f, alpha);
-            }
-
             public void DrawCustom(SpriteBatch sb, Vector2 drawPos, int size, float scale, float alpha) {
-                Texture2D px = VaultAsset.placeholder2.Value;
+                Texture2D vaule = VaultAsset.placeholder2.Value;
                 Rectangle r = new Rectangle((int)drawPos.X, (int)drawPos.Y, size, size);
                 Color back = new Color(6, 32, 48) * (alpha * 0.9f);
                 if (Hover) {
                     back *= 1.15f;
                 }
-                sb.Draw(px, r, new Rectangle(0, 0, 1, 1), back);
+                sb.Draw(vaule, r, new Rectangle(0, 0, 1, 1), back);
                 Color edge = IsSatisfied ? new Color(70, 180, 230) : new Color(40, 100, 140);
-                sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0, 0, 1, 1), edge);
-                sb.Draw(px, new Rectangle(r.X, r.Bottom - 2, r.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
-                sb.Draw(px, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
-                sb.Draw(px, new Rectangle(r.Right - 2, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+                sb.Draw(vaule, new Rectangle(r.X, r.Y, r.Width, 2), new Rectangle(0, 0, 1, 1), edge);
+                sb.Draw(vaule, new Rectangle(r.X, r.Bottom - 2, r.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
+                sb.Draw(vaule, new Rectangle(r.X, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
+                sb.Draw(vaule, new Rectangle(r.Right - 2, r.Y, 2, r.Height), new Rectangle(0, 0, 1, 1), edge * 0.85f);
                 if (ItemType > ItemID.None) {
                     Main.instance.LoadItem(ItemType);
                     Texture2D tex = TextureAssets.Item[ItemType].Value;

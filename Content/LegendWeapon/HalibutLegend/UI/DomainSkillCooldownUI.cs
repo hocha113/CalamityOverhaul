@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             _activeIcons.Sort((a, b) => b.Current.CompareTo(a.Current));
 
             Vector2 screenAnchor = new(Main.screenWidth - 80, Main.screenHeight - 180);
-            float globalOffset = MathHelper.Lerp(20f, 0f, EaseOutCubic(_panelAppear));
+            float globalOffset = MathHelper.Lerp(20f, 0f, CWRUtils.EaseOutCubic(_panelAppear));
 
             for (int i = 0; i < _activeIcons.Count; i++) {
                 var icon = _activeIcons[i];
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (_panelAppear < 1f) target = Math.Min(target, Math.Max(0f, (_panelAppear - delay) / 0.5f));
                 icon.LocalAppear = MathHelper.Lerp(icon.LocalAppear, target, speed);
 
-                float localSlide = MathHelper.Lerp(16f, 0f, EaseOutCubic(icon.LocalAppear));
+                float localSlide = MathHelper.Lerp(16f, 0f, CWRUtils.EaseOutCubic(icon.LocalAppear));
                 float y = screenAnchor.Y + globalOffset + i * (IconSize + IconPadding) + localSlide;
                 float x = screenAnchor.X - IconSize / 2f;
                 icon.DrawPos = new Vector2(x, y);
@@ -201,7 +201,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
         }
-
-        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
     }
 }

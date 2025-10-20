@@ -3,7 +3,6 @@ using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using System.IO;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

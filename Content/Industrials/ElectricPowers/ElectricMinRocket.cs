@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Owner.gravity = 0f;
             Owner.maxFallSpeed = 100f;
 
-            Projectile.timeLeft = 2;           
+            Projectile.timeLeft = 2;
             Owner.Center = Projectile.Center;
             Owner.CWR().RideElectricMinRocket = true;
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(Owner.velocity.X / 3, ControlDown ? 2 : -6), 0.1f);

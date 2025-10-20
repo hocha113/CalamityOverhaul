@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 return 12;
             }
             return cwrItem.LegendData.Level;
-        }       
+        }
         public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);
         public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
         public static void LoadWeaponData() {

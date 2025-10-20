@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             float progress = Timer / GatherDuration;
-            auraRadius = MathHelper.Lerp(0f, 300f, EaseOutCubic(progress));
+            auraRadius = MathHelper.Lerp(0f, 300f, CWRUtils.EaseOutCubic(progress));
             auraIntensity = MathHelper.Lerp(0f, 1f, progress);
 
             if (Timer % 2 == 0) {
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         private void ResetPhaseAI(Player owner) {
             float progress = Timer / ResetDuration;
 
-            auraRadius = MathHelper.Lerp(150f, 0f, EaseInCubic(progress));
+            auraRadius = MathHelper.Lerp(150f, 0f, CWRUtils.EaseInCubic(progress));
             auraIntensity = MathHelper.Lerp(1.5f, 0.4f, progress);
 
             if (Timer % 1 == 0) {
@@ -376,9 +376,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
-        private static float EaseInCubic(float t) => t * t * t;
-
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Player owner = Main.player[Projectile.owner];
@@ -403,7 +400,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             //血红色光晕，带有脉动效果
             float pulse = (float)Math.Sin(Timer * 0.15f) * 0.2f + 0.8f;
             Color auraColor = new Color(200, 30, 30) * (auraIntensity * 0.4f * pulse);
@@ -492,7 +489,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 ParticleType.Burst => Main.rand.Next(35, 75),
                 _ => 60
             };
-            
+
             //设置不同类型粒子的血红色调
             BaseColor = type switch {
                 ParticleType.Gather => new Color(180, 40, 40),
@@ -516,7 +513,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             Rotation += 0.1f;
             Alpha = 1f - (Life / (float)MaxLife);
-            
+
             //粒子在消散时变暗
             float fadeProgress = Life / (float)MaxLife;
             if (fadeProgress > 0.7f) {
@@ -529,7 +526,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Color color = BaseColor * Alpha;
 
             float finalScale = Scale * (1f + (float)Math.Sin(Life * 0.3f) * 0.2f);
-            
+
             sb.Draw(pixel, Position - Main.screenPosition, null, color,
                 Rotation, new Vector2(0.5f), new Vector2(finalScale * 3.5f), SpriteEffects.None, 0f);
         }

@@ -266,14 +266,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
                 }
             }
-            
+
             bool tryGroundSmash = false;
             // 专用键触发（向下键）
             if (fodingDownKey && MurasamaOverride.UnlockSkill2(Item) && noHasDownSkillProj
                 && noHasBreakOutProj && nolegendStart) {
                 tryGroundSmash = true;
             }
-            
+
             // 执行下砸
             if (tryGroundSmash) {
                 Item.Initialize();

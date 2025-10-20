@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -74,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Owner.itemTime = 0;
             }
 
-            Lighting.AddLight(Projectile.Center, 
+            Lighting.AddLight(Projectile.Center,
                 new Vector3(1f, 0.2f, 0.2f) * auraIntensity * 1.5f);
 
             StateTimer++;
@@ -96,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //更新所有特效
             UpdateEffects();
-            
+
             //让玩家跟随弹幕
             if (State != GroundSmashState.Recovery) {
                 Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.25f);
@@ -109,16 +108,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void ChargeUpPhase() {
             float progress = StateTimer / ChargeUpDuration;
-            
+
             //玩家在空中停滞并抬起
             Owner.velocity = Vector2.Zero;
             Owner.position.Y -= 0.5f;
-            
+
             //蓄力强度增长
-            ChargeIntensity = EaseOutCubic(progress);
+            ChargeIntensity = CWRUtils.EaseOutCubic(progress);
             auraIntensity = ChargeIntensity;
             swordGlowIntensity = ChargeIntensity * 1.2f;
-            
+
             //刀向后上方抬起
             float liftAngle = MathHelper.Lerp(0f, -MathHelper.PiOver2 * 1.3f, ChargeIntensity);
             Projectile.rotation = liftAngle;
@@ -128,7 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             float armAngle = MathHelper.ToRadians(-100 - 30 * ChargeIntensity);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle * Owner.direction);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armAngle * Owner.direction);
-            
+
             //给予无敌帧
             Owner.GivePlayerImmuneState(10);
 
@@ -156,17 +155,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (StateTimer >= ChargeUpDuration) {
                 State = GroundSmashState.Descending;
                 StateTimer = 0;
-                
+
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
                     Volume = 0.9f,
                     Pitch = -0.3f
                 }, Projectile.Center);
-                
+
                 SoundEngine.PlaySound(Murasama.BigSwing with {
                     Volume = 0.8f,
                     Pitch = -0.2f
                 }, Projectile.Center);
-                
+
                 //初始化下落速度
                 Projectile.velocity = new Vector2(0, 0.5f);
             }
@@ -175,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private void DescendingPhase() {
             //加速下落
             Projectile.velocity.Y += 1.2f;
-            
+
             //限制最大下落速度，级别越高速度越快
             float maxSpeed = 25f + MurasamaOverride.GetLevel(Item) * 2f;
             if (Projectile.velocity.Y > maxSpeed) {
@@ -184,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //旋转刀身
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            
+
             //增强光晕
             float speedRatio = Math.Abs(Projectile.velocity.Y) / maxSpeed;
             auraIntensity = 0.8f + speedRatio * 0.5f;
@@ -194,11 +193,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             SpawnDescendTrail();
 
             //设置玩家手臂姿势 - 握剑向下
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full,
                 MathHelper.ToRadians(90) * Owner.direction);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full,
                 MathHelper.ToRadians(90) * Owner.direction);
-            
+
             Owner.GivePlayerImmuneState(8);
 
             //持续音效
@@ -238,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             //设置玩家姿势
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
-            
+
             Owner.GivePlayerImmuneState(15);
 
             if (StateTimer >= ImpactDuration) {
@@ -249,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
         private void RecoveryPhase() {
             float progress = StateTimer / (float)RecoveryDuration;
-            
+
             //逐渐恢复控制
             Projectile.velocity *= 0.9f;
             auraIntensity = (1f - progress) * 0.3f;
@@ -279,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Volume = 1.2f,
                 Pitch = -0.6f
             }, impactPosition);
-            
+
             SoundEngine.PlaySound(Murasama.InorganicHit with {
                 Volume = 1f,
                 Pitch = -0.4f
@@ -293,12 +292,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (CWRServerConfig.Instance.ScreenVibration) {
                 screenShakeIntensity = 20f;
                 PunchCameraModifier modifier = new PunchCameraModifier(
-                    impactPosition, 
-                    new Vector2(0, Main.rand.NextFloat(-3, 3)), 
-                    16f, 
-                    20f, 
-                    30, 
-                    1200f, 
+                    impactPosition,
+                    new Vector2(0, Main.rand.NextFloat(-3, 3)),
+                    16f,
+                    20f,
+                    30,
+                    1200f,
                     FullName
                 );
                 Main.instance.CameraModifiers.Add(modifier);
@@ -325,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             for (int i = 0; i < particleCount; i++) {
                 float angle = MathHelper.TwoPi * i / particleCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 25f);
-                
+
                 AltSparkParticle spark = new AltSparkParticle(
                     impactPosition,
                     velocity,
@@ -348,7 +347,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     Main.rand.NextFloat(-15f, 15f),
                     Main.rand.NextFloat(-20f, -8f)
                 );
-                
+
                 int dustType = Main.rand.NextBool() ? DustID.Smoke : DustID.Torch;
                 Dust debris = Dust.NewDustPerfect(
                     impactPosition,
@@ -379,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     float angle = MathHelper.TwoPi * j / 30f;
                     float radius = 80f + i * 50f;
                     Vector2 pos = impactPosition + angle.ToRotationVector2() * radius;
-                    
+
                     Dust fire = Dust.NewDustPerfect(
                         pos,
                         DustID.Torch,
@@ -408,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     //距离越近伤害越高
                     float damageMultiplier = 1.5f - (distance / damageRadius) * 0.7f;
                     int damage = (int)(baseDamage * damageMultiplier);
-                    
+
                     Vector2 knockbackDir = (npc.Center - impactPosition).SafeNormalize(Vector2.Zero);
                     float knockbackForce = Projectile.knockBack * (2f - distance / damageRadius);
 
@@ -428,7 +427,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(50f, 300f);
                 Vector2 pos = impactPosition + angle.ToRotationVector2() * distance;
-                
+
                 Dust crack = Dust.NewDustPerfect(
                     pos,
                     DustID.Smoke,
@@ -447,9 +446,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(80f, 150f);
                 Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
-                Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * 
+                Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
                                   Main.rand.NextFloat(3f, 7f);
-                
+
                 AltSparkParticle spark = new AltSparkParticle(
                     spawnPos,
                     velocity,
@@ -573,7 +572,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (State == GroundSmashState.Descending) {
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
                     if (i >= Projectile.oldPos.Length - 1) continue;
-                    
+
                     float progress = i / (float)Projectile.oldPos.Length;
                     float trailAlpha = (1f - progress) * 0.6f;
                     Color trailColor = Color.Lerp(Color.Red, Color.Crimson, progress) * trailAlpha;
@@ -622,8 +621,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 shockwave.Draw(sb);
             }
         }
-
-        private static float EaseOutCubic(float t) => 1f - MathF.Pow(1f - t, 3f);
     }
 
     #region 特效类
@@ -671,7 +668,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (alpha <= 0.05f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            
+
             for (int i = 0; i < Points.Count - 1; i++) {
                 Vector2 start = Points[i];
                 Vector2 end = Points[i + 1];
@@ -720,7 +717,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public void Update() {
             Life++;
             float progress = Life / (float)MaxLife;
-            Radius = MathHelper.Lerp(0f, MaxRadius, EaseOutQuad(progress));
+            Radius = MathHelper.Lerp(0f, MaxRadius, CWRUtils.EaseOutQuad(progress));
         }
 
         public bool ShouldRemove() => Life >= MaxLife;
@@ -759,8 +756,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 );
             }
         }
-
-        private static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
     }
     #endregion
 }

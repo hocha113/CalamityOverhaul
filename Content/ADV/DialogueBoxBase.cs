@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content.ADV
             if (progress <= 0f) {
                 return Rectangle.Empty;
             }
-            float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
+            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
             float width = PanelWidth;
             float height = panelHeight;
             Vector2 panelOrigin = new(width / 2f, height);
@@ -367,17 +367,6 @@ namespace CalamityOverhaul.Content.ADV
             }
             fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
         }
-        protected static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-        protected static float EaseInCubic(float t) {
-            return t * t * t;
-        }
-        protected static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
-        }
         public override void Draw(SpriteBatch spriteBatch) {
             if (showProgress <= 0.01f && !closing) {
                 return;
@@ -386,7 +375,7 @@ namespace CalamityOverhaul.Content.ADV
             if (progress <= 0f) {
                 return;
             }
-            float eased = closing ? EaseInCubic(progress) : EaseOutBack(progress);
+            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
             float width = PanelWidth;
             float height = panelHeight;
             Vector2 panelOrigin = new(width / 2f, height);

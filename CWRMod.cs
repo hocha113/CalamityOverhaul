@@ -1,7 +1,5 @@
 ﻿global using InnoVault;
 global using Microsoft.Xna.Framework;
-using CalamityMod;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;

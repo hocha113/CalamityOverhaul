@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (spawnProgress < 1f) {
                 spawnProgress += 1f / SpawnDuration;
                 spawnProgress = Math.Clamp(spawnProgress, 0f, 1f);
-                float easedProgress = EaseOutCubic(spawnProgress);
+                float easedProgress = CWRUtils.EaseOutCubic(spawnProgress);
                 CurrentRadius = TargetRadius * easedProgress;
                 Alpha = easedProgress;
             }
@@ -205,9 +205,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Alpha = 1f;
             }
             rotation += 0.005f * (1f + LayerIndex * 0.1f);
-        }
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3);
         }
         public void Draw(SpriteBatch spriteBatch, float panelAlpha) {
             if (Alpha < 0.01f) {
@@ -319,8 +316,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             Rectangle sourceRect = new Rectangle(0, frame * frameHeight, tex.Width, frameHeight);
             Vector2 center = DomainUI.Instance.halibutCenter;
-            Vector2 pos = Vector2.Lerp(startPos, center, EaseOut(progress));
-            float scale = MathHelper.Lerp(0.8f, 1.8f, EaseOutBack(progress));
+            Vector2 pos = Vector2.Lerp(startPos, center, CWRUtils.EaseOut(progress));
+            float scale = MathHelper.Lerp(0.8f, 1.8f, CWRUtils.EaseOutBack(progress));
             float fade = 1f - Math.Abs(progress - 0.5f) * 2f;
             Color color = Color.White * (alpha * fade);
             Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
@@ -334,17 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawPulseRing(spriteBatch, pos, scale * 22f, ringColor, 2f);
         }
 
-        private static float EaseOut(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
-        }
-
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
-        private void DrawPulseRing(SpriteBatch spriteBatch, Vector2 center, float radius, Color color, float thickness) {
+        private static void DrawPulseRing(SpriteBatch spriteBatch, Vector2 center, float radius, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int segs = 40;
             float step = MathHelper.TwoPi / segs;

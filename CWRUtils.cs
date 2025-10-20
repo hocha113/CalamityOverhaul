@@ -614,6 +614,134 @@ namespace CalamityOverhaul
 
         #region MathUtils
         /// <summary>
+        /// 指数缓出函数
+        /// 速度起初极快并迅速减缓，在接近结束时趋于平缓
+        /// 常用于需要强烈减速感的动画
+        /// </summary>
+        public static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
+
+        /// <summary>
+        /// 三次缓出函数
+        /// 起初快速加速，随后平滑减速
+        /// 常用于自然的物体停止效果
+        /// </summary>
+        public static float EaseOutCubic(float t) {
+            t = MathHelper.Clamp(t, 0, 1);
+            t = 1 - (float)Math.Pow(1 - t, 3);
+            return t;
+        }
+
+        /// <summary>
+        /// 三次缓出函数的简化版
+        /// 功能等同于 EaseOutCubic
+        /// </summary>
+        public static float EaseOut(float t) {
+            return 1f - (float)Math.Pow(1f - t, 3f);
+        }
+
+        /// <summary>
+        /// 二次缓入函数
+        /// 从慢到快加速，适合平滑启动的动画
+        /// </summary>
+        public static float EaseInQuad(float t) => t * t;
+
+        /// <summary>
+        /// 二次缓出函数
+        /// 从快到慢减速，适合平滑停止的动画
+        /// </summary>
+        public static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
+
+        /// <summary>
+        /// 反向缓入缓出函数
+        /// 在开始和结束阶段略有“回弹”效果
+        /// 常用于强调弹性或动感的过渡
+        /// </summary>
+        public static float EaseInOutBack(float t) {
+            const float c1 = 1.70158f;
+            const float c2 = c1 * 1.525f;
+            t = MathHelper.Clamp(t, 0, 1);
+            return t < 0.5f
+                ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
+                : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
+        }
+
+        /// <summary>
+        /// 反向缓出函数
+        /// 在结束阶段会略微超出目标后反弹回终点
+        /// 常用于产生弹性离场的视觉效果
+        /// </summary>
+        public static float EaseOutBack(float t) {
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
+        }
+
+        /// <summary>
+        /// 三次缓入缓出函数
+        /// 前半段加速 后半段减速
+        /// 常用于平滑的镜像对称运动
+        /// </summary>
+        public static float EaseInOutCubic(float t) {
+            return t < 0.5f
+                ? 4f * t * t * t
+                : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
+        }
+
+        /// <summary>
+        /// 三次缓入函数
+        /// 起始阶段缓慢 加速度随时间增加
+        /// </summary>
+        public static float EaseInCubic(float t) {
+            return t * t * t;
+        }
+
+        /// <summary>
+        /// 二次缓入缓出函数
+        /// 前半部分加速 后半部分减速
+        /// 常用于平滑自然的过渡动画
+        /// </summary>
+        public static float EaseInOutQuad(float t) {
+            return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
+        }
+
+        /// <summary>
+        /// 二次贝塞尔曲线
+        /// 由三个控制点定义的平滑曲线
+        /// 用于简单插值或平滑路径计算
+        /// </summary>
+        public static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t) {
+            float u = 1f - t;
+            return u * u * a + 2f * u * t * b + t * t * c;
+        }
+
+        /// <summary>
+        /// 三次贝塞尔曲线
+        /// 由四个控制点定义的高阶平滑曲线
+        /// 适用于复杂轨迹与自然运动插值
+        /// </summary>
+        public static Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) {
+            float u = 1f - t;
+            float tt = t * t;
+            float uu = u * u;
+            float uuu = uu * u;
+            float ttt = tt * t;
+            Vector2 p = uuu * p0;
+            p += 3f * uu * t * p1;
+            p += 3f * u * tt * p2;
+            p += ttt * p3;
+            return p;
+        }
+
+        /// <summary>
+        /// 正弦缓出函数
+        /// 使用正弦曲线模拟平滑的停止运动
+        /// 常用于自然的轻缓收尾效果
+        /// </summary>
+        public static float EaseOutSine(float t) {
+            return (float)Math.Sin(t * MathHelper.PiOver2);
+        }
+
+        /// <summary>
         /// 检测索引的合法性
         /// </summary>
         /// <returns>合法将返回 <see cref="true"/></returns>

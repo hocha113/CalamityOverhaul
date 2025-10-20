@@ -585,7 +585,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
             else if (progress < 0.85f) {
                 float p = (progress - 0.6f) / 0.25f;
-                orbitRadius = MathHelper.Lerp(340f, 60f, EaseOutCubic(p));
+                orbitRadius = MathHelper.Lerp(340f, 60f, CWRUtils.EaseOutCubic(p));
                 spiralAngle += 0.18f * timeWarpFactor * (1f + p);
                 Alpha = 1f;
                 if (!burstSpawned && p > 0.3f) { //临近核心喷洒震荡尘粒
@@ -611,10 +611,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (TrailPositions.Count > MaxTrailLength) {
                 TrailPositions.RemoveAt(TrailPositions.Count - 1);
             }
-        }
-
-        private static float EaseOutCubic(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3);
         }
 
         private void SpawnConvergeBurst(Vector2 center) {
@@ -700,19 +696,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (progress < 0.28f) {
                 float p = progress / 0.28f;
                 Intensity = p;
-                Scale = MathHelper.Lerp(0f, 5f, EaseOutBack(p)); //缩小初始规模
+                Scale = MathHelper.Lerp(0f, 5f, CWRUtils.EaseOutBack(p)); //缩小初始规模
             }
             else {
                 float p = (progress - 0.28f) / 0.72f;
                 Intensity = (float)Math.Pow(1f - p, 1.35f);
                 Scale = 5f + p * 2.2f; //终末尺寸更小
             }
-        }
-
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
         }
 
         public bool ShouldRemove() => Life >= MaxLife;
