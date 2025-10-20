@@ -88,6 +88,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
 
         }
+        private static void ModifyAfterMoonSelect(int index, ref string newContent, ref string num) {
+            if (index != 9) {
+                return;
+            }
+            else if (Downed23.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text8");
+                num += "-1";
+            }
+            else if (Level9) {
+                newContent = MuraText.GetTextValue("Subtest_Text7");
+                num += "-1";
+            }
+
+
+
+        }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", noneTip: CWRLocText.Instance.Notbound.Value);
@@ -106,6 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 ModifyWallSelect(index, ref newContent, ref num);
                 ModifyMechBossSelect(index, ref newContent, ref num);
                 ModifyGolemSelect(index, ref newContent, ref num);
+                ModifyAfterMoonSelect(index, ref newContent, ref num);
                 text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
             }

@@ -69,11 +69,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
             
         }
+        private static void ModifyAfterMoonSelect(int index, ref int damage) {
+            if (index != 9) {
+                return;
+            }
+
+            if (Level9) {
+                damage += 50;
+            }
+            if (Downed23.Invoke()) {
+                damage += 70;
+            }
+            else {
+                return;
+            }
+
+        }
         public static void DamageModify(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
             ModifyWallSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyGolemSelect(item.CWR().LegendData.Level, ref onDamage);
+            ModifyAfterMoonSelect(item.CWR().LegendData.Level, ref onDamage);
             CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
             float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);
             float SpeedToMelee = 1f + (float)Math.Log(meleeSpeedRoad) * 0.48f;

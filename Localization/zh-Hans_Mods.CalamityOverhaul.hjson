@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -2752,6 +2752,8 @@ Legend: {
 		Subtest_Text4: 丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
 		Subtest_Text5: 血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
 		Subtest_Text6: 昔日的星神早已陨落，如今所剩的不过堪堪一条蛆虫，让我们彻底结束星神的时代
+		Subtest_Text7: 击杀噬魂幽花
+		Subtest_Text8: 靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
 	}
 }
 
