@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -464,14 +465,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             CloseEyes(Player);
         }
         public static void CloseEyes(Player player) {
-            if (player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
-                foreach (var save in halibutSave.activationSequence) {
-                    if (save.IsCrashed) {
-                        continue;//死机状态的眼睛不受影响
-                    }
-                    save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
+            if (!player.TryGetModPlayer<HalibutSave>(out var halibutSave)) {
+                return;
+            }
+
+            foreach (var save in halibutSave.activationSequence) {
+                if (save.IsCrashed) {
+                    continue;//死机状态的眼睛不受影响
+                }
+                save.IsActive = false;//关掉所有眼球，避免死后继续因为眼球的复苏再次进入临界值
+            }
+
+            List<int> activeIndices = [];
+
+            foreach (var index in halibutSave.activationSequence) {
+                if (index.IsActive) {
+                    activeIndices.Add(index.Index);
                 }
             }
+
+            //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
+            DomainUI.InitializeEyes(activeIndices);
         }
         #endregion
 

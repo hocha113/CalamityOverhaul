@@ -108,31 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
                 //读取激活的眼睛索引列表
                 if (tag.TryGet<List<int>>("ActiveEyeIndices", out var activeIndices)) {
-                    //清空当前激活序列
-                    activationSequence.Clear();
-                    if (eyes.Count == 0) {
-                        for (int i = 0; i < DomainUI.MaxEyes; i++) {
-                            float angle = i / (float)DomainUI.MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
-                            eyes.Add(new SeaEyeButton(i, angle));
-                        }
-                    }
-                    //重置所有眼睛状态
-                    foreach (var eye in eyes) {
-                        eye.IsActive = false;
-                        eye.LayerNumber = null;
-                    }
-                    //按保存的顺序重新激活眼睛
-                    foreach (int index in activeIndices) {
-                        if (index >= 0 && index < eyes.Count) {
-                            var eye = eyes[index];
-                            eye.IsActive = true;
-                            activationSequence.Add(eye);
-                            eye.LayerNumber = activationSequence.Count;
-                        }
-                    }
-                    //更新圆环
-                    DomainUI.Instance.UpdateRings(activationSequence.Count);
-                    DomainUI.Instance.lastActiveEyeCount = activationSequence.Count;
+                    DomainUI.InitializeEyes(activeIndices);
                 }
 
                 if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
