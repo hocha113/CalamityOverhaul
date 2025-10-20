@@ -192,14 +192,14 @@ namespace CalamityOverhaul.Content.Items.Tools
             auraRadius = MathHelper.Lerp(0f, 300f, EaseOutCubic(progress));
             auraIntensity = MathHelper.Lerp(0f, 1f, progress);
 
-            if (Timer % 3 == 0) {
+            if (Timer % 2 == 0) {
                 SpawnGatherParticles(owner.Center);
             }
 
             if (Timer % 20 == 0) {
-                SoundEngine.PlaySound(SoundID.Item8 with {
+                SoundEngine.PlaySound(SoundID.NPCDeath1 with {
                     Volume = 0.3f,
-                    Pitch = -0.5f + progress * 0.5f
+                    Pitch = -0.5f + progress * 0.3f
                 }, owner.Center);
             }
 
@@ -214,16 +214,16 @@ namespace CalamityOverhaul.Content.Items.Tools
             float progress = Timer / RewindDuration;
 
             auraRadius = MathHelper.Lerp(300f, 150f, progress);
-            auraIntensity = MathHelper.Lerp(1f, 1.2f, (float)Math.Sin(progress * MathHelper.Pi));
+            auraIntensity = MathHelper.Lerp(1f, 1.5f, (float)Math.Sin(progress * MathHelper.Pi));
 
             if (Timer % 2 == 0) {
                 SpawnRewindParticles(owner.Center, progress);
             }
 
-            if (Timer % 15 == 0) {
-                SoundEngine.PlaySound(SoundID.Item9 with {
+            if (Timer % 12 == 0) {
+                SoundEngine.PlaySound(SoundID.NPCHit1 with {
                     Volume = 0.4f,
-                    Pitch = 0.5f - progress * 0.8f
+                    Pitch = 0.3f - progress * 0.6f
                 }, owner.Center);
             }
 
@@ -239,16 +239,16 @@ namespace CalamityOverhaul.Content.Items.Tools
             float progress = Timer / ResetDuration;
 
             auraRadius = MathHelper.Lerp(150f, 0f, EaseInCubic(progress));
-            auraIntensity = MathHelper.Lerp(1.2f, 0.3f, progress);
+            auraIntensity = MathHelper.Lerp(1.5f, 0.4f, progress);
 
             if (Timer % 1 == 0) {
                 SpawnResetBurst(owner.Center);
             }
 
             if (Timer % 5 == 0) {
-                SoundEngine.PlaySound(SoundID.Item4 with {
-                    Volume = 0.3f,
-                    Pitch = progress * 0.8f
+                SoundEngine.PlaySound(SoundID.Item74 with {
+                    Volume = 0.35f,
+                    Pitch = progress * 0.5f
                 }, owner.Center);
             }
 
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         private void CompletePhaseAI(Player owner) {
             float progress = Timer / CompleteDuration;
-            auraIntensity = MathHelper.Lerp(0.3f, 0f, progress);
+            auraIntensity = MathHelper.Lerp(0.4f, 0f, progress);
 
             if (Timer >= CompleteDuration) {
                 Projectile.Kill();
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             ScenarioManager.ResetAll();
 
-            for (int i = 0; i < 30; i++) {
+            for (int i = 0; i < 40; i++) {
                 SpawnResetExplosion(owner.Center);
             }
         }
@@ -310,20 +310,20 @@ namespace CalamityOverhaul.Content.Items.Tools
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float radius = Main.rand.NextFloat(50f, auraRadius);
             Vector2 pos = center + angle.ToRotationVector2() * radius;
-            Vector2 velocity = (center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f);
+            Vector2 velocity = (center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1.5f, 3.5f);
 
             particles.Add(new TimeParticle(pos, velocity, TimeParticle.ParticleType.Gather));
         }
 
         private void SpawnRewindParticles(Vector2 center, float intensity) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float radius = Main.rand.NextFloat(100f, 250f);
                 Vector2 pos = center + angle.ToRotationVector2() * radius;
 
-                float orbitSpeed = Main.rand.NextFloat(0.05f, 0.1f);
+                float orbitSpeed = Main.rand.NextFloat(0.06f, 0.12f);
                 Vector2 velocity = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * orbitSpeed * 100f;
-                velocity += (center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+                velocity += (center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2.5f, 5f);
 
                 particles.Add(new TimeParticle(pos, velocity, TimeParticle.ParticleType.Rewind));
             }
@@ -331,49 +331,48 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         private void SpawnResetBurst(Vector2 center) {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
+            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 7f);
             particles.Add(new TimeParticle(center, velocity, TimeParticle.ParticleType.Reset));
         }
 
         private void SpawnResetExplosion(Vector2 center) {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
+            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 14f);
             particles.Add(new TimeParticle(center, velocity, TimeParticle.ParticleType.Burst));
         }
 
         private static void PlayGatherSound(Player owner) {
-            SoundEngine.PlaySound(SoundID.Item4 with {
-                Volume = 0.6f,
-                Pitch = -0.5f
+            SoundEngine.PlaySound(SoundID.NPCDeath13 with {
+                Volume = 0.7f,
+                Pitch = -0.6f
             }, owner.Center);
         }
 
         private static void PlayRewindSound(Player owner) {
-            SoundEngine.PlaySound(SoundID.Item8 with {
-                Volume = 0.8f,
-                Pitch = 0.5f
-            }, owner.Center);
-        }
-
-        private static void PlayResetSound(Player owner) {
-            SoundEngine.PlaySound(SoundID.Item62 with {
+            SoundEngine.PlaySound(SoundID.Zombie53 with {
                 Volume = 0.8f,
                 Pitch = -0.3f
             }, owner.Center);
         }
 
-        private static void PlayCompleteSound(Player owner) {
-            SoundEngine.PlaySound(SoundID.Item4 with {
-                Volume = 0.7f,
-                Pitch = 0.8f
+        private static void PlayResetSound(Player owner) {
+            SoundEngine.PlaySound(SoundID.NPCDeath19 with {
+                Volume = 0.9f,
+                Pitch = -0.5f
             }, owner.Center);
-            SoundEngine.PlaySound(SoundID.MaxMana, owner.Center);
+        }
+
+        private static void PlayCompleteSound(Player owner) {
+            SoundEngine.PlaySound(SoundID.Item103 with {
+                Volume = 0.8f,
+                Pitch = -0.4f
+            }, owner.Center);
         }
 
         private static void ShowCompletionMessage(Player owner) {
             if (Main.netMode != NetmodeID.Server) {
                 string text = TheForgottenTome.CompletionText.Value;
-                CombatText.NewText(owner.Hitbox, new Color(180, 180, 255), text, true);
+                CombatText.NewText(owner.Hitbox, new Color(200, 50, 50), text, true);
             }
         }
 
@@ -404,12 +403,18 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            Color auraColor = new Color(180, 180, 255) * (auraIntensity * 0.3f);
+            
+            //血红色光晕，带有脉动效果
+            float pulse = (float)Math.Sin(Timer * 0.15f) * 0.2f + 0.8f;
+            Color auraColor = new Color(200, 30, 30) * (auraIntensity * 0.4f * pulse);
+            Color innerColor = new Color(140, 0, 0) * (auraIntensity * 0.5f * pulse);
 
-            for (int i = 0; i < 3; i++) {
-                float ringRadius = auraRadius * (0.8f + i * 0.1f);
-                float ringThickness = 1.5f + i;
+            for (int i = 0; i < 4; i++) {
+                float ringRadius = auraRadius * (0.7f + i * 0.15f);
+                float ringThickness = 2f + i * 0.8f;
                 int segments = 64;
+
+                Color ringColor = Color.Lerp(innerColor, auraColor, i / 4f);
 
                 for (int j = 0; j < segments; j++) {
                     float angle1 = (j / (float)segments) * MathHelper.TwoPi;
@@ -422,7 +427,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     float length = diff.Length();
                     float rotation = diff.ToRotation();
 
-                    sb.Draw(pixel, pos1 - Main.screenPosition, null, auraColor,
+                    sb.Draw(pixel, pos1 - Main.screenPosition, null, ringColor,
                         rotation, Vector2.Zero, new Vector2(length, ringThickness), SpriteEffects.None, 0f);
                 }
             }
@@ -436,13 +441,15 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         private void DrawCenterGlow(SpriteBatch sb, Vector2 center) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float pulse = (float)Math.Sin(Timer * 0.3f) * 0.3f + 0.7f;
-            Color glowColor = new Color(180, 180, 255) * (auraIntensity * pulse);
+            float pulse = (float)Math.Sin(Timer * 0.4f) * 0.4f + 0.6f;
+            Color glowColor = new Color(220, 20, 20) * (auraIntensity * pulse);
+            Color darkGlow = new Color(100, 0, 0) * (auraIntensity * pulse * 0.8f);
 
-            for (int i = 0; i < 5; i++) {
-                float scale = 20f * (1f + i * 0.3f);
-                float alpha = (1f - i / 5f) * auraIntensity;
-                sb.Draw(pixel, center - Main.screenPosition, null, glowColor * alpha,
+            for (int i = 0; i < 6; i++) {
+                float scale = 25f * (1f + i * 0.4f);
+                float alpha = (1f - i / 6f) * auraIntensity;
+                Color color = Color.Lerp(glowColor, darkGlow, i / 6f);
+                sb.Draw(pixel, center - Main.screenPosition, null, color * alpha,
                     0f, new Vector2(0.5f), new Vector2(scale), SpriteEffects.None, 0f);
             }
         }
@@ -466,6 +473,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         public float Alpha;
         public int Life;
         public int MaxLife;
+        public Color BaseColor;
 
         public bool ShouldRemove => Life >= MaxLife;
 
@@ -473,16 +481,25 @@ namespace CalamityOverhaul.Content.Items.Tools
             Position = pos;
             Velocity = vel;
             Type = type;
-            Scale = Main.rand.NextFloat(0.8f, 1.5f);
+            Scale = Main.rand.NextFloat(0.9f, 1.8f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Alpha = 1f;
             Life = 0;
             MaxLife = type switch {
-                ParticleType.Gather => Main.rand.Next(40, 70),
-                ParticleType.Rewind => Main.rand.Next(50, 90),
-                ParticleType.Reset => Main.rand.Next(30, 60),
-                ParticleType.Burst => Main.rand.Next(40, 80),
+                ParticleType.Gather => Main.rand.Next(35, 65),
+                ParticleType.Rewind => Main.rand.Next(45, 85),
+                ParticleType.Reset => Main.rand.Next(25, 55),
+                ParticleType.Burst => Main.rand.Next(35, 75),
                 _ => 60
+            };
+            
+            //设置不同类型粒子的血红色调
+            BaseColor = type switch {
+                ParticleType.Gather => new Color(180, 40, 40),
+                ParticleType.Rewind => new Color(200, 20, 20),
+                ParticleType.Reset => new Color(220, 50, 50),
+                ParticleType.Burst => new Color(160, 10, 10),
+                _ => new Color(200, 30, 30)
             };
         }
 
@@ -491,28 +508,30 @@ namespace CalamityOverhaul.Content.Items.Tools
             Position += Velocity;
 
             if (Type == ParticleType.Gather || Type == ParticleType.Rewind) {
-                Velocity *= 0.98f;
+                Velocity *= 0.97f;
             }
             else {
-                Velocity *= 0.96f;
+                Velocity *= 0.94f;
             }
 
-            Rotation += 0.08f;
+            Rotation += 0.1f;
             Alpha = 1f - (Life / (float)MaxLife);
+            
+            //粒子在消散时变暗
+            float fadeProgress = Life / (float)MaxLife;
+            if (fadeProgress > 0.7f) {
+                BaseColor = Color.Lerp(BaseColor, new Color(80, 0, 0), (fadeProgress - 0.7f) / 0.3f);
+            }
         }
 
         public void Draw(SpriteBatch sb) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            Color color = Type switch {
-                ParticleType.Gather => new Color(180, 180, 255),
-                ParticleType.Rewind => new Color(200, 200, 255),
-                ParticleType.Reset => new Color(255, 255, 255),
-                ParticleType.Burst => new Color(220, 220, 255),
-                _ => Color.White
-            } * Alpha;
+            Color color = BaseColor * Alpha;
 
+            float finalScale = Scale * (1f + (float)Math.Sin(Life * 0.3f) * 0.2f);
+            
             sb.Draw(pixel, Position - Main.screenPosition, null, color,
-                Rotation, new Vector2(0.5f), new Vector2(Scale * 3f), SpriteEffects.None, 0f);
+                Rotation, new Vector2(0.5f), new Vector2(finalScale * 3.5f), SpriteEffects.None, 0f);
         }
     }
 
@@ -530,7 +549,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         public ClockHand(float angle, float radius) {
             Angle = angle;
             Radius = radius;
-            RotationSpeed = Main.rand.NextFloat(0.02f, 0.05f) * (Main.rand.NextBool() ? 1 : -1);
+            RotationSpeed = Main.rand.NextFloat(0.025f, 0.06f) * (Main.rand.NextBool() ? 1 : -1);
             Alpha = 1f;
             Life = 0;
             MaxLife = 300;
@@ -550,15 +569,19 @@ namespace CalamityOverhaul.Content.Items.Tools
             float length = diff.Length();
             float rotation = diff.ToRotation();
 
-            Color color = new Color(180, 180, 255) * (Alpha * 0.6f);
+            //血红色时针，带有暗红渐变
+            Color handColor = new Color(160, 20, 20) * (Alpha * 0.7f);
+            Color tipColor = new Color(200, 40, 40) * (Alpha * 0.8f);
 
-            sb.Draw(pixel, center - Main.screenPosition, null, color,
-                rotation, Vector2.Zero, new Vector2(length, 2f), SpriteEffects.None, 0f);
+            sb.Draw(pixel, center - Main.screenPosition, null, handColor,
+                rotation, Vector2.Zero, new Vector2(length, 2.5f), SpriteEffects.None, 0f);
 
-            for (int i = 0; i < 3; i++) {
-                float glowAlpha = (1f - i / 3f) * Alpha * 0.3f;
-                sb.Draw(pixel, endPos - Main.screenPosition, null, color * glowAlpha,
-                    0f, new Vector2(0.5f), new Vector2(6f + i * 2f), SpriteEffects.None, 0f);
+            //时针末端的血珠效果
+            for (int i = 0; i < 4; i++) {
+                float glowAlpha = (1f - i / 4f) * Alpha * 0.4f;
+                Color glowColor = Color.Lerp(handColor, tipColor, i / 4f);
+                sb.Draw(pixel, endPos - Main.screenPosition, null, glowColor * glowAlpha,
+                    0f, new Vector2(0.5f), new Vector2(7f + i * 2.5f), SpriteEffects.None, 0f);
             }
         }
     }
