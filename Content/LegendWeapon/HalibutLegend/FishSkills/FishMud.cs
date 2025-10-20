@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             if (Cooldown <= 0) {
                 SetCooldown();
-                int existingCount = CountActiveSentries(player);
+                int existingCount = player.CountProjectilesOfID<MudfishSentry>();
                 int maxCount = MaxMudfishSentries + HalibutData.GetDomainLayer() * 2;
 
                 if (existingCount < maxCount) {
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnMudfishSentry(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
-            NPC target = FindNearestEnemy(player);
+            NPC target = player.Center.FindClosestNPC(1200f);
             if (target == null) return;
 
             Vector2 spawnPos = FindValidGroundPosition(player, target);
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
         }
 
-        private Vector2 FindValidGroundPosition(Player player, NPC target) {
+        private static Vector2 FindValidGroundPosition(Player player, NPC target) {
             Vector2 targetPos = target.Center;
             Vector2 dirToTarget = (targetPos - player.Center).SafeNormalize(Vector2.Zero);
 
@@ -79,36 +79,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             return Vector2.Zero;
-        }
-
-        private NPC FindNearestEnemy(Player player) {
-            NPC closest = null;
-            float closestDist = 1200f;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(player.Center, npc.Center);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = npc;
-                    }
-                }
-            }
-
-            return closest;
-        }
-
-        private int CountActiveSentries(Player player) {
-            int count = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI &&
-                    proj.type == ModContent.ProjectileType<MudfishSentry>()) {
-                    count++;
-                }
-            }
-            return count;
         }
     }
 
