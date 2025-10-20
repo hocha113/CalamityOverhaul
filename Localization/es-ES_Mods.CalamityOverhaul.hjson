@@ -2821,6 +2821,9 @@ Legend: {
 			Con espadas y sangre, hágales saber que nuestra expedición aplastará a todas las abominaciones alienígenas e inteligencias odiosas.
 			'''
 		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
+		// Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
+		// Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
+		// Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
 	}
 }
 

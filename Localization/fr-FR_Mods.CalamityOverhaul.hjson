@@ -2799,6 +2799,9 @@ Legend: {
 			Avec des lames et du sang, faites-leur savoir que notre expédition écrasera toutes les abominations extraterrestres et les intelligences haineuses.
 			'''
 		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
+		// Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
+		// Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
+		// Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
 	}
 }
 

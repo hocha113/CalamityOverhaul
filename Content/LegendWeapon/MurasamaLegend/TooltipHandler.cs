@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Potions.Alcohol;
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -56,6 +57,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             } while (false);
             num += levelContent;
         }
+        private static void ModifyGolemSelect(int index, ref string newContent, ref string num) {
+            if (index != 7) {
+                return;
+            }
+            else if (Downed15.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text6");
+                num += "-3";
+            }
+            else if (Downed14.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text5");
+                num += "-2";
+            }
+            else if (Level7) {
+                newContent = MuraText.GetTextValue("Subtest_Text4");
+                num += "-1";
+            }
+        }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", noneTip: CWRLocText.Instance.Notbound.Value);
@@ -73,6 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 }
                 ModifyWallSelect(index, ref newContent, ref num);
                 ModifyMechBossSelect(index, ref newContent, ref num);
+                ModifyGolemSelect(index, ref newContent, ref num);
                 text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
             }

@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2809,6 +2809,9 @@ Legend: {
 			With blades and blood, let them know our expedition will crush all alien abominations and hateful intelligences.
 			'''
 		World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
+		Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
+		Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
+		Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
 	}
 }
 
