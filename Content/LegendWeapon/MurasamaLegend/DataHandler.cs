@@ -12,9 +12,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (index != 4) {
                 return;
             }
-            //完成试炼5但是没有进入困难模式
             if (Level4 && !Main.hardMode) {
-                damage += 3;
+                damage += 7;
             }
             else {
                 return;
@@ -24,27 +23,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         private static void ModifyMechBossSelect(int index, ref int damage) {
             if (index != 5) {
                 return;
-            }//index是5，执行到这里说明刚进入困难模式
-
+            }
             if (!Level5) {
                 return;
             }
-
-            //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的选择
-            do {
-                if (!NPC.downedMechBoss1) {//毁灭者
-                    damage += 5;
-                    break;
-                }
-                if (!NPC.downedMechBoss2) {//双子魔眼
-                    damage += 10;
-                    break;
-                }
-                if (!NPC.downedMechBoss3) {//机械统帅
-                    damage += 15;
-                    break;
-                }
-            } while (false);
+            if (NPC.downedMechBoss1) {//毁灭者
+                damage += 7;
+            }
+            if (NPC.downedMechBoss2) {//双子魔眼
+                damage += 8;
+            }
+            if (NPC.downedMechBoss3) {//机械统帅
+                damage += 10;
+            }
+            else {
+                return;
+            }
         }
 
         private static void ModifyGolemSelect(int index, ref int damage) {
@@ -67,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             else {
                 return;
             }
-            
+
         }
         private static void ModifyAfterMoonSelect(int index, ref int damage) {
             if (index != 9) {
@@ -85,12 +79,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
 
         }
+        private static void ModifyAfterMechSelect(int index, ref int damage) {
+            if (index != 6) {
+                return;
+            }
+
+            if (Level6) {
+                damage += 20;
+            }
+            if (VDownedV7.Invoke()) {
+                damage += 15;
+            }
+            else {
+                return;
+            }
+
+        }
         public static void DamageModify(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
             ModifyWallSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyGolemSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyAfterMoonSelect(item.CWR().LegendData.Level, ref onDamage);
+            ModifyAfterMechSelect(item.CWR().LegendData.Level, ref onDamage);
             CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
             float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);
             float SpeedToMelee = 1f + (float)Math.Log(meleeSpeedRoad) * 0.48f;
