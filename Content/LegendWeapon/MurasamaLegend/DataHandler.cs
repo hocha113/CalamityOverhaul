@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 damage += 3;
             }
             else {
-                damage += 0;
+                return;
             }
         }
 
@@ -47,10 +47,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             } while (false);
         }
 
+        private static void ModifyGolemSelect(int index, ref int damage) {
+            if (index != 7) {
+                return;
+            }
+
+            if (Level7) {//石巨人
+                damage += 20;
+            }
+            if (Downed14.Invoke()) {
+                damage += 5;
+            }
+            if (Downed15.Invoke()) {
+                damage += 5;
+            }
+            if (Downed16.Invoke()) {
+                damage += 10;
+            }
+            else {
+                return;
+            }
+            
+        }
         public static void DamageModify(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
             ModifyWallSelect(item.CWR().LegendData.Level, ref onDamage);
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
+            ModifyGolemSelect(item.CWR().LegendData.Level, ref onDamage);
             CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
             float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);
             float SpeedToMelee = 1f + (float)Math.Log(meleeSpeedRoad) * 0.48f;

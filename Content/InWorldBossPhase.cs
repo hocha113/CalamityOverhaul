@@ -41,6 +41,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static bool DownedAnyMechBoss => NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
         /// <summary>
+        /// 击败所有石后灾厄Boss
+        /// </summary>
+        public static bool DownedAnyAfterGolemBoss => Downed14.Invoke() && Downed15.Invoke() && Downed16.Invoke();
+        /// <summary>
         /// 史莱姆王
         /// </summary>
         public static readonly Func<bool> DownedV0 = () => NPC.downedSlimeKing;
@@ -516,7 +520,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (Level7) {
+            if (Level7 && DownedAnyAfterGolemBoss) {
                 level = 8;
             }
             else {

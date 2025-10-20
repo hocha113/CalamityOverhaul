@@ -2852,6 +2852,9 @@ Legend: {
 			Клинками и кровью покажите им, что наша экспедиция раздавит всех чужих тварей и ненавистные интеллекты.
 			'''
 		World_Text0: " (последний раз было обновлено в мире «{0}»  | Рекорд: <{1}>)"
+		// Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
+		// Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
+		// Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
 	}
 }
 

@@ -2791,6 +2791,9 @@ Legend: {
 			Mit Klingen und Blut lasst sie wissen, dass unsere Expedition alle fremden Abscheulichkeiten und hassvollen Intelligenzen zerschmettern wird.
 			'''
 		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
+		// Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
+		// Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
+		// Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
 	}
 }
 
