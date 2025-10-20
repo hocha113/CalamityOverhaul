@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Potions.Alcohol;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -32,8 +31,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             string levelContent = "";
 
             if (!Level5) {
-                levelContent = "-0";
-                num += levelContent;
                 return;
             }
 
@@ -61,6 +58,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (index != 7) {
                 return;
             }
+            else if (Downed14.Invoke() && Downed16.Invoke() && !Downed15.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text5");
+                num += "-3";
+            }
+            else if (Downed15.Invoke() && Downed16.Invoke() && !Downed14.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text4");
+                num += "-3";
+            }
+            else if (Downed15.Invoke() && !Downed14.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text4");
+                num += "-2";
+            }
+            else if (Downed16.Invoke() && !Downed14.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text4");
+                num += "-2";
+            }
             else if (Downed15.Invoke()) {
                 newContent = MuraText.GetTextValue("Subtest_Text6");
                 num += "-3";
@@ -73,6 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 newContent = MuraText.GetTextValue("Subtest_Text4");
                 num += "-1";
             }
+
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
