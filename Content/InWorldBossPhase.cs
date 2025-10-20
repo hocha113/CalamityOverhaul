@@ -23,15 +23,15 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static bool Level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
 
-        public static bool Level6 => Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke();
+        public static bool Level6 => Downed10.Invoke() || VDownedV7.Invoke();
 
-        public static bool Level7 => Downed14.Invoke() || Downed15.Invoke() || Downed16.Invoke();
+        public static bool Level7 => DownedV7.Invoke() || Downed14.Invoke();
 
-        public static bool Level8 => Downed17.Invoke() || Downed18.Invoke();
+        public static bool Level8 => VDownedV16.Invoke();
 
-        public static bool Level9 => Downed19.Invoke() || Downed20.Invoke() || Downed21.Invoke() || Downed22.Invoke() || Downed23.Invoke();
+        public static bool Level9 => Downed19.Invoke() || Downed23.Invoke();
 
-        public static bool Level10 => Downed26.Invoke() || Downed27.Invoke();
+        public static bool Level10 => Downed27.Invoke();
 
         public static bool Level11 => Downed28.Invoke();
 
@@ -195,11 +195,11 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static readonly Func<bool> Downed20 = () => DownedBossSystem.downedCeaselessVoid;
         /// <summary>
-        /// 风暴吞噬者
+        /// 风暴编织者
         /// </summary>
         public static readonly Func<bool> Downed21 = () => DownedBossSystem.downedStormWeaver;
         /// <summary>
-        /// 席格纳斯
+        /// 西格纳斯
         /// </summary>
         public static readonly Func<bool> Downed22 = () => DownedBossSystem.downedSignus;
         /// <summary>

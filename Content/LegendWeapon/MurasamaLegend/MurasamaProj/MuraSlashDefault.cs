@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            // 对终灾造成1.63倍伤害
+            // 对终灾造成1.66倍伤害
             if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
                 modifiers.FinalDamage *= 1.66f;
             }
