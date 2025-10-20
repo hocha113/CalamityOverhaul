@@ -183,6 +183,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             if (save.FirstMetSupCal) {
                 return;
             }
+            if (InWorldBossPhase.Downed30.Invoke()) {
+                return;//如果已经打过至尊灾厄，则不触发
+            }
             if (halibutPlayer.HeldHalibut && !save.CalamitasCloneGift) {//如果玩家拿着大比目鱼，则必须先获得过比目鱼小姐给的灾厄克隆的礼物才能触发，避免这两个场景冲突
                 return;
             }
