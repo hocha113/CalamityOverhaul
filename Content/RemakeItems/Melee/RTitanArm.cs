@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<AstralInfectionDebuff>(), 300);
             if (!onHitNpcs.Contains(target)) {
-                MuraBreakerSlash.StrikeToFly(new Vector2(hit.HitDirection * 8, -6), target, Owner, 6);
                 onHitNpcs.Add(target);
             }
         }

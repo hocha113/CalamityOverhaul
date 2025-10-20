@@ -9,7 +9,6 @@ namespace CalamityOverhaul
 {
     public enum CWRMessageType : byte
     {
-        OverBeatBack,
         NPCbasicData,
         ModifiIntercept_InGame,
         ModifiIntercept_EnterWorld_Request,
@@ -27,10 +26,7 @@ namespace CalamityOverhaul
         public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
 
-            if (type == CWRMessageType.OverBeatBack) {
-                CWRNpc.OtherBeatBackReceive(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.NPCbasicData) {
+            if (type == CWRMessageType.NPCbasicData) {
                 CWRNpc.NPCbasicDataHandler(reader);
             }
             else if (type == CWRMessageType.ModifiIntercept_InGame) {

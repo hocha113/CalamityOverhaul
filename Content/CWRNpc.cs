@@ -69,18 +69,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool LonginusSign;
         /// <summary>
-        /// 实体是否受到额外的击退
-        /// </summary>
-        public bool OverBeatBackBool;
-        /// <summary>
-        /// 击退力的具体向量
-        /// </summary>
-        public Vector2 OverBeatBackVr;
-        /// <summary>
-        /// 击退的衰减力度系数，1为不衰减
-        /// </summary>
-        public float OverBeatBackAttenuationForce;
-        /// <summary>
         /// 上一帧实体的位置
         /// </summary>
         public Vector2 OldNPCPos;
@@ -116,43 +104,8 @@ namespace CalamityOverhaul.Content
             cwr.WhipHitNum = WhipHitNum;
             cwr.WhipHitType = WhipHitType;
             cwr.LonginusSign = LonginusSign;
-            cwr.OverBeatBackBool = OverBeatBackBool;
-            cwr.OverBeatBackVr = OverBeatBackVr;
-            cwr.OverBeatBackAttenuationForce = OverBeatBackAttenuationForce;
             cwr.IceParclose = IceParclose;
             return cwr;
-        }
-
-        public static void OverBeatBackSend(NPC npc, float power = 0.99f) {
-            if (VaultUtils.isClient) {
-                var netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.OverBeatBack);
-                netMessage.Write((byte)npc.whoAmI);
-                netMessage.WriteVector2(npc.CWR().OverBeatBackVr);
-                netMessage.Write(power);
-                netMessage.Send();
-            }
-        }
-
-        public static void OtherBeatBackReceive(BinaryReader reader, int whoAmI) {
-            NPC npc = Main.npc[reader.ReadByte()];
-            Vector2 overBeatBackVr = reader.ReadVector2();
-            float power = reader.ReadSingle();
-            if (npc.type == NPCID.None || !npc.active) {
-                return;
-            }
-            CWRNpc modnpc = npc.CWR();
-            modnpc.OverBeatBackBool = true;
-            modnpc.OverBeatBackVr = overBeatBackVr;
-            modnpc.OverBeatBackAttenuationForce = power;
-            if (VaultUtils.isServer) {
-                var netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.OverBeatBack);
-                netMessage.Write((byte)npc.whoAmI);
-                netMessage.WriteVector2(npc.CWR().OverBeatBackVr);
-                netMessage.Write(power);
-                netMessage.Send(-1, whoAmI);
-            }
         }
 
         /// <summary>
@@ -207,26 +160,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void UpdateOverBeatBack(NPC npc) {
-            if (OverBeatBackBool) {
-                Vector2 v = Collision.TileCollision(npc.position, OverBeatBackVr, npc.width, npc.height);
-                if (OverBeatBackVr != v) {
-                    OverBeatBackBool = false;
-                    return;
-                }
-                npc.position += OverBeatBackVr;
-                if (OldNPCPos.Y - npc.position.Y < 0) {
-                    OverBeatBackVr.Y *= 0.9f;
-                }
-                OldNPCPos = npc.position;
-                OverBeatBackVr *= OverBeatBackAttenuationForce;
-                OverBeatBackVr.X *= OverBeatBackAttenuationForce;
-                if (OverBeatBackVr.LengthSquared() < 2) {
-                    OverBeatBackBool = false;
-                }
-            }
-        }
-
         public static void DoTimeFrozen(NPC npc) {
             npc.timeLeft++;
             npc.aiAction = 0;
@@ -242,7 +175,6 @@ namespace CalamityOverhaul.Content
                 return false;
             }
 
-            UpdateOverBeatBack(npc);
             return base.PreAI(npc);
         }
 
