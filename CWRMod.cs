@@ -67,15 +67,6 @@ namespace CalamityOverhaul
             foreach (var load in ILoaders) {
                 load.LoadData();
             }
-            //防止鬼妖受到蠕虫伤害衰减
-            if (CalamityLists.pierceResistExceptionList != null) {
-                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
-            if (CalamityLists.projectileDestroyExceptionList != null) {
-                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
         }
 
         public override void Unload() {
@@ -87,10 +78,6 @@ namespace CalamityOverhaul
             ILoaders?.Clear();
             CWRLoad.UnLoad();
             Instance = null;
-            if (CalamityLists.pierceResistExceptionList != null) {
-                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraSlashDefault>());
-                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraBreakerSlash>());
-            }
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);

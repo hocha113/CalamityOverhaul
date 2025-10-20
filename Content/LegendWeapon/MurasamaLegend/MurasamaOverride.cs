@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 return 12;
             }
             return cwrItem.LegendData.Level;
-        }
+        }       
         public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);
         public static bool NameIsVergil(Player player) => VergilNameList.Contains(player.name);
         public static void LoadWeaponData() {
@@ -211,6 +211,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[TargetID] = true;
+
+            //防止鬼妖受到蠕虫伤害衰减
+            if (CalamityLists.pierceResistExceptionList != null) {
+                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
+                CalamityLists.pierceResistExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
+            }
+            if (CalamityLists.projectileDestroyExceptionList != null) {
+                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraSlashDefault>());
+                CalamityLists.projectileDestroyExceptionList.Add(ModContent.ProjectileType<MuraBreakerSlash>());
+            }
+        }
+
+        public override void Unload() {
+            if (CalamityLists.pierceResistExceptionList != null) {
+                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraSlashDefault>());
+                CalamityLists.pierceResistExceptionList.Remove(ModContent.ProjectileType<MuraBreakerSlash>());
+            }
         }
 
         public override void SetDefaults(Item item) => SetDefaultsFunc(item);

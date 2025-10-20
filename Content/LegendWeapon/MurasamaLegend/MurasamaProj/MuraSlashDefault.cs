@@ -12,6 +12,7 @@ using CalamityMod.Particles;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -154,19 +155,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
         }
-        public bool IsBossActive() {
-            foreach (NPC npc in Main.npc) {
-                if (npc.active && npc.boss) {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             int level = MurasamaOverride.GetLevel(Item);
             // boss存活时对非Boss单位造成2倍伤害
-            if (IsBossActive() && !target.boss) {
+            if (Main.npc.Any(n => n.Alives() && n.boss) && !target.boss) {
                 modifiers.FinalDamage *= 2f;
             }
             // 对红宝石，蓝宝石仅造成1.5倍
