@@ -1242,6 +1242,7 @@ Items: {
 	SirenMusicalBox: {
 		DisplayName: 海妖八音盒
 		Tooltip: ""
+		DeathText: "{0}在未知的袭击下化作腐尸"
 	}
 }
 

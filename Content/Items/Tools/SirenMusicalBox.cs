@@ -1,9 +1,7 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -260,36 +258,172 @@ namespace CalamityOverhaul.Content.Items.Tools
         /// 生成死亡特效
         /// </summary>
         private void SpawnDeathEffects() {
-            //大量暗影粒子爆发
-            for (int i = 0; i < 100; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
-                Dust dust = Dust.NewDustDirect(Player.Center, 0, 0, DustID.Shadowflame, velocity.X, velocity.Y, 100, Color.DarkMagenta, Main.rand.NextFloat(2f, 3.5f));
+            for (int i = 0; i < 150; i++) {
+                Vector2 velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
+                float speed = Main.rand.NextFloat(0.6f, 1.4f);
+                velocity *= speed;
+                
+                Dust dust = Dust.NewDustDirect(Player.Center, 0, 0, DustID.Shadowflame, velocity.X, velocity.Y, 100, 
+                    Main.rand.NextBool() ? Color.DarkMagenta : Color.Purple, Main.rand.NextFloat(2.5f, 4f));
                 dust.noGravity = true;
+                dust.fadeIn = 1.5f;
             }
 
-            //黑暗能量环
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 20; j++) {
-                    float angle = MathHelper.TwoPi / 20f * j;
-                    float radius = 50f + i * 30f;
-                    Vector2 pos = Player.Center + angle.ToRotationVector2() * radius;
-                    Vector2 vel = (pos - Player.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f);
+            for (int i = 0; i < 60; i++) {
+                float angle = MathHelper.TwoPi / 60f * i;
+                float radius = Main.rand.NextFloat(20f, 60f);
+                Vector2 pos = Player.Center + angle.ToRotationVector2() * radius;
+                Vector2 vel = new Vector2(0, -Main.rand.NextFloat(3f, 6f)).RotatedBy(angle * 0.3f);
+                
+                PRT_Light soulFragment = new PRT_Light(pos, vel, Main.rand.NextFloat(0.5f, 0.75f), 
+                    Color.Cyan * 0.8f, Main.rand.Next(40, 70));
+                PRTLoader.AddParticle(soulFragment);
+            }
 
-                    PRT_Light particle = new PRT_Light(pos, vel, Main.rand.NextFloat(1.2f, 1.8f), Color.Purple, Main.rand.Next(20, 40));
+            for (int layer = 0; layer < 5; layer++) {
+                int particlesPerRing = 24;
+                float ringRadius = 40f + layer * 35f;
+                float layerDelay = layer * 0.2f;
+                
+                for (int j = 0; j < particlesPerRing; j++) {
+                    float angle = MathHelper.TwoPi / particlesPerRing * j;
+                    Vector2 pos = Player.Center + angle.ToRotationVector2() * ringRadius;
+                    Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
+                    
+                    Color ringColor = Color.Lerp(Color.Purple, Color.DarkRed, layer / 5f);
+                    PRT_Light particle = new PRT_Light(pos, vel, Main.rand.NextFloat(0.5f, 0.75f), 
+                        ringColor, Main.rand.Next(30, 60));
                     PRTLoader.AddParticle(particle);
                 }
             }
 
-            //海妖触手效果（参考深渊死亡系统）
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 10; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 tentaclePos = Player.Center + angle.ToRotationVector2() * 200f;
+                Vector2 tentacleStart = Player.Center + angle.ToRotationVector2() * Main.rand.NextFloat(250f, 350f);
+                
+                //绘制触手轨迹
+                int segmentCount = Main.rand.Next(20, 30);
+                for (int j = 0; j < segmentCount; j++) {
+                    float progress = j / (float)segmentCount;
+                    Vector2 pos = Vector2.Lerp(tentacleStart, Player.Center, CWRUtils.EaseOutCubic(progress));
+                    
+                    //添加一些扭曲
+                    float waveOffset = MathF.Sin(progress * MathHelper.Pi * 3f + i) * 20f;
+                    Vector2 perpendicular = Vector2.Normalize(new Vector2(-(tentacleStart.Y - Player.Center.Y), tentacleStart.X - Player.Center.X));
+                    pos += perpendicular * waveOffset;
+                    
+                    //触手本体
+                    Dust tentacle = Dust.NewDustDirect(pos, 0, 0, DustID.DungeonWater, 0f, 0f, 100, 
+                        Color.Lerp(Color.DarkBlue, Color.Cyan, progress), Main.rand.NextFloat(2f, 3.5f) * (1f - progress * 0.5f));
+                    tentacle.noGravity = true;
+                    tentacle.velocity = Main.rand.NextVector2Circular(1f, 1f);
+                    
+                    //触手末端的能量
+                    if (j % 3 == 0) {
+                        PRT_Light energy = new PRT_Light(pos, Main.rand.NextVector2Circular(2f, 2f), 
+                            Main.rand.NextFloat(0.31f, 0.5f), Color.Cyan * 0.6f, Main.rand.Next(20, 40));
+                        PRTLoader.AddParticle(energy);
+                    }
+                }
+                
+                //触手末端爆炸
+                for (int k = 0; k < 8; k++) {
+                    Vector2 burstVel = Main.rand.NextVector2CircularEdge(5f, 5f);
+                    Dust burst = Dust.NewDustDirect(Player.Center, 0, 0, DustID.Blood, burstVel.X, burstVel.Y, 100, 
+                        Color.DarkRed, Main.rand.NextFloat(2.5f, 3.5f));
+                    burst.noGravity = true;
+                }
+            }
 
-                for (int j = 0; j < 15; j++) {
-                    Vector2 pos = Vector2.Lerp(tentaclePos, Player.Center, j / 15f);
-                    Dust dust = Dust.NewDustDirect(pos, 0, 0, DustID.DungeonWater, 0f, 0f, 100, Color.DarkBlue, 2f);
-                    dust.velocity = Main.rand.NextVector2Circular(2f, 2f);
-                    dust.noGravity = true;
+            int eyeCount = Main.rand.Next(6, 10);
+            for (int i = 0; i < eyeCount; i++) {
+                float angle = MathHelper.TwoPi / eyeCount * i + Main.rand.NextFloat(-0.2f, 0.2f);
+                Vector2 eyePos = Player.Center + angle.ToRotationVector2() * Main.rand.NextFloat(150f, 250f);
+                
+                //白色巩膜
+                for (int j = 0; j < 16; j++) {
+                    float eyeAngle = MathHelper.TwoPi / 16f * j;
+                    Vector2 scleraPos = eyePos + eyeAngle.ToRotationVector2() * 20f;
+                    
+                    Dust sclera = Dust.NewDustDirect(scleraPos, 0, 0, DustID.Ice, 0f, 0f, 100, Color.White, 2f);
+                    sclera.noGravity = true;
+                    sclera.velocity = (eyePos - scleraPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.3f, 0.8f);
+                    sclera.fadeIn = 1.2f;
+                }
+                
+                //深蓝色
+                for (int j = 0; j < 12; j++) {
+                    float irisAngle = MathHelper.TwoPi / 12f * j;
+                    Vector2 irisPos = eyePos + irisAngle.ToRotationVector2() * 12f;
+                    
+                    Dust iris = Dust.NewDustDirect(irisPos, 0, 0, DustID.DungeonWater, 0f, 0f, 100, Color.Cyan, 1.8f);
+                    iris.noGravity = true;
+                    iris.velocity = (eyePos - irisPos).SafeNormalize(Vector2.Zero) * 0.5f;
+                }
+                
+                //血红色
+                for (int j = 0; j < 8; j++) {
+                    Vector2 pupilOffset = Main.rand.NextVector2Circular(5f, 5f);
+                    Dust pupil = Dust.NewDustDirect(eyePos + pupilOffset, 0, 0, DustID.Blood, 0f, 0f, 100, Color.DarkRed, 2.5f);
+                    pupil.noGravity = true;
+                    pupil.velocity = -pupilOffset * 0.1f;
+                }
+                
+                //眼睛凝视光线
+                Vector2 gazeDirection = (Player.Center - eyePos).SafeNormalize(Vector2.Zero);
+                for (int j = 0; j < 30; j++) {
+                    Vector2 gazePos = eyePos + gazeDirection * (j * 8f);
+                    PRT_Light gaze = new PRT_Light(gazePos, gazeDirection * 0.5f, 
+                        Main.rand.NextFloat(0.6f, 0.83f), Color.Red * 0.6f, Main.rand.Next(15, 30));
+                    PRTLoader.AddParticle(gaze);
+                }
+            }
+
+            for (int i = 0; i < 200; i++) {
+                Vector2 mistVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 15f);
+                Dust mist = Dust.NewDustDirect(Player.Center, 0, 0, DustID.Blood, mistVel.X, mistVel.Y, 100, 
+                    Color.DarkRed, Main.rand.NextFloat(1.5f, 3f));
+                mist.noGravity = true;
+                mist.fadeIn = Main.rand.NextFloat(0.8f, 1.5f);
+            }
+
+            for (int i = 0; i < 100; i++) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float radius = Main.rand.NextFloat(5f, 100f);
+                Vector2 pos = Player.Center + angle.ToRotationVector2() * radius;
+                Vector2 vel = (Player.Center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 16f);
+                
+                Dust vortex = Dust.NewDustDirect(pos, 0, 0, DustID.Shadowflame, vel.X, vel.Y, 100, 
+                    Color.Black, Main.rand.NextFloat(2f, 3.5f));
+                vortex.noGravity = true;
+                vortex.fadeIn = 1.5f;
+            }
+
+            for (int i = 0; i < 80; i++) {
+                Vector2 pos = Player.Center + Main.rand.NextVector2Circular(40f, 40f);
+                Vector2 vel = new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(6f, 12f));
+                
+                Color soulColor = Main.rand.Next(3) switch {
+                    0 => Color.White,
+                    1 => Color.Cyan,
+                    _ => Color.Purple
+                };
+                
+                PRT_Light soul = new PRT_Light(pos, vel, Main.rand.NextFloat(0.35f, 0.55f), 
+                    soulColor * 0.7f, Main.rand.Next(60, 100));
+                PRTLoader.AddParticle(soul);
+            }
+
+            for (int i = 0; i < 50; i++) {
+                float angle = MathHelper.TwoPi / 50f * i;
+                Vector2 pos = Player.Center + angle.ToRotationVector2() * Main.rand.NextFloat(80f, 150f);
+                
+                for (int j = 0; j < 5; j++) {
+                    Vector2 crackPos = pos + Main.rand.NextVector2Circular(10f, 10f);
+                    Dust crack = Dust.NewDustDirect(crackPos, 0, 0, DustID.Shadowflame, 0f, 0f, 100, 
+                        Color.Lerp(Color.Purple, Color.Black, j / 5f), Main.rand.NextFloat(1.5f, 2.5f));
+                    crack.noGravity = true;
+                    crack.velocity = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (j + 1);
                 }
             }
         }
@@ -475,28 +609,129 @@ namespace CalamityOverhaul.Content.Items.Tools
                     continue;
                 }
 
-                //在玩家周围生成环绕的音符
-                float angle = Main.GlobalTimeWrappedHourly * 2f + Main.rand.NextFloat(MathHelper.TwoPi);
-                float radius = 80f + MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 20f;
+                //音符环绕效果 - 多层螺旋
+                for (int layer = 0; layer < 2; layer++) {
+                    float baseAngle = Main.GlobalTimeWrappedHourly * (2f + layer * 0.5f);
+                    float angle = baseAngle + Main.rand.NextFloat(MathHelper.TwoPi);
+                    float radius = 60f + layer * 40f + MathF.Sin(Main.GlobalTimeWrappedHourly * 3f + layer) * 15f;
+                    
+                    Vector2 spawnPos = player.Center + angle.ToRotationVector2() * radius;
+                    Vector2 velocity = (player.Center - spawnPos).SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.5f, 1.5f);
 
-                Vector2 spawnPos = player.Center + angle.ToRotationVector2() * radius;
-                Vector2 velocity = new Vector2(0, -Main.rand.NextFloat(1f, 2f)).RotatedByRandom(0.5f);
+                    //音符粒子 - 使用更鲜艳的颜色
+                    Color particleColor = Main.rand.Next(4) switch {
+                        0 => new Color(186, 85, 211), //中紫罗兰色
+                        1 => new Color(138, 43, 226), //蓝紫色
+                        2 => new Color(147, 112, 219), //中紫色
+                        _ => new Color(255, 0, 255)    //品红色
+                    };
 
-                //创建音符粒子
-                PRT_Light noteParticle = new PRT_Light(
-                    spawnPos,
-                    velocity,
-                    Main.rand.NextFloat(0.8f, 1.2f),
-                    Main.rand.NextBool() ? Color.Purple : Color.DarkMagenta,
-                    Main.rand.Next(30, 60)
-                );
-                PRTLoader.AddParticle(noteParticle);
+                    PRT_Light noteParticle = new PRT_Light(
+                        spawnPos,
+                        velocity,
+                        Main.rand.NextFloat(0.2f, 0.8f),
+                        particleColor,
+                        Main.rand.Next(45, 75)
+                    );
+                    PRTLoader.AddParticle(noteParticle);
+                }
 
-                //额外的诡异粒子
+                //追踪玩家的幽灵音符
+                if (Main.rand.NextBool(2)) {
+                    float offsetAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 ghostPos = player.Center + offsetAngle.ToRotationVector2() * Main.rand.Next(100, 200);
+                    Vector2 ghostVel = (player.Center - ghostPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
+                    
+                    PRT_Light ghostNote = new PRT_Light(
+                        ghostPos,
+                        ghostVel,
+                        Main.rand.NextFloat(0.5f, 0.75f),
+                        Color.DarkViolet * 0.8f,
+                        Main.rand.Next(30, 50)
+                    );
+                    PRTLoader.AddParticle(ghostNote);
+                }
+
+                //深色暗影尘埃 - 增加恐怖氛围
                 if (Main.rand.NextBool(3)) {
-                    Dust dust = Dust.NewDustDirect(spawnPos, 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Purple, Main.rand.NextFloat(1f, 1.5f));
-                    dust.noGravity = true;
-                    dust.velocity = velocity * 0.5f;
+                    for (int i = 0; i < 2; i++) {
+                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        float radius = Main.rand.NextFloat(40f, 120f);
+                        Vector2 dustPos = player.Center + angle.ToRotationVector2() * radius;
+                        
+                        Dust dust = Dust.NewDustDirect(dustPos, 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Purple, Main.rand.NextFloat(1.5f, 2.5f));
+                        dust.noGravity = true;
+                        dust.velocity = (player.Center - dustPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 1.5f);
+                        dust.fadeIn = Main.rand.NextFloat(0.8f, 1.4f);
+                    }
+                }
+
+                //血红色警告粒子（音乐快结束时）
+                SirenMusicalBoxPlayer modPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
+                if (modPlayer.MusicTimer >= SirenMusicalBoxPlayer.MusicDuration - 300) {
+                    float dangerIntensity = (modPlayer.MusicTimer - (SirenMusicalBoxPlayer.MusicDuration - 300)) / 300f;
+                    
+                    if (Main.rand.NextFloat() < dangerIntensity * 0.3f) {
+                        Vector2 warnPos = player.Center + Main.rand.NextVector2Circular(60f, 60f);
+                        Dust warnDust = Dust.NewDustDirect(warnPos, 0, 0, DustID.Blood, 0f, 0f, 100, Color.Red, Main.rand.NextFloat(2f, 3.5f));
+                        warnDust.noGravity = true;
+                        warnDust.velocity = Main.rand.NextVector2Circular(3f, 3f);
+                    }
+                }
+
+                //海妖之眼效果 - 偶尔出现诡异的"眼睛"
+                if (Main.rand.NextBool(120)) {
+                    Vector2 eyePos = player.Center + Main.rand.NextVector2Circular(150f, 150f);
+                    
+                    //眼睛外圈
+                    for (int i = 0; i < 12; i++) {
+                        float eyeAngle = MathHelper.TwoPi / 12f * i;
+                        Vector2 pos = eyePos + eyeAngle.ToRotationVector2() * 15f;
+                        
+                        Dust eyeDust = Dust.NewDustDirect(pos, 0, 0, DustID.DungeonWater, 0f, 0f, 100, Color.Cyan, 1.8f);
+                        eyeDust.noGravity = true;
+                        eyeDust.velocity = (eyePos - pos).SafeNormalize(Vector2.Zero) * 0.5f;
+                    }
+                    
+                    //眼睛瞳孔
+                    Dust pupil = Dust.NewDustDirect(eyePos, 0, 0, DustID.Shadowflame, 0f, 0f, 100, Color.Red, 2.5f);
+                    pupil.noGravity = true;
+                }
+
+                //扭曲的音波效果
+                if (Main.rand.NextBool(10)) {
+                    int waveCount = 20;
+                    float waveRadius = Main.rand.NextFloat(80f, 150f);
+                    
+                    for (int i = 0; i < waveCount; i++) {
+                        float waveAngle = MathHelper.TwoPi / waveCount * i;
+                        Vector2 wavePos = player.Center + waveAngle.ToRotationVector2() * waveRadius;
+                        Vector2 waveVel = waveAngle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
+                        
+                        Color waveColor = Color.Lerp(Color.Purple, Color.Cyan, Main.rand.NextFloat());
+                        PRT_Light wave = new PRT_Light(wavePos, waveVel, 0.52f, waveColor * 0.6f, Main.rand.Next(20, 40));
+                        PRTLoader.AddParticle(wave);
+                    }
+                }
+
+                //玩家脚下的深渊涟漪
+                if (Main.rand.NextBool(15)) {
+                    Vector2 groundPos = new Vector2(player.Center.X, player.Bottom.Y);
+                    
+                    for (int i = 0; i < 3; i++) {
+                        int rippleCount = 16;
+                        float rippleRadius = 30f + i * 25f;
+                        
+                        for (int j = 0; j < rippleCount; j++) {
+                            float rippleAngle = MathHelper.TwoPi / rippleCount * j;
+                            Vector2 ripplePos = groundPos + rippleAngle.ToRotationVector2() * rippleRadius;
+                            
+                            Dust ripple = Dust.NewDustDirect(ripplePos, 0, 0, DustID.DungeonWater, 0f, -1f, 100, 
+                                Color.DarkBlue * (1f - i * 0.3f), 1.5f - i * 0.3f);
+                            ripple.noGravity = true;
+                            ripple.fadeIn = 0.8f;
+                        }
+                    }
                 }
             }
         }

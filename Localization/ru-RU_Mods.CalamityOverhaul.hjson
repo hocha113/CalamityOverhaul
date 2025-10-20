@@ -1271,6 +1271,7 @@ Items: {
 	SirenMusicalBox: {
 		// DisplayName: Siren Musical Box
 		// Tooltip: ""
+		// DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
 	}
 }
 
