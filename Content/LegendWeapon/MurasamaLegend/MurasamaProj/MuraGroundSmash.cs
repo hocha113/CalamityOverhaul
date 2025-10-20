@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             //玩家获得向上的推力
             if (StateTimer == 1 && Projectile.IsOwnedByLocalPlayer()) {
-                float upwardForce = -18f - MurasamaOverride.GetLevel(Item) * 1.5f;
+                float upwardForce = -12f - MurasamaOverride.GetLevel(Item) * 1.2f;
                 Owner.velocity = new Vector2(Owner.velocity.X * 0.5f, upwardForce);
             }
 
