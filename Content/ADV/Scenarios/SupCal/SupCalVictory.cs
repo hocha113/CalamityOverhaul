@@ -67,19 +67,36 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Add(Rolename1.Value, Line4.Value);
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
-            Add(Rolename1.Value, Line7.Value);
-            Add(Rolename2.Value, Line8.Value, onComplete: () => {
-                //给予奖励
-                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 99, "",
-                    appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero);
-            });
+
+            bool hasHalibut = false;
+            try {
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    hasHalibut = halibutPlayer.HasHalubut;
+                }
+            } catch {
+                hasHalibut = false;
+            }
+
+            if (hasHalibut) {
+                Add(Rolename1.Value, Line7.Value);
+                Add(Rolename2.Value, Line8.Value, onComplete: GiveReward);
+            }
+            else {
+                Add(Rolename1.Value, Line7.Value, onComplete: GiveReward);
+            }
+        }
+
+        private static void GiveReward() {
+            //给予奖励
+            ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "",
+                appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                anchorProvider: () => {
+                    var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                    if (rect == Rectangle.Empty) {
+                        return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
+                    }
+                    return new Vector2(rect.Center.X, rect.Y - 70f);
+                }, offset: Vector2.Zero);
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
