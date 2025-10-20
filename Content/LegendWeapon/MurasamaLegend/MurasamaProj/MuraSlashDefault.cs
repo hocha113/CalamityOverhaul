@@ -157,9 +157,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            int level = MurasamaOverride.GetLevel(Item);
             // boss存活时对非Boss单位造成2倍伤害
-            if (Main.npc.Any(n => n.Alives() && n.boss) && !target.boss) {
+            if (CWRWorld.HasBoss && !target.boss) {
                 modifiers.FinalDamage *= 2f;
             }
             // 对红宝石，蓝宝石仅造成1.5倍

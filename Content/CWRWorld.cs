@@ -3,6 +3,7 @@ using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,6 +29,10 @@ namespace CalamityOverhaul.Content
         /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
         /// </summary>
         public static int TimeFrozenTick;
+        /// <summary>
+        /// 当前世界是否存在Boss
+        /// </summary>
+        public static bool HasBoss;
 
         internal static bool BossRush => BossRushEvent.BossRushActive || MachineRebellion;
         internal static bool MasterMode => Main.masterMode || BossRush;
@@ -83,8 +88,7 @@ namespace CalamityOverhaul.Content
             NPC.mechQueen = -1;
 
             if (!Main.dedServ) {
-                Main.LocalPlayer.CurrentSceneEffect.music.value
-                    = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Metal");
             }
 
             bool noBoss = true;
@@ -119,6 +123,14 @@ namespace CalamityOverhaul.Content
             }
 
             UpdateMachineRebellion();
+
+            HasBoss = false;
+            foreach (var n in Main.ActiveNPCs) {
+                if (n.boss) {
+                    HasBoss = true;
+                    break;
+                }
+            }
         }
 
         public override void NetSend(BinaryWriter writer) {

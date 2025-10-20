@@ -1,10 +1,11 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
 {
     /// <summary>
     /// 比目鱼鱼油获取提示与任务创建场景
@@ -125,6 +126,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             //排除混乱事件
             if (VaultUtils.IsInvasion()) {
                 return;
+            }
+
+            if (CWRWorld.HasBoss) {
+                return;//有Boss战时不触发
             }
 
             if (ScenarioManager.Start<FishoilQuestScenario>()) {
