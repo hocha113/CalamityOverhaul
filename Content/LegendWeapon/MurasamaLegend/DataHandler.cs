@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             ModifyMechBossSelect(item.CWR().LegendData.Level, ref onDamage);
             CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
             float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);//获取攻速分母，刚好可以作为增幅系数
-            damage.Base *= meleeSpeedRoad;//对Base也就是基本伤害进行相乘，避免出现独立乘区的情况
+            damage *= meleeSpeedRoad;//对Base也就是基本伤害进行相乘，避免出现独立乘区的情况
         }
     }
 }
