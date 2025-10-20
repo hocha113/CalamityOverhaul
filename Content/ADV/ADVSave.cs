@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.ADV
 
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
-            
+
             //使用反射自动保存所有公共字段
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields) {
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV
                 }
                 tag[field.Name] = field.GetValue(this);
             }
-            
+
             return tag;
         }
 

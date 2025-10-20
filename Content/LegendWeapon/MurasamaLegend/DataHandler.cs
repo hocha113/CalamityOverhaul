@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             else {
                 return;
             }
-            
+
         }
         private static void ModifyAfterMoonSelect(int index, ref int damage) {
             if (index != 9) {

@@ -290,11 +290,11 @@ namespace CalamityOverhaul.Content.ADV
         #region 粒子内部类
         private class StarFx(Vector2 p)
         {
-            public Vector2 Pos = p; 
-            public float BaseRadius = Main.rand.NextFloat(2f, 4f); 
-            public float Rot = Main.rand.NextFloat(MathHelper.TwoPi); 
-            public float Life = 0f; 
-            public float MaxLife = Main.rand.NextFloat(60f, 140f); 
+            public Vector2 Pos = p;
+            public float BaseRadius = Main.rand.NextFloat(2f, 4f);
+            public float Rot = Main.rand.NextFloat(MathHelper.TwoPi);
+            public float Life = 0f;
+            public float MaxLife = Main.rand.NextFloat(60f, 140f);
             public float Seed = Main.rand.NextFloat(10f);
 
             public bool Update(Vector2 panelPos, Vector2 panelSize) {

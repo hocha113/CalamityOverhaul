@@ -156,7 +156,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 Add(Rolename3.Value + helenAmazed, Line8.Value); //惊讶表情，震惊于异类状态
                 Add(Rolename2.Value + expressionCloseEye, Line9.Value);
                 Add(Rolename2.Value + expressionBeTo, Line10.Value);
-            } else {
+            }
+            else {
                 //无比目鱼版本添加对话
                 Add(Rolename1.Value, NoFishLine1.Value);
                 Add(Rolename1.Value, NoFishLine2.Value);
