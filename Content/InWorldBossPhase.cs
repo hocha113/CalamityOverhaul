@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content
 
         public static bool Level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke();
 
-        public static bool Level6 => Downed10.Invoke() || VDownedV7.Invoke();
+        public static bool Level6 => Downed10.Invoke();
 
         public static bool Level7 => DownedV7.Invoke();
 
@@ -513,7 +513,7 @@ namespace CalamityOverhaul.Content
                 return level;//LaiF1
             }
 
-            if (Level6) {
+            if (Level6 && VDownedV7.Invoke()) {
                 level = 7;
             }
             else {

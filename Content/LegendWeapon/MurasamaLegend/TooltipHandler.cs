@@ -27,33 +27,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         private static void ModifyMechBossSelect(int index, ref string newContent, ref string num) {
             if (index != 5) {
                 return;
-            }//index是5，执行到这里说明刚进入困难模式
-            string levelContent = "";
-
-            if (!Level5) {
-                return;
             }
-
-            //如果已经击败了灾厄三王，下面枚举判断所有机械Boss的选择
-            do {
-                if (!NPC.downedMechBoss1) {//毁灭者
-                    newContent = MuraText.GetTextValue("Subtest_Text1");
-                    levelContent = "-1";
-                    break;
-                }
-                if (!NPC.downedMechBoss2) {//双子魔眼
-                    newContent = MuraText.GetTextValue("Subtest_Text2");
-                    levelContent = "-2";
-                    break;
-                }
-                if (!NPC.downedMechBoss3) {//机械统帅
-                    newContent = MuraText.GetTextValue("Subtest_Text3");
-                    levelContent = "-3";
-                    break;
-                }
-            } while (false);
-            num += levelContent;
+            else if (NPC.downedMechBoss2 && NPC.downedMechBoss3 && !NPC.downedMechBoss1) {
+                newContent = MuraText.GetTextValue("Subtest_Text1");
+                num += "-3";
+            }
+            else if (NPC.downedMechBoss1 && NPC.downedMechBoss3 && !NPC.downedMechBoss2) {
+                newContent = MuraText.GetTextValue("Subtest_Text2");
+                num += "-3";
+            }
+            else if (NPC.downedMechBoss2 &&!NPC.downedMechBoss1) {
+                newContent = MuraText.GetTextValue("Subtest_Text1");
+                num += "-2";
+            }
+            else if (NPC.downedMechBoss3 && !NPC.downedMechBoss1) {
+                newContent = MuraText.GetTextValue("Subtest_Text1");
+                num += "-2";
+            }
+            else if (NPC.downedMechBoss2) {
+                newContent = MuraText.GetTextValue("Subtest_Text3");
+                num += "-3";
+            }
+            else if (NPC.downedMechBoss1) {
+                newContent = MuraText.GetTextValue("Subtest_Text2");
+                num += "-2";
+            }
+            else if (Level5) {
+                newContent = MuraText.GetTextValue("Subtest_Text1");
+                num += "-1";
+            }
         }
+
         private static void ModifyGolemSelect(int index, ref string newContent, ref string num) {
             if (index != 7) {
                 return;
@@ -100,9 +104,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 newContent = MuraText.GetTextValue("Subtest_Text7");
                 num += "-1";
             }
-
-
-
+        }
+        private static void ModifyAfterMechSelect(int index, ref string newContent, ref string num) {
+            if (index != 6) {
+                return;
+            }
+            else if (VDownedV7.Invoke()) {
+                newContent = MuraText.GetTextValue("Subtest_Text10");
+                num += "-1";
+            }
+            else if (Level6) {
+                newContent = MuraText.GetTextValue("Subtest_Text9");
+                num += "-1";
+            }
         }
 
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
@@ -123,6 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
                 ModifyMechBossSelect(index, ref newContent, ref num);
                 ModifyGolemSelect(index, ref newContent, ref num);
                 ModifyAfterMoonSelect(index, ref newContent, ref num);
+                ModifyAfterMechSelect(index, ref newContent, ref num);
                 text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
                 text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
             }
