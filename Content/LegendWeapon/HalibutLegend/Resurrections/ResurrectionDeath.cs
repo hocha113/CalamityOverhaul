@@ -485,7 +485,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
 
             //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
-            DomainUI.InitializeEyes(activeIndices);
+            halibutSave.InitializeEyes(activeIndices);
         }
         #endregion
 

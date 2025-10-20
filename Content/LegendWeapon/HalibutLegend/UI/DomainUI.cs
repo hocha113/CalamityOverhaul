@@ -201,38 +201,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             UpdateResurrectionRate();//更新复苏速度
         }
 
-        /// <summary>
-        /// 根据保存的数据初始化眼睛状态
-        /// </summary>
-        /// <param name="activeIndices">活跃的眼睛的索引集合</param>
-        public static void InitializeEyes(List<int> activeIndices) {
-            //清空当前激活序列
-            ActivationSequence.Clear();
-            if (Eyes.Count == 0) {
-                for (int i = 0; i < MaxEyes; i++) {
-                    float angle = i / (float)MaxEyes * MathHelper.TwoPi - MathHelper.PiOver2;
-                    Eyes.Add(new SeaEyeButton(i, angle));
-                }
-            }
-            //重置所有眼睛状态
-            foreach (var eye in Eyes) {
-                eye.IsActive = false;
-                eye.LayerNumber = null;
-            }
-            //按保存的顺序重新激活眼睛
-            foreach (int index in activeIndices) {
-                if (index >= 0 && index < Eyes.Count) {
-                    var eye = Eyes[index];
-                    eye.IsActive = true;
-                    ActivationSequence.Add(eye);
-                    eye.LayerNumber = ActivationSequence.Count;
-                }
-            }
-            //更新圆环
-            Instance.UpdateRings(ActivationSequence.Count);
-            Instance.lastActiveEyeCount = ActivationSequence.Count;
-        }
-
         public override void Update() {
             if (Eyes.Count == 0) {
                 for (int i = 0; i < MaxEyes; i++) {
@@ -518,10 +486,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private void HandleEyeToggle(SeaEyeButton eye) {
             SoundEngine.PlaySound(SoundID.MenuTick);
+
+            bool wasActive = eye.IsActive;
+            //写在这里提醒自己，别他妈动这个调用顺序，这里用了更新差序的逻辑
             eye.Toggle();
 
-            bool wasActive = eye.IsActive;          
-            
             if (!wasActive && eye.IsActive) {
                 if (!ActivationSequence.Contains(eye)) {
                     ActivationSequence.Add(eye);
