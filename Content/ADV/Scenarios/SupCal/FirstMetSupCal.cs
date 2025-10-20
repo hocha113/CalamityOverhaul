@@ -77,8 +77,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             NoFishLine1 = this.GetLocalization(nameof(NoFishLine1), () => "没想到你这么快就杀掉了我的'妹妹'，独自一人来的？");
             NoFishLine2 = this.GetLocalization(nameof(NoFishLine2), () => "你的成长速度比我预期的要快");
             NoFishLine3 = this.GetLocalization(nameof(NoFishLine3), () => "看来你已经开始触碰那些不该知道的东西");
-            NoFishLine4 = this.GetLocalization(nameof(NoFishLine4), () => "我的意识早已熔铸进硫磺火，这具躯体只是被火焰驱动的外壳");
-            NoFishLine5 = this.GetLocalization(nameof(NoFishLine5), () => "......异类？你的层次太低，无法理解我现在的状态");
+            NoFishLine4 = this.GetLocalization(nameof(NoFishLine4), () => "我的意识早已熔铸进硫磺火，这具躯体只是被火焰驱动的尸体");
+            NoFishLine5 = this.GetLocalization(nameof(NoFishLine5), () => "不过，你的层次太低，无法理解我现在的状态");
             NoFishLine6 = this.GetLocalization(nameof(NoFishLine6), () => "我现身也不是为了解释这些的");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "那么，你的选择是？");
