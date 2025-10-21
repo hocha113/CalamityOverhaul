@@ -13,10 +13,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishScorpio : FishSkill
     {
         public override int UnlockFishID => ItemID.ScorpioFish;
-        public override int DefaultCooldown => 120 - HalibutData.GetDomainLayer() * 8; //2秒冷却
+        public override int DefaultCooldown => 60 * (15 - HalibutData.GetDomainLayer() / 2); //15-10秒冷却
         public override int ResearchDuration => 60 * 18;
 
-        private static int MaxScorpionSentries => 1 + HalibutData.GetDomainLayer() / 3; //最多1-4只蝎子
+        private static int MaxScorpionSentries => 1 + HalibutData.GetDomainLayer() / 10; //最多1-2只蝎子
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<ScorpionSentry>(),
-                (int)(damage * (1.6f + HalibutData.GetDomainLayer() * 0.35f)),
+                (int)(damage * (0.4f + HalibutData.GetDomainLayer() * 0.1f)),
                 knockback * 0.7f,
                 player.whoAmI,
                 ai0: target?.whoAmI ?? -1
@@ -133,8 +133,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool isEmerging = true; //正在从地面爬出
         private float emergeProgress = 0f;
 
-        private const int LifeTime = 60 * 15; //15秒存在时间
-        private const int AttackInterval = 80; //攻击间隔（随层数减少）
+        private static int LifeTime => 60 * (5 + HalibutData.GetDomainLayer() / 2); //5-10秒存在时间
+        private static int AttackInterval => 120 - HalibutData.GetDomainLayer() * 6; //攻击间隔（随层数减少）
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 4; //蝎子有4帧动画
@@ -149,6 +149,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = LifeTime;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 2f;
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

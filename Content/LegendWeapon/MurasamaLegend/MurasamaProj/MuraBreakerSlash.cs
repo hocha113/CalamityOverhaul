@@ -233,9 +233,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            // 对星流双子造成1.25倍伤害
+            // 对星流双子造成1.33倍伤害
             if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.33f;
             }
             // 对终灾造成1.33倍伤害
             if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
