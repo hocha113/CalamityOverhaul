@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.value = Terraria.Item.buyPrice(0, 5, 0, 0);
-            Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(0, 5, 0, 0);
+            Item.rare = ItemRarityID.Purple;
             Item.createTile = ModContent.TileType<SirenMusicalBoxTile>();
         }
     }
