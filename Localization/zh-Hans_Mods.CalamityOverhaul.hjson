@@ -1623,6 +1623,7 @@ Projectiles: {
 	FishoilDrinkEffect.DisplayName: 活力涌现
 	MiniWhiteWyvern.DisplayName: 白龙尾
 	WhiteWyvernTailController.DisplayName: 白龙尾
+	ScorpionSentry.DisplayName: 蝎子哨兵
 }
 
 Configs: {
@@ -6246,6 +6247,16 @@ FishSkill: {
 			白龙将快速飞向敌人并造成伤害
 			'''
 		Studied: 我觉得它应该属于传说生物的一种
+	}
+
+	FishScorpio: {
+		DisplayName: 沙蝎哨兵
+		Tooltip:
+			'''
+			召唤在地面移动的蝎子哨兵
+			向敌人发射沙龙卷
+			'''
+		Studied: 它的体内全是沙子
 	}
 }
 

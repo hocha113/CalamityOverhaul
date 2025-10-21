@@ -25,15 +25,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
             }
 
-            //玩家行走时触发（检测水平速度）
-            if (Math.Abs(player.velocity.X) > 0.5f && player.velocity.Y == 0 && Cooldown <= 0) {
-                int existingCount = player.CountProjectilesOfID<ScorpionSentry>();
-                int maxCount = MaxScorpionSentries;
+            int existingCount = player.CountProjectilesOfID<ScorpionSentry>();
+            int maxCount = MaxScorpionSentries;
 
-                if (existingCount < maxCount) {
-                    SetCooldown();
-                    SpawnScorpionSentry(player, source, damage, knockback);
-                }
+            if (existingCount < maxCount) {
+                SetCooldown();
+                SpawnScorpionSentry(player, source, damage, knockback);
             }
 
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
@@ -50,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (player.whoAmI == Main.myPlayer) {
-                int proj = Projectile.NewProjectile(
+                Projectile.NewProjectile(
                 source,
                 spawnPos,
                 Vector2.Zero,
@@ -59,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 knockback * 0.7f,
                 player.whoAmI,
                 ai0: target?.whoAmI ?? -1
-            );
+                );
             }
 
             //召唤特效
@@ -68,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static Vector2 FindValidGroundPosition(Player player, NPC target) {
-            Vector2 dirToTarget = Vector2.Zero;
+            Vector2 dirToTarget;
             if (target != null) {
                 dirToTarget = (target.Center - player.Center).SafeNormalize(Vector2.Zero);
             }
@@ -145,13 +142,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetDefaults() {
             Projectile.width = 42;
-            Projectile.height = 30;
+            Projectile.height = 20;
             Projectile.friendly = false; //哨兵本体不造成伤害
             Projectile.hostile = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = LifeTime;
-            Projectile.tileCollide = false;
+            Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            return false;
         }
 
         public override bool? CanDamage() => false;
@@ -188,6 +189,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 direction = target.Center.X > Projectile.Center.X ? 1 : -1;
             }
 
+            if (Math.Abs(Projectile.Center.X - target.Center.X) > 6) {
+                Projectile.velocity.X = direction * 3;
+            }
+            else {
+                Projectile.velocity.X = direction * 0.01f;
+            }
+
+            if (Projectile.velocity.Y < 16) {
+                Projectile.velocity.Y += 2;
+            }
+
             //攻击逻辑
             AttackTimer++;
             int adjustedInterval = Math.Clamp(AttackInterval - layer * 8, 35, AttackInterval);
@@ -199,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //帧动画（爪子挥动）
+            //帧动画
             if (++Projectile.frameCounter >= 8) {
                 Projectile.frameCounter = 0;
                 Projectile.frame++;
@@ -309,7 +321,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.EntitySpriteDraw(texture, drawPos, source, lightColor * fade, 
                 0f, origin, Projectile.scale, effects, 0);
 
-            //轻微发光（攻击前蓄力）
+            //轻微发光
             if (AttackTimer > AttackInterval - 30 && target != null) {
                 float glowIntensity = (AttackTimer - (AttackInterval - 30)) / 30f;
                 Color glow = new Color(255, 200, 100, 0) * glowIntensity * 0.5f * fade;

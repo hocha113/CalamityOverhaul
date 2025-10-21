@@ -1645,6 +1645,7 @@ Projectiles: {
 	// FishoilDrinkEffect.DisplayName: Vitality Surge
 	// MiniWhiteWyvern.DisplayName: Mini White Wyvern
 	// WhiteWyvernTailController.DisplayName: White Wyvern Tail
+	// ScorpionSentry.DisplayName: Scorpion Sentry
 }
 
 Configs: {
@@ -6275,6 +6276,16 @@ FishSkill: {
 			The white dragon swiftly flies toward enemies and deals damage.
 			''' */
 		// Studied: I believe it should be considered a type of legendary creature.
+	}
+
+	FishScorpio: {
+		// DisplayName: Sand Scorpion Sentinel
+		/* Tooltip:
+			'''
+			Summon the ground-moving scorpion sentinels
+			Launch the salamon rolls at the enemy
+			''' */
+		// Studied: Its entire body is filled with sand.
 	}
 }
 
