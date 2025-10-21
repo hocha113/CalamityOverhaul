@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishWyverntail : FishSkill
     {
         public override int UnlockFishID => ItemID.Wyverntail;
-        public override int DefaultCooldown => 60 * 25 - HalibutData.GetDomainLayer() * 8;
+        public override int DefaultCooldown => 60 * (25 - HalibutData.GetDomainLayer());
         public override int ResearchDuration => 60 * 35;
 
         private static bool PlayerHasController(Player player) {
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class WhiteWyvernTailController : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        private const int BaseLifeTime = 60 * 20;
+        private static int BaseLifeTime => 60 * (10 + HalibutData.GetDomainLayer());
         private ref float BaseDamage => ref Projectile.ai[0];
         private ref float BaseKnockback => ref Projectile.ai[1];
         private ref float Timer => ref Projectile.ai[2];
@@ -124,7 +124,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), firePos, dir * speed,
                             ModContent.ProjectileType<MiniWhiteWyvern>(),
-                            (int)(BaseDamage * (1.4f + layer * 0.25f)), BaseKnockback * 0.35f, Owner.whoAmI,
+                            (int)(BaseDamage * (1.6f + layer * 0.4f)),
+                            BaseKnockback * 0.35f,
+                            Owner.whoAmI,
                             ai0: target?.whoAmI ?? -1);
                         if (proj >= 0) {
                             Main.projectile[proj].scale = 0.9f + layer * 0.03f;
