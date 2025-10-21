@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnScorpionSentry(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
             //寻找附近敌人作为参考方向
             NPC target = player.Center.FindClosestNPC(1200f);
-            
+
             Vector2 spawnPos = FindValidGroundPosition(player, target);
             if (spawnPos == Vector2.Zero) {
                 //如果找不到合适位置，在玩家脚下生成
@@ -103,14 +103,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 18; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4f, 3f);
                 vel.Y -= Main.rand.NextFloat(1f, 3f); //向上飞散
-                Dust d = Dust.NewDustPerfect(position, DustID.Sand, vel, 100, 
+                Dust d = Dust.NewDustPerfect(position, DustID.Sand, vel, 100,
                     new Color(200, 180, 140), Main.rand.NextFloat(1.2f, 2f));
                 d.noGravity = false;
             }
 
             //黄色沙尘
             for (int i = 0; i < 12; i++) {
-                Dust d = Dust.NewDustDirect(position - new Vector2(16), 32, 16, 
+                Dust d = Dust.NewDustDirect(position - new Vector2(16), 32, 16,
                     DustID.YellowTorch, Scale: Main.rand.NextFloat(0.8f, 1.4f));
                 d.velocity.Y -= 2f;
                 d.noGravity = true;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //攻击逻辑
             AttackTimer++;
             int adjustedInterval = Math.Clamp(AttackInterval - layer * 8, 35, AttackInterval);
-            
+
             if (!isEmerging && AttackTimer >= adjustedInterval && target != null) {
                 AttackTimer = 0;
                 if (Projectile.IsOwnedByLocalPlayer()) {
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void ShootAtTarget(NPC target, int layer) {
             Vector2 toTarget = target.Center - Projectile.Center;
             float distance = toTarget.Length();
-            
+
             //预判目标移动
             Vector2 predictedPos = target.Center + target.velocity * (distance / 15f);
             Vector2 shootDir = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -250,22 +250,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float angleOffset = numShots > 1 ? MathHelper.Lerp(-0.15f, 0.15f, i / (float)(numShots - 1)) : 0f;
                 Vector2 vel = shootDir.RotatedBy(angleOffset) * speed;
 
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), 
-                    Projectile.Center + shootDir * 20f, 
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                    Projectile.Center + shootDir * 20f,
                     vel,
-                    projectileType, 
-                    Projectile.damage, 
-                    Projectile.knockBack, 
+                    projectileType,
+                    Projectile.damage,
+                    Projectile.knockBack,
                     Owner.whoAmI);
             }
 
             //攻击音效与特效
             SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
-            
+
             //沙尘爆发
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = shootDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 6f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center + shootDir * 15f, DustID.Sand, vel, 
+                Dust d = Dust.NewDustPerfect(Projectile.Center + shootDir * 15f, DustID.Sand, vel,
                     100, new Color(220, 200, 160), Main.rand.NextFloat(1.2f, 1.8f));
                 d.noGravity = true;
             }
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //黄色闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = shootDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 6f);
-                Dust flash = Dust.NewDustDirect(Projectile.Center + shootDir * 10f, 8, 8, 
+                Dust flash = Dust.NewDustDirect(Projectile.Center + shootDir * 10f, 8, 8,
                     DustID.YellowTorch, Scale: Main.rand.NextFloat(1f, 1.5f));
                 flash.velocity = vel * 0.4f;
                 flash.noGravity = true;
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //消失时沙尘效果
             for (int i = 0; i < 20; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Sand, vel, 
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Sand, vel,
                     100, new Color(200, 180, 140), Main.rand.NextFloat(1f, 1.6f));
                 d.noGravity = false;
             }
@@ -296,16 +296,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //加载原版蝎子纹理
             Main.instance.LoadNPC(NPCID.Scorpion);
             Texture2D texture = TextureAssets.Npc[NPCID.Scorpion].Value;
-            
+
             int frameHeight = texture.Height / 4;
             Rectangle source = new Rectangle(0, Projectile.frame * frameHeight, texture.Width, frameHeight);
             Vector2 origin = source.Size() / 2f;
-            
+
             //蝎子正面朝左，根据方向翻转
             SpriteEffects effects = direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            
+
             float fade = 1f - Projectile.alpha / 255f;
-            
+
             //爬出地面时从下往上显示
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             if (isEmerging) {
@@ -314,25 +314,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //阴影
             Vector2 shadowPos = drawPos + new Vector2(2, 4);
-            Main.EntitySpriteDraw(texture, shadowPos, source, Color.Black * 0.4f * fade, 
+            Main.EntitySpriteDraw(texture, shadowPos, source, Color.Black * 0.4f * fade,
                 0f, origin, Projectile.scale, effects, 0);
 
             //主体
-            Main.EntitySpriteDraw(texture, drawPos, source, lightColor * fade, 
+            Main.EntitySpriteDraw(texture, drawPos, source, lightColor * fade,
                 0f, origin, Projectile.scale, effects, 0);
 
             //轻微发光
             if (AttackTimer > AttackInterval - 30 && target != null) {
                 float glowIntensity = (AttackTimer - (AttackInterval - 30)) / 30f;
                 Color glow = new Color(255, 200, 100, 0) * glowIntensity * 0.5f * fade;
-                Main.EntitySpriteDraw(texture, drawPos, source, glow, 
+                Main.EntitySpriteDraw(texture, drawPos, source, glow,
                     0f, origin, Projectile.scale * 1.05f, effects, 0);
             }
 
             return false;
         }
 
-        public override Color? GetAlpha(Color lightColor) => 
+        public override Color? GetAlpha(Color lightColor) =>
             new Color(255, 255, 255, 200) * (1f - Projectile.alpha / 255f);
     }
 }
