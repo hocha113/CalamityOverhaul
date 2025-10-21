@@ -2791,8 +2791,8 @@ Legend: {
 		}
 
 		BrimstoneDialogueBox: {
-			// ContinueHint: 继续
-			// FastHint: 加速
+			// ContinueHint: Continue
+			// FastHint: Accelerate
 		}
 	}
 

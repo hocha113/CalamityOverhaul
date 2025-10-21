@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -2773,8 +2773,8 @@ Legend: {
 		}
 
 		BrimstoneDialogueBox: {
-			ContinueHint: 继续
-			FastHint: 加速
+			ContinueHint: Continue
+			FastHint: Accelerate
 		}
 	}
 
