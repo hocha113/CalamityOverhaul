@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.RemakeItems;
@@ -19,6 +20,7 @@ namespace CalamityOverhaul
         GlobalSleep,
         CrabulonFeed,
         CrabulonModifyNetWork,
+        GiftScenarioNPC,
     }
 
     public static class CWRNetWork
@@ -51,6 +53,7 @@ namespace CalamityOverhaul
                 ModifyTruffle.HandleGlobalSleep(reader);
             }
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
+            GiftScenarioNPC.NetHandle(type, reader, whoAmI);
         }
     }
 }
