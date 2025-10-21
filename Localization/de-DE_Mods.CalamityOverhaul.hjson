@@ -1256,6 +1256,11 @@ Items: {
 			''' */
 		// DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
 	}
+
+	Heartcarver: {
+		// DisplayName: Heartcarver
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1631,6 +1636,7 @@ Projectiles: {
 	// MiniWhiteWyvern.DisplayName: Mini White Wyvern
 	// WhiteWyvernTailController.DisplayName: White Wyvern Tail
 	// ScorpionSentry.DisplayName: Scorpion Sentry
+	// HeartcarverDagger.DisplayName: Heartcarver Dagger
 }
 
 Configs: {

@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
         public override int TargetID => ModContent.ItemType<Heartcarver>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "Heartcarver_Bar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
         private int stabCounter = 0;//刺击计数器
 
         public override void SetKnifeProperty() {
