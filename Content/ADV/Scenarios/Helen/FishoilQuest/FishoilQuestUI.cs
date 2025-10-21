@@ -79,13 +79,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp)) {
                     return false;
                 }
+                //已拒绝直接不显示
                 if (hp.ADCSave.FishoilQuestDeclined) {
                     return false;
                 }
+                //未接受不显示
                 if (!hp.ADCSave.FishoilQuestAccepted) {
                     return false;
                 }
-                if (hp.ADCSave.FishoilQuestCompleted && rewarded && hideProgress >= 1f) {
+                //已完成后直接隐藏
+                if (hp.ADCSave.FishoilQuestCompleted && hideProgress >= 1f) {
                     return false;
                 }
                 return true;
@@ -97,11 +100,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             DescText = this.GetLocalization(nameof(DescText), () => "放入足够数量的鲈鱼,我会立刻提炼一瓶鱼油返还给你,过程很快,不需要你等待");
             SubmitHint = this.GetLocalization(nameof(SubmitHint), () => "左键放入/右键取出,Shift批量,Ctrl满仓");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");
-            CompletedText = this.GetLocalization(nameof(CompletedText), () => "提炼完成");
+            CompletedText = this.GetLocalization(nameof(CompletedText), () => "完成");
             QuickPutText = this.GetLocalization(nameof(QuickPutText), () => "快速放入");
         }
 
         public void OpenPersistent() {
+            // 已经完成或已拒绝不再打开，防止多人模式或重新加载后无意义显示
+            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp) && (hp.ADCSave.FishoilQuestCompleted || hp.ADCSave.FishoilQuestDeclined)) {
+                return;
+            }
             if (RequiredItems.Count == 0) {
                 InitDefaultRequirement();
             }
@@ -127,7 +134,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
 
         private void InitDefaultRequirement() {
             RequiredItems.Clear();
-            //默认需求:鲈鱼 300(测试:较大数量)
             RequiredItems.Add(new QuestMaterialSlot(ItemID.Bass, 300));
         }
 
@@ -149,6 +155,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                     hideProgress = 1f;
                 }
             }
+            //Active 已在完成后直接返回 false；但关闭动画期间 Active 也为 false，showProgress 会回收，这里保持逻辑不变
             if (showProgress <= 0f && !closing) {
                 return;
             }
@@ -407,7 +414,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
             Vector2 divEnd = divStart + new Vector2(BasePanelWidth - Padding * 2, 0);
             DrawGradientLine(sb, divStart, divEnd, new Color(70, 180, 230) * (ca * 0.85f * elementAlpha), new Color(70, 180, 230) * (ca * 0.05f * elementAlpha), 1.2f);
 
-            //槽位绘制(缩放与轻微纵向偏移让动画更自然)
+            //槽位绘制
             Vector2 slotsStart = new Vector2(panelRect.X + Padding, divStart.Y + 8);
             for (int i = 0; i < RequiredItems.Count; i++) {
                 QuestMaterialSlot slot = RequiredItems[i];
