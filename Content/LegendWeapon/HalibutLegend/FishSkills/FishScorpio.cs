@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 direction = target.Center.X > Projectile.Center.X ? 1 : -1;
             }
 
-            if (Math.Abs(Projectile.Center.X - target.Center.X) > 6) {
+            if (target != null && Math.Abs(Projectile.Center.X - target.Center.X) > 6) {
                 Projectile.velocity.X = direction * 3;
             }
             else {
