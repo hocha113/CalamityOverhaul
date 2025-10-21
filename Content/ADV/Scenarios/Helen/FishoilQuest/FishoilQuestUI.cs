@@ -89,7 +89,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 }
                 //已完成后直接隐藏
                 if (hp.ADCSave.FishoilQuestCompleted) {
-                    return false;
+                    closing = true;//强行设置开始关闭
+                    return hideProgress < 1f;
                 }
                 return true;
             }
@@ -105,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         }
 
         public void OpenPersistent() {
-            // 已经完成或已拒绝不再打开，防止多人模式或重新加载后无意义显示
+            //已经完成或已拒绝不再打开，防止多人模式或重新加载后无意义显示
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var hp) && (hp.ADCSave.FishoilQuestCompleted || hp.ADCSave.FishoilQuestDeclined)) {
                 return;
             }
