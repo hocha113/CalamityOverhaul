@@ -115,6 +115,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             if (!save.FirstMetSupCal) {
                 return;
             }
+            //如果玩家拿着大比目鱼，则必须先获得过比目鱼小姐给的礼物才能触发，避免这两个场景冲突
+            if (halibutPlayer.HeldHalibut && !save.MoonLordGift) {
+                return;
+            }
             //必须选择了Choice1（拔出武器）
             if (!save.SupCalChoseToFight) {
                 return;
