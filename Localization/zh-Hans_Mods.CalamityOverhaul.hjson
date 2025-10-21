@@ -1633,7 +1633,7 @@ Projectiles: {
 	MiniWhiteWyvern.DisplayName: 白龙尾
 	WhiteWyvernTailController.DisplayName: 白龙尾
 	ScorpionSentry.DisplayName: 蝎子哨兵
-	// HeartcarverDagger.DisplayName: Heartcarver Dagger
+	HeartcarverDagger.DisplayName: 仪式匕首
 }
 
 Configs: {
