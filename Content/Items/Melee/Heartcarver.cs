@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = 52;
             Item.height = 52;
             Item.damage = 145;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = DamageClass.Generic;
             Item.useAnimation = 14;
             Item.useTime = 14;
             Item.useTurn = true;
@@ -60,6 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int stabCounter = 0;//刺击计数器
 
         public override void SetKnifeProperty() {
+            Projectile.DamageType = DamageClass.Generic;
             Projectile.width = Projectile.height = 66;
             canDrawSlashTrail = false;
             SwingData.baseSwingSpeed = 5.5f;
@@ -155,6 +156,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Generic;
             Projectile.width = 30;
             Projectile.height = 30;
             Projectile.friendly = true;
