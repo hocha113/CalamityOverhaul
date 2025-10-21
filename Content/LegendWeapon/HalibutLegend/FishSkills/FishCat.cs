@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             bodyRotation = MathHelper.Lerp(bodyRotation, 0, 0.35f);
 
-            NPC target = FindNearestEnemy();
+            NPC target = Projectile.Center.FindClosestNPC(DetectionRange);
 
             if (target != null) {
                 TargetNPCID = target.whoAmI;
@@ -336,24 +336,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             isSpinning = true;
             spinSpeed = Main.rand.NextFloat(0.4f, 0.8f) * (Main.rand.NextBool() ? 1 : -1);
             State = CatState.Spinning;
-        }
-
-        private NPC FindNearestEnemy() {
-            NPC closest = null;
-            float closestDist = DetectionRange;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(Projectile.Center, npc.Center);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = npc;
-                    }
-                }
-            }
-
-            return closest;
         }
 
         private bool IsTargetValid() {

@@ -15,8 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 60 * 11 - HalibutData.GetDomainLayer() / 2;
         public override int ResearchDuration => 60 * 25;
 
-        /// <summary>每次射击生成的眼球数量</summary>
-        private int EyesPerShot => 1 + HalibutData.GetDomainLayer() / 3; // 1-4个眼球
+        /// <summary>
+        /// 每次射击生成的眼球数量
+        /// </summary>
+        private int EyesPerShot => 1 + HalibutData.GetDomainLayer() / 3; //1-4个眼球
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

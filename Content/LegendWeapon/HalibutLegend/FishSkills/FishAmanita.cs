@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     ///<summary>
-    ///真菌鱼技能 - 荧光孢子生态系统
+    ///真菌鱼技能，荧光孢子生态系统
     ///</summary>
     internal class FishAmanita : FishSkill
     {

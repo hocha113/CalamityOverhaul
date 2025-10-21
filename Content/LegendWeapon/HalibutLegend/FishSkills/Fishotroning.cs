@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //搜索敌人
             if (StateTimer > IdleDuration) {
-                NPC target = FindNearestEnemy(owner);
+                NPC target = owner.Center.FindClosestNPC(SearchRange);
                 if (target != null) {
                     targetNPCID = target.whoAmI;
                     State = HandState.Targeting;
@@ -824,24 +824,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0.2f
                 );
             }
-        }
-
-        private NPC FindNearestEnemy(Player owner) {
-            NPC closest = null;
-            float closestDist = SearchRange;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(owner.Center, npc.Center);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = npc;
-                    }
-                }
-            }
-
-            return closest;
         }
 
         private bool IsTargetValid() {

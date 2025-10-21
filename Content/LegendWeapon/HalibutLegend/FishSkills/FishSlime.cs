@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 史莱姆鱼技能-生成粘性凝胶球
+    /// 史莱姆鱼技能，生成粘性凝胶球
     /// </summary>
     internal class FishSlime : FishSkill
     {

@@ -23,11 +23,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (++spawnTimer <= 3 + HalibutData.GetDomainLayer() / 2) {
-                int existingCount = CountActivePenguins(player);
+                int existingCount = player.CountProjectilesOfID<FallingPenguin>();
                 int maxCount = MaxActivePenguins + HalibutData.GetDomainLayer() * 2;
 
                 if (existingCount < maxCount) {
-                    NPC target = FindNearestEnemy(player);
+                    NPC target = player.Center.FindClosestNPC(1000f);
                     if (target != null) {
                         SpawnFallingPenguin(player, source, target, damage, knockback);
                     }
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
-        private void SpawnFallingPenguin(Player player, EntitySource_ItemUse_WithAmmo source, NPC target, int damage, float knockback) {
+        private static void SpawnFallingPenguin(Player player, EntitySource_ItemUse_WithAmmo source, NPC target, int damage, float knockback) {
             Vector2 targetPos = target.Center;
             Vector2 spawnPos = targetPos + new Vector2(Main.rand.NextFloat(-100f, 100f), -600f);
 
@@ -60,36 +60,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Volume = 0.4f,
                 Pitch = 0.3f
             }, spawnPos);
-        }
-
-        private NPC FindNearestEnemy(Player player) {
-            NPC closest = null;
-            float closestDist = 1000f;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.CanBeChasedBy() && !npc.friendly) {
-                    float dist = Vector2.Distance(player.Center, npc.Center);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = npc;
-                    }
-                }
-            }
-
-            return closest;
-        }
-
-        private int CountActivePenguins(Player player) {
-            int count = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI &&
-                    proj.type == ModContent.ProjectileType<FallingPenguin>()) {
-                    count++;
-                }
-            }
-            return count;
         }
     }
 

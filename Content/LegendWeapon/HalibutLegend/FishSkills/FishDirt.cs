@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int SpawnInterval = 20;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            int fishCount = CountActiveDirtFish(player);
+            int fishCount = player.CountProjectilesOfID<DirtFishFollower>();
             int requiredFish = 5 + HalibutData.GetDomainLayer();
 
             if (fishCount >= requiredFish && !HasActiveDirtBall(player) && !HasGatheringFish(player)) {
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Active(player)) {
                 spawnTimer++;
 
-                int currentCount = CountActiveDirtFish(player);
+                int currentCount = player.CountProjectilesOfID<DirtFishFollower>();
                 int maxCount = MaxDirtFish + HalibutData.GetDomainLayer() * FishPerDomainLayer;
 
                 if (spawnTimer >= SpawnInterval && currentCount < maxCount && player.velocity.LengthSquared() > 1f) {
@@ -78,18 +79,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dust.velocity = Main.rand.NextVector2Circular(3f, 3f);
                 dust.noGravity = Main.rand.NextBool();
             }
-        }
-
-        private static int CountActiveDirtFish(Player player) {
-            int count = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == player.whoAmI &&
-                    proj.type == ModContent.ProjectileType<DirtFishFollower>()) {
-                    count++;
-                }
-            }
-            return count;
         }
 
         private static bool HasActiveDirtBall(Player player) {
