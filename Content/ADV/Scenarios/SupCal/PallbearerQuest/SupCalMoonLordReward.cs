@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
-            //添加对话（使用本地化文本）
+            //添加对话
             //计数器跟踪当前索引
             int currentIndex = 0;
 

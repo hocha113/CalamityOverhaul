@@ -61,6 +61,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
+            bool hasHalibut = false;
+            try {
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    hasHalibut = halibutPlayer.HasHalubut;
+                }
+            } catch {
+                hasHalibut = false;
+            }
+
             Add(Rolename1.Value + expressionDespise, Line1.Value);
             Add(Rolename1.Value + expressionDespise, Line2.Value);
             Add(Rolename1.Value, Line3.Value);
@@ -68,8 +77,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value + expressionCloseEye, Line6.Value);
             Add(Rolename1.Value, Line7.Value);
-            Add(Rolename2.Value, Line8.Value);
-            Add(Rolename2.Value, Line9.Value);
+            if (hasHalibut) {
+                Add(Rolename2.Value, Line8.Value);
+                Add(Rolename2.Value, Line9.Value);
+            }
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
