@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -144,20 +145,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// </summary>
     internal class PallbearerQuestTracker : GlobalNPC
     {
-        public override bool SpecialOnKill(NPC npc) {
-            
-            return base.SpecialOnKill(npc);
-        }
-
         public override void OnKill(NPC npc) {
-            Check(npc);
-        }
-
-        public static void Check(NPC npc) {
             if (npc.type != ModContent.NPCType<Providence>()) {
                 return;
             }
+            Check();
 
+            //仅服务器发送
+            if (VaultUtils.isServer && GiftScenarioBase.BossIDToInds.ContainsKey(npc.type)) {
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.PallbearerQuestTracker);
+                packet.Send();
+            }
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;//仅客户端处理
+            }
+            if (type == CWRMessageType.PallbearerQuestTracker) {
+                Check();
+            }
+        }
+
+        public static void Check() {
             Player player = Main.LocalPlayer;
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;

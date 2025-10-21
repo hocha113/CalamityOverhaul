@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -120,10 +121,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// </summary>
     internal class DoGQuestTracker : GlobalNPC//你逼我的
     {
-        private static void Check(NPC npc) {
-            if (npc.type != ModContent.NPCType<DevourerofGodsHead>()) {
-                return;
-            }
+        private static void Check() {
             Player player = Main.LocalPlayer;
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
@@ -140,9 +138,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             DoGQuestRewardTrigger.RandomTimer = 60 * Main.rand.Next(3, 5);
         }
 
-        public override bool SpecialOnKill(NPC npc) {
-            Check(npc);
-            return false;
+        public override void OnKill(NPC npc) {
+            if (npc.type != ModContent.NPCType<DevourerofGodsHead>()) {
+                return;
+            }
+            Check();
+
+            //仅服务器发送
+            if (VaultUtils.isServer && GiftScenarioBase.BossIDToInds.ContainsKey(npc.type)) {
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.DoGQuestTracker);
+                packet.Send();
+            }
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;//仅客户端处理
+            }
+            if (type == CWRMessageType.DoGQuestTracker) {
+                Check();
+            }
         }
     }
 
