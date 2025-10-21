@@ -2742,6 +2742,25 @@ Legend: {
 				RewardText: 领取奖励
 				QuickPutText: 快速放入
 			}
+
+			DoGQuestUI: {
+				QuestTitle: 委托：神明吞噬者
+				QuestDesc: 使用刻心者击杀神明吞噬者
+				AcceptText: 接受
+				DeclineText: 拒绝
+			}
+
+			SupCalDoGQuestReward: {
+				Rolename1: 至尊灾厄
+				Rolename2: 比目鱼
+				Line1: 干净利落
+				Line2: 这把刀，一如既往地令人满意
+				Line3: 当年我还是凡人之躯时，就是用它亲手挖出老师的心脏，很好用，不是吗？
+				Line4: 拿好
+				Line5: 你有没有想过，如果下一次，我是委托你来杀我，你会怎么做？
+				Line6: 真遗憾，你和他注定见不了面。不然你们一定聊得很投机
+				Line7: ......我越来越受不了这家伙了
+			}
 		}
 
 		SeaDialogueBox: {

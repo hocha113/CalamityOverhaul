@@ -2789,6 +2789,25 @@ Legend: {
 				// RewardText: Claim Reward
 				// QuickPutText: Quick Stack
 			}
+
+			DoGQuestUI: {
+				// QuestTitle: Commission: The Devourer of Gods
+				// QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
+				// AcceptText: Accept
+				// DeclineText: Decline
+			}
+
+			SupCalDoGQuestReward: {
+				// Rolename1: Supreme Calamitas
+				// Rolename2: Halibut
+				// Line1: Cleanly done.
+				// Line2: This blade... as satisfying as ever.
+				// Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
+				// Line4: Take it.
+				// Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
+				// Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
+				// Line7: ......I really can't stand her.
+			}
 		}
 
 		SeaDialogueBox: {
