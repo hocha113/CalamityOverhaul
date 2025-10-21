@@ -1251,8 +1251,12 @@ Items: {
 	}
 
 	Heartcarver: {
-		// DisplayName: Heartcarver
-		// Tooltip: ""
+		DisplayName: 仪式匕首
+		Tooltip:
+			'''
+			生成三把额外的仪式匕首围绕玩家旋转
+			蓄力完成后飞向目标
+			'''
 	}
 }
 

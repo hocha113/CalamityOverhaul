@@ -1281,7 +1281,11 @@ Items: {
 
 	Heartcarver: {
 		// DisplayName: Heartcarver
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Generate three additional ritual daggers to rotate around the player.
+			After the charging is completed, fly towards the target.
+			''' */
 	}
 }
 
