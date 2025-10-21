@@ -1271,6 +1271,11 @@ Items: {
 			''' */
 		// DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
 	}
+
+	OniMachete: {
+		// DisplayName: Oni Machete
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1646,6 +1651,7 @@ Projectiles: {
 	// MiniWhiteWyvern.DisplayName: Mini White Wyvern
 	// WhiteWyvernTailController.DisplayName: White Wyvern Tail
 	// ScorpionSentry.DisplayName: Scorpion Sentry
+	// OniSkeletonArm.DisplayName: Oni Skeleton Arm
 }
 
 Configs: {

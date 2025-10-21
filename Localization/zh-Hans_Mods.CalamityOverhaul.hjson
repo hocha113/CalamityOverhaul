@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1249,6 +1249,11 @@ Items: {
 			'''
 		DeathText: "{0}在未知的袭击下化作腐尸"
 	}
+
+	OniMachete: {
+		// DisplayName: Oni Machete
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1624,6 +1629,7 @@ Projectiles: {
 	MiniWhiteWyvern.DisplayName: 白龙尾
 	WhiteWyvernTailController.DisplayName: 白龙尾
 	ScorpionSentry.DisplayName: 蝎子哨兵
+	// OniSkeletonArm.DisplayName: Oni Skeleton Arm
 }
 
 Configs: {
