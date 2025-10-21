@@ -109,10 +109,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// </summary>
         public float ResurrectionRate {
             get {
-                if (!Main.gameMenu && 
-                    Main.LocalPlayer.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer) 
-                    && sirenMusicalBoxPlayer.IsCursed 
-                    && Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+                if (!Main.gameMenu &&
+                    Main.LocalPlayer.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)
+                    && sirenMusicalBoxPlayer.IsCursed
+                    && Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
                     && halibutPlayer.SeaDomainLayers <= 5) {
                     return 0f;//在被诅咒且海域层级不高于5时，复苏速度为0
                 }

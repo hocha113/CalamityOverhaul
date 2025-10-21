@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);
-                var cloudParticle = new PRT_CloudParticle(position + Main.rand.NextVector2Circular(20f, 20f), 
+                var cloudParticle = new PRT_CloudParticle(position + Main.rand.NextVector2Circular(20f, 20f),
                     vel, Main.rand.NextFloat(0.8f, 1.5f), new Color(240, 250, 255), 45);
                 PRTLoader.AddParticle(cloudParticle);
             }
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 22; i++) {
                 float angle = MathHelper.TwoPi * i / 22f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
-                Dust d = Dust.NewDustPerfect(position, DustID.WhiteTorch, vel, 100, 
+                Dust d = Dust.NewDustPerfect(position, DustID.WhiteTorch, vel, 100,
                     new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 1.9f));
                 d.noGravity = true;
                 d.fadeIn = 1.2f;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //银色闪光
             for (int i = 0; i < 12; i++) {
-                Dust shard = Dust.NewDustDirect(position - new Vector2(12), 24, 24, 
+                Dust shard = Dust.NewDustDirect(position - new Vector2(12), 24, 24,
                     DustID.SilverFlame, Scale: Main.rand.NextFloat(1f, 1.6f));
                 shard.velocity = Main.rand.NextVector2Circular(4f, 4f);
                 shard.noGravity = true;
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Timer % interval == 0) {
                 NPC target = Owner.Center.FindClosestNPC(1400f);
                 Vector2 firePos = Projectile.Center + Main.rand.NextVector2Circular(24f, 24f);
-                
+
                 for (int i = 0; i < batch; i++) {
                     Vector2 dir;
                     if (target != null && target.active && target.CanBeChasedBy()) {
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     else {
                         dir = Main.rand.NextVector2Unit();
                     }
-                    
+
                     float speed = Main.rand.NextFloat(12f, 16f) + layer * 0.8f;
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), firePos, dir * speed,
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 for (int k = 0; k < 18; k++) {
                     Vector2 v = Main.rand.NextVector2Circular(5f, 5f);
-                    Dust d = Dust.NewDustPerfect(firePos, DustID.WhiteTorch, v, 120, 
+                    Dust d = Dust.NewDustPerfect(firePos, DustID.WhiteTorch, v, 120,
                         new Color(220, 240, 255), Main.rand.NextFloat(0.9f, 1.4f));
                     d.noGravity = true;
                 }
@@ -222,12 +222,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //蛇形偏移
                 Vector2 normal = dir.RotatedBy(MathHelper.PiOver2);
-                float wave = (float)Math.Sin(SerpentinePhase * serpFrequency) * serpAmplitude * 
+                float wave = (float)Math.Sin(SerpentinePhase * serpFrequency) * serpAmplitude *
                     MathHelper.Clamp(dist / 400f, 0.2f, 1f);
                 Vector2 desiredVel = dir * MathHelper.Clamp(18f + dist * 0.01f, 12f, 32f) + normal * wave;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.15f);
                 desiredRot = Projectile.velocity.ToRotation();
-                
+
                 if (dist < 40f) {
                     serpAmplitude *= 0.85f;
                 }
@@ -252,18 +252,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (cloudSpawnTimer % 3 == 0 && !VaultUtils.isServer) {
                 Vector2 trailPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f;
                 trailPos += Main.rand.NextVector2Circular(8f, 8f);
-                var cloudParticle = new PRT_CloudParticle(trailPos, 
+                var cloudParticle = new PRT_CloudParticle(trailPos,
                     -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f),
-                    Main.rand.NextFloat(0.7f, 1.3f), 
-                    new Color(235, 245, 255, 180), 
+                    Main.rand.NextFloat(0.7f, 1.3f),
+                    new Color(235, 245, 255, 180),
                     Main.rand.Next(25, 40));
                 PRTLoader.AddParticle(cloudParticle);
             }
 
             //白色火花粒子
             if (Main.rand.NextBool(5)) {
-                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, 
-                    DustID.WhiteTorch, -Projectile.velocity.X * 0.2f, -Projectile.velocity.Y * 0.2f, 
+                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
+                    DustID.WhiteTorch, -Projectile.velocity.X * 0.2f, -Projectile.velocity.Y * 0.2f,
                     120, new Color(220, 240, 255), Main.rand.NextFloat(0.8f, 1.2f));
                 d.noGravity = true;
             }
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 15; i++) {
                 int goreType = Main.rand.Next(11, 14); //原版云Gore
                 Vector2 goreVel = Main.rand.NextVector2Circular(4f, 4f) + Projectile.velocity * 0.3f;
-                Gore gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, 
+                Gore gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center,
                     goreVel, goreType, Projectile.scale);
                 gore.timeLeft = Main.rand.Next(20, 35);
                 gore.scale *= 3;
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //白色粒子爆发
             for (int i = 0; i < 20; i++) {
                 Vector2 v = Main.rand.NextVector2Circular(8f, 8f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, v, 100, 
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, v, 100,
                     new Color(255, 255, 255), Main.rand.NextFloat(1.2f, 2f));
                 d.noGravity = true;
             }
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 9f);
-                Dust shock = Dust.NewDustPerfect(Projectile.Center, DustID.SilverFlame, vel, 
+                Dust shock = Dust.NewDustPerfect(Projectile.Center, DustID.SilverFlame, vel,
                     120, Color.White, Main.rand.NextFloat(1.3f, 1.8f));
                 shock.noGravity = true;
             }
@@ -334,13 +334,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int ring = 0; ring < 3; ring++) {
                 int count = 12 + ring * 8;
                 float baseRadius = 30f + ring * 20f;
-                
+
                 for (int i = 0; i < count; i++) {
                     float angle = MathHelper.TwoPi * i / count;
                     Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(baseRadius * 0.8f, baseRadius * 1.2f);
-                    Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 7f) + 
+                    Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 7f) +
                         impactVelocity * 0.2f;
-                    
+
                     var cloudParticle = new PRT_CloudParticle(
                         center + offset * 0.3f,
                         velocity,
@@ -382,18 +382,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color trailColor = new Color(200, 220, 240) * progress * 0.4f * fade;
                 Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float rot = Projectile.oldRot[i] + drawOffset;
-                Main.EntitySpriteDraw(vaule, drawPos, source, trailColor, rot, origin, 
+                Main.EntitySpriteDraw(vaule, drawPos, source, trailColor, rot, origin,
                     Projectile.scale * (0.9f + progress * 0.1f), SpriteEffects.None, 0);
             }
 
             //主体
             SpriteEffects spriteEffect = Projectile.velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source, 
+            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source,
                 lightColor * fade, Projectile.rotation + drawOffset, origin, Projectile.scale, spriteEffect, 0);
 
             //辉光层
             Color glow = new Color(255, 255, 255, 0) * 0.4f * fade;
-            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source, glow, 
+            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source, glow,
                 Projectile.rotation + drawOffset, origin, Projectile.scale * 1.05f, spriteEffect, 0);
 
             return false;
@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             velocity *= 0.96f; //阻力
             scale *= 0.98f; //缩放衰减
             currentRotation += rotationSpeed;
-            
+
             //透明度渐变
             float lifeProgress = (float)Time / Lifetime;
             float fadeIn = MathHelper.Clamp(lifeProgress * 3f, 0f, 1f);
@@ -441,14 +441,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (FishCloud.Fog == null) return false;
-            
+
             Texture2D fogTex = FishCloud.Fog;
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = fogTex.Size() / 2f;
-            
-            spriteBatch.Draw(fogTex, drawPos, null, Color, currentRotation, origin, 
+
+            spriteBatch.Draw(fogTex, drawPos, null, Color, currentRotation, origin,
                 scale * 0.8f, SpriteEffects.None, 0f);
-            
+
             return false;
         }
     }
