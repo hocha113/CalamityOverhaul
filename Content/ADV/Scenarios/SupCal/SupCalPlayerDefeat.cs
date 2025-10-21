@@ -161,12 +161,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             return true;
         }
 
-        public override void OnKill(NPC npc) {
+        public override bool SpecialOnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
                 //Boss被击杀时重置状态
                 hasRecordedDeath = false;
                 Spawned = false;
             }
+            return base.SpecialOnKill(npc);
         }
     }
 }

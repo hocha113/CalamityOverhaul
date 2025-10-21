@@ -331,45 +331,4 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             }
         }
     }
-
-    /// <summary>
-    /// 追踪玩家使用扶柩者击杀亵渎天神
-    /// </summary>
-    internal class PallbearerQuestTracker : GlobalNPC
-    {
-        public override void OnKill(NPC npc) {
-            if (npc.type != ModContent.NPCType<Providence>()) {
-                return;
-            }
-
-            Player player = Main.LocalPlayer;
-            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
-            }
-
-            //检查是否接受了任务
-            if (!halibutPlayer.ADCSave.SupCalQuestAccepted || halibutPlayer.ADCSave.SupCalQuestDeclined) {
-                return;
-            }
-
-            //检查玩家是否手持扶柩者
-            Item heldItem = player.GetItem();
-            if (heldItem.type != ModContent.ItemType<Pallbearer>()) {
-                return;
-            }
-
-            //标记任务完成
-            halibutPlayer.ADCSave.SupCalQuestReward = true;
-
-            //延迟触发奖励场景
-            PallbearerQuestRewardTrigger.Spawned = true;
-            PallbearerQuestRewardTrigger.RandomTimer = 60 * Main.rand.Next(3, 5);
-        }
-    }
-
-    internal static class PallbearerQuestRewardTrigger
-    {
-        public static bool Spawned = false;
-        public static int RandomTimer;
-    }
 }

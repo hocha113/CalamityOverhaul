@@ -1,12 +1,13 @@
-using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.Items.Materials;
+using CalamityMod.NPCs.DevourerofGods;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.GameSystem;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using InnoVault.GameSystem;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
 {
@@ -117,10 +118,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// <summary>
     /// 追踪玩家使用Heartcarver击杀神明吞噬者
     /// </summary>
-    internal class DoGQuestTracker : NPCOverride//你逼我的
+    internal class DoGQuestTracker : GlobalNPC//你逼我的
     {
-        public override int TargetID => ModContent.NPCType<DevourerofGodsHead>();
-
         private static void Check(NPC npc) {
             if (npc.type != ModContent.NPCType<DevourerofGodsHead>()) {
                 return;
@@ -141,9 +140,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             DoGQuestRewardTrigger.RandomTimer = 60 * Main.rand.Next(3, 5);
         }
 
-        public override bool? On_PreKill() {
+        public override bool SpecialOnKill(NPC npc) {
             Check(npc);
-            return base.On_PreKill();
+            return false;
         }
     }
 
