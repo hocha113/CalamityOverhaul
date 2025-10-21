@@ -103,6 +103,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 return;
             }
 
+            //避免在不合适的时候触发
+            if (VaultUtils.IsInvasion() || CWRWorld.HasBoss) {
+                return;
+            }
+
             if (ScenarioManager.Start<FirstMet>()) {
                 save.FirstMet = true;
             }

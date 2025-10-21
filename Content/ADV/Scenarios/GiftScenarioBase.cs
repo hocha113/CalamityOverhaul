@@ -100,6 +100,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 return;//Boss未被击败或礼物场景未生成
             }
 
+            //避免在不合适的时候触发
+            if (VaultUtils.IsInvasion() || CWRWorld.HasBoss) {
+                return;
+            }
+
             if (!pendingTimers.TryGetValue(Key, out int timer)) {
                 timer = 60 * Main.rand.Next(2, 4);
                 pendingTimers[Key] = timer;//与SupCalMoonLordReward保持一致的随机缓冲时间

@@ -132,10 +132,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 spawnDelayTimer--;
                 return;
             }
-            if (VaultUtils.IsInvasion()) {
-                return;
-            }
-            if (CWRWorld.HasBoss) {
+            //避免在不合适的时候触发
+            if (VaultUtils.IsInvasion() || CWRWorld.HasBoss) {
                 return;
             }
 
