@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Particles;
 using CalamityOverhaul.Content.MeleeModify.Core;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noMelee = true;
             Item.shoot = ModContent.ProjectileType<HeartcarverHeld>();
             Item.shootSpeed = 2.4f;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 30, 0, 0);
         }
 
@@ -63,7 +64,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             canDrawSlashTrail = false;
             SwingData.baseSwingSpeed = 5.5f;
             Length = 45;
-            unitOffsetDrawZkMode = -8;
             drawTrailTopWidth = 30;
             drawTrailBtommWidth = 10;
         }
@@ -74,10 +74,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                 initialLength: 35,
                 lifetime: maxSwingTime,
                 scaleFactorDenominator: 420f,
-                minLength: 35,
+                minLength: 45,
                 maxLength: 65,
                 canDrawSlashTrail: true
             );
+            if (Time == 1) {
+                SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+            }
             return false;
         }
 
@@ -87,15 +90,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             //限制最多3把匕首
             if (Owner.ownedProjectileCounts[daggerType] < 3) {
                 Projectile.NewProjectile(
-                        Source,
-                        ShootSpanPos,
-                        Vector2.Zero,
+                    Source,
+                    ShootSpanPos,
+                    Vector2.Zero,
                     daggerType,
-                (int)(Projectile.damage * 0.85f),
-         Projectile.knockBack * 0.5f,
-               Owner.whoAmI,
-                ai0: stabCounter //传入刺击索引用于错开动画
-            );
+                    (int)(Projectile.damage * 0.85f),
+                    Projectile.knockBack * 0.5f,
+                    Owner.whoAmI,
+                    ai0: stabCounter //传入刺击索引用于错开动画
+                );
                 stabCounter++;
             }
         }
@@ -105,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class HeartcarverDagger : ModProjectile
+    internal class HeartcarverDagger : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
@@ -165,9 +168,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-
-            if (!owner.active || owner.dead) {
+            if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
             }
@@ -178,19 +179,16 @@ namespace CalamityOverhaul.Content.Items.Melee
             //状态机
             switch (State) {
                 case DaggerState.Gathering:
-                    GatheringPhaseAI(owner);
+                    GatheringPhaseAI(Owner);
                     break;
-
                 case DaggerState.Orbiting:
-                    OrbitingPhaseAI(owner);
+                    OrbitingPhaseAI(Owner);
                     break;
-
                 case DaggerState.Charging:
-                    ChargingPhaseAI(owner);
+                    ChargingPhaseAI(Owner);
                     break;
-
                 case DaggerState.Launching:
-                    LaunchingPhaseAI(owner);
+                    LaunchingPhaseAI(Owner);
                     break;
             }
 
@@ -369,7 +367,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }, Projectile.Center);
         }
 
-        //发射阶段：向目标飞行
+        //向目标飞行
         private void LaunchingPhaseAI(Player owner) {
             //速度衰减
             Projectile.velocity *= 0.99f;
@@ -378,6 +376,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             NPC target = Projectile.Center.FindClosestNPC(800);
             if (target != null && Projectile.timeLeft < 570) {
                 Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.08f);
+            }
+            else {
+                Projectile.SmoothHomingBehavior(InMousePos, 1.01f, 0.08f);
             }
 
             //轨迹强度保持
@@ -395,11 +396,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        //===== 粒子效果方法 =====
-
         private void SpawnGatherParticle() {
             Dust gather = Dust.NewDustPerfect(
-      Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
+                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
                 DustID.Blood,
                 (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f),
                 100,
@@ -559,6 +558,9 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //添加流血Buff
             target.AddBuff(BuffID.Bleeding, 240);
+
+            //爆发式血色粒子
+            SpawnLaunchBurst();
         }
 
         public override void OnKill(int timeLeft) {
