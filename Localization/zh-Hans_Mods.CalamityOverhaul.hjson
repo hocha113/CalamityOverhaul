@@ -1616,7 +1616,7 @@ Projectiles: {
 	ForgottenTomeEffect.DisplayName: 遗忘符文
 	TunabeardDashProj.DisplayName: 金枪鱼猛冲
 	TunabeardImpactWave.DisplayName: 怒涛冲击
-	BloodyAxeController.DisplayName: 血斧风暴
+	BloodySwarmController.DisplayName: 血腥风暴
 	BloodyJellyfishUnit.DisplayName: 血色水母
 	BloodyStrikeWave.DisplayName: 鲜血冲击
 	UnicornFishDashProj.DisplayName: 独角冲锋
@@ -6223,8 +6223,8 @@ FishSkill: {
 		DisplayName: 猩红裁决
 		Tooltip:
 			'''
-			开火时召唤血腥水母形成一把战斧劈向敌人
-			血腥水母斧的挥砍造成大范围伤害
+			开火时召唤一群血腥水母向敌人聚拢
+			血腥水母群聚拢会造成大范围伤害
 			'''
 		Studied: 它们的关系是共生还是上下级？
 	}

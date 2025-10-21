@@ -1638,7 +1638,7 @@ Projectiles: {
 	// ForgottenTomeEffect.DisplayName: Forgotten Runes
 	// TunabeardDashProj.DisplayName: Tuna Rush
 	// TunabeardImpactWave.DisplayName: Tidal Slam
-	// BloodyAxeController.DisplayName: Crimson Cyclone
+	// BloodySwarmController.DisplayName: Blood Storm
 	// BloodyJellyfishUnit.DisplayName: Bloody Jellyfish
 	// BloodyStrikeWave.DisplayName: Wave of Blood
 	// UnicornFishDashProj.DisplayName: Horn Charge
@@ -6252,8 +6252,8 @@ FishSkill: {
 		// DisplayName: Crimson Judgment
 		/* Tooltip:
 			'''
-			Firing summons Bloody Manowars that form a battle-axe
-			to chop enemies, dealing heavy area damage.
+			When firing, summon a group of bloody jellyfish to approach the enemy.
+			The gathering of the bloody jellyfish will cause extensive damage.
 			''' */
 		// Studied: Is their relationship symbiotic, or... hierarchical?
 	}

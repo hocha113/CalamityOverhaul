@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -27,73 +28,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void Use(Item item, Player player) {
             SetCooldown();
 
-            Vector2 targetDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX * player.direction);
+            Vector2 targetPos = Main.MouseWorld;
             ShootState shootState = player.GetShootState();
 
-            //生成斧头控制器
+            //生成水母群控制器
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
-                player.Center,
-                targetDirection,
-                ModContent.ProjectileType<BloodyAxeController>(),
+                targetPos,
+                Vector2.Zero,
+                ModContent.ProjectileType<BloodySwarmController>(),
                 (int)(shootState.WeaponDamage * (2f + HalibutData.GetDomainLayer() * 0.5f)),
                 shootState.WeaponKnockback * 2.5f,
                 player.whoAmI
             );
 
-            //音效
-            SoundEngine.PlaySound(SoundID.NPCDeath19 with { Volume = 0.7f, Pitch = -0.3f }, player.Center);
-            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.6f, Pitch = -0.2f }, player.Center);
+            //召唤音效
+            SoundEngine.PlaySound(SoundID.NPCDeath19 with { Volume = 0.7f, Pitch = -0.3f }, targetPos);
+            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.6f, Pitch = -0.2f }, targetPos);
         }
-
     }
 
     /// <summary>
-    /// 血腥斧头控制器，管理水母聚集和劈砍动作
+    /// 血腥水母群控制器
     /// </summary>
-    internal class BloodyAxeController : ModProjectile
+    internal class BloodySwarmController : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private enum AxePhase
+        public enum SwarmPhase
         {
-            Gathering,//聚集阶段
-            Raising,//抬起阶段
-            Striking,//劈砍阶段
-            Dissipating//消散阶段
+            Spawning,//生成扩散
+            Hovering,//悬浮等待
+            Converging,//聚拢冲击
+            Exploding//爆炸消散
         }
 
-        private AxePhase Phase {
-            get => (AxePhase)Projectile.ai[0];
+        public SwarmPhase Phase {
+            get => (SwarmPhase)Projectile.ai[0];
             set => Projectile.ai[0] = (float)value;
         }
 
-        private ref float PhaseTimer => ref Projectile.ai[1];
-        private Player Owner => Main.player[Projectile.owner];
+        public ref float PhaseTimer => ref Projectile.ai[1];
+        public ref float ConvergenceProgress => ref Projectile.ai[2];
+        public Player Owner => Main.player[Projectile.owner];
 
-        private List<int> jellyfishList = new List<int>();
-        private Vector2 initialDirection;//初始方向
-        public Vector2 handlePosition;//斧柄位置（旋转支点）
-        public float currentRotation;//当前旋转角度
-        private float swingDirection;//挥舞方向（1或-1）
+        public List<int> jellyfishList = new List<int>();
+        public Vector2 centerPoint;//聚集中心点
+        public bool hasCausedDamage = false;
 
-        private const int GatherDuration = 30;//聚集时长
-        private const int RaiseDuration = 20;//抬起时长
-        private const int StrikeDuration = 25;//劈砍时长
-        private const int DissipateDuration = 35;//消散时长
-
-        //斧头尺寸参数
-        private const float AxeLength = 180f;//斧头总长度
-        private const float HandleLength = 50f;//柄部长度
+        private const int SpawnDuration = 25;//生成扩散阶段
+        private const int HoverDuration = 35;//悬浮等待阶段
+        private const int ConvergeDuration = 20;//聚拢冲击阶段
+        private const int ExplodeDuration = 30;//爆炸消散阶段
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 200;
+            Projectile.width = Projectile.height = 400;
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = GatherDuration + RaiseDuration + StrikeDuration + DissipateDuration + 10;
+            Projectile.timeLeft = SpawnDuration + HoverDuration + ConvergeDuration + ExplodeDuration + 10;
         }
 
         public override void AI() {
@@ -104,315 +99,228 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             PhaseTimer++;
 
-            //初始化方向
+            //初始化中心点
             if (PhaseTimer == 1) {
-                initialDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-                swingDirection = initialDirection.X > 0 ? 1 : -1;
+                centerPoint = Projectile.Center;
             }
 
             switch (Phase) {
-                case AxePhase.Gathering:
-                    GatheringPhaseAI();
+                case SwarmPhase.Spawning:
+                    SpawningPhaseAI();
                     break;
-                case AxePhase.Raising:
-                    RaisingPhaseAI();
+                case SwarmPhase.Hovering:
+                    HoveringPhaseAI();
                     break;
-                case AxePhase.Striking:
-                    StrikingPhaseAI();
+                case SwarmPhase.Converging:
+                    ConvergingPhaseAI();
                     break;
-                case AxePhase.Dissipating:
-                    DissipatingPhaseAI();
+                case SwarmPhase.Exploding:
+                    ExplodingPhaseAI();
                     break;
             }
 
-            //更新弹幕中心位置供网络同步
-            Projectile.Center = handlePosition;
+            Projectile.Center = centerPoint;
         }
 
-        private void GatheringPhaseAI() {
+        private void SpawningPhaseAI() {
             if (PhaseTimer == 1) {
-                //生成水母组成斧头形状
-                int jellyfishCount = 35 + HalibutData.GetDomainLayer() * 5;
+                int layer = HalibutData.GetDomainLayer(Owner);
+                int jellyfishCount = 25 + layer * 6;//水母数量随层数增长
 
-                //斧头形状的水母分布
+                //环形扩散生成水母
                 for (int i = 0; i < jellyfishCount; i++) {
-                    //计算该水母在斧头上的相对偏移
-                    Vector2 offset = CalculateAxeShapeOffset(i, jellyfishCount);
+                    float angle = MathHelper.TwoPi * i / jellyfishCount;
+                    float distance = Main.rand.NextFloat(180f, 280f);
+                    Vector2 offset = angle.ToRotationVector2() * distance;
 
                     int proj = Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
-                        Owner.Center,//初始在玩家位置
+                        centerPoint,
                         Vector2.Zero,
                         ModContent.ProjectileType<BloodyJellyfishUnit>(),
                         Projectile.damage,
                         Projectile.knockBack,
                         Projectile.owner,
-                        Projectile.identity,//控制器ID
-                        i//水母索引
+                        Projectile.identity,
+                        i
                     );
 
                     if (proj >= 0) {
                         jellyfishList.Add(proj);
-                        //设置水母的目标偏移
                         if (Main.projectile[proj].ModProjectile is BloodyJellyfishUnit unit) {
-                            unit.localOffset = offset;
+                            unit.targetOffset = offset;
+                            unit.hoverHeight = Main.rand.NextFloat(-40f, 40f);
                         }
                     }
                 }
 
-                //聚集特效
-                Vector2 spawnCenter = Owner.Center + initialDirection * 100f + new Vector2(0, 80f);
-                for (int i = 0; i < 30; i++) {
-                    Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                    Dust gather = Dust.NewDustPerfect(
-                        spawnCenter,
-                        DustID.Blood,
-                        velocity,
-                        100,
-                        Color.DarkRed,
-                        Main.rand.NextFloat(1.2f, 2f)
-                    );
-                    gather.noGravity = true;
+                //生成血雾扩散特效
+                SpawnBloodMist(centerPoint, 40);
+            }
+
+            //扩散粒子效果
+            if (PhaseTimer % 2 == 0) {
+                float progress = PhaseTimer / SpawnDuration;
+                float radius = MathHelper.Lerp(0f, 300f, progress);
+                for (int i = 0; i < 3; i++) {
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 pos = centerPoint + angle.ToRotationVector2() * radius;
+                    Dust d = Dust.NewDustPerfect(pos, DustID.Blood, 
+                        Vector2.Zero, 100, Color.DarkRed, Main.rand.NextFloat(1.2f, 1.8f));
+                    d.noGravity = true;
                 }
             }
 
-            //聚集阶段：斧柄在玩家前下方，斧头向下斜指
-            handlePosition = Owner.Center + new Vector2(swingDirection * 70f, 80f);
-            //初始角度：斧头向前下方倾斜约45度
-            currentRotation = (swingDirection > 0 ? 1 : -1) * 45f * MathHelper.Pi / 180f;
-
-            if (PhaseTimer >= GatherDuration) {
-                Phase = AxePhase.Raising;
+            if (PhaseTimer >= SpawnDuration) {
+                Phase = SwarmPhase.Hovering;
                 PhaseTimer = 0;
+                SoundEngine.PlaySound(SoundID.NPCHit19 with { Volume = 0.5f, Pitch = 0.2f }, centerPoint);
             }
         }
 
-        private void RaisingPhaseAI() {
-            //抬起阶段：从前下方抬起到头顶上方
-            float progress = PhaseTimer / RaiseDuration;
-            float easeProgress = 1f - MathF.Pow(1f - progress, 2f);//先快后慢的曲线
-
-            //柄部位置：从前下方移动到头顶上方
-            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 70f, 80f);
-            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 30f, -180f);
-            handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, easeProgress);
-
-            //旋转角度：从前下方45°抬起到头顶-120°（总共旋转约165度）
-            float startAngle = (swingDirection > 0 ? 1 : -1) * 45f * MathHelper.Pi / 180f;
-            float endAngle = -120f * swingDirection * MathHelper.Pi / 180f;//举起角度
-            currentRotation = MathHelper.Lerp(startAngle, endAngle, easeProgress);
-
-            //抬起粒子
-            if (PhaseTimer % 3 == 0) {
-                SpawnRaiseParticles();
+        private void HoveringPhaseAI() {
+            //环境血雾
+            if (PhaseTimer % 5 == 0) {
+                Vector2 pos = centerPoint + Main.rand.NextVector2Circular(250f, 250f);
+                Dust mist = Dust.NewDustPerfect(pos, DustID.Blood, 
+                    Main.rand.NextVector2Circular(1f, 1f), 120, 
+                    new Color(180, 0, 0, 100), Main.rand.NextFloat(1.5f, 2.2f));
+                mist.noGravity = true;
             }
 
-            //抬起轨迹血雾
-            if (PhaseTimer % 2 == 0) {
-                Vector2 bladeOffset = new Vector2(0, -AxeLength * 0.8f).RotatedBy(currentRotation);
-                Vector2 bladePos = handlePosition + bladeOffset;
-                Dust trail = Dust.NewDustPerfect(
-                    bladePos + Main.rand.NextVector2Circular(25f, 25f),
-                    DustID.Blood,
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    100,
-                    Color.Red,
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                trail.noGravity = true;
+            //脉动光效
+            if (PhaseTimer % 20 == 0) {
+                Lighting.AddLight(centerPoint, 0.8f, 0.1f, 0.1f);
             }
 
-            if (PhaseTimer >= RaiseDuration) {
-                Phase = AxePhase.Striking;
+            if (PhaseTimer >= HoverDuration) {
+                Phase = SwarmPhase.Converging;
                 PhaseTimer = 0;
-                SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = -0.5f }, handlePosition);
+                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.4f }, centerPoint);
             }
         }
 
-        private void StrikingPhaseAI() {
-            //劈砍阶段：从头顶快速向前下方挥舞
-            float progress = PhaseTimer / StrikeDuration;
-            float strikeProgress = 1f - MathF.Pow(1f - progress, 3f);//加速曲线
+        private void ConvergingPhaseAI() {
+            ConvergenceProgress = PhaseTimer / ConvergeDuration;
 
-            //柄部位置：从头顶上方移动到前下方
-            Vector2 startHandlePos = Owner.Center + new Vector2(swingDirection * 30f, -180f);
-            Vector2 endHandlePos = Owner.Center + new Vector2(swingDirection * 90f, 110f);
-            handlePosition = Vector2.Lerp(startHandlePos, endHandlePos, strikeProgress);
+            //聚拢过程粒子轨迹
+            if (PhaseTimer % 1 == 0) {
+                for (int i = 0; i < 5; i++) {
+                    float distance = MathHelper.Lerp(300f, 50f, ConvergenceProgress);
+                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 pos = centerPoint + angle.ToRotationVector2() * distance;
+                    Vector2 vel = (centerPoint - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
+                    
+                    Dust d = Dust.NewDustPerfect(pos, DustID.Blood, vel, 
+                        100, Color.Red, Main.rand.NextFloat(1.5f, 2.5f));
+                    d.noGravity = true;
+                }
+            }
 
-            //旋转角度：从举起(-120°)旋转到劈下(80°)，总共旋转约200度
-            float startAngle = -120f * swingDirection * MathHelper.Pi / 180f;
-            float endAngle = 80f * swingDirection * MathHelper.Pi / 180f;
-            currentRotation = MathHelper.Lerp(startAngle, endAngle, strikeProgress);
-
-            //劈砍音效
+            //聚拢冲击音效
             if (PhaseTimer == 5) {
-                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.8f, Pitch = -0.3f }, handlePosition);
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.8f, Pitch = -0.5f }, centerPoint);
             }
 
-            //冲击波效果
-            if (PhaseTimer == 16) {
-                CreateStrikeImpact();
+            //产生冲击波伤害（聚拢完成瞬间）
+            if (PhaseTimer == ConvergeDuration - 3 && !hasCausedDamage) {
+                CreateImpactWave();
+                hasCausedDamage = true;
             }
 
-            //劈砍粒子
-            if (PhaseTimer % 2 == 0) {
-                SpawnStrikeParticles();
-            }
-
-            if (PhaseTimer >= StrikeDuration) {
-                Phase = AxePhase.Dissipating;
+            if (PhaseTimer >= ConvergeDuration) {
+                Phase = SwarmPhase.Exploding;
                 PhaseTimer = 0;
             }
         }
 
-        private void DissipatingPhaseAI() {
-            //保持在最终位置和角度
-            handlePosition = Owner.Center + new Vector2(swingDirection * 90f, 110f);
-            currentRotation = 80f * swingDirection * MathHelper.Pi / 180f;
-
-            //消散所有水母
+        private void ExplodingPhaseAI() {
+            //触发所有水母消散
             if (PhaseTimer == 1) {
                 foreach (int projIndex in jellyfishList) {
                     if (Main.projectile.IndexInRange(projIndex) && Main.projectile[projIndex].active) {
-                        Main.projectile[projIndex].ai[2] = 1f;//触发消散
+                        Main.projectile[projIndex].ai[2] = 1f;//消散标记
                     }
                 }
+
+                //爆炸特效
+                SpawnExplosionEffect(centerPoint);
             }
 
-            if (PhaseTimer >= DissipateDuration) {
+            if (PhaseTimer >= ExplodeDuration) {
                 Projectile.Kill();
             }
         }
 
-        private Vector2 CalculateAxeShapeOffset(int index, int total) {
-            //斧头形状：以柄部底端为原点(0,0)，向上延伸
-            float t = index / (float)total;
+        private void CreateImpactWave() {
+            //生成多层冲击波
+            int waveCount = 1 + HalibutData.GetDomainLayer(Owner) / 3;
+            for (int i = 0; i < waveCount; i++) {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    centerPoint,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<BloodyStrikeWave>(),
+                    Projectile.damage * 2,
+                    Projectile.knockBack * 2f,
+                    Projectile.owner,
+                    ai0: i * 0.15f//延迟错开
+                );
+            }
 
-            //分成三部分：刃部、身部、柄部
-            if (t < 0.35f) {//刃部(35%)
-                float bladeT = t / 0.35f;
-                float width = MathHelper.Lerp(10f, 100f, bladeT);//从10宽到100宽
-                float x = (bladeT - 0.5f) * width * 2f;
-                float y = -(HandleLength + 90f + bladeT * 90f);//刃部在最上方
-                return new Vector2(x, y);
+            //冲击音效叠加
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.9f, Pitch = -0.4f }, centerPoint);
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.7f, Pitch = -0.5f }, centerPoint);
+
+            //冲击环形血雾爆发
+            for (int ring = 0; ring < 3; ring++) {
+                int count = 20 + ring * 10;
+                float radius = 80f + ring * 60f;
+                
+                for (int i = 0; i < count; i++) {
+                    float angle = MathHelper.TwoPi * i / count;
+                    Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
+                    Dust impact = Dust.NewDustPerfect(centerPoint, DustID.Blood, vel, 
+                        100, Color.DarkRed, Main.rand.NextFloat(2f, 3f));
+                    impact.noGravity = ring > 0;
+                }
             }
-            else if (t < 0.65f) {//身部(30%)
-                float bodyT = (t - 0.35f) / 0.3f;
-                float width = MathHelper.Lerp(100f, 50f, bodyT);//从100宽到50宽
-                float x = (bodyT - 0.5f) * width * 2f;
-                float y = -(HandleLength + bodyT * 90f);//身部在中间
-                return new Vector2(x, y);
-            }
-            else {//柄部(35%)
-                float handleT = (t - 0.65f) / 0.35f;
-                float x = (handleT - 0.5f) * 30f;//柄部较窄
-                float y = -handleT * HandleLength;//柄部在底部
-                return new Vector2(x, y);
+
+            //中心血液爆炸
+            for (int i = 0; i < 40; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
+                Dust blood = Dust.NewDustPerfect(centerPoint, DustID.Blood, vel, 
+                    100, Color.Red, Main.rand.NextFloat(2f, 3.5f));
+                blood.noGravity = Main.rand.NextBool();
             }
         }
 
-        private void SpawnRaiseParticles() {
-            //计算斧头刃部位置（用于生成粒子）
-            Vector2 bladeOffset = new Vector2(0, -AxeLength).RotatedBy(currentRotation);
-            Vector2 bladePos = handlePosition + bladeOffset;
-
-            Dust raise = Dust.NewDustPerfect(
-                bladePos + Main.rand.NextVector2Circular(40f, 40f),
-                DustID.Blood,
-                new Vector2(0, -Main.rand.NextFloat(2f, 4f)),
-                100,
-                Color.Red,
-                Main.rand.NextFloat(1f, 1.5f)
-            );
-            raise.noGravity = true;
-        }
-
-        private void CreateStrikeImpact() {
-            //计算斧头刃部撞击位置
-            Vector2 bladeOffset = new Vector2(0, -AxeLength).RotatedBy(currentRotation);
-            Vector2 impactPos = handlePosition + bladeOffset;
-
-            //生成冲击波弹幕
-            Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                impactPos,
-                Vector2.Zero,
-                ModContent.ProjectileType<BloodyStrikeWave>(),
-                Projectile.damage * 2,
-                Projectile.knockBack * 2f,
-                Projectile.owner
-            );
-
-            //地面冲击音效
-            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.8f, Pitch = -0.3f }, impactPos);
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = -0.4f }, impactPos);
-
-            //冲击粒子（以撞击点为中心向外扩散）
-            for (int i = 0; i < 50; i++) {
-                float angle = MathHelper.TwoPi * i / 50f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 18f);
-
-                Dust impact = Dust.NewDustPerfect(
-                    impactPos,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    Color.DarkRed,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                impact.noGravity = Main.rand.NextBool();
-            }
-
-            //地面裂纹效果
-            for (int i = 0; i < 25; i++) {
-                Vector2 crackVel = new Vector2(
-                    Main.rand.NextFloat(-12f, 12f),
-                    Main.rand.NextFloat(-3f, 2f)
-                );
-                Dust crack = Dust.NewDustPerfect(
-                    impactPos + new Vector2(Main.rand.NextFloat(-60f, 60f), 0),
-                    DustID.Stone,
-                    crackVel,
-                    100,
-                    Color.Gray,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                crack.noGravity = false;
-            }
-
-            //斧刃轨迹血雾
-            Vector2 trailStart = handlePosition;
-            Vector2 trailEnd = impactPos;
-            for (int i = 0; i < 20; i++) {
-                float t = i / 20f;
-                Vector2 trailPos = Vector2.Lerp(trailStart, trailEnd, t);
-                Dust trail = Dust.NewDustPerfect(
-                    trailPos + Main.rand.NextVector2Circular(30f, 30f),
-                    DustID.Blood,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    100,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                trail.noGravity = true;
+        private static void SpawnBloodMist(Vector2 center, int count) {
+            for (int i = 0; i < count; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
+                Dust mist = Dust.NewDustPerfect(center, DustID.Blood, vel, 
+                    100, new Color(160, 0, 0, 150), Main.rand.NextFloat(1.5f, 2.5f));
+                mist.noGravity = true;
             }
         }
 
-        private void SpawnStrikeParticles() {
-            //沿着斧头轨迹生成粒子
-            float bladeProgress = Main.rand.NextFloat(0.5f, 1f);
-            Vector2 bladeOffset = new Vector2(0, -AxeLength * bladeProgress).RotatedBy(currentRotation);
-            Vector2 particlePos = handlePosition + bladeOffset;
+        private static void SpawnExplosionEffect(Vector2 center) {
+            //爆炸血雾扩散
+            for (int i = 0; i < 60; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(18f, 18f);
+                Dust explosion = Dust.NewDustPerfect(center, DustID.Blood, vel, 
+                    100, Color.DarkRed, Main.rand.NextFloat(2f, 3.5f));
+                explosion.noGravity = Main.rand.NextBool();
+            }
 
-            Dust trail = Dust.NewDustPerfect(
-                particlePos + Main.rand.NextVector2Circular(20f, 20f),
-                DustID.Blood,
-                Main.rand.NextVector2Circular(5f, 5f),
-                100,
-                Color.Red,
-                Main.rand.NextFloat(1.2f, 2f)
-            );
-            trail.noGravity = true;
+            //血液飞溅
+            for (int i = 0; i < 30; i++) {
+                Dust splash = Dust.NewDustDirect(center - new Vector2(40), 80, 80, 
+                    DustID.Blood, Scale: Main.rand.NextFloat(2f, 3f));
+                splash.velocity = Main.rand.NextVector2Circular(12f, 12f);
+            }
+
+            SoundEngine.PlaySound(SoundID.NPCDeath19 with { Volume = 0.6f, Pitch = -0.2f }, center);
         }
 
         public override void OnKill(int timeLeft) {
@@ -426,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 单个血腥水母单元
+    /// 血腥水母单元
     /// </summary>
     internal class BloodyJellyfishUnit : ModProjectile
     {
@@ -436,10 +344,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float UnitIndex => ref Projectile.ai[1];
         private ref float IsDissipating => ref Projectile.ai[2];
 
-        public Vector2 localOffset;//水母在斧头上的相对位置偏移（未旋转）
+        public Vector2 targetOffset;//目标偏移位置
+        public float hoverHeight;//悬浮高度偏移
         private float rotation;
         private float pulsePhase;
+        private float hoverPhase;
         private float dissipateAlpha = 1f;
+        private Vector2 currentPos;
 
         public override void SetDefaults() {
             Projectile.width = 30;
@@ -458,32 +369,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //重置生命时间
             Projectile.timeLeft = 200;
-
             pulsePhase += 0.12f;
-            float pulse = MathF.Sin(pulsePhase + UnitIndex * 0.3f);
+            hoverPhase += 0.08f;
 
-            if (controller.ModProjectile is BloodyAxeController axeCtrl) {
+            if (controller.ModProjectile is BloodySwarmController swarmCtrl) {
+                Vector2 centerPoint = swarmCtrl.centerPoint;
+
                 if (IsDissipating == 0) {
-                    //使用旋转矩阵变换localOffset到世界坐标
-                    //localOffset是相对于柄部(0,0)的偏移，需要旋转currentRotation角度
-                    Vector2 rotatedOffset = localOffset.RotatedBy(axeCtrl.currentRotation);
+                    float phase = (float)swarmCtrl.Phase;
+                    
+                    if (phase == 0) {//Spawning扩散阶段
+                        float spawnProgress = swarmCtrl.PhaseTimer / 25f;
+                        currentPos = Vector2.Lerp(centerPoint, centerPoint + targetOffset, 
+                            CWRUtils.EaseOutCubic(spawnProgress));
+                    }
+                    else if (phase == 1) {//Hovering悬浮阶段
+                        Vector2 basePos = centerPoint + targetOffset;
+                        float hoverOffset = MathF.Sin(hoverPhase + UnitIndex * 0.3f) * hoverHeight;
+                        currentPos = basePos + new Vector2(0, hoverOffset);
+                    }
+                    else if (phase == 2) {//Converging聚拢阶段
+                        float convergeProgress = swarmCtrl.ConvergenceProgress;
+                        Vector2 startPos = centerPoint + targetOffset;
+                        currentPos = Vector2.Lerp(startPos, centerPoint, 
+                            CWRUtils.EaseInCubic(convergeProgress));
+                    }
+                    else {//Exploding爆炸阶段
+                        currentPos = centerPoint;
+                    }
 
-                    //目标位置 = 柄部位置 + 旋转后的偏移
-                    Vector2 targetPos = axeCtrl.handlePosition + rotatedOffset;
-
-                    //平滑移动到目标位置
-                    Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.3f);
-
-                    //水母朝向斧头的旋转方向
-                    Projectile.rotation = axeCtrl.currentRotation + MathHelper.PiOver4;
+                    Projectile.Center = currentPos;
+                    
+                    //朝向中心点
+                    Vector2 toCenter = centerPoint - Projectile.Center;
+                    if (toCenter.LengthSquared() > 1f) {
+                        Projectile.rotation = toCenter.ToRotation() + MathHelper.PiOver2;
+                    }
                 }
                 else {
-                    //消散状态：向外飞散
-                    dissipateAlpha -= 0.035f;
-                    Projectile.velocity = Main.rand.NextVector2Circular(4f, 4f);
-                    Projectile.rotation += 0.15f;
+                    //消散状态向外飞散
+                    dissipateAlpha -= 0.04f;
+                    Projectile.velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    Projectile.rotation += 0.2f;
 
                     if (dissipateAlpha <= 0) {
                         Projectile.Kill();
@@ -492,21 +420,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //旋转动画
-            rotation += 0.06f * (UnitIndex % 2 == 0 ? 1 : -1);
+            rotation += 0.08f * (UnitIndex % 2 == 0 ? 1 : -1);
 
-            //脉动效果
-            Projectile.scale = 0.85f + pulse * 0.12f;
+            //脉动缩放
+            float pulse = MathF.Sin(pulsePhase + UnitIndex * 0.3f);
+            Projectile.scale = 0.8f + pulse * 0.15f;
 
-            //周期性粒子
-            if (Main.rand.NextBool(10) && IsDissipating == 0) {
+            //血雾粒子
+            if (Main.rand.NextBool(12) && IsDissipating == 0) {
                 Dust d = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
+                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
                     DustID.Blood,
-                    Vector2.Zero,
-                    100,
-                    Color.DarkRed,
-                    Main.rand.NextFloat(0.5f, 0.8f)
+                    Main.rand.NextVector2Circular(0.5f, 0.5f),
+                    120,
+                    new Color(180, 0, 0, 100),
+                    Main.rand.NextFloat(0.6f, 1f)
                 );
+                d.noGravity = true;
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            //死亡血雾
+            for (int i = 0; i < 8; i++) {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, 
+                    Main.rand.NextVector2Circular(4f, 4f), 100, 
+                    Color.DarkRed, Main.rand.NextFloat(1f, 1.6f));
                 d.noGravity = true;
             }
         }
@@ -518,50 +457,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Color drawColor = lightColor * dissipateAlpha;
 
-            //绘制阴影
-            for (int i = 0; i < 2; i++) {
-                Vector2 shadowOffset = new Vector2(i * 1.5f, i * 1.5f);
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPos + shadowOffset,
-                    null,
-                    Color.Black * 0.25f * dissipateAlpha,
-                    Projectile.rotation + rotation,
-                    origin,
-                    Projectile.scale * 0.95f,
-                    SpriteEffects.None,
-                    0
-                );
+            //多层阴影增强深度感
+            for (int i = 0; i < 3; i++) {
+                Vector2 shadowOffset = new Vector2(i * 2f, i * 2f);
+                Main.EntitySpriteDraw(texture, drawPos + shadowOffset, null, 
+                    Color.Black * 0.2f * dissipateAlpha, 
+                    Projectile.rotation + rotation, origin, 
+                    Projectile.scale * 0.95f, SpriteEffects.None, 0);
             }
 
-            //绘制主体
-            Main.EntitySpriteDraw(
-                texture,
-                drawPos,
-                null,
-                drawColor,
-                Projectile.rotation + rotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-            );
+            //主体
+            Main.EntitySpriteDraw(texture, drawPos, null, drawColor, 
+                Projectile.rotation + rotation, origin, 
+                Projectile.scale, SpriteEffects.None, 0);
 
-            //发光层
+            //血红发光
             if (IsDissipating == 0) {
-                Color glowColor = Color.Red * 0.35f * dissipateAlpha;
-                glowColor.A = 0;
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPos,
-                    null,
-                    glowColor,
-                    Projectile.rotation + rotation,
-                    origin,
-                    Projectile.scale * 1.12f,
-                    SpriteEffects.None,
-                    0
-                );
+                Color glowColor = new Color(255, 0, 0, 0) * 0.4f * dissipateAlpha;
+                Main.EntitySpriteDraw(texture, drawPos, null, glowColor, 
+                    Projectile.rotation + rotation, origin, 
+                    Projectile.scale * 1.15f, SpriteEffects.None, 0);
             }
 
             return false;
@@ -569,11 +484,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 劈砍冲击波
+    /// 血腥冲击波
     /// </summary>
     internal class BloodyStrikeWave : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+
+        private ref float DelayOffset => ref Projectile.ai[0];
+        private float delayTimer = 0f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 360;
@@ -582,10 +500,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.timeLeft = 35;
+            Projectile.timeLeft = 45;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
+
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.75f;
@@ -596,21 +515,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            Projectile.scale += 0.18f;
-            Projectile.alpha += 8;
-            Projectile.rotation += 0.05f;
+            //延迟启动
+            if (delayTimer < DelayOffset * 60f) {
+                delayTimer++;
+                Projectile.scale = 0.1f;
+                Projectile.alpha = 255;
+                return;
+            }
 
-            //扩散血雾
+            Projectile.scale += 0.2f;
+            Projectile.alpha += 7;
+            Projectile.rotation += 0.06f;
+
+            //血雾扩散
             if (Main.rand.NextBool(2)) {
-                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2);
-                Dust mist = Dust.NewDustPerfect(
-                    pos,
-                    DustID.Blood,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    100,
-                    Color.DarkRed,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(
+                    Projectile.width / 2 * Projectile.scale, 
+                    Projectile.height / 2 * Projectile.scale);
+                Dust mist = Dust.NewDustPerfect(pos, DustID.Blood, 
+                    Main.rand.NextVector2Circular(4f, 4f), 100, 
+                    Color.DarkRed, Main.rand.NextFloat(1.8f, 2.8f));
                 mist.noGravity = true;
             }
 
@@ -620,47 +544,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //血腥减速效果
-            target.velocity *= 0.4f;
+            //强力减速
+            target.velocity *= 0.3f;
 
-            //血液飞溅
-            for (int i = 0; i < 12; i++) {
-                Dust blood = Dust.NewDustDirect(
-                    target.position,
-                    target.width,
-                    target.height,
-                    DustID.Blood,
-                    Main.rand.NextFloat(-5f, 5f),
-                    Main.rand.NextFloat(-5f, 5f),
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                blood.noGravity = false;
+            //血液爆溅
+            for (int i = 0; i < 15; i++) {
+                Dust blood = Dust.NewDustDirect(target.position, target.width, target.height, 
+                    DustID.Blood, Main.rand.NextFloat(-6f, 6f), Main.rand.NextFloat(-6f, 6f), 
+                    100, default, Main.rand.NextFloat(1.8f, 2.8f));
+                blood.noGravity = Main.rand.NextBool();
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
-            Color warpColor = new Color(100, 0, 0) * (1f - Projectile.alpha / 255f);
-            warpColor.A = 0;
+            float fadeAlpha = 1f - Projectile.alpha / 255f;
+            Color warpColor = new Color(120, 0, 0, 0) * fadeAlpha;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = warpTex.Size() / 2f;
 
-            //多层旋转绘制增强冲击感
-            for (int i = 0; i < 4; i++) {
-                Main.spriteBatch.Draw(
-                    warpTex,
-                    drawPos,
-                    null,
-                    warpColor * 0.7f,
-                    Projectile.rotation + i * MathHelper.TwoPi / 4f,
-                    origin,
-                    Projectile.scale * (1f + i * 0.08f),
-                    SpriteEffects.None,
-                    0f
-                );
+            //多层旋转增强冲击力
+            for (int i = 0; i < 5; i++) {
+                float layerAlpha = fadeAlpha * (1f - i * 0.15f);
+                float layerScale = Projectile.scale * (1f + i * 0.12f);
+                float layerRotation = Projectile.rotation + i * MathHelper.PiOver2 * 0.8f;
+                
+                Main.spriteBatch.Draw(warpTex, drawPos, null, 
+                    warpColor * layerAlpha * 0.65f, layerRotation, origin, 
+                    layerScale, SpriteEffects.None, 0f);
             }
+
+            //中心增强层
+            Main.spriteBatch.Draw(warpTex, drawPos, null, 
+                new Color(180, 0, 0, 0) * fadeAlpha * 0.8f, 
+                Projectile.rotation * 0.5f, origin, 
+                Projectile.scale * 0.7f, SpriteEffects.None, 0f);
 
             return false;
         }
