@@ -145,8 +145,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     internal class PallbearerQuestTracker : GlobalNPC
     {
         public override bool SpecialOnKill(NPC npc) {
-            Check(npc);
+            
             return base.SpecialOnKill(npc);
+        }
+
+        public override void OnKill(NPC npc) {
+            Check(npc);
         }
 
         public static void Check(NPC npc) {
