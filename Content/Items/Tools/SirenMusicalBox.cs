@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -188,6 +189,11 @@ namespace CalamityOverhaul.Content.Items.Tools
         public bool IsCursed;
 
         /// <summary>
+        /// 玩家是否曾经通过钓鱼获得过八音盒（首次保底逻辑用）
+        /// </summary>
+        public bool HasSirenMusicalBox;
+
+        /// <summary>
         /// 玩家所属的八音盒位置
         /// </summary>
         public Point16 BoundBoxPosition;
@@ -208,19 +214,33 @@ namespace CalamityOverhaul.Content.Items.Tools
             //如果正在播放音乐，更新计时器
             if (IsCursed && IsMusicPlaying) {
                 MusicTimer++;
-
-                //给予无敌状态
-                if (!Player.dead) {
-                    Player.immune = true;
-                    Player.immuneTime = 999999;
-                    Player.immuneNoBlink = true;
-                }
-
                 //音乐结束，执行死亡
                 if (MusicTimer >= MusicDuration) {
                     ExecuteDeath();
                 }
+
+                if (Main.rand.NextBool(13)) {
+                    Newphonogram(Player.Center);
+                }
             }
+        }
+
+        public static void Newphonogram(Vector2 position) {
+            int goreType = Main.rand.Next(570, 573);
+            float wind = Main.WindForVisuals * 2f;
+            float randX = 1f + Main.rand.NextFloat(-1.5f, 1.5f);
+            float randY = 1f + Main.rand.NextFloat(-0.5f, 0.5f);
+
+            if (goreType == 572) {
+                position.X -= 8f;
+            }
+            else if (goreType == 571) {
+                position.X -= 4f;
+            }
+
+            Vector2 velocity = new(wind * randX, -0.5f * randY);
+
+            Gore.NewGore(new EntitySource_TileUpdate((int)position.X, (int)position.Y), position, velocity, goreType, 0.8f);        
         }
 
         /// <summary>
@@ -450,14 +470,23 @@ namespace CalamityOverhaul.Content.Items.Tools
             tag["MusicTimer"] = MusicTimer;
             tag["BoundBoxX"] = BoundBoxPosition.X;
             tag["BoundBoxY"] = BoundBoxPosition.Y;
+            //保存是否曾钓到八音盒
+            tag["HasSirenMusicalBox"] = HasSirenMusicalBox;
         }
 
         public override void LoadData(TagCompound tag) {
-            IsCursed = tag.GetBool("IsCursed");
-            MusicTimer = tag.GetInt("MusicTimer");
-            if (tag.TryGet("BoundBoxX", out short x) && tag.TryGet("BoundBoxY", out short y)) {
-                BoundBoxPosition = new Point16(x, y);
-            }
+            try {
+                IsCursed = tag.GetBool("IsCursed");
+                MusicTimer = tag.GetInt("MusicTimer");
+                if (tag.TryGet("BoundBoxX", out short x) && tag.TryGet("BoundBoxY", out short y)) {
+                    BoundBoxPosition = new Point16(x, y);
+                }
+
+                //读取是否曾钓到八音盒
+                if (tag.TryGet("HasSirenMusicalBox", out bool hasSirenMusicalBox)) {
+                    HasSirenMusicalBox = hasSirenMusicalBox;
+                }
+            } catch { }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
@@ -465,6 +494,22 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return false;
             }
             return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
+        }
+
+        public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
+            if (!CWRServerConfig.Instance.WeaponOverhaul || attempt.inHoney || attempt.inLava) {
+                return;
+            }
+
+            if (HasSirenMusicalBox) {
+                if (Main.rand.NextBool(800)) {
+                    itemDrop = ModContent.ItemType<SirenMusicalBox>();
+                }
+            }
+            else {//必出
+                itemDrop = ModContent.ItemType<SirenMusicalBox>();
+                HasSirenMusicalBox = true;
+            }
         }
     }
 
@@ -498,6 +543,11 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer) 
+                && sirenMusicalBoxPlayer.IsCursed) {
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.62f });
+                return false;//被诅咒的玩家无法关上八音盒
+            }
             if (!IsMusicPlaying) {
                 StartMusic(player);
             }
@@ -743,6 +793,10 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //生成粒子效果
             if (particleTimer >= ParticleSpawnRate) {
+                if (Main.rand.NextBool(4)) {
+                    SirenMusicalBoxPlayer.Newphonogram(Center);
+                }
+                
                 particleTimer = 0;
                 SpawnNoteParticles();
             }

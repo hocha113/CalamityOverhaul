@@ -1241,7 +1241,12 @@ Items: {
 
 	SirenMusicalBox: {
 		DisplayName: 海妖八音盒
-		Tooltip: ""
+		Tooltip:
+			'''
+			右键点击播放诡异的八音盒音乐
+			听者皆会被诅咒，在音乐持续时无法死去
+			音乐结束后会受到必死袭击
+			'''
 		DeathText: "{0}在未知的袭击下化作腐尸"
 	}
 }

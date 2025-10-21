@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CalamityOverhaul.Content.Items.Tools;
+using System;
+using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
@@ -106,7 +108,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 获取或设置复苏速度
         /// </summary>
         public float ResurrectionRate {
-            get => resurrectionRate;
+            get {
+                if (!Main.gameMenu && 
+                    Main.LocalPlayer.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer) 
+                    && sirenMusicalBoxPlayer.IsCursed 
+                    && Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) 
+                    && halibutPlayer.SeaDomainLayers <= 5) {
+                    return 0f;//在被诅咒且海域层级不高于5时，复苏速度为0
+                }
+                return resurrectionRate;
+            }
             set {
                 float oldRate = resurrectionRate;
                 resurrectionRate = value;
@@ -216,8 +227,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
 
             // 应用复苏速度
-            if (Math.Abs(resurrectionRate) > 0.001f) {
-                AddValue(resurrectionRate, true);
+            if (Math.Abs(ResurrectionRate) > 0.001f) {
+                AddValue(ResurrectionRate, true);
             }
 
             // 检查危险区域状态
