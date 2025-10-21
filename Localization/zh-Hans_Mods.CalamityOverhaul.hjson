@@ -1910,11 +1910,11 @@ TextContent: {
 			'''
 		Murasama_TextDictionary_Content_6: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
 		Murasama_TextDictionary_Content_7: 愚蠢的蜥蜴族只会信奉这些冥顽不灵的石头，让我们把它斩为齑粉，摧毁他们的信仰，我们才是它们应该供奉的
-		Murasama_TextDictionary_Content_8: 击杀月亮领主
+		Murasama_TextDictionary_Content_8: 那个躲在月亮背面的伪神不过是个残缺的拼凑物。去斩断它的触须，挖出它的心脏，用它的血来痛饮
 		Murasama_TextDictionary_Content_9:
 			'''
 			靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
-			击杀噬魂幽花
+			让地牢里那团灵魂聚集物在我的刀锋下凋零，它的灵魂将是最好的养料
 			'''
 		Murasama_TextDictionary_Content_10: 那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
 		Murasama_TextDictionary_Content_11:
@@ -2762,9 +2762,9 @@ Legend: {
 		Subtest_Text4: 丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
 		Subtest_Text5: 血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
 		Subtest_Text6: 昔日的星神早已陨落，如今所剩的不过堪堪一条蛆虫，让我们彻底结束星神的时代
-		Subtest_Text7: 击杀噬魂幽花
+		Subtest_Text7: 让地牢里那团灵魂聚集物在我的刀锋下凋零，它的灵魂将是最好的养料
 		Subtest_Text8: 靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
-		Subtest_Text9: 击杀世纪之花
+		Subtest_Text9: 丛林深处的那朵植株异形，去撕碎它的花瓣，碾碎它的球茎，让它的汁液浸染这片土地
 		Subtest_Text10: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
 	}
 }

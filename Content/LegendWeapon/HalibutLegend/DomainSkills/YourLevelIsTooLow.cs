@@ -63,8 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
 
     /// <summary>
-    /// 终极技能弹幕 - 无限重启叠加效果主控制器
-    /// 改为：按住左键且领域=10层时持续存在，松开或层数跌落则进入结束渐隐阶段
+    /// 无限重启叠加效果主控制器
     /// </summary>
     internal class YourLevelIsTooLowProj : BaseHeldProj
     {

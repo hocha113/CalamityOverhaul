@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1905,98 +1905,62 @@ TextContent: {
 		Murasama_Text_Lang_End: Already passed
 		Murasama_TextDictionary_Content_0:
 			'''
-			New recruit, prove yourself to me.
-			That slimy blue fat thing, the last remnants of the sea witches beneath the desert sands, 
-			the zombie crabs in the mushroom caves—
-			Eliminate one of them. This is your first step.
+			Recruit. Prove yourself to me.
+			That slimy blue brute, and the siren-spawn beneath the sands...
+			Destroy them. That is your first step.
 			'''
-		Murasama_TextDictionary_Content_1:
-			'''
-			With the moon high in the night sky, let us pierce that chaotic, flying eye in the heavens and blind that false god for good.
-			The desert trembles. Go beneath it and discover what stirs, then deal with the great oyster that lurks there.
-			'''
+		Murasama_TextDictionary_Content_1: The moon is high. Let's go poke out that giant, careening eyeball and blind that false god for good.
 		Murasama_TextDictionary_Content_2:
 			'''
-			The rotting corpse of the false god defiles Terra's sacred earth, 
-			heretics breed at the world's ends, and xenos ravage the land.
-			Go and liberate the corrupted continent, crush the false god’s brain, and shred that vile purple worm!
-			I want to see your blade dance through the flesh and blood of the xenos!
+			The false god's remains taint this land. Heresy breeds at the world's end, and abominations run rampant.
+			Go and liberate the corrupted lands. Hack apart that false god's putrid brain. Mince that purple worm!
+			I want to see my blade dance in their alien flesh!
 			'''
-		Murasama_TextDictionary_Content_3:
-			'''
-			The corrupted earth still trembles like a heart in agony. 
-			The flesh-eaters move beneath the surface, and the tainted tumors still think.
-			Go, exile them forever!
-			The curse at the dungeon door is loosening. 
-			I can feel the psychic stirrings deep in the dungeon, mixed with screams, wails, and whispers...
-			'''
+		Murasama_TextDictionary_Content_3: The corrupted lands still throb like a heart. The flesh-parasites still squirm. The corrupted tumors still *think*. Go and banish them all!
 		Murasama_TextDictionary_Content_4:
 			'''
-			The Slime Kingdom whispers of a legend. They have a fallen god, now weakened. 
-			It is the perfect time to exile it back to the warp.
+			There is a legend in the Slime Kingdom... of a fallen, alien god.
+			It is weak. Now is the time to banish it back to the void.
+			The curse on the dungeon is failing. I feel a psychic power stirring in the deep... screams... wails... whispers...
 			'''
 		Murasama_TextDictionary_Content_5:
 			'''
-			In the prison within the Glacial Bastion lies a mighty psyker. 
-			Free him, and he will be a great ally in our reclamation of Terra.
-			The forsaken child of the Sulfur Sea blocks our path to the treasures of the Abyss. End its hunger and wanderings.
-			I miss the fire-forged flames of the Sulfur Cliffs. Go, meet its guardians.
+			The prison of solid ice... a powerful psyker is held there. Free him. He will be a great asset in our reclamation of this world.
+			The outcast of the Sulphurous Sea bars our path to the abyss's treasures. End its endless consumption and wandering.
+			I miss the tempering of the brimstone crag. Go... and 'greet' its guardian.
 			'''
-		Murasama_TextDictionary_Content_6:
-			'''
-			The witch who fell to Chaos, with her twisted clone-sister, eliminate the xenos, sacrificing them to blood and flame.
-			The siren’s song calls from the shore. It is the voice of her kind. Let us take the head of the sea witch and make our mark upon the sea.
-			The foolish lizardfolk worship these mindless idols. 
-			Let us grind them to dust, shatter their faith, for we are the ones they should worship.
-			'''
-		Murasama_TextDictionary_Content_7:
-			'''
-			The flesh-wrought husks, the vengeful souls of ancient battlefields, the unceasing destroyer of things—it annihilates all, and we shall annihilate it.
-			In the jungle, the remnants of someone’s failed creations still roam. As failures, they deserve nothing but to be discarded like scrap metal.
-			The ancient star gods have long since fallen. What remains is but a maggot. Let us end their era once and for all.
-			'''
-		Murasama_TextDictionary_Content_8:
-			'''
-			The clumsy mockery of the Mechanicus heretic, the foolish clones that wander the jungle—destroy them.
-			A new sun stirs beneath the earth, it seeks to bring its sacred flame to the surface. Exile its apostles, 
-			for Terra permits only one faith’s fire to burn.
-			'''
+		Murasama_TextDictionary_Content_6: That witch who gave herself to the chaos... she has a warped clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
+		Murasama_TextDictionary_Content_7: The foolish Lihzahrds worship inert stone. Let us grind their idol to dust and shatter their faith. WE are what they should be worshipping.
+		Murasama_TextDictionary_Content_8: That false god hiding behind the moon is nothing but a flawed, patchwork thing. Go. Sever its tentacles, carve out its heart, and let us drink deep of its blood.
 		Murasama_TextDictionary_Content_9:
 			'''
-			The pitiful god that clings to life by siphoning stellar heat, its heretical fire must be extinguished.
-			The storm-borne creatures that prey on the winged dragons in the sky have strong armor, but their doom is near.
-			Within the dungeon, a sealed dimensional rift may be our chance to acquire dark matter.
-			The apostle of the warp, bearing rare twisted void—this is our chance to understand the true nature of the warp.
+			A pathetic god, merely prolonging its wretched life by siphoning stellar heat. Its heretical fire must be extinguished.
+			Let that mass of souls in the dungeon wither before my blade. Their spirits will be the finest nourishment.
 			'''
-		Murasama_TextDictionary_Content_10:
-			'''
-			The arrogant cosmic serpent stirs behind the veil of the world. End its foolish ambition.
-			The oldest of the beasts stirs within the Sulfur Sea, awakened by the psychic storm. Let it become a part of our glory.
-			'''
+		Murasama_TextDictionary_Content_10: That arrogant cosmic serpent stirs behind the veil of this world. End its ambition.
 		Murasama_TextDictionary_Content_11:
 			'''
-			The jungle dragon, the last of the golden-scaled drakes on Terra, is unlike any xenos. It demands our respect.
-			Yet now, we must send it to death once more and strip its golden soul from its body.
-			These materials will forge weapons of supreme quality.
+			The Jungle Dragon... the last of the Auric Dragons. Unlike these other abominations, it... deserves our respect.
+			And yet, we must make it die again. We must strip it of its Auric soul.
+			These materials will forge wargear of supreme quality.
 			'''
 		Murasama_TextDictionary_Content_12:
 			'''
-			The heretic of the Mechanicus, believing his creation of star-titans to be more powerful than the gods—such faith is absurd.
-			Let us return those titans to their natural state—mere heaps of scrap.
-			The witch, once blessed with immense psychic talent, 
-			should have been an ally in protecting Terra. But she has long since been lost to Chaos.
-			We must exile her, drive the blade into her chest, and let the fire of loyalty burn away her rotting soul.
+			That heretic of the mechanical cult... he truly believes his 'Titans' surpass the power of gods.
+			Such conviction is absurd. Let us return those Titans to their natural state—a pile of scrap.
+			And that witch... a gifted psyker who should have been a great asset, now lost to chaos.
+			We can only banish her. Plunge this blade into her heart and let the fire of loyalty burn her corrupted soul to ash.
 			'''
 		Murasama_TextDictionary_Content_13:
 			'''
-			Our path of conquest is unstoppable. Break the armor of the dragon beneath the Black Abyss.
-			Use the Stone of the End to wage our final battle against the xenos.
+			Our path to conquest is inevitable. Shatter the armor of that abyssal dragon.
+			Use the Terminus Stone. Begin the final battle against these alien things.
 			'''
 		Murasama_TextDictionary_Content_14:
 			'''
-			Well done, recruit. The xenos scum have been purged from this world.
-			Our journey has reached its apex, and even the tyrants who once ruled Terra are nothing compared to us.
-			Now, spread your arms and embrace this world forged by victory.
+			Well done, recruit. The alien filth of this world has been scoured clean by our hand.
+			Our conquest is at its zenith. Even the tyrant who once ruled this world was nothing before us.
+			Now... open your arms. Embrace the world our victory has given you.
 			'''
 		Murasama_No_legend_Content_1: The sheath will be unlocked after the dragon falls
 		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
@@ -2829,13 +2793,13 @@ Legend: {
 			With blades and blood, let them know our expedition will crush all alien abominations and hateful intelligences.
 			'''
 		World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
-		Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
-		Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
-		Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
-		Subtest_Text7: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text7
-		Subtest_Text8: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text8
-		Subtest_Text9: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text9
-		Subtest_Text10: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text10
+		Subtest_Text4: Someone's shoddy handiwork still wanders the jungle. As the failure it is, it deserves to be turned into a pile of scrap.
+		Subtest_Text5: A husk of interwoven flesh and blood, the bitter spirits of an ancient battlefield, a golem of ceaseless ruin. It destroys all things, and we... we destroy *it*.
+		Subtest_Text6: The Star God of old is long fallen. What's left is nothing but a maggot. Let us put an end to the age of these so-called gods.
+		Subtest_Text7: Let that clump of souls in the dungeon wither before my blade. Its soul will be the finest nourishment.
+		Subtest_Text8: A pathetic god, merely prolonging its wretched life by sipping stellar heat. Its heretical fire needs to be extinguished. Completely.
+		Subtest_Text9: That floral abomination deep in the jungle... Go. Shred its petals, crush its bulb, and let its juices soak the earth.
+		Subtest_Text10: That witch who gave herself to chaos... she has a *warped* clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
 	}
 }
 

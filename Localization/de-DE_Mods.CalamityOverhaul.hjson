@@ -2805,13 +2805,13 @@ Legend: {
 			Mit Klingen und Blut lasst sie wissen, dass unsere Expedition alle fremden Abscheulichkeiten und hassvollen Intelligenzen zerschmettern wird.
 			'''
 		// World_Text0: Last Upgraded World: <{0}> | Recorded Tier: <{1}>
-		// Subtest_Text4: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text4
-		// Subtest_Text5: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text5
-		// Subtest_Text6: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text6
-		// Subtest_Text7: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text7
-		// Subtest_Text8: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text8
-		// Subtest_Text9: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text9
-		// Subtest_Text10: Mods.CalamityOverhaul.Legend.MuraText.Subtest_Text10
+		// Subtest_Text4: Someone's shoddy handiwork still wanders the jungle. As the failure it is, it deserves to be turned into a pile of scrap.
+		// Subtest_Text5: A husk of interwoven flesh and blood, the bitter spirits of an ancient battlefield, a golem of ceaseless ruin. It destroys all things, and we... we destroy *it*.
+		// Subtest_Text6: The Star God of old is long fallen. What's left is nothing but a maggot. Let us put an end to the age of these so-called gods.
+		// Subtest_Text7: Let that clump of souls in the dungeon wither before my blade. Its soul will be the finest nourishment.
+		// Subtest_Text8: A pathetic god, merely prolonging its wretched life by sipping stellar heat. Its heretical fire needs to be extinguished. Completely.
+		// Subtest_Text9: That floral abomination deep in the jungle... Go. Shred its petals, crush its bulb, and let its juices soak the earth.
+		// Subtest_Text10: That witch who gave herself to chaos... she has a *warped* clone-sister. Kill that aberration. Anoint this blade with its blood and fire.
 	}
 }
 
