@@ -40,6 +40,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.value = Item.buyPrice(0, 30, 0, 0);
         }
 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            if (InWorldBossPhase.Level10) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level11) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level12) {
+                damage *= 1.25f;
+            }
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
