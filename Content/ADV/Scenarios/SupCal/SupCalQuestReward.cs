@@ -89,6 +89,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                         return new Vector2(rect.Center.X, rect.Y - 70f);
                     }, offset: Vector2.Zero);
             }
+            if (args.Index == 4) {//在Line5时发放新的任务武器
+                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofAnnihilation>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => {
+                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+                        if (rect == Rectangle.Empty) {
+                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f - 60);
+                        }
+                        return new Vector2(rect.Center.X, rect.Y - 70f - 60);//高一点点
+                    }, offset: Vector2.Zero);
+            }
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
