@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
 {
     internal class SupCalMoonLordReward : ADVScenarioBase, ILocalizedModType
     {

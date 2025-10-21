@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
+﻿using CalamityMod.Particles;
 using CalamityOverhaul.Content.MeleeModify.Core;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;

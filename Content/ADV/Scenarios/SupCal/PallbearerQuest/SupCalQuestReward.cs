@@ -1,11 +1,12 @@
 ﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
 {
     /// <summary>
     /// 完成扶柩者任务后的奖励场景
@@ -90,7 +91,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                     }, offset: Vector2.Zero);
             }
             if (args.Index == 4) {//在Line5时发放新的任务武器
-                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofAnnihilation>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<Heartcarver>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
