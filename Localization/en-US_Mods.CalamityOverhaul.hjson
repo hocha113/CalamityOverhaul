@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1637,7 +1637,7 @@ Projectiles: {
 	UnicornFishDashProj.DisplayName: Horn Charge
 	FishoilDrinkEffect.DisplayName: Vitality Surge
 	MiniWhiteWyvern.DisplayName: Mini White Wyvern
-	WhiteWyvernTailController.DisplayName: White Wyvern Tail Controller
+	WhiteWyvernTailController.DisplayName: White Wyvern Tail
 }
 
 Configs: {
@@ -6306,9 +6306,13 @@ FishSkill: {
 	}
 
 	FishWyverntail: {
-		DisplayName: ""
-		Tooltip: ""
-		Studied: ""
+  	  DisplayName: White Piercing Shadow
+  	  Tooltip:
+			'''
+			Periodically summons a white dragon while firing.
+			The white dragon swiftly flies toward enemies and deals damage.
+			'''
+		Studied: I believe it should be considered a type of legendary creature.
 	}
 }
 

@@ -1,4 +1,4 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1616,8 +1616,8 @@ Projectiles: {
 	BloodyStrikeWave.DisplayName: 鲜血冲击
 	UnicornFishDashProj.DisplayName: 独角冲锋
 	FishoilDrinkEffect.DisplayName: 活力涌现
-	// MiniWhiteWyvern.DisplayName: Mini White Wyvern
-	// WhiteWyvernTailController.DisplayName: White Wyvern Tail Controller
+	MiniWhiteWyvern.DisplayName: 白龙尾
+	WhiteWyvernTailController.DisplayName: 白龙尾
 }
 
 Configs: {
@@ -6234,9 +6234,13 @@ FishSkill: {
 	}
 
 	FishWyverntail: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 长白贯影
+		Tooltip:
+			'''
+			开火时周期性的召唤白龙
+			白龙将快速飞向敌人并造成伤害
+			'''
+		Studied: 我觉得它应该属于传说生物的一种
 	}
 }
 
