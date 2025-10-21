@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                     return false;
                 }
                 //已完成后直接隐藏
-                if (hp.ADCSave.FishoilQuestCompleted && hideProgress >= 1f) {
+                if (hp.ADCSave.FishoilQuestCompleted) {
                     return false;
                 }
                 return true;
