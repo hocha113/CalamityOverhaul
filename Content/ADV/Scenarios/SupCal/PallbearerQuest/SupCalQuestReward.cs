@@ -69,6 +69,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
+            bool hasHalibut = false;
+            try {
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    hasHalibut = halibutPlayer.HasHalubut;
+                }
+            } catch {
+                hasHalibut = false;
+            }
+
             //添加对话
             Add(Rolename1.Value + expressionSmile, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
@@ -76,7 +85,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             Add(Rolename1.Value + expressionSmile, Line4.Value);//奖励
             Add(Rolename1.Value + expressionCloseEye, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
-            Add(Rolename2.Value, Line7.Value);
+            if (hasHalibut) {
+                Add(Rolename2.Value, Line7.Value);
+            }
         }
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
