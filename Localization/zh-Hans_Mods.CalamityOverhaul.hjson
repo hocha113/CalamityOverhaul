@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
@@ -1616,6 +1616,8 @@ Projectiles: {
 	BloodyStrikeWave.DisplayName: 鲜血冲击
 	UnicornFishDashProj.DisplayName: 独角冲锋
 	FishoilDrinkEffect.DisplayName: 活力涌现
+	// MiniWhiteWyvern.DisplayName: Mini White Wyvern
+	// WhiteWyvernTailController.DisplayName: White Wyvern Tail Controller
 }
 
 Configs: {
@@ -6229,6 +6231,12 @@ FishSkill: {
 			突刺期间全程无敌并且可以穿墙
 			'''
 		Studied: 传说只有纯洁的少女才能钓到它！
+	}
+
+	FishWyverntail: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

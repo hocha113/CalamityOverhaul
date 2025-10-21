@@ -1,4 +1,4 @@
-﻿EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
@@ -1636,6 +1636,8 @@ Projectiles: {
 	BloodyStrikeWave.DisplayName: Wave of Blood
 	UnicornFishDashProj.DisplayName: Horn Charge
 	FishoilDrinkEffect.DisplayName: Vitality Surge
+	MiniWhiteWyvern.DisplayName: Mini White Wyvern
+	WhiteWyvernTailController.DisplayName: White Wyvern Tail Controller
 }
 
 Configs: {
@@ -6301,6 +6303,12 @@ FishSkill: {
 			Grants invincibility and phases through walls during the dash.
 			'''
 		Studied: Legend says only a pure maiden can catch this one!
+	}
+
+	FishWyverntail: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
 	}
 }
 
