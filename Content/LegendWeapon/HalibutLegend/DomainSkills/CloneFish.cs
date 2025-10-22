@@ -44,13 +44,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         internal static void SpawnCloneProjectiles(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
-            var source = player.GetSource_Misc("CloneFishSkill");
+            var source = player.FromObjectGetParent();
 
             //生成多个克隆体，每个有不同的延迟
             int count = Math.Clamp(hp.CloneCount, 1, 10);
             for (int i = 0; i < count; i++) {
                 int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
-                int proj = Projectile.NewProjectile(source, player.Center, Vector2.Zero
+                Projectile.NewProjectile(source, player.Center, Vector2.Zero
                     , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI, delay);
             }
         }
@@ -296,9 +296,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (hp.CloneShootEvents.Count <= 0) {
                 return;
             }
+            ShootState shootState = Owner.GetShootState();
             for (int i = 0; i < hp.CloneShootEvents.Count; i++) {
                 var ev = hp.CloneShootEvents[i];
-                if (ev.FrameIndex != replayFrame || !Projectile.IsOwnedByLocalPlayer()) {
+                if (ev.FrameIndex != replayFrame) {
                     continue;
                 }
 
@@ -310,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
 
                 for (int j = 0; j < evShootNum; j++) {
-                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis()
+                    int proj = Projectile.NewProjectile(shootState.Source
                     , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
                     , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
                     Main.projectile[proj].friendly = true;
@@ -330,8 +331,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             afterImages.Add(snap);
             if (afterImages.Count > AfterImageCache) afterImages.RemoveAt(0);
 
-            //重放射击事件
-            Shoot(hp, snap);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //重放射击事件
+                Shoot(hp, snap);
+            }
 
             boids ??= CreateBoids(Owner.Center);
             Vector2 clusterTarget = Projectile.Center + new Vector2(0, -16);
