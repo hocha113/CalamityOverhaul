@@ -593,7 +593,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         /// <summary>
         /// 停止播放音乐
         /// </summary>
-        private void StopMusic() {
+        internal void StopMusic() {
             if (!IsMusicPlaying) {
                 return;
             }

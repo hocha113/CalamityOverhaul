@@ -1,9 +1,11 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -53,6 +55,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
                 sirenMusicalBoxPlayer.ResetCurse();//清除八音盒诅咒
+                foreach (var tp in TileProcessorLoader.TP_InWorld.ToList()) {
+                    if (!tp.Active) {
+                        continue;
+                    }
+                    if (tp.ID != TPUtils.GetID<SirenMusicalBoxTP>()) {
+                        continue;
+                    }
+                    if (tp is not SirenMusicalBoxTP smbTP) {
+                        continue;
+                    }
+                    smbTP.StopMusic();
+                }
             }
 
             //生成大量恢复粒子
