@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -46,6 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private bool hasImpacted = false;
         private float swordGlowIntensity = 0f;
 
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.WriteVector2(impactPosition);
+            writer.Write(hasImpacted);
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            impactPosition = reader.ReadVector2();
+            hasImpacted = reader.ReadBoolean();
+        }
+
         public override void SetStaticDefaults() {
             base.SetStaticDefaults();
             ProjectileID.Sets.TrailCacheLength[Type] = 12;
@@ -63,10 +74,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override bool? CanDamage() {
             //只在下落和冲击阶段造成伤害
             return State == GroundSmashState.Descending || State == GroundSmashState.Impact;
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            base.ModifyHitNPC(target, ref modifiers);
         }
 
         public override void AI() {
@@ -270,6 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             StateTimer = 0;
             hasImpacted = true;
             impactPosition = Projectile.Center;
+            Projectile.netUpdate = true;
         }
 
         private void ExecuteImpact() {
@@ -482,19 +490,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中敌人时的特效
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                AltSparkParticle spark = new AltSparkParticle(
-                    target.Center,
-                    velocity,
-                    false,
-                    Main.rand.Next(10, 18),
-                    Main.rand.NextFloat(1.5f, 2.5f),
-                    Main.rand.NextBool() ? Color.Red : Color.DarkRed
-                );
-                GeneralParticleHandler.SpawnParticle(spark);
+            if (!VaultUtils.isServer) {
+                //击中敌人时的特效
+                for (int i = 0; i < 15; i++) {
+                    Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                    AltSparkParticle spark = new AltSparkParticle(
+                        target.Center,
+                        velocity,
+                        false,
+                        Main.rand.Next(10, 18),
+                        Main.rand.NextFloat(1.5f, 2.5f),
+                        Main.rand.NextBool() ? Color.Red : Color.DarkRed
+                    );
+                    GeneralParticleHandler.SpawnParticle(spark);
+                }
             }
+            
             TriggerImpact();
         }
 
