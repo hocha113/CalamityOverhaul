@@ -232,9 +232,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            // 对双子魔眼造成1.5倍伤害
+            // 对双子魔眼造成2倍伤害
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 2f;
             }
             // 对毁灭魔像身体部位造成50%伤害
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
