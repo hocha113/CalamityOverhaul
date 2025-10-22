@@ -37,7 +37,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             hp.SeaDomainActive = true;
 
             //播放领域开启音效，瀑布+水流
-            if (Main.myPlayer == player.whoAmI) {
+            if (Main.myPlayer != player.whoAmI) {
+                return;
+            }
+
+            if (!hp.OnStartSeaDomain) {//如果OnStartSeaDomain是true，不要播放音效，会看起来很吵
                 //叠加雷鸣音效
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Volume = 0.4f,
@@ -51,9 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     Pitch = -0.8f,  //极低音调
                     MaxInstances = 1
                 }, player.Center);
-
-                SpawnDomain(player);
             }
+
+            SpawnDomain(player);
         }
 
         public static void Deactivate(Player player) {
@@ -61,20 +65,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             hp.SeaDomainActive = false;
 
             //播放领域关闭音效：水流消退
-            if (Main.myPlayer == player.whoAmI) {
-                SoundEngine.PlaySound(SoundID.Splash with {
-                    Volume = 0.6f,
-                    Pitch = -0.4f,  //低沉的水流消退声
-                    MaxInstances = 1
-                }, player.Center);
-
-                //气泡破裂音效
-                SoundEngine.PlaySound(SoundID.Item54 with {  //柔和的破裂声
-                    Volume = 0.4f,
-                    Pitch = 0.2f,
-                    MaxInstances = 1
-                }, player.Center);
+            if (Main.myPlayer != player.whoAmI) {
+                return;
             }
+
+            if (hp.OnStartSeaDomain) {//如果OnStartSeaDomain是true，不要播放音效，会看起来很吵
+                return;
+            }
+
+            SoundEngine.PlaySound(SoundID.Splash with {
+                Volume = 0.6f,
+                Pitch = -0.4f,  //低沉的水流消退声
+                MaxInstances = 1
+            }, player.Center);
+
+            //气泡破裂音效
+            SoundEngine.PlaySound(SoundID.Item54 with {  //柔和的破裂声
+                Volume = 0.4f,
+                Pitch = 0.2f,
+                MaxInstances = 1
+            }, player.Center);
         }
 
         internal static void SpawnDomain(Player player) {
@@ -208,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             bool moving = speed > MoveThreshold;
             float targetFade = moving ? TargetMoveFade : 1f;
             //加速淡出/淡入：移动时快 -> 静止时更快恢复
-            float lerpSpeed = moving ? 0.25f : 0.35f;
+            float lerpSpeed = moving ? 0.1f : 0.15f;
             movementFadeFactor = MathHelper.Lerp(movementFadeFactor, targetFade, lerpSpeed);
             float fishTarget = moving ? TargetMoveFishFade : 1f;
             fishFadeFactor = MathHelper.Lerp(fishFadeFactor, fishTarget, moving ? FishFadeLerpMoving : FishFadeLerpRest);
@@ -393,7 +403,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        private void SpawnPressureHitDust(NPC npc, int damage) {
+        private static void SpawnPressureHitDust(NPC npc, int damage) {
             int count = Math.Min(6, 2 + damage / 8);
             for (int d = 0; d < count; d++) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);

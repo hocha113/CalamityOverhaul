@@ -510,14 +510,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             if (halibutPlayer.SeaDomainActive) {
+                halibutPlayer.OnStartSeaDomain = true;
                 halibutPlayer.SeaDomainLayers = ActiveEyeCount;//同步层数
                 SeaDomain.Deactivate(player);
-                halibutPlayer.OnStartSeaDomain = true;
             }
             if (halibutPlayer.CloneFishActive) {
+                halibutPlayer.OnStartClone = true;
                 halibutPlayer.CloneCount = halibutPlayer.SeaDomainLayers;//同步数量
                 CloneFish.Deactivate(player);
-                halibutPlayer.OnStartClone = true;
             }
         }
 

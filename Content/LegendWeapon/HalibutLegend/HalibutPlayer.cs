@@ -381,17 +381,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             if (!SeaDomainActive && OnStartSeaDomain && Player.CountProjectilesOfID<SeaDomainProj>() == 0) {
-                OnStartSeaDomain = false;
                 if (SeaDomainLayers > 0) {
                     SeaDomain.AltUse(item, Player);
                 }
+                OnStartSeaDomain = false;
             }
             if (!CloneFishActive && OnStartClone && Player.CountProjectilesOfID<ClonePlayer>() == 0) {
-                OnStartClone = false;
                 if (SeaDomainLayers > 0) {
                     CloneCount = SeaDomainLayers;
                     CloneFish.AltUse(item, Player);
                 }
+                OnStartClone = false;
             }
         }
 
