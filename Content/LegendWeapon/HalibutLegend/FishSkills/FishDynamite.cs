@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
 
-            //=== 状态机：飞行 -> 着陆 -> 待命 -> 引爆 ===
+            //状态机：飞行 -> 着陆 -> 待命 -> 引爆
 
             if (State == 0) {
                 //飞行状态
@@ -541,7 +541,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color midColor = new Color(255, 120, 40, 0);     //中层：橙红
             Color outerColor = new Color(220, 60, 30, 0);    //外层：深红
 
-            //=== 第1层：光束爆发（使用LightBeam） ===
+            //光束爆发
             if (FishDynamite.LightBeam != null && progress < 0.6f) {
                 Texture2D beam = FishDynamite.LightBeam;
                 float beamAlpha = MathHelper.Lerp(1f, 0f, progress / 0.6f);
@@ -567,7 +567,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //=== 第3层：主体火球 ===
+            //主体火球
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = scale * (2.0f + expandPulse * 0.3f);
@@ -612,7 +612,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //=== 第4层：核心高亮 ===
+            //核心高亮
             if (SoftGlow?.Value != null && progress < 0.5f) {
                 Texture2D core = SoftGlow.Value;
                 float coreScale = scale * (0.8f + (float)Math.Sin(progress * MathHelper.Pi * 2f) * 0.4f);
@@ -643,7 +643,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //=== 第5层：星形闪光 ===
+            //星形闪光
             if (StarTexture?.Value != null && progress < 0.4f) {
                 Texture2D star = StarTexture.Value;
                 float starAlpha = MathHelper.Lerp(1f, 0f, progress / 0.4f);
@@ -666,7 +666,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //=== 第6层：外围粒子环 ===
+            //外围粒子环
             if (SoftGlow?.Value != null) {
                 Texture2D particle = SoftGlow.Value;
                 int particleCount = 16;

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             }
         }
 
-        private void DrawLine(List<Vector2> list) {
+        private static void DrawLine(List<Vector2> list) {
             Texture2D texture = TextureAssets.FishingLine.Value;
             Rectangle frame = texture.Frame();
             Vector2 origin = new Vector2(frame.Width / 2, 2);

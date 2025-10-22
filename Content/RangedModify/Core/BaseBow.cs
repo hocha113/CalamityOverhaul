@@ -487,7 +487,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
+        private static void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
             if (!arrow.consumable) {
                 int newtype = ItemID.WoodenArrow;
                 if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(arrow.shoot, out int value2)) {

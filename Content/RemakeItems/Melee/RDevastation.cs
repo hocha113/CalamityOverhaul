@@ -71,16 +71,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        private int GetRandomProjectileType() {
-            switch (Main.rand.Next(6)) {
-                case 1: return ModContent.ProjectileType<GalaxyBlast>();
-                case 2: return ModContent.ProjectileType<GalaxyBlastType2>();
-                case 3: return ModContent.ProjectileType<GalaxyBlastType3>();
-                default: return ModContent.ProjectileType<GalaxyBlast>();
-            }
+        private static int GetRandomProjectileType() {
+            return Main.rand.Next(6) switch {
+                1 => ModContent.ProjectileType<GalaxyBlast>(),
+                2 => ModContent.ProjectileType<GalaxyBlastType2>(),
+                3 => ModContent.ProjectileType<GalaxyBlastType3>(),
+                _ => ModContent.ProjectileType<GalaxyBlast>(),
+            };
         }
 
-        private Vector2 GetMouseDistance(Vector2 playerPos, float gravDir) {
+        private static Vector2 GetMouseDistance(Vector2 playerPos, float gravDir) {
             float mouseXDist = Main.mouseX + Main.screenPosition.X - playerPos.X;
             float mouseYDist = Main.mouseY + Main.screenPosition.Y - playerPos.Y;
             if (gravDir == -1f) {
@@ -89,26 +89,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return new Vector2(mouseXDist, mouseYDist);
         }
 
-        private Vector2 GetRandomSpawnPosition(Player player, int index) {
+        private static Vector2 GetRandomSpawnPosition(Player player, int index) {
             float spawnX = player.position.X + player.width * 0.5f + Main.rand.Next(201) * -player.direction + (Main.mouseX + Main.screenPosition.X - player.position.X);
             float spawnY = player.MountedCenter.Y - 600f - 100 * index;
             spawnX = (spawnX + player.Center.X) / 2f + Main.rand.Next(-200, 201);
             return new Vector2(spawnX, spawnY);
         }
 
-        private Vector2 AdjustDistanceForSpeed(Vector2 distance, float speed) {
+        private static Vector2 AdjustDistanceForSpeed(Vector2 distance, float speed) {
             distance.Y = Math.Abs(distance.Y) < 20f ? 20f : distance.Y;
             float distanceLength = distance.Length();
             return distance * (speed / distanceLength);
         }
 
-        private int GetProjectileTypeByIndex(int index) {
-            switch (index) {
-                case 0: return ModContent.ProjectileType<GalaxyBlast>();
-                case 1: return ModContent.ProjectileType<GalaxyBlastType2>();
-                case 2: return ModContent.ProjectileType<GalaxyBlastType3>();
-                default: return ModContent.ProjectileType<GalaxyBlast>();
-            }
+        private static int GetProjectileTypeByIndex(int index) {
+            return index switch {
+                0 => ModContent.ProjectileType<GalaxyBlast>(),
+                1 => ModContent.ProjectileType<GalaxyBlastType2>(),
+                2 => ModContent.ProjectileType<GalaxyBlastType3>(),
+                _ => ModContent.ProjectileType<GalaxyBlast>(),
+            };
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

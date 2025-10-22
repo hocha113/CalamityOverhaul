@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             DashTimer++;
 
-            //=== 冲刺阶段 ===
+            //冲刺阶段
             if (DashTimer <= DashDuration) {
                 //冲刺阶段：强力加速
                 float dashProgress = DashTimer / DashDuration;
@@ -243,8 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Owner.velocity = adjustedDirection * (currentDashSpeed + NormalSpeed * dashProgress);
 
-                //=== 螺旋冲刺特效增强 ===
-                //水花粒子（更密集）
+                //水花粒子
                 if (Main.rand.NextBool(2)) {
                     Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(120f, 120f);
                     Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water,
@@ -297,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                 }
             }
-            //=== 持续移动阶段 ===
+            //持续移动阶段
             else {
                 //计算目标速度（朝向光标）
                 Vector2 targetDirection = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
@@ -481,7 +480,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             HalibutPlayer halibutPlayer = OwnerPlayer.GetOverride<HalibutPlayer>();
 
-            //=== 突袭模式 ===
+            //突袭模式
             if (surgeModeActive) {
                 SurgeModeAI();
                 return;
@@ -517,11 +516,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //判断是否在冲刺阶段
             bool isDashing = lifeTimer <= DashPhase;
 
-            //=== 冲刺阶段特殊行为 ===
+            //冲刺阶段特殊行为
             if (isDashing) {
                 DashPhaseAI();
             }
-            //=== 正常阶段行为 ===
+            //正常阶段行为
             else {
                 NormalPhaseAI();
             }
@@ -558,7 +557,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冲刺进度（0-1）
             float dashProgress = lifeTimer / (float)DashPhase;
 
-            //=== 螺旋式跟进设计 ===
+            //螺旋式跟进设计
             //基础参数
             float baseAngle = MathHelper.TwoPi * FishID / 140f; //基础角度分布
 
@@ -596,7 +595,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 (float)Math.Sin(spiralAngle) * currentRadius + spiralHeightWave
             );
 
-            //=== 预判玩家位置 ===
             //根据玩家速度预判未来位置，确保鱼群不会落后
             float predictionStrength = MathHelper.Lerp(0.8f, 0.3f, dashProgress); //初期预判更强
             Vector2 playerVelocityPredict = OwnerPlayer.velocity * predictionStrength;
@@ -606,20 +604,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 targetPosition = OwnerPlayer.Center + spiralOffset + playerVelocityPredict + forwardBias;
 
-            //=== 计算运动力 ===
+            //计算运动力
             Vector2 toTarget = targetPosition - Projectile.Center;
             float distanceToTarget = toTarget.Length();
 
             Vector2 totalForce = Vector2.Zero;
 
-            //1. 主要吸引力：向目标螺旋位置移动（根据距离动态调整）
+            //主要吸引力：向目标螺旋位置移动（根据距离动态调整）
             if (distanceToTarget > 5f) {
                 //距离越远，吸引力越强
                 float urgency = MathHelper.Clamp(distanceToTarget / 80f, 0.8f, 3f);
                 totalForce += toTarget.SafeNormalize(Vector2.Zero) * 10f * urgency;
             }
 
-            //2. 切向速度：让鱼沿着螺旋切线方向移动（产生螺旋流动感）
+            //切向速度：让鱼沿着螺旋切线方向移动（产生螺旋流动感）
             Vector2 tangentialDirection = new Vector2(
                 -(float)Math.Sin(spiralAngle),
                 (float)Math.Cos(spiralAngle)
@@ -628,32 +626,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float tangentialSpeed = (150f - currentRadius) / 150f * 12f + 5f;
             totalForce += tangentialDirection * tangentialSpeed;
 
-            //3. 速度同步：匹配玩家速度
+            //速度同步：匹配玩家速度
             Vector2 velocityDiff = OwnerPlayer.velocity - Projectile.velocity;
             float syncStrength = MathHelper.Lerp(1.2f, 0.6f, dashProgress); //初期同步更强
             totalForce += velocityDiff * syncStrength;
 
-            //4. 向心力：让鱼持续指向玩家中心（防止螺旋飞散）
+            //向心力：让鱼持续指向玩家中心（防止螺旋飞散）
             Vector2 centripetalForce = (OwnerPlayer.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
             float centripetalStrength = MathHelper.Lerp(2f, 4f, dashProgress); //后期向心力增强
             totalForce += centripetalForce * centripetalStrength;
 
-            //5. 轻微分离力（避免螺旋臂内部重叠）
+            //轻微分离力（避免螺旋臂内部重叠）
             CalculateFlockingBehavior();
             totalForce += separationForce * 0.5f; //权重很低，优先保持螺旋形态
 
-            //6. 沿玩家运动方向的推力（整体向前）
+            //沿玩家运动方向的推力（整体向前）
             if (OwnerPlayer.velocity.LengthSquared() > 1f) {
                 Vector2 forwardPush = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
                 totalForce += forwardPush * 4f;
             }
 
-            //7. 螺旋脉冲：周期性的径向收缩/扩张，增强动感
+            //螺旋脉冲：周期性的径向收缩/扩张，增强动感
             float pulseFactor = (float)Math.Sin(lifeTimer * 0.3f + spiralArm * MathHelper.PiOver2) * 0.5f;
             Vector2 pulseForce = spiralOffset.SafeNormalize(Vector2.Zero) * pulseFactor;
             totalForce += pulseForce;
 
-            //=== 应用力和速度限制 ===
+            //应用力和速度限制
             Projectile.velocity += totalForce * 0.4f; //更高的加速度，响应更快
 
             //速度限制：根据在螺旋中的位置动态调整
@@ -671,7 +669,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * dashMinSpeed;
             }
 
-            //=== 强制位置修正（确保螺旋形态） ===
             //如果鱼偏离螺旋轨迹太远，强制拉回
             if (distanceToTarget > 180f) {
                 //严重偏离，直接插值拉回
@@ -682,7 +679,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.1f);
             }
 
-            //=== 视觉效果增强 ===
             //螺旋轨迹粒子（只在螺旋臂上的关键位置生成）
             if (FishID % 7 == 0 && Main.rand.NextBool(3)) { //减少粒子密度，但更有目的性
                 Vector2 particleVel = tangentialDirection * 3f + Main.rand.NextVector2Circular(1f, 1f);
@@ -699,16 +695,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 正常阶段AI - 自然的鱼群行为
+        /// 正常阶段AI，自然的鱼群行为
         /// </summary>
         private void NormalPhaseAI() {
-            //=== 鱼群算法实现 ===
+            //鱼群算法实现
             CalculateFlockingBehavior();
 
             //应用鱼群行为力
             Vector2 totalForce = Vector2.Zero;
 
-            //1. 跟随玩家的吸引力
+            //跟随玩家的吸引力
             Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
             float distanceToPlayer = toPlayer.Length();
 
@@ -729,12 +725,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 totalForce += toPlayer.SafeNormalize(Vector2.Zero) * 0.5f;
             }
 
-            //2. 鱼群行为力（提高权重以增加活跃度）
+            //鱼群行为力
             totalForce += separationForce * 3.0f * behaviorRandomness;  //分离力增强
             totalForce += alignmentForce * 1.5f;                         //对齐力增强
             totalForce += cohesionForce * 1.2f;                          //聚合力增强
 
-            //3. 随机游动（更频繁的方向改变）
+            //随机游动（更频繁的方向改变）
             wanderTimer++;
             if (wanderTimer > Main.rand.Next(15, 30)) { //更频繁地改变方向
                 wanderTimer = 0;
@@ -745,11 +741,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             totalForce += randomWander * 0.6f;
 
-            //4. 朝向光标的整体方向（更强的引导力）
+            //朝向光标的整体方向（更强的引导力）
             Vector2 toMouse = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
             totalForce += toMouse * 1.0f;
 
-            //5. 跃动效果（周期性的上下波动）
+            //跃动效果（周期性的上下波动）
             float jumpTime = (Main.GameUpdateCount + jumpPhaseOffset) * 0.08f;
             float jumpStrength = (float)Math.Sin(jumpTime) * 0.8f * behaviorRandomness;
             Vector2 jumpForce = new Vector2(0, jumpStrength);
@@ -781,20 +777,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 突袭模式AI - 聚拢后形成螺旋尖锥突袭
+        /// 突袭模式AI，聚拢后形成螺旋尖锥突袭
         /// </summary>
         private void SurgeModeAI() {
             surgeTimer++;
 
-            //=== 阶段1：快速聚拢（0-15帧） ===
+            //快速聚拢（0-15帧）
             if (surgeTimer <= SurgeGatherPhase) {
                 GatherPhaseAI();
             }
-            //=== 阶段2：螺旋尖锥突袭（16-45帧） ===
+            //螺旋尖锥突袭（16-45帧）
             else if (surgeTimer <= SurgeGatherPhase + SurgeDashPhase) {
                 ConeSurgePhaseAI();
             }
-            //=== 阶段3：消散 ===
+            //消散
             else {
                 fishAlpha -= 0.1f;
                 if (fishAlpha <= 0f) {
@@ -828,12 +824,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 聚拢阶段AI - 所有鱼快速向玩家聚拢
+        /// 聚拢阶段AI，所有鱼快速向玩家聚拢
         /// </summary>
         private void GatherPhaseAI() {
             float gatherProgress = surgeTimer / (float)SurgeGatherPhase;
 
-            //目标位置：玩家中心附近的紧密区域
+            //目标位置，玩家中心附近的紧密区域
             Vector2 targetPosition = OwnerPlayer.Center;
 
             //轻微的圆形分布，避免完全重叠
@@ -880,13 +876,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 螺旋尖锥突袭阶段AI - 形成尖锥形螺旋突袭
+        /// 螺旋尖锥突袭阶段AI，形成尖锥形螺旋突袭
         /// </summary>
         private void ConeSurgePhaseAI() {
             int surgePhaseTimer = surgeTimer - SurgeGatherPhase;
             float surgeProgress = surgePhaseTimer / (float)SurgeDashPhase;
 
-            //=== 尖锥形螺旋设计 ===
             //螺旋参数
             int spiralArm = FishID % 5; //5条螺旋臂
             int layerIndex = FishID / 28; //5层深度
@@ -896,7 +891,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float spiralAngle = MathHelper.TwoPi * FishID / 140f + spiralArm * MathHelper.TwoPi / 5f;
             spiralAngle += surgePhaseTimer * spiralRotationSpeed;
 
-            //尖锥形状：前方的鱼聚集更紧密，后方更分散
+            //尖锥形状，前方的鱼聚集更紧密，后方更分散
             //距离随时间推进而增加，形成拉长的锥形
             float coneLength = surgeProgress * 400f; //锥形长度逐渐拉长
             float coneRadius = (layerIndex + 1) * 15f + surgeProgress * 30f; //后方半径逐渐增大
@@ -917,28 +912,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 tipPosition = OwnerPlayer.Center + surgeDirection * (200f + surgeProgress * 800f); //锥尖不断前进
             Vector2 targetPosition = tipPosition - surgeDirection * distanceFromTip + spiralOffset;
 
-            //=== 运动力计算 ===
+            //运动力计算
             Vector2 toTarget = targetPosition - Projectile.Center;
             float distanceToTarget = toTarget.Length();
 
             Vector2 totalForce = Vector2.Zero;
 
-            //1. 主吸引力：追随锥形位置
+            //追随锥形位置
             if (distanceToTarget > 10f) {
                 totalForce += toTarget.SafeNormalize(Vector2.Zero) * 12f;
             }
 
-            //2. 前向推力：整体向突袭方向高速移动
+            //整体向突袭方向高速移动
             totalForce += surgeDirection * 20f;
 
-            //3. 切向速度：螺旋旋转
+            //螺旋旋转
             Vector2 tangentialDir = new Vector2(
                 -(float)Math.Sin(spiralAngle),
                 (float)Math.Cos(spiralAngle)
             );
             totalForce += tangentialDir * 8f;
 
-            //4. 轻微分离力
+            //轻微分离力
             CalculateFlockingBehavior();
             totalForce += separationForce * 0.3f;
 

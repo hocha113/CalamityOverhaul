@@ -97,8 +97,6 @@ namespace CalamityOverhaul.Content.ADV
             //转移播放计数（关键：保证 Index 正确）
             to.playedCount = from.playedCount;
 
-            //=== 转移动画过渡状态，实现平滑切换 ===
-
             //转移显示进度（确保对话框保持显示状态）
             to.showProgress = from.showProgress;
 

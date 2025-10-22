@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //===== 粒子效果方法 =====
+        //粒子效果方法
 
         private void SpawnIdleParticle() {
             Dust idle = Dust.NewDustDirect(
@@ -566,12 +566,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //===== 绘制运动残影 =====
+            //绘制运动残影
             if (State == HungryState.Attacking && StateTimer >= 20 && StateTimer < 40) {
                 DrawAttackTrail(sb, hungryTex, sourceRect, origin, lightColor, alpha);
             }
 
-            //===== 绘制外层血肉辉光 =====
+            //绘制外层血肉辉光
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = Projectile.scale * 1.2f * squashStretch;
@@ -590,7 +590,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //===== 绘制主体恶鬼 =====
+            //绘制主体恶鬼
             SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             //应用挤压拉伸

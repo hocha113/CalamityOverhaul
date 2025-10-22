@@ -348,10 +348,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float alpha = (255f - Projectile.alpha) / 255f;
             float scale = Projectile.scale * (IsMainStar ? 1.2f : 0.8f);
 
-            //===== 绘制星星轨迹 =====
+            //绘制星星轨迹
             DrawStarTrail(sb, starTex, sourceRect, origin, alpha);
 
-            //===== 绘制外层辉光 =====
+            //绘制外层辉光
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = scale * (1.2f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.2f);
@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //===== 绘制主体星星 =====
+            //绘制主体星星
             Color starColor = Color.Lerp(lightColor, Color.White, 0.7f);
 
             sb.Draw(
@@ -398,7 +398,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //===== 绘制星形闪光 =====
+            //绘制星形闪光
             if (StarTexture?.Value != null) {
                 Texture2D star = StarTexture.Value;
                 float starPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.5f + 0.5f;
@@ -628,10 +628,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float alpha = (255f - Projectile.alpha) / 255f;
             float scale = Projectile.scale * 1.3f;
 
-            //===== 绘制强烈的坠落轨迹 =====
+            //绘制坠落轨迹
             DrawFallingTrail(sb, starTex, sourceRect, origin, alpha);
 
-            //===== 绘制外层强烈辉光 =====
+            //绘制外层辉光
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = scale * (1.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.3f);
@@ -650,7 +650,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //===== 绘制主体星星 =====
+            //绘制主体星星
             Color starColor = Color.Lerp(lightColor, new Color(255, 255, 150), 0.9f);
 
             sb.Draw(
@@ -678,7 +678,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //===== 绘制多层星形闪光 =====
+            //绘制多层星形闪光
             if (StarTexture?.Value != null) {
                 Texture2D star = StarTexture.Value;
 

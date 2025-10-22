@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -110,9 +111,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 旋转骨头弹幕 - 环绕蓄力后发射
+    /// 旋转骨头弹幕，环绕蓄力后发射
     /// </summary>
-    internal class BonefishOrbit : ModProjectile
+    internal class BonefishOrbit : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bone;
 
@@ -177,20 +178,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-
-            if (!owner.active || owner.dead) {
+            if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
             }
 
-            if (!FishSkill.GetT<FishBone>().Active(owner)) {
+            if (!FishSkill.GetT<FishBone>().Active(Owner)) {
                 Projectile.Kill();
                 return;
             }
 
             //检查玩家是否受伤
-            if (FishBone.IsPlayerHurt(owner) && State != BoneState.Scattering) {
+            if (FishBone.IsPlayerHurt(Owner) && State != BoneState.Scattering) {
                 EnterScatterState();
             }
 
@@ -203,19 +202,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //状态机
             switch (State) {
                 case BoneState.Gathering:
-                    GatheringPhaseAI(owner);
+                    GatheringPhaseAI(Owner);
                     break;
 
                 case BoneState.Orbiting:
-                    OrbitingPhaseAI(owner);
+                    OrbitingPhaseAI(Owner);
                     break;
 
                 case BoneState.Charging:
-                    ChargingPhaseAI(owner);
+                    ChargingPhaseAI(Owner);
                     break;
 
                 case BoneState.Launching:
-                    LaunchingPhaseAI(owner);
+                    LaunchingPhaseAI(Owner);
                     break;
 
                 case BoneState.Scattering:
@@ -235,7 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         ///<summary>
-        ///聚集阶段：骨头快速飞向玩家附近
+        ///聚集阶段，骨头快速飞向玩家附近
         ///</summary>
         private void GatheringPhaseAI(Player owner) {
             float progress = StateTimer / GatherDuration;
@@ -272,7 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         ///<summary>
-        ///环绕阶段：环绕玩家并逐渐加速
+        ///环绕阶段，环绕玩家并逐渐加速
         ///</summary>
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
@@ -378,13 +377,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         ///发射向目标
         ///</summary>
         private void LaunchToTarget(Player owner) {
-            Vector2 toMouse = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.Zero);
-
             //计算发射速度（基于当前旋转速度增加动量感）
             float momentumBonus = orbitSpeed / MaxOrbitSpeed;
             float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
 
-            Projectile.velocity = toMouse * finalSpeed;
+            Projectile.velocity = UnitToMouseV * finalSpeed;
             if (!Framing.GetTileSafely(Projectile.Center.ToTileCoordinates16()).HasTile) {
                 Projectile.tileCollide = true;
             }
@@ -470,8 +467,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.5f
             }, Projectile.Center);
         }
-
-        //===== 粒子效果方法 =====
 
         private void SpawnGatherParticle() {
             Dust gather = Dust.NewDustPerfect(
@@ -674,13 +669,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //===== 绘制骨头残影拖尾 =====
             if (State == BoneState.Orbiting || State == BoneState.Charging || State == BoneState.Launching) {
                 DrawBoneAfterimages(sb, boneTex, sourceRect, origin, baseColor, alpha);
             }
 
-            //===== 绘制主体骨头 =====
-            // 基础绘制
             sb.Draw(
                 boneTex,
                 drawPos,
@@ -696,7 +688,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //蓄力/发射时的骨质辉光覆盖层
             if ((State == BoneState.Charging || State == BoneState.Launching) && glowIntensity > 0.5f) {
                 float glowAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.4f;
-                Color boneGlow = new Color(220, 220, 240); // 冷白色骨质辉光
+                Color boneGlow = new Color(220, 220, 240); //冷白色骨质辉光
 
                 sb.Draw(
                     boneTex,
@@ -732,8 +724,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color afterimageColor;
                 if (State == BoneState.Launching) {
                     afterimageColor = Color.Lerp(
-                        new Color(200, 200, 220),  // 冷白
-                        new Color(240, 240, 255),  // 亮白
+                        new Color(200, 200, 220),  //冷白
+                        new Color(240, 240, 255),  //亮白
                         afterimageProgress
                     ) * (afterimageAlpha * 0.7f);
                 }
@@ -752,7 +744,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     afterimagePos,
                     sourceRect,
                     afterimageColor,
-                    Projectile.rotation - i * 0.1f * (orbitSpeed / MaxOrbitSpeed), // 轻微旋转错位
+                    Projectile.rotation - i * 0.1f * (orbitSpeed / MaxOrbitSpeed), //轻微旋转错位
                     origin,
                     afterimageScale,
                     SpriteEffects.None,

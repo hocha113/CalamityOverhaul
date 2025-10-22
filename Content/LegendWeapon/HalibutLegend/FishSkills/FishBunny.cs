@@ -23,6 +23,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return null;
             }
 
+            if (player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+
             if (Cooldown > 0) {
                 return false;
             }

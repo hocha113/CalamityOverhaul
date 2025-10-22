@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal List<ProjItem> projectiles = [];
         internal List<EffectEntity> effectEntities = [];
         internal List<NPCGhostItem> npcGhostItem = [];
-        private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
-        private int projTimer => 4600;
+        private static Vector2 ItemPos => new(Main.screenWidth / 2, Main.screenHeight - 60);
+        private const int projTimer = 4600;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
 
@@ -413,12 +413,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     Texture2D pts = CWRUtils.GetT2DValue(CWRConstant.Placeholder);
                     for (int i = 0; i < names.Length; i++) {
                         string textContent = names[i];
-                        ProjItem proj = new ProjItem(i, projTimer, 1, 0, Color.White, itemPos, new Vector2(0, -1), textContent, pts, i * 90);
+                        ProjItem proj = new ProjItem(i, projTimer, 1, 0, Color.White, ItemPos, new Vector2(0, -1), textContent, pts, i * 90);
                         projectiles.Add(proj);
                     }
                 }
 
-                //=== 更新 projectiles ===
+                //更新 projItem
                 foreach (ProjItem projItem in projectiles) {
                     if (projItem.index >= 0 && projItem.index < names.Length) {
                         projItem.text = names[projItem.index];
@@ -429,7 +429,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
                     projItem.color.R -= 25;
                     projItem.timeLeft = projTimer;
-                    projItem.position = itemPos;
+                    projItem.position = ItemPos;
                     projItem.alp = 0;
                     projItem.active = true;
                 }
@@ -445,7 +445,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     }
                 }
 
-                //=== 更新 effectEntities ===
+                //更新 effectEntities
                 foreach (EffectEntity effect in effectEntities) {
                     if (effect.active) {
                         continue;
@@ -464,7 +464,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     effect.active = true;
                 }
 
-                //=== 初始化 NPCGhostItem ===
+                //初始化 NPCGhostItem
                 if (npcGhostItem.Count < 1) {
                     Texture2D tex = TextureAssets.Npc[NPCID.Spazmatism].Value;
                     Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; //示例替代图
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     npcGhostItem.Add(ghost);
                 }
 
-                //=== 更新 NPCGhostItem ===
+                //更新 NPCGhostItem
                 foreach (NPCGhostItem ghost in npcGhostItem) {
                     if (ghost.active) {
                         continue;

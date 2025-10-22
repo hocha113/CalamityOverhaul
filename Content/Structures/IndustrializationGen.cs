@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Structures
 
             List<Point16> candidateSpots = new();
 
-            //=== 第一步：收集所有可能放置的平地点 ===
+            //收集所有可能放置的平地点
             for (int x = minX; x < maxX - 2; x++) {
                 for (int y = minY; y < maxY - 4; y++) {
                     bool valid = true;
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //=== 第二步：稀疏性筛选，过滤靠得太近的点位 ===
+            //稀疏性筛选，过滤靠得太近的点位 
             List<Point16> sparseFiltered = new();
             int minDistance = 60; //曼哈顿距离最小值
 
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //=== 第三步：根据深度与地形做进一步筛选（丛林/深度优先） ===
+            //根据深度与地形做进一步筛选（丛林/深度优先）
             List<Point16> finalSpots = new();
 
             foreach (var pos in sparseFiltered) {
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.Structures
                 finalSpots = finalSpots.Take(300).ToList();
             }
 
-            //=== 最后正式放置 ===
+            //最后正式放置
             foreach (var pos in finalSpots) {
                 //清理区域
                 for (int i = 0; i < 3; i++) {

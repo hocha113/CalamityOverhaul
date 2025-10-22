@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 云朵乘骑弹幕 - 玩家骑乘的筋斗云
+    /// 云朵乘骑弹幕
     /// </summary>
     internal class CloudRide : ModProjectile
     {
@@ -248,7 +248,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     fish.Alpha -= 0.08f;
                 }
 
-                //=== 鱼群算法实现 ===
                 Vector2 separationForce = Vector2.Zero;
                 Vector2 alignmentForce = Vector2.Zero;
                 Vector2 cohesionForce = Vector2.Zero;
@@ -264,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     CloudFishParticle otherFish = cloudFishParticles[j];
                     float distance = Vector2.Distance(fish.Position, otherFish.Position);
 
-                    //分离力：避免碰撞
+                    //分离力避免碰撞
                     if (distance < 40f && distance > 0.1f) {
                         Vector2 awayFromOther = (fish.Position - otherFish.Position).SafeNormalize(Vector2.Zero);
                         separationForce += awayFromOther / distance;
@@ -282,14 +281,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     centerOfMass /= nearbyFishCount;
                     averageVelocity /= nearbyFishCount;
 
-                    //对齐力：向平均方向移动
+                    //对齐力向平均方向移动
                     alignmentForce = (averageVelocity - fish.Velocity) * 0.1f;
 
-                    //聚合力：向群体中心移动
+                    //聚合力向群体中心移动
                     cohesionForce = (centerOfMass - fish.Position).SafeNormalize(Vector2.Zero) * 0.3f;
                 }
 
-                //=== 围绕云朵运动的核心力 ===
+                //围绕云朵运动的核心力
                 Vector2 toCloud = Projectile.Center - fish.Position;
                 float distanceToCloud = toCloud.Length();
 
@@ -317,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     orbitForce = directionToCloud * 2.0f;
                 }
 
-                //=== 切向速度（围绕云朵旋转） ===
+                //切向速度（围绕云朵旋转）
                 //根据云朵移动方向调整旋转方向
                 Vector2 tangentialDirection = new Vector2(-directionToCloud.Y, directionToCloud.X);
 
@@ -328,29 +327,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Vector2 tangentialForce = tangentialDirection * (2.5f + (float)Math.Sin(LifeTimer * 0.05f + fish.PhaseOffset) * 0.8f) * catchUpBoost;
 
-                //=== 跟随云朵的速度同步 ===
+                //跟随云朵的速度同步
                 Vector2 velocitySync = Projectile.velocity * 0.6f;
 
-                //=== 波动效果（上下摆动） ===
+                //波动效果（上下摆动）
                 float waveTime = LifeTimer * 0.08f + fish.PhaseOffset;
                 Vector2 waveForce = new Vector2(0, (float)Math.Sin(waveTime) * 0.4f * fish.BehaviorRandomness);
 
-                //=== 随机游动 ===
+                //随机游动
                 Vector2 randomWander = new Vector2(
                     (float)Math.Sin(waveTime * 1.3f),
                     (float)Math.Cos(waveTime * 1.7f)
                 ) * 0.3f * fish.BehaviorRandomness;
 
-                //=== 合成所有力 ===
+                //合成所有力
                 Vector2 totalForce = Vector2.Zero;
-                totalForce += separationForce * 2.5f; // 分离力（避免重叠）
-                totalForce += alignmentForce * 1.2f; // 对齐力
-                totalForce += cohesionForce * 0.8f; // 聚合力
-                totalForce += orbitForce * 1.5f; // 轨道力
-                totalForce += tangentialForce; // 切向运动
-                totalForce += velocitySync; // 速度同步
-                totalForce += waveForce; // 波动
-                totalForce += randomWander; // 随机游动
+                totalForce += separationForce * 2.5f; //分离力（避免重叠）
+                totalForce += alignmentForce * 1.2f; //对齐力
+                totalForce += cohesionForce * 0.8f; //聚合力
+                totalForce += orbitForce * 1.5f; //轨道力
+                totalForce += tangentialForce; //切向运动
+                totalForce += velocitySync; //速度同步
+                totalForce += waveForce; //波动
+                totalForce += randomWander; //随机游动
 
                 //应用力
                 fish.Velocity += totalForce * 0.15f;
@@ -385,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 阶段0：飞向玩家脚下
+        /// 阶段0，飞向玩家脚下
         /// </summary>
         private void FlyToPlayerPhase() {
             //淡入
@@ -443,7 +442,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
             }
 
-            //=== 玩家骑乘效果 ===
             //玩家位置跟随云朵（脚部位于云朵顶部）
             Owner.position = Projectile.Center + new Vector2(0, -25) - Owner.Size / 2f;
             Owner.velocity = Projectile.velocity; Owner.fallStart = (int)(Owner.position.Y / 16f); Owner.gravity = 0f; Owner.noFallDmg = true;
@@ -653,23 +651,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             Vector2 center = Projectile.Center - Main.screenPosition;
 
-            //=== 绘制主云体（扁平筋斗云形状） ===
+            //绘制主云体（扁平筋斗云形状）
             DrawMainCloudBody(sb, center);
 
-            //=== 绘制云朵粒子（翻滚效果） ===
+            //绘制云朵粒子（翻滚效果）
             DrawCloudParticles(sb);
 
-            //=== 绘制速度拖尾效果 ===
+            //绘制速度拖尾效果
             if (Phase == 1 && Projectile.velocity.Length() > 10f) {
                 DrawSpeedTrail(sb, center);
             }
 
-            //=== 绘制筋斗云黄金边缘效果 ===
+            //绘制筋斗云黄金边缘效果
             if (Phase == 1) {
                 DrawGoldenEdges(sb, center);
             }
 
-            //=== 绘制云鱼粒子（伴飞效果） ===
+            //绘制云鱼粒子（伴飞效果）
             DrawCloudFishParticles(sb);
 
             return false;

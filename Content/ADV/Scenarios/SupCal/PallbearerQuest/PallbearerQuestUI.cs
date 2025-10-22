@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.Providence;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;
@@ -257,8 +256,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             DrawButton(spriteBatch, declineButtonRect, DeclineText.Value, hoveringDecline, alpha, false);
         }
 
-        private void DrawButton(SpriteBatch spriteBatch, Rectangle buttonRect, string text, bool hovering, float alpha, bool isAccept) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+        private static void DrawButton(SpriteBatch spriteBatch, Rectangle buttonRect, string text, bool hovering, float alpha, bool isAccept) {
+            Texture2D vaule = VaultAsset.placeholder2.Value;
 
             //按钮背景
             Color bgColor = isAccept
@@ -266,7 +265,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
                 : hovering ? new Color(100, 60, 60) : new Color(80, 45, 45);
             bgColor *= alpha * 0.9f;
 
-            spriteBatch.Draw(pixel, buttonRect, new Rectangle(0, 0, 1, 1), bgColor);
+            spriteBatch.Draw(vaule, buttonRect, new Rectangle(0, 0, 1, 1), bgColor);
 
             //按钮边框
             Color borderColor = isAccept ? Color.Green : Color.Red;
@@ -278,10 +277,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             Rectangle leftBorder = new Rectangle(buttonRect.X, buttonRect.Y, borderWidth, buttonRect.Height);
             Rectangle rightBorder = new Rectangle(buttonRect.Right - borderWidth, buttonRect.Y, borderWidth, buttonRect.Height);
 
-            spriteBatch.Draw(pixel, topBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, bottomBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, leftBorder, new Rectangle(0, 0, 1, 1), borderColor);
-            spriteBatch.Draw(pixel, rightBorder, new Rectangle(0, 0, 1, 1), borderColor);
+            spriteBatch.Draw(vaule, topBorder, new Rectangle(0, 0, 1, 1), borderColor);
+            spriteBatch.Draw(vaule, bottomBorder, new Rectangle(0, 0, 1, 1), borderColor);
+            spriteBatch.Draw(vaule, leftBorder, new Rectangle(0, 0, 1, 1), borderColor);
+            spriteBatch.Draw(vaule, rightBorder, new Rectangle(0, 0, 1, 1), borderColor);
 
             //按钮文字
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text);

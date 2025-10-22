@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { //corrected signature
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Player owner = Main.player[Projectile.owner];
             owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
             if (State == BoomerangState.Throwing) {

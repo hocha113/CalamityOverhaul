@@ -61,7 +61,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
         }
 
         public override bool AI() {
-            //===================[全局逻辑: 目标、消失、激怒]===================
             CalamityGlobalNPC.perfHive = npc.whoAmI;
 
             //获取目标玩家
@@ -401,8 +400,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
                 }
             }
         }
-
-        //===================[辅助函数]===================
 
         //发射扇形弹幕的辅助方法
         private void SpawnProjectileFan(Player target, int numProj, int spread, float velocity, bool isDeathMode) {

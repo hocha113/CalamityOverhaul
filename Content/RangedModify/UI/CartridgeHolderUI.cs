@@ -18,18 +18,18 @@ namespace CalamityOverhaul.Content.RangedModify.UI
         public static float JARSengs;
         public static CWRItem cwrWeapon;
         public static Item targetWeapon;
-        private Item heldItem => player.GetItem();
+        private static Item HeldItem => player.GetItem();
         private float otherPotData;
         internal int Weith;
         internal int Height;
         private int rightHeldTime;
         private int frameMax;
-        public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[heldItem.type] || IsAmmo());
-        public bool IsAmmo() => heldItem.ammo != AmmoID.None && heldItem.ammo != AmmoID.Arrow;
+        public override bool Active => CWRServerConfig.Instance.MagazineSystem && (CWRLoad.ItemHasCartridgeHolder[HeldItem.type] || IsAmmo());
+        public static bool IsAmmo() => HeldItem.ammo != AmmoID.None && HeldItem.ammo != AmmoID.Arrow;
         public override void Update() {
             bool weaponIsHand = false;
-            if (CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
-                targetWeapon = heldItem;
+            if (CWRLoad.ItemHasCartridgeHolder[HeldItem.type]) {
+                targetWeapon = HeldItem;
                 cwrWeapon = targetWeapon.CWR();
                 weaponIsHand = true;
             }
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
             if (targetWeapon == null || cwrWeapon == null || IsAmmo()) {
                 for (int i = player.inventory.Length - 1; i >= 0; i--) {
                     Item item = player.inventory[i];
-                    if (!CWRLoad.ItemHasCartridgeHolder[heldItem.type]) {
+                    if (!CWRLoad.ItemHasCartridgeHolder[HeldItem.type]) {
                         continue;
                     }
                     targetWeapon = item;
@@ -101,9 +101,9 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     }
 
                     if (canContrl) {
-                        if (cwrWeapon.NumberBullets < cwrWeapon.AmmoCapacity && targetWeapon.useAmmo == heldItem.ammo) {
+                        if (cwrWeapon.NumberBullets < cwrWeapon.AmmoCapacity && targetWeapon.useAmmo == HeldItem.ammo) {
                             SoundEngine.PlaySound(CWRSound.Gun_Clipin);
-                            cwrWeapon.LoadenMagazine(heldItem, addStact);
+                            cwrWeapon.LoadenMagazine(HeldItem, addStact);
                         }
                         else {
                             SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked);
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                 if (cwrWeapon.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     key2 = "_dragonBreath";
                 }
-                if (heldItem.useAmmo == AmmoID.Rocket) {
+                if (HeldItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     if (cwrWeapon.NumberBullets >= cwrWeapon.AmmoCapacity) {
                         textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text7");
                     }
-                    if (targetWeapon.useAmmo != heldItem.ammo) {
+                    if (targetWeapon.useAmmo != HeldItem.ammo) {
                         textContent = CWRLocText.GetTextValue("CartridgeHolderUI_Text6");
                     }
                 }

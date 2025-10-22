@@ -554,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color outerColor = new Color(180, 40, 20, 0);     //外层：深红
             Color edgeColor = new Color(100, 20, 30, 0);      //边缘：暗红
 
-            //=== 第1层：最外层扩散辉光 ===
+            //最外层扩散辉光
             if (SoftGlow?.Value != null) {
                 Texture2D glow = SoftGlow.Value;
                 float glowScale = scale * (2.2f + mainPulse * 0.3f);
@@ -566,7 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            //=== 第3层：中层主体火焰 ===
+            //中层主体火焰
             if (SoftGlow?.Value != null) {
                 Texture2D mainGlow = SoftGlow.Value;
                 float mainScale = scale * (1.3f + mainPulse * 0.15f);
@@ -583,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //=== 第4层：内层明亮火焰 ===
+            //内层明亮火焰
             if (SoftGlow?.Value != null) {
                 Texture2D innerGlow = SoftGlow.Value;
                 float innerScale = scale * (1.0f + fastPulse * 0.2f);
@@ -594,7 +594,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            //=== 第5层：核心高亮 ===
+            //核心高亮
             if (SoftGlow?.Value != null) {
                 Texture2D core = SoftGlow.Value;
                 float coreScale = scale * (0.5f + fastPulse * 0.3f);
@@ -611,7 +611,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            //=== 第6层：能量闪电纹理 ===
+            //能量闪电纹理
             if (StarTexture?.Value != null) {
                 Texture2D star = StarTexture.Value;
 
@@ -630,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //=== 第7层：旋转能量束（类似太阳耀斑） ===
+            //旋转能量束（类似太阳耀斑）
             Texture2D pixel = CWRAsset.StarTexture.Value;
             for (int i = 0; i < 6; i++) {
                 float beamRotation = Projectile.rotation + time * 4f + i * MathHelper.TwoPi / 6f;
@@ -647,7 +647,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None, 0f);
             }
 
-            //=== 第9层：外围能量粒子环 ===
+            //外围能量粒子环
             for (int i = 0; i < 12; i++) {
                 float particleAngle = time * 3f + i * MathHelper.TwoPi / 12f;
                 float particleDistance = 60f * scale * (1f + (float)Math.Sin(time * 4f + i) * 0.2f);
