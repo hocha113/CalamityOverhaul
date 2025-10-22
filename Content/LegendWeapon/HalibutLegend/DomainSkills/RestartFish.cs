@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             player.SetResurrectionValue(0);//复苏进度归零
 
-            if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
+            if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer) && sirenMusicalBoxPlayer.IsCursed) {
                 sirenMusicalBoxPlayer.ResetCurse();//清除八音盒诅咒
                 foreach (var tp in TileProcessorLoader.TP_InWorld.ToList()) {
                     if (!tp.Active) {
@@ -66,6 +66,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         continue;
                     }
                     smbTP.StopMusic();
+                    for (int i = 0; i < 16; i++) {
+                        Dust.NewDust(smbTP.PosInWorld, smbTP.Width, smbTP.Height, DustID.Blood);
+                    }
                 }
             }
 
