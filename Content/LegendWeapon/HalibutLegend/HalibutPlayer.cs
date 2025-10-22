@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            if (VaultUtils.isServer || !HeldHalibut) {
+            if (VaultUtils.isServer || Main.myPlayer != Player.whoAmI || !HeldHalibut) {
                 return;
             }
 
