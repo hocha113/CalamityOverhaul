@@ -208,9 +208,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.25f;
             }
-            // 对渊海灾虫仅造成10%伤害
+            // 对渊海灾虫仅造成15%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.4f;
+                modifiers.FinalDamage *= 0.6f;
             }
             if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
                 modifiers.FinalDamage *= 0.1f;
@@ -227,6 +227,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             // 对塔纳托斯头造成2.85倍伤害
             if (target.type == CWRLoad.ThanatosHead) {
                 modifiers.FinalDamage *= 11.4f;
+            }
+            // 对肉山仅造成1.5倍伤害
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            // 对双子魔眼造成1.5倍伤害
+            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
+                modifiers.FinalDamage *= 1.5f;
             }
             // 对毁灭魔像身体部位造成50%伤害
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead

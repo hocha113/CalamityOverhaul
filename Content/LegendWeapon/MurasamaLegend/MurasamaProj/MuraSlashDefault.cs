@@ -217,16 +217,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (CWRLoad.targetNpcTypes9.Contains(target.type)) {
                 modifiers.FinalDamage *= 1.32f;
             }
-            // 对渊海灾虫仅造成10%伤害
+            // 对渊海灾虫仅造成15%伤害
             if (CWRLoad.targetNpcTypes11.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.3f;
             }
             if (target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
                 modifiers.FinalDamage *= 0.1f;
-            }
-            // 对毁灭者仅造成10%伤害
-            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerBody || target.type == NPCID.TheDestroyerTail) {
-                modifiers.FinalDamage *= 0.3f;
             }
             // 对塔纳托斯体节仅造成66%伤害
             if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2 || target.type == CWRLoad.ThanatosTail) {
@@ -243,6 +239,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
             // 对克苏鲁之眼造成1.5倍伤害
             if (target.type == NPCID.EyeofCthulhu) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            // 对肉山仅造成1.5倍伤害
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            // 对双子魔眼造成1.5倍伤害
+            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 1.5f;
             }
             // 对毁灭魔像身体部位造成50%伤害
