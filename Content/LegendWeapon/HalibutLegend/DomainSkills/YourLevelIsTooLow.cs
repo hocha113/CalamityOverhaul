@@ -405,18 +405,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private void ContinuousHeal() {
             //每36帧恢复一次生命
             if (skillTimer % 36 == 0) { //频率稍降低
-                Owner.statLife = Owner.statLifeMax2;
-                Owner.HealEffect(Owner.statLifeMax2);
-            }
-
-            //持续清除debuff
-            if (skillTimer % 12 == 0) {
-                for (int i = 0; i < Player.MaxBuffs; i++) {
-                    int buffType = Owner.buffType[i];
-                    if (buffType > 0 && Main.debuff[buffType]) {
-                        Owner.DelBuff(i);
-                    }
-                }
+                RestartFish.ExecuteRestart(Owner);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
@@ -491,9 +492,16 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
             if (IsCursed) {
+                if (Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
+                    return true;//厉鬼复苏的死亡无法阻挡
+                }
                 return false;
             }
             return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
+        }
+
+        public override void OnRespawn() {
+            ResetCurse();//不管如何，重生后都重置一次诅咒状态
         }
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {

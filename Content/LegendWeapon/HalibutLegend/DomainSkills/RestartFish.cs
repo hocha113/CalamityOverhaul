@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+﻿using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -37,6 +38,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var source = player.GetSource_Misc("RestartFishSkill");
             Projectile.NewProjectile(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<RestartEffectProj>(), 0, 0, player.whoAmI);
+        }
+
+        internal static void ExecuteRestart(Player player) {
+            //满血
+            player.Heal(player.statLifeMax2);
+
+            //清除所有buff
+            for (int i = 0; i < Player.MaxBuffs; i++) {
+                player.DelBuff(i);
+            }
+
+            player.SetResurrectionValue(0);//复苏进度归零
+
+            if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)) {
+                sirenMusicalBoxPlayer.ResetCurse();//清除八音盒诅咒
+            }
+
+            //生成大量恢复粒子
+            for (int i = 0; i < 50; i++) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = player.Center + angle.ToRotationVector2() * Main.rand.NextFloat(100f);
+                int dust = Dust.NewDust(pos, 1, 1, DustID.HealingPlus, 0, 0, 0, default, 2f);
+                Main.dust[dust].noGravity = true;
+                Main.dust[dust].velocity = (player.Center - pos).SafeNormalize(Vector2.Zero) * 5f;
+            }
         }
     }
 
@@ -303,7 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             //执行重启效果
             if (stateTimer == 5) {
-                ExecuteRestart();
+                RestartFish.ExecuteRestart(Owner);
             }
 
             //密集粒子爆发
@@ -355,27 +381,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
 
                 fishSwarms.Add(new RestartFishBoid(spawnPos, Owner.Center));
-            }
-        }
-
-        private void ExecuteRestart() {
-            //满血
-            Owner.Heal(Owner.statLifeMax2);
-
-            //清除所有buff
-            for (int i = 0; i < Player.MaxBuffs; i++) {
-                Owner.DelBuff(i);
-            }
-
-            Owner.SetResurrectionValue(0);//复苏进度归零
-
-            //生成大量恢复粒子
-            for (int i = 0; i < 50; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 pos = Owner.Center + angle.ToRotationVector2() * Main.rand.NextFloat(100f);
-                int dust = Dust.NewDust(pos, 1, 1, DustID.HealingPlus, 0, 0, 0, default, 2f);
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = (Owner.Center - pos).SafeNormalize(Vector2.Zero) * 5f;
             }
         }
 
