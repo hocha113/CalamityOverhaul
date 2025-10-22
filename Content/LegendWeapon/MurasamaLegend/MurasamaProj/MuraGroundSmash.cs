@@ -306,10 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             CreateMassiveImpactEffect();
 
             //造成范围伤害
-            DealAreaDamage();
-
-            //爆炸判定
-            Projectile.Explode(450);
+            Projectile.Explode(300 + MurasamaOverride.GetLevel(Item) * 30);
 
             //生成地面裂痕（视觉效果）
             SpawnGroundCracks();
@@ -389,14 +386,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     fire.noGravity = true;
                 }
             }
-        }
-
-        private void DealAreaDamage() {
-            if (!Projectile.IsOwnedByLocalPlayer()) {
-                return;
-            }
-
-            Projectile.Explode(300 + MurasamaOverride.GetLevel(Item) * 30);
         }
 
         private void SpawnGroundCracks() {
