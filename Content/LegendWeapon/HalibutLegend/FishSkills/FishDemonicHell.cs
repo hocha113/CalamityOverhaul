@@ -90,7 +90,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Projectile.Center = Owner.Center;
-            Owner.direction = Math.Sign(Projectile.velocity.X);
 
             ChargeTimer++;
 
@@ -112,6 +111,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnChargeParticles() {
+            if (VaultUtils.isServer) {
+                return;
+            }
             //每3帧生成一组粒子
             if (Main.rand.NextBool(3)) {
                 //向心聚集的地狱火焰
@@ -157,6 +159,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int damage = (int)(Owner.GetShootState().WeaponDamage * (2f + HalibutData.GetDomainLayer() * 0.5f));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 6f,
                 ModContent.ProjectileType<HellFireBlast>(), damage, 6f, Owner.whoAmI);
+
+            if (VaultUtils.isServer) {
+                return;
+            }
 
             //发射时的粒子爆发
             for (int i = 0; i < 50; i++) {
@@ -418,6 +424,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnInitialBurst() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
             for (int i = 0; i < 30; i++) {
                 Vector2 v = Main.rand.NextVector2Circular(8f, 8f);
                 var d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, v, 150,
@@ -440,6 +450,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnTrailParticle() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
             var prt = PRTLoader.NewParticle<PRT_HellFlame>(
                 Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
                 -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f),
@@ -453,6 +467,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnPreExplosionParticle() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
             var prt = PRTLoader.NewParticle<PRT_HellFlame>(
                 Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
                 Main.rand.NextVector2Circular(2f, 2f),
@@ -469,6 +487,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             explode = true;
             //伤害区域扩大
             Projectile.Explode(620, default, false);
+
+            if (VaultUtils.isServer) {
+                return;
+            }
 
             //大量地狱火焰粒子（主要视觉效果）
             for (int i = 0; i < 80; i++) {

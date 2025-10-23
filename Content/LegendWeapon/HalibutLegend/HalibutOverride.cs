@@ -4,6 +4,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.RemakeItems;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -156,6 +157,145 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// 计算武器持握的旋转角度，基于玩家手臂朝向
+        /// </summary>
+        private static float CalculateWeaponRotation(Player player) {
+            float armRotation = player.compositeFrontArm.rotation;
+            float rotationOffset = MathHelper.PiOver2 * player.gravDir;
+            return armRotation + rotationOffset;
+        }
+
+        /// <summary>
+        /// 获取武器绘制的位置偏移量
+        /// </summary>
+        private static Vector2 GetWeaponPositionOffset(float rotation, float distanceFromPlayer = 7f) {
+            return rotation.ToRotationVector2() * distanceFromPlayer;
+        }
+
+        /// <summary>
+        /// 设置武器相对于精灵的原点偏移
+        /// </summary>
+        private static Vector2 GetItemSpriteOrigin(int offsetX = -52, int offsetY = 4) {
+            return new Vector2(offsetX, offsetY);
+        }
+
+        public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
+            //更新玩家朝向，根据鼠标与玩家中心的相对位置
+            Vector2 worldMousePos = GetSyncedMousePosition(player);
+            Vector2 directionVector = worldMousePos - player.Center;
+            player.ChangeDir(Math.Sign(directionVector.X));
+
+            //计算武器的旋转角度和位置
+            float weaponRotation = CalculateWeaponRotation(player);
+            Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
+            Vector2 weaponDrawPosition = player.MountedCenter + positionOffset;
+
+            //设置武器尺寸和原点
+            Vector2 weaponDimensions = new Vector2(item.width, item.height);
+            Vector2 spriteOrigin = GetItemSpriteOrigin();
+
+            //应用持握样式
+            ApplyHoldingStyle(player, weaponRotation, weaponDrawPosition, weaponDimensions, spriteOrigin);
+        }
+
+        /// <summary>
+        /// 应用清爽的持握样式
+        /// </summary>
+        private static void ApplyHoldingStyle(Player player, float rotation, Vector2 position, Vector2 itemSize, Vector2 originOffset) {
+            originOffset.X *= player.direction;
+            originOffset.Y *= player.gravDir;
+
+            player.itemRotation = rotation;
+
+            if (player.direction < 0) {
+                player.itemRotation += MathHelper.Pi;
+            }
+
+            Vector2 consistentCenterAnchor = player.itemRotation.ToRotationVector2() * (itemSize.X / -2f - 10f) * player.direction;
+            Vector2 consistentAnchor = consistentCenterAnchor - originOffset.RotatedBy(player.itemRotation);
+            Vector2 offsetAgain = itemSize * -0.5f;
+
+            Vector2 finalPosition = position + offsetAgain + consistentAnchor;
+            int frame = player.bodyFrame.Y / player.bodyFrame.Height;
+            if ((frame > 6 && frame < 10) || (frame > 13 && frame < 17)) {
+                finalPosition -= Vector2.UnitY * 2f;
+            }
+
+            player.itemLocation = finalPosition + new Vector2(itemSize.X * 0.5f, 0);
+        }
+
+        /// <summary>
+        /// 获取同步的鼠标位置
+        /// </summary>
+        private static Vector2 GetSyncedMousePosition(Player player) {
+            if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return halibutPlayer.MouseWorld;
+            }
+            return Main.MouseWorld;
+        }
+
+        /// <summary>
+        /// 计算动画进度（0到1）
+        /// </summary>
+        private static float GetAnimationProgress(Player player) {
+            return 1f - (player.itemTime / (float)player.itemTimeMax);
+        }
+
+        /// <summary>
+        /// 计算手臂摆动旋转的额外偏移量
+        /// </summary>
+        private static float CalculateArmSwingOffset(float progress, int playerDirection) {
+            if (progress >= 0.4f) return 0f;
+
+            float swingPhase = (0.4f - progress) / 0.4f;
+            float swingPower = (float)Math.Pow(swingPhase, 2);
+            return -0.16f * swingPower * playerDirection;
+        }
+
+        /// <summary>
+        /// 根据鼠标位置计算基础旋转角度
+        /// </summary>
+        private static float CalculateBaseRotation(Player player, Vector2 mouseWorldPos) {
+            Vector2 toMouse = player.Center - mouseWorldPos;
+            float angleToMouse = toMouse.ToRotation();
+            float gravityAdjustedAngle = angleToMouse * player.gravDir;
+            return gravityAdjustedAngle + MathHelper.PiOver2;
+        }
+
+        public override void UseItemFrame(Item item, Player player) {
+            //同步获取鼠标位置
+            Vector2 syncedMousePos = GetSyncedMousePosition(player);
+            
+            //根据鼠标位置更新玩家朝向
+            Vector2 playerToMouse = syncedMousePos - player.Center;
+            player.ChangeDir(Math.Sign(playerToMouse.X));
+
+            //计算动画的当前进度
+            float animProgress = GetAnimationProgress(player);
+            
+            //基于鼠标位置计算旋转
+            float baseRotation = CalculateBaseRotation(player, syncedMousePos);
+            
+            //添加挥动动画偏移
+            float swingOffset = CalculateArmSwingOffset(animProgress, player.direction);
+            float finalRotation = baseRotation + swingOffset;
+
+            //设置复合手臂姿势
+            SetCompositeArmWithRotation(player, finalRotation);
+        }
+
+        /// <summary>
+        /// 设置玩家的复合手臂姿势
+        /// </summary>
+        private static void SetCompositeArmWithRotation(Player player, float rotation) {
+            player.SetCompositeArmFront(
+                enabled: true,
+                stretch: Player.CompositeArmStretchAmount.Full,
+                rotation: rotation
+            );
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

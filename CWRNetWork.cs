@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest;
 using CalamityOverhaul.Content.Industrials.Modifys;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.RemakeItems;
 using System.IO;
@@ -24,6 +25,7 @@ namespace CalamityOverhaul
         GiftScenarioNPC,
         DoGQuestTracker,
         PallbearerQuestTracker,
+        HalibutMouseWorld,
     }
 
     public static class CWRNetWork
@@ -59,6 +61,7 @@ namespace CalamityOverhaul
             GiftScenarioNPC.NetHandle(type, reader, whoAmI);
             PallbearerQuestTracker.NetHandle(type, reader, whoAmI);
             DoGQuestTracker.NetHandle(type, reader, whoAmI);
+            HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
         }
     }
 }

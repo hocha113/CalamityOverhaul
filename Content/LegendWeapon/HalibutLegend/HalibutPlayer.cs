@@ -6,10 +6,12 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
@@ -36,6 +38,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 锁定控制面板的时间
         /// </summary>
         public int IsInteractionLockedTime;
+        /// <summary>
+        /// 鼠标世界坐标
+        /// </summary>
+        public Vector2 MouseWorld;
+        private Vector2 _mouseWorld;
 
         #region 深渊复苏系统
         /// <summary>
@@ -258,9 +265,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return InWorldBossPhase.Halibut_Level() == 14;
         }
 
+        internal static void HandleHalibutMouseWorld(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (type != CWRMessageType.HalibutMouseWorld) {
+                return;
+            }
+
+            int playerIndex = reader.ReadByte();
+
+            if (!playerIndex.TryGetPlayer(out var player)) {
+                return;
+            }
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+
+            Vector2 mouseWorld = reader.ReadVector2();
+            halibutPlayer.MouseWorld = mouseWorld;
+
+            if (!VaultUtils.isServer) {
+                return;
+            }
+
+            ModPacket modPacket = CWRMod.Instance.GetPacket();
+            modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
+            modPacket.Write((byte)playerIndex);
+            modPacket.WriteVector2(mouseWorld);
+            modPacket.Send(-1, whoAmI);
+        }
+
+        internal void UpdateMouseWorld() {
+            if (Player.whoAmI == Main.myPlayer && (Player.PressKey() || Player.PressKey(false))) {
+                MouseWorld = Main.MouseWorld;
+                if (MouseWorld != _mouseWorld) {
+                    if (VaultUtils.isClient) {
+                        ModPacket modPacket = CWRMod.Instance.GetPacket();
+                        modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
+                        modPacket.Write((byte)Player.whoAmI);
+                        modPacket.WriteVector2(MouseWorld);
+                        modPacket.Send();
+                    }
+                }
+                _mouseWorld = MouseWorld;
+            }
+        }
+
         public override void PostUpdate() {//在每帧更新后进行一些操作
-            //更新深渊复苏系统
             if (HeldHalibut) {
+                UpdateMouseWorld();
+                //更新深渊复苏系统
                 ResurrectionSystem.Update();
             }
 
