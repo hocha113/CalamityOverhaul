@@ -295,10 +295,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
                 Vector2 mouseWorld = reader.ReadVector2();
 
-                // 验证鼠标位置是否在合理范围内
-                float maxDistance = 2000f; // 根据游戏需求调整最大距离
+                //验证鼠标位置是否在合理范围内
+                float maxDistance = 2000f;//根据游戏需求调整最大距离
                 if ((mouseWorld - player.Center).Length() > maxDistance) {
-                    return; // 可能是作弊或异常数据，忽略
+                    return;//可能是作弊或异常数据，忽略
                 }
 
                 halibutPlayer.MouseWorld = mouseWorld;
