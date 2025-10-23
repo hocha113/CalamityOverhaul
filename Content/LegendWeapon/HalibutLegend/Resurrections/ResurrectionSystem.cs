@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Tools;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections

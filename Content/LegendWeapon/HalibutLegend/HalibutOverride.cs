@@ -268,17 +268,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public override void UseItemFrame(Item item, Player player) {
             //同步获取鼠标位置
             Vector2 syncedMousePos = GetSyncedMousePosition(player);
-            
+
             //根据鼠标位置更新玩家朝向
             Vector2 playerToMouse = syncedMousePos - player.Center;
             player.ChangeDir(Math.Sign(playerToMouse.X));
 
             //计算动画的当前进度
             float animProgress = GetAnimationProgress(player);
-            
+
             //基于鼠标位置计算旋转
             float baseRotation = CalculateBaseRotation(player, syncedMousePos);
-            
+
             //添加挥动动画偏移
             float swingOffset = CalculateArmSwingOffset(animProgress, player.direction);
             float finalRotation = baseRotation + swingOffset;

@@ -505,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
-            
+
             TriggerImpact();
         }
 

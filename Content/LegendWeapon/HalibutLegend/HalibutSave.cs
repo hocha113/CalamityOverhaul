@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
                 tag["ActiveEyeIndices"] = activeEyeIndices;
-               
+
                 if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
                     //保存深渊复苏系统数据
                     tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
