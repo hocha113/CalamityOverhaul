@@ -73,11 +73,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
                 tag["ActiveEyeIndices"] = activeEyeIndices;
-
-                //保存深渊复苏系统数据
+               
                 if (Player.TryGetOverride<HalibutPlayer>(out var hPlayer)) {
+                    //保存深渊复苏系统数据
                     tag["ResurrectionSystem"] = hPlayer.ResurrectionSystem.SaveData();
                     tag["ADCSave"] = hPlayer.ADCSave.SaveData();
+                    tag["IsInteractionLockedTime"] = hPlayer.IsInteractionLockedTime;
                 }
 
                 foreach (var scenario in ADVScenarioBase.Instances) {
@@ -119,6 +120,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     //加载ADCSave数据
                     if (tag.TryGet<TagCompound>("ADCSave", out var adcTag)) {
                         halibutPlayer.ADCSave.LoadData(adcTag);
+                    }
+                    //加载锁定时间
+                    if (tag.TryGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {
+                        halibutPlayer.IsInteractionLockedTime = isInteractionLockedTime;
                     }
                 }
 
