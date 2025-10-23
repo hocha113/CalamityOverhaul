@@ -81,11 +81,14 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
+        public override bool CreateDust(int i, int j, ref int type) {
+            type = Main.rand.NextBool(2) ? DustID.Water : DustID.SilverCoin;
+            return true;
+        }
+
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, Width * 16, Height * 16, ModContent.ItemType<SirenMusicalBox>());
-
             for (int z = 0; z < 13; z++) {
                 Dust.NewDust(new Vector2(i * 16, j * 16), Width * 16, Height * 16, DustID.SilverCoin);
             }
@@ -247,7 +250,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         /// <summary>
         /// 执行玩家死亡
         /// </summary>
-        private void ExecuteDeath() {
+        internal void ExecuteDeath() {
             if (Player.dead) {
                 return;
             }
@@ -543,14 +546,28 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void OnKill() {
             if (IsMusicPlaying) {
+                foreach (int playerIndex in activePlayers) {
+                    if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
+                        continue;
+                    }
+                    Player player = Main.player[playerIndex];
+                    if (player == null || !player.active) {
+                        continue;
+                    }
+                    SirenMusicalBoxPlayer modPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
+                    if (!modPlayer.IsCursed) {
+                        continue;
+                    }
+                    modPlayer.ExecuteDeath();
+                }
                 StopMusic();
-            }
-            if (VaultUtils.isClient) {
-                SendData();
             }
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
+            if (player.whoAmI != Main.myPlayer) {
+                return false;
+            }
             if (player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)
                 && sirenMusicalBoxPlayer.IsCursed) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.62f });
@@ -584,10 +601,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             //绑定范围内的所有玩家
             BindNearbyPlayers();
 
-            //在服务器上同步
-            if (Main.netMode == NetmodeID.Server) {
-                SendData();
-            }
+            SendData();
         }
 
         /// <summary>
@@ -608,10 +622,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             //解除所有玩家的绑定
             UnbindAllPlayers();
 
-            //在服务器上同步
-            if (Main.netMode == NetmodeID.Server) {
-                SendData();
-            }
+            SendData();
         }
 
         /// <summary>
