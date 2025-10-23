@@ -108,16 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 获取或设置复苏速度
         /// </summary>
         public float ResurrectionRate {
-            get {
-                if (!Main.gameMenu &&
-                    Main.LocalPlayer.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)
-                    && sirenMusicalBoxPlayer.IsCursed
-                    && Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)
-                    && halibutPlayer.SeaDomainLayers <= 5) {
-                    return 0f;//在被诅咒且海域层级不高于5时，复苏速度为0
-                }
-                return resurrectionRate;
-            }
+            get => resurrectionRate;
             set {
                 float oldRate = resurrectionRate;
                 resurrectionRate = value;
@@ -227,8 +218,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
 
             // 应用复苏速度
-            if (Math.Abs(ResurrectionRate) > 0.001f) {
-                AddValue(ResurrectionRate, true);
+            if (Math.Abs(resurrectionRate) > 0.001f) {
+                AddValue(resurrectionRate, true);
             }
 
             // 检查危险区域状态

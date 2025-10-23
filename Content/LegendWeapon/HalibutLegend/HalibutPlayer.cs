@@ -236,9 +236,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 低于或者等于这个等级的眼睛会进入死机状态
         /// </summary>
         public int CrashesLevel() {
-            int level = GetCrashesLevel(Main.LocalPlayer.GetItem());
+            int level = GetCrashesLevel(Player.GetItem());
             if (Player.HasBuff<FishoilBuff>()) {
                 level++;//鱼油加持下可以临时的多死机一只眼
+            }
+            if (!Main.gameMenu &&
+                Player.TryGetModPlayer<SirenMusicalBoxPlayer>(out var sirenMusicalBoxPlayer)
+                && sirenMusicalBoxPlayer.IsCursed) {
+                if (level < 5) {
+                    level = 5;//被诅咒时最低死机等级为5
+                }
             }
             return (int)MathHelper.Clamp(level, 0, 10);
         }
