@@ -685,20 +685,22 @@ namespace CalamityOverhaul.Content.Items.Tools
                     Vector2 spawnPos = player.Center + angle.ToRotationVector2() * radius;
                     Vector2 velocity = (player.Center - spawnPos).SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.5f, 1.5f);
 
-                    //音符粒子 - 使用更鲜艳的颜色
+                    //使用音符粒子 - 随机选择音符类型
                     Color particleColor = Main.rand.Next(4) switch {
-                        0 => new Color(186, 85, 211), //中紫罗兰色
-                        1 => new Color(138, 43, 226), //蓝紫色
+                        0 => new Color(186, 85, 211),  //中紫罗兰色
+                        1 => new Color(138, 43, 226),  //蓝紫色
                         2 => new Color(147, 112, 219), //中紫色
                         _ => new Color(255, 0, 255)    //品红色
                     };
 
-                    PRT_Light noteParticle = new PRT_Light(
+                    int noteType = Main.rand.Next(3); //随机选择音符类型
+                    PRT_Note noteParticle = new PRT_Note(
                         spawnPos,
                         velocity,
-                        Main.rand.NextFloat(0.2f, 0.8f),
                         particleColor,
-                        Main.rand.Next(45, 75)
+                        Main.rand.Next(45, 75),
+                        Main.rand.NextFloat(0.3f, 0.6f),
+                        noteType
                     );
                     PRTLoader.AddParticle(noteParticle);
                 }
@@ -709,12 +711,13 @@ namespace CalamityOverhaul.Content.Items.Tools
                     Vector2 ghostPos = player.Center + offsetAngle.ToRotationVector2() * Main.rand.Next(100, 200);
                     Vector2 ghostVel = (player.Center - ghostPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
 
-                    PRT_Light ghostNote = new PRT_Light(
+                    PRT_Note ghostNote = new PRT_Note(
                         ghostPos,
                         ghostVel,
-                        Main.rand.NextFloat(0.5f, 0.75f),
                         Color.DarkViolet * 0.8f,
-                        Main.rand.Next(30, 50)
+                        Main.rand.Next(30, 50),
+                        Main.rand.NextFloat(0.5f, 0.75f),
+                        Main.rand.Next(3)
                     );
                     PRTLoader.AddParticle(ghostNote);
                 }
@@ -744,6 +747,23 @@ namespace CalamityOverhaul.Content.Items.Tools
                         warnDust.noGravity = true;
                         warnDust.velocity = Main.rand.NextVector2Circular(3f, 3f);
                     }
+
+                    //快结束时增加音符密度
+                    if (Main.rand.NextBool(2)) {
+                        float panicAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+                        Vector2 panicPos = player.Center + panicAngle.ToRotationVector2() * Main.rand.NextFloat(40f, 80f);
+                        Vector2 panicVel = Main.rand.NextVector2Circular(2f, 2f);
+
+                        PRT_Note panicNote = new PRT_Note(
+                            panicPos,
+                            panicVel,
+                            Color.Lerp(Color.Red, Color.DarkMagenta, Main.rand.NextFloat()),
+                            Main.rand.Next(20, 40),
+                            Main.rand.NextFloat(0.4f, 0.7f),
+                            Main.rand.Next(3)
+                        );
+                        PRTLoader.AddParticle(panicNote);
+                    }
                 }
 
                 //海妖之眼效果 - 偶尔出现诡异的"眼睛"
@@ -765,7 +785,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                     pupil.noGravity = true;
                 }
 
-                //扭曲的音波效果
+                //扭曲的音波效果 - 使用音符粒子
                 if (Main.rand.NextBool(10)) {
                     int waveCount = 20;
                     float waveRadius = Main.rand.NextFloat(80f, 150f);
@@ -776,8 +796,15 @@ namespace CalamityOverhaul.Content.Items.Tools
                         Vector2 waveVel = waveAngle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
 
                         Color waveColor = Color.Lerp(Color.Purple, Color.Cyan, Main.rand.NextFloat());
-                        PRT_Light wave = new PRT_Light(wavePos, waveVel, 0.52f, waveColor * 0.6f, Main.rand.Next(20, 40));
-                        PRTLoader.AddParticle(wave);
+                        PRT_Note waveNote = new PRT_Note(
+                            wavePos,
+                            waveVel,
+                            waveColor * 0.6f,
+                            Main.rand.Next(20, 40),
+                            Main.rand.NextFloat(0.4f, 0.6f),
+                            Main.rand.Next(3)
+                        );
+                        PRTLoader.AddParticle(waveNote);
                     }
                 }
 
@@ -799,6 +826,28 @@ namespace CalamityOverhaul.Content.Items.Tools
                             ripple.fadeIn = 0.8f;
                         }
                     }
+                }
+
+                //音符雨效果 - 从上方飘落的音符
+                if (Main.rand.NextBool(8)) {
+                    Vector2 fallPos = player.Center + new Vector2(Main.rand.NextFloat(-200f, 200f), -Main.rand.NextFloat(150f, 250f));
+                    Vector2 fallVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f));
+                    
+                    Color fallColor = Main.rand.Next(3) switch {
+                        0 => Color.Purple,
+                        1 => Color.Violet,
+                        _ => Color.Magenta
+                    };
+
+                    PRT_Note fallNote = new PRT_Note(
+                        fallPos,
+                        fallVel,
+                        fallColor * 0.8f,
+                        Main.rand.Next(60, 90),
+                        Main.rand.NextFloat(0.4f, 0.8f),
+                        Main.rand.Next(3)
+                    );
+                    PRTLoader.AddParticle(fallNote);
                 }
             }
         }
