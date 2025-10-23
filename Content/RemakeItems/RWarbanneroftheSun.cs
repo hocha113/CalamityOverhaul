@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.RemakeItems
                     }
                 }
 
-                bonus /= 4f;
+                bonus /= 2f;
 
                 player.GetAttackSpeed<MeleeDamageClass>() += bonus;
                 player.GetDamage<MeleeDamageClass>() += bonus;
