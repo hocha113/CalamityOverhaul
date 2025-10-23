@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,8 +42,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// <summary>
         /// 鼠标世界坐标
         /// </summary>
-        public Vector2 MouseWorld;
+        public Vector2 MouseWorld {
+            get {
+                UpdateMouseWorld();
+                return _mouseWorld;
+            }
+            set {
+                _mouseWorld = value;
+            }
+        }
         private Vector2 _mouseWorld;
+        private Vector2 _oldMouseWorld;
+        private int _syncCooldown = 0;//同步冷却计数器
+        private const int SYNC_INTERVAL = 5; //每5帧同步一次
+        private const float MIN_MOVEMENT_THRESHOLD = 5f; //最小移动距离阈值
 
         #region 深渊复苏系统
         /// <summary>
@@ -270,48 +283,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
-            int playerIndex = reader.ReadByte();
+            try {
+                int playerIndex = reader.ReadByte();
 
-            if (!playerIndex.TryGetPlayer(out var player)) {
-                return;
+                if (!playerIndex.TryGetPlayer(out var player) || player == null) {
+                    return;
+                }
+                if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer) || halibutPlayer == null) {
+                    return;
+                }
+
+                Vector2 mouseWorld = reader.ReadVector2();
+
+                // 验证鼠标位置是否在合理范围内
+                float maxDistance = 2000f; // 根据游戏需求调整最大距离
+                if ((mouseWorld - player.Center).Length() > maxDistance) {
+                    return; // 可能是作弊或异常数据，忽略
+                }
+
+                halibutPlayer.MouseWorld = mouseWorld;
+
+                if (!VaultUtils.isServer) {
+                    return;
+                }
+
+                ModPacket modPacket = CWRMod.Instance.GetPacket();
+                modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
+                modPacket.Write((byte)playerIndex);
+                modPacket.WriteVector2(mouseWorld);
+                modPacket.Send(-1, whoAmI);
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Error("Error in HandleHalibutMouseWorld: " + ex.Message);
             }
-            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                return;
-            }
-
-            Vector2 mouseWorld = reader.ReadVector2();
-            halibutPlayer.MouseWorld = mouseWorld;
-
-            if (!VaultUtils.isServer) {
-                return;
-            }
-
-            ModPacket modPacket = CWRMod.Instance.GetPacket();
-            modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
-            modPacket.Write((byte)playerIndex);
-            modPacket.WriteVector2(mouseWorld);
-            modPacket.Send(-1, whoAmI);
         }
 
-        internal void UpdateMouseWorld() {
-            if (Player.whoAmI == Main.myPlayer && (Player.PressKey() || Player.PressKey(false))) {
-                MouseWorld = Main.MouseWorld;
-                if (MouseWorld != _mouseWorld) {
-                    if (VaultUtils.isClient) {
-                        ModPacket modPacket = CWRMod.Instance.GetPacket();
-                        modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
-                        modPacket.Write((byte)Player.whoAmI);
-                        modPacket.WriteVector2(MouseWorld);
-                        modPacket.Send();
-                    }
+        private void UpdateMouseWorld() {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+
+            _mouseWorld = Main.MouseWorld;
+
+            //只有当鼠标移动超过阈值或达到同步间隔时才发送同步
+            if ((_mouseWorld - _oldMouseWorld).Length() > MIN_MOVEMENT_THRESHOLD || ++_syncCooldown >= SYNC_INTERVAL) {
+                if (VaultUtils.isClient) {
+                    ModPacket modPacket = CWRMod.Instance.GetPacket();
+                    modPacket.Write((byte)CWRMessageType.HalibutMouseWorld);
+                    modPacket.Write((byte)Player.whoAmI);
+                    modPacket.WriteVector2(_mouseWorld);
+                    modPacket.Send();
                 }
-                _mouseWorld = MouseWorld;
+                _syncCooldown = 0;
+                _oldMouseWorld = _mouseWorld;
             }
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
             if (HeldHalibut) {
-                UpdateMouseWorld();
                 //更新深渊复苏系统
                 ResurrectionSystem.Update();
             }
