@@ -22,12 +22,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private const int RestartCooldown = 60 * 60 * 3; //3分钟冷却
 
         public static void AltUse(Item item, Player player) {
-            var hp = player.GetOverride<HalibutPlayer>();
-            if (hp.RestartFishToggleCD > 0 || hp.RestartFishCooldown > 0) return;
+            if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+            if (halibutPlayer.RestartFishToggleCD > 0 || halibutPlayer.RestartFishCooldown > 0) return;
             Activate(player);
-            hp.IsInteractionLockedTime = (int)(60 * ((10 - MathHelper.Clamp(hp.CrashesLevel() - 5, 0, 10)) * 3));
-            hp.RestartFishToggleCD = ToggleCD;
-            hp.RestartFishCooldown = RestartCooldown;
+            halibutPlayer.IsInteractionLockedTime = (int)(60 * ((10 - MathHelper.Clamp(halibutPlayer.CrashesLevel() - 5, 0, 10)) * 3));
+            halibutPlayer.RestartFishToggleCD = ToggleCD;
+            halibutPlayer.RestartFishCooldown = RestartCooldown;
         }
 
         public static void Activate(Player player) {
@@ -216,6 +218,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return false; //正在重启，阻止死亡
             }
             return true;
+        }
+
+        public override void OnRespawn() {
+            if (!Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                return;
+            }
+            if (halibutPlayer.IsInteractionLockedTime > 3 * 60) {
+                halibutPlayer.IsInteractionLockedTime = 3 * 60;//重生后锁定时间不超过3秒
+            }
         }
     }
 
