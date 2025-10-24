@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             Check();
 
             //仅服务器发送
-            if (VaultUtils.isServer && GiftScenarioBase.BossIDToInds.ContainsKey(npc.type)) {
+            if (VaultUtils.isServer) {
                 ModPacket packet = CWRMod.Instance.GetPacket();
                 packet.Write((byte)CWRMessageType.PallbearerQuestTracker);
                 packet.Send();

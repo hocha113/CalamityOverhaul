@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV.Scenarios;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -23,6 +24,7 @@ namespace CalamityOverhaul
         CrabulonFeed,
         CrabulonModifyNetWork,
         GiftScenarioNPC,
+        FirstMetSupCalNPC,
         DoGQuestTracker,
         PallbearerQuestTracker,
         HalibutMouseWorld,
@@ -59,6 +61,7 @@ namespace CalamityOverhaul
             }
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             GiftScenarioNPC.NetHandle(type, reader, whoAmI);
+            FirstMetSupCalNPC.NetHandle(type, reader, whoAmI);
             PallbearerQuestTracker.NetHandle(type, reader, whoAmI);
             DoGQuestTracker.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
