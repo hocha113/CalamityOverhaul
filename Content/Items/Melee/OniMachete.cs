@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly List<int> ActiveHands = new();
         public override void SetDefaults() {
             Item.width = Item.height = 45;
-            Item.damage = 6666;
+            Item.damage = 2666;
             Item.scale = 3.2f;
             Item.DamageType = DamageClass.Generic;
             Item.useTime = Item.useAnimation = 12;
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<OniHandMinion>(),
-                damage/2,
+                damage,
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
@@ -1482,7 +1482,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<OniHandExplode>(), Projectile.damage * 5, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<OniHandExplode>(), Projectile.damage * 3, Projectile.knockBack, Projectile.owner);
             }
         }
 
