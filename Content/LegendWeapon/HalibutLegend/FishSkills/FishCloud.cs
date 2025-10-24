@@ -195,13 +195,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             UpdateCloudFishParticles();
 
             switch (Phase) {
-                case 0: // 飞向玩家脚下
+                case 0: //飞向玩家脚下
                     FlyToPlayerPhase();
                     break;
-                case 1: // 载着玩家飞行
+                case 1: //载着玩家飞行
                     RidingPhase();
                     break;
-                case 2: // 消散
+                case 2: //消散
                     DissipatePhase();
                     break;
             }
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //更新位置
                 fish.Position += fish.Velocity;
-                fish.Position += Projectile.velocity * 0.8f;
+                fish.Position += Projectile.velocity * 0.64f;
 
                 //更新旋转（面向移动方向）
                 if (fish.Velocity.LengthSquared() > 0.1f) {
