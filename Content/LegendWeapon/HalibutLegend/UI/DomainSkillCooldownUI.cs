@@ -159,12 +159,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float a = _panelAppear * icon.LocalAppear;
                 if (a <= 0.01f) continue;
 
-                // 抖动偏移：使用快速sin + 轻微乱序(基于技能枚举) 制造更自然的警告感
+                //抖动偏移：使用快速sin + 轻微乱序(基于技能枚举) 制造更自然的警告感
                 Vector2 shakeOffset = Vector2.Zero;
                 if (icon.Shake > 0f) {
                     float t = (float)Main.GameUpdateCount * 0.4f;
-                    float phase = (int)icon.Skill * 1.7f; // 枚举区分
-                    float amp = 4f * icon.Shake; // 最大4px
+                    float phase = (int)icon.Skill * 1.7f; //枚举区分
+                    float amp = 4f * icon.Shake; //最大4px
                     shakeOffset.X = (float)Math.Sin(t * 5f + phase) * amp;
                     shakeOffset.Y = (float)Math.Cos(t * 3.2f + phase) * amp * 0.5f;
                 }
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
                 //圆形进度遮罩
                 if (GearProgress?.Value != null) {
-                    GearProgress.Value.Parameters["Progress"].SetValue(icon.RemainingRatio);
+                    GearProgress.Value.Parameters["Progress"].SetValue(1f - icon.RemainingRatio);
                     GearProgress.Value.Parameters["Rotation"].SetValue(-MathHelper.PiOver2);
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(0, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GearProgress.Value, Main.UIScaleMatrix);
