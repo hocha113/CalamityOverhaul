@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Timer++;
 
             //火球旋转效果
-            Projectile.rotation += Projectile.velocity.Length() * 0.03f;
+            Projectile.rotation += Projectile.velocity.X * 0.13f;
 
             //硫磺火球发光
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.3f + 0.7f;
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SpawnBrimstoneTrail();
 
             //火球膨胀脉动效果
-            Projectile.scale = 1f + (float)Math.Sin(Timer * 0.2f) * 0.15f;
+            Projectile.scale = 1f + (float)Math.Sin(Timer * 0.02f) * 0.1f;
         }
 
         private void HomeInOnTarget() {
@@ -389,7 +389,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = mainValue.GetRectangle(Projectile.frame, 4);
+            Rectangle rectangle = mainValue.GetRectangle();
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
