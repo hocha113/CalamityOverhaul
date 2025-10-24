@@ -182,10 +182,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return new Vector2(offsetX, offsetY);
         }
 
+        public override void HoldItem(Item item, Player player) {
+            //同步获取鼠标位置
+            Vector2 syncedMousePos = GetSyncedMousePosition(player);
+            //根据鼠标位置更新玩家朝向
+            Vector2 playerToMouse = player.To(syncedMousePos);
+            player.ChangeDir(Math.Sign(playerToMouse.X));
+        }
+
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
             //更新玩家朝向，根据鼠标与玩家中心的相对位置
             Vector2 worldMousePos = GetSyncedMousePosition(player);
-            Vector2 directionVector = worldMousePos - player.Center;
+            Vector2 directionVector = player.To(worldMousePos);
             player.ChangeDir(Math.Sign(directionVector.X));
 
             //计算武器的旋转角度和位置
