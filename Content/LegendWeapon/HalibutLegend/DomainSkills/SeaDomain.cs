@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private int pressureDamageTimer;
         private const int PressureTickInterval = 30; //每30帧(0.5s)结算一次
         private const int PressureBase = 8;          //1层基础伤害
-        private const int PressurePerLayer = 6;      //额外线性增长
+        private const int PressurePerLayer = 10;      //额外线性增长
         private const float BossDamageFactor = 1.75f; //对Boss增加
         private const float HighLifeDamageFactor = 1.4f; //对高血量精英增加
 
