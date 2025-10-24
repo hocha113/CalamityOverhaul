@@ -377,6 +377,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (GelLife % 5 == 0) {
                 SpawnStickyTrail();
             }
+
+            if (Projectile.localAI[0] > 0) {
+                Projectile.localAI[0]--;
+            }
         }
 
         //追踪粒子效果
@@ -715,11 +719,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bounce.noGravity = true;
             }
 
-            //弹跳音效 - 弹跳次数多时音调变化
-            SoundEngine.PlaySound(SoundID.Item95 with {
-                Volume = 0.3f,
-                Pitch = 0.1f + Math.Min(bounceCount * 0.1f, 0.4f)
-            }, Projectile.Center);
+            if (Projectile.localAI[0] <= 1) {
+                //弹跳音效，弹跳次数多时音调变化
+                SoundEngine.PlaySound(SoundID.Item95 with {
+                    Volume = 0.3f,
+                    Pitch = 0.1f + Math.Min(bounceCount * 0.1f, 0.4f)
+                }, Projectile.Center);
+                Projectile.localAI[0] = 30;
+            }
 
             return false;
         }
