@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<Heartcarver>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
-        private int stabCounter = 0;//刺击计数器
+        private static int stabCounter = 0;//刺击计数器
 
         public override void SetKnifeProperty() {
             Projectile.DamageType = DamageClass.Generic;
@@ -99,6 +99,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void Shoot() {
             //每次刺击都会生成环绕匕首
             int daggerType = ModContent.ProjectileType<HeartcarverDagger>();
+            if (stabCounter > 3) {
+                stabCounter = 0;
+            }
             //限制最多3把匕首
             if (Owner.ownedProjectileCounts[daggerType] < 3) {
                 Projectile.NewProjectile(
