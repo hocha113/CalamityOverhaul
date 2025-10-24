@@ -330,30 +330,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (target.active) {
                     Vector2 toTarget = target.Center - Projectile.Center;
                     float distance = toTarget.Length();
-                    
+
                     if (distance > 20f) {
                         //计算追踪强度 - 距离越近追踪越强
                         float distanceRatio = 1f - Math.Min(distance / TrackingRange, 1f);
-                        
+
                         //弹跳次数越多，追踪力越强
                         float bounceBonus = Math.Min(bounceCount * 0.15f, 0.6f);
-                        
+
                         //下落时追踪力增强
                         float fallBonus = Projectile.velocity.Y > 0 ? 0.3f : 0f;
-                        
+
                         //综合追踪力度
                         float trackingStrength = TrackingForce * (0.6f + distanceRatio * 0.4f + bounceBonus + fallBonus);
-                        
+
                         //计算追踪加速度
                         Vector2 trackingAccel = toTarget.SafeNormalize(Vector2.Zero) * trackingStrength;
-                        
+
                         //应用追踪力 - 使用加速度而非直接修改速度，保持自然感
                         Projectile.velocity += trackingAccel;
-                        
+
                         //限制最大速度，但允许重力和弹跳的自然速度
                         float currentSpeed = Projectile.velocity.Length();
                         if (currentSpeed > MaxTrackingSpeed) {
-                            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 
+                            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) *
                                 MathHelper.Lerp(currentSpeed, MaxTrackingSpeed, 0.1f);
                         }
 
@@ -675,7 +675,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity.X = -oldVelocity.X * Bounce;
                 jellyStretch = 1.3f;
                 jellySquash = 0.7f;
-                
+
                 //弹跳时如果有追踪目标，调整X方向朝向目标
                 if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
                     NPC target = Main.npc[trackingTargetID];
@@ -692,7 +692,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity.Y = -oldVelocity.Y * Bounce;
                 jellySquash = 1.3f;
                 jellyStretch = 0.7f;
-                
+
                 //弹跳时如果有追踪目标，给一点朝向目标的水平速度
                 if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
                     NPC target = Main.npc[trackingTargetID];
@@ -854,7 +854,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //绘制追踪指示
         private void DrawTrackingIndicator(SpriteBatch sb) {
             if (trackingTargetID < 0 || trackingTargetID >= Main.maxNPCs) return;
-            
+
             NPC target = Main.npc[trackingTargetID];
             if (!target.active) return;
 
@@ -874,10 +874,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int segments = (int)(length / 20f);
             for (int i = 0; i < segments; i++) {
                 if (i % 2 == 0) continue; //创建虚线效果
-                
+
                 Vector2 segmentStart = start + diff * (i / (float)segments);
                 float segmentLength = Math.Min(20f, length - i * 20f);
-                
+
                 float pulse = (float)Math.Sin(GelLife * 0.3f - i * 0.3f) * 0.3f + 0.7f;
                 Color indicatorColor = new Color(150, 220, 255) * pulse * 0.3f;
 
@@ -992,7 +992,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (trackingTargetID >= 0) {
                 float trackingPulse = (float)Math.Sin(GelLife * 0.4f) * 0.3f + 0.7f;
                 Color trackingGlow = new Color(150, 230, 255) * trackingPulse * 0.4f;
-                
+
                 sb.Draw(
                     glowTex,
                     drawPos,
