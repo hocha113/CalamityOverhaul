@@ -139,6 +139,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             if (npc.type != ModContent.NPCType<DevourerofGodsHead>()) {
                 return;
             }
+
             Check();
 
             //仅服务器发送

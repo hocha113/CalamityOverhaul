@@ -91,13 +91,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             if (npc.type == ModContent.NPCType<SupremeCalamitas>() && Main.LocalPlayer.GetItem().type == HalibutOverride.ID) {
                 Spawned = true;
                 RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
-            }
 
-            //仅服务器发送
-            if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.SupCalDefeatNPC);
-                packet.Send();
+                //仅服务器发送
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.SupCalDefeatNPC);
+                    packet.Send();
+                }
             }
         }
 

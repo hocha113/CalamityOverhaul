@@ -149,6 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             if (npc.type != ModContent.NPCType<Providence>()) {
                 return;
             }
+
             Check();
 
             //仅服务器发送

@@ -167,13 +167,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                 //Boss被击杀时重置状态
                 hasRecordedDeath = false;
                 Spawned = false;
-            }
 
-            //仅服务器发送
-            if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.SupCalPlayerDefeatTracker);
-                packet.Send();
+                //仅服务器发送
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.SupCalPlayerDefeatTracker);
+                    packet.Send();
+                }
             }
         }
 
