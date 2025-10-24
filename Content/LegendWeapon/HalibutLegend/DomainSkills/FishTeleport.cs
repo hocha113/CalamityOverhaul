@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private const int ToggleCD = 15;
         private const int TeleportCooldown = 180; //3秒冷却
 
-        public static void AltUse(Item item, Player player) {
+        public static void AltUse(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.FishTeleportToggleCD > 0 || hp.FishTeleportCooldown > 0) return;
 

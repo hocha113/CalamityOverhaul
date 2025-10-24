@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         internal static int ID = 4;
         private const int ToggleCD = 15;
 
-        public static void AltUse(Item item, Player player) {
+        public static void AltUse(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SeaDomainToggleCD > 0) return;
             if (!hp.SeaDomainActive) {

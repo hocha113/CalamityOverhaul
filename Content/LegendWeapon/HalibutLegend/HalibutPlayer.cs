@@ -438,45 +438,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //海域领域激活检测，不要在服务器上访问按键
             if (CWRKeySystem.Halibut_Domain.JustPressed) {
                 if (SeaDomainLayers > 0 || SeaDomainActive) {
-                    SeaDomain.AltUse(item, Player);
+                    SeaDomain.AltUse(Player);
                 }
             }
             //封锁过去，埋葬现在，截断未来...难道我今天真的要被孟小董杀死？不，现在还不能放弃...
             else if (CWRKeySystem.Halibut_Clone.JustPressed) {
                 if (SeaDomainLayers > 0) {
                     CloneCount = SeaDomainLayers;
-                    CloneFish.AltUse(item, Player);
+                    CloneFish.AltUse(Player);
                 }
             }
             //既然总部认为我已经死了，那么就让你们看看，我死后，到底会发生什么事情
             else if (CWRKeySystem.Halibut_Restart.JustPressed) {
                 if (SeaDomainLayers >= 5) {//大于等于五层领域后才能使用
-                    RestartFish.AltUse(item, Player);
+                    RestartFish.AltUse(Player);
                 }
             }
             //叠加袭击
             else if (CWRKeySystem.Halibut_Superposition.JustPressed) {
                 if (SeaDomainLayers >= 7) {//大于等于七层领域后才能使用
-                    Superposition.AltUse(item, Player);
+                    Superposition.AltUse(Player);
                 }
             }
             //领域传送
             else if (CWRKeySystem.Halibut_Teleport.JustPressed) {
                 if (SeaDomainActive) {
-                    FishTeleport.AltUse(item, Player);
+                    FishTeleport.AltUse(Player);
                 }
             }
 
             if (!SeaDomainActive && OnStartSeaDomain && Player.CountProjectilesOfID<SeaDomainProj>() == 0) {
                 if (SeaDomainLayers > 0) {
-                    SeaDomain.AltUse(item, Player);
+                    SeaDomain.AltUse(Player);
                 }
                 OnStartSeaDomain = false;
             }
             if (!CloneFishActive && OnStartClone && Player.CountProjectilesOfID<ClonePlayer>() == 0) {
                 if (SeaDomainLayers > 0) {
                     CloneCount = SeaDomainLayers;
-                    CloneFish.AltUse(item, Player);
+                    CloneFish.AltUse(Player);
                 }
                 OnStartClone = false;
             }

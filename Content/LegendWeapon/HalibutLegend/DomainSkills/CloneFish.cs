@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public static int ID = 3;
         private const int ToggleCD = 12; //0.2 秒左右的触发后摇
 
-        public static void AltUse(Item item, Player player) {
+        public static void AltUse(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.CloneFishToggleCD > 0) return; //后摇中禁止
             if (!hp.CloneFishActive) {

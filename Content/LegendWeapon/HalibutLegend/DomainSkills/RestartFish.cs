@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private const int ToggleCD = 20;
         private const int RestartCooldown = 60 * 60 * 3; //3分钟冷却
 
-        public static void AltUse(Item item, Player player) {
+        public static void AltUse(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }

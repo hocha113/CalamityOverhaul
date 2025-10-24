@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public static int ID = 6;
         private const int ToggleCD = 30;
         private static int SuperpositionCooldown => 60 * (30 - (HalibutData.GetDomainLayer() - 7) * 5); //30s基础冷却
-        public static void AltUse(Item item, Player player) {
+        public static void AltUse(Player player) {
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SuperpositionToggleCD > 0 || hp.SuperpositionCooldown > 0) {
                 return;
