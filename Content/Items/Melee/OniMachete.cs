@@ -33,6 +33,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
         }
 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            if (InWorldBossPhase.Level11) {
+                damage *= 1.25f;
+            }
+            if (InWorldBossPhase.Level12) {
+                damage *= 1.25f;
+            }
+        }
+
         public override void HoldItem(Player player) {
             if (ActiveHands.Count < 6) {
                 SpawnHand(player, player.FromObjectGetParent(), player.GetWeaponDamage(Item, true), 2f);
