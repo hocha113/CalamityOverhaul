@@ -21,9 +21,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly List<int> ActiveHands = new();
         public override void SetDefaults() {
             Item.width = Item.height = 45;
-            Item.damage = 2000;
+            Item.damage = 6666;
+            Item.scale = 3.2f;
             Item.DamageType = DamageClass.Generic;
-            Item.useTime = Item.useAnimation = 25;
+            Item.useTime = Item.useAnimation = 12;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTurn = true;
             Item.rare = ItemRarityID.Red;
@@ -179,6 +180,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.maxPenetrate = Projectile.penetrate = 3;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            Projectile.damage = (int)(Projectile.damage * 0.65f);
         }
 
         public override void AI() {
