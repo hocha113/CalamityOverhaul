@@ -150,6 +150,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float GelLife => ref Projectile.ai[1];
         private ref float AttachedTargetID => ref Projectile.ai[2];
 
+        //追踪目标系统
+        private int trackingTargetID = -1;
+        private int trackingLockTime = 0;
+        private const int TrackingLockDuration = 180; //目标锁定持续时间
+        private const float TrackingRange = 400f; //追踪范围
+        private const float TrackingForce = 0.3f; //追踪力度基础值
+        private const float MaxTrackingSpeed = 16f; //最大追踪速度
+        private int bounceCount = 0; //弹跳计数
+        private const int MaxBounces = 5; //最大弹跳次数后追踪力增强
+
         //粘连系统
         private readonly List<int> ConnectedGels = new();
         private const float ConnectionRange = 180f;
@@ -200,6 +210,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             GelLife++;
 
+            //更新追踪目标
+            UpdateTracking();
+
             //状态机
             switch (State) {
                 case GelState.Floating:
@@ -229,8 +242,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bubblePhase += 0.05f;
             if (bubblePhase > MathHelper.TwoPi) bubblePhase = 0f;
 
-            //史莱姆蓝色照明
+            //史莱姆蓝色照明 - 追踪时增强光效
             float lightIntensity = 0.7f * (1f - Projectile.alpha / 255f);
+            if (trackingTargetID >= 0) lightIntensity *= 1.3f;
             Lighting.AddLight(Projectile.Center,
                 0.3f * lightIntensity,
                 0.6f * lightIntensity,
@@ -248,6 +262,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        //更新追踪系统
+        private void UpdateTracking() {
+            //检查当前追踪目标是否有效
+            if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
+                NPC target = Main.npc[trackingTargetID];
+                if (!target.active || !target.CanBeChasedBy() || target.friendly) {
+                    trackingTargetID = -1;
+                    trackingLockTime = 0;
+                }
+                else {
+                    float distToTarget = Vector2.Distance(Projectile.Center, target.Center);
+                    if (distToTarget > TrackingRange * 1.5f) {
+                        //目标太远，丢失锁定
+                        trackingTargetID = -1;
+                        trackingLockTime = 0;
+                    }
+                    else {
+                        trackingLockTime++;
+                    }
+                }
+            }
+
+            //如果没有追踪目标，寻找新目标
+            if (trackingTargetID < 0 && State == GelState.Floating) {
+                FindTrackingTarget();
+            }
+        }
+
+        //寻找追踪目标
+        private void FindTrackingTarget() {
+            NPC closestNPC = Projectile.Center.FindClosestNPC(TrackingRange);
+
+            if (closestNPC != null) {
+                trackingTargetID = closestNPC.whoAmI;
+                trackingLockTime = 0;
+
+                //锁定目标时的视觉反馈
+                SpawnTrackingLockEffect();
+            }
+        }
+
+        //锁定目标效果
+        private void SpawnTrackingLockEffect() {
+            for (int i = 0; i < 8; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(2f, 2f);
+                Dust dust = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.TintableDust,
+                    velocity,
+                    100,
+                    new Color(150, 220, 255),
+                    Main.rand.NextFloat(0.8f, 1.2f)
+                );
+                dust.noGravity = true;
+                dust.fadeIn = 1.0f;
+            }
+        }
+
         //漂浮状态AI
         private void FloatingPhaseAI() {
             //应用重力
@@ -259,6 +331,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //轻微漂浮效果
             float floatOscillation = (float)Math.Sin(GelLife * 0.1f) * 0.1f;
             Projectile.velocity.Y += floatOscillation;
+
+            //追踪AI - 自然的追踪行为
+            if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
+                NPC target = Main.npc[trackingTargetID];
+                if (target.active) {
+                    Vector2 toTarget = target.Center - Projectile.Center;
+                    float distance = toTarget.Length();
+                    
+                    if (distance > 20f) {
+                        //计算追踪强度 - 距离越近追踪越强
+                        float distanceRatio = 1f - Math.Min(distance / TrackingRange, 1f);
+                        
+                        //弹跳次数越多，追踪力越强
+                        float bounceBonus = Math.Min(bounceCount * 0.15f, 0.6f);
+                        
+                        //下落时追踪力增强
+                        float fallBonus = Projectile.velocity.Y > 0 ? 0.3f : 0f;
+                        
+                        //综合追踪力度
+                        float trackingStrength = TrackingForce * (0.6f + distanceRatio * 0.4f + bounceBonus + fallBonus);
+                        
+                        //计算追踪加速度
+                        Vector2 trackingAccel = toTarget.SafeNormalize(Vector2.Zero) * trackingStrength;
+                        
+                        //应用追踪力 - 使用加速度而非直接修改速度，保持自然感
+                        Projectile.velocity += trackingAccel;
+                        
+                        //限制最大速度，但允许重力和弹跳的自然速度
+                        float currentSpeed = Projectile.velocity.Length();
+                        if (currentSpeed > MaxTrackingSpeed) {
+                            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 
+                                MathHelper.Lerp(currentSpeed, MaxTrackingSpeed, 0.1f);
+                        }
+
+                        //追踪粒子效果
+                        if (GelLife % 8 == 0 && distanceRatio > 0.3f) {
+                            SpawnTrackingParticle(toTarget.SafeNormalize(Vector2.Zero));
+                        }
+                    }
+                }
+            }
 
             //生成凝胶粒子
             if (GelLife % 3 == 0 && gelParticles.Count < MaxGelParticles) {
@@ -272,6 +385,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (GelLife % 5 == 0) {
                 SpawnStickyTrail();
             }
+        }
+
+        //追踪粒子效果
+        private void SpawnTrackingParticle(Vector2 direction) {
+            Dust track = Dust.NewDustPerfect(
+                Projectile.Center - direction * 15f,
+                DustID.TintableDust,
+                direction * 2f,
+                100,
+                new Color(120, 220, 255),
+                Main.rand.NextFloat(0.6f, 1.0f)
+            );
+            track.noGravity = true;
+            track.fadeIn = 0.8f;
         }
 
         //附着状态AI
@@ -298,12 +425,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     //目标死亡,返回漂浮状态
                     State = GelState.Floating;
                     AttachedTargetID = -1;
+                    trackingTargetID = -1; //清除追踪
                 }
             }
             else {
                 //无效目标,返回漂浮状态
                 State = GelState.Floating;
                 AttachedTargetID = -1;
+                trackingTargetID = -1;
             }
 
             //附着时生成更少粒子
@@ -334,6 +463,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void CheckAttachment() {
             if (State != GelState.Floating) return;
 
+            //优先尝试附着到追踪目标
+            if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
+                NPC trackTarget = Main.npc[trackingTargetID];
+                if (trackTarget.active) {
+                    float distToTrack = Vector2.Distance(Projectile.Center, trackTarget.Center);
+                    if (distToTrack < AttachRange) {
+                        AttachToTarget(trackTarget);
+                        return;
+                    }
+                }
+            }
+
             //寻找最近的敌人
             NPC closestNPC = null;
             float closestDist = AttachRange;
@@ -350,20 +491,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (closestNPC != null) {
-                //附着到敌人
-                State = GelState.Attached;
-                AttachedTargetID = closestNPC.whoAmI;
-                Projectile.tileCollide = false;
-
-                //附着音效
-                SoundEngine.PlaySound(SoundID.NPCHit1 with {
-                    Volume = 0.6f,
-                    Pitch = 0.4f
-                }, Projectile.Center);
-
-                //附着效果
-                SpawnAttachEffect(closestNPC.Center);
+                AttachToTarget(closestNPC);
             }
+        }
+
+        //附着到目标
+        private void AttachToTarget(NPC target) {
+            State = GelState.Attached;
+            AttachedTargetID = target.whoAmI;
+            Projectile.tileCollide = false;
+            trackingTargetID = -1; //清除追踪
+
+            //附着音效
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = 0.6f,
+                Pitch = 0.4f
+            }, Projectile.Center);
+
+            //附着效果
+            SpawnAttachEffect(target.Center);
         }
 
         //更新连接关系
@@ -525,16 +671,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //碰撞处理
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            //增加弹跳计数
+            bounceCount++;
+
             //果冻弹跳效果
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * Bounce;
                 jellyStretch = 1.3f;
                 jellySquash = 0.7f;
+                
+                //弹跳时如果有追踪目标，调整X方向朝向目标
+                if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
+                    NPC target = Main.npc[trackingTargetID];
+                    if (target.active) {
+                        float toTargetX = target.Center.X - Projectile.Center.X;
+                        if (Math.Sign(toTargetX) != Math.Sign(Projectile.velocity.X)) {
+                            //反转X速度方向使其朝向目标
+                            Projectile.velocity.X = -Projectile.velocity.X * 0.8f;
+                        }
+                    }
+                }
             }
             if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon) {
                 Projectile.velocity.Y = -oldVelocity.Y * Bounce;
                 jellySquash = 1.3f;
                 jellyStretch = 0.7f;
+                
+                //弹跳时如果有追踪目标，给一点朝向目标的水平速度
+                if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
+                    NPC target = Main.npc[trackingTargetID];
+                    if (target.active) {
+                        Vector2 toTarget = target.Center - Projectile.Center;
+                        float horizontalBoost = Math.Sign(toTarget.X) * Math.Min(Math.Abs(toTarget.X) * 0.02f, 3f);
+                        Projectile.velocity.X += horizontalBoost;
+                    }
+                }
             }
 
             //弹跳粒子
@@ -552,6 +723,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bounce.noGravity = true;
             }
 
+            //弹跳音效 - 弹跳次数多时音调变化
+            SoundEngine.PlaySound(SoundID.Item95 with {
+                Volume = 0.3f,
+                Pitch = 0.1f + Math.Min(bounceCount * 0.1f, 0.4f)
+            }, Projectile.Center);
+
             return false;
         }
 
@@ -559,11 +736,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //附着到目标
             if (State == GelState.Floating) {
-                State = GelState.Attached;
-                AttachedTargetID = target.whoAmI;
-                Projectile.tileCollide = false;
-
-                SpawnAttachEffect(target.Center);
+                AttachToTarget(target);
             }
 
             //附加减速
@@ -664,6 +837,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
 
+            //绘制追踪指示线
+            DrawTrackingIndicator(sb);
+
             //绘制连接线
             DrawConnections(sb);
 
@@ -674,6 +850,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             DrawGelOrb(sb, lightColor);
 
             return false;
+        }
+
+        //绘制追踪指示
+        private void DrawTrackingIndicator(SpriteBatch sb) {
+            if (trackingTargetID < 0 || trackingTargetID >= Main.maxNPCs) return;
+            
+            NPC target = Main.npc[trackingTargetID];
+            if (!target.active) return;
+
+            Texture2D lineTex = DyeMachineAsset.SoftGlow;
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            Vector2 start = Projectile.Center;
+            Vector2 end = target.Center;
+            Vector2 diff = end - start;
+            float length = diff.Length();
+            float rotation = diff.ToRotation();
+
+            //追踪指示线 - 虚线效果
+            int segments = (int)(length / 20f);
+            for (int i = 0; i < segments; i++) {
+                if (i % 2 == 0) continue; //创建虚线效果
+                
+                Vector2 segmentStart = start + diff * (i / (float)segments);
+                float segmentLength = Math.Min(20f, length - i * 20f);
+                
+                float pulse = (float)Math.Sin(GelLife * 0.3f - i * 0.3f) * 0.3f + 0.7f;
+                Color indicatorColor = new Color(150, 220, 255) * pulse * 0.3f;
+
+                sb.Draw(
+                    lineTex,
+                    segmentStart - Main.screenPosition,
+                    null,
+                    indicatorColor,
+                    rotation,
+                    new Vector2(0, lineTex.Height / 2f),
+                    new Vector2(segmentLength / lineTex.Width, 0.02f),
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         //绘制连接线
@@ -764,6 +988,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D orbTex = TextureAssets.Item[ItemID.KingSlimeMask].Value;
 
             Texture2D maskTex = DyeMachineAsset.SoftGlow;
+
+            //追踪状态额外光效
+            if (trackingTargetID >= 0) {
+                float trackingPulse = (float)Math.Sin(GelLife * 0.4f) * 0.3f + 0.7f;
+                Color trackingGlow = new Color(150, 230, 255) * trackingPulse * 0.4f;
+                
+                sb.Draw(
+                    glowTex,
+                    drawPos,
+                    null,
+                    trackingGlow with { A = 0 },
+                    GelLife * 0.15f,
+                    glowTex.Size() / 2f,
+                    new Vector2(1.4f * jellyStretch, 1.4f * jellySquash),
+                    SpriteEffects.None,
+                    0
+                );
+            }
 
             //爆炸前兆效果
             if (State == GelState.Exploding) {
