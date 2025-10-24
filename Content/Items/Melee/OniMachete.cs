@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly List<int> ActiveHands = new();
         public override void SetDefaults() {
             Item.width = Item.height = 45;
-            Item.damage = 380;
+            Item.damage = 2000;
             Item.DamageType = DamageClass.Generic;
             Item.useTime = Item.useAnimation = 25;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<OniHandMinion>(),
-                damage * 10,
+                damage,
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
