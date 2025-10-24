@@ -191,11 +191,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            //更新玩家朝向，根据鼠标与玩家中心的相对位置
-            Vector2 worldMousePos = GetSyncedMousePosition(player);
-            Vector2 directionVector = player.To(worldMousePos);
-            player.ChangeDir(Math.Sign(directionVector.X));
-
             //计算武器的旋转角度和位置
             float weaponRotation = CalculateWeaponRotation(player);
             Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
