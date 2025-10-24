@@ -159,7 +159,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         //视觉效果
         private float glowIntensity = 0f;
         private float trailIntensity = 0f;
-        private float pulseTimer = 0f;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
@@ -187,7 +186,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             StateTimer++;
-            pulseTimer += 0.08f;
 
             //状态机
             switch (State) {
@@ -343,7 +341,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             //转入发射阶段
-            if (StateTimer >= ChargeDuration) {
+            if (StateTimer >= ChargeDuration + DaggerIndex * 10) {
                 LaunchToTarget(owner);
             }
         }
