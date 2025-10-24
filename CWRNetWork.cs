@@ -25,6 +25,8 @@ namespace CalamityOverhaul
         CrabulonModifyNetWork,
         GiftScenarioNPC,
         FirstMetSupCalNPC,
+        SupCalDefeatNPC,
+        SupCalPlayerDefeatTracker,
         DoGQuestTracker,
         PallbearerQuestTracker,
         HalibutMouseWorld,
@@ -62,6 +64,8 @@ namespace CalamityOverhaul
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             GiftScenarioNPC.NetHandle(type, reader, whoAmI);
             FirstMetSupCalNPC.NetHandle(type, reader, whoAmI);
+            SupCalDefeatNPC.NetHandle(type, reader, whoAmI);
+            SupCalPlayerDefeatTracker.NetHandle(type, reader, whoAmI);
             PallbearerQuestTracker.NetHandle(type, reader, whoAmI);
             DoGQuestTracker.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);

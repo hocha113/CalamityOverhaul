@@ -1,6 +1,8 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod.NPCs.CalClone;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -114,7 +116,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override bool InstancePerEntity => true;
 
-        private bool hasRecordedDeath = false;
+        public static bool hasRecordedDeath = false;
 
         public override bool PreAI(NPC npc) {
             if (!FirstMetSupCal.ThisIsToFight) {
@@ -161,13 +163,30 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             return true;
         }
 
-        public override bool SpecialOnKill(NPC npc) {
+        public override void OnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
                 //Boss被击杀时重置状态
                 hasRecordedDeath = false;
                 Spawned = false;
             }
-            return base.SpecialOnKill(npc);
+
+            //仅服务器发送
+            if (VaultUtils.isServer) {
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.SupCalPlayerDefeatTracker);
+                packet.Send();
+            }
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;//仅客户端处理
+            }
+            if (type == CWRMessageType.SupCalPlayerDefeatTracker) {
+                //Boss被击杀时重置状态
+                hasRecordedDeath = false;
+                Spawned = false;
+            }
         }
     }
 }

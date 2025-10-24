@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Vector2 syncedMousePos = GetSyncedMousePosition(player);
 
             //根据鼠标位置更新玩家朝向
-            Vector2 playerToMouse = syncedMousePos - player.Center;
+            Vector2 playerToMouse = player.To(syncedMousePos);
             player.ChangeDir(Math.Sign(playerToMouse.X));
 
             //计算动画的当前进度
