@@ -92,6 +92,10 @@ namespace CalamityOverhaul.Content
         /// 受到的染料物品ID
         /// </summary>
         public int DyeItemID;
+        /// <summary>
+        /// 如果大于0，则表示该NPC处于虚弱时间状态
+        /// </summary>
+        public int IsWeakTime;
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
@@ -174,7 +178,9 @@ namespace CalamityOverhaul.Content
                 DoTimeFrozen(npc);
                 return false;
             }
-
+            if (IsWeakTime > 0) {
+                IsWeakTime--;
+            }
             return base.PreAI(npc);
         }
 
@@ -184,6 +190,13 @@ namespace CalamityOverhaul.Content
                     WhipHitNum = 10;
                 }
             }
+        }
+
+        public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) {
+            if (IsWeakTime > 0) {
+                return false;
+            }
+            return true;
         }
 
         public override bool SpecialOnKill(NPC npc) {

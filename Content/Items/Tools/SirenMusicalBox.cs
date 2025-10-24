@@ -832,7 +832,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (Main.rand.NextBool(8)) {
                     Vector2 fallPos = player.Center + new Vector2(Main.rand.NextFloat(-200f, 200f), -Main.rand.NextFloat(150f, 250f));
                     Vector2 fallVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(1f, 3f));
-                    
+
                     Color fallColor = Main.rand.Next(3) switch {
                         0 => Color.Purple,
                         1 => Color.Violet,

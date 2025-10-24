@@ -144,8 +144,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //水压持续伤害相关
         private int pressureDamageTimer;
         private const int PressureTickInterval = 30; //每30帧(0.5s)结算一次
-        private const int PressureBase = 4;          //1层基础伤害
-        private const int PressurePerLayer = 3;      //额外线性增长
+        private const int PressureBase = 8;          //1层基础伤害
+        private const int PressurePerLayer = 6;      //额外线性增长
         private const float BossDamageFactor = 1.75f; //对Boss增加
         private const float HighLifeDamageFactor = 1.4f; //对高血量精英增加
 
@@ -297,18 +297,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             maxDomainRadius = layers[^1].Radius;
         }
 
-        /// <summary>判断是否为弱小可束缚生物</summary>
+        /// <summary>
+        /// 判断是否为弱小可束缚生物
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <returns></returns>
         public static bool IsWeakEntity(NPC npc) {
-            if (npc.boss || npc.defense > 20 || npc.lifeMax > 500) {
-                return false;
+            if (npc.boss || npc.defense > 60 || npc.lifeMax > 5500) {
+                return false;//强大实体
             }
 
             if (npc.knockBackResist <= 0.3f) {
-                return false;
+                return false;//高抗击退实体
             }
 
             if (NPCID.Sets.ProjectileNPC[npc.type]) {
-                return false;
+                return false;//投射物NPC
+            }
+
+            if (npc.realLife.TryGetNPC(out var realNPC) && realNPC.boss) {
+                return false;//复合体Boss的子实体
             }
 
             return npc.friendly == false && npc.damage > 0;
@@ -322,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             bool doDamageThisTick = pressureDamageTimer % PressureTickInterval == 0 && domainAlpha > 0.55f;
-            int scaledDamage = PressureBase + PressurePerLayer * (layerCount - 1); //线性增长 1层=4 10层=31 每0.5s
+            int scaledDamage = PressureBase + PressurePerLayer * (layerCount - 1); //线性增长
             if (scaledDamage < 1) scaledDamage = 1;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -363,6 +371,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                             boundNPCs.Add(i);
                         }
 
+                        if (npc.Alives()) {
+                            npc.CWR().IsWeakTime = 60;//每秒刷新束缚状态
+                        }
+
                         float dragStrength = 0.25f;
                         Vector2 desiredPos = domainCenter + (npc.Center - domainCenter).SafeNormalize(Vector2.Zero) * Math.Min(dist, maxDomainRadius * 0.8f);
                         Vector2 dragForce = (desiredPos - npc.Center) * dragStrength;
@@ -376,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                     }
 
                     //水压伤害处理（服务器侧）
-                    if (doDamageThisTick && !VaultUtils.isClient) {
+                    if (doDamageThisTick && Projectile.IsOwnedByLocalPlayer()) {
                         int damage = scaledDamage;
                         if (npc.boss) {
                             damage = (int)(damage * BossDamageFactor);
