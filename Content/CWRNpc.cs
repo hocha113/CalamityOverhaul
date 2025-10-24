@@ -361,6 +361,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void DrawEffects(NPC npc, ref Color drawColor) {
+            if (IsWeakTime > 0) {
+                drawColor = Color.Lerp(drawColor, Color.BlueViolet, 0.4f);//虚弱时间时，NPC会变成蓝紫色
+            }
             if (VoidErosionBool) {
                 drawColor.R = 100;
                 VoidErosion.SpanStar(npc, VaultUtils.RandVr(npc.width / 2));

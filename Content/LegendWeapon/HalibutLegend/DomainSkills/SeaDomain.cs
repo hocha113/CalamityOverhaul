@@ -402,6 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         if (damage < 1) damage = 1;
                         //伤害归属玩家
                         npc.SimpleStrikeNPC(damage, npc.direction); //移除不存在的 direction 命名参数
+                        npc.AddBuff(BuffID.Wet, 120);
                         //轻微视觉反馈（客户端自行处理即可）
                         if (!VaultUtils.isServer) {
                             SpawnPressureHitDust(npc, damage);
