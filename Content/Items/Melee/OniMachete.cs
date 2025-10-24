@@ -1482,7 +1482,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<OniHandExplode>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<OniHandExplode>(), Projectile.damage * 5, Projectile.knockBack, Projectile.owner);
             }
         }
 
