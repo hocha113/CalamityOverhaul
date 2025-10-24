@@ -1280,6 +1280,11 @@ Items: {
 			After the charging is completed, fly towards the target.
 			''' */
 	}
+
+	OniMachete: {
+		// DisplayName: Oni Machete
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1656,6 +1661,8 @@ Projectiles: {
 	// WhiteWyvernTailController.DisplayName: White Wyvern Tail
 	// ScorpionSentry.DisplayName: Scorpion Sentry
 	// HeartcarverDagger.DisplayName: Heartcarver Dagger
+	// OniHandExplode.DisplayName: Oni Hand Explode
+	// OniHandMinion.DisplayName: Oni Hand Minion
 }
 
 Configs: {
