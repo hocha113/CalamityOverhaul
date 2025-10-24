@@ -1251,7 +1251,7 @@ Items: {
 	}
 
 	Heartcarver: {
-		DisplayName: 仪式匕首
+		DisplayName: 刻心者
 		Tooltip:
 			'''
 			生成三把额外的仪式匕首围绕玩家旋转
@@ -1260,8 +1260,12 @@ Items: {
 	}
 
 	OniMachete: {
-		// DisplayName: Oni Machete
-		// Tooltip: ""
+		DisplayName: 鬼面刀
+		Tooltip:
+			'''
+			手持时会生成六条鬼手协助战斗
+			真近战攻击会释放出鬼火
+			'''
 	}
 }
 

@@ -1,6 +1,8 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
+﻿using CalamityMod.Dusts;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -22,17 +24,23 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly List<int> ActiveHands = new();
         public override void SetDefaults() {
             Item.width = Item.height = 45;
-            Item.damage = 180;
+            Item.damage = 780;
             Item.DamageType = DamageClass.Generic;
             Item.useTime = Item.useAnimation = 25;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTurn = true;
+            Item.rare = ItemRarityID.Red;
+            Item.UseSound = SoundID.Item1;
         }
 
         public override void HoldItem(Player player) {
             if (ActiveHands.Count < 6) {
                 SpawnHand(player, player.FromObjectGetParent(), player.GetWeaponDamage(Item, true), 2f);
             }
+        }
+
+        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+            SpawnSummonEffect(target.Center);
         }
 
         public override void UpdateInventory(Player player) {
@@ -58,14 +66,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 ActiveHands.Add(handProj);
                 SpawnSummonEffect(spawnPos);
 
-                //骨头摩擦音效
-                SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                    Volume = 0.8f,
-                    Pitch = -0.3f
+                //硫磺火召唤音效 - 参考SCal的音效
+                SoundEngine.PlaySound(SoundID.Item74 with {
+                    Volume = 0.7f,
+                    Pitch = -0.4f
                 }, spawnPos);
 
-                //低沉的召唤音
-                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
+                //低沉的地狱火焰音
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
                     Volume = 0.6f,
                     Pitch = -0.5f
                 }, spawnPos);
@@ -81,40 +89,52 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private static void SpawnSummonEffect(Vector2 position) {
-            //骨质粒子爆发
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
+            //硫磺火粒子爆发 - 使用Brimstone粒子
+            for (int i = 0; i < 40; i++) {
+                float angle = MathHelper.TwoPi * i / 40f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
 
                 Dust dust = Dust.NewDustPerfect(
                     position,
-                    DustID.Bone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
+                    Main.rand.NextFloat(1.8f, 3f)
                 );
                 dust.noGravity = true;
                 dust.fadeIn = 1.4f;
             }
 
-            //烟雾环
+            //红色火焰核心
+            for (int i = 0; i < 20; i++) {
+                Dust fire = Dust.NewDustPerfect(
+                    position,
+                    DustID.Torch,
+                    Main.rand.NextVector2Circular(8f, 8f),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fire.noGravity = true;
+            }
+
+            //地狱火环
             for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 15; j++) {
-                    float angle = MathHelper.TwoPi * j / 15f;
-                    float radius = 30f + i * 20f;
+                for (int j = 0; j < 18; j++) {
+                    float angle = MathHelper.TwoPi * j / 18f;
+                    float radius = 35f + i * 25f;
                     Vector2 spawnPos = position + angle.ToRotationVector2() * radius;
 
                     Dust ring = Dust.NewDustPerfect(
                         spawnPos,
-                        DustID.Smoke,
-                        Vector2.Zero,
-                        100,
-                        new Color(100, 100, 100),
-                        Main.rand.NextFloat(1.2f, 2f)
+                        (int)CalamityDusts.Brimstone,
+                        angle.ToRotationVector2() * 4f,
+                        0,
+                        default,
+                        Main.rand.NextFloat(1.5f, 2.5f)
                     );
                     ring.noGravity = true;
-                    ring.velocity = angle.ToRotationVector2() * 3f;
                 }
             }
         }
@@ -133,6 +153,66 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
+        }
+    }
+
+    internal class OniFireBall : ModProjectile
+    {
+        public override string Texture => CWRConstant.Projectile + "Fireball";
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 32;
+            Projectile.hostile = false;
+            Projectile.friendly = true;
+            Projectile.timeLeft = 300;
+            Projectile.extraUpdates = 1;
+            Projectile.tileCollide = false;
+            Projectile.maxPenetrate = Projectile.penetrate = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI() {
+            if (Projectile.ai[0] == 0) {
+                Projectile.velocity /= 2;
+            }
+            if (Projectile.ai[0] <= 60) {
+                Projectile.velocity *= 0.99f;
+            }
+            if (Projectile.ai[0] > 60 && Projectile.ai[0] < 360) {
+                Projectile.velocity *= 1.025f;
+            }
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
+            if (Math.Abs(Projectile.position.X - Main.LocalPlayer.position.X) <= Main.screenWidth / 2
+                || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
+                    Velocity = Projectile.velocity * 0.2f,
+                    Position = Projectile.Center + VaultUtils.RandVr(6),
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    maxLifeTime = 20,
+                    minLifeTime = 8
+                };
+                PRTLoader.AddParticle(lavaFire);
+            }
+
+            Projectile.ai[0]++;
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            target.AddBuff(BuffID.OnFire3, 60);
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(BuffID.OnFire3, 60);
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
+            Rectangle rectangle = mainValue.GetRectangle(Projectile.frame, 4);
+            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle, Color.White
+                , Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 
@@ -176,7 +256,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float armTension = 0f; //手臂张力,用于IK自然度
 
         //攻击参数
-        private const float SearchRange = 800f;
+        private const float SearchRange = 1800f;
         private const int IdleDuration = 40;
         private const int WindUpDuration = 30;
         private const int SwingDuration = 18;
@@ -223,6 +303,17 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool? CanDamage() => State == HandState.Swinging || State == HandState.Slamming || State == HandState.Sweeping;
+
+        private void UpdateIdleOffset() {
+            //更加明显的漂浮效果
+            idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 50f;
+            idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 30f;
+        }
+
+        private void UpdateShoulderPosition(Player owner) {
+            //肩膀固定在玩家中心
+            shoulderPos = owner.GetPlayerStabilityCenter();
+        }
 
         public override void AI() {
             if (!Owner.active || Owner.dead) {
@@ -275,9 +366,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             //更新拖尾
             UpdateTrail();
 
-            //发光效果
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.2f + 0.8f;
-            Lighting.AddLight(Projectile.Center, 0.5f * pulse, 0.5f * pulse, 0.6f * pulse);
+            //硫磺火发光效果 - 红色脉动
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.3f + 0.7f;
+            Lighting.AddLight(Projectile.Center, 0.8f * pulse, 0.2f * pulse, 0.1f * pulse);
 
             //冲击震动衰减
             impactShake *= 0.85f;
@@ -290,17 +381,38 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //旋转朝向
             UpdateRotation();
+
+            //硫磺火环境粒子
+            SpawnBrimstoneAmbient();
         }
 
-        private void UpdateIdleOffset() {
-            //更加明显的漂浮效果
-            idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 50f;
-            idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 30f;
-        }
+        private void SpawnBrimstoneAmbient() {
+            //待机和攻击时持续产生硫磺火粒子
+            if (Main.rand.NextBool(5)) {
+                Dust brimstoneFire = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
+                    DustID.Torch,
+                    Vector2.UnitY * -Main.rand.NextFloat(1f, 3f),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(0.8f, 1.3f)
+                );
+                brimstoneFire.noGravity = true;
+                brimstoneFire.fadeIn = 1.1f;
+            }
 
-        private void UpdateShoulderPosition(Player owner) {
-            //肩膀固定在玩家中心
-            shoulderPos = owner.GetPlayerStabilityCenter();
+            //高强度状态下的额外硫磺火效果
+            if (glowIntensity > 0.7f && Main.rand.NextBool(3)) {
+                Dust brimstone = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
+                    (int)CalamityDusts.Brimstone,
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    0,
+                    default,
+                    Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                brimstone.noGravity = true;
+            }
         }
 
         private void IdleBehavior(Player owner) {
@@ -309,7 +421,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 targetPos = shoulderPos + angle.ToRotationVector2() * 150f + idleOffset + new Vector2(0, -80f);
             MoveToPosition(targetPos, 0.15f);
 
-            glowIntensity = 0.3f;
+            glowIntensity = 0.4f;
             armTension = 0.3f;
             throwActionActive = false;
 
@@ -323,8 +435,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //周围骨质粒子
-            if (Main.rand.NextBool(10)) {
+            //硫磺火待机粒子
+            if (Main.rand.NextBool(8)) {
                 SpawnIdleDust();
             }
         }
@@ -349,10 +461,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                 attackTargetPos = target.Center;
                 attackWindUpIntensity = 1f;
 
-                //投掷前置音效
-                SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
-                    Volume = 0.4f,
-                    Pitch = -0.3f
+                //硫磺火蓄力音效
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
+                    Volume = 0.5f,
+                    Pitch = -0.4f
                 }, Projectile.Center);
             }
             else {
@@ -360,7 +472,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 approachPos = target.Center + new Vector2(0, -180f);
                 MoveToPosition(approachPos, 0.2f);
 
-                glowIntensity = 0.5f;
+                glowIntensity = 0.6f;
                 armTension = 0.6f;
 
                 //到达位置后选择近战攻击方式
@@ -373,9 +485,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                     attackWindUpIntensity = 1f;
                 }
 
-                //锁定音效
+                //锁定火焰效果
                 if (StateTimer == 1) {
-                    SoundEngine.PlaySound(SoundID.DD2_SkeletonHurt with {
+                    SoundEngine.PlaySound(SoundID.Item74 with {
                         Volume = 0.4f,
                         Pitch = -0.3f
                     }, Projectile.Center);
@@ -415,7 +527,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             float progress = StateTimer / WindUpDuration;
-            glowIntensity = 0.5f + progress * 0.4f;
+            glowIntensity = 0.6f + progress * 0.4f;
             armTension = 0.9f;
 
             //根据攻击类型后拉-增大幅度
@@ -433,16 +545,16 @@ namespace CalamityOverhaul.Content.Items.Melee
             //蓄力时手部放大
             handScale = 1f + progress * 0.3f;
 
-            //蓄力粒子
+            //硫磺火蓄力粒子
             if (Main.rand.NextBool(2)) {
                 SpawnWindUpDust();
             }
 
-            //蓄力音效
+            //蓄力音效 - 地狱火焰蓄力
             if (StateTimer % 8 == 0) {
-                SoundEngine.PlaySound(SoundID.Item1 with {
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with {
                     Volume = 0.3f * progress,
-                    Pitch = -0.5f + progress * 0.3f
+                    Pitch = -0.6f + progress * 0.4f
                 }, Projectile.Center);
             }
 
@@ -470,14 +582,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                     }
                 }
 
-                //攻击开始音效
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Volume = 0.8f,
-                    Pitch = -0.2f
-                }, Projectile.Center);
-
-                SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                    Volume = 0.7f
+                //硫磺火爆发音效
+                SoundEngine.PlaySound(SoundID.Item74 with {
+                    Volume = 0.9f,
+                    Pitch = -0.3f
                 }, Projectile.Center);
             }
         }
@@ -581,7 +689,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void ThrowingBehavior() {
-            float progress = StateTimer / ThrowDuration;
             glowIntensity = 1f;
             armTension = 0.8f;
 
@@ -611,7 +718,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 //在投掷动作中段释放骨头
                 if (StateTimer == (int)(ThrowDuration * 0.5f)) {
-                    ThrowBones();
+                    ThrowFires();
                 }
 
                 //投掷动作轨迹特效
@@ -633,7 +740,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        private void ThrowBones() {
+        private void ThrowFires() {
             if (!IsTargetValid() || Main.myPlayer != Projectile.owner) return;
 
             NPC target = Main.npc[targetNPCID];
@@ -647,67 +754,76 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < boneCount; i++) {
                 //扇形散射角度
                 float spreadAngle = MathHelper.Lerp(-0.35f, 0.35f, i / (float)(boneCount - 1));
-                Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(20f, 28f);
+                Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(10f, 12f);
 
                 //从手掌位置生成骨头,添加轻微随机偏移
                 Vector2 spawnOffset = Main.rand.NextVector2Circular(8f, 8f);
 
-                Projectile.NewProjectile(
+                int proj = Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     throwOrigin + spawnOffset,
                     velocity,
-                    ProjectileID.Bone,
+                    ModContent.ProjectileType<OniFireBall>(),
                     (int)(Projectile.damage * 0.1),
                     2f,
                     Projectile.owner
                 );
+                Main.projectile[proj].friendly = true;
             }
 
-            //投掷点爆发特效
+            //硫磺火投掷爆发特效
+            for (int i = 0; i < 35; i++) {
+                Vector2 velocity = toTarget.RotatedByRandom(0.7f) * Main.rand.NextFloat(8f, 18f);
+                Dust brimstone = Dust.NewDustPerfect(
+                    throwOrigin,
+                    (int)CalamityDusts.Brimstone,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(2.5f, 4f)
+                );
+                brimstone.noGravity = true;
+                brimstone.fadeIn = 1.6f;
+            }
+
+            //火焰爆发
             for (int i = 0; i < 25; i++) {
                 Vector2 velocity = toTarget.RotatedByRandom(0.6f) * Main.rand.NextFloat(6f, 14f);
-                Dust dust = Dust.NewDustPerfect(
+                Dust fire = Dust.NewDustPerfect(
                     throwOrigin,
-                    DustID.Bone,
+                    DustID.Torch,
                     velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.8f, 2.8f)
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
-                dust.noGravity = true;
-                dust.fadeIn = 1.2f;
+                fire.noGravity = true;
             }
 
-            //冲击波环
+            //地狱火冲击环
             for (int i = 0; i < 20; i++) {
                 float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * 8f;
+                Vector2 velocity = angle.ToRotationVector2() * 10f;
                 Dust ring = Dust.NewDustPerfect(
                     throwOrigin,
-                    DustID.Smoke,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
-                    new Color(180, 180, 180),
-                    Main.rand.NextFloat(1.5f, 2.2f)
+                    0,
+                    default,
+                    Main.rand.NextFloat(2f, 3f)
                 );
                 ring.noGravity = true;
             }
 
-            //投掷音效
-            SoundEngine.PlaySound(SoundID.Item1 with {
-                Volume = 0.85f,
-                Pitch = 0.4f
-            }, throwOrigin);
-
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
-                Volume = 0.75f,
+            //投掷音效 - 地狱火焰爆发
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 0.95f,
                 Pitch = 0.3f
             }, throwOrigin);
 
-            //骨头碎裂音效
-            SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                Volume = 0.6f,
-                Pitch = 0.5f
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
+                Volume = 0.85f,
+                Pitch = 0.4f
             }, throwOrigin);
         }
 
@@ -809,215 +925,295 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         //特效方法
         private void SpawnIdleDust() {
-            Dust dust = Dust.NewDustDirect(
+            Dust brimstone = Dust.NewDustDirect(
                 Projectile.position,
                 Projectile.width,
                 Projectile.height,
-                DustID.Bone,
-                Scale: Main.rand.NextFloat(0.8f, 1.3f)
+                (int)CalamityDusts.Brimstone,
+                Scale: Main.rand.NextFloat(1f, 1.5f)
             );
-            dust.velocity = Main.rand.NextVector2Circular(1f, 1f);
-            dust.noGravity = true;
+            brimstone.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
+            brimstone.noGravity = true;
         }
 
         private void SpawnWindUpDust() {
-            for (int i = 0; i < 2; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
-                    DustID.Bone,
+            for (int i = 0; i < 3; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+                Dust brimstone = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(50f, 50f),
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    Main.rand.NextFloat(1.5f, 2.5f)
                 );
-                dust.noGravity = true;
+                brimstone.noGravity = true;
+            }
+
+            //红色火焰核心
+            if (Main.rand.NextBool()) {
+                Dust fire = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
+                    DustID.Torch,
+                    Main.rand.NextVector2Circular(3f, 3f),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.2f, 2f)
+                );
+                fire.noGravity = true;
             }
         }
 
         private void SpawnSwingEffect() {
             if (Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustDirect(
+                Dust brimstone = Dust.NewDustDirect(
                     Projectile.position,
                     Projectile.width,
                     Projectile.height,
-                    DustID.Smoke,
+                    (int)CalamityDusts.Brimstone,
+                    Scale: Main.rand.NextFloat(2f, 3f)
+                );
+                brimstone.velocity = Projectile.velocity * 0.4f;
+                brimstone.noGravity = true;
+            }
+
+            //火焰轨迹
+            if (Main.rand.NextBool()) {
+                Dust fire = Dust.NewDustDirect(
+                    Projectile.position,
+                    Projectile.width,
+                    Projectile.height,
+                    DustID.Torch,
                     Scale: Main.rand.NextFloat(1.5f, 2.5f)
                 );
-                dust.velocity = Projectile.velocity * 0.3f;
-                dust.noGravity = true;
-                dust.color = new Color(150, 150, 150);
+                fire.velocity = Projectile.velocity * 0.3f;
+                fire.noGravity = true;
+                fire.color = Color.Red;
             }
         }
 
         private void SpawnSlamTrail() {
-            for (int i = 0; i < 3; i++) {
-                Dust dust = Dust.NewDustDirect(
+            for (int i = 0; i < 4; i++) {
+                Dust brimstone = Dust.NewDustDirect(
                     Projectile.position,
                     Projectile.width,
                     Projectile.height,
-                    DustID.Bone,
-                    0, 0, 100,
+                    (int)CalamityDusts.Brimstone,
+                    0, 0, 0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.2f)
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
-                dust.velocity = -Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(2f, 2f);
-                dust.noGravity = true;
+                brimstone.velocity = -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(3f, 3f);
+                brimstone.noGravity = true;
+            }
+
+            //火焰尾迹
+            if (Main.rand.NextBool()) {
+                Dust fire = Dust.NewDustDirect(
+                    Projectile.position,
+                    Projectile.width,
+                    Projectile.height,
+                    DustID.Torch,
+                    0, 0, 0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.8f, 2.8f)
+                );
+                fire.velocity = -Projectile.velocity * 0.2f;
+                fire.noGravity = true;
             }
         }
 
         private void SpawnSweepEffect() {
             if (Main.rand.NextBool()) {
-                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f, 1.5f);
-                Dust dust = Dust.NewDustPerfect(
+                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.6f, 1.8f);
+                Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    DustID.Smoke,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
-                    new Color(180, 180, 180),
-                    Main.rand.NextFloat(1.8f, 2.8f)
+                    0,
+                    default,
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
-                dust.noGravity = true;
+                brimstone.noGravity = true;
+            }
+
+            //火焰弧线
+            if (Main.rand.NextBool(2)) {
+                Dust fire = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Torch,
+                    Projectile.velocity * 0.4f,
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fire.noGravity = true;
             }
         }
 
         private void SpawnThrowTrailEffect() {
-            //投掷动作的高速轨迹特效
-            for (int i = 0; i < 2; i++) {
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.Bone,
-                    -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(3f, 3f),
-                    100,
+            //投掷动作的硫磺火轨迹
+            for (int i = 0; i < 3; i++) {
+                Dust brimstone = Dust.NewDustPerfect(
+                    Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
+                    (int)CalamityDusts.Brimstone,
+                    -Projectile.velocity * 0.4f + Main.rand.NextVector2Circular(4f, 4f),
+                    0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.2f)
+                    Main.rand.NextFloat(2f, 3f)
                 );
-                dust.noGravity = true;
-                dust.fadeIn = 1.3f;
+                brimstone.noGravity = true;
+                brimstone.fadeIn = 1.5f;
             }
 
-            //烟雾尾迹
+            //火焰尾迹
             if (Main.rand.NextBool(2)) {
-                Dust smoke = Dust.NewDustPerfect(
+                Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
-                    DustID.Smoke,
-                    -Projectile.velocity * 0.2f,
-                    100,
-                    new Color(160, 160, 160),
-                    Main.rand.NextFloat(1.8f, 2.5f)
+                    DustID.Torch,
+                    -Projectile.velocity * 0.3f,
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(2f, 3f)
                 );
-                smoke.noGravity = true;
+                fire.noGravity = true;
             }
         }
 
         private void CreateImpactEffect(Vector2 position) {
             impactShake = 12f;
 
-            //冲击波
-            for (int i = 0; i < 40; i++) {
-                float angle = MathHelper.TwoPi * i / 40f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
+            //硫磺火冲击波
+            for (int i = 0; i < 50; i++) {
+                float angle = MathHelper.TwoPi * i / 50f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 15f);
 
-                Dust dust = Dust.NewDustPerfect(
+                Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    DustID.Bone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.3f;
-            }
-
-            //烟雾
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust smoke = Dust.NewDustPerfect(
-                    position,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(100, 100, 100),
                     Main.rand.NextFloat(2f, 3.5f)
                 );
-                smoke.noGravity = true;
+                brimstone.noGravity = true;
+                brimstone.fadeIn = 1.5f;
             }
 
-            SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.8f,
-                Pitch = -0.4f
+            //红色火焰爆发
+            for (int i = 0; i < 30; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
+                Dust fire = Dust.NewDustPerfect(
+                    position,
+                    DustID.Torch,
+                    velocity,
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(2f, 3.5f)
+                );
+                fire.noGravity = true;
+            }
+
+            //地狱火环
+            for (int i = 0; i < 25; i++) {
+                float angle = MathHelper.TwoPi * i / 25f;
+                Vector2 velocity = angle.ToRotationVector2() * 10f;
+                Dust ring = Dust.NewDustPerfect(
+                    position,
+                    (int)CalamityDusts.Brimstone,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(2f, 3f)
+                );
+                ring.noGravity = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 0.9f,
+                Pitch = -0.5f
             }, position);
 
-            SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                Volume = 0.7f,
-                Pitch = -0.3f
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
+                Volume = 0.8f
             }, position);
         }
 
         private void CreateSlamImpact(Vector2 position) {
             impactShake = 18f;
 
-            //强力冲击波
-            for (int i = 0; i < 60; i++) {
-                float angle = MathHelper.TwoPi * i / 60f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 18f);
+            //强力硫磺火冲击波
+            for (int i = 0; i < 80; i++) {
+                float angle = MathHelper.TwoPi * i / 80f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 22f);
 
-                Dust dust = Dust.NewDustPerfect(
+                Dust brimstone = Dust.NewDustPerfect(
                     position,
-                    DustID.Bone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(2f, 3.5f)
+                    Main.rand.NextFloat(2.5f, 4f)
                 );
-                dust.noGravity = true;
-                dust.fadeIn = 1.5f;
+                brimstone.noGravity = true;
+                brimstone.fadeIn = 1.8f;
             }
 
-            //地面碎片
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-15f, -5f));
-                Dust debris = Dust.NewDustPerfect(
+            //地狱火焰柱
+            for (int i = 0; i < 40; i++) {
+                Dust fire = Dust.NewDustPerfect(
+                    position + Main.rand.NextVector2Circular(60f, 20f),
+                    DustID.Torch,
+                    new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-20f, -8f)),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(2.5f, 4f)
+                );
+                fire.noGravity = true;
+            }
+
+            //燃烧的余烬
+            for (int i = 0; i < 50; i++) {
+                Vector2 velocity = new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-18f, -6f));
+                Dust ember = Dust.NewDustPerfect(
                     position,
-                    DustID.Stone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
                     Main.rand.NextFloat(1.5f, 2.5f)
                 );
-                debris.noGravity = false;
+                ember.noGravity = false;
             }
 
-            //烟尘环
+            //硫磺火环爆发
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 20; j++) {
                     float angle = MathHelper.TwoPi * j / 20f;
-                    float radius = 40f + i * 30f;
+                    float radius = 50f + i * 35f;
                     Vector2 spawnPos = position + angle.ToRotationVector2() * radius;
 
-                    Dust smoke = Dust.NewDustPerfect(
+                    Dust ring = Dust.NewDustPerfect(
                         spawnPos,
-                        DustID.Smoke,
-                        Vector2.Zero,
-                        100,
-                        new Color(120, 120, 120),
+                        (int)CalamityDusts.Brimstone,
+                        angle.ToRotationVector2() * 5f,
+                        0,
+                        default,
                         Main.rand.NextFloat(2.5f, 4f)
                     );
-                    smoke.velocity = angle.ToRotationVector2() * 4f;
-                    smoke.noGravity = true;
+                    ring.noGravity = true;
                 }
             }
 
-            SoundEngine.PlaySound(SoundID.Item14 with {
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 1.2f,
+                Pitch = -0.6f
+            }, position);
+
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
                 Volume = 1f,
-                Pitch = -0.5f
+                Pitch = -0.3f
             }, position);
-
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Volume = 0.9f
-            }, position);
-
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
@@ -1026,44 +1222,70 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中特效
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust dust = Dust.NewDustPerfect(
+            //硫磺火击中特效
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
+                Dust brimstone = Dust.NewDustPerfect(
                     target.Center,
-                    DustID.Bone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
-                dust.noGravity = true;
+                brimstone.noGravity = true;
             }
 
-            SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                Volume = 0.6f,
-                Pitch = 0.2f
+            //火焰爆发
+            for (int i = 0; i < 10; i++) {
+                Dust fire = Dust.NewDustPerfect(
+                    target.Center,
+                    DustID.Torch,
+                    Main.rand.NextVector2Circular(8f, 8f),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fire.noGravity = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 0.7f,
+                Pitch = 0.3f
             }, target.Center);
         }
 
         public override void OnKill(int timeLeft) {
-            //消散特效
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                Dust dust = Dust.NewDustPerfect(
+            //硫磺火消散特效
+            for (int i = 0; i < 40; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Dust brimstone = Dust.NewDustPerfect(
                     Projectile.Center,
-                    DustID.Bone,
+                    (int)CalamityDusts.Brimstone,
                     velocity,
-                    100,
+                    0,
                     default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
+                    Main.rand.NextFloat(2f, 3.5f)
                 );
-                dust.noGravity = true;
+                brimstone.noGravity = true;
             }
 
-            SoundEngine.PlaySound(SoundID.NPCDeath2 with {
-                Volume = 0.5f,
-                Pitch = -0.3f
+            //火焰余烬
+            for (int i = 0; i < 20; i++) {
+                Dust fire = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Torch,
+                    Main.rand.NextVector2Circular(6f, 6f),
+                    0,
+                    Color.Red,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fire.noGravity = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item74 with {
+                Volume = 0.6f,
+                Pitch = -0.4f
             }, Projectile.Center);
         }
 
@@ -1089,17 +1311,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 shakeOffset = Main.rand.NextVector2Circular(impactShake, impactShake);
             Vector2 drawPos = Projectile.Center - Main.screenPosition + shakeOffset;
 
-            //蓄力辉光效果
+            //硫磺火蓄力辉光效果 - 红色能量
             if (attackWindUpIntensity > 0.3f) {
-                for (int i = 0; i < 3; i++) {
-                    float windUpScale = handScale * (1.15f + i * 0.1f);
-                    float windUpAlpha = (attackWindUpIntensity - 0.3f) * (1f - i * 0.3f) * 0.5f;
+                for (int i = 0; i < 4; i++) {
+                    float windUpScale = handScale * (1.2f + i * 0.15f);
+                    float windUpAlpha = (attackWindUpIntensity - 0.3f) * (1f - i * 0.25f) * 0.6f;
 
                     sb.Draw(
                         handTexture,
                         drawPos,
                         null,
-                        new Color(255, 200, 200, 0) * windUpAlpha,
+                        new Color(255, 80, 40, 0) * windUpAlpha,
                         Projectile.rotation + MathHelper.Pi,
                         origin,
                         Projectile.scale * windUpScale,
@@ -1109,17 +1331,17 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //发光层
+            //硫磺火发光层 - 红橙色辉光
             if (glowIntensity > 0.5f) {
-                for (int i = 0; i < 3; i++) {
-                    float glowScale = handScale * (1.1f + i * 0.1f);
-                    float glowAlpha = (glowIntensity - 0.5f) * (1f - i * 0.3f);
+                for (int i = 0; i < 4; i++) {
+                    float glowScale = handScale * (1.15f + i * 0.12f);
+                    float glowAlpha = (glowIntensity - 0.5f) * (1f - i * 0.25f) * 0.8f;
 
                     sb.Draw(
                         handTexture,
                         drawPos,
                         null,
-                        new Color(200, 200, 220, 0) * glowAlpha,
+                        new Color(255, 100, 50, 0) * glowAlpha,
                         Projectile.rotation + MathHelper.Pi,
                         origin,
                         Projectile.scale * glowScale,
@@ -1166,6 +1388,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     //根据位置添加轻微的骨头大小变化
                     float boneScale = Projectile.scale * MathHelper.Lerp(0.6f, 0.8f, (float)Math.Sin(progress * MathHelper.Pi));
 
+                    //绘制骨头主体
                     sb.Draw(
                         boneTexture,
                         bonePos - Main.screenPosition,
@@ -1177,6 +1400,21 @@ namespace CalamityOverhaul.Content.Items.Melee
                         SpriteEffects.None,
                         0
                     );
+
+                    //硫磺火辉光层
+                    if (glowIntensity > 0.4f) {
+                        sb.Draw(
+                            boneTexture,
+                            bonePos - Main.screenPosition,
+                            null,
+                            new Color(255, 100, 50, 0) * glowIntensity * 0.5f,
+                            rotation + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i + j) * 0.1f,
+                            boneTexture.Size() / 2f,
+                            boneScale * 2.1f,
+                            SpriteEffects.None,
+                            0
+                        );
+                    }
                 }
             }
         }
@@ -1186,7 +1424,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 if (i >= trailPositions.Count - 1) continue;
 
                 float fade = (trailPositions.Count - i) / (float)trailPositions.Count;
-                Color trailColor = new Color(180, 180, 200, 0) * fade * 0.6f;
+                //硫磺火轨迹 - 红橙色
+                Color trailColor = new Color(255, 120, 60, 0) * fade * 0.7f;
 
                 sb.Draw(
                     texture,
@@ -1217,9 +1456,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                     //计算残影位置-从起点到当前位置的插值
                     Vector2 trailPos = Vector2.Lerp(throwStartPos, Projectile.Center, 1f - trailProgress * 0.6f);
 
-                    //残影透明度随距离衰减
-                    float alpha = (1f - trailProgress) * 0.5f * actionProgress;
-                    Color trailColor = new Color(220, 220, 240, 0) * alpha;
+                    //残影透明度随距离衰减 - 硫磺火色彩
+                    float alpha = (1f - trailProgress) * 0.6f * actionProgress;
+                    Color trailColor = new Color(255, 140, 70, 0) * alpha;
 
                     //残影尺寸略小
                     float trailScale = handScale * (0.85f + trailProgress * 0.15f);
@@ -1240,20 +1479,20 @@ namespace CalamityOverhaul.Content.Items.Melee
                     );
                 }
 
-                //额外的发光层
+                //额外的硫磺火发光层
                 for (int i = 0; i < 3; i++) {
                     float glowProgress = i / 3f;
                     Vector2 glowPos = Vector2.Lerp(throwStartPos, Projectile.Center, 1f - glowProgress * 0.3f);
-                    float glowAlpha = (1f - glowProgress) * 0.3f * actionProgress;
+                    float glowAlpha = (1f - glowProgress) * 0.4f * actionProgress;
 
                     sb.Draw(
                         texture,
                         glowPos - Main.screenPosition,
                         null,
-                        new Color(255, 255, 255, 0) * glowAlpha,
+                        new Color(255, 100, 50, 0) * glowAlpha,
                         Projectile.rotation + MathHelper.Pi,
                         origin,
-                        Projectile.scale * handScale * (1.2f + glowProgress * 0.2f),
+                        Projectile.scale * handScale * (1.3f + glowProgress * 0.2f),
                         SpriteEffects.None,
                         0
                     );

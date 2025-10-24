@@ -1283,7 +1283,11 @@ Items: {
 
 	OniMachete: {
 		// DisplayName: Oni Machete
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			When held, six oni hands will be generated to assist in combat.
+			True melee attacks will release ghost flames.
+			''' */
 	}
 }
 
