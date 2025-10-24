@@ -1,5 +1,5 @@
 ﻿displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.5, InnoVault@1.9.66
+modReferences = CalamityMod@2.0.5, InnoVault@1.9.72
 sortAfter = CalamityMod, InnoVault
 weakReferences = ThoriumMod
 homepage = https://calamity-overhaul.cc

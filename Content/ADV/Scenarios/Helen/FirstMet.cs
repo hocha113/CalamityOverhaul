@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             //避免在不合适的时候触发
-            if (VaultUtils.IsInvasion() || CWRWorld.HasBoss) {
+            if (CWRWorld.HasBoss) {
                 return;
             }
 
