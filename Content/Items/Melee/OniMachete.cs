@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<OniHandMinion>(),
-                damage,
+                damage/2,
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            Projectile.damage = (int)(Projectile.damage * 0.65f);
+            Projectile.damage = (int)(Projectile.damage * 0.60f);
         }
 
         public override void AI() {

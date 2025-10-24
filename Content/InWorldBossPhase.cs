@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (VDownedV7.Invoke()) {
+            if (Downed10.Invoke() || VDownedV7.Invoke()) {
                 level = 6;
             }
             else {
