@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
 
         public override void PreProcessSegment(DialogueBoxBase.DialoguePreProcessArgs args) {
             if (args.Index == 3) { //Line4Ê±·¢·Å½±Àø
-                ADVRewardPopup.ShowReward(ModContent.ItemType<CosmiliteBar>(), 99, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                ADVRewardPopup.ShowReward(ModContent.ItemType<OniMachete>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
