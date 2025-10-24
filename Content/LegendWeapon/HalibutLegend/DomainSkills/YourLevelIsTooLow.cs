@@ -433,17 +433,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             ghost.hairColor = ghostColor;
             ghost.eyeColor = ghostColor;
 
-            try {
-                Main.PlayerRenderer.DrawPlayer(
+            Main.PlayerRenderer.DrawPlayer(
                     Main.Camera,
                     ghost,
                     ghost.position,
                     0f,
                     ghost.fullRotationOrigin
                 );
-            } catch {
-                //忽略渲染异常
-            }
         }
 
         public override bool PreDraw(ref Color lightColor) {

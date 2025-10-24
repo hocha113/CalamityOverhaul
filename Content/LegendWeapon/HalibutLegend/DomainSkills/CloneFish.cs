@@ -469,7 +469,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         , cp.itemRotation, gun.Size() / 2, 1f, cp.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 }
 
-                try { Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin); } catch { }
+                Main.PlayerRenderer.DrawPlayer(Main.Camera, cp, cp.position, 0f, cp.fullRotationOrigin);
             }
 
             Main.spriteBatch.End();
