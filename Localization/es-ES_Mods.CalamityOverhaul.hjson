@@ -1666,7 +1666,8 @@ Projectiles: {
 	// ScorpionSentry.DisplayName: Scorpion Sentry
 	// HeartcarverDagger.DisplayName: Heartcarver Dagger
 	// OniHandExplode.DisplayName: Oni Hand Explode
-	// OniHandMinion.DisplayName: Oni Hand Minion
+	// OniHandMinion.DisplayName: Oni Hand
+	// OniFireBall.DisplayName: Oni Fire Ball
 }
 
 Configs: {

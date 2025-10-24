@@ -1643,8 +1643,9 @@ Projectiles: {
 	WhiteWyvernTailController.DisplayName: 白龙尾
 	ScorpionSentry.DisplayName: 蝎子哨兵
 	HeartcarverDagger.DisplayName: 仪式匕首
-	// OniHandExplode.DisplayName: Oni Hand Explode
-	// OniHandMinion.DisplayName: Oni Hand Minion
+	OniHandExplode.DisplayName: 鬼手爆破
+	OniHandMinion.DisplayName: 鬼手
+	OniFireBall.DisplayName: 鬼手之火
 }
 
 Configs: {
