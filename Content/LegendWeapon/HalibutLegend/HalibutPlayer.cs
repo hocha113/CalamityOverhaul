@@ -487,6 +487,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
+            //根据鼠标位置更新玩家朝向
+            Vector2 playerToMouse = Player.To(MouseWorld);
+            Player.ChangeDir(Math.Sign(playerToMouse.X));
             //这里可以操纵players移除不需要绘制的玩家达到隐藏玩家的目的
             if (HidePlayerTime > 0) {
                 //移除正在使用技能的玩家，使其隐藏
