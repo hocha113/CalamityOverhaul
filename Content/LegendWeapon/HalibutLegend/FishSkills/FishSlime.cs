@@ -152,9 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //追踪目标系统
         private int trackingTargetID = -1;
-        private int trackingLockTime = 0;
-        private const int TrackingLockDuration = 180; //目标锁定持续时间
-        private const float TrackingRange = 400f; //追踪范围
+        private const float TrackingRange = 120f; //追踪范围
         private const float TrackingForce = 0.3f; //追踪力度基础值
         private const float MaxTrackingSpeed = 16f; //最大追踪速度
         private int bounceCount = 0; //弹跳计数
@@ -269,17 +267,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 NPC target = Main.npc[trackingTargetID];
                 if (!target.active || !target.CanBeChasedBy() || target.friendly) {
                     trackingTargetID = -1;
-                    trackingLockTime = 0;
                 }
                 else {
                     float distToTarget = Vector2.Distance(Projectile.Center, target.Center);
                     if (distToTarget > TrackingRange * 1.5f) {
                         //目标太远，丢失锁定
                         trackingTargetID = -1;
-                        trackingLockTime = 0;
-                    }
-                    else {
-                        trackingLockTime++;
                     }
                 }
             }
@@ -296,7 +289,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             if (closestNPC != null) {
                 trackingTargetID = closestNPC.whoAmI;
-                trackingLockTime = 0;
 
                 //锁定目标时的视觉反馈
                 SpawnTrackingLockEffect();
