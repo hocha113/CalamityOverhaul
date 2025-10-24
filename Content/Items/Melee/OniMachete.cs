@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Dusts;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -63,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<OniHandMinion>(),
-                (int)(damage * (5 + HalibutData.GetDomainLayer() * 0.8)),
+                damage * 10,
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count
