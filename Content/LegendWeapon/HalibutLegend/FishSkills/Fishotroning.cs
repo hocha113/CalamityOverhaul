@@ -199,6 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 shoulderPos = Vector2.Zero;
         private Vector2 handPos = Vector2.Zero;
         private float armTension = 0f; //手臂张力,用于IK自然度
+        private int ownerDirection = 1; //玩家朝向 (-1左, 1右)
 
         //攻击参数
         private const float SearchRange = 800f;
@@ -324,14 +325,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdateShoulderPosition(Player owner) {
-            //肩膀固定在玩家中心
-            shoulderPos = owner.Center;
+            //待机状态下更新玩家朝向
+            if (State == HandState.Idle) {
+                ownerDirection = owner.direction;
+            }
+            
+            //肩膀位置需要根据玩家朝向偏移
+            Vector2 shoulderOffset = new Vector2(8f * ownerDirection, -4f);
+            shoulderPos = owner.Center + shoulderOffset;
         }
 
         private void IdleBehavior(Player owner) {
-            //在玩家周围较远距离漂浮
+            //在玩家周围较远距离漂浮 - 根据玩家朝向调整位置
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
-            Vector2 targetPos = shoulderPos + angle.ToRotationVector2() * 150f + idleOffset + new Vector2(0, -80f);
+            
+            //根据玩家朝向镜像X偏移
+            Vector2 circleOffset = angle.ToRotationVector2() * 150f;
+            circleOffset.X *= ownerDirection;
+            
+            Vector2 targetPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(targetPos, 0.15f);
 
             glowIntensity = 0.3f;
@@ -443,12 +455,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 0.5f + progress * 0.4f;
             armTension = 0.9f;
 
-            //根据攻击类型后拉-增大幅度
+            //根据攻击类型后拉-增大幅度，并考虑玩家朝向
             Vector2 windUpOffset = AttackType switch {
-                0 => new Vector2(-200f, -100f),  //挥击-向后上方拉
-                1 => new Vector2(0, -250f),      //下砸-向上拉
-                2 => new Vector2(-220f, 0),      //横扫-向侧后方拉
-                3 => new Vector2(-180f, -120f),  //投掷-向后上方
+                0 => new Vector2(-200f * ownerDirection, -100f),  //挥击-向后上方拉
+                1 => new Vector2(0, -250f),                        //下砸-向上拉
+                2 => new Vector2(-220f * ownerDirection, 0),       //横扫-向侧后方拉
+                3 => new Vector2(-180f * ownerDirection, -120f),   //投掷-向后上方
                 _ => Vector2.Zero
             };
 
@@ -512,12 +524,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f;
             armTension = 1f;
 
-            //快速挥击弧线-增大范围
-            float swingAngle = MathHelper.Lerp(
-                MathHelper.PiOver2 * 1.2f,
-                -MathHelper.PiOver4 * 1.5f,
-                CWRUtils.EaseInOutCubic(progress)
-            );
+            //快速挥击弧线-增大范围，考虑玩家朝向
+            //朝右时：从右上挥到左下
+            //朝左时：从左上挥到右下
+            float startAngle = MathHelper.PiOver2 * 1.2f;
+            float endAngle = -MathHelper.PiOver4 * 1.5f;
+            
+            //根据玩家朝向镜像角度
+            if (ownerDirection == -1) {
+                startAngle = MathHelper.Pi - startAngle;
+                endAngle = MathHelper.Pi - endAngle;
+            }
+            
+            float swingAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutCubic(progress));
 
             Vector2 swingOffset = new Vector2(
                 (float)Math.Cos(swingAngle) * 250f,
@@ -576,12 +595,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f;
             armTension = 1f;
 
-            //横扫弧线-增大范围
-            float sweepAngle = MathHelper.Lerp(
-                -MathHelper.Pi * 1.1f,
-                MathHelper.Pi * 1.1f,
-                CWRUtils.EaseInOutQuad(progress)
-            );
+            //横扫弧线-增大范围，考虑玩家朝向
+            float startAngle = -MathHelper.Pi * 1.1f;
+            float endAngle = MathHelper.Pi * 1.1f;
+            
+            //根据玩家朝向调整横扫方向
+            if (ownerDirection == -1) {
+                (startAngle, endAngle) = (MathHelper.Pi - endAngle, MathHelper.Pi - startAngle);
+            }
+            
+            float sweepAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutQuad(progress));
 
             float radius = 220f;
             Vector2 sweepOffset = new Vector2(
@@ -741,9 +764,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f - progress * 0.7f;
             armTension = 0.5f;
 
-            //返回待机位置
+            //返回待机位置 - 考虑玩家朝向
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
-            Vector2 recoverPos = shoulderPos + angle.ToRotationVector2() * 150f + idleOffset + new Vector2(0, -80f);
+            Vector2 circleOffset = angle.ToRotationVector2() * 150f;
+            circleOffset.X *= ownerDirection;
+            
+            Vector2 recoverPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(recoverPos, 0.2f);
 
             if (StateTimer >= RecoverDuration) {
@@ -787,8 +813,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 direction = (armSegments[i - 1] - (i == ArmSegmentCount - 1 ? shoulderPos : armSegments[i])).SafeNormalize(Vector2.Zero);
 
                 //根据张力调整关节位置,增加自然弯曲
+                //关键修复：根据玩家朝向调整弯曲方向
                 float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
-                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f;
+                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f * ownerDirection;
 
                 armSegments[i] = armSegments[i - 1] - direction * SegmentLength + perpendicular;
             }
@@ -798,9 +825,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = ArmSegmentCount - 2; i >= 0; i--) {
                 Vector2 direction = (armSegments[i] - armSegments[i + 1]).SafeNormalize(Vector2.Zero);
 
-                //同样应用弯曲
+                //同样应用弯曲，考虑玩家朝向
                 float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
-                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f;
+                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f * ownerDirection;
 
                 armSegments[i] = armSegments[i + 1] + direction * SegmentLength + perpendicular;
             }
