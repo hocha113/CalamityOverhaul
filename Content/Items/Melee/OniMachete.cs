@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Dusts;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -168,10 +166,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class OniFireBall : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "OniMachete";
-        
+
         private ref float Timer => ref Projectile.ai[0];
         private ref float TargetNPCID => ref Projectile.ai[1];
-        
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.hostile = false;
@@ -186,32 +184,32 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             Timer++;
-            
+
             //火球旋转效果
             Projectile.rotation += Projectile.velocity.Length() * 0.03f;
-            
+
             //硫磺火球发光
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.9f * pulse, 0.3f * pulse, 0.1f * pulse);
-            
+
             //初期加速
             if (Timer < 15f) {
                 Projectile.velocity *= 1.02f;
             }
-            
+
             //中期追踪
             if (Timer > 15f && Timer < 120f) {
                 HomeInOnTarget();
             }
-            
+
             //后期减速
             if (Timer > 120f) {
                 Projectile.velocity *= 0.98f;
             }
-            
+
             //硫磺火粒子轨迹
             SpawnBrimstoneTrail();
-            
+
             //火球膨胀脉动效果
             Projectile.scale = 1f + (float)Math.Sin(Timer * 0.2f) * 0.15f;
         }
@@ -220,28 +218,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             //寻找最近的敌人
             NPC target = null;
             float maxDistance = 600f;
-            
+
             if (TargetNPCID >= 0 && TargetNPCID < Main.maxNPCs) {
                 NPC potentialTarget = Main.npc[(int)TargetNPCID];
-                if (potentialTarget.active && potentialTarget.CanBeChasedBy() && 
+                if (potentialTarget.active && potentialTarget.CanBeChasedBy() &&
                     Vector2.Distance(Projectile.Center, potentialTarget.Center) < maxDistance) {
                     target = potentialTarget;
                 }
             }
-            
+
             if (target == null) {
                 target = Projectile.Center.FindClosestNPC(maxDistance);
                 if (target != null) {
                     TargetNPCID = target.whoAmI;
                 }
             }
-            
+
             if (target != null) {
                 //平滑追踪
                 Vector2 targetDirection = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                 float currentSpeed = Projectile.velocity.Length();
                 float turnSpeed = 0.08f;
-                
+
                 Projectile.velocity = Vector2.Lerp(
                     Projectile.velocity.SafeNormalize(Vector2.Zero),
                     targetDirection,
@@ -264,7 +262,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 brimstone.noGravity = true;
                 brimstone.fadeIn = 1.3f;
             }
-            
+
             //火焰尾迹
             if (Main.rand.NextBool(3)) {
                 Dust fire = Dust.NewDustPerfect(
@@ -285,7 +283,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 180);
-            
+
             //击中特效
             CreateHitEffect(Projectile.Center);
         }
@@ -293,7 +291,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnKill(int timeLeft) {
             //火球爆炸效果
             CreateExplosionEffect(Projectile.Center);
-            
+
             //爆炸音效
             SoundEngine.PlaySound(SoundID.Item74 with {
                 Volume = 0.6f,
@@ -315,7 +313,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 );
                 brimstone.noGravity = true;
             }
-            
+
             //火焰飞溅
             for (int i = 0; i < 8; i++) {
                 Dust fire = Dust.NewDustPerfect(
@@ -335,7 +333,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-                
+
                 Dust brimstone = Dust.NewDustPerfect(
                     position,
                     (int)CalamityDusts.Brimstone,
@@ -347,7 +345,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 brimstone.noGravity = true;
                 brimstone.fadeIn = 1.6f;
             }
-            
+
             //火焰爆炸核心
             for (int i = 0; i < 20; i++) {
                 Dust fire = Dust.NewDustPerfect(
@@ -360,12 +358,12 @@ namespace CalamityOverhaul.Content.Items.Melee
                 );
                 fire.noGravity = true;
             }
-            
+
             //冲击环
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * 6f;
-                
+
                 Dust ring = Dust.NewDustPerfect(
                     position,
                     (int)CalamityDusts.Brimstone,
@@ -390,12 +388,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Rectangle rectangle = mainValue.GetRectangle(Projectile.frame, 4);
             Vector2 origin = rectangle.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            
+
             //绘制硫磺火后发光层
             for (int i = 0; i < 3; i++) {
                 float glowScale = Projectile.scale * (1.3f + i * 0.2f);
                 float glowAlpha = 0.4f * (1f - i * 0.3f);
-                
+
                 sb.Draw(
                     mainValue,
                     drawPos,
@@ -408,7 +406,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     0
                 );
             }
-            
+
             //绘制核心白色亮光
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f + Projectile.whoAmI) * 0.3f + 0.7f;
             sb.Draw(
@@ -422,7 +420,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpriteEffects.None,
                 0
             );
-            
+
             //绘制火球主体 - 红橙色调
             sb.Draw(
                 mainValue,
@@ -435,7 +433,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpriteEffects.None,
                 0
             );
-            
+
             //绘制外层炽热边缘
             sb.Draw(
                 mainValue,
@@ -448,7 +446,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpriteEffects.None,
                 0
             );
-            
+
             return false;
         }
     }
@@ -661,11 +659,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void IdleBehavior(Player owner) {
             //在玩家周围较远距离漂浮，根据玩家朝向调整位置
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
-            
+
             //根据玩家朝向镜像X偏移
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
-            
+
             Vector2 targetPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(targetPos, 0.15f);
 
@@ -848,13 +846,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             //朝左时：从左上挥到右下
             float startAngle = MathHelper.PiOver2 * 1.2f;
             float endAngle = -MathHelper.PiOver4 * 1.5f;
-            
+
             //根据玩家朝向镜像角度
             if (ownerDirection == -1) {
                 startAngle = MathHelper.Pi - startAngle;
                 endAngle = MathHelper.Pi - endAngle;
             }
-            
+
             float swingAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutCubic(progress));
 
             Vector2 swingOffset = new Vector2(
@@ -917,12 +915,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             //横扫弧线-增大范围，考虑玩家朝向
             float startAngle = -MathHelper.Pi * 1.1f;
             float endAngle = MathHelper.Pi * 1.1f;
-            
+
             //根据玩家朝向调整横扫方向
             if (ownerDirection == -1) {
                 (startAngle, endAngle) = (MathHelper.Pi - endAngle, MathHelper.Pi - startAngle);
             }
-            
+
             float sweepAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutQuad(progress));
 
             float radius = 220f;
@@ -1095,7 +1093,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
-            
+
             Vector2 recoverPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(recoverPos, 0.2f);
 

@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.CalClone;
-using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.IO;

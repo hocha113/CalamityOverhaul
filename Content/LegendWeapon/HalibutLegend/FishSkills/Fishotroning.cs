@@ -329,7 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (State == HandState.Idle) {
                 ownerDirection = owner.direction;
             }
-            
+
             //肩膀位置需要根据玩家朝向偏移
             Vector2 shoulderOffset = new Vector2(8f * ownerDirection, -4f);
             shoulderPos = owner.Center + shoulderOffset;
@@ -338,11 +338,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void IdleBehavior(Player owner) {
             //在玩家周围较远距离漂浮 - 根据玩家朝向调整位置
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
-            
+
             //根据玩家朝向镜像X偏移
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
-            
+
             Vector2 targetPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(targetPos, 0.15f);
 
@@ -529,13 +529,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //朝左时：从左上挥到右下
             float startAngle = MathHelper.PiOver2 * 1.2f;
             float endAngle = -MathHelper.PiOver4 * 1.5f;
-            
+
             //根据玩家朝向镜像角度
             if (ownerDirection == -1) {
                 startAngle = MathHelper.Pi - startAngle;
                 endAngle = MathHelper.Pi - endAngle;
             }
-            
+
             float swingAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutCubic(progress));
 
             Vector2 swingOffset = new Vector2(
@@ -598,12 +598,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //横扫弧线-增大范围，考虑玩家朝向
             float startAngle = -MathHelper.Pi * 1.1f;
             float endAngle = MathHelper.Pi * 1.1f;
-            
+
             //根据玩家朝向调整横扫方向
             if (ownerDirection == -1) {
                 (startAngle, endAngle) = (MathHelper.Pi - endAngle, MathHelper.Pi - startAngle);
             }
-            
+
             float sweepAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutQuad(progress));
 
             float radius = 220f;
@@ -768,7 +768,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float angle = HandIndex * MathHelper.TwoPi / 3f + Main.GlobalTimeWrappedHourly * 0.5f;
             Vector2 circleOffset = angle.ToRotationVector2() * 150f;
             circleOffset.X *= ownerDirection;
-            
+
             Vector2 recoverPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
             MoveToPosition(recoverPos, 0.2f);
 
