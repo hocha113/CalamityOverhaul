@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
-    internal class SupCalDefeat : ADVScenarioBase, ILocalizedModType
+    internal class SupCalDefeat : ADVScenarioBase, ILocalizedModType//彩蛋章
     {
         public override string Key => nameof(SupCalDefeat);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
