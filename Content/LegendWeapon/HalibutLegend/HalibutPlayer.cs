@@ -339,6 +339,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public override void PostUpdate() {//在每帧更新后进行一些操作
+            //根据鼠标位置更新玩家朝向
+            Vector2 playerToMouse = Player.To(MouseWorld);
+            Player.ChangeDir(Math.Sign(playerToMouse.X));
+
             if (HeldHalibut) {
                 //更新深渊复苏系统
                 ResurrectionSystem.Update();
