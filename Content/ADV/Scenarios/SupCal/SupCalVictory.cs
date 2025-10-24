@@ -3,6 +3,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -149,6 +150,29 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override void OnKill(NPC npc) {
             if (FirstMetSupCal.ThisIsToFight && npc.type == ModContent.NPCType<SupremeCalamitas>()) {
+                Player player = Main.LocalPlayer;
+                if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    if (halibutPlayer.ADCSave.SupCalChoseToFight) {
+                        Spawned = true;
+                        RandomTimer = 60 * Main.rand.Next(2, 4);
+                    }
+                }
+                FirstMetSupCal.ThisIsToFight = false;//战斗结束
+
+                //仅服务器发送
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.SupCalVictoryNPC);
+                    packet.Send();
+                }
+            }
+        }
+
+        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
+            if (!VaultUtils.isClient) {
+                return;//仅客户端处理
+            }
+            if (type == CWRMessageType.SupCalVictoryNPC) {
                 Player player = Main.LocalPlayer;
                 if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     if (halibutPlayer.ADCSave.SupCalChoseToFight) {

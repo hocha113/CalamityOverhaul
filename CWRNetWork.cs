@@ -27,6 +27,7 @@ namespace CalamityOverhaul
         FirstMetSupCalNPC,
         SupCalDefeatNPC,
         SupCalPlayerDefeatTracker,
+        SupCalVictoryNPC,
         DoGQuestTracker,
         PallbearerQuestTracker,
         HalibutMouseWorld,
@@ -66,6 +67,7 @@ namespace CalamityOverhaul
             FirstMetSupCalNPC.NetHandle(type, reader, whoAmI);
             SupCalDefeatNPC.NetHandle(type, reader, whoAmI);
             SupCalPlayerDefeatTracker.NetHandle(type, reader, whoAmI);
+            SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
             PallbearerQuestTracker.NetHandle(type, reader, whoAmI);
             DoGQuestTracker.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
