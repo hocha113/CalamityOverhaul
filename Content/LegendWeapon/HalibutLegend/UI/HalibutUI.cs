@@ -116,8 +116,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
         }
         public override void Draw(SpriteBatch spriteBatch) {
+            RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+            Rectangle viedutRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight - 20);
+            //进行矩形画布裁剪绘制
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                             DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+            Rectangle originalScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
+            Rectangle newScissorRect = VaultUtils.GetClippingRectangle(spriteBatch, viedutRect);
+            spriteBatch.GraphicsDevice.ScissorRectangle = newScissorRect;
             //他妈的我不知道为什么这里裁剪画布不生效，那么就这么将就着画吧，反正插穿鱼头也没人在意，就像他妈的澳大利亚人要打多少只袋鼠一样无聊
             spriteBatch.Draw(LeftSidebar, UIHitBox, Color.White);
+
+            rasterizerState.ScissorTestEnable = false;
+            //恢复画布
+            spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                             DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
         }
         public void PostDraw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Cap, DrawPosition + new Vector2(4, 0), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
@@ -528,14 +544,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            var rasterizer = Main.Rasterizer;
-            rasterizer.ScissorTestEnable = true;
-            Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
-            Rectangle clipping = new(20, 0, Main.screenWidth, Main.screenHeight);//别问我这个X=20是干什么的，问就是手调的，问就是刚刚好
+            RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+            Rectangle originalScissor = spriteBatch.GraphicsDevice.ScissorRectangle;//裁剪区域：只在面板内绘制技能图标
+            Rectangle clipping = new(20, 0, Main.screenWidth, Main.screenHeight - 20);//别问我这个X=20是干什么的，问就是手调的，问就是刚刚好
             Main.instance.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipping);//这里进行必要的裁剪画布设置，避免绘制出不适合出现的部分
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                    , DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
 
             SkillTooltipPanel.Instance.Draw(spriteBatch);//先绘制介绍面板（在主面板后面）
             spriteBatch.Draw(Panel, UIHitBox, Color.White);//绘制主面板
@@ -543,18 +558,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             rightButton.Draw(spriteBatch);
             StudySlot.Instance.Draw(spriteBatch);
 
-            Rectangle originalScissor = spriteBatch.GraphicsDevice.ScissorRectangle;//裁剪区域：只在面板内绘制技能图标
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                             DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
             Rectangle scissorRect = new Rectangle(
-                (int)(DrawPosition.X + 40),
+                20,
                 (int)(DrawPosition.Y + 20),
-                (int)(Size.X - 80),
+                (int)(Size.X),
                 (int)(Size.Y - 40)
             );
-            RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                             DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
-            spriteBatch.GraphicsDevice.ScissorRectangle = scissorRect;
+            spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, scissorRect);
             for (int i = 0; i < halibutUISkillSlots.Count; i++) {
                 var slot = halibutUISkillSlots[i];
                 float alpha = 1f;//计算透明度：边缘的图标逐渐淡出
@@ -567,20 +580,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 slot.DrawAlpha = Math.Clamp(alpha, 0f, 1f);
                 slot.Draw(spriteBatch);
             }
-            spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;//恢复裁剪矩形
+
+            rasterizerState.ScissorTestEnable = false;//恢复RasterizerState
+            spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;//他妈的要恢复，不然UI就鸡巴全没了
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
+                    , DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+
             foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);//绘制飞行粒子（在最上层）
             }
             //绘制快捷提示(在粒子之后保证可见)
             SkillSlot.HoveredSlot?.DrawHint(spriteBatch);
-            rasterizer.ScissorTestEnable = false;//恢复RasterizerState
-            Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = false;//他妈的要恢复，不然UI就鸡巴全没了
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
         }
     }
 }
