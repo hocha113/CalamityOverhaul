@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
     ///<summary>
-    ///终极爆炸波
+    ///爆炸波
     ///</summary>
     internal class PandemoniumBlastWave : ModProjectile
     {

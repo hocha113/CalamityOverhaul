@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (Level5) {
                 damage += 10;
             }
-            
+
             if (NPC.downedMechBoss1) {//毁灭者
                 damage += 5;
             }

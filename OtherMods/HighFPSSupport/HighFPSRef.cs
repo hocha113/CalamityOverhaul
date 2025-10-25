@@ -40,11 +40,11 @@ namespace CalamityOverhaul.OtherMods.HighFPSSupport
                 if (CWRMod.Instance.highFPSSupport.TryFind<ModConfig>("Config", out var config)) {
                     return (bool)motionInterpolationField.GetValue(config);
                 }
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"HighFPSRef.GetMotionInterpolationValue An Error Has Cccurred: {ex.Message}");
                 return false;
             }
-            
+
             return false;
         }
         /// <summary>
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.OtherMods.HighFPSSupport
                 return;//已经禁用了的话就不管了
             }
             //这里为了保证模组稳定，自动关闭运动插值功能
-            SpwanTextProj.New(Main.LocalPlayer, () => 
+            SpwanTextProj.New(Main.LocalPlayer, () =>
                     VaultUtils.Text(CWRLocText.Instance.DisableMotionInterpolationMessage.Value
                     , Color.OrangeRed), 260
                 );

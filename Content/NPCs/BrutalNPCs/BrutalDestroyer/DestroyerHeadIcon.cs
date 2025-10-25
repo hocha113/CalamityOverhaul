@@ -10,13 +10,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
     internal class DestroyerHeadIcon : CWRNPCOverride, ICWRLoader
     {
         public override int TargetID => -1;//设置为-1，也就是说会运行在所有NPC之上，这里可以让GetBossHeadRotation等钩子可以在type为0的NPC上运行
-        
+
         /// <summary>
         /// 存储当前参与地图绘制时需要修改类型的毁灭者头部NPC索引
         /// 使用HashSet保证唯一性和快速查找
         /// </summary>
         internal static HashSet<int> HeadWhoAmIs { get; private set; } = [];
-        
+
         /// <summary>
         /// 备份原始NPC类型，用于在绘制完成后恢复
         /// 键为NPC索引，值为原始type
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private static readonly Dictionary<int, int> OriginalNPCTypes = [];
 
         void ICWRLoader.LoadData() => On_Main.DrawMap += On_Main_DrawMap;
-        
+
         void ICWRLoader.UnLoadData() {
             On_Main.DrawMap -= On_Main_DrawMap;
             //清理静态数据，防止内存泄漏
@@ -49,8 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             try {
                 //执行原版绘制逻辑，此时毁灭者的type已经被临时改为None
                 orig.Invoke(self, gameTime);//<---DestroyerHeadIcon的钩子会在这里运行，所以运行顺序不会出问题
-            }
-            finally {
+            } finally {
                 //恢复阶段：无论是否发生异常都要恢复NPC类型
                 //使用finally块确保即使发生异常也能正确恢复
                 RestoreDestroyerHeads();
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 //记录这个NPC的索引和原始类型
                 HeadWhoAmIs.Add(npc.whoAmI);
                 OriginalNPCTypes[npc.whoAmI] = npc.type;
-                
+
                 //改成0来避开任何可能的ID特判检查
                 //幸运的是这个函数里，改动ID这种事情并不危险
                 npc.type = NPCID.None;
@@ -122,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
 
             HashSet<int> validIndices = [];
-            
+
             foreach (var index in HeadWhoAmIs.ToHashSet()) {
                 //验证NPC是否仍然有效且为Boss级别的毁灭者
                 if (index.TryGetNPC(out var npc) && npc.boss && npc.type == NPCID.TheDestroyer) {

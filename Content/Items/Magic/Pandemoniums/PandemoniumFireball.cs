@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
     ///<summary>
-    ///混沌魔能火球 - 增强版
+    ///混沌魔能火球
     ///</summary>
     internal class PandemoniumFireball : ModProjectile
     {

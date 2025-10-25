@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float Wave => ref Projectile.ai[0];
         private ref float TrailTimer => ref Projectile.ai[1];
 
-        // 拖尾效果
+        //拖尾效果
         private Vector2[] oldPositions = new Vector2[20];
         private float[] oldRotations = new float[20];
 
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void AI() {
-            // 初始化拖尾数组
+            //初始化拖尾数组
             if (TrailTimer == 0) {
                 for (int i = 0; i < oldPositions.Length; i++) {
                     oldPositions[i] = Projectile.Center;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
             TrailTimer++;
 
-            // 更新拖尾位置
+            //更新拖尾位置
             for (int i = oldPositions.Length - 1; i > 0; i--) {
                 oldPositions[i] = oldPositions[i - 1];
                 oldRotations[i] = oldRotations[i - 1];
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             oldPositions[0] = Projectile.Center;
             oldRotations[0] = Projectile.rotation;
 
-            // 螺旋运动
+            //螺旋运动
             float spiralAmount = (float)Math.Sin(TrailTimer * 0.1f) * 2f;
             Projectile.velocity = Projectile.velocity.RotatedBy(spiralAmount * 0.02f);
 
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.position);
 
-            // 命中爆发效果
+            //命中爆发效果
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Blood, vel, 100, default, 1.8f);
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SpriteBatch sb = Main.spriteBatch;
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
-            // 绘制拖尾
+            //绘制拖尾
             for (int i = 1; i < oldPositions.Length; i++) {
                 float progress = 1f - i / (float)oldPositions.Length;
                 Color trailColor = Color.Lerp(new Color(180, 20, 40, 0), new Color(255, 80, 60, 0), progress) * progress * 0.8f;
@@ -139,12 +139,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     texture.Size() / 2, trailScale, SpriteEffects.None, 0f);
             }
 
-            // 绘制主体
+            //绘制主体
             Color mainColor = Projectile.GetAlpha(lightColor);
             sb.Draw(texture, Projectile.Center - Main.screenPosition, null, mainColor, Projectile.rotation,
                 texture.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
-            // 绘制辉光
+            //绘制辉光
             Color glowColor = new Color(255, 100, 80, 0) * 0.8f;
             sb.Draw(texture, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation,
                 texture.Size() / 2, Projectile.scale * 1.1f, SpriteEffects.None, 0f);
