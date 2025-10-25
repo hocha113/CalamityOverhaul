@@ -1289,6 +1289,11 @@ Items: {
 			True melee attacks will release ghost flames.
 			''' */
 	}
+
+	Pandemonium: {
+		// DisplayName: Pandemonium
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1668,6 +1673,9 @@ Projectiles: {
 	// OniHandExplode.DisplayName: Oni Hand Explode
 	// OniHandMinion.DisplayName: Oni Hand
 	// OniFireBall.DisplayName: Oni Fire Ball
+	// PandemoniumChannel.DisplayName: Pandemonium Channel
+	// PandemoniumFireball.DisplayName: Pandemonium Fireball
+	// PandemoniumScythe.DisplayName: Pandemonium Scythe
 }
 
 Configs: {

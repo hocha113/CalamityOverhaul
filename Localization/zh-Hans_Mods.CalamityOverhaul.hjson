@@ -1267,6 +1267,11 @@ Items: {
 			真近战攻击会释放出鬼火
 			'''
 	}
+
+	Pandemonium: {
+		// DisplayName: Pandemonium
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1646,6 +1651,9 @@ Projectiles: {
 	OniHandExplode.DisplayName: 鬼手爆破
 	OniHandMinion.DisplayName: 鬼手
 	OniFireBall.DisplayName: 鬼手之火
+	// PandemoniumChannel.DisplayName: Pandemonium Channel
+	// PandemoniumFireball.DisplayName: Pandemonium Fireball
+	// PandemoniumScythe.DisplayName: Pandemonium Scythe
 }
 
 Configs: {
