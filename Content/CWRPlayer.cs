@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.RemakeItems;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using CalamityOverhaul.OtherMods.HighFPSSupport;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -377,6 +378,8 @@ namespace CalamityOverhaul.Content
             SpearOfLonginus.ZenithWorldAsset();
 
             HandlerCanOverride.ModifiIntercept_OnEnterWorld();
+
+            HighFPSRef.DisableMotionInterpolation();
 
             //初始化位置信息
             oldPlayerPositionChange = Player.position;

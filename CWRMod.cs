@@ -41,6 +41,7 @@ namespace CalamityOverhaul
         internal Mod ddmod = null;
         internal Mod coralite = null;
         internal Mod bossChecklist = null;
+        internal Mod highFPSSupport = null;
 
         #endregion
 
@@ -100,6 +101,7 @@ namespace CalamityOverhaul
             ddmod = null;
             coralite = null;
             bossChecklist = null;
+            highFPSSupport = null;
         }
 
         public void FindMod() {
@@ -125,6 +127,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("DDmod", out ddmod);
             ModLoader.TryGetMod("Coralite", out coralite);
             ModLoader.TryGetMod("BossChecklist", out bossChecklist);
+            ModLoader.TryGetMod("HighFPSSupport", out highFPSSupport);
         }
     }
 }
