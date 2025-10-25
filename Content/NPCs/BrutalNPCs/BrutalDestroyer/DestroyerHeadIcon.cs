@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         /// 恢复阶段：将所有被修改的NPC类型恢复为原始值
         /// </summary>
         private static void RestoreDestroyerHeads() {
-            foreach (var whoAmI in HeadWhoAmIs) {
+            foreach (var whoAmI in HeadWhoAmIs.ToHashSet()) {
                 //安全检查：确保NPC索引有效
                 if (!whoAmI.TryGetNPC(out var npc)) {
                     continue;
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             HashSet<int> validIndices = [];
             
-            foreach (var index in HeadWhoAmIs) {
+            foreach (var index in HeadWhoAmIs.ToHashSet()) {
                 //验证NPC是否仍然有效且为Boss级别的毁灭者
                 if (index.TryGetNPC(out var npc) && npc.boss && npc.type == NPCID.TheDestroyer) {
                     validIndices.Add(index);
