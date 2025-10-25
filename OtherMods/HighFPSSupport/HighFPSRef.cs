@@ -23,6 +23,10 @@ namespace CalamityOverhaul.OtherMods.HighFPSSupport
                 DisableMotionInterpolationMethod = configType.GetMethod("DisableMotionInterpolation", BindingFlags.NonPublic | BindingFlags.Static);
             } catch (Exception ex) { CWRMod.Instance.Logger.Error($"HighFPSRef.LoadData An Error Has Cccurred: {ex.Message}"); }
         }
+        void ICWRLoader.UnLoadData() {
+            DisableMotionInterpolationMethod = null;
+            motionInterpolationField = null;
+        }
         /// <summary>
         /// 获取高FPS支持模组中运动插值功能的开启状态
         /// </summary>
