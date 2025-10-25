@@ -9,25 +9,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 {
     internal class DestroyerBossBar : GlobalBossBar
     {
+        private static bool IsDestroyerSegment(int type) =>
+            type == NPCID.TheDestroyer || type == NPCID.TheDestroyerBody || type == NPCID.TheDestroyerTail;
+
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
-            if ((npc.type == NPCID.TheDestroyer || npc.type == NPCID.TheDestroyerBody
-                || npc.type == NPCID.TheDestroyerTail) && !HeadPrimeAI.DontReform()) {
+            //非目标直接返回，不改任何东西，确保不会影响其它 NPC
+            if (!IsDestroyerSegment(npc.type) || HeadPrimeAI.DontReform()) {
+                return true;
+            }
+
+            //安全获取图标
+            if (DestroyerHeadAI.HeadIcon?.Value != null) {
                 drawParams.IconTexture = DestroyerHeadAI.HeadIcon.Value;
                 drawParams.IconFrame = DestroyerHeadAI.HeadIcon.Value.GetRectangle();
+            }
+
+            //头部直接使用自身血量
+            if (npc.type == NPCID.TheDestroyer) {
+                drawParams.Life = npc.life;
                 drawParams.LifeMax = npc.lifeMax;
-                if (npc.type != NPCID.TheDestroyer) {
-                    int headIndex = -1;//为了让这里的代码看起来是给人看的，我选择将条件判断分开写
-                    if (npc.realLife >= 0 && npc.realLife < Main.maxNPCs) {
-                        headIndex = npc.realLife;//如果是身体，根据realLife找到头部的索引
-                    }
-                    if (!Main.npc[headIndex].active || Main.npc[headIndex].type != NPCID.TheDestroyer) {
-                        headIndex = -1;//检测头部是否正常，判断一下ID防止连到其他NPC去了
-                    }
-                    if (headIndex >= 0 && headIndex < Main.maxNPCs) {//如果找到正常的头部了就设置一下头部的血量
-                        drawParams.Life = Main.npc[headIndex].life;
-                    }
+                return true;
+            }
+
+            //身体或尾部尝试同步头部
+            int headIndex = npc.realLife;
+            if (headIndex >= 0 && headIndex < Main.maxNPCs) {
+                NPC head = Main.npc[headIndex];
+                if (head.active && head.type == NPCID.TheDestroyer) {
+                    drawParams.Life = head.life;
+                    drawParams.LifeMax = head.lifeMax;
+                    return true;
                 }
             }
+
+            //回退，没找到正常头部，就用本段自身数据，避免异常
+            drawParams.Life = npc.life;
+            drawParams.LifeMax = npc.lifeMax;
             return true;
         }
     }
