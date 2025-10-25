@@ -1654,6 +1654,7 @@ Projectiles: {
 	// PandemoniumChannel.DisplayName: Pandemonium Channel
 	// PandemoniumFireball.DisplayName: Pandemonium Fireball
 	// PandemoniumScythe.DisplayName: Pandemonium Scythe
+	// PandemoniumBlastWave.DisplayName: Pandemonium Blast Wave
 }
 
 Configs: {
