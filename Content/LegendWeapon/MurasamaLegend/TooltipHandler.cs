@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", noneTip: CWRLocText.Instance.Notbound.Value);
             tooltips.InsertHotkeyBinding(CWRKeySystem.Murasama_DownKey, "[KEY2]", noneTip: CWRLocText.Instance.Notbound.Value);
 
-            int index = Mura_Level();
+            int index = GetLevel(item);
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
             string text2 = CWRLocText.GetTextValue("Murasama_Text0");
             string text3;
