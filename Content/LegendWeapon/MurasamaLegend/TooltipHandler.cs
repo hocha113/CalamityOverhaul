@@ -24,14 +24,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (index != 5) {
                 return;
             }
-            
+            if (!Level5) {
+                //没有击败全部灾三王，不提示机械三王
+                return;
+            }
             //根据击败的Boss数量来确定提示
             //击败了所有三个机械Boss
             if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3) {
                 //全部击败，不需要提示
                 return;
             }
-            
             //击败了两个Boss的情况
             if (NPC.downedMechBoss2 && NPC.downedMechBoss3 && !NPC.downedMechBoss1) {
                 //击败了双子和机械统帅，还差毁灭者
@@ -56,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
             else if (NPC.downedMechBoss2 && !NPC.downedMechBoss1 && !NPC.downedMechBoss3) {
                 //只击败了双子 - 这是问题所在！
-                newContent = MuraText.GetTextValue("Subtest_Text3");  //提示击败机械统帅
+                newContent = MuraText.GetTextValue("Subtest_Text1");  //提示击败机械统帅
                 num += "-2";  //修复：改为-2而不是-3
             }
             else if (NPC.downedMechBoss1 && !NPC.downedMechBoss2 && !NPC.downedMechBoss3) {
@@ -73,6 +75,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         private static void ModifyGolemSelect(int index, ref string newContent, ref string num) {
             if (index != 7) {
+                return;
+            }
+            if (!Level7) {
+                //没有击败石巨人，不提示石后boss
                 return;
             }
             else if (Downed14.Invoke() && Downed16.Invoke() && !Downed15.Invoke()) {
