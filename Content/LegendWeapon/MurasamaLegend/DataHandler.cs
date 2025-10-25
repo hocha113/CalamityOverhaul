@@ -15,9 +15,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (Level4 && !Main.hardMode) {
                 damage += 7;
             }
-            else {
-                return;
-            }
         }
 
         private static void ModifyMechBossSelect(int index, ref int damage) {
@@ -27,6 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (!Level5) {
                 return;
             }
+            
             if (NPC.downedMechBoss1) {//毁灭者
                 damage += 7;
             }
@@ -35,9 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             }
             if (NPC.downedMechBoss3) {//机械统帅
                 damage += 10;
-            }
-            else {
-                return;
             }
         }
 
@@ -58,10 +53,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (Downed16.Invoke()) {
                 damage += 10;
             }
-            else {
-                return;
-            }
-
         }
         private static void ModifyAfterMoonSelect(int index, ref int damage) {
             if (index != 9) {
@@ -74,10 +65,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (Downed23.Invoke()) {
                 damage += 70;
             }
-            else {
-                return;
-            }
-
         }
         private static void ModifyAfterMechSelect(int index, ref int damage) {
             if (index != 6) {
@@ -90,10 +77,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (VDownedV7.Invoke()) {
                 damage += 15;
             }
-            else {
-                return;
-            }
-
         }
         public static void DamageModify(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
