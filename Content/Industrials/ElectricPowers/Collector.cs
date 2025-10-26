@@ -97,13 +97,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override bool CanDrop(int i, int j) => false;
 
-        public override bool RightClick(int i, int j) {
-            if (TileProcessorLoader.AutoPositionGetTP(i, j, out CollectorTP collector)) {
-                collector.RightClick(Main.LocalPlayer);
-            }
-            return base.RightClick(i, j);
-        }
-
         public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<Collector>());
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
@@ -160,6 +153,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
         internal float hoverSengs;
+        
         public override void SetBattery() {
             ItemFilter = new Item();
             DrawExtendMode = 2200;
@@ -222,7 +216,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!workState && frame == 23) {
                 frame = 0;
                 workState = true;
-                if (Main.dedServ) {
+                if (!VaultUtils.isClient) {
                     SendData();
                 }
                 SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
@@ -230,61 +224,115 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
         }
 
-        internal static void CheckArm(ref int armIndex, int armID, Vector2 armPos) {
-            if (armIndex < 0) {
-                return;
-            }
-
+        internal static bool IsArmValid(int armIndex) {
+            if (armIndex < 0) return false;
             Projectile projectile = Main.projectile.FindByIdentity(armIndex);
-            if (!projectile.Alives() || projectile.type != armID) {
-                armIndex = -1;
-                return;
-            }
+            return projectile.Alives() && projectile.type == ModContent.ProjectileType<CollectorArm>();
         }
 
-        internal void RightClick(Player player) {
+        public override bool? RightClick(int i, int j, Tile tile, Player player) {
             Item item = player.GetItem();
+            bool changed = false;
+
             if (!item.Alives()) {
                 if (TagItemSign != ItemID.None) {
-                    SoundEngine.PlaySound(CWRSound.Select with { Pitch = 0.2f });
                     TagItemSign = ItemID.None;
+                    changed = true;
                 }
-                return;
             }
-            if (TagItemSign > ItemID.None && TagItemSign == item.type) {
-                SoundEngine.PlaySound(CWRSound.Select with { Pitch = 0.2f });
+            else if (TagItemSign > ItemID.None && TagItemSign == item.type) {
                 TagItemSign = ItemID.None;
-                return;
+                changed = true;
             }
-            SoundEngine.PlaySound(CWRSound.Select with { Pitch = -0.2f });
-            TagItemSign = item.type;
+            else {
+                TagItemSign = item.type;
+                changed = true;
 
-            if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
-                ItemFilter = item.Clone();
-                var data = ItemFilter.GetGlobalItem<ItemFilterData>().Items.ToHashSet();
-                ItemFilter.GetGlobalItem<ItemFilterData>().Items = data;
+                if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
+                    ItemFilter = item.Clone();
+                    // 深拷贝过滤数据
+                    var sourceData = item.GetGlobalItem<ItemFilterData>();
+                    var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
+                    targetData.SetItems(sourceData.Items);
+                }
             }
 
-            SendData();
+            // 播放音效（所有客户端）
+            SoundEngine.PlaySound(CWRSound.Select with {
+                Pitch = changed && TagItemSign > ItemID.None ? -0.2f : 0.2f
+            });
+
+            if (changed) {
+                SendData();
+            }
+            return false;
         }
 
         internal Chest FindChest(Item item) {
             Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
-            if (chest == null && textIdleTime <= 0) {
+            
+            // 只在服务器端显示提示
+            if (chest == null && textIdleTime <= 0 && !VaultUtils.isClient) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
-                for (int i = 0; i < 220; i++) {
-                    Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
-                    int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
-                    Main.dust[dust].noGravity = true;
+                
+                // 生成视觉提示粒子（客户端也会同步看到）
+                if (Main.netMode != NetmodeID.Server) {
+                    for (int i = 0; i < 220; i++) {
+                        Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
+                        int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
+                        Main.dust[dust].noGravity = true;
+                    }
                 }
             }
             return chest;
         }
 
+        /// <summary>
+        /// 检查并生成机械臂（仅服务器端）
+        /// </summary>
+        private void SpawnArmsIfNeeded() {
+            if (VaultUtils.isClient) return;
+            if (ArmPos.FindClosestPlayer(killerArmDistance) == null) return;
+            if (dontSpawnArmTime > 0) return;
+            
+            bool needsSync = false;
+            int armType = ModContent.ProjectileType<CollectorArm>();
+            
+            // 检查并生成三个机械臂
+            if (!IsArmValid(ArmIndex0)) {
+                ArmIndex0 = Projectile.NewProjectileDirect(
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    armType, 0, 0, -1, ai0: 0, ai1: 0
+                ).identity;
+                needsSync = true;
+            }
+            
+            if (!IsArmValid(ArmIndex1)) {
+                ArmIndex1 = Projectile.NewProjectileDirect(
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    armType, 0, 0, -1, ai0: 0, ai1: 1
+                ).identity;
+                needsSync = true;
+            }
+            
+            if (!IsArmValid(ArmIndex2)) {
+                ArmIndex2 = Projectile.NewProjectileDirect(
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    armType, 0, 0, -1, ai0: 0, ai1: 2
+                ).identity;
+                needsSync = true;
+            }
+            
+            if (needsSync) {
+                SendData();
+            }
+        }
+
         public override void UpdateMachine() {
             FindFrame();
             consumeUE = 8;
+            
             if (!workState) {
                 return;
             }
@@ -300,6 +348,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 dontSpawnArmTime--;
             }
 
+            // 检查机械臂总数限制
             if (VaultUtils.CountProjectilesOfID<CollectorArm>() > 300) {
                 if (textIdleTime <= 0) {
                     CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
@@ -308,52 +357,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            if (ArmPos.FindClosestPlayer(killerArmDistance) != null && dontSpawnArmTime <= 0 && !VaultUtils.isClient) {
-                bool doNet = false;
+            // 生成机械臂
+            SpawnArmsIfNeeded();
 
-                CheckArm(ref ArmIndex0, ModContent.ProjectileType<CollectorArm>(), ArmPos);
-                if (ArmIndex0 == -1) {
-                    ArmIndex0 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
-                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 0).identity;
-                    doNet = true;
-                }
-
-                CheckArm(ref ArmIndex1, ModContent.ProjectileType<CollectorArm>(), ArmPos);
-                if (ArmIndex1 == -1) {
-                    ArmIndex1 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
-                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 1).identity;
-                    doNet = true;
-                }
-
-                CheckArm(ref ArmIndex2, ModContent.ProjectileType<CollectorArm>(), ArmPos);
-                if (ArmIndex2 == -1) {
-                    ArmIndex2 = Projectile.NewProjectileDirect(this.FromObjectGetParent(), ArmPos
-                        , Vector2.Zero, ModContent.ProjectileType<CollectorArm>(), 0, 0, -1, ai0: 0, ai1: 2).identity;
-                    doNet = true;
-                }
-
-                if (doNet) {
-                    SendData();
-                }
-            }
-
+            // 检查能量状态
             BatteryPrompt = MachineData.UEvalue < consumeUE;
-            if (BatteryPrompt) {
-                if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
-                    textIdleTime = 300;
-                }
+            if (BatteryPrompt && textIdleTime <= 0) {
+                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
+                textIdleTime = 300;
             }
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
+            // 只绘制属于当前收集器的机械臂
+            int armType = ModContent.ProjectileType<CollectorArm>();
+            
             foreach (var proj in Main.ActiveProjectiles) {
-                if (proj.type != ModContent.ProjectileType<CollectorArm>()) {
-                    continue;
-                }
-                if ((proj.ai[1] == 0 && ArmIndex0 == proj.identity)
-                    || (proj.ai[1] == 1 && ArmIndex1 == proj.identity)
-                    || (proj.ai[1] == 2 && ArmIndex2 == proj.identity)) {
+                if (proj.type != armType) continue;
+                
+                int armSlot = (int)proj.ai[1];
+                bool belongsToThis = (armSlot == 0 && ArmIndex0 == proj.identity)
+                    || (armSlot == 1 && ArmIndex1 == proj.identity)
+                    || (armSlot == 2 && ArmIndex2 == proj.identity);
+                
+                if (belongsToThis) {
                     ((CollectorArm)proj.ModProjectile).DoDraw(Lighting.GetColor(proj.Center.ToTileCoordinates()));
                 }
             }
@@ -367,16 +394,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (TagItemSign == ModContent.ItemType<ItemFilter>() && hoverSengs > 0.01f) {
-                int[] filterItems = [.. ItemFilter.GetGlobalItem<ItemFilterData>().Items];
-                if (filterItems.Length > 0) {
+                var filterItems = ItemFilter.GetGlobalItem<ItemFilterData>().Items;
+                if (filterItems.Count > 0) {
                     const float maxRadius = 150f;
                     float currentRadius = maxRadius * hoverSengs;
-                    float angleIncrement = MathHelper.TwoPi / filterItems.Length;
+                    float angleIncrement = MathHelper.TwoPi / filterItems.Count;
 
                     Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
 
-                    for (int i = 0; i < filterItems.Length; i++) {
-                        if (filterItems[i] <= ItemID.None) continue;
+                    for (int i = 0; i < filterItems.Count; i++) {
+                        int itemType = filterItems[i];
+                        if (itemType <= ItemID.None) continue;
 
                         float currentAngle = angleIncrement * i - MathHelper.PiOver2;
                         Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
@@ -385,8 +413,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
                         float scale = hoverSengs * 1.25f;
 
-                        VaultUtils.SafeLoadItem(filterItems[i]);
-                        VaultUtils.SimpleDrawItem(Main.spriteBatch, filterItems[i], itemPos, itemWidth: 32, scale, 0, drawColor);
+                        VaultUtils.SafeLoadItem(itemType);
+                        VaultUtils.SimpleDrawItem(Main.spriteBatch, itemType, itemPos, itemWidth: 32, scale, 0, drawColor);
                     }
                 }
             }
@@ -398,14 +426,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
     /// <summary>
     /// 机械臂状态枚举
     /// </summary>
-    internal enum ArmState
+    internal enum ArmState : byte
     {
-        Idle = 0,           //待机
-        Searching = 1,      //搜索目标
-        MovingToItem = 2,   //移动到物品
-        Grasping = 3,       //抓取物品
-        MovingToChest = 4,  //移动到箱子
-        Depositing = 5      //存放物品
+        Idle = 0,           // 待机
+        Searching = 1,      // 搜索目标
+        MovingToItem = 2,   // 移动到物品
+        Grasping = 3,       // 抓取物品
+        MovingToChest = 4,  // 移动到箱子
+        Depositing = 5      // 存放物品
     }
 
     internal class CollectorArm : ModProjectile
@@ -418,33 +446,38 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
         private static Asset<Texture2D> clampGlow = null;
 
-        //核心引用
+        // 核心引用
         internal CollectorTP collectorTP;
         internal Vector2 startPos;
         private Item graspItem;
-        private bool spawn;
-        internal Chest targetChest;
+        private bool initialized;
+        
+        // 箱子缓存（使用坐标而不是直接引用）
+        private Point16 targetChestPos = Point16.NegativeOne;
 
-        //物理模拟参数
+        // 物理模拟参数
         private Vector2 velocity;
         private Vector2 targetPosition;
-        private const float SpringStiffness = 0.15f;      //弹簧刚度
-        private const float Damping = 0.85f;              //阻尼系数
-        private const float MaxSpeed = 16f;               //最大速度
-        private const float ArrivalThreshold = 8f;        //到达阈值
+        private const float SpringStiffness = 0.15f;
+        private const float Damping = 0.85f;
+        private const float MaxSpeed = 16f;
+        private const float ArrivalThreshold = 8f;
 
-        //视觉效果参数
-        private float clampOpenness = 0f;                 //夹子开合度 (0=闭合, 1=完全打开)
-        private float shakeIntensity = 0f;                //抖动强度
-        private int particleTimer = 0;                    //粒子生成计时器
-        private float rotationVelocity = 0f;              //旋转速度
+        // 视觉效果参数（仅客户端）
+        private float clampOpenness = 0f;
+        private float shakeIntensity = 0f;
+        private int particleTimer = 0;
+        private float rotationVelocity = 0f;
         
-        //状态机
+        // 状态机
         private ArmState currentState = ArmState.Idle;
         private int stateTimer = 0;
         private int targetItemWhoAmI = -1;
+        
+        // 搜索冷却（避免频繁搜索）
+        private int searchCooldown = 0;
 
-        //不重要物品列表
+        // 不重要物品列表
         private readonly static HashSet<int> unimportances = [
             ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple, 
             ItemID.Star, ItemID.SoulCake
@@ -466,8 +499,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             writer.WriteVector2(targetPosition);
             writer.Write((byte)currentState);
             writer.Write(targetItemWhoAmI);
-            writer.Write(clampOpenness);
-            writer.Write(shakeIntensity);
+            writer.Write(targetChestPos.X);
+            writer.Write(targetChestPos.Y);
             
             graspItem ??= new Item();
             ItemIO.Send(graspItem, writer, true);
@@ -479,16 +512,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             targetPosition = reader.ReadVector2();
             currentState = (ArmState)reader.ReadByte();
             targetItemWhoAmI = reader.ReadInt32();
-            clampOpenness = reader.ReadSingle();
-            shakeIntensity = reader.ReadSingle();
+            targetChestPos = new Point16(reader.ReadInt16(), reader.ReadInt16());
             
             graspItem = ItemIO.Receive(reader, true);
         }
 
         /// <summary>
-        /// 查找最近的可收集物品
+        /// 查找最近的可收集物品（仅服务器端）
         /// </summary>
         private Item FindNearestItem() {
+            if (VaultUtils.isClient) return null;
+            
             Item bestItem = null;
             float minDistSQ = 4000000f;
             int itemFilterType = ModContent.ItemType<ItemFilter>();
@@ -496,9 +530,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             foreach (var item in Main.ActiveItems) {
                 if (!IsValidTarget(item)) continue;
 
-                //检查过滤器
+                // 检查过滤器
                 if (collectorTP.TagItemSign == itemFilterType) {
-                    if (!collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>().Items.Contains(item.type)) {
+                    var filterData = collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>();
+                    if (!filterData.Items.Contains(item.type)) {
                         continue;
                     }
                 }
@@ -506,7 +541,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     continue;
                 }
 
-                //提前检查是否有箱子可用
+                // 提前检查箱子（避免抓取后无处存放）
                 if (collectorTP.FindChest(item) == null) {
                     continue;
                 }
@@ -528,10 +563,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (item.IsAir || !item.active) return false;
             if (unimportances.Contains(item.type)) return false;
             
-            var targetInfo = item.CWR().TargetByCollector;
-            if (targetInfo >= 0 && targetInfo != Projectile.identity) return false;
+            int targetCollector = item.CWR().TargetByCollector;
+            // 只接受未被锁定或被自己锁定的物品
+            if (targetCollector >= 0 && targetCollector != Projectile.identity) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 获取目标箱子（通过坐标）
+        /// </summary>
+        private Chest GetTargetChest() {
+            if (targetChestPos == Point16.NegativeOne) return null;
+            int index = Chest.FindChest(targetChestPos.X, targetChestPos.Y);
+            return index >= 0 ? Main.chest[index] : null;
         }
 
         /// <summary>
@@ -540,36 +585,37 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
             Vector2 toTarget = target - Projectile.Center;
             
-            //弹簧力 = 刚度 × 位移
+            // 弹簧力
             Vector2 springForce = toTarget * SpringStiffness * speedMultiplier;
-            
-            //应用力到速度
             velocity += springForce;
             
-            //应用阻尼
+            // 阻尼
             velocity *= Damping;
             
-            //限制最大速度
+            // 限速
             if (velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
                 velocity = Vector2.Normalize(velocity) * MaxSpeed;
             }
             
-            //更新位置
             Projectile.Center += velocity;
             
-            //平滑旋转
-            float targetRotation = velocity.ToRotation();
-            float rotationDifference = MathHelper.WrapAngle(targetRotation - Projectile.rotation);
-            rotationVelocity = MathHelper.Lerp(rotationVelocity, rotationDifference * 0.2f, 0.3f);
-            Projectile.rotation += rotationVelocity;
+            // 平滑旋转
+            if (velocity.LengthSquared() > 0.1f) {
+                float targetRotation = velocity.ToRotation();
+                float rotationDiff = MathHelper.WrapAngle(targetRotation - Projectile.rotation);
+                rotationVelocity = MathHelper.Lerp(rotationVelocity, rotationDiff * 0.2f, 0.3f);
+                Projectile.rotation += rotationVelocity;
+            }
         }
 
         /// <summary>
-        /// 生成机械效果粒子
+        /// 生成机械粒子（仅客户端，降低频率）
         /// </summary>
         private void SpawnMechanicalParticles(bool intensive = false) {
+            if (Main.netMode == NetmodeID.Server) return;
+            
             particleTimer++;
-            int spawnRate = intensive ? 6 : 12;
+            int spawnRate = intensive ? 8 : 16;
             
             if (particleTimer % spawnRate == 0) {
                 Vector2 particleVel = velocity * 0.2f + Main.rand.NextVector2Circular(2, 2);
@@ -580,55 +626,51 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        /// <summary>
-        /// 状态机，待机状态
-        /// </summary>
         private void State_Idle() {
             stateTimer++;
+            searchCooldown = Math.Max(0, searchCooldown - 1);
             
-            //平滑打开夹子
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.1f);
             shakeIntensity *= 0.9f;
 
-            //每30帧搜索一次
-            if (stateTimer >= 30 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
-                TransitionToState(ArmState.Searching);
+            // 每30帧且冷却结束后搜索
+            if (stateTimer >= 30 && searchCooldown == 0 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
+                if (!VaultUtils.isClient) {
+                    TransitionToState(ArmState.Searching);
+                }
             }
 
-            //回到待机位置
             Vector2 idleOffset = GetIdleOffset();
             SpringPhysicsMove(startPos + idleOffset, 0.8f);
         }
 
-        /// <summary>
-        /// 状态机，搜索状态
-        /// </summary>
         private void State_Searching() {
-            Item foundItem = FindNearestItem();
-            
-            if (foundItem != null) {
-                targetItemWhoAmI = foundItem.whoAmI;
-                foundItem.CWR().TargetByCollector = Projectile.identity;
+            // 只在服务器端搜索
+            if (!VaultUtils.isClient) {
+                Item foundItem = FindNearestItem();
                 
-                //消耗能量
-                if (!VaultUtils.isClient) {
+                if (foundItem != null) {
+                    targetItemWhoAmI = foundItem.whoAmI;
+                    foundItem.CWR().TargetByCollector = Projectile.identity;
+                    
+                    // 消耗能量
                     collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
                     collectorTP.SendData();
+                    
+                    TransitionToState(ArmState.MovingToItem);
                 }
-                
-                //播放声音
-                SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
-                
-                TransitionToState(ArmState.MovingToItem);
+                else {
+                    searchCooldown = 60; // 设置搜索冷却
+                    TransitionToState(ArmState.Idle);
+                }
             }
-            else {
-                TransitionToState(ArmState.Idle);
+            
+            // 播放音效（所有客户端）
+            if (stateTimer == 1) {
+                SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
             }
         }
 
-        /// <summary>
-        /// 状态机，移动到物品
-        /// </summary>
         private void State_MovingToItem() {
             if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
                 TransitionToState(ArmState.Idle);
@@ -645,7 +687,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             SpringPhysicsMove(targetPosition, 1.2f);
             SpawnMechanicalParticles();
 
-            //夹子准备抓取
             clampOpenness = MathHelper.Lerp(clampOpenness, 0.8f, 0.15f);
 
             if (Projectile.Distance(targetPosition) < ArrivalThreshold) {
@@ -653,131 +694,141 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
         }
 
-        /// <summary>
-        /// 状态机，抓取物品
-        /// </summary>
         private void State_Grasping() {
             stateTimer++;
             
+            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+            
             Item targetItem = Main.item[targetItemWhoAmI];
             
-            //夹子快速闭合
             clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.25f);
             shakeIntensity = 1.5f;
             
-            //保持在物品位置
             targetPosition = targetItem.Center;
             SpringPhysicsMove(targetPosition, 0.5f);
             
             SpawnMechanicalParticles(intensive: true);
 
-            //抓取完成
+            // 抓取完成（仅服务器端处理物品）
             if (stateTimer > 12) {
-                graspItem = targetItem.Clone();
-                targetItem.TurnToAir();
-
-                if (VaultUtils.isServer) {
+                if (!VaultUtils.isClient) {
+                    graspItem = targetItem.Clone();
+                    targetItem.TurnToAir();
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
+
+                    // 查找并缓存箱子坐标
+                    Chest chest = collectorTP.FindChest(graspItem);
+                    if (chest != null) {
+                        targetChestPos = new Point16(chest.x, chest.y);
+                        graspItem.CWR().TargetByCollector = Projectile.identity;
+                        TransitionToState(ArmState.MovingToChest);
+                    }
+                    else {
+                        // 找不到箱子，放弃物品
+                        VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
+                        graspItem.TurnToAir();
+                        TransitionToState(ArmState.Idle);
+                    }
                 }
-
-                targetChest = collectorTP.FindChest(graspItem);
-                graspItem.CWR().TargetByCollector = Projectile.identity;
-
-                //播放抓取音效
-                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center);
                 
-                //生成抓取特效
-                for (int i = 0; i < 15; i++) {
-                    Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
-                    Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 16, 32, 32,
-                        DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
-                    dust.noGravity = true;
+                // 音效和特效（所有客户端）
+                if (stateTimer == 13) {
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center);
+                    
+                    if (Main.netMode != NetmodeID.Server) {
+                        for (int i = 0; i < 15; i++) {
+                            Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
+                            Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 16, 32, 32,
+                                DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
+                            dust.noGravity = true;
+                        }
+                    }
                 }
-
-                TransitionToState(ArmState.MovingToChest);
             }
         }
 
-        /// <summary>
-        /// 状态机，移动到箱子
-        /// </summary>
         private void State_MovingToChest() {
             if (graspItem == null || graspItem.type == ItemID.None) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
 
-            if (targetChest == null || !Main.chest.Contains(targetChest)) {
-                //箱子失效，扔掉物品
+            Chest targetChest = GetTargetChest();
+            if (targetChest == null) {
+                // 箱子失效
                 if (!VaultUtils.isClient) {
                     VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
+                    graspItem.TurnToAir();
                 }
-                graspItem.TurnToAir();
                 TransitionToState(ArmState.Idle);
                 return;
             }
 
-            Vector2 chestPos = new Vector2(targetChest.x, targetChest.y) * 16 + new Vector2(8, 8);
+            Vector2 chestPos = targetChestPos.ToWorldCoordinates() + new Vector2(8, 8);
             targetPosition = chestPos;
             SpringPhysicsMove(targetPosition, 1.0f);
             
             graspItem.Center = Projectile.Center;
             SpawnMechanicalParticles();
 
-            if (Projectile.Hitbox.Intersects(targetChest.GetPoint16().ToWorldCoordinates().GetRectangle(32))) {
+            if (Projectile.Hitbox.Intersects(targetChestPos.ToWorldCoordinates().GetRectangle(32))) {
                 TransitionToState(ArmState.Depositing);
             }
         }
 
-        /// <summary>
-        /// 状态机，存放物品
-        /// </summary>
         private void State_Depositing() {
             stateTimer++;
             
-            //夹子打开
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.2f);
             shakeIntensity = 0.8f;
             
             SpawnMechanicalParticles(intensive: true);
 
             if (stateTimer > 10) {
-                targetChest.eatingAnimationTime = 20;
-                targetChest.AddItem(graspItem, true);
-                CheckCoins(targetChest);
+                // 只在服务器端处理物品存储
+                if (!VaultUtils.isClient) {
+                    Chest targetChest = GetTargetChest();
+                    if (targetChest != null) {
+                        targetChest.eatingAnimationTime = 20;
+                        targetChest.AddItem(graspItem, true);
+                        CheckCoins(targetChest);
+                    }
+                    
+                    graspItem.TurnToAir();
+                    if (VaultUtils.isServer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
+                    }
+                }
                 
-                //播放存放音效
-                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
-                
-                graspItem.TurnToAir();
-                if (VaultUtils.isServer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
+                // 音效（所有客户端）
+                if (stateTimer == 11) {
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
                 }
 
-                TransitionToState(ArmState.Idle);
+                if (stateTimer > 15) {
+                    TransitionToState(ArmState.Idle);
+                }
             }
         }
 
-        /// <summary>
-        /// 状态转换
-        /// </summary>
         private void TransitionToState(ArmState newState) {
             currentState = newState;
             stateTimer = 0;
             
             if (newState == ArmState.Idle) {
                 targetItemWhoAmI = -1;
-                targetChest = null;
+                targetChestPos = Point16.NegativeOne;
             }
             
+            // 只在服务器端触发网络更新
             if (!VaultUtils.isClient) {
                 Projectile.netUpdate = true;
             }
         }
 
-        /// <summary>
-        /// 获取待机偏移位置
-        /// </summary>
         private Vector2 GetIdleOffset() {
             return Projectile.ai[1] switch {
                 1 => new Vector2(120, -20),
@@ -786,9 +837,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             };
         }
 
-        /// <summary>
-        /// 整理箱子中的钱币
-        /// </summary>
         private static void CheckCoins(Chest chest) {
             long totalValue = 0;
 
@@ -809,18 +857,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (totalValue <= 0) return;
 
             if (totalValue >= 1000000) {
-                int platinumCoins = (int)(totalValue / 1000000);
-                chest.AddItem(new Item(ItemID.PlatinumCoin, platinumCoins));
+                chest.AddItem(new Item(ItemID.PlatinumCoin, (int)(totalValue / 1000000)));
                 totalValue %= 1000000;
             }
             if (totalValue >= 10000) {
-                int goldCoins = (int)(totalValue / 10000);
-                chest.AddItem(new Item(ItemID.GoldCoin, goldCoins));
+                chest.AddItem(new Item(ItemID.GoldCoin, (int)(totalValue / 10000)));
                 totalValue %= 10000;
             }
             if (totalValue >= 100) {
-                int silverCoins = (int)(totalValue / 100);
-                chest.AddItem(new Item(ItemID.SilverCoin, silverCoins));
+                chest.AddItem(new Item(ItemID.SilverCoin, (int)(totalValue / 100)));
                 totalValue %= 100;
             }
             if (totalValue > 0) {
@@ -829,13 +874,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AI() {
-            if (!spawn) {
+            if (!initialized) {
                 if (!VaultUtils.isClient) {
                     startPos = Projectile.Center;
                     velocity = Vector2.Zero;
                     Projectile.netUpdate = true;
                 }
-                spawn = true;
+                initialized = true;
             }
 
             if (!TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
@@ -847,12 +892,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             startPos = collectorTP.ArmPos;
 
             if (startPos.FindClosestPlayer(CollectorTP.killerArmDistance) == null) {
-                collectorTP.dontSpawnArmTime = 60;
+                if (!VaultUtils.isClient) {
+                    collectorTP.dontSpawnArmTime = 60;
+                }
                 Projectile.Kill();
                 return;
             }
 
-            //状态机驱动
+            // 状态机驱动
             switch (currentState) {
                 case ArmState.Idle:
                     State_Idle();
@@ -874,7 +921,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     break;
             }
 
-            //衰减抖动效果
             shakeIntensity *= 0.92f;
         }
 
@@ -891,30 +937,32 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
 
-            //添加抖动效果
+            // 添加抖动效果
             if (shakeIntensity > 0.01f) {
                 end += Main.rand.NextVector2Circular(shakeIntensity * 2, shakeIntensity * 2);
             }
 
-            //动态贝塞尔曲线控制点
+            // 动态贝塞尔曲线控制点
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
             
-            //根据速度添加动态弯曲
+            // 根据速度添加动态弯曲
             float velocityInfluence = velocity.Length() * 2f;
             bendHeight += velocityInfluence;
             
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            //精确计算曲线长度
+            // 计算曲线长度
             int sampleCount = 60;
             float curveLength = 0f;
             Vector2 prev = start;
             for (int i = 1; i <= sampleCount; i++) {
                 float t = i / (float)sampleCount;
-                Vector2 a = Vector2.Lerp(start, midControl, t);
-                Vector2 b = Vector2.Lerp(midControl, end, t);
-                Vector2 point = Vector2.Lerp(a, b, t);
+                Vector2 point = Vector2.Lerp(
+                    Vector2.Lerp(start, midControl, t),
+                    Vector2.Lerp(midControl, end, t),
+                    t
+                );
                 curveLength += Vector2.Distance(prev, point);
                 prev = point;
             }
@@ -923,20 +971,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             Vector2[] points = new Vector2[segmentCount + 1];
 
-            //构建点位
             for (int i = 0; i <= segmentCount; i++) {
                 float t = i / (float)segmentCount;
-                Vector2 pos = Vector2.Lerp(
+                points[i] = Vector2.Lerp(
                     Vector2.Lerp(start, midControl, t),
                     Vector2.Lerp(midControl, end, t),
                     t
                 );
-                points[i] = pos;
             }
 
             float clampRot = Projectile.rotation;
 
-            //绘制机械臂体节
+            // 绘制机械臂
             for (int i = 0; i < segmentCount; i++) {
                 Vector2 pos = points[i];
                 Vector2 next = points[i + 1];
@@ -948,14 +994,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     clampRot = direction.ToRotation();
                 }
                 
-                //添加轻微的缩放动画
+                // 添加轻微的缩放动画
                 float scale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i * 0.5f) * 0.02f;
                 
                 Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
                     , new Vector2(tex.Width / 2f, tex.Height), scale, SpriteEffects.None, 0f);
             }
 
-            //绘制夹子（根据clampOpenness调整帧）
+            // 绘制夹子
             int clampFrame = clampOpenness > 0.5f ? 0 : 1;
             
             Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
@@ -968,7 +1014,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 , Color.White * (0.7f + shakeIntensity * 0.3f), clampRot + MathHelper.PiOver2
                 , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
 
-            //绘制抓取的物品
+            // 绘制抓取的物品
             if (graspItem != null && !graspItem.IsAir) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
                     , Projectile.Center - Main.screenPosition, 1f

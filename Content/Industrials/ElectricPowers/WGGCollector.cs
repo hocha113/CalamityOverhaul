@@ -156,12 +156,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (ArmPos.FindClosestPlayer(killerArmDistance) != null && dontSpawnArmTime <= 0 && !VaultUtils.isClient) {
-                CollectorTP.CheckArm(ref ArmIndex, ModContent.ProjectileType<WGGCollectorArm>(), ArmPos);
+                CheckArm(ref ArmIndex, ModContent.ProjectileType<WGGCollectorArm>(), ArmPos);
                 if (ArmIndex == -1) {
                     ArmIndex = Projectile.NewProjectileDirect(this.FromObjectGetParent()
                     , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGCollectorArm>(), 10, 2, -1).identity;
                     SendData();
                 }
+            }
+        }
+        internal static void CheckArm(ref int armIndex, int armID, Vector2 armPos) {
+            if (armIndex < 0) {
+                return;
+            }
+
+            Projectile projectile = Main.projectile.FindByIdentity(armIndex);
+            if (!projectile.Alives() || projectile.type != armID) {
+                armIndex = -1;
+                return;
             }
         }
         public override void MachineKill() {
