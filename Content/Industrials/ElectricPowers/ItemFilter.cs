@@ -118,17 +118,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (item.type != ItemFilter.ID) {
                 return;
             }
-            
-            if (tag.TryGet<int[]>("_Items", out var value)) {
-                Items = new List<int>(value);
-            }
-            else {
-                Items = [];
-            }
-            
-            if (tag.TryGet<int>("_DataVersion", out int version)) {
-                DataVersion = version;
-            }
+
+            try {
+                if (tag.TryGet<int[]>("_Items", out var value)) {
+                    Items = new List<int>(value);
+                }
+                else {
+                    Items = [];
+                }
+
+                if (tag.TryGet<int>("_DataVersion", out int version)) {
+                    DataVersion = version;
+                }
+            } catch (Exception ex) { CWRMod.Instance.Logger.Error($"[ItemFilterData:LoadData] an error has occurred:{ex.Message}"); }           
         }
     }
 
