@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///爆炸波
-    ///</summary>
+    /// <summary>
+    /// 爆炸波
+    /// </summary>
     internal class PandemoniumBlastWave : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

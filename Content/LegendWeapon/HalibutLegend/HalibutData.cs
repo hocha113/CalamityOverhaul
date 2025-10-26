@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ModLoader;
 

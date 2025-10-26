@@ -7,9 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///深渊血色镰刀 - 重新设计为更有设计感的追踪镰刀
-    ///</summary>
+    /// <summary>
+    /// 深渊血色镰刀
+    /// </summary>
     internal class PandemoniumScythe : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 for (int i = 0; i < oldPositions.Length; i++) {
                     oldPositions[i] = Projectile.Center;
                 }
-                
+
                 //初始化螺旋参数
                 spiralRadius = 50f + Wave * 30f;
             }
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //螺旋运动 - 改进版：镰刀会沿着螺旋轨迹飞行
             float spiralAmount = (float)Math.Sin(TrailTimer * spiralSpeed + SpiralPhase) * spiralRadius;
             Vector2 spiralOffset = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * spiralAmount;
-            
+
             //应用螺旋偏移
             Projectile.velocity = Projectile.velocity.RotatedBy(spiralAmount * 0.001f);
 
@@ -87,14 +87,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 //追踪目标
                 if (target != null && target.active && !target.dontTakeDamage) {
                     Vector2 direction = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                    
+
                     //强追踪模式：更强的追踪能力
                     float homingStrength = HomingMode == 2 ? 0.15f : 0.08f;
                     float targetSpeed = HomingMode == 2 ? 22f : 18f;
-                    
+
                     //根据层级提升速度
                     targetSpeed += Wave * 2f;
-                    
+
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * targetSpeed, homingStrength);
                 }
                 else {
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private NPC FindTarget() {
             NPC closest = null;
             float maxDist = HomingMode == 2 ? 1200f : 900f; //强追踪模式搜索范围更大
-            
+
             foreach (NPC npc in Main.npc) {
                 if (npc.CanBeChasedBy(this)) {
                     float dist = Projectile.Distance(npc.Center);
@@ -202,10 +202,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             //绘制辉光 - 强追踪模式更亮
             float glowIntensity = HomingMode == 2 ? 1.0f : 0.8f;
-            Color glowColor = HomingMode == 2 ? 
-                new Color(255, 140, 80, 0) * glowIntensity : 
+            Color glowColor = HomingMode == 2 ?
+                new Color(255, 140, 80, 0) * glowIntensity :
                 new Color(255, 100, 80, 0) * glowIntensity;
-            
+
             sb.Draw(texture, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation,
                 texture.Size() / 2, Projectile.scale * 1.1f, SpriteEffects.None, 0f);
 

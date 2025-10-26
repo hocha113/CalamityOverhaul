@@ -10,9 +10,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///引导法阵的核心控制器
-    ///</summary>
+    /// <summary>
+    /// 引导法阵的核心控制器
+    /// </summary>
     internal class PandemoniumChannel : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         //攻击发射间隔
         private int attackCooldown = 0;
         private const int BaseAttackInterval = 50;
-        
+
         //新增：连击系统
         private int comboCounter = 0;
         private int lastAttackType = -1;
@@ -578,10 +578,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (Owner.whoAmI != Main.myPlayer) return;
 
             int tier = (int)CurrentTier;
-            
+
             //根据连击数选择攻击模式，形成连贯的攻击节奏
             int attackPattern = (comboCounter % 4);
-            
+
             switch (tier) {
                 case 1: //第一层：基础镰刀螺旋
                     if (attackPattern == 0 || attackPattern == 2) {
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         ReleaseHomingFireball(2);
                     }
                     break;
-                    
+
                 case 2: //第二层：添加追踪镰刀和集束火球
                     if (attackPattern == 0) {
                         ReleaseSpiralScytheWave(tier, 8);
@@ -606,7 +606,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         ReleaseLightningChain();
                     }
                     break;
-                    
+
                 case 3: //第三层：全面攻击组合
                     if (attackPattern == 0) {
                         ReleaseSpiralScytheWave(tier, 12);
@@ -627,7 +627,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     }
                     break;
             }
-            
+
             //更新连击计数
             comboCounter++;
             lastAttackType = attackPattern;
@@ -645,16 +645,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 //螺旋轨迹的初始速度
                 Vector2 velocity = angle.ToRotationVector2() * speedBase;
-                
+
                 int damage = (int)(Projectile.damage * (1f + tier * 0.1f));
                 int scythe = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(), 
-                    Projectile.Center, 
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
                     velocity,
-                    ModContent.ProjectileType<PandemoniumScythe>(), 
-                    damage, 
-                    Projectile.knockBack, 
-                    Owner.whoAmI, 
+                    ModContent.ProjectileType<PandemoniumScythe>(),
+                    damage,
+                    Projectile.knockBack,
+                    Owner.whoAmI,
                     tier,
                     spiralPhase
                 );
@@ -669,7 +669,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             NPC[] targets = new NPC[count];
             float searchRadius = 900f;
-            
+
             //先找出最近的几个敌人
             List<NPC> potentialTargets = new List<NPC>();
             foreach (NPC npc in Main.npc) {
@@ -681,7 +681,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count;
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
-                
+
                 int targetIndex = -1;
                 if (potentialTargets.Count > 0) {
                     targetIndex = potentialTargets[i % potentialTargets.Count].whoAmI;
@@ -709,27 +709,27 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
 
             Vector2 targetPos = Main.MouseWorld;
-            
+
             for (int i = 0; i < count; i++) {
                 float delay = i * 5f;
-                
+
                 //预判目标位置（如果玩家在移动）
                 Vector2 predictedPos = targetPos;
                 if (Owner != null) {
                     predictedPos += Owner.velocity * (delay / 60f) * 20f;
                 }
-                
+
                 Vector2 toTarget = (predictedPos - Projectile.Center).SafeNormalize(Vector2.UnitY);
                 Vector2 spreadOffset = toTarget.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f));
 
                 Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(), 
-                    Projectile.Center, 
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
                     spreadOffset * 0.1f,
-                    ModContent.ProjectileType<PandemoniumFireball>(), 
-                    (int)(Projectile.damage * 1.4f), 
-                    Projectile.knockBack, 
-                    Owner.whoAmI, 
+                    ModContent.ProjectileType<PandemoniumFireball>(),
+                    (int)(Projectile.damage * 1.4f),
+                    Projectile.knockBack,
+                    Owner.whoAmI,
                     delay,
                     0 //标记为普通火球
                 );
@@ -741,17 +741,17 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.4f, Pitch = -0.4f }, Projectile.Center);
 
             Vector2 targetPos = Main.MouseWorld;
-            
+
             //在目标位置周围生成一圈火球
             for (int i = 0; i < clusterCount; i++) {
                 float angle = MathHelper.TwoPi * i / clusterCount;
                 Vector2 clusterOffset = angle.ToRotationVector2() * 150f;
                 Vector2 spawnPoint = targetPos + clusterOffset;
-                
+
                 Vector2 direction = (spawnPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                
+
                 float delay = 10f + i * 3f;
-                
+
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     Projectile.Center,
@@ -771,12 +771,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
 
             int lightningCount = 3 + (int)CurrentTier;
-            
+
             for (int i = 0; i < lightningCount; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = 300f + CurrentTier * 50f;
                 Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
-                
+
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     spawnPos,
@@ -796,16 +796,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.Item73 with { Volume = 1.3f, Pitch = -0.5f }, Projectile.Center);
 
             int rainCount = 20 + (int)CurrentTier * 5;
-            
+
             for (int i = 0; i < rainCount; i++) {
                 Vector2 spawnPos = Projectile.Center + new Vector2(
                     Main.rand.NextFloat(-400f, 400f),
                     -Main.rand.NextFloat(300f, 500f)
                 );
-                
+
                 Vector2 targetPos = Main.MouseWorld + Main.rand.NextVector2Circular(200f, 200f);
                 Vector2 velocity = (targetPos - spawnPos).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(8f, 14f);
-                
+
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     spawnPos,

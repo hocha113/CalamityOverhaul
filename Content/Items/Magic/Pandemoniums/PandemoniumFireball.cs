@@ -7,9 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///混沌魔能火球 - 改进为集束爆炸火球
-    ///</summary>
+    /// <summary>
+    /// 混沌魔能火球
+    /// </summary>
     internal class PandemoniumFireball : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (!initialized) {
                 initialized = true;
                 targetVelocity = Projectile.velocity;
-                
+
                 //集束模式：记录目标位置
                 if (ClusterMode == 1) {
                     targetPosition = Projectile.Center;
@@ -75,10 +75,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //增强拖尾效果
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = Projectile.velocity.SafeNormalize(Vector2.Zero) * -i * 8f;
-                Color dustColor = ClusterMode == 1 ? 
+                Color dustColor = ClusterMode == 1 ?
                     Color.Lerp(Color.Gold, Color.OrangeRed, i / 3f) :
                     Color.Lerp(Color.Red, Color.Orange, i / 3f);
-                
+
                 var d = Dust.NewDustPerfect(Projectile.Center + offset, DustID.AncientLight, Vector2.Zero, 100, dustColor, 2.0f);
                 d.noGravity = true;
                 d.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (ClusterMode == 1 && Projectile.Distance(targetPosition) < 50f) {
                 Projectile.velocity *= 0.9f;
                 Projectile.tileCollide = false;
-                
+
                 //等待其他火球到位
                 if (Projectile.timeLeft > 60) {
                     Projectile.timeLeft = 60;
@@ -140,10 +140,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             int particleCount = ClusterMode == 1 ? 120 : 80;
             for (int i = 0; i < particleCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
-                Color particleColor = ClusterMode == 1 ? 
+                Color particleColor = ClusterMode == 1 ?
                     new Color(255, Main.rand.Next(150, 220), 40) :
                     new Color(255, Main.rand.Next(80, 150), 40);
-                
+
                 var d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel, 100,
                     particleColor, Main.rand.NextFloat(2.0f, 3.5f));
                 d.noGravity = true;
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     float angle = MathHelper.TwoPi * i / 6f;
                     Vector2 secondaryPos = Projectile.Center + angle.ToRotationVector2() * 120f;
                     Vector2 secondaryVel = angle.ToRotationVector2() * 2f;
-                    
+
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
                         secondaryPos,

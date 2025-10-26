@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.SHPCProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using Terraria;

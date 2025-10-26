@@ -8,16 +8,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///硫磺血雨 - 从天而降的硫磺火球
-    ///</summary>
+    /// <summary>
+    /// 硫磺血雨
+    /// </summary>
     internal class PandemoniumRainDrop : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        
+
         private ref float Timer => ref Projectile.localAI[0];
         private bool hasHit = false;
-        
+
         public override void SetDefaults() {
             Projectile.width = 24;
             Projectile.height = 24;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override void AI() {
             Timer++;
-            
+
             //淡入
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 10;
@@ -51,11 +51,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //硫磺火拖尾
             if (Main.rand.NextBool(2)) {
                 Dust d = Dust.NewDustPerfect(
-                    Projectile.Center + Projectile.velocity * -0.3f, 
-                    (int)CalamityDusts.Brimstone, 
-                    Projectile.velocity * -0.2f, 
-                    100, 
-                    default, 
+                    Projectile.Center + Projectile.velocity * -0.3f,
+                    (int)CalamityDusts.Brimstone,
+                    Projectile.velocity * -0.2f,
+                    100,
+                    default,
                     Main.rand.NextFloat(1.2f, 2.0f)
                 );
                 d.noGravity = true;
@@ -65,11 +65,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //火焰粒子
             if (Main.rand.NextBool(3)) {
                 Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center, 
-                    DustID.Torch, 
-                    Main.rand.NextVector2Circular(2f, 2f), 
-                    100, 
-                    Color.OrangeRed, 
+                    Projectile.Center,
+                    DustID.Torch,
+                    Main.rand.NextVector2Circular(2f, 2f),
+                    100,
+                    Color.OrangeRed,
                     1.0f
                 );
                 fire.noGravity = true;
@@ -107,11 +107,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             for (int i = 0; i < 20; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust d = Dust.NewDustPerfect(
-                    Projectile.Center, 
-                    (int)CalamityDusts.Brimstone, 
-                    vel, 
-                    100, 
-                    default, 
+                    Projectile.Center,
+                    (int)CalamityDusts.Brimstone,
+                    vel,
+                    100,
+                    default,
                     Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 d.noGravity = true;
@@ -167,16 +167,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
     }
 
-    ///<summary>
-    ///地面火焰 - 雨滴落地后产生的持续燃烧效果
-    ///</summary>
+    /// <summary>
+    /// 地面火焰
+    /// </summary>
     internal class PandemoniumGroundFlame : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        
+
         private ref float Timer => ref Projectile.ai[0];
         private const int MaxLifetime = 120;
-        
+
         public override void SetDefaults() {
             Projectile.width = 60;
             Projectile.height = 40;
@@ -194,12 +194,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override void AI() {
             Timer++;
-            
+
             //火焰粒子
             if (Main.rand.NextBool(2)) {
                 Vector2 spawnPos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, -1f));
-                
+
                 Dust d = Dust.NewDustPerfect(spawnPos, DustID.Torch, vel, 100, Color.OrangeRed, Main.rand.NextFloat(1.0f, 1.8f));
                 d.noGravity = true;
             }

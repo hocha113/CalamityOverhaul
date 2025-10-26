@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.RemakeItems;

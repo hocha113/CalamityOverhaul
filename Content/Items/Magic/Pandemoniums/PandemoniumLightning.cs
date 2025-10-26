@@ -8,22 +8,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///闪电链 - 会在敌人之间跳跃的闪电球
-    ///</summary>
+    /// <summary>
+    /// 闪电链，会在敌人之间跳跃的闪电球
+    /// </summary>
     internal class PandemoniumLightning : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        
+
         private ref float ChainCount => ref Projectile.ai[0];
         private ref float TierLevel => ref Projectile.ai[1];
-        private ref float Timer => ref Projectile.localAI[0];
         private ref float SearchCooldown => ref Projectile.localAI[1];
-        
+
         private NPC currentTarget;
         private List<int> hitNPCs = new List<int>();
         private const int MaxChainCount = 8;
-        
+
         public override void SetDefaults() {
             Projectile.width = 30;
             Projectile.height = 30;
@@ -40,8 +39,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void AI() {
-            Timer++;
-            
             //淡入效果
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 15;
@@ -61,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (currentTarget != null && currentTarget.active && !currentTarget.dontTakeDamage) {
                 Vector2 toTarget = currentTarget.Center - Projectile.Center;
                 float distance = toTarget.Length();
-                
+
                 if (distance < 50f) {
                     //接近目标，准备跳跃
                     ChainToNextTarget();
@@ -102,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private NPC FindNextTarget() {
             NPC closest = null;
             float maxDist = 600f + TierLevel * 100f;
-            
+
             foreach (NPC npc in Main.npc) {
                 if (npc.CanBeChasedBy(this) && !hitNPCs.Contains(npc.whoAmI)) {
                     float dist = Projectile.Distance(npc.Center);
@@ -172,13 +169,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             for (int i = 0; i < 6; i++) {
                 float angle = MathHelper.TwoPi * i / 6f;
                 Vector2 lineEnd = Projectile.Center + angle.ToRotationVector2() * 120f;
-                
+
                 //用粒子模拟闪电线
                 for (int j = 0; j < 10; j++) {
                     float progress = j / 10f;
                     Vector2 linePos = Vector2.Lerp(Projectile.Center, lineEnd, progress);
                     linePos += Main.rand.NextVector2Circular(10f, 10f);
-                    
+
                     Dust d = Dust.NewDustPerfect(linePos, DustID.Electric, Vector2.Zero, 100, Color.White, 0.8f);
                     d.noGravity = true;
                     d.fadeIn = 0.5f;
