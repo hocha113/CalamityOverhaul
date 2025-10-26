@@ -6438,3 +6438,11 @@ Resurrections: {
 		// RetainValueFormat: Resurgence Value: {0}%
 	}
 }
+
+UI: {
+	ItemFilterUI: {
+		// HintText: Left-click to add an item
+		// HintText2: Left-click to remove an item
+		// CloseHint: Press [ESC] or [Right-click] to close
+	}
+}

@@ -6317,3 +6317,11 @@ Resurrections: {
 		RetainValueFormat: 复苏值: {0}%
 	}
 }
+
+UI: {
+	ItemFilterUI: {
+		HintText: 左键点击可添加项目
+		HintText2: 左键点击可移除项目
+		CloseHint: "[ESC]键或[右键点击]可关闭"
+	}
+}

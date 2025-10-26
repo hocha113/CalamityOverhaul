@@ -621,6 +621,16 @@ namespace CalamityOverhaul
         public static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
 
         /// <summary>
+        /// 计算平滑的缓动函数
+        /// </summary>
+        public static float EaseOutElastic(float t) {
+            const float c4 = (2f * MathHelper.Pi) / 3f;
+            return t == 0f ? 0f
+                : t == 1f ? 1f
+                : (float)(Math.Pow(2, -10 * t) * Math.Sin((t * 10 - 0.75) * c4) + 1);
+        }
+
+        /// <summary>
         /// 三次缓出函数
         /// 起初快速加速，随后平滑减速
         /// 常用于自然的物体停止效果
