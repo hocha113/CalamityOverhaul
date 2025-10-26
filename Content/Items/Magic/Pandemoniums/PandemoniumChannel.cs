@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         //攻击发射间隔
         private int attackCooldown = 0;
         private const int BaseAttackInterval = 50;
+        
+        //新增：连击系统
+        private int comboCounter = 0;
+        private int lastAttackType = -1;
 
         //符文动画数据 - 多层系统
         private List<RuneData>[] runeLayers = new List<RuneData>[3];
@@ -201,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 ExpandProjectileSize(1000);
             }
 
-            //持续攻击逻辑（根据层级调整间隔）
+            //持续攻击逻辑（根据层级调整间隔和攻击模式）
             int attackInterval = BaseAttackInterval - (int)CurrentTier * 8;
             if (attackCooldown <= 0 && CurrentTier >= 1) {
                 PerformTieredAttack();
@@ -383,26 +387,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 );
 
                 rune.Offset = basePos + lissajousOffset + spiralOffset + noiseOffset;
-            }
-        }
-
-        private void PerformTieredAttack() {
-            if (Owner.whoAmI != Main.myPlayer) return;
-
-            int tier = (int)CurrentTier;
-
-            if (tier >= 1) {
-                int scytheCount = 8 + tier * 4;
-                ReleaseScytheWave(tier, scytheCount);
-            }
-
-            if (tier >= 2) {
-                int fireballCount = 2 + tier;
-                ReleaseFireballBarrage(fireballCount);
-            }
-
-            if (tier >= 3 && Main.rand.NextBool(4)) {
-                ReleaseFinalBlast();
             }
         }
 
@@ -590,6 +574,250 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 ModContent.ProjectileType<PandemoniumBlastWave>(), (int)(Projectile.damage * 2.2f), Projectile.knockBack * 2f, Owner.whoAmI);
         }
 
+        private void PerformTieredAttack() {
+            if (Owner.whoAmI != Main.myPlayer) return;
+
+            int tier = (int)CurrentTier;
+            
+            //根据连击数选择攻击模式，形成连贯的攻击节奏
+            int attackPattern = (comboCounter % 4);
+            
+            switch (tier) {
+                case 1: //第一层：基础镰刀螺旋
+                    if (attackPattern == 0 || attackPattern == 2) {
+                        ReleaseSpiralScytheWave(tier, 6);
+                    }
+                    else {
+                        ReleaseHomingFireball(2);
+                    }
+                    break;
+                    
+                case 2: //第二层：添加追踪镰刀和集束火球
+                    if (attackPattern == 0) {
+                        ReleaseSpiralScytheWave(tier, 8);
+                    }
+                    else if (attackPattern == 1) {
+                        ReleaseClusterFireball(3);
+                    }
+                    else if (attackPattern == 2) {
+                        ReleaseHomingScytheRing(tier, 10);
+                    }
+                    else {
+                        ReleaseLightningChain();
+                    }
+                    break;
+                    
+                case 3: //第三层：全面攻击组合
+                    if (attackPattern == 0) {
+                        ReleaseSpiralScytheWave(tier, 12);
+                        if (Main.rand.NextBool(2)) {
+                            ReleaseHomingFireball(2);
+                        }
+                    }
+                    else if (attackPattern == 1) {
+                        ReleaseClusterFireball(4);
+                        ReleaseLightningChain();
+                    }
+                    else if (attackPattern == 2) {
+                        ReleaseHomingScytheRing(tier, 14);
+                        ReleaseBrimstoneRain();
+                    }
+                    else {
+                        ReleaseFinalBlast();
+                    }
+                    break;
+            }
+            
+            //更新连击计数
+            comboCounter++;
+            lastAttackType = attackPattern;
+        }
+
+        //改进的螺旋镰刀波 - 镰刀会螺旋展开并互相追踪
+        private void ReleaseSpiralScytheWave(int tier, int count) {
+            SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.1f, Pitch = -0.5f }, Projectile.Center);
+
+            float speedBase = 11f + tier * 2f;
+
+            for (int i = 0; i < count; i++) {
+                float angle = MathHelper.TwoPi / count * i;
+                float spiralPhase = i * 0.5f;
+
+                //螺旋轨迹的初始速度
+                Vector2 velocity = angle.ToRotationVector2() * speedBase;
+                
+                int damage = (int)(Projectile.damage * (1f + tier * 0.1f));
+                int scythe = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(), 
+                    Projectile.Center, 
+                    velocity,
+                    ModContent.ProjectileType<PandemoniumScythe>(), 
+                    damage, 
+                    Projectile.knockBack, 
+                    Owner.whoAmI, 
+                    tier,
+                    spiralPhase
+                );
+
+                Main.projectile[scythe].localAI[0] = 1; //标记为可追踪模式
+            }
+        }
+
+        //新增：追踪镰刀环 - 镰刀会主动寻找并锁定目标
+        private void ReleaseHomingScytheRing(int tier, int count) {
+            SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.2f, Pitch = -0.3f }, Projectile.Center);
+
+            NPC[] targets = new NPC[count];
+            float searchRadius = 900f;
+            
+            //先找出最近的几个敌人
+            List<NPC> potentialTargets = new List<NPC>();
+            foreach (NPC npc in Main.npc) {
+                if (npc.CanBeChasedBy(this) && npc.Distance(Projectile.Center) < searchRadius) {
+                    potentialTargets.Add(npc);
+                }
+            }
+
+            for (int i = 0; i < count; i++) {
+                float angle = MathHelper.TwoPi * i / count;
+                Vector2 velocity = angle.ToRotationVector2() * 8f;
+                
+                int targetIndex = -1;
+                if (potentialTargets.Count > 0) {
+                    targetIndex = potentialTargets[i % potentialTargets.Count].whoAmI;
+                }
+
+                int damage = (int)(Projectile.damage * 1.3f);
+                int scythe = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    velocity,
+                    ModContent.ProjectileType<PandemoniumScythe>(),
+                    damage,
+                    Projectile.knockBack,
+                    Owner.whoAmI,
+                    tier,
+                    targetIndex //将目标索引传递给镰刀
+                );
+
+                Main.projectile[scythe].localAI[1] = 2; //标记为强追踪模式
+            }
+        }
+
+        //改进的火球 - 追踪玩家鼠标位置并预判
+        private void ReleaseHomingFireball(int count) {
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
+
+            Vector2 targetPos = Main.MouseWorld;
+            
+            for (int i = 0; i < count; i++) {
+                float delay = i * 5f;
+                
+                //预判目标位置（如果玩家在移动）
+                Vector2 predictedPos = targetPos;
+                if (Owner != null) {
+                    predictedPos += Owner.velocity * (delay / 60f) * 20f;
+                }
+                
+                Vector2 toTarget = (predictedPos - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                Vector2 spreadOffset = toTarget.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f));
+
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(), 
+                    Projectile.Center, 
+                    spreadOffset * 0.1f,
+                    ModContent.ProjectileType<PandemoniumFireball>(), 
+                    (int)(Projectile.damage * 1.4f), 
+                    Projectile.knockBack, 
+                    Owner.whoAmI, 
+                    delay,
+                    0 //标记为普通火球
+                );
+            }
+        }
+
+        //新增：集束火球 - 火球会在空中形成阵型然后一起爆炸
+        private void ReleaseClusterFireball(int clusterCount) {
+            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.4f, Pitch = -0.4f }, Projectile.Center);
+
+            Vector2 targetPos = Main.MouseWorld;
+            
+            //在目标位置周围生成一圈火球
+            for (int i = 0; i < clusterCount; i++) {
+                float angle = MathHelper.TwoPi * i / clusterCount;
+                Vector2 clusterOffset = angle.ToRotationVector2() * 150f;
+                Vector2 spawnPoint = targetPos + clusterOffset;
+                
+                Vector2 direction = (spawnPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
+                
+                float delay = 10f + i * 3f;
+                
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    direction * 0.1f,
+                    ModContent.ProjectileType<PandemoniumFireball>(),
+                    (int)(Projectile.damage * 1.3f),
+                    Projectile.knockBack,
+                    Owner.whoAmI,
+                    delay,
+                    1 //标记为集束火球
+                );
+            }
+        }
+
+        //新增：闪电链 - 在法阵边缘生成闪电球，会在敌人之间跳跃
+        private void ReleaseLightningChain() {
+            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
+
+            int lightningCount = 3 + (int)CurrentTier;
+            
+            for (int i = 0; i < lightningCount; i++) {
+                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+                float distance = 300f + CurrentTier * 50f;
+                Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
+                
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<PandemoniumLightning>(),
+                    (int)(Projectile.damage * 0.8f),
+                    Projectile.knockBack * 0.5f,
+                    Owner.whoAmI,
+                    0,
+                    CurrentTier
+                );
+            }
+        }
+
+        //新增：硫磺血雨 - 从法阵上方落下大量硫磺火球
+        private void ReleaseBrimstoneRain() {
+            SoundEngine.PlaySound(SoundID.Item73 with { Volume = 1.3f, Pitch = -0.5f }, Projectile.Center);
+
+            int rainCount = 20 + (int)CurrentTier * 5;
+            
+            for (int i = 0; i < rainCount; i++) {
+                Vector2 spawnPos = Projectile.Center + new Vector2(
+                    Main.rand.NextFloat(-400f, 400f),
+                    -Main.rand.NextFloat(300f, 500f)
+                );
+                
+                Vector2 targetPos = Main.MouseWorld + Main.rand.NextVector2Circular(200f, 200f);
+                Vector2 velocity = (targetPos - spawnPos).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(8f, 14f);
+                
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    spawnPos,
+                    velocity,
+                    ModContent.ProjectileType<PandemoniumRainDrop>(),
+                    (int)(Projectile.damage * 0.7f),
+                    Projectile.knockBack * 0.3f,
+                    Owner.whoAmI
+                );
+            }
+        }
+
         private void SpawnChargeParticles() {
             int particleChance = Math.Max(1, 5 - (int)CurrentTier);
 
@@ -645,20 +873,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 float ringSize = 520f + i * 130f;
                 float alpha = (0.7f - i * 0.12f) * visualAlpha;
                 DrawVoidRing(sb, center, ringSize, voidColor, alpha, time * (1f + i * 0.25f));
-            }
-
-            //绘制复杂法阵环
-            for (int layer = 0; layer <= tier; layer++) {
-                float baseRadius = 380f + layer * 90f;
-                int segments = 18 + layer * 6;
-                float layerAlpha = (1f - layer * 0.13f) * visualAlpha;
-
-                DrawComplexRing(sb, center, baseRadius, 10f + layer * 1.8f, edgeColor, layerAlpha, time * (1.6f + layer * 0.4f), segments);
-                DrawComplexRing(sb, center, baseRadius - 50f, 6f + layer * 1.2f, midColor, layerAlpha, -time * (2f + layer * 0.4f), segments - 4);
-
-                if (layer >= 1) {
-                    DrawComplexRing(sb, center, baseRadius + 25f, 3f, highlightColor, layerAlpha * 0.6f, time * (2.5f + layer * 0.5f), segments + 2);
-                }
             }
 
             //绘制连接线网络
@@ -747,28 +961,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 GlowAsset.Value.Size() / 2,
                 radius / GlowAsset.Value.Width * 2.2f,
                 SpriteEffects.None, 0);
-        }
-
-        private void DrawComplexRing(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float alpha, float rotation, int segments) {
-            if (alpha <= 0) return;
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
-
-            for (int i = 0; i < segments; i++) {
-                float angle = rotation + MathHelper.TwoPi * i / segments;
-                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + i * 0.4f) * 0.3f + 0.7f;
-                float segmentLength = MathHelper.TwoPi * radius / segments * (0.75f + pulse * 0.15f);
-
-                Vector2 pos = center + angle.ToRotationVector2() * radius;
-                float colorMod = (float)Math.Sin(i * 0.6f + rotation * 1.8f) * 0.4f + 0.6f;
-                Color segmentColor = Color.Lerp(color, color * 0.6f, colorMod);
-
-                sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1),
-                    segmentColor * alpha * pulse,
-                    angle + MathHelper.PiOver2,
-                    new Vector2(0.5f, 0.5f),
-                    new Vector2(thickness * pulse, segmentLength),
-                    SpriteEffects.None, 0f);
-            }
         }
 
         private void DrawConnectionWeb(SpriteBatch sb, Vector2 center, float radius, float alpha, Color color, float time) {

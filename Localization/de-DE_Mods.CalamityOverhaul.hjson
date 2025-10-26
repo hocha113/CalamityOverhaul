@@ -1662,6 +1662,9 @@ Projectiles: {
 	// PandemoniumFireball.DisplayName: Pandemonium Fireball
 	// PandemoniumScythe.DisplayName: Pandemonium Scythe
 	// PandemoniumBlastWave.DisplayName: Pandemonium Blast Wave
+	// PandemoniumGroundFlame.DisplayName: Pandemonium Ground Flame
+	// PandemoniumLightning.DisplayName: Pandemonium Lightning
+	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
 }
 
 Configs: {
