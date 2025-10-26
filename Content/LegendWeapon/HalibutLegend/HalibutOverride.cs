@@ -182,26 +182,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return new Vector2(offsetX, offsetY);
         }
 
-        public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
-            //同步获取鼠标位置
-            Vector2 syncedMousePos = GetSyncedMousePosition(player);
-            //根据鼠标位置更新玩家朝向
-            Vector2 playerToMouse = player.To(syncedMousePos);
-            player.ChangeDir(Math.Sign(playerToMouse.X));
-
-            //计算武器的旋转角度和位置
-            float weaponRotation = CalculateWeaponRotation(player);
-            Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
-            Vector2 weaponDrawPosition = player.MountedCenter + positionOffset;
-
-            //设置武器尺寸和原点
-            Vector2 weaponDimensions = new Vector2(item.width, item.height);
-            Vector2 spriteOrigin = GetItemSpriteOrigin();
-
-            //应用持握样式
-            ApplyHoldingStyle(player, weaponRotation, weaponDrawPosition, weaponDimensions, spriteOrigin);
-        }
-
         /// <summary>
         /// 应用清爽的持握样式
         /// </summary>
@@ -266,7 +246,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return gravityAdjustedAngle + MathHelper.PiOver2;
         }
 
+        public static bool DontModifyHeldStyle() {
+            if (CWRMod.Instance.terrariaOverhaul != null) {
+                return true;//与TO持握样式冲突
+            }
+            return false;
+        }
+
+        public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
+            if (DontModifyHeldStyle()) {
+                return;
+            }
+
+            //同步获取鼠标位置
+            Vector2 syncedMousePos = GetSyncedMousePosition(player);
+            //根据鼠标位置更新玩家朝向
+            Vector2 playerToMouse = player.To(syncedMousePos);
+            player.ChangeDir(Math.Sign(playerToMouse.X));
+
+            //计算武器的旋转角度和位置
+            float weaponRotation = CalculateWeaponRotation(player);
+            Vector2 positionOffset = GetWeaponPositionOffset(weaponRotation);
+            Vector2 weaponDrawPosition = player.MountedCenter + positionOffset;
+
+            //设置武器尺寸和原点
+            Vector2 weaponDimensions = new Vector2(item.width, item.height);
+            Vector2 spriteOrigin = GetItemSpriteOrigin();
+
+            //应用持握样式
+            ApplyHoldingStyle(player, weaponRotation, weaponDrawPosition, weaponDimensions, spriteOrigin);
+        }
+
         public override void UseItemFrame(Item item, Player player) {
+            if (DontModifyHeldStyle()) {
+                return;
+            }
+
             //同步获取鼠标位置
             Vector2 syncedMousePos = GetSyncedMousePosition(player);
 

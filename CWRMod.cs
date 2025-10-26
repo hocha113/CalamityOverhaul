@@ -26,6 +26,7 @@ namespace CalamityOverhaul
         internal Mod fargowiltasSouls = null;
         internal Mod catalystMod = null;
         internal Mod weaponOut = null;
+        internal Mod weaponOutLite = null;
         internal Mod weaponDisplay = null;
         internal Mod weaponDisplayLite = null;
         internal Mod magicBuilder = null;
@@ -112,6 +113,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("FargowiltasSouls", out fargowiltasSouls);
             ModLoader.TryGetMod("CatalystMod", out catalystMod);
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
+            ModLoader.TryGetMod("WeaponOutLite", out weaponOutLite);
             ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
             ModLoader.TryGetMod("WeaponDisplayLite", out weaponDisplayLite);
             ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
