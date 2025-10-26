@@ -162,7 +162,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal float hoverSengs;
         public override void SetBattery() {
             ItemFilter = new Item();
-            //给予更多的绘制扩宽，因为爪手依赖TP的绘制，避免超出屏幕后爪手消失
             DrawExtendMode = 2200;
         }
 
@@ -194,14 +193,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             ItemFilter ??= new Item();
             tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
 
-            string result;
-            //因为对于模组来讲，物品的ID是动态的，为了避免模组变动导致的ID偏移问题，这里存储物品的内部名
-            if (TagItemSign < ItemID.Count) {
-                result = TagItemSign.ToString();
-            }
-            else {
-                result = ItemLoader.GetItem(TagItemSign).FullName;
-            }
+            string result = TagItemSign < ItemID.Count 
+                ? TagItemSign.ToString() 
+                : ItemLoader.GetItem(TagItemSign).FullName;
             tag["_TagItemFullName"] = result;
         }
 
@@ -226,7 +220,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void FindFrame() {
             int maxFrame = workState ? 7 : 24;
             if (!workState && frame == 23) {
-                frame = 0;//立刻让帧归零防止越界
+                frame = 0;
                 workState = true;
                 if (Main.dedServ) {
                     SendData();
@@ -268,7 +262,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (TagItemSign == ModContent.ItemType<ItemFilter>()) {
                 ItemFilter = item.Clone();
                 var data = ItemFilter.GetGlobalItem<ItemFilterData>().Items.ToHashSet();
-                ItemFilter.GetGlobalItem<ItemFilterData>().Items = data;//这一个来回用于切断和原物品的过滤内容引用粘连
+                ItemFilter.GetGlobalItem<ItemFilterData>().Items = data;
             }
 
             SendData();
@@ -279,7 +273,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (chest == null && textIdleTime <= 0) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
-                //生成一个效果环
                 for (int i = 0; i < 220; i++) {
                     Vector2 spwanPos = PosInWorld + VaultUtils.RandVr(maxFindChestMode, maxFindChestMode + 1);
                     int dust = Dust.NewDust(spwanPos, 2, 2, DustID.OrangeTorch, 0, 0);
@@ -296,16 +289,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            if (HoverTP) {
-                if (hoverSengs < 1f) {
-                    hoverSengs += 0.1f;
-                }
-            }
-            else {
-                if (hoverSengs > 0f) {
-                    hoverSengs -= 0.1f;
-                }
-            }
+            hoverSengs = HoverTP 
+                ? Math.Min(hoverSengs + 0.1f, 1f) 
+                : Math.Max(hoverSengs - 0.1f, 0f);
 
             if (textIdleTime > 0) {
                 textIdleTime--;
@@ -374,33 +360,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
-            //首先，绘制当前设置的目标物品图标
             if (TagItemSign > ItemID.None) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, TagItemSign
                     , CenterInWorld - Main.screenPosition + new Vector2(0, 32)
                     , itemWidth: 32, 0, 0, Lighting.GetColor(Position.ToPoint()));
             }
 
-            //如果设置的目标物品是“物品过滤器”，并且鼠标正在悬停(hoverSengs > 0)
-            //则以动画形式将过滤器内的物品环绕展开
             if (TagItemSign == ModContent.ItemType<ItemFilter>() && hoverSengs > 0.01f) {
                 int[] filterItems = [.. ItemFilter.GetGlobalItem<ItemFilterData>().Items];
                 if (filterItems.Length > 0) {
-                    const float maxRadius = 150f;//定义展开的最大半径
-                    float currentRadius = maxRadius * hoverSengs;//根据hoverSengs计算当前半径
-                    float angleIncrement = MathHelper.TwoPi / filterItems.Length;//计算每个物品之间的角度间隔
+                    const float maxRadius = 150f;
+                    float currentRadius = maxRadius * hoverSengs;
+                    float angleIncrement = MathHelper.TwoPi / filterItems.Length;
 
-                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);//中心点与目标物品图标一致
+                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
 
                     for (int i = 0; i < filterItems.Length; i++) {
-                        if (filterItems[i] <= ItemID.None) continue;//跳过无效物品ID
+                        if (filterItems[i] <= ItemID.None) continue;
 
-                        //计算物品环绕排列的位置，-MathHelper.PiOver2是为了让第一个物品在正上方
                         float currentAngle = angleIncrement * i - MathHelper.PiOver2;
                         Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
                         Vector2 itemPos = drawCenter + offset;
 
-                        //物品也使用hoverSengs来控制淡入和缩放效果，使其动画更平滑
                         Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
                         float scale = hoverSengs * 1.25f;
 
@@ -410,28 +391,67 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
             }
 
-            //最后绘制机器的充能条
             DrawChargeBar();
         }
+    }
+
+    /// <summary>
+    /// 机械臂状态枚举
+    /// </summary>
+    internal enum ArmState
+    {
+        Idle = 0,           //待机
+        Searching = 1,      //搜索目标
+        MovingToItem = 2,   //移动到物品
+        Grasping = 3,       //抓取物品
+        MovingToChest = 4,  //移动到箱子
+        Depositing = 5      //存放物品
     }
 
     internal class CollectorArm : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalArm")]
-        private static Asset<Texture2D> arm = null;//手臂的体节纹理
+        private static Asset<Texture2D> arm = null;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClamp")]
-        private static Asset<Texture2D> clamp = null;//手臂的夹子纹理
+        private static Asset<Texture2D> clamp = null;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/MechanicalClampGlow")]
-        private static Asset<Texture2D> clampGlow = null;//手臂的夹子的光效纹理
+        private static Asset<Texture2D> clampGlow = null;
+
+        //核心引用
         internal CollectorTP collectorTP;
-        internal Vector2 startPos;//记录这个弹幕的起点位置
+        internal Vector2 startPos;
         private Item graspItem;
         private bool spawn;
-        internal Chest Chest;
-        //不重要的东西的列表，比如小心心物品
-        private readonly static HashSet<int> unimportances = [ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple, ItemID.Star, ItemID.SoulCake];
+        internal Chest targetChest;
+
+        //物理模拟参数
+        private Vector2 velocity;
+        private Vector2 targetPosition;
+        private const float SpringStiffness = 0.15f;      //弹簧刚度
+        private const float Damping = 0.85f;              //阻尼系数
+        private const float MaxSpeed = 16f;               //最大速度
+        private const float ArrivalThreshold = 8f;        //到达阈值
+
+        //视觉效果参数
+        private float clampOpenness = 0f;                 //夹子开合度 (0=闭合, 1=完全打开)
+        private float shakeIntensity = 0f;                //抖动强度
+        private int particleTimer = 0;                    //粒子生成计时器
+        private float rotationVelocity = 0f;              //旋转速度
+        
+        //状态机
+        private ArmState currentState = ArmState.Idle;
+        private int stateTimer = 0;
+        private int targetItemWhoAmI = -1;
+
+        //不重要物品列表
+        private readonly static HashSet<int> unimportances = [
+            ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple, 
+            ItemID.Star, ItemID.SoulCake
+        ];
+
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
+        
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
@@ -442,83 +462,352 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.WriteVector2(startPos);
+            writer.WriteVector2(velocity);
+            writer.WriteVector2(targetPosition);
+            writer.Write((byte)currentState);
+            writer.Write(targetItemWhoAmI);
+            writer.Write(clampOpenness);
+            writer.Write(shakeIntensity);
+            
             graspItem ??= new Item();
             ItemIO.Send(graspItem, writer, true);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             startPos = reader.ReadVector2();
+            velocity = reader.ReadVector2();
+            targetPosition = reader.ReadVector2();
+            currentState = (ArmState)reader.ReadByte();
+            targetItemWhoAmI = reader.ReadInt32();
+            clampOpenness = reader.ReadSingle();
+            shakeIntensity = reader.ReadSingle();
+            
             graspItem = ItemIO.Receive(reader, true);
         }
 
-        internal Item FindItem() {
-            Item item = null;
-            float maxFindSQ = 4000000;
-            int itemFilter = ModContent.ItemType<ItemFilter>();
-            foreach (var i in Main.ActiveItems) {
-                if (i.IsAir || !i.active) {
-                    continue;
-                }
+        /// <summary>
+        /// 查找最近的可收集物品
+        /// </summary>
+        private Item FindNearestItem() {
+            Item bestItem = null;
+            float minDistSQ = 4000000f;
+            int itemFilterType = ModContent.ItemType<ItemFilter>();
 
-                if (unimportances.Contains(i.type)) {
-                    continue;
-                }
+            foreach (var item in Main.ActiveItems) {
+                if (!IsValidTarget(item)) continue;
 
-                if (i.CWR().TargetByCollector >= 0 && i.CWR().TargetByCollector != Projectile.identity) {
-                    continue;
-                }
-
-                if (collectorTP.TagItemSign == itemFilter) {
-                    if (!collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>().Items.Contains(i.type)) {
+                //检查过滤器
+                if (collectorTP.TagItemSign == itemFilterType) {
+                    if (!collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>().Items.Contains(item.type)) {
                         continue;
                     }
                 }
-                else if (collectorTP.TagItemSign > ItemID.None && i.type != collectorTP.TagItemSign) {
+                else if (collectorTP.TagItemSign > ItemID.None && item.type != collectorTP.TagItemSign) {
                     continue;
                 }
 
-                if (collectorTP.FindChest(i) == null) {
+                //提前检查是否有箱子可用
+                if (collectorTP.FindChest(item) == null) {
                     continue;
                 }
 
-                float newFindSQ = i.Center.DistanceSQ(Projectile.Center);
-                if (newFindSQ < maxFindSQ) {
-                    item = i;
-                    maxFindSQ = newFindSQ;
+                float distSQ = item.Center.DistanceSQ(Projectile.Center);
+                if (distSQ < minDistSQ) {
+                    bestItem = item;
+                    minDistSQ = distSQ;
                 }
             }
-            return item;
+
+            return bestItem;
         }
 
+        /// <summary>
+        /// 检查物品是否为有效目标
+        /// </summary>
+        private bool IsValidTarget(Item item) {
+            if (item.IsAir || !item.active) return false;
+            if (unimportances.Contains(item.type)) return false;
+            
+            var targetInfo = item.CWR().TargetByCollector;
+            if (targetInfo >= 0 && targetInfo != Projectile.identity) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// 弹簧物理模拟移动
+        /// </summary>
+        private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
+            Vector2 toTarget = target - Projectile.Center;
+            
+            //弹簧力 = 刚度 × 位移
+            Vector2 springForce = toTarget * SpringStiffness * speedMultiplier;
+            
+            //应用力到速度
+            velocity += springForce;
+            
+            //应用阻尼
+            velocity *= Damping;
+            
+            //限制最大速度
+            if (velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
+                velocity = Vector2.Normalize(velocity) * MaxSpeed;
+            }
+            
+            //更新位置
+            Projectile.Center += velocity;
+            
+            //平滑旋转
+            float targetRotation = velocity.ToRotation();
+            float rotationDifference = MathHelper.WrapAngle(targetRotation - Projectile.rotation);
+            rotationVelocity = MathHelper.Lerp(rotationVelocity, rotationDifference * 0.2f, 0.3f);
+            Projectile.rotation += rotationVelocity;
+        }
+
+        /// <summary>
+        /// 生成机械效果粒子
+        /// </summary>
+        private void SpawnMechanicalParticles(bool intensive = false) {
+            particleTimer++;
+            int spawnRate = intensive ? 6 : 12;
+            
+            if (particleTimer % spawnRate == 0) {
+                Vector2 particleVel = velocity * 0.2f + Main.rand.NextVector2Circular(2, 2);
+                Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 8, 16, 16,
+                    DustID.Electric, particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
+                dust.noGravity = true;
+                dust.fadeIn = 1.2f;
+            }
+        }
+
+        /// <summary>
+        /// 状态机，待机状态
+        /// </summary>
+        private void State_Idle() {
+            stateTimer++;
+            
+            //平滑打开夹子
+            clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.1f);
+            shakeIntensity *= 0.9f;
+
+            //每30帧搜索一次
+            if (stateTimer >= 30 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
+                TransitionToState(ArmState.Searching);
+            }
+
+            //回到待机位置
+            Vector2 idleOffset = GetIdleOffset();
+            SpringPhysicsMove(startPos + idleOffset, 0.8f);
+        }
+
+        /// <summary>
+        /// 状态机，搜索状态
+        /// </summary>
+        private void State_Searching() {
+            Item foundItem = FindNearestItem();
+            
+            if (foundItem != null) {
+                targetItemWhoAmI = foundItem.whoAmI;
+                foundItem.CWR().TargetByCollector = Projectile.identity;
+                
+                //消耗能量
+                if (!VaultUtils.isClient) {
+                    collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
+                    collectorTP.SendData();
+                }
+                
+                //播放声音
+                SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
+                
+                TransitionToState(ArmState.MovingToItem);
+            }
+            else {
+                TransitionToState(ArmState.Idle);
+            }
+        }
+
+        /// <summary>
+        /// 状态机，移动到物品
+        /// </summary>
+        private void State_MovingToItem() {
+            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
+            Item targetItem = Main.item[targetItemWhoAmI];
+            if (!IsValidTarget(targetItem) || (targetItem.CWR().TargetByCollector != Projectile.identity && targetItem.CWR().TargetByCollector != -1)) {
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
+            targetPosition = targetItem.Center;
+            SpringPhysicsMove(targetPosition, 1.2f);
+            SpawnMechanicalParticles();
+
+            //夹子准备抓取
+            clampOpenness = MathHelper.Lerp(clampOpenness, 0.8f, 0.15f);
+
+            if (Projectile.Distance(targetPosition) < ArrivalThreshold) {
+                TransitionToState(ArmState.Grasping);
+            }
+        }
+
+        /// <summary>
+        /// 状态机，抓取物品
+        /// </summary>
+        private void State_Grasping() {
+            stateTimer++;
+            
+            Item targetItem = Main.item[targetItemWhoAmI];
+            
+            //夹子快速闭合
+            clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.25f);
+            shakeIntensity = 1.5f;
+            
+            //保持在物品位置
+            targetPosition = targetItem.Center;
+            SpringPhysicsMove(targetPosition, 0.5f);
+            
+            SpawnMechanicalParticles(intensive: true);
+
+            //抓取完成
+            if (stateTimer > 12) {
+                graspItem = targetItem.Clone();
+                targetItem.TurnToAir();
+
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
+                }
+
+                targetChest = collectorTP.FindChest(graspItem);
+                graspItem.CWR().TargetByCollector = Projectile.identity;
+
+                //播放抓取音效
+                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center);
+                
+                //生成抓取特效
+                for (int i = 0; i < 15; i++) {
+                    Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
+                    Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 16, 32, 32,
+                        DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
+                    dust.noGravity = true;
+                }
+
+                TransitionToState(ArmState.MovingToChest);
+            }
+        }
+
+        /// <summary>
+        /// 状态机，移动到箱子
+        /// </summary>
+        private void State_MovingToChest() {
+            if (graspItem == null || graspItem.type == ItemID.None) {
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
+            if (targetChest == null || !Main.chest.Contains(targetChest)) {
+                //箱子失效，扔掉物品
+                if (!VaultUtils.isClient) {
+                    VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
+                }
+                graspItem.TurnToAir();
+                TransitionToState(ArmState.Idle);
+                return;
+            }
+
+            Vector2 chestPos = new Vector2(targetChest.x, targetChest.y) * 16 + new Vector2(8, 8);
+            targetPosition = chestPos;
+            SpringPhysicsMove(targetPosition, 1.0f);
+            
+            graspItem.Center = Projectile.Center;
+            SpawnMechanicalParticles();
+
+            if (Projectile.Hitbox.Intersects(targetChest.GetPoint16().ToWorldCoordinates().GetRectangle(32))) {
+                TransitionToState(ArmState.Depositing);
+            }
+        }
+
+        /// <summary>
+        /// 状态机，存放物品
+        /// </summary>
+        private void State_Depositing() {
+            stateTimer++;
+            
+            //夹子打开
+            clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.2f);
+            shakeIntensity = 0.8f;
+            
+            SpawnMechanicalParticles(intensive: true);
+
+            if (stateTimer > 10) {
+                targetChest.eatingAnimationTime = 20;
+                targetChest.AddItem(graspItem, true);
+                CheckCoins(targetChest);
+                
+                //播放存放音效
+                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
+                
+                graspItem.TurnToAir();
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
+                }
+
+                TransitionToState(ArmState.Idle);
+            }
+        }
+
+        /// <summary>
+        /// 状态转换
+        /// </summary>
+        private void TransitionToState(ArmState newState) {
+            currentState = newState;
+            stateTimer = 0;
+            
+            if (newState == ArmState.Idle) {
+                targetItemWhoAmI = -1;
+                targetChest = null;
+            }
+            
+            if (!VaultUtils.isClient) {
+                Projectile.netUpdate = true;
+            }
+        }
+
+        /// <summary>
+        /// 获取待机偏移位置
+        /// </summary>
+        private Vector2 GetIdleOffset() {
+            return Projectile.ai[1] switch {
+                1 => new Vector2(120, -20),
+                2 => new Vector2(-120, -20),
+                _ => new Vector2(0, -120)
+            };
+        }
+
+        /// <summary>
+        /// 整理箱子中的钱币
+        /// </summary>
         private static void CheckCoins(Chest chest) {
-            //使用 long 类型来存储总价值，防止钱太多导致整数溢出
             long totalValue = 0;
 
             for (int i = 0; i < chest.item.Length; i++) {
                 Item item = chest.item[i];
                 if (item != null && !item.IsAir && item.IsACoin) {
-                    int value = 1;
-                    if (item.type == ItemID.SilverCoin) {
-                        value = 100;
-                    }
-                    if (item.type == ItemID.GoldCoin) {
-                        value = 10000;
-                    }
-                    if (item.type == ItemID.PlatinumCoin) {
-                        value = 1000000;
-                    }
+                    int value = item.type switch {
+                        ItemID.SilverCoin => 100,
+                        ItemID.GoldCoin => 10000,
+                        ItemID.PlatinumCoin => 1000000,
+                        _ => 1
+                    };
                     totalValue += (long)value * item.stack;
-                    //从箱子中移除旧的钱币
                     item.TurnToAir();
                 }
             }
 
-            //如果总价值为0，就没必要继续了
-            if (totalValue <= 0) {
-                return;
-            }
+            if (totalValue <= 0) return;
 
-            //从价值最高的铂金币开始往下换算
             if (totalValue >= 1000000) {
                 int platinumCoins = (int)(totalValue / 1000000);
                 chest.AddItem(new Item(ItemID.PlatinumCoin, platinumCoins));
@@ -535,8 +824,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 totalValue %= 100;
             }
             if (totalValue > 0) {
-                int copperCoins = (int)totalValue;
-                chest.AddItem(new Item(ItemID.CopperCoin, copperCoins));
+                chest.AddItem(new Item(ItemID.CopperCoin, (int)totalValue));
             }
         }
 
@@ -544,10 +832,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (!spawn) {
                 if (!VaultUtils.isClient) {
                     startPos = Projectile.Center;
+                    velocity = Vector2.Zero;
                     Projectile.netUpdate = true;
                 }
                 spawn = true;
-                Projectile.ai[2] = -1;//使用 ai[2] 存储目标物品的ID, -1代表无目标
             }
 
             if (!TileProcessorLoader.AutoPositionGetTP(startPos.ToTileCoordinates16(), out collectorTP)) {
@@ -564,127 +852,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            //使用 localAI[0] 作为计时器
-            Projectile.localAI[0]++;
-
-            //状态 2: 携带物品前往箱子
-            if (Projectile.ai[0] == 2) {
-                if (graspItem == null || graspItem.type == ItemID.None) { //如果手上的物品没了, 重置
-                    Projectile.ai[0] = 0;
-                    return;
-                }
-
-                //检查箱子是否有效
-                if (Chest == null || !Main.chest.Contains(Chest)) {
-                    //箱子失效, 扔掉物品并重置
-                    if (!VaultUtils.isClient) {
-                        VaultUtils.SpwanItem(Projectile.GetSource_DropAsItem(), Projectile.Hitbox, graspItem);
-                    }
-                    graspItem.TurnToAir();
-                    Projectile.ai[0] = 0;
-                    Projectile.netUpdate = true;
-                    return;
-                }
-
-                //移动到箱子并存入 (这段逻辑与你原来基本一致)
-                Vector2 chestPos = new Vector2(Chest.x, Chest.y) * 16 + new Vector2(8, 8);
-                float speed = 12 + Projectile.To(chestPos).Length() / 90f;
-                Projectile.ChasingBehavior(chestPos, speed); //可以适当提高速度
-                graspItem.Center = Projectile.Center;
-
-                if (Projectile.Hitbox.Intersects(Chest.GetPoint16().ToWorldCoordinates().GetRectangle(32))) {
-                    Chest.eatingAnimationTime = 20;
-                    Chest.AddItem(graspItem, true);
-                    CheckCoins(Chest);
-                    graspItem.TurnToAir();
-                    if (VaultUtils.isServer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
-                    }
-                    Projectile.ai[0] = 0; //任务完成，返回状态0
-                    Projectile.netUpdate = true;
-                }
-                return;
+            //状态机驱动
+            switch (currentState) {
+                case ArmState.Idle:
+                    State_Idle();
+                    break;
+                case ArmState.Searching:
+                    State_Searching();
+                    break;
+                case ArmState.MovingToItem:
+                    State_MovingToItem();
+                    break;
+                case ArmState.Grasping:
+                    State_Grasping();
+                    break;
+                case ArmState.MovingToChest:
+                    State_MovingToChest();
+                    break;
+                case ArmState.Depositing:
+                    State_Depositing();
+                    break;
             }
 
-            //状态 1: 锁定目标，前往抓取
-            if (Projectile.ai[0] == 1) {
-                int targetWhoAmI = (int)Projectile.ai[2];
-                if (targetWhoAmI < 0 || targetWhoAmI >= Main.maxItems) { //ID无效
-                    Projectile.ai[0] = 0; //重置
-                    return;
-                }
-
-                Item targetItem = Main.item[targetWhoAmI];
-
-                //验证目标物品是否仍然有效
-                if (!targetItem.active || targetItem.type == ItemID.None || targetItem.CWR().TargetByCollector != -1 && targetItem.CWR().TargetByCollector != Projectile.identity) {
-                    Projectile.ai[0] = 0;//物品消失或被其他抓手锁定，放弃目标，返回状态0
-                    Projectile.ai[2] = -1;
-                    return;
-                }
-
-                float speed = 8 + Projectile.To(targetItem.Center).Length() / 90f;
-                //飞向目标
-                Projectile.ChasingBehavior(targetItem.Center, speed);
-                Projectile.EntityToRot(Projectile.velocity.ToRotation(), 0.1f);
-
-                //到达并抓取
-                if (Projectile.Distance(targetItem.Center) < 32) {
-                    graspItem = targetItem.Clone();
-                    targetItem.TurnToAir();
-
-                    if (VaultUtils.isServer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
-                    }
-
-                    //抓取成功后，再次确认箱子信息并存起来，然后切换到状态2
-                    Chest = collectorTP.FindChest(graspItem);
-                    graspItem.CWR().TargetByCollector = Projectile.identity;
-                    Projectile.ai[0] = 2;//切换到状态2
-                    Projectile.ai[2] = -1;//清除目标ID
-                    Projectile.netUpdate = true;
-                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
-                }
-                return;
-            }
-            //状态 0: 待机与搜索新目标
-            else if (Projectile.ai[0] == 0) {
-                //每 30 帧搜索一次，并且能量充足
-                if (Projectile.localAI[0] >= 30 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
-                    Projectile.localAI[0] = 0; //重置计时器
-
-                    Item foundItem = FindItem(); //昂贵操作只在这里被限时调用
-
-                    if (foundItem != null) {
-                        //在锁定目标前，先确认有地方放
-                        var potentialChest = collectorTP.FindChest(foundItem);
-                        if (potentialChest != null) {
-                            //锁定目标，并切换到状态1
-                            foundItem.CWR().TargetByCollector = Projectile.identity; //标记为自己的目标
-                            Projectile.ai[2] = foundItem.whoAmI;
-                            Projectile.ai[0] = 1;
-                            Projectile.netUpdate = true;
-
-                            //消耗能量
-                            if (!VaultUtils.isClient) {
-                                collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
-                                collectorTP.SendData();
-                            }
-                        }
-                    }
-                }
-
-                //待机状态下回到初始位置
-                Vector2 offset = new Vector2(0, -120);
-                if (Projectile.ai[1] == 1) {
-                    offset = new Vector2(120, -20);
-                }
-                if (Projectile.ai[1] == 2) {
-                    offset = new Vector2(-120, -20);
-                }
-                Projectile.ChasingBehavior(startPos + offset, 8);
-                Projectile.EntityToRot(new Vector2(0, 1).ToRotation(), 0.1f);
-            }
+            //衰减抖动效果
+            shakeIntensity *= 0.92f;
         }
 
         internal void DoDraw(Color lightColor) {
@@ -693,23 +884,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (collectorTP?.BatteryPrompt == true) {
-                lightColor.R /= 2;
-                lightColor.G /= 2;
-                lightColor.B /= 2;
-                lightColor.A = 255;
+                lightColor = new Color(lightColor.R / 2, lightColor.G / 2, lightColor.B / 2, 255);
             }
 
             Texture2D tex = arm.Value;
             Vector2 start = startPos;
             Vector2 end = Projectile.Center;
 
-            //动态控制点偏移
+            //添加抖动效果
+            if (shakeIntensity > 0.01f) {
+                end += Main.rand.NextVector2Circular(shakeIntensity * 2, shakeIntensity * 2);
+            }
+
+            //动态贝塞尔曲线控制点
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
+            
+            //根据速度添加动态弯曲
+            float velocityInfluence = velocity.Length() * 2f;
+            bendHeight += velocityInfluence;
+            
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            //估算真实曲线长度
-            int sampleCount = 50;
+            //精确计算曲线长度
+            int sampleCount = 60;
             float curveLength = 0f;
             Vector2 prev = start;
             for (int i = 1; i <= sampleCount; i++) {
@@ -738,28 +936,39 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
             float clampRot = Projectile.rotation;
 
+            //绘制机械臂体节
             for (int i = 0; i < segmentCount; i++) {
                 Vector2 pos = points[i];
                 Vector2 next = points[i + 1];
                 Vector2 direction = next - pos;
                 Color color = Lighting.GetColor((pos / 16).ToPoint());
                 float rotation = direction.ToRotation() + MathHelper.PiOver2;
+                
                 if (i == segmentCount - 1) {
                     clampRot = direction.ToRotation();
                 }
+                
+                //添加轻微的缩放动画
+                float scale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i * 0.5f) * 0.02f;
+                
                 Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
-                    , new Vector2(tex.Width / 2f, tex.Height), 1f, SpriteEffects.None, 0f);
+                    , new Vector2(tex.Width / 2f, tex.Height), scale, SpriteEffects.None, 0f);
             }
 
+            //绘制夹子（根据clampOpenness调整帧）
+            int clampFrame = clampOpenness > 0.5f ? 0 : 1;
+            
             Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
-                , clamp.Value.GetRectangle((graspItem == null || graspItem.IsAir) ? 0 : 1, 2)
+                , clamp.Value.GetRectangle(clampFrame, 2)
                 , lightColor, clampRot + MathHelper.PiOver2
                 , clamp.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
+            
             Main.spriteBatch.Draw(clampGlow.Value, Projectile.Center - Main.screenPosition
-                , clampGlow.Value.GetRectangle((graspItem == null || graspItem.IsAir) ? 0 : 1, 2)
-                , Color.White, clampRot + MathHelper.PiOver2
+                , clampGlow.Value.GetRectangle(clampFrame, 2)
+                , Color.White * (0.7f + shakeIntensity * 0.3f), clampRot + MathHelper.PiOver2
                 , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
 
+            //绘制抓取的物品
             if (graspItem != null && !graspItem.IsAir) {
                 VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
                     , Projectile.Center - Main.screenPosition, 1f

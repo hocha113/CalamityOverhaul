@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    ///<summary>
-    ///万魔殿
-    ///</summary>
+    /// <summary>
+    /// 万魔殿
+    /// </summary>
     internal class Pandemonium : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "Pandemonium";
