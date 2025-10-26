@@ -200,9 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public void InOwner() {
             int safeGravDir = Math.Sign(Owner.gravDir);
             nolegendStart = true;
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                nolegendStart = InWorldBossPhase.Level11;
-            }
+
             //设置有升龙斩的特殊情况，这种情况可能出现朝向设置的延后冲突，所以这里实时更新一次
             SetDirByBreakerSlash();
 

@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// 获取开局的伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
-        public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
         public override int TargetID => ModContent.ItemType<SHPC>();
         private static void OnSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ICWRLoader.LoadData() {
@@ -47,9 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (cwrItem.LegendData == null) {
                 return 0;
             }
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
+
             return cwrItem.LegendData.Level;
         }
         /// <summary>
@@ -96,22 +93,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = SHPC_Level();
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
-            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                string num = (index + 1).ToString();
-                if (index == 14) {
-                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
-                }
-
-                string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
-
-                tooltips.ReplacePlaceholder("[Lang4]", text, "");
-                tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), "");
+            string num = (index + 1).ToString();
+            if (index == 14) {
+                num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
             }
-            else {
-                tooltips.ReplacePlaceholder("[Lang4]", "", "");
-                tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_4"), "");
-                newContent = Level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");
-            }
+
+            string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
+
+            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), "");
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplacePlaceholder("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }

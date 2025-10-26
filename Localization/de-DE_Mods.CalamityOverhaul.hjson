@@ -1677,16 +1677,6 @@ Configs: {
 				'''
 		}
 
-		WeaponEnhancementSystem: {
-			Label: Legendäre Waffeninhalte aktivieren
-			Tooltip:
-				'''
-				Wenn aktiviert, erhalten einige Waffen den Titel "legendär" zurück, was ihre Erhaltung beeinflusst
-				Legendäre Waffen werden im Verlauf immer mächtiger
-				Deaktivieren Sie diese Option, um diese Inhalte zu deaktivieren
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Bildschirmvibration für spezielle Waffenangriffe
 			Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen

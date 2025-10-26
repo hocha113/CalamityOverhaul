@@ -29,13 +29,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             EnableRecoilRetroEffect = true;
         }
 
-        public override bool CanSpanProj() {
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return InWorldBossPhase.Downed28.Invoke();
-            }
-            return base.CanSpanProj();
-        }
-
         public override void HanderPlaySound() {
             if (onFire) {
                 SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);

@@ -56,10 +56,6 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool BiologyOverhaul { get; set; }
 
-        [BackgroundColor(35, 185, 78, 255)]
-        [DefaultValue(true)]
-        public bool WeaponEnhancementSystem { get; set; }
-
         [Header("CWRWeapon")]
 
         [BackgroundColor(192, 54, 94, 255)]

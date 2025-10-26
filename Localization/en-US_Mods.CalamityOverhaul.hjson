@@ -1690,16 +1690,6 @@ Configs: {
 				'''
 		}
 
-		WeaponEnhancementSystem: {
-			Label: Enable Legendary Weapon Enhancement System
-			Tooltip:
-				'''
-				If enabled, some weapons will regain their legendary titles, affecting their acquisition difficulty. 
-				Legendary weapons will grow in power as you progress through stages. 
-				Disabling this option will deactivate this feature.
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Weapon Screen Vibration
 			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense

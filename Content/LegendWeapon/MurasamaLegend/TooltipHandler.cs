@@ -147,24 +147,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             string text2 = CWRLocText.GetTextValue("Murasama_Text0");
             string text3;
             string text4;
-            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                string num = (index + 1).ToString();
-                if (index == 14) {
-                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
-                }
-                ModifyWallSelect(index, ref newContent, ref num);
-                ModifyMechBossSelect(index, ref newContent, ref num);
-                ModifyGolemSelect(index, ref newContent, ref num);
-                ModifyAfterMoonSelect(index, ref newContent, ref num);
-                ModifyAfterMechSelect(index, ref newContent, ref num);
-                text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
-                text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
+
+            string num = (index + 1).ToString();
+            if (index == 14) {
+                num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
             }
-            else {
-                text3 = "";
-                text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_4");
-                newContent = Level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
-            }
+            ModifyWallSelect(index, ref newContent, ref num);
+            ModifyMechBossSelect(index, ref newContent, ref num);
+            ModifyGolemSelect(index, ref newContent, ref num);
+            ModifyAfterMoonSelect(index, ref newContent, ref num);
+            ModifyAfterMechSelect(index, ref newContent, ref num);
+            text3 = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
+            text4 = CWRLocText.GetTextValue("Murasama_No_legend_Content_3");
 
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplacePlaceholder("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");

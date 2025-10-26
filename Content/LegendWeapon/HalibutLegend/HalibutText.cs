@@ -36,22 +36,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
             int index = HalibutData.GetLevel(item);
             string newContent = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
-            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                string num = (index + 1).ToString();
-                if (index == 14) {
-                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
-                }
-
-                string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
-
-                tooltips.ReplacePlaceholder("[Lang4]", text, "");
-                tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), "");
+            string num = (index + 1).ToString();
+            if (index == 14) {
+                num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
             }
-            else {
-                tooltips.ReplacePlaceholder("[Lang4]", "", "");
-                tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_4"), "");
-                newContent = InWorldBossPhase.Level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
-            }
+
+            string text = LegendData.GetLevelTrialPreText(item.CWR(), "Murasama_Text_Lang_0", num);
+
+            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            tooltips.ReplacePlaceholder("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), "");
             Color newColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             tooltips.ReplacePlaceholder("[Text]", VaultUtils.FormatColorTextMultiLine(newContent, newColor), "");
         }

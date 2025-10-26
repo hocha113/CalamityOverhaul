@@ -253,9 +253,6 @@ namespace CalamityOverhaul.Content
 
         public static int SHPC_Level() {
             int level = 0;
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
 
             if (DownedV0.Invoke()) {
                 level = 1;
@@ -361,10 +358,6 @@ namespace CalamityOverhaul.Content
         public static int Halibut_Level() {
             int level = 0;
 
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
-
             if (DownedV0.Invoke()) {
                 level = 1;
             }
@@ -468,9 +461,7 @@ namespace CalamityOverhaul.Content
 
         public static int Mura_Level() {
             int level = 0;
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
+
             if (Level0) {
                 level = 1;
             }

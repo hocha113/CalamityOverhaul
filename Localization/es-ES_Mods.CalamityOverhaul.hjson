@@ -1692,16 +1692,6 @@ Configs: {
 				'''
 		}
 
-		WeaponEnhancementSystem: {
-			Label: ¿Habilitar contenido de armas legendarias?
-			Tooltip:
-				'''
-				Si se activa, algunas armas volverán a recibir el título de legendarias, lo que afectará su dificultad de obtención.
-				Las armas legendarias se volverán más poderosas a medida que avance la etapa.
-				Desactivar esta opción deshabilitará este contenido.
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Efecto de vibración de pantalla en ataques especiales de armas
 			Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.

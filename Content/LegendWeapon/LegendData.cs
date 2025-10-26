@@ -115,9 +115,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public void DoUpdate() {
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return;
-            }
             Update();
         }
     }

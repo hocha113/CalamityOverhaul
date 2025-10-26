@@ -1678,16 +1678,6 @@ Configs: {
 				'''
 		}
 
-		WeaponEnhancementSystem: {
-			Label: Activer le contenu des armes légendaires
-			Tooltip:
-				'''
-				Si activé, certaines armes obtiendront le titre légendaire, ce qui affectera leur difficulté d'obtention
-				Les armes légendaires deviendront plus puissantes au fur et à mesure de votre progression
-				Désactiver cette option permet de désactiver ce contenu
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Effet de vibration de l'écran pour les attaques spéciales des armes
 			Tooltip: Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup

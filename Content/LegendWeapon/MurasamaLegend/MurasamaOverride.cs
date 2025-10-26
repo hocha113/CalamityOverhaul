@@ -114,9 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             if (cwrItem.LegendData == null) {
                 return 0;
             }
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                return 12;
-            }
+
             return cwrItem.LegendData.Level;
         }
         public static bool NameIsSam(Player player) => SamNameList.Contains(player.name);
@@ -316,9 +314,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             return player.ownedProjectileCounts[ModContent.ProjectileType<MuraBreakerSlash>()] > 0
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] > 0
                 || player.PressKey(false)
-                ? false
-                : (CWRServerConfig.Instance.WeaponEnhancementSystem || InWorldBossPhase.Level11)
-                && player.ownedProjectileCounts[Item.shoot] == 0;
+                ? false : player.ownedProjectileCounts[Item.shoot] == 0;
         }
     }
 }
