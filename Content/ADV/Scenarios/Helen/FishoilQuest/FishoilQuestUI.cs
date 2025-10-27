@@ -10,6 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
 {
@@ -94,6 +95,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
                 }
                 return true;
             }
+        }
+
+        public override void LoadUIData(TagCompound tag) {
+            hideProgress = 1f;//设置一下隐藏，防止进世界时会有一瞬间看到UI
+        }
+
+        public override void SaveUIData(TagCompound tag) {
+            hideProgress = 1f;//设置一下隐藏，防止进世界时会有一瞬间看到UI
         }
 
         public override void SetStaticDefaults() {
