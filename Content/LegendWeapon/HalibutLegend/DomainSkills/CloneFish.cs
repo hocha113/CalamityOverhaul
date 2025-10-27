@@ -304,18 +304,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
 
                 int evShootNum = shootNum;
-                int evDamage = ev.Damage;
-                if (ev.Type == ModContent.ProjectileType<OceanCurrent>()) {
-                    evDamage = (int)(evDamage * (1f + evShootNum * 0.25f));
-                    evShootNum = 1;
-                }
-
-                for (int j = 0; j < evShootNum; j++) {
-                    int proj = Projectile.NewProjectile(shootState.Source
-                    , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
-                    , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
-                    Main.projectile[proj].friendly = true;
-                }
+                int evDamage = (int)(ev.Damage * (1f + evShootNum * 0.25f));
+                int proj = Projectile.NewProjectile(shootState.Source
+                   , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
+                   , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
+                Main.projectile[proj].friendly = true;
             }
         }
 
