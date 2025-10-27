@@ -1696,6 +1696,8 @@ Projectiles: {
 	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
 	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
+	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
+	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
 }
 
 Configs: {
@@ -6480,6 +6482,12 @@ FishSkill: {
 	}
 
 	FishNeonTetra: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishBrimlish: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

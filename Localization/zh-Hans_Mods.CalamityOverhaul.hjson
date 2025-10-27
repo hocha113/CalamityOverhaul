@@ -1667,6 +1667,8 @@ Projectiles: {
 	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
 	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
+	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
+	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
 }
 
 Configs: {
@@ -6380,11 +6382,14 @@ FishSkill: {
 
 	FishNeonTetra: {
 		DisplayName: 霓虹足迹
-		Tooltip:
-			'''
-			行走过程中留下发光的霓虹鱼，照亮路径上的敌人并造成伤害
-			'''
+		Tooltip: 行走过程中留下发光的霓虹鱼，照亮路径上的敌人并造成伤害
 		Studied: 我喜欢它的鳞片
+	}
+
+	FishBrimlish: {
+		DisplayName: 赤红硫火
+		Tooltip: 开火时周期性的召唤一只硫磺火鱼向敌人突出大量硫磺火球
+		Studied: 温度高的吓人
 	}
 }
 
