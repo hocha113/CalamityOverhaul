@@ -18,12 +18,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishCrimsonTiger : FishSkill
     {
         public override int UnlockFishID => ItemID.CrimsonTigerfish;
-        public override int DefaultCooldown => 60;
+        public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
         public override int ResearchDuration => 60 * 18;
 
         //活跃的虎鱼追踪
         private static readonly List<int> ActiveTigerFish = new();
-        private static int MaxTigerFish => 8 + HalibutData.GetDomainLayer();
+        private static int MaxTigerFish => 5 + HalibutData.GetDomainLayer();
 
         public override bool? AltFunctionUse(Item item, Player player) {
             return Cooldown == 0;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                             spawnPos,
                             spawnDir * Main.rand.NextFloat(12f, 18f),
                             ModContent.ProjectileType<CrimsonTigerFishMinion>(),
-                            (int)(damage * (1.8f + HalibutData.GetDomainLayer() * 0.4f)),
+                            (int)(damage * (0.6f + HalibutData.GetDomainLayer() * 0.15f)),
                             knockback * 2f,
                             player.whoAmI,
                             ai2: ActiveTigerFish.Count

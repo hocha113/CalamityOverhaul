@@ -18,12 +18,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishPrincess : FishSkill
     {
         public override int UnlockFishID => ItemID.PrincessFish;
-        public override int DefaultCooldown => 35 - HalibutData.GetDomainLayer() * 2;
+        public override int DefaultCooldown => 50 - HalibutData.GetDomainLayer() * 2;
         public override int ResearchDuration => 60 * 22;
 
         //活跃的公主鱼追踪
         private static readonly List<int> ActivePrincessFish = new();
-        private static int MaxPrincessFish => 4 + HalibutData.GetDomainLayer() / 2;
+        private static int MaxPrincessFish => 3 + HalibutData.GetDomainLayer() / 3;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         spawnPos,
                         Vector2.Zero,
                         ModContent.ProjectileType<PrincessFishMinion>(),
-                        (int)(damage * (1.6f + HalibutData.GetDomainLayer() * 0.5f)),
+                        (int)(damage * (0.2f + HalibutData.GetDomainLayer() * 0.05f)),
                         knockback * 1.5f,
                         player.whoAmI,
                         ai2: ActivePrincessFish.Count //通过ai2传递索引
@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void LaunchMagicAttack(NPC target) {
             //发射多个彩虹魔法球
-            int projectileCount = 3 + HalibutData.GetDomainLayer() / 3;
+            int projectileCount = 3 + HalibutData.GetDomainLayer() / 4;
 
             for (int i = 0; i < projectileCount; i++) {
                 //计算预判位置
@@ -651,6 +651,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.ignoreWater = true;
             Projectile.alpha = 0;
             Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishObsidian : FishSkill
     {
         public override int UnlockFishID => ItemID.Obsidifish;
-        public override int DefaultCooldown => 120 - HalibutData.GetDomainLayer() * 5;
+        public override int DefaultCooldown => 120 - HalibutData.GetDomainLayer() * 6;
         public override int ResearchDuration => 60 * 18;
 
         //黑曜石鱼管理系统
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center,
                         Vector2.Zero,
                         ModContent.ProjectileType<ObsidianFishOrbit>(),
-                        (int)(damage * (1.8f + HalibutData.GetDomainLayer() * 0.6f)),
+                        (int)(damage * (1.6f + HalibutData.GetDomainLayer() * 0.55f)),
                         knockback * 0.3f,
                         player.whoAmI,
                         ai0: ActiveObsidianFish.Count //传递索引用于环形排列

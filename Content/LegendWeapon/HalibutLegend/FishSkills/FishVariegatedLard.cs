@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         position,
                         oilVelocity,
                         ModContent.ProjectileType<OilBlob>(),
-                        (int)(shootState.WeaponDamage * (1.4f + HalibutData.GetDomainLayer() * 0.35f)),
+                        (int)(shootState.WeaponDamage * (1f + HalibutData.GetDomainLayer() * 0.25f)),
                         shootState.WeaponKnockback * 1.2f,
                         player.whoAmI
                     );

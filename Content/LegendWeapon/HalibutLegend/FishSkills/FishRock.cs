@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishRock : FishSkill
     {
         public override int UnlockFishID => ItemID.Rockfish;
-        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 10;
+        public override int DefaultCooldown => 180 - HalibutData.GetDomainLayer() * 9;
         public override int ResearchDuration => 60 * 16;
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             if (!Active(player)) {
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         player.Center + new Vector2(0, -120), //从玩家头顶生成
                         Vector2.Zero,
                         ModContent.ProjectileType<RockHammerFish>(),
-                        (int)(shootState.WeaponDamage * (3.5f + HalibutData.GetDomainLayer() * 1.8f)),
+                        (int)(shootState.WeaponDamage * (3.6f + HalibutData.GetDomainLayer() * 1.2f)),
                         shootState.WeaponKnockback * 3f,
                         player.whoAmI,
                         ai0: target.whoAmI //传递目标ID

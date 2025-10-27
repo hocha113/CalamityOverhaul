@@ -18,11 +18,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishTropicalBarracuda : FishSkill
     {
         public override int UnlockFishID => ItemID.TropicalBarracuda;
-        public override int DefaultCooldown => 25 - HalibutData.GetDomainLayer() * 2;
+        public override int DefaultCooldown => 15;
         public override int ResearchDuration => 60 * 16;
 
         private int spawnCounter = 0;
-        private const int SpawnInterval = 6;
+        private static int SpawnInterval => 5- HalibutData.GetDomainLayer()/3;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     spawnPos,
                     velocity,
                     ModContent.ProjectileType<TropicalBarracudaProjectile>(),
-                    (int)(damage * (1.5f + HalibutData.GetDomainLayer() * 0.35f)),
+                    (int)(damage * (1f + HalibutData.GetDomainLayer() * 0.25f)),
                     knockback * 1.2f,
                     player.whoAmI,
                     ai0: i / (float)schoolSize //颜色偏移
@@ -191,14 +191,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 40;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 5;
+            Projectile.penetrate = 9;
             Projectile.timeLeft = 300;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.alpha = 0;
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = -1;
 
             baseHue = Main.rand.NextFloat(1f);
         }
