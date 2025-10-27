@@ -1677,6 +1677,7 @@ Projectiles: {
 	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
 	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
 	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
+	// DoubleCodProjectile.DisplayName: Double Cod Projectile
 }
 
 Configs: {
@@ -6360,6 +6361,12 @@ FishSkill: {
 	}
 
 	FishBrimlish: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishDoubleCod: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

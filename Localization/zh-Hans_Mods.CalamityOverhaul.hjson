@@ -1669,6 +1669,7 @@ Projectiles: {
 	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
 	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
 	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
+	// DoubleCodProjectile.DisplayName: Double Cod Projectile
 }
 
 Configs: {
@@ -6390,6 +6391,12 @@ FishSkill: {
 		DisplayName: 赤红硫火
 		Tooltip: 开火时周期性的召唤一只硫磺火鱼向敌人突出大量硫磺火球
 		Studied: 温度高的吓人
+	}
+
+	FishDoubleCod: {
+		DisplayName: 双鳕伴飞
+		Tooltip: 开火时周期性发射追踪敌人的鳕鱼
+		Studied: 很奇特的一种鱼
 	}
 }
 
