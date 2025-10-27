@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 热带梭鱼弹幕 - 快速穿梭屏幕
+    /// 热带梭鱼弹幕
     /// </summary>
     internal class TropicalBarracudaProjectile : ModProjectile
     {
