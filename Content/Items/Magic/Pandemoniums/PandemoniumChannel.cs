@@ -1093,7 +1093,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 if (rune.Alpha < 0.01f) continue;
 
                 Vector2 pos = center + rune.Offset * expandScale;
-                
+
                 //火焰强度脉冲（更剧烈的火焰效果）
                 float intensityPulse = (float)Math.Sin(rune.IntensityPulse) * 0.3f + 0.7f;
                 float fireFlicker = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f + rune.PulsePhase) * 0.2f + 0.8f;
@@ -1125,40 +1125,40 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
                 //绘制火焰阴影底层（增强暗黑感）
                 Color shadowColor = new Color(20, 8, 6) with { A = 0 } * layerAlpha * 0.8f;
-                sb.Draw(runeTex, pos, fireFrame, shadowColor, rune.Rotation, 
+                sb.Draw(runeTex, pos, fireFrame, shadowColor, rune.Rotation,
                     new Vector2(frameWidth, frameHeight) / 2f, finalScale * 1.5f, SpriteEffects.None, 0f);
 
                 //绘制火焰主体（稍大的底层光晕）
-                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.6f, rune.Rotation, 
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.6f, rune.Rotation,
                     new Vector2(frameWidth, frameHeight) / 2f, finalScale * 1.3f, SpriteEffects.None, 0f);
 
                 //绘制火焰核心（较亮）
-                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 1.2f, rune.Rotation, 
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 1.2f, rune.Rotation,
                     new Vector2(frameWidth, frameHeight) / 2f, finalScale, SpriteEffects.None, 0f);
 
                 //绘制额外的火焰细节层（旋转角度不同，增加动感）
-                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.4f, rune.Rotation + MathHelper.PiOver4, 
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.4f, rune.Rotation + MathHelper.PiOver4,
                     new Vector2(frameWidth, frameHeight) / 2f, finalScale * 0.8f, SpriteEffects.None, 0f);
 
                 //绘制星星核心闪光（暗红橙色调）
                 if (starTex != null && rune.CoreGlowAlpha > 0.3f) {
                     float corePulse = (float)Math.Sin(rune.PulsePhase * 2f) * 0.5f + 0.5f;
                     float coreIntensity = intensityPulse * corePulse * fireFlicker;
-                    
+
                     //核心暗红光（不再是白光）
                     Color coreColor = new Color(255, 90, 50) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.7f;
-                    sb.Draw(starTex, pos, null, coreColor, rune.Rotation, 
+                    sb.Draw(starTex, pos, null, coreColor, rune.Rotation,
                         starTex.Size() / 2f, finalScale * 0.3f * (0.8f + corePulse * 0.4f), SpriteEffects.None, 0f);
 
                     //核心深橙红光
                     Color coreGlow = new Color(200, 70, 40) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.5f;
-                    sb.Draw(starTex, pos, null, coreGlow, rune.Rotation + MathHelper.PiOver4, 
+                    sb.Draw(starTex, pos, null, coreGlow, rune.Rotation + MathHelper.PiOver4,
                         starTex.Size() / 2f, finalScale * 0.4f * (0.7f + corePulse * 0.5f), SpriteEffects.None, 0f);
 
                     //外层脉冲光环（暗红色）
                     if (corePulse > 0.6f) {
                         Color pulseRing = new Color(180, 60, 35) with { A = 0 } * rune.CoreGlowAlpha * (corePulse - 0.6f) * 2f * layerAlpha * 0.3f;
-                        sb.Draw(starTex, pos, null, pulseRing, rune.Rotation, 
+                        sb.Draw(starTex, pos, null, pulseRing, rune.Rotation,
                             starTex.Size() / 2f, finalScale * 0.6f * corePulse, SpriteEffects.None, 0f);
                     }
                 }
@@ -1172,23 +1172,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             //硫磺火核心辉光（暗红色调）
             //最外层 - 深暗红
-            sb.Draw(glow, center, null, new Color(80, 25, 18) with { A = 0 } * scale * 0.5f, time * 1.8f, 
+            sb.Draw(glow, center, null, new Color(80, 25, 18) with { A = 0 } * scale * 0.5f, time * 1.8f,
                 glow.Size() / 2, scale * 3.2f, SpriteEffects.None, 0);
-            
+
             //中层 - 深红
-            sb.Draw(glow, center, null, c2 with { A = 0 } * scale * 0.75f * pulse1, -time * 1.3f, 
+            sb.Draw(glow, center, null, c2 with { A = 0 } * scale * 0.75f * pulse1, -time * 1.3f,
                 glow.Size() / 2, scale * (2.4f + pulse1 * 0.4f), SpriteEffects.None, 0);
-            
+
             //内层 - 橙红
-            sb.Draw(glow, center, null, c1 with { A = 0 } * scale * pulse2, time * 0.9f, 
+            sb.Draw(glow, center, null, c1 with { A = 0 } * scale * pulse2, time * 0.9f,
                 glow.Size() / 2, scale * (1.8f + pulse2 * 0.5f), SpriteEffects.None, 0);
-            
+
             //高光层 - 亮橙红
-            sb.Draw(glow, center, null, c4 with { A = 0 } * scale * 0.6f * pulse2, -time * 2f, 
+            sb.Draw(glow, center, null, c4 with { A = 0 } * scale * 0.6f * pulse2, -time * 2f,
                 glow.Size() / 2, scale * (1.3f + pulse2 * 0.3f), SpriteEffects.None, 0);
-            
+
             //核心 - 暗橙红（不再是纯白）
-            sb.Draw(glow, center, null, new Color(220, 80, 50) with { A = 0 } * scale * 0.4f * pulse3, 0, 
+            sb.Draw(glow, center, null, new Color(220, 80, 50) with { A = 0 } * scale * 0.4f * pulse3, 0,
                 glow.Size() / 2, scale * 1.1f * (1f + pulse3 * 0.3f), SpriteEffects.None, 0);
         }
     }

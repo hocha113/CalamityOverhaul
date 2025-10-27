@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

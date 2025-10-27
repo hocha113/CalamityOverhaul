@@ -75,13 +75,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 targetCenter = Main.MouseWorld;
                 Projectile.Center = targetCenter;
                 InitializeSkill();
-                
+
                 //超必杀启动音效
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream with {
                     Volume = 1.5f,
                     Pitch = -0.6f
                 }, targetCenter);
-                
+
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with {
                     Volume = 1.3f,
                     Pitch = -0.5f
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             foreach (var ring in runeRings) {
                 ring.Alpha *= 0.95f;
                 ring.Rotation += 0.03f;
-                
+
                 //更新火焰帧
                 ring.FireFrameCounter += 0.4f;
                 if (ring.FireFrameCounter >= 1f) {
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //遍历生成队列
             for (int i = pillarSpawnQueue.Count - 1; i >= 0; i--) {
                 var data = pillarSpawnQueue[i];
-                
+
                 if (!data.Spawned && Projectile.timeLeft <= (Duration - data.SpawnTime)) {
                     //生成火柱弹幕
                     Projectile.NewProjectile(
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         Projectile.knockBack,
                         Projectile.owner
                     );
-                    
+
                     data.Spawned = true;
                 }
             }

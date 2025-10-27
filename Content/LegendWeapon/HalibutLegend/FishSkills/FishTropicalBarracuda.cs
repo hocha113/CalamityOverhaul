@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 16;
 
         private int spawnCounter = 0;
-        private static int SpawnInterval => 5- HalibutData.GetDomainLayer()/3;
+        private static int SpawnInterval => 5 - HalibutData.GetDomainLayer() / 3;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
