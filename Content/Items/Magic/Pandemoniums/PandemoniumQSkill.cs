@@ -11,12 +11,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
     /// <summary>
-    /// Q技能：硫磺火天罚 - 超必杀
+    /// Q技能：硫磺火天罚，超必杀
     /// 召唤大量硫磺火柱从天而降，覆盖鼠标周围大范围区域
     /// </summary>
     internal class PandemoniumQSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+        private Player Owner => Main.player[Projectile.owner];
         private ref float Phase => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
 
@@ -27,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private const int Duration = 180;
 
         //视觉效果
-        private List<FirePillarData> pillars = new();
+        private List<PillarSpawnData> pillarSpawnQueue = new();
         private List<RuneRingData> runeRings = new();
         private float warningIntensity = 0f;
 
@@ -38,14 +39,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         private static Asset<Texture2D> GlowAsset = null;
 
-        private class FirePillarData
+        private class PillarSpawnData
         {
             public Vector2 Position;
-            public float Delay;
-            public float Life;
-            public float MaxLife;
-            public float Radius;
-            public bool Active;
+            public float SpawnTime;
+            public bool Spawned;
         }
 
         private class RuneRingData
@@ -61,14 +59,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override void SetDefaults() {
             Projectile.width = 1200;
             Projectile.height = 1200;
-            Projectile.friendly = true;
+            Projectile.friendly = false; //控制器本身不造成伤害
             Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = -1;
             Projectile.timeLeft = Duration;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
         }
 
         public override void AI() {
@@ -112,8 +108,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 AftermathPhase();
             }
 
-            //更新火柱
-            UpdatePillars();
+            //生成火柱弹幕
+            SpawnPillars();
 
             //超强照明
             float lightIntensity = 3f + warningIntensity * 2f;
@@ -121,19 +117,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void InitializeSkill() {
-            //初始化火柱位置
+            //初始化火柱生成队列
             for (int i = 0; i < PillarCount; i++) {
                 float angle = MathHelper.TwoPi * i / PillarCount + Main.rand.NextFloat(-0.2f, 0.2f);
                 float distance = Main.rand.NextFloat(SkillRadius * 0.3f, SkillRadius);
                 Vector2 pos = targetCenter + angle.ToRotationVector2() * distance;
 
-                pillars.Add(new FirePillarData {
+                pillarSpawnQueue.Add(new PillarSpawnData {
                     Position = pos,
-                    Delay = i * 3f + Main.rand.NextFloat(0, 10f),
-                    Life = 0,
-                    MaxLife = 80,
-                    Radius = Main.rand.NextFloat(180f, 220f),
-                    Active = false
+                    SpawnTime = 60f + i * 3f + Main.rand.NextFloat(0, 10f), //预警后开始生成
+                    Spawned = false
                 });
             }
 
@@ -182,14 +175,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void PillarPhase() {
-            //激活火柱
-            foreach (var pillar in pillars) {
-                if (!pillar.Active && Timer >= pillar.Delay) {
-                    pillar.Active = true;
-                    SpawnPillarEffect(pillar);
-                }
-            }
-
             //符文环加速旋转
             foreach (var ring in runeRings) {
                 ring.Rotation += 0.05f;
@@ -214,38 +199,38 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             foreach (var ring in runeRings) {
                 ring.Alpha *= 0.95f;
                 ring.Rotation += 0.03f;
+                
+                //更新火焰帧
+                ring.FireFrameCounter += 0.4f;
+                if (ring.FireFrameCounter >= 1f) {
+                    ring.FireFrameCounter = 0;
+                    ring.FireFrame = (ring.FireFrame + 1) % 16;
+                }
             }
 
             warningIntensity *= 0.9f;
         }
 
-        private void UpdatePillars() {
-            for (int i = pillars.Count - 1; i >= 0; i--) {
-                var pillar = pillars[i];
-                if (!pillar.Active) continue;
+        private void SpawnPillars() {
+            if (Main.myPlayer != Projectile.owner) return;
 
-                pillar.Life++;
-
-                //伤害判定
-                if (pillar.Life < pillar.MaxLife * 0.8f) {
-                    foreach (NPC npc in Main.npc) {
-                        if (npc.active && npc.Distance(pillar.Position) < pillar.Radius) {
-                            NPC.HitInfo hit = new NPC.HitInfo {
-                                Damage = Projectile.damage * 10,
-                                Knockback = Projectile.knockBack,
-                                HitDirection = Math.Sign(npc.Center.X - pillar.Position.X)
-                            };
-                            npc.StrikeNPC(hit);
-
-                            //燃烧debuff
-                            npc.AddBuff(BuffID.OnFire3, 240);
-                        }
-                    }
-                }
-
-                //持续特效
-                if (Main.rand.NextBool(2)) {
-                    SpawnPillarParticles(pillar);
+            //遍历生成队列
+            for (int i = pillarSpawnQueue.Count - 1; i >= 0; i--) {
+                var data = pillarSpawnQueue[i];
+                
+                if (!data.Spawned && Projectile.timeLeft <= (Duration - data.SpawnTime)) {
+                    //生成火柱弹幕
+                    Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        data.Position,
+                        Vector2.Zero,
+                        ModContent.ProjectileType<PandemoniumFirePillar>(),
+                        Projectile.damage * 10,
+                        Projectile.knockBack,
+                        Projectile.owner
+                    );
+                    
+                    data.Spawned = true;
                 }
             }
         }
@@ -266,92 +251,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 );
                 warning.noGravity = true;
                 warning.fadeIn = 1.5f;
-            }
-        }
-
-        private void SpawnPillarEffect(FirePillarData pillar) {
-            //火柱生成爆发
-            for (int i = 0; i < 60; i++) {
-                Vector2 velocity = new Vector2(
-                    Main.rand.NextFloat(-8f, 8f),
-                    Main.rand.NextFloat(-20f, -5f)
-                );
-
-                Dust brimstone = Dust.NewDustPerfect(
-                    pillar.Position,
-                    (int)CalamityDusts.Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(3f, 5f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 2f;
-            }
-
-            //火焰核心
-            for (int i = 0; i < 40; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    pillar.Position,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(10f, 10f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                fire.noGravity = true;
-            }
-
-            //地面冲击环
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * 12f;
-
-                Dust ring = Dust.NewDustPerfect(
-                    pillar.Position,
-                    (int)CalamityDusts.Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                ring.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
-                Volume = 1.2f,
-                Pitch = -0.4f
-            }, pillar.Position);
-        }
-
-        private void SpawnPillarParticles(FirePillarData pillar) {
-            float lifeRatio = pillar.Life / pillar.MaxLife;
-
-            //上升火焰
-            for (int i = 0; i < 3; i++) {
-                Vector2 spawnPos = pillar.Position + Main.rand.NextVector2Circular(pillar.Radius * 0.5f, 10f);
-                Dust flame = Dust.NewDustPerfect(
-                    spawnPos,
-                    (int)CalamityDusts.Brimstone,
-                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-12f, -6f)),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f) * (1f - lifeRatio * 0.5f)
-                );
-                flame.noGravity = true;
-            }
-
-            //火焰余烬
-            if (Main.rand.NextBool(2)) {
-                Dust ember = Dust.NewDustPerfect(
-                    pillar.Position + Main.rand.NextVector2Circular(pillar.Radius * 0.7f, pillar.Radius * 0.7f),
-                    DustID.Torch,
-                    new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-8f, -3f)),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                ember.noGravity = true;
             }
         }
 
@@ -383,9 +282,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             //绘制符文环
             DrawRuneRings(sb);
-
-            //绘制火柱
-            DrawPillars(sb);
 
             return false;
         }
@@ -450,49 +346,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         0
                     );
                 }
-            }
-        }
-
-        private void DrawPillars(SpriteBatch sb) {
-            if (!(GlowAsset?.IsLoaded ?? false)) return;
-
-            foreach (var pillar in pillars) {
-                if (!pillar.Active) continue;
-
-                Vector2 screenPos = pillar.Position - Main.screenPosition;
-                float lifeRatio = pillar.Life / pillar.MaxLife;
-                float alpha = lifeRatio < 0.2f ? lifeRatio / 0.2f : (lifeRatio > 0.8f ? (1f - lifeRatio) / 0.2f : 1f);
-
-                //火柱基础辉光
-                for (int i = 0; i < 4; i++) {
-                    float scale = (pillar.Radius / GlowAsset.Value.Width) * (2f + i * 0.2f);
-                    float layerAlpha = alpha * (0.6f - i * 0.12f);
-
-                    sb.Draw(
-                        GlowAsset.Value,
-                        screenPos,
-                        null,
-                        new Color(255, 100, 50) with { A = 0 } * layerAlpha,
-                        pillar.Life * 0.05f,
-                        GlowAsset.Value.Size() / 2,
-                        scale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-
-                //核心白光
-                sb.Draw(
-                    GlowAsset.Value,
-                    screenPos,
-                    null,
-                    Color.White with { A = 0 } * alpha * 0.5f,
-                    pillar.Life * 0.08f,
-                    GlowAsset.Value.Size() / 2,
-                    (pillar.Radius / GlowAsset.Value.Width) * 1.2f,
-                    SpriteEffects.None,
-                    0
-                );
             }
         }
     }

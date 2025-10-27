@@ -1661,26 +1661,28 @@ Projectiles: {
 	// PandemoniumChannel.DisplayName: Pandemonium Channel
 	// PandemoniumFireball.DisplayName: Pandemonium Fireball
 	// PandemoniumScythe.DisplayName: Pandemonium Scythe
-	// PandemoniumBlastWave.DisplayName: Pandemonium Blast Wave
-	// PandemoniumGroundFlame.DisplayName: Pandemonium Ground Flame
-	// PandemoniumLightning.DisplayName: Pandemonium Lightning
-	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
-	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
-	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
-	// RockHammerFish.DisplayName: Rock Hammer Fish
-	// OilBlob.DisplayName: Oil Blob
-	// PrincessFishMinion.DisplayName: Princess Fish Minion
-	// PrincessMagicOrb.DisplayName: Princess Magic Orb
-	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
-	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
-	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
-	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
-	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
-	// DoubleCodProjectile.DisplayName: Double Cod Projectile
-	// FrostMinnowSpitterProjectile.DisplayName: Frost Minnow Spitter Projectile
-	// FrostSnowflakeProjectile.DisplayName: Frost Snowflake Projectile
-	// PandemoniumCircle.DisplayName: Pandemonium Circle
-	// PandemoniumQSkill.DisplayName: Pandemonium Q Skill
+	// PandemoniumBlastWave.DisplayName: Pandemonium Blast
+	// PandemoniumGroundFlame.DisplayName: Pandemonium Groundflame
+	// PandemoniumLightning.DisplayName: Pandemonium Bolt
+	// PandemoniumRainDrop.DisplayName: Pandemonium Rain
+	// PrismiteWaveProjectile.DisplayName: Prismite Wave
+	// ObsidianFishOrbit.DisplayName: Obsidianfish Orbit
+	// RockHammerFish.DisplayName: Rockhammer Fish
+	// OilBlob.DisplayName: Oil Glob
+	// PrincessFishMinion.DisplayName: Princess Fish
+	// PrincessMagicOrb.DisplayName: Regal Orb
+	// CrimsonTigerFishMinion.DisplayName: Crimson Tigerfish
+	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda
+	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light
+	// BrimfishSpitterProjectile.DisplayName: Brimfish Spit
+	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame
+	// DoubleCodProjectile.DisplayName: Twin Cod
+	// FrostMinnowSpitterProjectile.DisplayName: Frost Minnow Spit
+	// FrostSnowflakeProjectile.DisplayName: Frostflake
+	// PandemoniumCircle.DisplayName: Pandemonium Sigil
+	// PandemoniumQSkill.DisplayName: Pandemonium Strike
+	// PandemoniumFirePillar.DisplayName: Pandemonium Flame Pillar
+	// PandemoniumRSkill.DisplayName: Pandemonium's Judgment
 }
 
 Configs: {

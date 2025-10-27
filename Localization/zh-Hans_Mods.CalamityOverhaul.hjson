@@ -1651,29 +1651,31 @@ Projectiles: {
 	OniHandExplode.DisplayName: 鬼手爆破
 	OniHandMinion.DisplayName: 鬼手
 	OniFireBall.DisplayName: 鬼手之火
-	// PandemoniumChannel.DisplayName: Pandemonium Channel
-	// PandemoniumFireball.DisplayName: Pandemonium Fireball
-	// PandemoniumScythe.DisplayName: Pandemonium Scythe
-	// PandemoniumBlastWave.DisplayName: Pandemonium Blast Wave
-	// PandemoniumGroundFlame.DisplayName: Pandemonium Ground Flame
-	// PandemoniumLightning.DisplayName: Pandemonium Lightning
-	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
-	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
-	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
-	// RockHammerFish.DisplayName: Rock Hammer Fish
-	// OilBlob.DisplayName: Oil Blob
-	// PrincessFishMinion.DisplayName: Princess Fish Minion
-	// PrincessMagicOrb.DisplayName: Princess Magic Orb
-	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
-	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
-	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
-	// BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
-	// BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
-	// DoubleCodProjectile.DisplayName: Double Cod Projectile
-	// FrostMinnowSpitterProjectile.DisplayName: Frost Minnow Spitter Projectile
-	// FrostSnowflakeProjectile.DisplayName: Frost Snowflake Projectile
-	// PandemoniumCircle.DisplayName: Pandemonium Circle
-	// PandemoniumQSkill.DisplayName: Pandemonium Q Skill
+	PandemoniumChannel.DisplayName: 万魔殿引导
+	PandemoniumFireball.DisplayName: 万魔殿火球
+	PandemoniumScythe.DisplayName: 万魔殿之镰
+	PandemoniumBlastWave.DisplayName: 万魔殿冲击波
+	PandemoniumGroundFlame.DisplayName: 万魔殿地焰
+	PandemoniumLightning.DisplayName: 万魔殿闪电
+	PandemoniumRainDrop.DisplayName: 万魔殿邪雨
+	PrismiteWaveProjectile.DisplayName: 棱晶波
+	ObsidianFishOrbit.DisplayName: 黑曜鱼环
+	RockHammerFish.DisplayName: 岩锤鱼
+	OilBlob.DisplayName: 粘稠原油
+	PrincessFishMinion.DisplayName: 公主鱼
+	PrincessMagicOrb.DisplayName: 公主魔球
+	CrimsonTigerFishMinion.DisplayName: 猩红虎鱼
+	TropicalBarracudaProjectile.DisplayName: 热带梭鱼
+	NeonTetraLightProjectile.DisplayName: 霓虹光束
+	BrimfishSpitterProjectile.DisplayName: 硫磺毒息
+	BrimstoneFlameProjectile.DisplayName: 硫磺火
+	DoubleCodProjectile.DisplayName: 双鳕鱼
+	FrostMinnowSpitterProjectile.DisplayName: 霜鲦鱼冰息
+	FrostSnowflakeProjectile.DisplayName: 霜冻雪花
+	PandemoniumCircle.DisplayName: 万魔殿法阵
+	PandemoniumQSkill.DisplayName: 万魔殿终结
+	PandemoniumFirePillar.DisplayName: 万魔殿火柱
+	PandemoniumRSkill.DisplayName: 万魔殿超位终结
 }
 
 Configs: {

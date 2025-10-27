@@ -41,6 +41,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private bool oldQ;
+        private bool oldR;
         public override void HoldItem(Player player) {
             bool isQ = Keyboard.GetState().IsKeyDown(Keys.Q);
             if (isQ && !oldQ && player.CountProjectilesOfID<PandemoniumQSkill>() == 0) {
@@ -50,6 +51,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
             }
             oldQ = isQ;
+            bool isR = Keyboard.GetState().IsKeyDown(Keys.R);
+            if (isR && !oldR && player.CountProjectilesOfID<PandemoniumRSkill>() == 0) {
+                ShootState shootState = player.GetShootState();
+                Projectile.NewProjectile(shootState.Source, player.Center
+                    , Vector2.Zero, ModContent.ProjectileType<PandemoniumRSkill>()
+                    , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
+            }
+            oldR = isR;
         }
 
         public override bool AltFunctionUse(Player player) => true;
