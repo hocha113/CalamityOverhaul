@@ -52,8 +52,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class PrismiteWaveProjectile : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-
-        private const int MaxGeneration = 3;
         private const int MaxLifeTime = 240;
 
         private float scale = 1f;
