@@ -6453,4 +6453,16 @@ UI: {
 		HintText2: 左键点击可移除项目
 		CloseHint: "[ESC]键或[右键点击]可关闭"
 	}
+
+	LegendUpgradeConfirmUI: {
+		TitleText: 传奇武器升级确认
+		DescText:
+			'''
+			检测到当前世界等级高于武器等级
+			是否将{0}升级到等级 {1}？
+			'''
+		ConfirmText: 确认升级
+		CancelText: 取消
+		Success: "[ITEM]已经升级到[LVEVL]级"
+	}
 }

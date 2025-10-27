@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using InnoVault.GameSystem;
 using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -107,10 +108,28 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         public virtual void Update() {
+            //检测是否需要升级
             if (TargetLevel > Level || UpgradeTagNameIsEmpty) {
-                UpgradeWorldName = Main.worldName;
-                UpgradeWorldFullName = SaveWorld.WorldFullName;
-                Level = TargetLevel;
+                if (!UpgradeTagNameIsEmpty && UpgradeWorldFullName != SaveWorld.WorldFullName) {//确保不是在同一个世界内多次升级
+                    //检测玩家是否手持该传奇武器
+                    Item heldItem = Main.LocalPlayer.GetItem();
+                    if (heldItem != null && heldItem.type > ItemID.None) {
+                        //检查该物品是否就是当前LegendData所属的物品
+                        if (heldItem.CWR().LegendData == this) {
+                            //弹出确认UI
+                            LegendUpgradeConfirmUI.RequestUpgrade(heldItem, this, TargetLevel);
+                            return;//等待用户确认，不自动升级
+                        }
+                    }
+                }
+
+                //如果不是手持状态，或者确认UI已经处理完毕，则自动升级（保持原有行为）
+                //这样可以兼容旧存档和非手持情况
+                if (!LegendUpgradeConfirmUI.Instance.Active) {
+                    UpgradeWorldName = Main.worldName;
+                    UpgradeWorldFullName = SaveWorld.WorldFullName;
+                    Level = TargetLevel;
+                }
             }
         }
 

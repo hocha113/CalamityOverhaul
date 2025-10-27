@@ -6495,4 +6495,16 @@ UI: {
 		HintText2: Left-click to remove an item
 		CloseHint: Press [ESC] or [Right-click] to close
 	}
+
+	LegendUpgradeConfirmUI: {
+		TitleText: Legendary Weapon Upgrade Confirmation
+		DescText:
+			'''
+			Current world level detected as higher than weapon level.
+			Upgrade {0} to level {1}?
+			'''
+		ConfirmText: Confirm Upgrade
+		CancelText: Cancel
+		Success: "[ITEM] has been upgraded to level [LVEVL]."
+	}
 }
