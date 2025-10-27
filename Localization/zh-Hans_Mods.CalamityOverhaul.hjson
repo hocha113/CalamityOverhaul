@@ -1661,6 +1661,7 @@ Projectiles: {
 	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 	// RockHammerFish.DisplayName: Rock Hammer Fish
+	// OilBlob.DisplayName: Oil Blob
 }
 
 Configs: {
@@ -6334,6 +6335,15 @@ FishSkill: {
 		DisplayName: 岩石重锤
 		Tooltip: 周期性生成岩鱼锤去敲击周围的敌人
 		Studied: 从来没有人问过这可怜的家伙想不想被当作锤子用
+	}
+
+	FishVariegatedLard: {
+		DisplayName: 斑驳油渍
+		Tooltip:
+			'''
+			攻击命中敌人时生成油渍
+			'''
+		Studied: 我需要很多很多洗洁精
 	}
 }
 

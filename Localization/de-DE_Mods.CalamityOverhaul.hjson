@@ -1668,6 +1668,7 @@ Projectiles: {
 	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 	// RockHammerFish.DisplayName: Rock Hammer Fish
+	// OilBlob.DisplayName: Oil Blob
 }
 
 Configs: {
@@ -6363,6 +6364,12 @@ FishSkill: {
 	}
 
 	FishRock: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishVariegatedLard: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
