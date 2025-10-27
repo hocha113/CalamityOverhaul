@@ -35,8 +35,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         [VaultLoaden(CWRConstant.Masking + "Fire")]
         private static Asset<Texture2D> RuneAsset = null;
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> StarTexture = null;
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         private static Asset<Texture2D> GlowAsset = null;
 

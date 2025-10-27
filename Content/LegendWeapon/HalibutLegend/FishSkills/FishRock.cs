@@ -115,7 +115,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //运动参数
         private Vector2 startPos;
-        private Vector2 targetPos;
         private Vector2 strikeStartPos;
         private Vector2 strikeEndPos;
 

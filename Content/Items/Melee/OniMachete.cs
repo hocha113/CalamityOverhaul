@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class OniMachete : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "OniMachete";
-        public static Texture2D OniArm;
-        public static Texture2D OniHand;
+        public static Texture2D OniArm = null;
+        public static Texture2D OniHand = null;
         private static readonly List<int> ActiveHands = new();
         public override void SetDefaults() {
             Item.width = Item.height = 45;

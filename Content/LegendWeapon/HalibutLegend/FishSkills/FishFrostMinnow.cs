@@ -698,8 +698,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private ref float Timer => ref Projectile.ai[0];
         private float rotationSpeed = 0f;
-        private float freezeIntensity = 0f;
-
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
