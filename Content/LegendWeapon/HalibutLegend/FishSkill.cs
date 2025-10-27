@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         }
 
         public void SetCooldown() {
-            Cooldown = DefaultCooldown;
+            Cooldown = (int)MathHelper.Clamp(DefaultCooldown, 1, 32767);
         }
 
         public virtual void SaveData(TagCompound tag) {

@@ -1660,6 +1660,7 @@ Projectiles: {
 	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
 	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
+	// RockHammerFish.DisplayName: Rock Hammer Fish
 }
 
 Configs: {
@@ -6326,7 +6327,13 @@ FishSkill: {
 			开火时生成一群黑曜石鱼围绕玩家旋转
 			每受伤一次会让一条黑曜石鱼碎裂
 			'''
-		Studied: ""
+		Studied: 黑曜石其实很脆
+	}
+
+	FishRock: {
+		DisplayName: 岩石重锤
+		Tooltip: 周期性生成岩鱼锤去敲击周围的敌人
+		Studied: 从来没有人问过这可怜的家伙想不想被当作锤子用
 	}
 }
 

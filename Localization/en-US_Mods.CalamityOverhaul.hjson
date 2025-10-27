@@ -1680,6 +1680,7 @@ Projectiles: {
 	PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
 	PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 	ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
+	RockHammerFish.DisplayName: Rock Hammer Fish
 }
 
 Configs: {
@@ -6358,6 +6359,12 @@ FishSkill: {
 	}
 
 	FishObsidian: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishRock: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
