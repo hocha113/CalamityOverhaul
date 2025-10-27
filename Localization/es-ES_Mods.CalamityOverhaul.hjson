@@ -2521,20 +2521,20 @@ Legend: {
 
 			EyeOfCthulhuGift: {
 				// R1: Halibut
-				// L0: That giant eye dragged your movements into slow motion... I thought you were just striking a pose.
-				// L1: We've entered the 'Watched Stage.' This means more... dramatic messes are on the way.
-				// L2: I found this in the eye's great maw. Here, a Cthulhu Fish. Much like its namesake, it doesn't really follow logic.
-				// L3: Be careful with it. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
+				// L0: Your movements were dragged into slow-motion... I just thought you were striking a pose.
+				// L1: We've entered the 'Watched Stage.' Which means... more trouble.
+				// L2: I found this in its... maw. Take it. A Cthulhu Fish. Just like its namesake... it doesn't really follow logic.
+				// L3: Hold onto it, but be careful. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
 				// L4: I'm curious if you'll start winking at the moon now.
 			}
 
 			KingSlimeGift: {
 				// R1: Halibut
-				// L0: That blue blob... a 'slime,' you call it? It looked more like... solidified emotion.
-				// L1: A clumsy attempt by matter to gain self-awareness and evolve, perhaps.
-				// L2: Please, take this. A Slimefish. Don't squeeze it. Its feelings might explode.
-				// L3: Have you ever tried to make soup from one of these?
-				// L4: I mean... yes, we make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
+				// L0: That blue blob... a 'slime,' you call it? Looked more like... solidified emotion.
+				// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve.
+				// L2: Here you go, a Slimefish. Don't squeeze it. Its feelings might explode.
+				// L3: Have you ever tried to make soup with one of these?
+				// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
 			}
 
 			QueenBeeGift: {
@@ -2542,7 +2542,7 @@ Legend: {
 				// R2: ???
 				// L0: I almost got a faceful of honey back there.
 				// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
-				// L2: Here, a fresh... and still-warm Honeyfish.
+				// L2: Here, fresh and... still-warm Honeyfish.
 				// L3: I think it would be perfect for a sweet and sour dish.
 			}
 
@@ -2557,11 +2557,11 @@ Legend: {
 
 			AquaticScourgeGift: {
 				// R1: Halibut
-				// L0: It reminds me of the less-friendly neighbors from my hometown... though this one was quite amicable. Used to be the head of security at Sulphurous Sea University. Always said hello.
+				// L0: It reminds me of the less-friendly neighbors from my hometown. This one was quite amicable, though. Used to be the head of security at Sulphurous Sea University. Always said hello.
 				// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
 				// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
 				// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
-				// L4: Finally, use it in dim light. Otherwise, you'll feel... high.
+				// L4: Best to use it in dim light. Otherwise, you'll feel... high.
 			}
 
 			BrimstoneElementalGift: {
@@ -2569,8 +2569,8 @@ Legend: {
 				// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
 				// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
 				// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
-				// L3: Careful, it might spontaneously combust in your hand. Not physically... emotionally.
-				// L4: After all, some kinds of anger are contagious.
+				// L3: Careful, it might spontaneously combust in your hand. Emotionally speaking.
+				// L4: After all, anger is contagious.
 			}
 
 			CalamitasCloneGift: {
@@ -2587,14 +2587,14 @@ Legend: {
 				// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
 				// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
 				// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
-				// L3: Don't worry, these spores won't turn a human into a fungus... probably.
+				// L3: Don't worry, the spores won't turn a human into a fungus... probably.
 				// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
 			}
 
 			CryogenGift: {
 				// R1: Halibut
-				// L0: A frozen soul... a temperature so low that time itself wants to lie down and rest.
-				// L1: You know, the end of cold isn't death. It's a state of eternal stillness.
+				// L0: A frozen soul...
+				// L1: In the Abyssal Archives, this kind of low temperature is usually used to 'preserve' the lunatics.
 				// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
 				// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
 				// L4: Eat too many, and you might just become an ice sculpture.
@@ -2613,7 +2613,7 @@ Legend: {
 				// R1: Halibut
 				// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
 				// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
-				// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my life.
+				// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my own existence.
 				// L3: I tried to boil it once. My pot surrendered first.
 				// L4: ...Some things exist just to make us realize that not all problems need to be solved.
 			}
@@ -2630,7 +2630,7 @@ Legend: {
 			LeviathanGift: {
 				// R1: Halibut
 				// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
-				// L1: You know, what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
+				// L1: I think what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
 				// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
 				// L3: The more mundane the exterior, the more extraordinary the past.
 				// L4: Just like us.
@@ -2639,7 +2639,7 @@ Legend: {
 			MoonLordGift: {
 				// R1: Halibut
 				// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
-				// L1: We didn't just save the world; we closed a door that was never meant to be opened correctly.
+				// L1: We didn't just save the world; we closed a door that was never meant to be opened.
 				// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
 				// L3: They say it lets you see the future... but you've already rewritten that future.
 				// L4: We just proved that even gods can bleed.
@@ -2658,14 +2658,14 @@ Legend: {
 				// R1: Halibut
 				// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
 				// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
-				// L2: A Jewel-fish. It was infected and miraculously recovered. Its immune system is more experienced than you are.
+				// L2: A Jewel-fish. Infected and miraculously recovered. Its immune system is more experienced than you are.
 				// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
-				// L4: But since you just walked out of a plague-hive, this little risk should be nothing.
+				// L4: But since *we* just walked out of a plague-hive, this little risk should be nothing.
 			}
 
 			PlanteraGift: {
 				// R1: Halibut
-				// L0: A flower... if 'flower' is the word for a man-eating vine conglomerate.
+				// L0: A flower... if 'flower' is the word for that man-eating vine conglomerate.
 				// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
 				// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
 				// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
@@ -6358,69 +6358,114 @@ FishSkill: {
 	}
 
 	FishPrismite: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Prismatic Barrage
+		/* Tooltip:
+			'''
+			Firing converts bullets into prismatic shockwaves.
+			Shockwaves split into multiple projectiles upon hitting enemies or tiles.
+			''' */
+		// Studied: This fish's iridescence is likely due to excessive heavy metal content.
 	}
 
 	FishObsidian: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Obsidian Fortress
+		/* Tooltip:
+			'''
+			Firing spawns Obsidianfish that orbit the player.
+			Obsidianfish deal continuous contact damage to enemies.
+			One fish shatters each time you take damage.
+			''' */
+		// Studied: Obsidian is actually quite brittle, you know.
 	}
 
 	FishRock: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Rock Hammer Slam
+		/* Tooltip:
+			'''
+			Periodically spawns a Rock Hammerfish that tracks nearby enemies.
+			It charges above the target before slamming down.
+			''' */
+		// Studied: No one ever asks the poor creature if it *wants* to be used as a hammer.
 	}
 
 	FishVariegatedLard: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Viscous Slick
+		/* Tooltip:
+			'''
+			Attacks hitting enemies spray oil from them.
+			The oil sticks to tiles or enemies and spreads further.
+			''' */
+		// Studied: I'm going to need a substantial amount of detergent.
 	}
 
 	FishPrincess: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Regal Radiance
+		/* Tooltip:
+			'''
+			Firing summons a Princess Fish to fight for you.
+			The Princess Fish fires scattering magic orbs at enemies.
+			''' */
+		// Studied: Clearly not a prince.
 	}
 
 	FishCrimsonTiger: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Crimson Patrol
+		/* Tooltip:
+			'''
+			Right-click to summon a school of Crimson Tigerfish that follow you.
+			They will actively seek out and attack enemies on sight.
+			''' */
+		// Studied: They appear quite ferocious.
 	}
 
 	FishTropicalBarracuda: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Barracuda Blitz
+		/* Tooltip:
+			'''
+			Firing summons schools of Tropical Barracudas from the screen edges.
+			They rapidly dart across the entire screen from a random direction.
+			''' */
+		// Studied: Their speed is remarkable.
 	}
 
 	FishNeonTetra: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Neon Trail
+		/* Tooltip:
+			'''
+			Leave glowing Neon Tetras behind while moving.
+			The Tetras illuminate and damage enemies along your path.
+			''' */
+		// Studied: I am rather fond of its scales.
 	}
 
 	FishBrimlish: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Brimstone Dispersion
+		/* Tooltip:
+			'''
+			Periodically summons a small Brimfish while firing.
+			The Brimfish spits numerous scattering brimstone balls at enemies.
+			''' */
+		// Studied: Alarmingly high temperature.
 	}
 
 	FishDoubleCod: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Twin Cod Pursuit
+		/* Tooltip:
+			'''
+			Periodically fires homing Cod while firing.
+			The Cod continuously track enemies and deal contact damage.
+			''' */
+		// Studied: A most peculiar species.
 	}
 
 	FishFrostMinnow: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		// DisplayName: Frost Proclamation
+		/* Tooltip:
+			'''
+			Periodically summons a Frost Minnow while firing.
+			The Frost Minnow spits numerous scattering frost balls at enemies.
+			''' */
+		// Studied: Brace yourself for frostbite!
 	}
 }
 
