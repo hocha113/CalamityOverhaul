@@ -1678,6 +1678,7 @@ Projectiles: {
 	PandemoniumGroundFlame.DisplayName: Pandemonium Ground Flame
 	PandemoniumLightning.DisplayName: Pandemonium Lightning
 	PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
+	PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 }
 
 Configs: {
@@ -6347,6 +6348,12 @@ FishSkill: {
 			Launch the salamon rolls at the enemy
 			'''
 		Studied: Its entire body is filled with sand.
+	}
+
+	FishPrismite: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
 	}
 }
 

@@ -1658,6 +1658,7 @@ Projectiles: {
 	// PandemoniumGroundFlame.DisplayName: Pandemonium Ground Flame
 	// PandemoniumLightning.DisplayName: Pandemonium Lightning
 	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
+	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
 }
 
 Configs: {
@@ -6305,6 +6306,16 @@ FishSkill: {
 			蝎子哨兵将向敌人发射沙龙卷
 			'''
 		Studied: 它的体内全是沙子
+	}
+
+	FishPrismite: {
+		DisplayName: 彩虹冲击
+		Tooltip:
+			'''
+			开火时周期性的发射棱彩冲击波
+			命中敌人或者物块后将分裂成多道冲击波继续前进
+			'''
+		Studied: 这条鱼的美丽来自于重金属超标
 	}
 }
 
