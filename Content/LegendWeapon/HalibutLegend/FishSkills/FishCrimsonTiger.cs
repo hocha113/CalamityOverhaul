@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishCrimsonTiger : FishSkill
     {
         public override int UnlockFishID => ItemID.CrimsonTigerfish;
-        public override int DefaultCooldown => 60; //无冷却，但需要右键
+        public override int DefaultCooldown => 60;
         public override int ResearchDuration => 60 * 18;
 
         //活跃的虎鱼追踪
@@ -517,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //主体绘制 - 猩红色调
+            //主体绘制，猩红色调
             Color mainColor = Color.Lerp(
                 lightColor,
                 Color.Crimson,

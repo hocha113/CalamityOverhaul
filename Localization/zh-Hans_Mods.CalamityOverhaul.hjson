@@ -1665,6 +1665,7 @@ Projectiles: {
 	// PrincessFishMinion.DisplayName: Princess Fish Minion
 	// PrincessMagicOrb.DisplayName: Princess Magic Orb
 	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
+	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
 }
 
 Configs: {
@@ -6357,9 +6358,23 @@ FishSkill: {
 	}
 
 	FishCrimsonTiger: {
-		// DisplayName: ""
-		// Tooltip: ""
-		// Studied: ""
+		DisplayName: 猩红喋血
+		Tooltip:
+			'''
+			右键召唤一群猩红虎鱼环绕自身
+			猩红虎鱼发现敌人后将主动出击攻击敌人
+			'''
+		Studied: 它们看起来相当凶猛
+	}
+
+	FishTropicalBarracuda: {
+		DisplayName: 热带穿梭
+		Tooltip:
+			'''
+			开火时从屏幕边缘召唤热带梭鱼群
+			梭鱼会快速穿梭并追踪敌人
+			'''
+		Studied: 它们的速度挺快的
 	}
 }
 
