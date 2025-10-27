@@ -117,6 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         public override void Draw(SpriteBatch spriteBatch) {
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+            RasterizerState normalState = new RasterizerState() { ScissorTestEnable = false };
             Rectangle viedutRect = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight - 20);
             //进行矩形画布裁剪绘制
             spriteBatch.End();
@@ -128,12 +129,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //他妈的我不知道为什么这里裁剪画布不生效，那么就这么将就着画吧，反正插穿鱼头也没人在意，就像他妈的澳大利亚人要打多少只袋鼠一样无聊
             spriteBatch.Draw(LeftSidebar, UIHitBox, Color.White);
 
-            rasterizerState.ScissorTestEnable = false;
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                             DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+                             DepthStencilState.None, normalState, null, Main.UIScaleMatrix);
         }
         public void PostDraw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(Cap, DrawPosition + new Vector2(4, 0), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
@@ -545,12 +545,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         public override void Draw(SpriteBatch spriteBatch) {
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+            RasterizerState normalState = new RasterizerState() { ScissorTestEnable = false };
             Rectangle originalScissor = spriteBatch.GraphicsDevice.ScissorRectangle;//裁剪区域：只在面板内绘制技能图标
             Rectangle clipping = new(20, 0, Main.screenWidth, Main.screenHeight - 20);//别问我这个X=20是干什么的，问就是手调的，问就是刚刚好
-            Main.instance.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipping);//这里进行必要的裁剪画布设置，避免绘制出不适合出现的部分
+            
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
                     , DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+            spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, clipping);//这里进行必要的裁剪画布设置，避免绘制出不适合出现的部分
 
             SkillTooltipPanel.Instance.Draw(spriteBatch);//先绘制介绍面板（在主面板后面）
             spriteBatch.Draw(Panel, UIHitBox, Color.White);//绘制主面板
@@ -581,11 +583,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 slot.Draw(spriteBatch);
             }
 
-            rasterizerState.ScissorTestEnable = false;//恢复RasterizerState
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissor;//他妈的要恢复，不然UI就鸡巴全没了
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+                    , DepthStencilState.None, normalState, null, Main.UIScaleMatrix);
 
             foreach (var particle in flyingParticles) {
                 particle.Draw(spriteBatch);//绘制飞行粒子（在最上层）
