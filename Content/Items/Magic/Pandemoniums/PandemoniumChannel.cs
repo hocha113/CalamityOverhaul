@@ -323,7 +323,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 runeLayers[layer].Add(new RuneData {
                     Offset = angle.ToRotationVector2() * distance,
                     Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                    Scale = Main.rand.NextFloat(0.6f, 1.0f) * (1f + layer * 0.15f),
+                    Scale = Main.rand.NextFloat(0.6f, 1.0f) * (1f + layer * 0.05f),
                     RotationSpeed = Main.rand.NextFloat(-0.025f, 0.025f) * (1f + layer * 0.4f),
                     PulsePhase = Main.rand.NextFloat(MathHelper.TwoPi),
                     Type = Main.rand.Next(6),
@@ -987,7 +987,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawCircleRing(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color) {
+        private static void DrawCircleRing(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color) {
             Texture2D pixel = CWRAsset.Placeholder_White.Value;
             int segments = (int)(radius / 10f);
 
@@ -1002,12 +1002,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawOctagon(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
+        private static void DrawOctagon(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
             Texture2D pixel = CWRAsset.Placeholder_White.Value;
             DrawPolygon(sb, pixel, center, 8, radius, thickness, color, rotation);
         }
 
-        private void DrawVoidRing(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha, float time) {
+        private static void DrawVoidRing(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha, float time) {
             if (!(GlowAsset?.IsLoaded ?? false)) return;
 
             float pulse = (float)Math.Sin(time * 2.5f) * 0.25f + 0.75f;
@@ -1020,7 +1020,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 SpriteEffects.None, 0);
         }
 
-        private void DrawConnectionWeb(SpriteBatch sb, Vector2 center, float radius, float alpha, Color color, float time) {
+        private static void DrawConnectionWeb(SpriteBatch sb, Vector2 center, float radius, float alpha, Color color, float time) {
             if (alpha < 0.25f) return;
             Texture2D pixel = CWRAsset.Placeholder_White.Value;
 
@@ -1040,13 +1040,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawHexagram(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
+        private static void DrawHexagram(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
             Texture2D pixel = CWRAsset.Placeholder_White.Value;
             DrawPolygon(sb, pixel, center, 3, radius, thickness, color, rotation);
             DrawPolygon(sb, pixel, center, 3, radius, thickness, color, rotation + MathHelper.Pi);
         }
 
-        private void DrawPentagram(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
+        private static void DrawPentagram(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color, float rotation) {
             Texture2D pixel = CWRAsset.Placeholder_White.Value;
             int points = 5;
             Vector2[] vertices = new Vector2[points];
@@ -1061,7 +1061,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawPolygon(SpriteBatch sb, Texture2D pixel, Vector2 center, int sides, float radius, float thickness, Color color, float rotation) {
+        private static void DrawPolygon(SpriteBatch sb, Texture2D pixel, Vector2 center, int sides, float radius, float thickness, Color color, float rotation) {
             if (sides < 3) return;
             Vector2 prev = center + rotation.ToRotationVector2() * radius;
             for (int i = 1; i <= sides; i++) {
@@ -1072,7 +1072,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawLine(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end, float thickness, Color color) {
+        private static void DrawLine(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end, float thickness, Color color) {
             Vector2 diff = end - start;
             float length = diff.Length();
             if (length < 1f) return;
@@ -1165,7 +1165,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void DrawCoreGlow(SpriteBatch sb, Texture2D glow, Vector2 center, float scale, Color c1, Color c2, Color c3, Color c4, float time) {
+        private static void DrawCoreGlow(SpriteBatch sb, Texture2D glow, Vector2 center, float scale, Color c1, Color c2, Color c3, Color c4, float time) {
             float pulse1 = (float)Math.Sin(time * 13f) * 0.4f + 0.6f;
             float pulse2 = (float)Math.Sin(time * 10f + 1f) * 0.4f + 0.6f;
             float pulse3 = (float)Math.Sin(time * 16f + 2f) * 0.4f + 0.6f;
