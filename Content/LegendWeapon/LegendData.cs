@@ -35,6 +35,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
         /// 这个传奇应该升级到的等级
         /// </summary>
         public virtual int TargetLevel => 0;
+        /// <summary>
+        /// 是否跳过升级（用于UI确认后调用）
+        /// </summary>
+        public string DontUpgradeName;
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
@@ -87,6 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (UpgradeWorldFullName != "") {
                 tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
             }
+            DontUpgradeName = string.Empty;//重置跳过升级标记
         }
 
         public virtual void LoadData(Item item, TagCompound tag) {
@@ -107,34 +112,37 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
         }
 
-        public virtual void Update() {
+        public virtual void Update(Item item) {
+            if (DontUpgradeName == SaveWorld.WorldFullName) {
+                return;//跳过升级
+            }
             //检测是否需要升级
-            if (TargetLevel > Level || UpgradeTagNameIsEmpty) {
-                if (!UpgradeTagNameIsEmpty && UpgradeWorldFullName != SaveWorld.WorldFullName) {//确保不是在同一个世界内多次升级
-                    //检测玩家是否手持该传奇武器
-                    Item heldItem = Main.LocalPlayer.GetItem();
-                    if (heldItem != null && heldItem.type > ItemID.None) {
-                        //检查该物品是否就是当前LegendData所属的物品
-                        if (heldItem.CWR().LegendData == this) {
-                            //弹出确认UI
-                            LegendUpgradeConfirmUI.RequestUpgrade(heldItem, this, TargetLevel);
-                            return;//等待用户确认，不自动升级
-                        }
+            if (TargetLevel <= Level && !UpgradeTagNameIsEmpty) {
+                return;
+            }
+            //确保不是在同一个世界内多次升级
+            if (UpgradeWorldFullName != string.Empty && UpgradeWorldFullName != SaveWorld.WorldFullName) {
+                if (item != null && item.type > ItemID.None) {
+                    //检查该物品是否就是当前LegendData所属的物品
+                    if (item.CWR().LegendData == this) {
+                        //弹出确认UI
+                        LegendUpgradeConfirmUI.RequestUpgrade(item, this, TargetLevel);
+                        return;//等待用户确认，不自动升级
                     }
                 }
+            }
 
-                //如果不是手持状态，或者确认UI已经处理完毕，则自动升级（保持原有行为）
-                //这样可以兼容旧存档和非手持情况
-                if (!LegendUpgradeConfirmUI.Instance.Active) {
-                    UpgradeWorldName = Main.worldName;
-                    UpgradeWorldFullName = SaveWorld.WorldFullName;
-                    Level = TargetLevel;
-                }
+            //如果不是手持状态，或者确认UI已经处理完毕，则自动升级（保持原有行为）
+            //这样可以兼容旧存档和非手持情况
+            if (!LegendUpgradeConfirmUI.Instance.Active) {
+                UpgradeWorldName = Main.worldName;
+                UpgradeWorldFullName = SaveWorld.WorldFullName;
+                Level = TargetLevel;
             }
         }
 
-        public void DoUpdate() {
-            Update();
+        public void DoUpdate(Item item) {
+            Update(item);
         }
     }
 }

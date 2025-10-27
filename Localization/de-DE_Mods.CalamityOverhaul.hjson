@@ -6495,14 +6495,14 @@ UI: {
 	}
 
 	LegendUpgradeConfirmUI: {
-		// TitleText: 传奇武器升级确认
+		// TitleText: Legendary Weapon Upgrade Confirmation
 		/* DescText:
 			'''
-			检测到当前世界等级高于武器等级
-			是否将{0}升级到等级 {1}？
+			Current world level detected as higher than weapon level.
+			Upgrade {0} to level {1}?
 			''' */
-		// ConfirmText: 确认升级
-		// CancelText: 取消
-		// Success: "[ITEM]已经升级到[LVEVL]级"
+		// ConfirmText: Confirm Upgrade
+		// CancelText: Cancel
+		// Success: "[ITEM] has been upgraded to level [LEVEL]."
 	}
 }

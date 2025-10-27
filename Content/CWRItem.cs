@@ -642,7 +642,7 @@ namespace CalamityOverhaul.Content
 
 
             try {
-                LegendData?.DoUpdate();
+                LegendData?.DoUpdate(item);
                 LegendData?.SaveData(item, tag);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:SaveData] an error has occurred:{ex.Message}");
@@ -700,7 +700,7 @@ namespace CalamityOverhaul.Content
 
             try {
                 LegendData?.LoadData(item, tag);
-                LegendData?.DoUpdate();
+                LegendData?.DoUpdate(item);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
             }
@@ -713,7 +713,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            LegendData?.DoUpdate();
+            LegendData?.DoUpdate(item);
             if (heldProjType > 0) {
                 //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
                 if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
@@ -741,12 +741,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override void UpdateInventory(Item item, Player player) {
-            LegendData?.DoUpdate();
+            LegendData?.DoUpdate(item);
             RecoverUnloadedItem.UpdateInventory(item);
         }
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {
-            LegendData?.DoUpdate();
+            LegendData?.DoUpdate(item);
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {

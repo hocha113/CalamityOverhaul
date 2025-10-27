@@ -6505,6 +6505,6 @@ UI: {
 			'''
 		ConfirmText: Confirm Upgrade
 		CancelText: Cancel
-		Success: "[ITEM] has been upgraded to level [LVEVL]."
+		Success: "[ITEM] has been upgraded to level [LEVEL]."
 	}
 }

@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             DescText = this.GetLocalization(nameof(DescText), () => "检测到当前世界等级高于武器等级\n是否将{0}升级到等级 {1}？");
             ConfirmText = this.GetLocalization(nameof(ConfirmText), () => "确认升级");
             CancelText = this.GetLocalization(nameof(CancelText), () => "取消");
-            Success = this.GetLocalization(nameof(Success), () => "[ITEM]已经升级到[LVEVL]级");
+            Success = this.GetLocalization(nameof(Success), () => "[ITEM]已经升级到[LEVEL]级");
         }
 
         public override bool Active => isPending || showProgress > 0f;
@@ -202,6 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         private void OnCancel() {
             SoundEngine.PlaySound(SoundID.MenuClose);
+            pendingLegendData.DontUpgradeName = SaveWorld.WorldFullName;
             BeginClose();
         }
 

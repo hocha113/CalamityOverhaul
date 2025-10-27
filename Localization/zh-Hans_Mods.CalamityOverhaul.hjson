@@ -2062,7 +2062,7 @@ TextContent: {
 		Halibut_No_legend_Content_2: 老兄，我一直在这里
 		Halibut_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
 		Halibut_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
-		Halibut_TextDictionary_Content_0: 朋友，让我们去挑战一下那个巨大的黏糊糊的陆地生物
+		Halibut_TextDictionary_Content_0: 先生，让我们去挑战一下那个巨大的黏糊糊的陆地生物
 		Halibut_TextDictionary_Content_1: 有一个大眼睛直盯着我们看，这很不礼貌，我们需要去教训教训它
 		Halibut_TextDictionary_Content_2: 生机盎然的地方不只有深渊，还有丛林，朋友，我们需要去拜访一下哪里的蜜蜂头头
 		Halibut_TextDictionary_Content_3:
@@ -6458,11 +6458,11 @@ UI: {
 		TitleText: 传奇武器升级确认
 		DescText:
 			'''
-			检测到当前世界等级高于武器等级
+			当前世界等级高于武器等级
 			是否将{0}升级到等级 {1}？
 			'''
 		ConfirmText: 确认升级
 		CancelText: 取消
-		Success: "[ITEM]已经升级到[LVEVL]级"
+		Success: "[ITEM]已经升级到[LEVEL]级"
 	}
 }
