@@ -1695,6 +1695,7 @@ Projectiles: {
 	// FrostMinnowSpitterProjectile.DisplayName: Frost Minnow Spitter Projectile
 	// FrostSnowflakeProjectile.DisplayName: Frost Snowflake Projectile
 	// PandemoniumCircle.DisplayName: Pandemonium Circle
+	// PandemoniumQSkill.DisplayName: Pandemonium Q Skill
 }
 
 Configs: {

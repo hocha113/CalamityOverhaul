@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -37,6 +38,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.shootSpeed = 10f;
             Item.channel = true;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_Pandemonium;
+        }
+
+        private bool oldQ;
+        public override void HoldItem(Player player) {
+            bool isQ = Keyboard.GetState().IsKeyDown(Keys.Q);
+            if (isQ && !oldQ && player.CountProjectilesOfID<PandemoniumQSkill>() == 0) {
+                ShootState shootState = player.GetShootState();
+                Projectile.NewProjectile(shootState.Source, player.Center
+                    , Vector2.Zero, ModContent.ProjectileType<PandemoniumQSkill>()
+                    , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
+            }
+            oldQ = isQ;
         }
 
         public override bool AltFunctionUse(Player player) => true;
