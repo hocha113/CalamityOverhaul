@@ -1690,6 +1690,8 @@ Projectiles: {
 	BrimfishSpitterProjectile.DisplayName: Brimfish Spitter Projectile
 	BrimstoneFlameProjectile.DisplayName: Brimstone Flame Projectile
 	DoubleCodProjectile.DisplayName: Double Cod Projectile
+	FrostMinnowSpitterProjectile.DisplayName: Frost Minnow Spitter Projectile
+	FrostSnowflakeProjectile.DisplayName: Frost Snowflake Projectile
 }
 
 Configs: {
@@ -6416,6 +6418,12 @@ FishSkill: {
 	}
 
 	FishDoubleCod: {
+		DisplayName: ""
+		Tooltip: ""
+		Studied: ""
+	}
+
+	FishFrostMinnow: {
 		DisplayName: ""
 		Tooltip: ""
 		Studied: ""
