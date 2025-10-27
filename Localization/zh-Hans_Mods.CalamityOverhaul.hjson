@@ -1662,6 +1662,8 @@ Projectiles: {
 	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 	// RockHammerFish.DisplayName: Rock Hammer Fish
 	// OilBlob.DisplayName: Oil Blob
+	// PrincessFishMinion.DisplayName: Princess Fish Minion
+	// PrincessMagicOrb.DisplayName: Princess Magic Orb
 }
 
 Configs: {
@@ -6339,11 +6341,18 @@ FishSkill: {
 
 	FishVariegatedLard: {
 		DisplayName: 斑驳油渍
+		Tooltip: 攻击命中敌人时生成油渍
+		Studied: 我需要很多很多洗洁精
+	}
+
+	FishPrincess: {
+		DisplayName: 绚丽童话
 		Tooltip:
 			'''
-			攻击命中敌人时生成油渍
+			开火时召唤公主鱼为你战斗
+			公主鱼会向敌人发射魔法弹
 			'''
-		Studied: 我需要很多很多洗洁精
+		Studied: 很显然它不是王子
 	}
 }
 

@@ -1691,6 +1691,8 @@ Projectiles: {
 	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 	// RockHammerFish.DisplayName: Rock Hammer Fish
 	// OilBlob.DisplayName: Oil Blob
+	// PrincessFishMinion.DisplayName: Princess Fish Minion
+	// PrincessMagicOrb.DisplayName: Princess Magic Orb
 }
 
 Configs: {
@@ -6451,6 +6453,12 @@ FishSkill: {
 	}
 
 	FishVariegatedLard: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishPrincess: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
