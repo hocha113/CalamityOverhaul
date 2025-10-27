@@ -872,13 +872,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float time = Main.GlobalTimeWrappedHourly;
             int tier = (int)CurrentTier;
 
-            //硫磺火色彩方案
-            Color coreColor = new Color(255, 230, 200);     //核心亮黄
-            Color midColor = new Color(255, 140, 70);       //中层橙
-            Color edgeColor = new Color(255, 80, 40);       //边缘橙红
-            Color darkColor = new Color(180, 50, 30);       //深红
-            Color voidColor = new Color(100, 20, 15);       //暗红
-            Color highlightColor = new Color(255, 200, 120); //高光金黄
+            //硫磺火色彩方案 - 黑红暗色系
+            Color coreColor = new Color(255, 80, 40);        //核心橙红
+            Color midColor = new Color(200, 50, 30);         //中层深红
+            Color edgeColor = new Color(120, 30, 20);        //边缘暗红
+            Color darkColor = new Color(80, 20, 15);         //深黑红
+            Color voidColor = new Color(40, 10, 10);         //虚空暗红
+            Color highlightColor = new Color(255, 100, 50);  //高光橙红
 
             //计算过渡效果 - 使用缓动函数平滑过渡
             float transitionEase = CWRUtils.EaseOutCubic(tierTransitionProgress);
@@ -903,16 +903,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
             //绘制多重几何图形（过渡期间淡入）
-            DrawHexagram(sb, center, 280f + tier * 55f, 5f, Color.Lerp(darkColor, midColor, 0.75f) * visualAlpha * transitionEase, time * 1.1f);
+            DrawHexagram(sb, center, 280f + tier * 55f, 5f, Color.Lerp(darkColor, edgeColor, 0.75f) * visualAlpha * transitionEase, time * 1.1f);
 
             if (tier >= 1) {
                 DrawPentagram(sb, center, 240f + tier * 45f, 3.5f, midColor * visualAlpha * transitionEase, -time * 1.4f);
-                DrawHexagram(sb, center, 360f, 6f, edgeColor * visualAlpha * transitionEase * 0.8f, time * 1.6f);
+                DrawHexagram(sb, center, 360f, 6f, darkColor * visualAlpha * transitionEase * 0.8f, time * 1.6f);
             }
 
             if (tier >= 2) {
                 DrawPentagram(sb, center, 170f, 2.5f, coreColor * visualAlpha * transitionEase, time * 2f);
-                DrawOctagon(sb, center, 420f, 4f, highlightColor * visualAlpha * transitionEase * 0.7f, -time * 1.2f);
+                DrawOctagon(sb, center, 420f, 4f, edgeColor * visualAlpha * transitionEase * 0.7f, -time * 1.2f);
             }
 
             //绘制硫磺火余烬
@@ -921,7 +921,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //绘制符文（带过渡淡入）
             if (RuneAsset?.IsLoaded ?? false) {
                 for (int layer = 0; layer <= tier && layer < runeLayers.Length; layer++) {
-                    DrawAnimatedRunes(sb, RuneAsset.Value, center, layer, coreColor, edgeColor, darkColor, transitionEase);
+                    DrawAnimatedRunes(sb, RuneAsset.Value, center, layer, coreColor, midColor, darkColor, transitionEase);
                 }
             }
 
@@ -937,6 +937,41 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
             return false;
+        }
+
+        private void DrawEnergyOrbs(SpriteBatch sb) {
+            if (!(GlowAsset?.IsLoaded ?? false)) return;
+
+            foreach (var orb in orbs) {
+                Vector2 drawPos = orb.Position - Main.screenPosition;
+                float lifeRatio = 1f - (orb.Life / orb.MaxLife);
+                float scale = lifeRatio * orb.Scale * 0.45f * orb.Alpha;
+
+                Color drawColor = orb.Color with { A = 0 };
+                sb.Draw(GlowAsset.Value, drawPos, null, drawColor * lifeRatio * orb.Alpha, 0,
+                    GlowAsset.Value.Size() / 2, scale, SpriteEffects.None, 0);
+
+                sb.Draw(GlowAsset.Value, drawPos, null, Color.White with { A = 0 } * lifeRatio * orb.Alpha * 0.4f, 0,
+                    GlowAsset.Value.Size() / 2, scale * 0.5f, SpriteEffects.None, 0);
+            }
+        }
+
+        private void DrawLightningArcsVisual(SpriteBatch sb) {
+            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+
+            foreach (var arc in lightningArcs) {
+                float alpha = 1f - (arc.Life / arc.MaxLife);
+
+                if (arc.SegmentPoints != null && arc.SegmentPoints.Count > 1) {
+                    for (int i = 0; i < arc.SegmentPoints.Count - 1; i++) {
+                        Vector2 start = arc.SegmentPoints[i] - Main.screenPosition;
+                        Vector2 end = arc.SegmentPoints[i + 1] - Main.screenPosition;
+
+                        DrawLine(sb, pixel, start, end, 2.5f, arc.Color * alpha * arc.Intensity);
+                        DrawLine(sb, pixel, start, end, 5f, arc.Color * alpha * arc.Intensity * 0.25f);
+                    }
+                }
+            }
         }
 
         private void DrawBrimstoneEmbers(SpriteBatch sb) {
@@ -1068,21 +1103,30 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 int frameY = rune.FireFrame / 4;
                 Rectangle fireFrame = new Rectangle(frameX * frameWidth, frameY * frameHeight, frameWidth, frameHeight);
 
-                //硫磺火色彩渐变（从亮黄到深红）
+                //硫磺火色彩渐变（黑红暗色系 - 从暗红到深黑红）
                 Color baseFireColor = rune.Type switch {
-                    0 => Color.Lerp(new Color(255, 230, 120), new Color(255, 140, 70), intensityPulse),//亮黄到橙
-                    1 => Color.Lerp(new Color(255, 180, 90), new Color(255, 100, 50), intensityPulse), //橙到橙红
-                    2 => Color.Lerp(new Color(255, 140, 70), new Color(200, 60, 40), intensityPulse),  //橙红到深红
-                    3 => Color.Lerp(new Color(255, 200, 120), new Color(255, 120, 60), intensityPulse),//金黄到橙
-                    4 => Color.Lerp(new Color(255, 160, 80), new Color(180, 70, 40), intensityPulse),  //浅橙到暗红
-                    _ => Color.Lerp(new Color(255, 140, 100), new Color(150, 50, 30), intensityPulse)  //默认渐变
+                    0 => Color.Lerp(new Color(180, 60, 40), new Color(100, 30, 20), intensityPulse),   //暗橙红到深红
+                    1 => Color.Lerp(new Color(200, 70, 45), new Color(120, 35, 25), intensityPulse),   //橙红到暗红
+                    2 => Color.Lerp(new Color(150, 50, 35), new Color(80, 25, 18), intensityPulse),    //深红到黑红
+                    3 => Color.Lerp(new Color(220, 80, 50), new Color(140, 40, 28), intensityPulse),   //亮橙红到暗橙红
+                    4 => Color.Lerp(new Color(160, 55, 38), new Color(90, 28, 20), intensityPulse),    //中红到深暗红
+                    _ => Color.Lerp(new Color(140, 45, 32), new Color(70, 22, 16), intensityPulse)     //默认暗红渐变
                 };
+
+                //添加黑暗基调
+                float darknessBlend = 0.3f + layer * 0.1f; //外层更暗
+                baseFireColor = Color.Lerp(baseFireColor, new Color(30, 10, 8), darknessBlend * (1f - intensityPulse * 0.5f));
 
                 float layerAlpha = (1f - layer * 0.18f) * rune.Alpha * transitionAlpha;
                 baseFireColor *= layerAlpha * expandScale * intensityPulse * fireFlicker;
                 baseFireColor.A = 0;//加法混合
 
                 float finalScale = rune.Scale * (0.9f + intensityPulse * 0.4f) * expandScale;
+
+                //绘制火焰阴影底层（增强暗黑感）
+                Color shadowColor = new Color(20, 8, 6) with { A = 0 } * layerAlpha * 0.8f;
+                sb.Draw(runeTex, pos, fireFrame, shadowColor, rune.Rotation, 
+                    new Vector2(frameWidth, frameHeight) / 2f, finalScale * 1.5f, SpriteEffects.None, 0f);
 
                 //绘制火焰主体（稍大的底层光晕）
                 sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.6f, rune.Rotation, 
@@ -1096,61 +1140,26 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.4f, rune.Rotation + MathHelper.PiOver4, 
                     new Vector2(frameWidth, frameHeight) / 2f, finalScale * 0.8f, SpriteEffects.None, 0f);
 
-                //绘制星星核心闪光
+                //绘制星星核心闪光（暗红橙色调）
                 if (starTex != null && rune.CoreGlowAlpha > 0.3f) {
                     float corePulse = (float)Math.Sin(rune.PulsePhase * 2f) * 0.5f + 0.5f;
                     float coreIntensity = intensityPulse * corePulse * fireFlicker;
                     
-                    //核心白光
-                    Color coreColor = Color.White with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.8f;
+                    //核心暗红光（不再是白光）
+                    Color coreColor = new Color(255, 90, 50) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.7f;
                     sb.Draw(starTex, pos, null, coreColor, rune.Rotation, 
                         starTex.Size() / 2f, finalScale * 0.3f * (0.8f + corePulse * 0.4f), SpriteEffects.None, 0f);
 
-                    //核心金黄色光
-                    Color coreGlow = new Color(255, 230, 150) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.6f;
+                    //核心深橙红光
+                    Color coreGlow = new Color(200, 70, 40) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.5f;
                     sb.Draw(starTex, pos, null, coreGlow, rune.Rotation + MathHelper.PiOver4, 
                         starTex.Size() / 2f, finalScale * 0.4f * (0.7f + corePulse * 0.5f), SpriteEffects.None, 0f);
 
-                    //外层脉冲光环
+                    //外层脉冲光环（暗红色）
                     if (corePulse > 0.6f) {
-                        Color pulseRing = new Color(255, 200, 120) with { A = 0 } * rune.CoreGlowAlpha * (corePulse - 0.6f) * 2f * layerAlpha * 0.4f;
+                        Color pulseRing = new Color(180, 60, 35) with { A = 0 } * rune.CoreGlowAlpha * (corePulse - 0.6f) * 2f * layerAlpha * 0.3f;
                         sb.Draw(starTex, pos, null, pulseRing, rune.Rotation, 
                             starTex.Size() / 2f, finalScale * 0.6f * corePulse, SpriteEffects.None, 0f);
-                    }
-                }
-            }
-        }
-
-        private void DrawEnergyOrbs(SpriteBatch sb) {
-            if (!(GlowAsset?.IsLoaded ?? false)) return;
-
-            foreach (var orb in orbs) {
-                Vector2 drawPos = orb.Position - Main.screenPosition;
-                float lifeRatio = 1f - (orb.Life / orb.MaxLife);
-                float scale = lifeRatio * orb.Scale * 0.45f * orb.Alpha;
-
-                Color drawColor = orb.Color with { A = 0 };
-                sb.Draw(GlowAsset.Value, drawPos, null, drawColor * lifeRatio * orb.Alpha, 0,
-                    GlowAsset.Value.Size() / 2, scale, SpriteEffects.None, 0);
-
-                sb.Draw(GlowAsset.Value, drawPos, null, Color.White with { A = 0 } * lifeRatio * orb.Alpha * 0.4f, 0,
-                    GlowAsset.Value.Size() / 2, scale * 0.5f, SpriteEffects.None, 0);
-            }
-        }
-
-        private void DrawLightningArcsVisual(SpriteBatch sb) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
-
-            foreach (var arc in lightningArcs) {
-                float alpha = 1f - (arc.Life / arc.MaxLife);
-
-                if (arc.SegmentPoints != null && arc.SegmentPoints.Count > 1) {
-                    for (int i = 0; i < arc.SegmentPoints.Count - 1; i++) {
-                        Vector2 start = arc.SegmentPoints[i] - Main.screenPosition;
-                        Vector2 end = arc.SegmentPoints[i + 1] - Main.screenPosition;
-
-                        DrawLine(sb, pixel, start, end, 2.5f, arc.Color * alpha * arc.Intensity);
-                        DrawLine(sb, pixel, start, end, 5f, arc.Color * alpha * arc.Intensity * 0.25f);
                     }
                 }
             }
@@ -1161,12 +1170,26 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float pulse2 = (float)Math.Sin(time * 10f + 1f) * 0.4f + 0.6f;
             float pulse3 = (float)Math.Sin(time * 16f + 2f) * 0.4f + 0.6f;
 
-            //硫磺火核心辉光
-            sb.Draw(glow, center, null, c3 with { A = 0 } * scale * 0.5f, time * 1.8f, glow.Size() / 2, scale * 3.2f, SpriteEffects.None, 0);
-            sb.Draw(glow, center, null, c2 with { A = 0 } * scale * 0.75f * pulse1, -time * 1.3f, glow.Size() / 2, scale * (2.4f + pulse1 * 0.4f), SpriteEffects.None, 0);
-            sb.Draw(glow, center, null, c1 with { A = 0 } * scale * pulse2, time * 0.9f, glow.Size() / 2, scale * (1.8f + pulse2 * 0.5f), SpriteEffects.None, 0);
-            sb.Draw(glow, center, null, c4 with { A = 0 } * scale * 0.6f * pulse2, -time * 2f, glow.Size() / 2, scale * (1.3f + pulse2 * 0.3f), SpriteEffects.None, 0);
-            sb.Draw(glow, center, null, Color.White with { A = 0 } * scale * 0.4f * pulse3, 0, glow.Size() / 2, scale * 1.1f * (1f + pulse3 * 0.3f), SpriteEffects.None, 0);
+            //硫磺火核心辉光（暗红色调）
+            //最外层 - 深暗红
+            sb.Draw(glow, center, null, new Color(80, 25, 18) with { A = 0 } * scale * 0.5f, time * 1.8f, 
+                glow.Size() / 2, scale * 3.2f, SpriteEffects.None, 0);
+            
+            //中层 - 深红
+            sb.Draw(glow, center, null, c2 with { A = 0 } * scale * 0.75f * pulse1, -time * 1.3f, 
+                glow.Size() / 2, scale * (2.4f + pulse1 * 0.4f), SpriteEffects.None, 0);
+            
+            //内层 - 橙红
+            sb.Draw(glow, center, null, c1 with { A = 0 } * scale * pulse2, time * 0.9f, 
+                glow.Size() / 2, scale * (1.8f + pulse2 * 0.5f), SpriteEffects.None, 0);
+            
+            //高光层 - 亮橙红
+            sb.Draw(glow, center, null, c4 with { A = 0 } * scale * 0.6f * pulse2, -time * 2f, 
+                glow.Size() / 2, scale * (1.3f + pulse2 * 0.3f), SpriteEffects.None, 0);
+            
+            //核心 - 暗橙红（不再是纯白）
+            sb.Draw(glow, center, null, new Color(220, 80, 50) with { A = 0 } * scale * 0.4f * pulse3, 0, 
+                glow.Size() / 2, scale * 1.1f * (1f + pulse3 * 0.3f), SpriteEffects.None, 0);
         }
     }
 }
