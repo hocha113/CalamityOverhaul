@@ -1269,8 +1269,8 @@ Items: {
 	}
 
 	Pandemonium: {
-		// DisplayName: Pandemonium
-		// Tooltip: ""
+		DisplayName: 万魔殿
+		Tooltip: ""
 	}
 }
 

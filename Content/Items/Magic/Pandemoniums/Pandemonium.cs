@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Rarities;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,10 +31,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();
             Item.shootSpeed = 10f;
             Item.channel = true;
+            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_Pandemonium;
         }
 
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumChannel>()] == 0;
-        }
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumChannel>()] == 0;
     }
 }
