@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishBrimlish : FishSkill
     {
         public override int UnlockFishID => ModContent.ItemType<Brimlish>();
-        public override int DefaultCooldown => 20 - HalibutData.GetDomainLayer();
+        public override int DefaultCooldown => 20;
         public override int ResearchDuration => 60 * 14;
 
         private int shootCounter = 0;
-        private const int ShootInterval = 8; //每8次开火触发一次
+        private static int ShootInterval => 8 - HalibutData.GetDomainLayer() / 3; //每8次开火触发一次
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //攻击参数
         private const float SearchRange = 1200f;
-        private const int FlameCount = 12; //喷射火焰数量
+        private static int FlameCount => 6 + HalibutData.GetDomainLayer() / 2; //喷射火焰数量
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -644,7 +644,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 20;
 
             rotationSpeed = Main.rand.NextFloat(-0.3f, 0.3f);
         }

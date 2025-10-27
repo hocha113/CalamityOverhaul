@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishFrostMinnow : FishSkill
     {
         public override int UnlockFishID => ItemID.FrostMinnow;
-        public override int DefaultCooldown => 90 - HalibutData.GetDomainLayer() * 4;
+        public override int DefaultCooldown => (int)(90 - HalibutData.GetDomainLayer() * 4.5);
         public override int ResearchDuration => 60 * 16;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<FrostMinnowSpitterProjectile>(),
-                (int)(damage * (0.7f + HalibutData.GetDomainLayer() * 0.18f)),
+                (int)(damage * (0.8f + HalibutData.GetDomainLayer() * 0.2f)),
                 knockback,
                 player.whoAmI
             );
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //攻击参数
         private const float SearchRange = 1400f;
-        private const int SnowflakeCount = 15; //喷射雪花数量
+        private static int SnowflakeCount => 6 + HalibutData.GetDomainLayer() / 2; //喷射雪花数量
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -711,7 +711,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            Projectile.localNPCHitCooldown = 20;
 
             rotationSpeed = Main.rand.NextFloat(-0.25f, 0.25f);
         }

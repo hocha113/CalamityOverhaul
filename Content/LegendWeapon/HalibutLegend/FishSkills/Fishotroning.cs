@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class Fishotroning : FishSkill
     {
         public override int UnlockFishID => ItemID.Fishotron;
-        public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
+        public override int DefaultCooldown => 60 * (10 - HalibutData.GetDomainLayer() / 2);
         public override int ResearchDuration => 60 * 12;
         private static readonly List<int> ActiveHands = new();
         private static int MaxHands => 2 + HalibutData.GetDomainLayer() / 3;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<SkeletronHandMinion>(),
-                (int)(damage * (5 + HalibutData.GetDomainLayer() * 0.8)),
+                (int)(damage * (3.5f + HalibutData.GetDomainLayer() * 0.6f)),
                 knockback * 2f,
                 player.whoAmI,
                 ActiveHands.Count

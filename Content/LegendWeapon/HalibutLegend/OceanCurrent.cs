@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            Projectile.damage = (int)(Projectile.damage * 0.8f);
+            Projectile.damage = (int)(Projectile.damage * 0.66f);
         }
 
         public override void AI() {

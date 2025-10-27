@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spawnPos,
                 Vector2.Zero,
                 ModContent.ProjectileType<NeonTetraLightProjectile>(),
-                (int)(shootState.WeaponDamage * (0.3f + HalibutData.GetDomainLayer() * 0.1f)),
+                (int)(shootState.WeaponDamage * (0.6f + HalibutData.GetDomainLayer() * 0.2f)),
                 2f,
                 player.whoAmI
             );

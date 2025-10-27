@@ -18,11 +18,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishDoubleCod : FishSkill
     {
         public override int UnlockFishID => ItemID.DoubleCod;
-        public override int DefaultCooldown => 18 - HalibutData.GetDomainLayer();
+        public override int DefaultCooldown => 18;
         public override int ResearchDuration => 60 * 15;
 
         private int shootCounter = 0;
-        private const int ShootInterval = 6; //每6次开火触发一次
+        private static int ShootInterval => 6 - HalibutData.GetDomainLayer() / 4; //每6-4次开火触发一次
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SpawnDoubleCodFish(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int damage, float knockback) {
             //发射数量随领域层数增加
-            int fishCount = 2 + HalibutData.GetDomainLayer() / 3;
+            int fishCount = 2 + HalibutData.GetDomainLayer() / 4;
 
             for (int i = 0; i < fishCount; i++) {
                 //扇形散射
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.alpha = 0;
             Projectile.extraUpdates = 1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
