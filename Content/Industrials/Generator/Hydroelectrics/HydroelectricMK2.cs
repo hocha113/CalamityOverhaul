@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             }
 
             if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += hasElmdVlome * 0.1f;
+                MachineData.UEvalue += hasElmdVlome * 1.6f;
             }
 
             for (int i = 0; i < 3; i++) {

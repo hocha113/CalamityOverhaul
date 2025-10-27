@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 flabellumRot += flabellumRotVlome;
 
                 if (MachineData.UEvalue < MaxUEValue) {
-                    MachineData.UEvalue += flabellumRotVlome * 0.04f;
+                    MachineData.UEvalue += flabellumRotVlome * 0.24f;
                 }
 
                 if (InScreen && Main.rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
