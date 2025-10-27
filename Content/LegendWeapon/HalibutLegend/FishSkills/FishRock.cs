@@ -1,14 +1,11 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using ThoriumMod.Empowerments;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
@@ -121,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 targetPos;
         private Vector2 strikeStartPos;
         private Vector2 strikeEndPos;
-        
+
         //贝塞尔曲线控制点
         private Vector2 bezierP0;
         private Vector2 bezierP1;
@@ -240,10 +237,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //弹性上升动画
             Projectile.Center = startPos + new Vector2(0, -30 * easeProgress);
-            
+
             //旋转展示
             targetRotation = MathHelper.TwoPi * 2f * CWRUtils.EaseOutCubic(progress);
-            
+
             //缩放渐入
             scaleMultiplier = easeProgress;
             glowIntensity = MathHelper.Lerp(0f, 1f, progress);
@@ -276,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             NPC target = Main.npc[(int)TargetNPCID];
-            
+
             //设置三次贝塞尔曲线的四个控制点
             bezierP0 = Projectile.Center; //起点
             bezierP3 = target.Center + new Vector2(0, -150); //终点（目标上方）
@@ -284,10 +281,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算中间控制点 - 创造优雅的弧线
             Vector2 toTarget = bezierP3 - bezierP0;
             float distance = toTarget.Length();
-            
+
             //控制点1 - 向上偏移
             bezierP1 = bezierP0 + new Vector2(toTarget.X * 0.3f, -distance * 0.4f);
-            
+
             //控制点2 - 侧向弧线
             float arcDirection = Math.Sign(toTarget.X) * -1; //反向弧线
             bezierP2 = bezierP3 + new Vector2(arcDirection * distance * 0.3f, -distance * 0.2f);
@@ -300,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //沿三次贝塞尔曲线移动
             Vector2 newPos = CWRUtils.CubicBezier(easeProgress, bezierP0, bezierP1, bezierP2, bezierP3);
-            
+
             //计算朝向 - 沿运动方向
             Vector2 velocity = newPos - Projectile.Center;
             if (velocity.LengthSquared() > 0.1f) {
@@ -355,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //蓄力旋转
             targetRotation += 0.4f;
-            
+
             //缩放蓄力效果
             scaleMultiplier = 1f + progress * 0.5f;
             glowIntensity = 1f + progress * 0.5f;
@@ -397,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //快速旋转
             targetRotation += 1.2f;
-            
+
             //冲击视觉
             scaleMultiplier = 1.5f - progress * 0.3f;
             glowIntensity = 2f;
@@ -411,11 +408,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (IsTargetValid() && StateTimer == StrikeDuration / 2) {
                 NPC target = Main.npc[(int)TargetNPCID];
                 float distance = Vector2.Distance(Projectile.Center, target.Center);
-                
+
                 if (distance < 100f) {
                     //造成伤害
                     target.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, null, false, 0f, true);
-                    
+
                     //创建冲击效果
                     CreateImpactEffect(target.Center);
                     impactShake = 20f;
@@ -450,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //减速旋转
             targetRotation += MathHelper.Lerp(0.8f, 0.1f, progress);
-            
+
             //缩小
             scaleMultiplier = MathHelper.Lerp(1.2f, 0.8f, progress);
             glowIntensity = MathHelper.Lerp(1.5f, 0.6f, progress);
@@ -474,7 +471,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //减速旋转
             targetRotation += 0.2f * (1f - progress);
-            
+
             //淡出
             Projectile.alpha = (int)(255 * easeProgress);
             scaleMultiplier = 1f - easeProgress * 0.5f;
@@ -530,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnChargeParticle() {
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(40f, 40f);
             Vector2 toCenter = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero);
-            
+
             Dust charge = Dust.NewDustPerfect(
                 particlePos,
                 DustID.Stone,
@@ -620,7 +617,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < 15; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
                 velocity.Y -= Main.rand.NextFloat(5f, 10f);
-                
+
                 Dust debris = Dust.NewDustPerfect(
                     position,
                     DustID.Stone,
@@ -659,7 +656,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             Texture2D hammerTex = TextureAssets.Item[ItemID.Rockfish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            
+
             //应用震动偏移
             if (impactShake > 0) {
                 drawPos += Main.rand.NextVector2Circular(impactShake, impactShake);
@@ -746,7 +743,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float afterimageScale = Projectile.scale * scaleMultiplier * MathHelper.Lerp(0.7f, 0.95f, afterimageProgress);
-                
+
                 //旋转插值
                 float afterimageRotation = MathHelper.Lerp(hammerRotation, hammerRotation - 0.4f, i / (float)afterimageCount);
 

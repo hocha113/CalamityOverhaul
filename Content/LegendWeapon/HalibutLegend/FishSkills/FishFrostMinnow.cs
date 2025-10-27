@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpitFrostSnowflakes(Player owner) {
             if (Main.myPlayer != Projectile.owner) return;
 
-            
+
             Vector2 targetCenter = InMousePos;
             if (IsTargetValid()) {
                 NPC target = Main.npc[targetNPCID];

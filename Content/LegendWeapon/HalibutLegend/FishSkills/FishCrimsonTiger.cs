@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
                 else {
                     //环绕玩家
-                    Vector2 orbitPos = owner.Center + 
+                    Vector2 orbitPos = owner.Center +
                         (swimPhase + FishIndex).ToRotationVector2() * 200f;
                     ChaseTarget(orbitPos);
                 }
@@ -372,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float distance = toTarget.Length();
 
             if (distance > 5f) {
-                Vector2 desiredVelocity = toTarget.SafeNormalize(Vector2.Zero) * 
+                Vector2 desiredVelocity = toTarget.SafeNormalize(Vector2.Zero) *
                     Math.Min(MaxSpeed * speedMult, distance * 0.1f);
 
                 Projectile.velocity += (desiredVelocity - Projectile.velocity) * (Acceleration * 0.1f);

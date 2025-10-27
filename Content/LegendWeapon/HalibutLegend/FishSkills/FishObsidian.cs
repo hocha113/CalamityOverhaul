@@ -63,12 +63,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //检测玩家受伤
             int currentHitCount = player.CountProjectilesOfID<Content.Projectiles.Others.Hit>();
-            
+
             if (currentHitCount > lastPlayerHitCount && ActiveObsidianFish.Count > 0) {
                 //玩家受伤，打碎一条黑曜石鱼
                 ShatterOneFish(player);
             }
-            
+
             lastPlayerHitCount = currentHitCount;
             return true;
         }
@@ -76,18 +76,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //打碎一条黑曜石鱼
         private void ShatterOneFish(Player player) {
             CleanupInactiveFish();
-            
+
             if (ActiveObsidianFish.Count > 0) {
                 //优先打碎最后一条（最新生成的）
                 int fishID = ActiveObsidianFish[ActiveObsidianFish.Count - 1];
-                
+
                 if (fishID >= 0 && fishID < Main.maxProjectiles && Main.projectile[fishID].active) {
                     Projectile fish = Main.projectile[fishID];
                     if (fish.ModProjectile is ObsidianFishOrbit obsidianFish) {
                         obsidianFish.Shatter();
                     }
                 }
-                
+
                 ActiveObsidianFish.RemoveAt(ActiveObsidianFish.Count - 1);
             }
         }
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float orbitAngle = 0f; //当前环绕角度
         private float baseOrbitSpeed = 0.015f; //基础环绕速度（大幅降低）
         private float orbitSpeedMultiplier = 1f; //速度倍数
-        
+
         //层次参数 - 创造立体感
         private float layerDepth = 0f; //深度层次（-1到1）
         private float layerPhase = 0f; //层次相位
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算目标环绕位置
             int totalFish = GetTotalActiveFish();
             float targetAngle = MathHelper.TwoPi * FishIndex / Math.Max(totalFish, 1);
-            
+
             //初始化层次深度（基于索引）
             if (StateTimer == 1) {
                 layerDepth = (float)Math.Sin(targetAngle) * 0.6f; //基于角度的深度
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             orbitAngle = targetAngle;
             glowIntensity = MathHelper.Lerp(0f, 0.8f, progress);
-            
+
             //计算初始朝向
             Vector2 toTarget = targetPos - Projectile.Center;
             if (toTarget.LengthSquared() > 1f) {
@@ -304,10 +304,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //重新计算所有鱼的索引分布
             int totalFish = GetTotalActiveFish();
             int myRealIndex = GetMyRealIndex();
-            
+
             //计算理想角度（均匀分布）
             float idealAngle = MathHelper.TwoPi * myRealIndex / Math.Max(totalFish, 1) + orbitAngle;
-            
+
             //平滑调整到理想角度
             float angleDiff = MathHelper.WrapAngle(idealAngle - orbitAngle);
             orbitAngle += angleDiff * 0.05f;
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新层次深度动画
             layerPhase += 0.02f;
             layerDepth = (float)Math.Sin(orbitAngle * 2f + layerPhase) * 0.5f;
-            
+
             //深度影响半径和尺寸
             float depthScale = 0.85f + layerDepth * 0.3f; //后方的鱼更小
             float currentRadius = orbitRadius * depthScale;
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //额外的波浪起伏
             float waveOffset = (float)Math.Sin(StateTimer * 0.05f + myRealIndex) * 15f;
-            
+
             //计算环绕位置
             Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
             Vector2 targetPos = owner.Center + orbitOffset + swimOffset;
@@ -343,7 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 velocity = targetPos - Projectile.Center;
             if (velocity.LengthSquared() > 0.5f) {
                 float targetAngle = velocity.ToRotation();
-                
+
                 //添加轻微的前后摆动
                 float swayAngle = (float)Math.Sin(swimPhase * 2f) * 0.15f;
                 targetBodyRotation = targetAngle + swayAngle;
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //辉光强度脉冲
             glowIntensity = 0.7f + (float)Math.Sin(StateTimer * 0.15f) * 0.2f;
-            
+
             //深度影响辉光（后方的鱼稍暗）
             glowIntensity *= (0.8f + layerDepth * 0.4f);
 
@@ -593,7 +593,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
-            
+
             //应用深度层次到颜色（后方的鱼稍暗）
             float depthDarken = 0.7f + layerDepth * 0.3f;
             baseColor = Color.Lerp(baseColor, Color.Black, (1f - depthDarken) * 0.3f);
@@ -674,7 +674,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
                 float afterimageScale = Projectile.scale * scaleMultiplier * MathHelper.Lerp(0.75f, 0.95f, afterimageProgress);
-                
+
                 //拖尾旋转插值
                 float afterimageRotation = MathHelper.Lerp(bodyRotation, bodyRotation - 0.3f, i / (float)afterimageCount) + MathHelper.PiOver4;
 

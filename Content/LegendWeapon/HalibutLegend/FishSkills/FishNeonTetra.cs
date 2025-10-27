@@ -30,10 +30,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             //检测玩家是否在移动
             float moveDistance = Vector2.Distance(player.Center, lastPlayerPosition);
-            
+
             if (moveDistance > 1f) { //玩家正在移动
                 walkTimer++;
-                
+
                 if (walkTimer >= WalkInterval) {
                     walkTimer = 0;
                     SetCooldown();
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //不移动时重置计时
                 walkTimer = 0;
             }
-            
+
             lastPlayerPosition = player.Center;
         }
 
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Active(player)) {
                 UpdatePlayer(player);
             }
-            
+
             return base.UpdateCooldown(halibutPlayer, player);
         }
 
@@ -199,11 +199,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (!npc.active || npc.friendly) continue;
 
                 float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                
+
                 if (distance < LightRadius) {
                     //照明效果显示敌人位置
                     Lighting.AddLight(npc.Center, 0.3f, 1f, 1.2f);
-                    
+
                     //在敌人头顶生成照明标记
                     if (Main.rand.NextBool(3)) {
                         SpawnLightMark(npc);

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Vector2 shootVel = velocity.SafeNormalize(Vector2.UnitX) * 18f;
-            
+
             int proj = Projectile.NewProjectile(
                 source,
                 position,
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SetCooldown();
             SoundEngine.PlaySound(SoundID.Item105 with { Volume = 0.7f, Pitch = 0.3f }, position);
-            
+
             return false;
         }
     }
@@ -55,20 +55,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private const int MaxGeneration = 3;
         private const int MaxLifeTime = 240;
-        
+
         private float scale = 1f;
         private readonly List<TrailPoint> trailPoints = new();
         private const int MaxTrailLength = 30;
-        
+
         //能量粒子系统
         private readonly List<EnergyParticle> energyParticles = new();
         private int particleSpawnTimer = 0;
-        
+
         //螺旋运动参数
         private float spiralPhase = 0f;
         private float spiralIntensity = 0f;
         private Vector2 baseVelocity;
-        
+
         //七彩颜色方案 - 更加鲜艳的配色
         private static readonly Color[] PrismColors = new Color[]
         {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int colorSeed;
         private float pulsePhase;
         private float energyWavePhase;
-        
+
         //冲击波环效果
         private readonly List<ShockwaveRing> shockwaveRings = new();
 
@@ -110,22 +110,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //螺旋运动轨迹
             spiralPhase += 0.18f;
             float lifeProgress = 1f - Projectile.timeLeft / (float)MaxLifeTime;
-            
+
             //根据生命周期调整螺旋强度
             if (lifeProgress < 0.2f) {
                 spiralIntensity = MathHelper.Lerp(0f, 1f, lifeProgress / 0.2f);
-            } else if (lifeProgress > 0.7f) {
+            }
+            else if (lifeProgress > 0.7f) {
                 spiralIntensity = MathHelper.Lerp(1f, 0.3f, (lifeProgress - 0.7f) / 0.3f);
-            } else {
+            }
+            else {
                 spiralIntensity = 1f;
             }
-            
+
             //应用螺旋偏移
             Vector2 perpendicular = baseVelocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
             float spiralOffset = (float)Math.Sin(spiralPhase) * 3f * spiralIntensity * (1f - generation * 0.3f);
             Projectile.velocity = baseVelocity * 0.99f + perpendicular * spiralOffset;
             baseVelocity = Projectile.velocity;
-            
+
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             pulsePhase += 0.2f;
             energyWavePhase += 0.12f;
@@ -139,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 TimeCreated = (int)Main.GameUpdateCount
             };
             trailPoints.Insert(0, newPoint);
-            
+
             if (trailPoints.Count > MaxTrailLength) {
                 trailPoints.RemoveAt(trailPoints.Count - 1);
             }
@@ -147,9 +149,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //缩放动画 - 更有张力
             if (lifeProgress < 0.1f) {
                 scale = CWRUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
-            } else if (lifeProgress > 0.85f) {
+            }
+            else if (lifeProgress > 0.85f) {
                 scale = MathHelper.Lerp(1f, 0.6f, (lifeProgress - 0.85f) / 0.15f);
-            } else {
+            }
+            else {
                 float breathe = (float)Math.Sin(pulsePhase * 0.5f) * 0.15f;
                 scale = 1f + breathe + lifeProgress * 0.2f;
             }
@@ -160,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpawnEnergyParticle();
                 particleSpawnTimer = 0;
             }
-            
+
             //更新能量粒子
             for (int i = energyParticles.Count - 1; i >= 0; i--) {
                 energyParticles[i].Update();
@@ -168,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     energyParticles.RemoveAt(i);
                 }
             }
-            
+
             //更新冲击波环
             for (int i = shockwaveRings.Count - 1; i >= 0; i--) {
                 shockwaveRings[i].Update();
@@ -194,14 +198,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void Initialize() {
             generation = (int)Projectile.ai[0];
             colorSeed = (int)Projectile.ai[1];
-            
+
             primaryColor = PrismColors[colorSeed % PrismColors.Length];
             secondaryColor = PrismColors[(colorSeed + 2) % PrismColors.Length];
             accentColor = PrismColors[(colorSeed + 4) % PrismColors.Length];
-            
+
             baseVelocity = Projectile.velocity;
             Projectile.scale = 1f - generation * 0.12f;
-            
+
             //生成初始爆发粒子
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
@@ -232,12 +236,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SplitOnImpact(Projectile.Center, -oldVelocity);
             SpawnImpactEffect(Projectile.Center);
-            
+
             //生成冲击波环
             shockwaveRings.Add(new ShockwaveRing(Projectile.Center, primaryColor, secondaryColor, 2f));
-            
+
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
-            
+
             return false;
         }
 
@@ -249,13 +253,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int splitCount = 3 + HalibutData.GetDomainLayer() / 2;
             Vector2 baseDir = impactDirection.SafeNormalize(Vector2.UnitX);
             float spreadAngle = MathHelper.Pi * 0.8f;
-            
+
             for (int i = 0; i < splitCount; i++) {
                 float angle = -spreadAngle / 2f + (spreadAngle * i / (splitCount - 1));
                 Vector2 splitVel = baseDir.RotatedBy(angle) * Main.rand.NextFloat(12f, 16f);
-                
+
                 int newColorSeed = (colorSeed + i + 1) % PrismColors.Length;
-                
+
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
                     impactPos,
@@ -276,28 +280,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 for (int i = 0; i < 24; i++) {
                     float angle = MathHelper.TwoPi * i / 24f + ring * 0.13f;
                     Vector2 dustVel = angle.ToRotationVector2() * (4f + ring * 4f);
-                    
-                    int dustType = Main.rand.Next(new int[] { 
-                        DustID.RainbowMk2, 
-                        DustID.PinkFairy, 
+
+                    int dustType = Main.rand.Next(new int[] {
+                        DustID.RainbowMk2,
+                        DustID.PinkFairy,
                         DustID.YellowStarDust,
                         DustID.Firework_Blue
                     });
-                    
-                    int dust = Dust.NewDust(pos, 1, 1, dustType, dustVel.X, dustVel.Y, 100, 
+
+                    int dust = Dust.NewDust(pos, 1, 1, dustType, dustVel.X, dustVel.Y, 100,
                         ring == 0 ? primaryColor : secondaryColor, 1.8f);
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].fadeIn = 1.5f;
                 }
             }
-            
+
             //中心爆裂光晕
             for (int i = 0; i < 16; i++) {
                 int dust = Dust.NewDust(pos, 1, 1, DustID.RainbowTorch, 0, 0, 0, Color.White, 2.5f);
                 Main.dust[dust].velocity = Main.rand.NextVector2Circular(7f, 7f);
                 Main.dust[dust].noGravity = true;
             }
-            
+
             //星形粒子爆发
             for (int i = 0; i < 8; i++) {
                 energyParticles.Add(new EnergyParticle(
@@ -312,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnEnergyParticle() {
             Vector2 offset = Main.rand.NextVector2Circular(8f, 8f);
             Vector2 particleVel = -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f);
-            
+
             energyParticles.Add(new EnergyParticle(
                 Projectile.Center + offset,
                 particleVel,
@@ -324,8 +328,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void SpawnTrailDust() {
             Color dustColor = Color.Lerp(primaryColor, accentColor, (float)Math.Sin(pulsePhase * 1.5f) * 0.5f + 0.5f);
             int dustType = Main.rand.Next(new int[] { DustID.RainbowMk2, DustID.PinkFairy, DustID.FireworkFountain_Blue });
-            
-            int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 
+
+            int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height,
                 dustType, 0, 0, 100, dustColor, 1.0f);
             Main.dust[dust].velocity = Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(0.5f, 0.5f);
             Main.dust[dust].noGravity = true;
@@ -353,10 +357,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float waveProgress = energyWavePhase % MathHelper.TwoPi / MathHelper.TwoPi;
             float waveScale = 0.3f + waveProgress * 0.8f;
             float waveAlpha = (1f - waveProgress) * 0.4f;
-            
+
             Color waveColor = Color.Lerp(primaryColor, secondaryColor, waveProgress) * waveAlpha;
             waveColor.A = 0;
-            
+
             Main.spriteBatch.Draw(
                 glowTex,
                 Projectile.Center - Main.screenPosition,
@@ -377,24 +381,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Texture2D trailTex = VaultAsset.placeholder2.Value;
             Texture2D glowTex = CWRAsset.StarTexture.Value;
-            
+
             for (int i = 0; i < trailPoints.Count - 1; i++) {
                 float progress = i / (float)trailPoints.Count;
                 float nextProgress = (i + 1) / (float)trailPoints.Count;
-                
+
                 TrailPoint current = trailPoints[i];
                 TrailPoint next = trailPoints[i + 1];
-                
+
                 Vector2 diff = next.Position - current.Position;
                 float length = diff.Length();
-                
+
                 if (length < 0.1f) continue;
-                
+
                 float trailRotation = diff.ToRotation();
-                
+
                 //渐变宽度 - 头部宽，尾部窄
                 float width = MathHelper.Lerp(16f, 4f, progress) * current.Scale;
-                
+
                 //三层拖尾绘制
                 //1. 外层辉光
                 Color outerColor = Color.Lerp(current.Color, secondaryColor, 0.5f) * (1f - progress) * 0.6f;
@@ -410,7 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None,
                     0f
                 );
-                
+
                 //2. 中层主体
                 Color midColor = current.Color * (1f - progress * 0.7f);
                 midColor.A = 0;
@@ -425,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None,
                     0f
                 );
-                
+
                 //3. 内层高光
                 Color innerColor = Color.Lerp(Color.White, current.Color, 0.3f) * (1f - progress) * 0.9f;
                 innerColor.A = 0;
@@ -440,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SpriteEffects.None,
                     0f
                 );
-                
+
                 //4. 星点装饰
                 if (i % 3 == 0 && progress < 0.7f) {
                     float sparkScale = (1f - progress) * 0.15f * current.Scale;
@@ -463,7 +467,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void DrawEnergyParticles() {
             Texture2D particleTex = CWRAsset.StarTexture.Value;
-            
+
             foreach (var particle in energyParticles) {
                 particle.Draw(particleTex);
             }
@@ -472,21 +476,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void DrawPrismiteCore() {
             Main.instance.LoadItem(ItemID.Prismite);
             Texture2D prismTex = Terraria.GameContent.TextureAssets.Item[ItemID.Prismite].Value;
-            
+
             float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
             float drawScale = scale * Projectile.scale * 0.9f;
-            
+
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = prismTex.Bounds;
             Vector2 origin = sourceRect.Size() * 0.5f;
-            
+
             //外层能量环
             for (int i = 0; i < 4; i++) {
                 float ringRotation = Projectile.rotation + i * MathHelper.PiOver2 + energyWavePhase;
                 float ringScale = drawScale * (1.6f + i * 0.2f + pulse * 0.3f);
                 Color ringColor = Color.Lerp(secondaryColor, accentColor, i / 4f) * (0.35f - i * 0.07f);
                 ringColor.A = 0;
-                
+
                 Main.spriteBatch.Draw(
                     prismTex,
                     drawPos,
@@ -499,7 +503,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0f
                 );
             }
-            
+
             //中层主体 - 双层渲染
             Color mainColor = primaryColor * 0.95f;
             mainColor.A = 0;
@@ -514,7 +518,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpriteEffects.None,
                 0f
             );
-            
+
             //内层亮色
             Color brightColor = Color.Lerp(primaryColor, Color.White, 0.4f) * 0.8f;
             brightColor.A = 0;
@@ -529,20 +533,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpriteEffects.None,
                 0f
             );
-            
+
             //核心白色高光
             Main.spriteBatch.Draw(
                 prismTex,
                 drawPos,
                 sourceRect,
-                Color.White with { A = 0 } * (0.7f + pulse * 0.3f) ,
+                Color.White with { A = 0 } * (0.7f + pulse * 0.3f),
                 Projectile.rotation * 0.5f,
                 origin,
                 drawScale * 0.75f,
                 SpriteEffects.None,
                 0f
             );
-            
+
             //顶层星光爆发
             Texture2D starTex = CWRAsset.StarTexture.Value;
             float starIntensity = (float)Math.Pow(pulse, 2);
@@ -550,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float starScale = drawScale * (starIntensity - 0.4f) * 3.5f;
                 Color starColor = Color.Lerp(primaryColor, Color.White, starIntensity) * 0.7f;
                 starColor.A = 0;
-                
+
                 //十字星光
                 for (int i = 0; i < 2; i++) {
                     Main.spriteBatch.Draw(
@@ -570,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     #region 辅助数据结构
-    
+
     internal struct TrailPoint
     {
         public Vector2 Position;
@@ -614,9 +618,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float alpha = (float)Math.Sin((1f - progress) * MathHelper.PiOver2);
             Color drawColor = Color * alpha;
             drawColor.A = 0;
-            
+
             float drawScale = Scale * (1f - progress * 0.5f) * 0.15f;
-            
+
             Main.spriteBatch.Draw(
                 texture,
                 Position - Main.screenPosition,
@@ -664,29 +668,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public void Draw() {
             float progress = Life / MaxLife;
             float alpha = (float)Math.Sin((1f - progress) * MathHelper.PiOver2) * 0.6f;
-            
+
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int segments = 48;
             float angleStep = MathHelper.TwoPi / segments;
-            
+
             for (int i = 0; i < segments; i++) {
                 float angle1 = i * angleStep;
                 float angle2 = (i + 1) * angleStep;
-                
+
                 Vector2 p1 = Center + angle1.ToRotationVector2() * Radius;
                 Vector2 p2 = Center + angle2.ToRotationVector2() * Radius;
-                
+
                 Vector2 diff = p2 - p1;
                 float length = diff.Length();
                 if (length < 0.01f) continue;
-                
+
                 float rotation = diff.ToRotation();
-                
+
                 //渐变色
                 float colorProgress = i / (float)segments;
                 Color segmentColor = Color.Lerp(InnerColor, OuterColor, colorProgress) * alpha;
                 segmentColor.A = 0;
-                
+
                 Main.spriteBatch.Draw(
                     pixel,
                     p1 - Main.screenPosition,
@@ -701,6 +705,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
     }
-    
+
     #endregion
 }

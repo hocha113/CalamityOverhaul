@@ -7,7 +7,6 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -153,7 +152,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal int ArmIndex1 = -1;
         internal int ArmIndex2 = -1;
         internal float hoverSengs;
-        
+
         public override void SetBattery() {
             ItemFilter = new Item();
             DrawExtendMode = 2200;
@@ -187,8 +186,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             ItemFilter ??= new Item();
             tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
 
-            string result = TagItemSign < ItemID.Count 
-                ? TagItemSign.ToString() 
+            string result = TagItemSign < ItemID.Count
+                ? TagItemSign.ToString()
                 : ItemLoader.GetItem(TagItemSign).FullName;
             tag["_TagItemFullName"] = result;
         }
@@ -270,12 +269,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         internal Chest FindChest(Item item) {
             Chest chest = Position.FindClosestChest(maxFindChestMode, true, (Chest c) => c.CanItemBeAddedToChest(item));
-            
+
             // 只在服务器端显示提示
             if (chest == null && textIdleTime <= 0 && !VaultUtils.isClient) {
                 CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text2.Value);
                 textIdleTime = 300;
-                
+
                 // 生成视觉提示粒子（客户端也会同步看到）
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 220; i++) {
@@ -295,35 +294,35 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             if (VaultUtils.isClient) return;
             if (ArmPos.FindClosestPlayer(killerArmDistance) == null) return;
             if (dontSpawnArmTime > 0) return;
-            
+
             bool needsSync = false;
             int armType = ModContent.ProjectileType<CollectorArm>();
-            
+
             // 检查并生成三个机械臂
             if (!IsArmValid(ArmIndex0)) {
                 ArmIndex0 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
                     armType, 0, 0, -1, ai0: 0, ai1: 0
                 ).identity;
                 needsSync = true;
             }
-            
+
             if (!IsArmValid(ArmIndex1)) {
                 ArmIndex1 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
                     armType, 0, 0, -1, ai0: 0, ai1: 1
                 ).identity;
                 needsSync = true;
             }
-            
+
             if (!IsArmValid(ArmIndex2)) {
                 ArmIndex2 = Projectile.NewProjectileDirect(
-                    this.FromObjectGetParent(), ArmPos, Vector2.Zero, 
+                    this.FromObjectGetParent(), ArmPos, Vector2.Zero,
                     armType, 0, 0, -1, ai0: 0, ai1: 2
                 ).identity;
                 needsSync = true;
             }
-            
+
             if (needsSync) {
                 SendData();
             }
@@ -332,13 +331,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void UpdateMachine() {
             FindFrame();
             consumeUE = 8;
-            
+
             if (!workState) {
                 return;
             }
 
-            hoverSengs = HoverTP 
-                ? Math.Min(hoverSengs + 0.1f, 1f) 
+            hoverSengs = HoverTP
+                ? Math.Min(hoverSengs + 0.1f, 1f)
                 : Math.Max(hoverSengs - 0.1f, 0f);
 
             if (textIdleTime > 0) {
@@ -371,15 +370,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             // 只绘制属于当前收集器的机械臂
             int armType = ModContent.ProjectileType<CollectorArm>();
-            
+
             foreach (var proj in Main.ActiveProjectiles) {
                 if (proj.type != armType) continue;
-                
+
                 int armSlot = (int)proj.ai[1];
                 bool belongsToThis = (armSlot == 0 && ArmIndex0 == proj.identity)
                     || (armSlot == 1 && ArmIndex1 == proj.identity)
                     || (armSlot == 2 && ArmIndex2 == proj.identity);
-                
+
                 if (belongsToThis) {
                     ((CollectorArm)proj.ModProjectile).DoDraw(Lighting.GetColor(proj.Center.ToTileCoordinates()));
                 }
@@ -451,7 +450,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         internal Vector2 startPos;
         private Item graspItem;
         private bool initialized;
-        
+
         // 箱子缓存（使用坐标而不是直接引用）
         private Point16 targetChestPos = Point16.NegativeOne;
 
@@ -468,23 +467,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private float shakeIntensity = 0f;
         private int particleTimer = 0;
         private float rotationVelocity = 0f;
-        
+
         // 状态机
         private ArmState currentState = ArmState.Idle;
         private int stateTimer = 0;
         private int targetItemWhoAmI = -1;
-        
+
         // 搜索冷却（避免频繁搜索）
         private int searchCooldown = 0;
 
         // 不重要物品列表
         private readonly static HashSet<int> unimportances = [
-            ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple, 
+            ItemID.Heart, ItemID.CandyCane, ItemID.CandyApple,
             ItemID.Star, ItemID.SoulCake
         ];
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4000;
-        
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
@@ -501,7 +500,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             writer.Write(targetItemWhoAmI);
             writer.Write(targetChestPos.X);
             writer.Write(targetChestPos.Y);
-            
+
             graspItem ??= new Item();
             ItemIO.Send(graspItem, writer, true);
         }
@@ -513,7 +512,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             currentState = (ArmState)reader.ReadByte();
             targetItemWhoAmI = reader.ReadInt32();
             targetChestPos = new Point16(reader.ReadInt16(), reader.ReadInt16());
-            
+
             graspItem = ItemIO.Receive(reader, true);
         }
 
@@ -522,7 +521,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         /// </summary>
         private Item FindNearestItem() {
             if (VaultUtils.isClient) return null;
-            
+
             Item bestItem = null;
             float minDistSQ = 4000000f;
             int itemFilterType = ModContent.ItemType<ItemFilter>();
@@ -562,7 +561,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private bool IsValidTarget(Item item) {
             if (item.IsAir || !item.active) return false;
             if (unimportances.Contains(item.type)) return false;
-            
+
             int targetCollector = item.CWR().TargetByCollector;
             // 只接受未被锁定或被自己锁定的物品
             if (targetCollector >= 0 && targetCollector != Projectile.identity) return false;
@@ -584,21 +583,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         /// </summary>
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
             Vector2 toTarget = target - Projectile.Center;
-            
+
             // 弹簧力
             Vector2 springForce = toTarget * SpringStiffness * speedMultiplier;
             velocity += springForce;
-            
+
             // 阻尼
             velocity *= Damping;
-            
+
             // 限速
             if (velocity.LengthSquared() > MaxSpeed * MaxSpeed) {
                 velocity = Vector2.Normalize(velocity) * MaxSpeed;
             }
-            
+
             Projectile.Center += velocity;
-            
+
             // 平滑旋转
             if (velocity.LengthSquared() > 0.1f) {
                 float targetRotation = velocity.ToRotation();
@@ -613,10 +612,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         /// </summary>
         private void SpawnMechanicalParticles(bool intensive = false) {
             if (Main.netMode == NetmodeID.Server) return;
-            
+
             particleTimer++;
             int spawnRate = intensive ? 8 : 16;
-            
+
             if (particleTimer % spawnRate == 0) {
                 Vector2 particleVel = velocity * 0.2f + Main.rand.NextVector2Circular(2, 2);
                 Dust dust = Dust.NewDustDirect(Projectile.Center - Vector2.One * 8, 16, 16,
@@ -629,7 +628,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void State_Idle() {
             stateTimer++;
             searchCooldown = Math.Max(0, searchCooldown - 1);
-            
+
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.1f);
             shakeIntensity *= 0.9f;
 
@@ -648,15 +647,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             // 只在服务器端搜索
             if (!VaultUtils.isClient) {
                 Item foundItem = FindNearestItem();
-                
+
                 if (foundItem != null) {
                     targetItemWhoAmI = foundItem.whoAmI;
                     foundItem.CWR().TargetByCollector = Projectile.identity;
-                    
+
                     // 消耗能量
                     collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
                     collectorTP.SendData();
-                    
+
                     TransitionToState(ArmState.MovingToItem);
                 }
                 else {
@@ -664,7 +663,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     TransitionToState(ArmState.Idle);
                 }
             }
-            
+
             // 播放音效（所有客户端）
             if (stateTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
@@ -696,20 +695,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         private void State_Grasping() {
             stateTimer++;
-            
+
             if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
                 TransitionToState(ArmState.Idle);
                 return;
             }
-            
+
             Item targetItem = Main.item[targetItemWhoAmI];
-            
+
             clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.25f);
             shakeIntensity = 1.5f;
-            
+
             targetPosition = targetItem.Center;
             SpringPhysicsMove(targetPosition, 0.5f);
-            
+
             SpawnMechanicalParticles(intensive: true);
 
             // 抓取完成（仅服务器端处理物品）
@@ -733,11 +732,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         TransitionToState(ArmState.Idle);
                     }
                 }
-                
+
                 // 音效和特效（所有客户端）
                 if (stateTimer == 13) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Projectile.Center);
-                    
+
                     if (Main.netMode != NetmodeID.Server) {
                         for (int i = 0; i < 15; i++) {
                             Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
@@ -770,7 +769,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             Vector2 chestPos = targetChestPos.ToWorldCoordinates() + new Vector2(8, 8);
             targetPosition = chestPos;
             SpringPhysicsMove(targetPosition, 1.0f);
-            
+
             graspItem.Center = Projectile.Center;
             SpawnMechanicalParticles();
 
@@ -781,10 +780,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         private void State_Depositing() {
             stateTimer++;
-            
+
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.2f);
             shakeIntensity = 0.8f;
-            
+
             SpawnMechanicalParticles(intensive: true);
 
             if (stateTimer > 10) {
@@ -796,13 +795,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                         targetChest.AddItem(graspItem, true);
                         CheckCoins(targetChest);
                     }
-                    
+
                     graspItem.TurnToAir();
                     if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
                     }
                 }
-                
+
                 // 音效（所有客户端）
                 if (stateTimer == 11) {
                     SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
@@ -817,12 +816,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         private void TransitionToState(ArmState newState) {
             currentState = newState;
             stateTimer = 0;
-            
+
             if (newState == ArmState.Idle) {
                 targetItemWhoAmI = -1;
                 targetChestPos = Point16.NegativeOne;
             }
-            
+
             // 只在服务器端触发网络更新
             if (!VaultUtils.isClient) {
                 Projectile.netUpdate = true;
@@ -945,11 +944,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             // 动态贝塞尔曲线控制点
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.5f, 40f, 200f);
-            
+
             // 根据速度添加动态弯曲
             float velocityInfluence = velocity.Length() * 2f;
             bendHeight += velocityInfluence;
-            
+
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
             // 计算曲线长度
@@ -989,26 +988,26 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 Vector2 direction = next - pos;
                 Color color = Lighting.GetColor((pos / 16).ToPoint());
                 float rotation = direction.ToRotation() + MathHelper.PiOver2;
-                
+
                 if (i == segmentCount - 1) {
                     clampRot = direction.ToRotation();
                 }
-                
+
                 // 添加轻微的缩放动画
                 float scale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i * 0.5f) * 0.02f;
-                
+
                 Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, rotation
                     , new Vector2(tex.Width / 2f, tex.Height), scale, SpriteEffects.None, 0f);
             }
 
             // 绘制夹子
             int clampFrame = clampOpenness > 0.5f ? 0 : 1;
-            
+
             Main.spriteBatch.Draw(clamp.Value, Projectile.Center - Main.screenPosition
                 , clamp.Value.GetRectangle(clampFrame, 2)
                 , lightColor, clampRot + MathHelper.PiOver2
                 , clamp.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
-            
+
             Main.spriteBatch.Draw(clampGlow.Value, Projectile.Center - Main.screenPosition
                 , clampGlow.Value.GetRectangle(clampFrame, 2)
                 , Color.White * (0.7f + shakeIntensity * 0.3f), clampRot + MathHelper.PiOver2
