@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault.GameContent.BaseEntity;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -65,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>
     /// 寒霜鲦鱼喷射器弹幕
     /// </summary>
-    internal class FrostMinnowSpitterProjectile : ModProjectile
+    internal class FrostMinnowSpitterProjectile : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.FrostMinnow;
 
@@ -125,8 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? CanDamage() => false; //鱼本身不造成伤害，只有雪花造成伤害
 
         public override void AI() {
-            Player owner = Main.player[Projectile.owner];
-            if (!owner.active || owner.dead) {
+            if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
             }
@@ -138,13 +138,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //状态机
             switch (State) {
                 case FishState.Appearing:
-                    AppearingBehavior(owner);
+                    AppearingBehavior(Owner);
                     break;
                 case FishState.Charging:
-                    ChargingBehavior(owner);
+                    ChargingBehavior(Owner);
                     break;
                 case FishState.Spitting:
-                    SpittingBehavior(owner);
+                    SpittingBehavior(Owner);
                     break;
                 case FishState.Fading:
                     FadingBehavior();
@@ -168,11 +168,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (IsTargetValid()) {
                     NPC target = Main.npc[targetNPCID];
                     Vector2 toTarget = target.Center - Projectile.Center;
-                    Projectile.rotation = MathHelper.Lerp(
-                        Projectile.rotation,
-                        toTarget.ToRotation() + MathHelper.PiOver4,
-                        0.12f
-                    );
+                    Projectile.rotation = toTarget.ToRotation();
+                }
+                else {
+                    Vector2 toTarget = InMousePos - Projectile.Center;
+                    Projectile.rotation = toTarget.ToRotation();
                 }
             }
         }
@@ -269,6 +269,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 1.8f;
                 Projectile.Center += recoil * 0.08f;
             }
+            else {
+                Vector2 toTarget = InMousePos - Projectile.Center;
+                Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 1.8f;
+                Projectile.Center += recoil * 0.08f;
+            }
 
             //持续漂浮
             float floatY = (float)Math.Sin(pulsePhase) * 2f;
@@ -302,13 +307,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpitFrostSnowflakes(Player owner) {
-            if (!IsTargetValid() || Main.myPlayer != Projectile.owner) return;
+            if (Main.myPlayer != Projectile.owner) return;
 
-            NPC target = Main.npc[targetNPCID];
+            
+            Vector2 targetCenter = InMousePos;
+            if (IsTargetValid()) {
+                NPC target = Main.npc[targetNPCID];
+                targetCenter = target.Center;
+            }
 
             //从鱼嘴位置喷射
             Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 18f;
-            Vector2 toTarget = (target.Center - mouthPos).SafeNormalize(Vector2.Zero);
+            Vector2 toTarget = (targetCenter - mouthPos).SafeNormalize(Vector2.Zero);
 
             //喷射扇形雪花
             for (int i = 0; i < SnowflakeCount; i++) {
@@ -528,6 +538,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D fishTex = TextureAssets.Item[ItemID.FrostMinnow].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
+            bool dir = Projectile.rotation.ToRotationVector2().X > 0;
+            SpriteEffects spriteEffects = dir ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float drawRot = Projectile.rotation + (dir ? MathHelper.PiOver4 : -MathHelper.PiOver4);
 
             float alpha = (255f - Projectile.alpha) / 255f;
 
@@ -545,10 +558,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         drawPos,
                         null,
                         new Color(100, 180, 255, 0) * glowAlpha,
-                        Projectile.rotation + MathHelper.PiOver4,
+                        drawRot,
                         origin,
                         glowScale,
-                        SpriteEffects.None,
+                        spriteEffects,
                         0
                     );
                 }
@@ -566,10 +579,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         drawPos,
                         null,
                         new Color(150, 220, 255, 0) * chargeAlpha,
-                        Projectile.rotation + MathHelper.PiOver4,
+                        drawRot,
                         origin,
                         chargeScale,
-                        SpriteEffects.None,
+                        spriteEffects,
                         0
                     );
                 }
@@ -583,10 +596,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     drawPos,
                     null,
                     new Color(180, 230, 255, 0) * frostAura * 0.5f * alpha,
-                    Projectile.rotation + MathHelper.PiOver4,
+                    drawRot,
                     origin,
                     auraScale,
-                    SpriteEffects.None,
+                    spriteEffects,
                     0
                 );
             }
@@ -603,10 +616,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 drawPos,
                 null,
                 mainColor * alpha,
-                Projectile.rotation + MathHelper.PiOver4,
+                drawRot,
                 origin,
                 Projectile.scale,
-                SpriteEffects.None,
+                spriteEffects,
                 0
             );
 
@@ -617,10 +630,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 drawPos,
                 null,
                 new Color(200, 240, 255, 0) * pulseIntensity * glowIntensity * alpha,
-                Projectile.rotation + MathHelper.PiOver4,
+                drawRot,
                 origin,
                 Projectile.scale * 1.15f,
-                SpriteEffects.None,
+                spriteEffects,
                 0
             );
 
@@ -631,10 +644,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     drawPos,
                     null,
                     Color.White * glowIntensity * 0.6f * alpha,
-                    Projectile.rotation + MathHelper.PiOver4,
+                    drawRot,
                     origin,
                     Projectile.scale * 0.85f,
-                    SpriteEffects.None,
+                    spriteEffects,
                     0
                 );
             }
@@ -644,7 +657,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void DrawFrostTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, float alpha) {
             if (trailPositions.Count < 2) return;
-
+            bool dir = Projectile.rotation.ToRotationVector2().X > 0;
+            SpriteEffects spriteEffects = dir ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float drawRot = Projectile.rotation + (dir ? MathHelper.PiOver4 : -MathHelper.PiOver4);
             for (int i = 1; i < trailPositions.Count; i++) {
                 float progress = 1f - i / (float)trailPositions.Count;
                 float trailAlpha = progress * alpha * 0.6f;
@@ -664,10 +679,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     trailPos,
                     null,
                     trailColor,
-                    Projectile.rotation - i * 0.08f + MathHelper.PiOver4,
+                    drawRot - i * 0.08f,
                     origin,
                     trailScale,
-                    SpriteEffects.None,
+                    spriteEffects,
                     0
                 );
             }
