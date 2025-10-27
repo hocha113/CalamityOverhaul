@@ -207,9 +207,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal static int TheDestroyer = -1;
         /// <summary>
-        /// 抬棺人下一发弩箭的伤害倍率，默认为1，回旋镖命中后设置为2并在弩箭发射后恢复
+        /// 抬棺人下一发弩箭的伤害倍率，默认为1
         /// </summary>
-        public int PallbearerNextArrowDamageMult = 1;
+        public float PallbearerNextArrowDamageMult = 1;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {

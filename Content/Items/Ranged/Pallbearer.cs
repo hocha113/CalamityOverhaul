@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Owner.PickAmmo(Owner.ActiveItem(), out int projToShoot, out float speed,
                 out int damage, out float knockback, out int usedAmmoItemId, false);
 
-            int mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
+            float mult = Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult;
             float damageMultiplier = (1f + ChargeLevel * 1.5f) * mult; //最高250% * 触发加成
             int finalDamage = (int)(damage * damageMultiplier);
 
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 ChargeLevel
             );
 
-            //Reset multiplier after consumption
+            //使用后重置加成
             if (mult > 1) {
                 Owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 1;
                 //反馈特效
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Player owner = Main.player[Projectile.owner];
-            owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2;
+            owner.GetModPlayer<CWRPlayer>().PallbearerNextArrowDamageMult = 2.45f;
             if (State == BoomerangState.Throwing) {
                 State = BoomerangState.Returning;
                 ReturnProgress = 0f;
