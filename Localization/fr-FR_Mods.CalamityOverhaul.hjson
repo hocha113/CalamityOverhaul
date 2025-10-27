@@ -1674,6 +1674,7 @@ Projectiles: {
 	// PrincessMagicOrb.DisplayName: Princess Magic Orb
 	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
+	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
 }
 
 Configs: {
@@ -6345,6 +6346,12 @@ FishSkill: {
 	}
 
 	FishTropicalBarracuda: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishNeonTetra: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""

@@ -1666,6 +1666,7 @@ Projectiles: {
 	// PrincessMagicOrb.DisplayName: Princess Magic Orb
 	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 	// TropicalBarracudaProjectile.DisplayName: Tropical Barracuda Projectile
+	// NeonTetraLightProjectile.DisplayName: Neon Tetra Light Projectile
 }
 
 Configs: {
@@ -6375,6 +6376,15 @@ FishSkill: {
 			梭鱼会快速穿梭并追踪敌人
 			'''
 		Studied: 它们的速度挺快的
+	}
+
+	FishNeonTetra: {
+		DisplayName: 霓虹足迹
+		Tooltip:
+			'''
+			行走过程中留下发光的霓虹鱼，照亮路径上的敌人并造成伤害
+			'''
+		Studied: 我喜欢它的鳞片
 	}
 }
 
