@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,6 +13,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     internal class Pandemonium : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "Pandemonium";
+
+        public override void SetStaticDefaults() {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        }
 
         public override void SetDefaults() {
             Item.damage = 320;
@@ -34,6 +39,43 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_Pandemonium;
         }
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumChannel>()] == 0;
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool CanUseItem(Player player) {
+            if (player.altFunctionUse == 2) {
+                //右键：鼠标法阵
+                Item.mana = 40;
+                Item.useTime = Item.useAnimation = 35;
+                Item.channel = false;
+                Item.shoot = ModContent.ProjectileType<PandemoniumCircle>();
+                return player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumCircle>()] < 13; //最多13个法阵
+            }
+            else {
+                //左键：原本的引导法阵
+                Item.mana = 25;
+                Item.useTime = Item.useAnimation = 20;
+                Item.channel = true;
+                Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();
+                return player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumChannel>()] == 0;
+            }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (player.altFunctionUse == 2) {
+                //在鼠标位置生成法阵
+                Vector2 targetPos = Main.MouseWorld;
+                Projectile.NewProjectile(
+                    source,
+                    targetPos,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<PandemoniumCircle>(),
+                    (int)(damage * 0.8f), //右键伤害为左键的80%
+                    knockback,
+                    player.whoAmI
+                );
+                return false;
+            }
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
     }
 }
