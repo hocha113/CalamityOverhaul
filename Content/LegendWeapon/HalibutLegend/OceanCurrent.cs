@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         //物理参数
         private const float WaterViscosity = 0.985f;
-        private const float Gravity = 0.28f;
+        private const float Gravity = 0.24f;
         private const float SurfaceTension = 0.18f;
         private const float WaterDensity = 1.0f;
         private const float BuoyancyForce = -0.05f;
@@ -72,9 +72,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private static readonly Color OceanFoam = new(200, 230, 255);
         private static readonly Color BioluminescentBlue = new(80, 180, 255);
 
+        private int trueDmg;
+
         public override void SetDefaults() {
-            Projectile.width = 24;
-            Projectile.height = 24;
+            Projectile.width = 30;
+            Projectile.height = 30;
             Projectile.friendly = true;
             Projectile.alpha = 0;
             Projectile.penetrate = -1;
@@ -121,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             UpdateMarineLife();
 
             //动画效果
-            glowPulse = (float)Math.Sin(StreamLife * 0.2f) * 0.4f + 0.6f;
+            glowPulse = (float)Math.Sin(StreamLife * 0.2f) * 0.2f + 0.8f;
             wavePhase += 0.15f;
             if (wavePhase > MathHelper.TwoPi) wavePhase -= MathHelper.TwoPi;
 
@@ -147,6 +149,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             if (Projectile.numHits > 2) {
                 Projectile.velocity /= 2;
+                if (Projectile.damage > 0) {
+                    trueDmg = Projectile.damage;
+                }
                 Projectile.damage = 0;
                 if (++pcctimer > 60) {
                     Projectile.Kill();
@@ -920,7 +925,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 foam.fadeIn = 1.1f;
             }
 
-            Projectile.Explode(90, default, false);
+            Projectile.damage = trueDmg / 2;
+            Projectile.Explode(100, default, false);
         }
 
         public override Color? GetAlpha(Color lightColor) {

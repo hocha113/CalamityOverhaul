@@ -355,6 +355,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             for (int index = 0; index < bulletAmt; ++index) {
                 float SpeedX = velocity.X + Main.rand.Next(-10, 11) * 0.05f;
                 float SpeedY = velocity.Y + Main.rand.Next(-10, 11) * 0.05f;
+                if (isBullet) {
+                    SpeedX *= 1.4f;
+                    SpeedY *= 1.4f;
+                }
                 Projectile.NewProjectile(source, position.X, position.Y, SpeedX, SpeedY, type, damage, knockback, player.whoAmI);
             }
 

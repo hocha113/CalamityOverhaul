@@ -304,7 +304,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
 
                 int evShootNum = shootNum;
-                int evDamage = (int)(ev.Damage * (1f + evShootNum * 0.25f));
+                float addby = ev.Type == ModContent.ProjectileType<OceanCurrent>() ? 0.25f : 0.4f;
+                int evDamage = (int)(ev.Damage * (1f + evShootNum * addby));
                 int proj = Projectile.NewProjectile(shootState.Source
                    , snap.Position + Owner.Size * 0.5f, ev.Velocity.RotatedByRandom(randomRot)
                    , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
