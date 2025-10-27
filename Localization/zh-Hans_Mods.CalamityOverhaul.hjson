@@ -1659,6 +1659,7 @@ Projectiles: {
 	// PandemoniumLightning.DisplayName: Pandemonium Lightning
 	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
 	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
+	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 }
 
 Configs: {
@@ -2464,7 +2465,7 @@ Legend: {
 				L1: 硫磺海是个有趣的地方，那里的生物都在问同一个问题：'为什么我还活着？'
 				L2: 棱镜鱼，它的鳞片能折射出你从未见过的颜色。主要是因为它们不该存在
 				L3: 盯着它看会让你的视觉系统重启，有点像强制更新，但更痛苦
-				L4: 最后在光线暗淡的地方使用，不然感觉会像嗑了似的
+				L4: 最好在光线暗淡的地方使用，不然感觉会像嗑了似的
 			}
 
 			BrimstoneElementalGift: {
@@ -6316,6 +6317,16 @@ FishSkill: {
 			命中敌人或者物块后将分裂成多道冲击波继续前进
 			'''
 		Studied: 这条鱼的美丽来自于重金属超标
+	}
+
+	FishObsidian: {
+		DisplayName: 黑石要塞
+		Tooltip:
+			'''
+			开火时生成一群黑曜石鱼围绕玩家旋转
+			每受伤一次会让一条黑曜石鱼碎裂
+			'''
+		Studied: ""
 	}
 }
 

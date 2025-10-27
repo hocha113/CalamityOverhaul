@@ -1667,6 +1667,7 @@ Projectiles: {
 	// PandemoniumLightning.DisplayName: Pandemonium Lightning
 	// PandemoniumRainDrop.DisplayName: Pandemonium Rain Drop
 	// PrismiteWaveProjectile.DisplayName: Prismite Wave Projectile
+	// ObsidianFishOrbit.DisplayName: Obsidian Fish Orbit
 }
 
 Configs: {
@@ -6302,6 +6303,12 @@ FishSkill: {
 	}
 
 	FishPrismite: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishObsidian: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
