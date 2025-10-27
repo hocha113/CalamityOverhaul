@@ -1664,6 +1664,7 @@ Projectiles: {
 	// OilBlob.DisplayName: Oil Blob
 	// PrincessFishMinion.DisplayName: Princess Fish Minion
 	// PrincessMagicOrb.DisplayName: Princess Magic Orb
+	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 }
 
 Configs: {
@@ -6353,6 +6354,12 @@ FishSkill: {
 			公主鱼会向敌人发射魔法弹
 			'''
 		Studied: 很显然它不是王子
+	}
+
+	FishCrimsonTiger: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
 	}
 }
 

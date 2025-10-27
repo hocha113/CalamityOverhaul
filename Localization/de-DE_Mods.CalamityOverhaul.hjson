@@ -1671,6 +1671,7 @@ Projectiles: {
 	// OilBlob.DisplayName: Oil Blob
 	// PrincessFishMinion.DisplayName: Princess Fish Minion
 	// PrincessMagicOrb.DisplayName: Princess Magic Orb
+	// CrimsonTigerFishMinion.DisplayName: Crimson Tiger Fish Minion
 }
 
 Configs: {
@@ -6378,6 +6379,12 @@ FishSkill: {
 	}
 
 	FishPrincess: {
+		// DisplayName: ""
+		// Tooltip: ""
+		// Studied: ""
+	}
+
+	FishCrimsonTiger: {
 		// DisplayName: ""
 		// Tooltip: ""
 		// Studied: ""
