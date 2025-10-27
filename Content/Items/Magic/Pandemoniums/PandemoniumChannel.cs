@@ -45,8 +45,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private float expandScale = 0f;
         private float tierTransitionProgress = 1f; //层级过渡进度，0=过渡中，1=稳定
 
-        [VaultLoaden(CWRConstant.Masking + "Extra_98")]
+        [VaultLoaden(CWRConstant.Masking + "Fire")]
         private static Asset<Texture2D> RuneAsset = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        private static Asset<Texture2D> StarTexture = null;
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         private static Asset<Texture2D> GlowAsset = null;
 
@@ -66,6 +68,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             public float DistanceModifier;
             public float BaseDistance;
             public float Alpha = 0f;
+            //新增：火焰动画相关
+            public int FireFrame = 0;
+            public float FireFrameCounter = 0;
+            public float IntensityPulse = 0;
+            public float CoreGlowAlpha = 0;
         }
 
         private class EnergyOrbData
@@ -327,7 +334,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     NoisePhase = Main.rand.NextFloat(MathHelper.TwoPi),
                     DistanceModifier = 1f,
                     BaseDistance = distance,
-                    Alpha = 0f
+                    Alpha = 0f,
+                    FireFrame = Main.rand.Next(16),//随机初始帧
+                    FireFrameCounter = 0,
+                    IntensityPulse = Main.rand.NextFloat(MathHelper.TwoPi),
+                    CoreGlowAlpha = 0
                 });
             }
         }
@@ -342,6 +353,17 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 //淡入效果 - 在过渡期间加速
                 float fadeSpeed = tierTransitionProgress < 0.5f ? 0.06f : 0.03f;
                 rune.Alpha = MathHelper.Lerp(rune.Alpha, 1f, fadeSpeed);
+                rune.CoreGlowAlpha = MathHelper.Lerp(rune.CoreGlowAlpha, 1f, fadeSpeed * 0.5f);
+
+                //火焰帧动画更新
+                rune.FireFrameCounter += 0.3f + layerIntensity * 0.1f;
+                if (rune.FireFrameCounter >= 1f) {
+                    rune.FireFrameCounter = 0;
+                    rune.FireFrame = (rune.FireFrame + 1) % 16;//4x4=16帧循环
+                }
+
+                //强度脉冲（用于火焰闪烁效果）
+                rune.IntensityPulse += 0.15f * layerIntensity;
 
                 //基础旋转（更平滑）
                 rune.Rotation += rune.RotationSpeed * layerIntensity;
@@ -1025,27 +1047,77 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void DrawAnimatedRunes(SpriteBatch sb, Texture2D runeTex, Vector2 center, int layer, Color c1, Color c2, Color c3, float transitionAlpha) {
             if (layer >= runeLayers.Length || runeLayers[layer] == null) return;
 
+            Texture2D starTex = StarTexture?.Value;
+            if (runeTex == null) return;
+
+            //4x4火焰纹理的单帧尺寸
+            int frameWidth = runeTex.Width / 4;
+            int frameHeight = runeTex.Height / 4;
+
             foreach (var rune in runeLayers[layer]) {
                 if (rune.Alpha < 0.01f) continue;
 
                 Vector2 pos = center + rune.Offset * expandScale;
-                float pulse = (float)Math.Sin(rune.PulsePhase) * 0.4f + 0.6f;
+                
+                //火焰强度脉冲（更剧烈的火焰效果）
+                float intensityPulse = (float)Math.Sin(rune.IntensityPulse) * 0.3f + 0.7f;
+                float fireFlicker = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f + rune.PulsePhase) * 0.2f + 0.8f;
 
-                Color runeColor = rune.Type switch {
-                    0 => Color.Lerp(c1, c2, pulse),
-                    1 => Color.Lerp(c2, c3, pulse),
-                    2 => Color.Lerp(c3, c1, pulse),
-                    3 => Color.Lerp(c1, c3, pulse),
-                    4 => c2 * (0.7f + pulse * 0.3f),
-                    _ => c3 * (0.7f + pulse * 0.3f)
+                //计算火焰帧的矩形区域
+                int frameX = rune.FireFrame % 4;
+                int frameY = rune.FireFrame / 4;
+                Rectangle fireFrame = new Rectangle(frameX * frameWidth, frameY * frameHeight, frameWidth, frameHeight);
+
+                //硫磺火色彩渐变（从亮黄到深红）
+                Color baseFireColor = rune.Type switch {
+                    0 => Color.Lerp(new Color(255, 230, 120), new Color(255, 140, 70), intensityPulse),//亮黄到橙
+                    1 => Color.Lerp(new Color(255, 180, 90), new Color(255, 100, 50), intensityPulse), //橙到橙红
+                    2 => Color.Lerp(new Color(255, 140, 70), new Color(200, 60, 40), intensityPulse),  //橙红到深红
+                    3 => Color.Lerp(new Color(255, 200, 120), new Color(255, 120, 60), intensityPulse),//金黄到橙
+                    4 => Color.Lerp(new Color(255, 160, 80), new Color(180, 70, 40), intensityPulse),  //浅橙到暗红
+                    _ => Color.Lerp(new Color(255, 140, 100), new Color(150, 50, 30), intensityPulse)  //默认渐变
                 };
 
                 float layerAlpha = (1f - layer * 0.18f) * rune.Alpha * transitionAlpha;
-                runeColor *= layerAlpha * expandScale * (0.65f + pulse * 0.35f);
-                runeColor.A = 0;
+                baseFireColor *= layerAlpha * expandScale * intensityPulse * fireFlicker;
+                baseFireColor.A = 0;//加法混合
 
-                float finalScale = rune.Scale * (0.85f + pulse * 0.3f) * expandScale;
-                sb.Draw(runeTex, pos, null, runeColor, rune.Rotation, runeTex.Size() / 2f, finalScale, SpriteEffects.None, 0f);
+                float finalScale = rune.Scale * (0.9f + intensityPulse * 0.4f) * expandScale;
+
+                //绘制火焰主体（稍大的底层光晕）
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.6f, rune.Rotation, 
+                    new Vector2(frameWidth, frameHeight) / 2f, finalScale * 1.3f, SpriteEffects.None, 0f);
+
+                //绘制火焰核心（较亮）
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 1.2f, rune.Rotation, 
+                    new Vector2(frameWidth, frameHeight) / 2f, finalScale, SpriteEffects.None, 0f);
+
+                //绘制额外的火焰细节层（旋转角度不同，增加动感）
+                sb.Draw(runeTex, pos, fireFrame, baseFireColor * 0.4f, rune.Rotation + MathHelper.PiOver4, 
+                    new Vector2(frameWidth, frameHeight) / 2f, finalScale * 0.8f, SpriteEffects.None, 0f);
+
+                //绘制星星核心闪光
+                if (starTex != null && rune.CoreGlowAlpha > 0.3f) {
+                    float corePulse = (float)Math.Sin(rune.PulsePhase * 2f) * 0.5f + 0.5f;
+                    float coreIntensity = intensityPulse * corePulse * fireFlicker;
+                    
+                    //核心白光
+                    Color coreColor = Color.White with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.8f;
+                    sb.Draw(starTex, pos, null, coreColor, rune.Rotation, 
+                        starTex.Size() / 2f, finalScale * 0.3f * (0.8f + corePulse * 0.4f), SpriteEffects.None, 0f);
+
+                    //核心金黄色光
+                    Color coreGlow = new Color(255, 230, 150) with { A = 0 } * rune.CoreGlowAlpha * coreIntensity * layerAlpha * 0.6f;
+                    sb.Draw(starTex, pos, null, coreGlow, rune.Rotation + MathHelper.PiOver4, 
+                        starTex.Size() / 2f, finalScale * 0.4f * (0.7f + corePulse * 0.5f), SpriteEffects.None, 0f);
+
+                    //外层脉冲光环
+                    if (corePulse > 0.6f) {
+                        Color pulseRing = new Color(255, 200, 120) with { A = 0 } * rune.CoreGlowAlpha * (corePulse - 0.6f) * 2f * layerAlpha * 0.4f;
+                        sb.Draw(starTex, pos, null, pulseRing, rune.Rotation, 
+                            starTex.Size() / 2f, finalScale * 0.6f * corePulse, SpriteEffects.None, 0f);
+                    }
+                }
             }
         }
 
