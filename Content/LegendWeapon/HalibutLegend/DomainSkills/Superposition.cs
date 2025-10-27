@@ -550,14 +550,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             Player ghost = new Player();
-            ghost.ResetEffects();
+            
             ghost.CopyVisuals(Owner);
+            ghost.ResetEffects();
             ghost.position = clone.Position - Owner.Size * 0.5f;
             ghost.direction = Owner.direction;
             ghost.bodyFrame = Owner.bodyFrame;
             ghost.legFrame = Owner.legFrame;
 
-            Color ghostColor = new Color(170, 130, 255) * clone.Alpha * 0.9f;
+            Color ghostColor = new Color(170, 130, 255, 255) * clone.Alpha * 0.9f;
             ghost.skinColor = ghostColor;
             ghost.shirtColor = ghostColor;
             ghost.underShirtColor = ghostColor;
@@ -565,6 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             ghost.shoeColor = ghostColor;
             ghost.hairColor = ghostColor;
             ghost.eyeColor = ghostColor;
+            ghost.heldProj = -1;
 
             Main.PlayerRenderer.DrawPlayer(
                     Main.Camera,

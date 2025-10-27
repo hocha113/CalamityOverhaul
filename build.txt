@@ -4,5 +4,5 @@ sortAfter = CalamityMod, InnoVault
 weakReferences = ThoriumMod
 homepage = https://calamity-overhaul.cc
 author = HoCha113
-version = 0.8025
+version = 0.8026
 includeSource = true

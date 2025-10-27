@@ -415,12 +415,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             Player ghost = new Player();
-            ghost.ResetEffects();
+            
             ghost.CopyVisuals(Owner);
+            ghost.ResetEffects();
             ghost.position = clone.Position - Owner.Size * 0.5f;
             ghost.direction = Owner.direction;
             ghost.bodyFrame = Owner.bodyFrame;
             ghost.legFrame = Owner.legFrame;
+            ghost.heldProj = -1;
 
             Lighting.AddLight(clone.Position, TorchID.Blue);
 

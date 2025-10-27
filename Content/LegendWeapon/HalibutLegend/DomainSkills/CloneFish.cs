@@ -436,8 +436,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (drawPlayer && cloneAlpha > 0.01f) {
                 cloneRenderPlayer ??= new Player();
                 var cp = cloneRenderPlayer;
-                cp.ResetEffects();
+                
                 cp.CopyVisuals(Owner);
+                cp.ResetEffects();
                 cp.position = snap.Position;
                 cp.velocity = snap.Velocity;
                 cp.direction = snap.Direction;
@@ -445,7 +446,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 cp.legFrame = snap.LegFrame;
                 cp.itemAnimation = snap.ItemAnimation;
                 cp.itemRotation = snap.ItemRotation;
-                cp.whoAmI = Owner.whoAmI;
+                cp.heldProj = -1;
 
                 Color drawColor = Color.BlueViolet * cloneAlpha;
                 cp.skinVariant = Owner.skinVariant;
