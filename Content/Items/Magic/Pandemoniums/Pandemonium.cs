@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             "CalamityOverhaul/Pandemonium"
         ];
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;//没做完，先别加载
+            return true;
         }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
