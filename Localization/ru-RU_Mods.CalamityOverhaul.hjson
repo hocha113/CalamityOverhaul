@@ -1932,6 +1932,8 @@ Keybinds: {
 	// Halibut_Superposition.DisplayName: Halibut: Superposition
 	// Halibut_Teleport.DisplayName: Halibut: Domain Teleport
 	// Halibut_UIControl.DisplayName: Halibut: UI Control
+	// Pandemonium_Q.DisplayName: Pandemonium: Sulphuric Cataclysm
+	// Pandemonium_R.DisplayName: Pandemonium: End of All Demons
 }
 
 TextContent: {

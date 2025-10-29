@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Halibut_Superposition { get; private set; }
         public static ModKeybind Halibut_Teleport { get; private set; }
         public static ModKeybind Halibut_UIControl { get; private set; }
+        public static ModKeybind Pandemonium_Q { get; private set; }
+        public static ModKeybind Pandemonium_R { get; private set; }
 
         void ICWRLoader.LoadData() {
             Mod mod = CWRMod.Instance;
@@ -31,6 +33,8 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, "Halibut_Superposition", "F");
             Halibut_Teleport = KeybindLoader.RegisterKeybind(mod, "Halibut_Teleport", "G");
             Halibut_UIControl = KeybindLoader.RegisterKeybind(mod, "Halibut_UIControl", "M");
+            Pandemonium_Q = KeybindLoader.RegisterKeybind(mod, "Pandemonium_Q", "Q");
+            Pandemonium_R = KeybindLoader.RegisterKeybind(mod, "Pandemonium_R", "R");
         }
 
         void ICWRLoader.UnLoadData() {
@@ -46,6 +50,8 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = null;
             Halibut_Teleport = null;
             Halibut_UIControl = null;
+            Pandemonium_Q = null;
+            Pandemonium_R = null;
         }
     }
 }

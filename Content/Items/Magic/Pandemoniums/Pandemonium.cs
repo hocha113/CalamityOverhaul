@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Rarities;
-using Microsoft.Xna.Framework.Input;
+using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -52,25 +52,19 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.CWR().OmigaSnyContent = FullItems;
         }
 
-        private bool oldQ;
-        private bool oldR;
         public override void HoldItem(Player player) {
-            bool isQ = Keyboard.GetState().IsKeyDown(Keys.Q);
-            if (isQ && !oldQ && player.CountProjectilesOfID<PandemoniumQSkill>() == 0) {
+            if (CWRKeySystem.Pandemonium_Q.JustPressed && player.CountProjectilesOfID<PandemoniumQSkill>() == 0) {
                 ShootState shootState = player.GetShootState();
                 Projectile.NewProjectile(shootState.Source, player.Center
                     , Vector2.Zero, ModContent.ProjectileType<PandemoniumQSkill>()
                     , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
             }
-            oldQ = isQ;
-            bool isR = Keyboard.GetState().IsKeyDown(Keys.R);
-            if (isR && !oldR && player.CountProjectilesOfID<PandemoniumRSkill>() == 0) {
+            if (CWRKeySystem.Pandemonium_R.JustPressed && player.CountProjectilesOfID<PandemoniumRSkill>() == 0) {
                 ShootState shootState = player.GetShootState();
                 Projectile.NewProjectile(shootState.Source, player.Center
                     , Vector2.Zero, ModContent.ProjectileType<PandemoniumRSkill>()
                     , shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI);
             }
-            oldR = isR;
         }
 
         public override bool AltFunctionUse(Player player) => true;
