@@ -560,35 +560,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        private void ReleaseScytheWave(int wave, int count) {
-            SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.1f, Pitch = -0.5f }, Projectile.Center);
-
-            float speedBase = 13f + wave * 2.5f;
-
-            for (int i = 0; i < count; i++) {
-                float angle = MathHelper.TwoPi * i / count;
-                float spiralOffset = (float)Math.Sin(i * 0.4f + ChargeTimer * 0.02f) * 0.35f;
-                Vector2 velocity = angle.ToRotationVector2().RotatedBy(spiralOffset) * speedBase;
-
-                int damage = (int)(Projectile.damage * (1f + wave * 0.12f));
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity,
-                    ModContent.ProjectileType<PandemoniumScythe>(), damage, Projectile.knockBack, Owner.whoAmI, wave);
-            }
-        }
-
-        private void ReleaseFireballBarrage(int count) {
-            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
-
-            for (int i = 0; i < count; i++) {
-                float delay = i * 3f;
-                Vector2 targetPos = Main.MouseWorld + Main.rand.NextVector2Circular(120f, 120f);
-                Vector2 dir = (targetPos - Projectile.Center).SafeNormalize(Vector2.UnitY);
-
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir * 0.1f,
-                    ModContent.ProjectileType<PandemoniumFireball>(), (int)(Projectile.damage * 1.4f), Projectile.knockBack, Owner.whoAmI, delay);
-            }
-        }
-
         private void ReleaseFinalBlast() {
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.4f, Pitch = -0.6f }, Projectile.Center);
 
@@ -699,7 +670,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     potentialTargets.Add(npc);
                 }
             }
-
+            
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count;
                 Vector2 velocity = angle.ToRotationVector2() * 8f;
@@ -719,7 +690,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     Projectile.knockBack,
                     Owner.whoAmI,
                     tier,
-                    targetIndex //将目标索引传递给镰刀
+                    targetIndex, //将目标索引传递给镰刀
+                    i
                 );
 
                 Main.projectile[scythe].localAI[1] = 2; //标记为强追踪模式

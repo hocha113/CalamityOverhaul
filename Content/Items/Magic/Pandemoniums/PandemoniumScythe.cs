@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Projectile.penetrate = 4;
             Projectile.timeLeft = 360;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 6;
+            Projectile.localNPCHitCooldown = 10;
             Projectile.extraUpdates = 1;
         }
 
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
             //强追踪模式：命中后生成小型冲击波
-            if (HomingMode == 2 && Projectile.owner == Main.myPlayer && Main.player[Projectile.owner].ownedProjectileCounts[Type] < 220) {
+            if (HomingMode == 2 && Projectile.owner == Main.myPlayer && Main.player[Projectile.owner].ownedProjectileCounts[Type] < 220 && Projectile.ai[2] < 4) {
                 for (int i = 0; i < 6; i++) {
                     float angle = MathHelper.TwoPi * i / 6f;
                     Vector2 shockVel = angle.ToRotationVector2() * 8f;
@@ -172,7 +172,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         Projectile.knockBack * 0.5f,
                         Projectile.owner,
                         Wave,
-                        0
+                        0,
+                        999
                     );
                 }
             }
