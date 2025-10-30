@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -108,6 +109,67 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
+        /// <summary>
+        /// 生成命中十字标记特效
+        /// </summary>
+        public static void SpawnCrossMarker(NPC target, int whoAmI) {
+            if (whoAmI == Main.myPlayer) {
+                //生成十字标记弹幕
+                Projectile.NewProjectile(
+                    Main.player[Main.myPlayer].GetSource_Misc("JusticeUnveiledMark"),
+                    target.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<JusticeCrossMark>(),
+                    0,
+                    0f,
+                    Main.myPlayer,
+                    target.whoAmI
+                );
+            }
+
+            //命中闪光特效
+            for (int i = 0; i < 4; i++) {
+                float angle = MathHelper.TwoPi * i / 4f;
+                Vector2 direction = angle.ToRotationVector2();
+
+                //金色光线爆发
+                for (int j = 0; j < 6; j++) {
+                    Vector2 velocity = direction * Main.rand.NextFloat(4f, 10f);
+                    Dust light = Dust.NewDustPerfect(
+                        target.Center,
+                        DustID.GoldCoin,
+                        velocity,
+                        0,
+                        default,
+                        Main.rand.NextFloat(1.5f, 2.5f)
+                    );
+                    light.noGravity = true;
+                    light.fadeIn = 1.2f;
+                }
+            }
+
+            //环形冲击波粒子
+            for (int i = 0; i < 16; i++) {
+                float angle = MathHelper.TwoPi * i / 16f;
+                Vector2 velocity = angle.ToRotationVector2() * 8f;
+                Dust ring = Dust.NewDustPerfect(
+                    target.Center,
+                    DustID.Electric,
+                    velocity,
+                    0,
+                    Color.Gold,
+                    Main.rand.NextFloat(1.2f, 2f)
+                );
+                ring.noGravity = true;
+            }
+
+            //命中音效
+            SoundEngine.PlaySound(SoundID.Item4 with {
+                Volume = 0.4f,
+                Pitch = 0.5f
+            }, target.Center);
+        }
+
         public static void OnHitNPCSpwanProj(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             if (!SpwanBool(player, projectile, target, hit)) {
                 return;
@@ -158,12 +220,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class DivineJustice : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        
+        private bool spawn;
         //引用高级实现案例中的优秀特效
         private readonly List<LightningBolt> lightningBolts = new();
         private float chargeIntensity = 0f;
-        private int shakeTimer = 0;
-        
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 64;
             Projectile.timeLeft = 190;
@@ -185,6 +245,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AI() {
+            if (!spawn) {
+                if (Projectile.ai[0].TryGetNPC(out var target)) {
+                    JusticeUnveiled.SpawnCrossMarker(target, Projectile.owner);
+                }
+                
+                spawn = true;
+            }
             //蓄能阶段
             if (Projectile.timeLeft > 160) {
                 float progress = (190 - Projectile.timeLeft) / 30f;
@@ -224,7 +291,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             
             //震屏预警
             if (Projectile.timeLeft < 20 && Projectile.timeLeft > 10) {
-                shakeTimer++;
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Projectile.Center,
@@ -271,32 +337,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void OnKill(int timeLeft) {
-            if (Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null) {
-                if (Main.zenithWorld) {
-                    SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
-                }
-                else {
-                    //多重音效叠加
-                    SoundEngine.PlaySound(CWRSound.JustStrike with { Volume = 1.2f }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { 
-                        Pitch = -0.4f, 
-                        Volume = 0.8f 
-                    }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.Thunder with { 
-                        Pitch = 0.3f, 
-                        Volume = 0.6f 
-                    }, Projectile.Center);
-                }
-
-                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
-                
-                if (CWRServerConfig.Instance.ScreenVibration) {
-                    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                            Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
-                    Main.instance.CameraModifiers.Add(modifier);
-                }
-            }
+            Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
+            , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
         }
         
         public override bool PreDraw(ref Color lightColor) {
@@ -363,6 +405,30 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AI() {
+            if (time == 0) {
+                if (Main.zenithWorld) {
+                    SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
+                }
+                else {
+                    //多重音效叠加
+                    SoundEngine.PlaySound(CWRSound.JustStrike with { Volume = 1.2f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
+                        Pitch = -0.4f,
+                        Volume = 0.8f
+                    }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Thunder with {
+                        Pitch = 0.3f,
+                        Volume = 0.6f
+                    }, Projectile.Center);
+                }
+
+                if (CWRServerConfig.Instance.ScreenVibration) {
+                    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
+                            Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
+                    Main.instance.CameraModifiers.Add(modifier);
+                }
+            }
+
             if (++time < 6) {
                 return;
             }
@@ -370,6 +436,18 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //初始化爆炸特效
             if (time == 6) {
                 InitializeExplosionEffects();
+
+                if (Projectile.ai[0].TryGetNPC(out var target2)) {
+                    int size = 2400;
+                    Point pos = target2.Center.ToPoint() - new Point(size / 2, size / 2);
+                    Rectangle hitBox = new Rectangle(pos.X, pos.Y, size, size);
+                    foreach (var n in Main.ActiveNPCs) {
+                        if (!n.Hitbox.Intersects(hitBox) || n.whoAmI == target2.whoAmI) {
+                            continue;
+                        }
+                        JusticeUnveiled.SpawnCrossMarker(n, Projectile.owner);
+                    }
+                }
             }
             
             if (++Projectile.frameCounter > 3) {
@@ -583,6 +661,243 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
     
+    /// <summary>
+    /// 命中敌人的十字标记弹幕
+    /// </summary>
+    internal class JusticeCrossMark : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+
+        private ref float TargetNPCID => ref Projectile.ai[0];
+        private ref float Timer => ref Projectile.ai[1];
+        private float rotation = 0f;
+        private float pulsePhase = 0f;
+        private float fadeProgress = 0f;
+
+        private const int MarkDuration = 90; //标记持续时间（帧）
+        private const float CrossSize = 50f; //十字大小
+        private const float GlowSize = 30f;   //发光范围
+
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 60;
+            Projectile.friendly = false;
+            Projectile.hostile = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.timeLeft = MarkDuration;
+            Projectile.alpha = 0;
+        }
+
+        public override void AI() {
+            int npcId = (int)TargetNPCID;
+            if (npcId < 0 || npcId >= Main.maxNPCs) {
+                Projectile.Kill();
+                return;
+            }
+
+            NPC npc = Main.npc[npcId];
+            if (!npc.active) {
+                Projectile.Kill();
+                return;
+            }
+
+            Timer++;
+            pulsePhase += 0.15f;
+            rotation += 0.08f;
+
+            //跟随敌人位置
+            Projectile.Center = npc.Center;
+
+            //淡出动画
+            if (Timer > MarkDuration - 30) {
+                fadeProgress = (Timer - (MarkDuration - 30)) / 30f;
+            }
+
+            //环境光照
+            float lightIntensity = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
+            Lighting.AddLight(Projectile.Center,
+                1.2f * lightIntensity * (1f - fadeProgress),
+                0.9f * lightIntensity * (1f - fadeProgress),
+                0.3f * lightIntensity * (1f - fadeProgress));
+
+            //粒子效果
+            if (Main.rand.NextBool(8) && fadeProgress < 0.7f) {
+                SpawnMarkParticle();
+            }
+        }
+
+        private void SpawnMarkParticle() {
+            //从十字中心向外发射金色粒子
+            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
+            Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
+
+            Dust mark = Dust.NewDustPerfect(
+                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
+                DustID.GoldCoin,
+                velocity,
+                0,
+                default,
+                Main.rand.NextFloat(1f, 1.5f)
+            );
+            mark.noGravity = true;
+            mark.fadeIn = 0.8f;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            SpriteBatch sb = Main.spriteBatch;
+            Texture2D glowTex = CWRAsset.StarTexture.Value;
+            Texture2D pixelTex = VaultAsset.placeholder2.Value;
+
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float alpha = 1f - fadeProgress;
+
+            //脉动效果
+            float pulse = (float)Math.Sin(pulsePhase * 1.5f) * 0.2f + 0.8f;
+
+            //绘制外层旋转光环
+            for (int i = 0; i < 3; i++) {
+                float ringScale = (1.8f + i * 0.4f) * pulse;
+                float ringAlpha = (1f - i * 0.3f) * alpha * 0.4f;
+                Color ringColor = Color.Lerp(Color.Gold, Color.Yellow, i / 3f) with { A = 0 };
+
+                sb.Draw(
+                    glowTex,
+                    drawPos,
+                    null,
+                    ringColor * ringAlpha,
+                    rotation + i * MathHelper.PiOver4,
+                    glowTex.Size() / 2f,
+                    ringScale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+            //绘制十字标记主体
+            DrawCross(sb, drawPos, alpha, pulse);
+
+            //绘制中心发光核心
+            Color coreColor = Color.White with { A = 0 };
+            sb.Draw(
+                glowTex,
+                drawPos,
+                null,
+                coreColor * alpha * 0.8f * pulse,
+                rotation,
+                glowTex.Size() / 2f,
+                0.6f * pulse,
+                SpriteEffects.None,
+                0f
+            );
+
+            return false;
+        }
+
+        /// <summary>
+        /// 绘制十字标记
+        /// </summary>
+        private static void DrawCross(SpriteBatch sb, Vector2 drawPos, float alpha, float pulse) {
+            Texture2D pixelTex = VaultAsset.placeholder2.Value;
+
+            //十字的四个方向
+            for (int i = 0; i < 4; i++) {
+                float angle = i * MathHelper.PiOver2;
+                Vector2 direction = angle.ToRotationVector2();
+
+                //主十字线
+                Color mainColor = Color.Lerp(Color.Gold, Color.Yellow, 0.3f) with { A = 0 };
+                Vector2 lineScale = new Vector2(CrossSize * pulse, 4f);
+
+                sb.Draw(
+                    pixelTex,
+                    drawPos + direction * 5f,
+                    null,
+                    mainColor * alpha * 0.9f,
+                    angle,
+                    Vector2.Zero,
+                    lineScale,
+                    SpriteEffects.None,
+                    0f
+                );
+
+                //发光层
+                Color glowColor = Color.White with { A = 0 };
+                Vector2 glowScale = new Vector2(CrossSize * pulse * 0.8f, 6f);
+
+                sb.Draw(
+                    pixelTex,
+                    drawPos + direction * 5f,
+                    null,
+                    glowColor * alpha * 0.5f * pulse,
+                    angle,
+                    Vector2.Zero,
+                    glowScale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+
+            //绘制对角线辅助十字（更细）
+            for (int i = 0; i < 4; i++) {
+                float angle = i * MathHelper.PiOver2 + MathHelper.PiOver4;
+                Vector2 direction = angle.ToRotationVector2();
+
+                Color auxColor = Color.Gold with { A = 0 };
+                Vector2 auxScale = new Vector2(CrossSize * 0.6f * pulse, 2f);
+
+                sb.Draw(
+                    pixelTex,
+                    drawPos + direction * 3f,
+                    null,
+                    auxColor * alpha * 0.6f,
+                    angle,
+                    Vector2.Zero,
+                    auxScale,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            //消散特效
+            for (int i = 0; i < 20; i++) {
+                float angle = MathHelper.TwoPi * i / 20f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
+
+                Dust fade = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.GoldCoin,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fade.noGravity = true;
+                fade.fadeIn = 1f;
+            }
+
+            //闪光粒子
+            for (int i = 0; i < 12; i++) {
+                Dust flash = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.Electric,
+                    Main.rand.NextVector2Circular(5f, 5f),
+                    0,
+                    Color.Gold,
+                    Main.rand.NextFloat(1.2f, 2f)
+                );
+                flash.noGravity = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item29 with {
+                Volume = 0.3f,
+                Pitch = 0.4f
+            }, Projectile.Center);
+        }
+    }
+
     #region 特效辅助类
     
     /// <summary>

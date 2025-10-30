@@ -1676,6 +1676,7 @@ Projectiles: {
 	PandemoniumQSkill.DisplayName: 万魔殿终结
 	PandemoniumFirePillar.DisplayName: 万魔殿火柱
 	PandemoniumRSkill.DisplayName: 万魔殿超位终结
+	JusticeCrossMark.DisplayName: 正义裁决
 }
 
 Configs: {

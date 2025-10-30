@@ -1698,6 +1698,7 @@ Projectiles: {
 	// PandemoniumQSkill.DisplayName: Pandemonium Strike
 	// PandemoniumFirePillar.DisplayName: Pandemonium Flame Pillar
 	// PandemoniumRSkill.DisplayName: Pandemonium's Judgment
+	// JusticeCrossMark.DisplayName: Justice Cross Mark
 }
 
 Configs: {
