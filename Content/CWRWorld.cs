@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Modifys;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -39,10 +40,13 @@ namespace CalamityOverhaul.Content
         internal static bool Death => CalamityWorld.death || BossRush;
         internal static bool Revenge => CalamityWorld.revenge || BossRush;
 
+        internal static List<IWorldInfo> WorldInfos { get; private set; }
+
         internal static bool IsAcidRainEventIsOngoing() => AcidRainEvent.AcidRainEventIsOngoing;
 
         public override void Load() {
             VaultUtils.InvasionEvent += IsAcidRainEventIsOngoing;
+            WorldInfos = VaultUtils.GetDerivedInstances<IWorldInfo>();
         }
 
         public override void Unload() {
@@ -51,10 +55,16 @@ namespace CalamityOverhaul.Content
 
         public override void OnWorldLoad() {
             MachineRebellionDowned = false;
+            foreach (var info in WorldInfos) {
+                info.OnWorldLoad();
+            }
         }
 
         public override void OnWorldUnload() {
             MachineRebellionDowned = false;
+            foreach (var info in WorldInfos) {
+                info.OnWorldUnLoad();
+            }
         }
 
         public override void PostUpdateProjectiles() {
