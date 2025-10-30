@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
     /// <summary>
     /// 比目鱼鱼油获取提示与任务创建场景
     /// </summary>
-    internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType
+    internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override string Key => nameof(FishoilQuestScenario);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
@@ -50,6 +50,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.FishoilQuest
         public static LocalizedText ChoiceDecline { get; private set; }
 
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+
+        void IWorldInfo.OnWorldLoad() {
+            Spwand = false;
+            scenarioStarted = false;
+        }
 
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");

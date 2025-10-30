@@ -116,8 +116,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// <summary>
     /// 追踪玩家使用Heartcarver击杀神明吞噬者
     /// </summary>
-    internal class DoGQuestTracker : GlobalNPC//你逼我的
+    internal class DoGQuestTracker : GlobalNPC, IWorldInfo
     {
+        void IWorldInfo.OnWorldLoad() {
+            DoGQuestRewardTrigger.Spawned = false;
+            DoGQuestRewardTrigger.RandomTimer = 0;
+        }
+
         private static void Check() {
             Player player = Main.LocalPlayer;
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {

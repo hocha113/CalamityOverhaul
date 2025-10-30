@@ -128,10 +128,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class SupCalVictoryNPC : GlobalNPC
+    internal class SupCalVictoryNPC : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
+
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+        }
 
         public override bool PreAI(NPC npc) {
             if (!FirstMetSupCal.ThisIsToFight) {

@@ -83,10 +83,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class SupCalDefeatNPC : GlobalNPC
+    internal class SupCalDefeatNPC : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+        }
+
         public override void OnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<SupremeCalamitas>() && Main.LocalPlayer.GetItem().type == HalibutOverride.ID) {
                 Spawned = true;

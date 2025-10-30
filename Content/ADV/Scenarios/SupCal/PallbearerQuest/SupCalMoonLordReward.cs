@@ -137,10 +137,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
         }
     }
 
-    internal class SupCalMoonLordRewardNPC : GlobalNPC
+    internal class SupCalMoonLordRewardNPC : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+        }
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == NPCID.MoonLordCore) {
                 Spawned = true;

@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
-    internal class FirstMetSupCal : ADVScenarioBase, ILocalizedModType
+    internal class FirstMetSupCal : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override string Key => nameof(FirstMetSupCal);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+
+        void IWorldInfo.OnWorldLoad() {
+            ThisIsToFight = false;
+        }
 
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
@@ -247,10 +251,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class FirstMetSupCalNPC : GlobalNPC
+    internal class FirstMetSupCalNPC : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+        }
+
         public override void OnKill(NPC npc) {
             if (npc.type == ModContent.NPCType<CalamitasClone>()) {
                 Spawned = true;

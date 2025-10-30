@@ -7,8 +7,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios
 {
-    internal class GiftScenarioNPC : GlobalNPC
+    internal class GiftScenarioNPC : GlobalNPC, IWorldInfo
     {
+        void IWorldInfo.OnWorldLoad() {
+            foreach(var giftScenario in GiftScenarioBase.BossIDToInds.Values) {
+                GiftScenarioBase.SpawnedDic[giftScenario] = false;
+            }
+        }
+
         public override void OnKill(NPC npc) {
             if (GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var giftScenarioBase)) {
                 GiftScenarioBase.SpawnedDic[giftScenarioBase] = true;

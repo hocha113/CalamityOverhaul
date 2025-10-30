@@ -108,14 +108,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    internal class SupCalPlayerDefeatTracker : GlobalNPC
+    internal class SupCalPlayerDefeatTracker : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
 
-        public override bool InstancePerEntity => true;
-
         public static bool hasRecordedDeath = false;
+
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+            hasRecordedDeath = false;
+        }
 
         public override bool PreAI(NPC npc) {
             if (!FirstMetSupCal.ThisIsToFight) {

@@ -143,8 +143,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// <summary>
     /// 追踪玩家使用扶柩者击杀亵渎天神
     /// </summary>
-    internal class PallbearerQuestTracker : GlobalNPC
+    internal class PallbearerQuestTracker : GlobalNPC, IWorldInfo
     {
+        void IWorldInfo.OnWorldLoad() {
+            PallbearerQuestRewardTrigger.Spawned = false;
+            PallbearerQuestRewardTrigger.RandomTimer = 0;
+        }
+
         public override void OnKill(NPC npc) {
             if (npc.type != ModContent.NPCType<Providence>()) {
                 return;
