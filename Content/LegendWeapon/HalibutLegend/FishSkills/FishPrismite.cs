@@ -120,6 +120,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spiralIntensity = 1f;
             }
 
+            if (tileCollideCooltimer > 0) {
+                tileCollideCooltimer--;
+            }
+
             //应用螺旋偏移
             Vector2 perpendicular = baseVelocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
             float spiralOffset = (float)Math.Sin(spiralPhase) * 3f * spiralIntensity * (1f - generation * 0.3f);
@@ -221,7 +225,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnImpactEffect(Projectile.Center);
         }
 
+        private int tileCollideCount;
+        private int tileCollideCooltimer;
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (tileCollideCooltimer > 0) {
+                return false;
+            }
+
             //更有力量感的反弹
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * 0.9f;
@@ -240,6 +250,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
 
+            if (++tileCollideCount > 6) {//允许反弹6次
+                Projectile.Kill();//超过反弹次数后消失
+            }
+
+            tileCollideCooltimer = 22;
             return false;
         }
 
