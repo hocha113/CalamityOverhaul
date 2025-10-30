@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -35,7 +36,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         //public override void SetStaticDefaults() {
@@ -93,7 +94,7 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Start<SupCalMoonLordReward>();
+            ScenarioManager.Start<EternalBlazingNow>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

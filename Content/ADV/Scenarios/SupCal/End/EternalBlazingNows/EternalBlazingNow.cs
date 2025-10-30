@@ -95,10 +95,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSolemn, silhouette: false);
 
             //注册至尊灾厄立绘（使用剪影效果）
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[0]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: true);
 
-            DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[5]);
+            DialogueBoxBase.RegisterPortrait(Rolename2.Value + supCalDespise, ADVAsset.SupCalADV[3]);
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value + supCalDespise, silhouette: true);
 
             //检查是否拥有比目鱼
