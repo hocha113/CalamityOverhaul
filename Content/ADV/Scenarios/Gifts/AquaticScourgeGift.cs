@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "硫酸海是个有趣的地方，那里的生物都在问同一个问题：'为什么我还活着？'");
             L2 = this.GetLocalization(nameof(L2), () => "棱镜鱼，它的鳞片能折射出你从未见过的颜色。主要是因为它们不该存在");
             L3 = this.GetLocalization(nameof(L3), () => "盯着它看会让你的视觉系统重启，有点像强制更新，但更痛苦");
-            L4 = this.GetLocalization(nameof(L4), () => "最后在光线暗淡的地方使用，不然感觉会像嗑了似的");
+            L4 = this.GetLocalization(nameof(L4), () => "最好在光线暗淡的地方使用，不然感觉会像嗑了似的");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);
