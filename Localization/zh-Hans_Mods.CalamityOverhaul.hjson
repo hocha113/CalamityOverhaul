@@ -1256,6 +1256,7 @@ Items: {
 			'''
 			生成三把额外的仪式匕首围绕玩家旋转
 			蓄力完成后飞向目标
+			右键进行短距离突刺
 			'''
 	}
 
@@ -1677,6 +1678,7 @@ Projectiles: {
 	PandemoniumFirePillar.DisplayName: 万魔殿火柱
 	PandemoniumRSkill.DisplayName: 万魔殿超位终结
 	JusticeCrossMark.DisplayName: 正义裁决
+	// HeartcarverDash.DisplayName: Heartcarver Dash
 }
 
 Configs: {

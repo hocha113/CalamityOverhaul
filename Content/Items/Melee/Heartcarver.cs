@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Particles;
 using CalamityOverhaul.Content.MeleeModify.Core;
+using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -19,6 +20,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class Heartcarver : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
+
+        public override void SetStaticDefaults() {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        }
 
         public override void SetDefaults() {
             Item.width = 52;
@@ -52,8 +57,27 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
+        public override bool CanUseItem(Player player) {
+            if (player.altFunctionUse == 2) {
+                if (player.CountProjectilesOfID<HeartcarverDash>() > 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override bool AltFunctionUse(Player player) => true;
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
+            //右键冲刺突击
+            if (player.altFunctionUse == 2) {
+                Projectile.NewProjectile(source, position, velocity.SafeNormalize(Vector2.Zero), 
+                    ModContent.ProjectileType<HeartcarverDash>(), (int)(damage * 1.5f), knockback * 2f, player.whoAmI);
+                return false;
+            }
+            
+            //普通左键攻击
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
@@ -120,6 +144,303 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Bleeding, 180);
+        }
+    }
+
+    /// <summary>
+    /// 刻心者冲刺突击弹幕
+    /// </summary>
+    internal class HeartcarverDash : BaseHeldProj
+    {
+        public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
+
+        private const int DashDuration = 25; //冲刺持续时间
+        private const float DashSpeed = 35f; //冲刺速度
+        private float currentDashSpeed;
+        private Vector2 dashDirection;
+        private int hitCount; //击中计数
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+
+        public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Generic;
+            Projectile.width = 60;
+            Projectile.height = 60;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = DashDuration;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 8;
+        }
+
+        public override void AI() {
+            if (!Owner.active || Owner.dead) {
+                Projectile.Kill();
+                return;
+            }
+
+            //初始化冲刺
+            if (Projectile.localAI[0] == 0f) {
+                InitializeDash();
+                Projectile.localAI[0] = 1f;
+            }
+
+            //更新冲刺状态
+            UpdateDashMovement();
+
+            //更新视觉效果
+            UpdateVisualEffects();
+
+            //给予玩家免疫帧
+            Owner.GivePlayerImmuneState(4);
+
+            //锁定玩家
+            Projectile.Center = Owner.Center;
+            Owner.heldProj = Projectile.whoAmI;
+        }
+
+        private void InitializeDash() {
+            //计算冲刺方向
+            dashDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
+            currentDashSpeed = DashSpeed;
+
+            //播放冲刺音效
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { 
+                Volume = 0.7f, 
+                Pitch = -0.3f 
+            }, Owner.Center);
+
+            SoundEngine.PlaySound(SoundID.Item71 with { 
+                Volume = 0.5f, 
+                Pitch = 0.2f 
+            }, Owner.Center);
+
+            //生成冲刺起始特效
+            SpawnDashStartEffect();
+        }
+
+        private void UpdateDashMovement() {
+            Projectile.direction = Math.Sign(dashDirection.X);
+
+            //冲刺逐渐减速
+            float progress = 1f - (Projectile.timeLeft / (float)DashDuration);
+            currentDashSpeed = MathHelper.Lerp(DashSpeed, DashSpeed * 0.3f, CWRUtils.EaseOutCubic(progress));
+
+            //应用冲刺速度
+            Projectile.velocity = dashDirection * currentDashSpeed;
+
+            //更新旋转
+            Projectile.rotation = dashDirection.ToRotation() + (Projectile.direction > 0 ? MathHelper.PiOver4 : -MathHelper.Pi - MathHelper.PiOver4);
+
+            //更新玩家朝向
+            Owner.direction = Projectile.direction;
+            Owner.Center = Projectile.Center;
+            Owner.itemTime = 2;
+            Owner.itemAnimation = 2;
+        }
+
+        private void UpdateVisualEffects() {
+            //生成血色拖尾粒子
+            if (Main.rand.NextBool(2)) {
+                Vector2 spawnPos = Owner.Center + Main.rand.NextVector2Circular(30f, 30f);
+                Dust trail = Dust.NewDustPerfect(
+                    spawnPos,
+                    DustID.Blood,
+                    -dashDirection * Main.rand.NextFloat(2f, 5f),
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.2f, 1.8f)
+                );
+                trail.noGravity = true;
+                trail.fadeIn = 1.1f;
+            }
+
+            //额外的冲击波效果
+            if (Projectile.timeLeft % 5 == 0) {
+                SpawnImpactRing();
+            }
+
+            //照明效果
+            Lighting.AddLight(Owner.Center, 0.9f, 0.2f, 0.2f);
+        }
+
+        private void SpawnDashStartEffect() {
+            //爆发式粒子效果
+            for (int i = 0; i < 30; i++) {
+                float angle = MathHelper.TwoPi * i / 30f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 15f);
+
+                Dust burst = Dust.NewDustPerfect(
+                    Owner.Center,
+                    DustID.Blood,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                burst.noGravity = true;
+                burst.fadeIn = 1.3f;
+            }
+
+            //环形冲击波
+            for (int i = 0; i < 12; i++) {
+                float angle = MathHelper.TwoPi * i / 12f;
+                Vector2 velocity = angle.ToRotationVector2() * 8f;
+
+                AltSparkParticle spark = new AltSparkParticle(
+                    Owner.Center,
+                    velocity,
+                    false,
+                    20,
+                    Main.rand.NextFloat(2f, 3f),
+                    Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat())
+                );
+                GeneralParticleHandler.SpawnParticle(spark);
+            }
+        }
+
+        private void SpawnImpactRing() {
+            //环形粒子效果
+            for (int i = 0; i < 8; i++) {
+                float angle = MathHelper.TwoPi * i / 8f;
+                Vector2 velocity = angle.ToRotationVector2() * 3f;
+
+                Dust ring = Dust.NewDustPerfect(
+                    Owner.Center,
+                    DustID.Blood,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.2f, 1.6f)
+                );
+                ring.noGravity = true;
+                ring.fadeIn = 1.1f;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //击中音效
+            SoundEngine.PlaySound(SoundID.NPCHit18 with { 
+                Volume = 0.6f, 
+                Pitch = 0.3f 
+            }, target.Center);
+
+            //流血Buff
+            target.AddBuff(BuffID.Bleeding, 300);
+
+            //击中特效
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Dust hitDust = Dust.NewDustPerfect(
+                    target.Center,
+                    DustID.Blood,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.2f)
+                );
+                hitDust.noGravity = true;
+                hitDust.fadeIn = 1.2f;
+            }
+
+            //击中计数
+            hitCount++;
+
+            //每击中3个敌人额外爆发一次
+            if (hitCount % 3 == 0) {
+                SpawnDashStartEffect();
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            //结束时的粒子效果
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+                Dust killDust = Dust.NewDustPerfect(
+                    Owner.Center,
+                    DustID.Blood,
+                    velocity,
+                    100,
+                    default,
+                    Main.rand.NextFloat(1.3f, 2f)
+                );
+                killDust.noGravity = true;
+            }
+
+            //重置玩家速度
+            Owner.velocity *= 0.5f;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Vector2 drawPos = Owner.GetPlayerStabilityCenter() - Main.screenPosition;
+            Rectangle sourceRect = texture.Frame(1, 1);
+            Vector2 origin = sourceRect.Size() / 2f;
+            SpriteEffects spriteEffects = Projectile.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            //绘制残影拖尾
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
+
+                float progress = 1f - i / (float)Projectile.oldPos.Length;
+                float alpha = progress * 0.8f;
+                float scale = Projectile.scale * MathHelper.Lerp(0.7f, 1f, progress);
+
+                Color trailColor = Color.Lerp(
+                    new Color(200, 50, 50),
+                    new Color(255, 100, 100),
+                    progress
+                ) * alpha;
+
+                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+
+                Main.spriteBatch.Draw(
+                    texture,
+                    trailPos,
+                    sourceRect,
+                    trailColor,
+                    Projectile.rotation,
+                    origin,
+                    scale,
+                    spriteEffects,
+                    0
+                );
+            }
+
+            //绘制主体
+            Main.spriteBatch.Draw(
+                texture,
+                drawPos,
+                sourceRect,
+                lightColor,
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                spriteEffects,
+                0
+            );
+
+            //发光效果
+            Color glowColor = new Color(220, 50, 50) * 0.6f;
+            Main.spriteBatch.Draw(
+                texture,
+                drawPos,
+                sourceRect,
+                glowColor,
+                Projectile.rotation,
+                origin,
+                Projectile.scale * 1.1f,
+                spriteEffects,
+                0
+            );
+
+            return false;
         }
     }
 

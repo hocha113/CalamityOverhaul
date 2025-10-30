@@ -1285,6 +1285,7 @@ Items: {
 			'''
 			Generate three additional ritual daggers to rotate around the player.
 			After the charging is completed, fly towards the target.
+			Right-click to perform a short-range thrust.
 			''' */
 	}
 
@@ -1706,6 +1707,7 @@ Projectiles: {
 	// PandemoniumFirePillar.DisplayName: Pandemonium Flame Pillar
 	// PandemoniumRSkill.DisplayName: Pandemonium's Judgment
 	// JusticeCrossMark.DisplayName: Justice Cross Mark
+	// HeartcarverDash.DisplayName: Heartcarver Dash
 }
 
 Configs: {
