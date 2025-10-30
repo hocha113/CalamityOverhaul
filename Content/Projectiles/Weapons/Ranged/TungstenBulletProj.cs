@@ -31,10 +31,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override void OnKill(int timeLeft) {
-
-        }
-
         public override bool OnTileCollide(Vector2 oldVelocity) {
             for (int i = 0; i < 4; i++) {
                 PRT_Spark spark = new PRT_Spark(Projectile.Center, VaultUtils.RandVr(14, 26), false, 4, 0.8f, Color.White);

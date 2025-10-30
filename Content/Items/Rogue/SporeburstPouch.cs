@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
                 Projectile.velocity.Y += 0.15f;//轻微增加重力
             }
 
-            //新增光效，潜行攻击时更亮，颜色也不同
+            //光效，潜行攻击时更亮，颜色也不同
             float lightBrightness = IsStealthStrike ? 0.7f : 0.4f;
             Color lightColor = IsStealthStrike ? Color.Purple : Color.Cyan;
             Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * lightBrightness);
@@ -164,7 +164,6 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetStaticDefaults() {
-            //新增弹丸的拖尾效果
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }

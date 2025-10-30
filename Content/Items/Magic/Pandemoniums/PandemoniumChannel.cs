@@ -29,9 +29,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private int attackCooldown = 0;
         private const int BaseAttackInterval = 50;
 
-        //新增：连击系统
+        //连击系统
         private int comboCounter = 0;
-        private int lastAttackType = -1;
 
         //符文动画数据 - 多层系统
         private List<RuneData>[] runeLayers = new List<RuneData>[3];
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             public float DistanceModifier;
             public float BaseDistance;
             public float Alpha = 0f;
-            //新增：火焰动画相关
+            //火焰动画相关
             public int FireFrame = 0;
             public float FireFrameCounter = 0;
             public float IntensityPulse = 0;
@@ -623,7 +622,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             //更新连击计数
             comboCounter++;
-            lastAttackType = attackPattern;
         }
 
         //改进的螺旋镰刀波 - 镰刀会螺旋展开并互相追踪
@@ -656,7 +654,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //新增：追踪镰刀环 - 镰刀会主动寻找并锁定目标
+        //追踪镰刀环 - 镰刀会主动寻找并锁定目标
         private void ReleaseHomingScytheRing(int tier, int count) {
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.2f, Pitch = -0.3f }, Projectile.Center);
 
@@ -730,7 +728,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //新增：集束火球 - 火球会在空中形成阵型然后一起爆炸
+        //集束火球 - 火球会在空中形成阵型然后一起爆炸
         private void ReleaseClusterFireball(int clusterCount) {
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.4f, Pitch = -0.4f }, Projectile.Center);
 
@@ -760,7 +758,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //新增：闪电链 - 在法阵边缘生成闪电球，会在敌人之间跳跃
+        //闪电链 - 在法阵边缘生成闪电球，会在敌人之间跳跃
         private void ReleaseLightningChain() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
 
@@ -785,7 +783,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //新增：硫磺血雨 - 从法阵上方落下大量硫磺火球
+        //硫磺血雨 - 从法阵上方落下大量硫磺火球
         private void ReleaseBrimstoneRain() {
             SoundEngine.PlaySound(SoundID.Item73 with { Volume = 1.3f, Pitch = -0.5f }, Projectile.Center);
 

@@ -385,9 +385,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float pillarWidth = 0f;
         private float targetWidth = 140f;
 
-        //新增：火焰核心效果参数
+        //火焰核心效果参数
         private float coreIntensity = 0f;
-        private float heatDistortion = 0f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 10;
@@ -430,9 +429,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 pillarWidth *= 0.92f;
                 coreIntensity *= 0.88f;
             }
-
-            //热浪扭曲效果
-            heatDistortion = (float)Math.Sin(Projectile.localAI[0] * 0.15f) * 0.5f;
 
             float progress = 1f - Projectile.timeLeft / 85f;
             //优化颜色渐变，让火焰更有层次感
@@ -569,7 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //新增：绘制火柱核心层，提供最强的发光效果
+        //绘制火柱核心层，提供最强的发光效果
         private void DrawPillarCore() {
             List<ColoredVertex> vertices = new();
 

@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private float currentScrollOffset = 0f;//当前实际滚动偏移量（用于平滑动画）
         private float scrollVelocity = 0f;//滚动速度（用于弹簧效果）
         public const int maxVisibleSlots = 3;//最多同时显示3个技能槽位
-        //新增: 分段滚动队列
+        //分段滚动队列
         private int queuedScrollSteps = 0; //尚未执行的增量(正右负左)
         private bool segmentInProgress = false; //当前是否在执行单步滚动动画
 
