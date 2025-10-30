@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public static Asset<Texture2D> MaskLaserLine = null;
         
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 400;
+            Projectile.width = Projectile.height = 2400;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Projectile.frameCounter = 0;
             }
             
-            Projectile.scale += 0.025f;
+            Projectile.scale += 0.065f;
 
             if (Projectile.ai[1] < 4 && Projectile.ai[2] == 0) {
                 Projectile.ai[1]++;
@@ -561,7 +561,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Rectangle rectangle = value.GetRectangle(frameIndex, maxFrame);
             Vector2 origin = new Vector2(rectangle.Width / 2, rectangle.Height);
-            
+            Vector2 drawPos = Projectile.Bottom - Main.screenPosition + new Vector2(0, -22 * Projectile.scale) + new Vector2(0, -Projectile.height / 3);
             //发光层
             Color glowColor = Color.Lerp(Color.Gold, Color.Yellow, 
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.5f + 0.5f);
@@ -571,13 +571,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 float glowScale = Projectile.scale * (1f + i * 0.1f);
                 float glowAlpha = (1f - i * 0.3f) * 0.5f;
                 
-                Main.spriteBatch.Draw(value, Projectile.Bottom - Main.screenPosition + new Vector2(0, 22 * Projectile.scale)
+                Main.spriteBatch.Draw(value, drawPos
                     , rectangle, glowColor * glowAlpha, Projectile.rotation, origin
                     , glowScale, SpriteEffects.None, 0);
             }
             
             //主体
-            Main.spriteBatch.Draw(value, Projectile.Bottom - Main.screenPosition + new Vector2(0, 22 * Projectile.scale)
+            Main.spriteBatch.Draw(value, drawPos
                 , rectangle, Color.White, Projectile.rotation, origin
                 , Projectile.scale, SpriteEffects.None, 0);
         }
@@ -661,7 +661,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     {
         public Vector2 Center;
         public float Radius;
-        public float MaxRadius = 350f;
+        public float MaxRadius = 1350f;
         public int Life;
         public int MaxLife = 40;
         public Color WaveColor;
