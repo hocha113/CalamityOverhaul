@@ -222,7 +222,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                             return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
                         }
                         return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero);
+                    }, offset: Vector2.Zero
+                    , styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone); //使用硫磺火风格
             }
             protected override void OnScenarioComplete() {
                 //停止粒子生成
