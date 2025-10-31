@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul
         SupCalVictoryNPC,
         DoGQuestTracker,
         PallbearerQuestTracker,
+        EternalBlazingNowNPC,
         HalibutMouseWorld,
     }
 
@@ -70,6 +72,7 @@ namespace CalamityOverhaul
             SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
             PallbearerQuestTracker.NetHandle(type, reader, whoAmI);
             DoGQuestTracker.NetHandle(type, reader, whoAmI);
+            EternalBlazingNowNPC.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
         }
     }

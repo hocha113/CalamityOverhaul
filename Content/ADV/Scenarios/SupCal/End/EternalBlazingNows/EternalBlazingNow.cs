@@ -1,10 +1,8 @@
 ﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.IO;
 using Terraria;
-using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -85,7 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
 
             Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
-            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "你在这条路上无论走多远，为此要变成什么样子，我都会陪着你");
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边");
         }
 
         protected override void OnScenarioStart() {
@@ -186,7 +184,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             protected override void Build() {
                 //选择阻止比目鱼
                 Add(Rolename1.Value + helenShock, Choice1Line1.Value);
-                Add(Rolename1.Value + helenSolemn, Choice1Line2.Value);
+                Add(Rolename1.Value, Choice1Line2.Value);
             }
         }
 
@@ -206,18 +204,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 return;
             }
 
-            //必须击败了至尊灾厄
-            if (!InWorldBossPhase.Downed30.Invoke()) {
-                return;
-            }
-
-            //如果玩家选择了战斗路线（FirstMetSupCal场景），则不触发此坏结局
-            if (save.SupCalChoseToFight) {
-                return;
-            }
-
-            //必须拥有比目鱼
-            if (!halibutPlayer.HasHalubut) {
+            //如果玩家选择了战斗路线（FirstMetSupCal场景），则触发此坏结局
+            //TODO:条件不应该这样，但目前还未完成的状态下只能这样设计了
+            if (!save.SupCalChoseToFight) {
                 return;
             }
 
@@ -241,11 +230,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     /// <summary>
     /// 用于检测至尊灾厄击败并触发场景的全局NPC类
     /// </summary>
-    internal class EternalBlazingNowNPC : GlobalNPC
+    internal class EternalBlazingNowNPC : GlobalNPC, IWorldInfo
     {
         public static bool Spawned = false;
         public static int RandomTimer;
-
+        void IWorldInfo.OnWorldLoad() {
+            Spawned = false;
+            RandomTimer = 0;
+        }
         public override void OnKill(NPC npc) {
             //检测至尊灾厄被击败
             if (npc.type == ModContent.NPCType<SupremeCalamitas>()) {
@@ -257,12 +249,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         RandomTimer = 60 * Main.rand.Next(3, 5); //3-5秒缓冲时间
                     }
                 }
+                //仅服务器发送
+                if (VaultUtils.isServer) {
+                    ModPacket packet = CWRMod.Instance.GetPacket();
+                    packet.Write((byte)CWRMessageType.EternalBlazingNowNPC);
+                    packet.Send();
+                }
             }
         }
 
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (!VaultUtils.isClient) {
                 return; //仅客户端处理
+            }
+            if (type == CWRMessageType.EternalBlazingNowNPC) {
+                Spawned = true;
+                RandomTimer = 60 * Main.rand.Next(3, 5);//给一个3到5秒的缓冲时间，打完立刻触发不太合适
             }
         }
     }
