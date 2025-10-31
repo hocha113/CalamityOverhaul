@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Line7 = this.GetLocalization(nameof(Line7), () => "所以我想最后拜托你们一件事");
             Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现今还存在一缕硫磺火，'我'就不会消亡");
             Line9 = this.GetLocalization(nameof(Line9), () => "但我的意识在沉沉浮浮的火海中终将被消磨殆尽");
-            Line10 = this.GetLocalization(nameof(Line10), () => "我有预感，如果没有遇到你们，我最多只能再撑30年");
+            Line10 = this.GetLocalization(nameof(Line10), () => "我有预感，如果没有遇到你们，我只能再撑30年");
             Line11 = this.GetLocalization(nameof(Line11), () => "......你希望他代替你的意识？");
             Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是必须的");
             Line13 = this.GetLocalization(nameof(Line13), () => "当我意识完全消散后，我身上近乎完整的硫磺火将会复苏，彻底焚烧掉整个世界");
@@ -128,69 +128,51 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 //有比目鱼版本对话
                 Add(Rolename1.Value + helenShock, Line1.Value);
                 Add(Rolename1.Value + helenShock, Line2.Value);
-                Add(Rolename2.Value, Line3.Value);
-                Add(Rolename2.Value, Line4.Value);
+                Add(Rolename1.Value + helenShock, Line3.Value);
+                Add(Rolename1.Value + helenShock, Line4.Value);
                 Add(Rolename2.Value, Line5.Value);
-                Add(Rolename1.Value + helenSolemn, Line6.Value);
-                Add(Rolename2.Value + supCalDespise, Line7.Value);
-                Add(Rolename1.Value + helenShock, Line8.Value);
+                Add(Rolename2.Value, Line6.Value);
+                Add(Rolename2.Value, Line7.Value);
+                Add(Rolename2.Value + supCalDespise, Line8.Value);
+                Add(Rolename2.Value, Line9.Value);
+                Add(Rolename2.Value, Line10.Value);
+                Add(Rolename1.Value + helenShock, Line11.Value);
+                Add(Rolename2.Value + supCalDespise, Line12.Value);
+                Add(Rolename2.Value + supCalDespise, Line13.Value);
+                Add(Rolename2.Value + supCalDespise, Line14.Value);
+                Add(Rolename1.Value + helenShock, Line15.Value);
 
                 //添加选项
-                AddWithChoices(Rolename1.Value + helenSolemn, QuestionLine.Value, [
+                AddWithChoices(Rolename1.Value + helenShock, QuestionLine.Value, [
                     new(Choice1Text.Value, () => {
                         //选择阻止比目鱼
-                        Add(Rolename1.Value + helenShock, Choice1Line1.Value, styleOverride: DefaultDialogueStyle);
-                        Add(Rolename1.Value, Choice1Line2.Value, styleOverride: DefaultDialogueStyle, onComplete: () => Choice1());
-
-                        DialogueUIRegistry.Current?.EnqueueDialogue(
-                            Rolename1.Value + helenShock,
-                            Choice1Line1.Value,
-                            onFinish: () => {
-                                DialogueUIRegistry.Current?.EnqueueDialogue(
-                                    Rolename1.Value,
-                                    Choice1Line2.Value,
-                                    onFinish: () => Choice1()
-                                );
-                            }
-                        );
+                        Add(Rolename2.Value + supCalDespise, Choice1Line1.Value);
+                        Add(Rolename1.Value, Choice1Line2.Value, onComplete: () => Choice1());
                     }),
-                    new(Choice2Text.Value, () => {
-                        //选择保持沉默，直接触发演出并结束场景
-                        Choice2();
-                    }),
+                    new(Choice2Text.Value, Choice2),
                 ]);
             }
             else {
                 //无比目鱼版本 - 简化对话后直接结束
-                Add(Rolename2.Value, Line3.Value);
-                Add(Rolename2.Value, Line4.Value);
-                Add(Rolename2.Value, Line5.Value, onComplete: () => Complete());
+                Add(Rolename2.Value, Line5.Value);
+                Add(Rolename2.Value, Line6.Value);
+                Add(Rolename2.Value, Line7.Value, onComplete: Complete);
             }
         }
 
         private void Choice1() {
             //选择1：阻止比目鱼拼命
-            //海伦透露真名，承诺陪伴
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice1 = true;
             }
-
             Complete();
         }
 
         private void Choice2() {
             //选择2：保持沉默
-            //触发演出效果
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice2 = true;
             }
-
-            //播放音效
-            SoundEngine.PlaySound(CWRSound.ShurikenOut with { Volume = 0.7f, Pitch = -0.3f });
-
-            //这里可以添加特殊的视觉效果或粒子效果
-            //例如：屏幕震动、闪光等
-
             Complete();
         }
 

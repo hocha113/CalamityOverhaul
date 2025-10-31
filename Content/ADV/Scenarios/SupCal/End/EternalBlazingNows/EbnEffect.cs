@@ -1,10 +1,12 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
@@ -256,6 +258,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             {
                 SpawnMassiveFlameBurst();
             }
+
+            foreach (var p in Main.ActiveProjectiles) {
+                if (p.type == ModContent.ProjectileType<ClonePlayer>()) {
+                    //遍历生成火焰粒子，表示被封锁过去
+                    for (int i = 0; i < 8; i++) {
+                        int dust = Dust.NewDust(p.position, p.width, p.height, DustID.RedTorch, Main.rand.NextFloat(-2f, 2f)
+                            , Main.rand.NextFloat(-2f, 2f), 150, Color.OrangeRed, Main.rand.NextFloat(1.5f, 2.5f));
+                        Main.dust[dust].noGravity = true;
+                    }
+                }
+            }
+            CloneFish.Deactivate(Main.LocalPlayer);//强行设置消失
 
             // 播放危机音乐
             Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");

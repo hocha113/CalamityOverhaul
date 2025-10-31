@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -94,7 +93,7 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            EbnSkyEffect.IsActive = !EbnSkyEffect.IsActive;
+            ScenarioManager.Start<EternalBlazingNow>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
