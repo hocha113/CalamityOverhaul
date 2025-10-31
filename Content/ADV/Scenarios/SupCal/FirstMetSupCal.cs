@@ -3,7 +3,6 @@ using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.IO;

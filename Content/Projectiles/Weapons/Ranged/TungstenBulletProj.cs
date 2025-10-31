@@ -85,8 +85,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             //击中音效
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.4f, Pitch = 0.2f }, Projectile.Center);
             if (Projectile.numHits == 0)
-            //击中特效
-            SpawnImpactEffect(Projectile.Center, hit.Crit);
+                //击中特效
+                SpawnImpactEffect(Projectile.Center, hit.Crit);
         }
 
         private void SpawnImpactEffect(Vector2 hitPosition, bool isCrit) {

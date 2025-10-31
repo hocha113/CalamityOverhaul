@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             RasterizerState normalState = new RasterizerState() { ScissorTestEnable = false };
             Rectangle originalScissor = spriteBatch.GraphicsDevice.ScissorRectangle;//裁剪区域：只在面板内绘制技能图标
             Rectangle clipping = new(20, 0, Main.screenWidth, Main.screenHeight - 20);//别问我这个X=20是干什么的，问就是手调的，问就是刚刚好
-            
+
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
                     , DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);

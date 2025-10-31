@@ -436,7 +436,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (drawPlayer && cloneAlpha > 0.01f) {
                 cloneRenderPlayer ??= new Player();
                 var cp = cloneRenderPlayer;
-                
+
                 cp.CopyVisuals(Owner);
                 cp.ResetEffects();
                 cp.position = snap.Position;

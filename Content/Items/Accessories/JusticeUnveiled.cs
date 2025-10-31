@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -249,30 +248,30 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 if (Projectile.ai[0].TryGetNPC(out var target)) {
                     JusticeUnveiled.SpawnCrossMarker(target, Projectile.owner);
                 }
-                
+
                 spawn = true;
             }
             //蓄能阶段
             if (Projectile.timeLeft > 160) {
                 float progress = (190 - Projectile.timeLeft) / 30f;
                 chargeIntensity = MathHelper.Lerp(0f, 1f, CWRUtils.EaseOutCubic(progress));
-                
+
                 //生成充能粒子
                 if (Main.rand.NextBool(2)) {
                     SpawnChargeParticle();
                 }
-                
+
                 //生成闪电
                 if (Main.rand.NextBool(5)) {
                     SpawnChargeLightning();
                 }
             }
-            
+
             //金色光芒粒子
-            PRT_Spark spark = new PRT_Spark(Projectile.Center, new Vector2(0, 2), false, 22, 1.2f, 
+            PRT_Spark spark = new PRT_Spark(Projectile.Center, new Vector2(0, 2), false, 22, 1.2f,
                 Color.Lerp(Color.Gold, Color.Yellow, chargeIntensity));
             PRTLoader.AddParticle(spark);
-            
+
             //更新闪电
             for (int i = lightningBolts.Count - 1; i >= 0; i--) {
                 lightningBolts[i].Update();
@@ -280,15 +279,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     lightningBolts.RemoveAt(i);
                 }
             }
-            
+
             //音效提示
             if (Projectile.timeLeft == 160) {
-                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { 
-                    Pitch = -0.3f, 
-                    Volume = 0.7f 
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
+                    Pitch = -0.3f,
+                    Volume = 0.7f
                 }, Projectile.Center);
             }
-            
+
             //震屏预警
             if (Projectile.timeLeft < 20 && Projectile.timeLeft > 10) {
                 if (CWRServerConfig.Instance.ScreenVibration) {
@@ -303,11 +302,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     ));
                 }
             }
-            
+
             //强化照明效果
-            Lighting.AddLight(Projectile.Center, 
-                1.5f * chargeIntensity, 
-                1.2f * chargeIntensity, 
+            Lighting.AddLight(Projectile.Center,
+                1.5f * chargeIntensity,
+                1.2f * chargeIntensity,
                 0.3f * chargeIntensity);
         }
 
@@ -315,16 +314,16 @@ namespace CalamityOverhaul.Content.Items.Accessories
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float distance = Main.rand.NextFloat(80f, 150f);
             Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
-            Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * 
+            Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) *
                                Main.rand.NextFloat(4f, 8f) * (1f + chargeIntensity);
-            
-            BasePRT particle = new PRT_Light(spawnPos, velocity, 
-                Main.rand.NextFloat(0.6f, 1.2f), 
-                Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()), 
+
+            BasePRT particle = new PRT_Light(spawnPos, velocity,
+                Main.rand.NextFloat(0.6f, 1.2f),
+                Color.Lerp(Color.Gold, Color.OrangeRed, Main.rand.NextFloat()),
                 25, 1, 1.5f, hueShift: 0.0f);
             PRTLoader.AddParticle(particle);
         }
-        
+
         private void SpawnChargeLightning() {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             Vector2 direction = angle.ToRotationVector2();
@@ -340,32 +339,32 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
             , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
         }
-        
+
         public override bool PreDraw(ref Color lightColor) {
             //绘制闪电效果
             foreach (var bolt in lightningBolts) {
                 bolt.Draw(Main.spriteBatch);
             }
-            
+
             //绘制充能光环
             DrawChargeAura();
-            
+
             return false;
         }
-        
+
         private void DrawChargeAura() {
             if (chargeIntensity <= 0.1f) return;
-            
+
             Texture2D glowTex = CWRAsset.StarTexture.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            
+
             //多层光晕
             for (int i = 0; i < 4; i++) {
                 float scale = (1f + i * 0.3f) * chargeIntensity * 0.8f;
                 float alpha = (1f - i * 0.2f) * chargeIntensity * 0.6f;
                 Color color = Color.Lerp(Color.Gold, Color.OrangeRed, i / 4f) * alpha;
                 color.A = 0;
-                
+
                 Main.spriteBatch.Draw(
                     glowTex,
                     drawPos,
@@ -389,10 +388,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
         private int time;
         private readonly List<ExplosionWave> explosionWaves = new();
         private readonly List<ImpactSpark> impactSparks = new();
-        
+
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> MaskLaserLine = null;
-        
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 2400;
             Projectile.friendly = true;
@@ -432,7 +431,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (++time < 6) {
                 return;
             }
-            
+
             //初始化爆炸特效
             if (time == 6) {
                 InitializeExplosionEffects();
@@ -449,26 +448,26 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     }
                 }
             }
-            
+
             if (++Projectile.frameCounter > 3) {
                 frameIndex++;
-                
+
                 //关键帧触发
                 if (frameIndex == 4) {
                     TriggerMainImpact();
                 }
-                
+
                 if (frameIndex == 8) {
                     TriggerSecondaryImpact();
                 }
-                
+
                 if (frameIndex >= maxFrame) {
                     Projectile.Kill();
                     frameIndex = 0;
                 }
                 Projectile.frameCounter = 0;
             }
-            
+
             Projectile.scale += 0.065f;
 
             if (Projectile.ai[1] < 4 && Projectile.ai[2] == 0) {
@@ -483,32 +482,32 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             //更新特效
             UpdateExplosionEffects();
-            
+
             //强化照明
             float lightIntensity = (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi);
-            Lighting.AddLight(Projectile.Center, 
-                2f * lightIntensity, 
-                1.5f * lightIntensity, 
+            Lighting.AddLight(Projectile.Center,
+                2f * lightIntensity,
+                1.5f * lightIntensity,
                 0.5f * lightIntensity);
         }
-        
+
         private void InitializeExplosionEffects() {
             //生成初始冲击波
             for (int i = 0; i < 3; i++) {
                 explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 15f));
             }
-            
+
             //生成火花效果
             for (int i = 0; i < 80; i++) {
                 float angle = MathHelper.TwoPi * i / 80f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 30f);
                 impactSparks.Add(new ImpactSpark(Projectile.Center, velocity));
             }
-            
+
             //大量粒子爆发
             SpawnExplosionParticles(100);
         }
-        
+
         private void TriggerMainImpact() {
             //主要冲击
             if (CWRServerConfig.Instance.ScreenVibration) {
@@ -516,21 +515,21 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     Main.rand.NextVector2Unit(), 25f, 10f, 35, 1500f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
-            
+
             //音效
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { 
-                Volume = 1.5f, 
-                Pitch = -0.3f 
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
+                Volume = 1.5f,
+                Pitch = -0.3f
             }, Projectile.Center);
-            
+
             //额外冲击波
             for (int i = 0; i < 2; i++) {
                 explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 20f));
             }
-            
+
             SpawnExplosionParticles(150);
         }
-        
+
         private void TriggerSecondaryImpact() {
             //次级冲击
             if (CWRServerConfig.Instance.ScreenVibration) {
@@ -538,20 +537,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     Main.rand.NextVector2Unit(), 15f, 8f, 25, 1200f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
-            
-            SoundEngine.PlaySound(SoundID.Item62 with { 
-                Volume = 1.2f, 
-                Pitch = -0.2f 
+
+            SoundEngine.PlaySound(SoundID.Item62 with {
+                Volume = 1.2f,
+                Pitch = -0.2f
             }, Projectile.Center);
-            
+
             SpawnExplosionParticles(80);
         }
-        
+
         private void SpawnExplosionParticles(int count) {
             for (int i = 0; i < count; i++) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 40f);
-                
+
                 //金色火花
                 BasePRT spark = new PRT_Light(
                     Projectile.Center + Main.rand.NextVector2Circular(50f, 50f),
@@ -564,7 +563,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 PRTLoader.AddParticle(spark);
             }
         }
-        
+
         private void UpdateExplosionEffects() {
             //更新冲击波
             for (int i = explosionWaves.Count - 1; i >= 0; i--) {
@@ -573,7 +572,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     explosionWaves.RemoveAt(i);
                 }
             }
-            
+
             //更新火花
             for (int i = impactSparks.Count - 1; i >= 0; i--) {
                 impactSparks[i].Update();
@@ -599,7 +598,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             foreach (var wave in explosionWaves) {
                 wave.Draw(Main.spriteBatch);
             }
-            
+
             //绘制火花
             foreach (var spark in impactSparks) {
                 spark.Draw(Main.spriteBatch);
@@ -610,57 +609,57 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             //绘制主体
             DrawMainExplosion(lightColor);
-            
+
             return false;
         }
-        
+
         private void DrawLightBeam() {
-            Color drawColor = Color.Lerp(Color.Gold, Color.OrangeRed, 
+            Color drawColor = Color.Lerp(Color.Gold, Color.OrangeRed,
                 (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi));
             drawColor.A = 0;
-            
+
             //主光柱
             Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, drawColor
                 , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
                 , new Vector2(4000, Projectile.ai[1] * 0.05f * Projectile.scale), SpriteEffects.None, 0);
-            
+
             //附加光柱增强效果
-            Color accentColor = Color.Lerp(Color.Yellow, Color.White, 
+            Color accentColor = Color.Lerp(Color.Yellow, Color.White,
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.5f + 0.5f);
             accentColor.A = 0;
             accentColor *= 0.6f;
-            
+
             Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, accentColor
                 , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
                 , new Vector2(4000, Projectile.ai[1] * 0.03f * Projectile.scale), SpriteEffects.None, 0);
         }
-        
+
         private void DrawMainExplosion(Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Rectangle rectangle = value.GetRectangle(frameIndex, maxFrame);
             Vector2 origin = new Vector2(rectangle.Width / 2, rectangle.Height);
             Vector2 drawPos = Projectile.Bottom - Main.screenPosition + new Vector2(0, -22 * Projectile.scale) + new Vector2(0, -Projectile.height / 3);
             //发光层
-            Color glowColor = Color.Lerp(Color.Gold, Color.Yellow, 
+            Color glowColor = Color.Lerp(Color.Gold, Color.Yellow,
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.5f + 0.5f);
             glowColor.A = 0;
-            
+
             for (int i = 0; i < 3; i++) {
                 float glowScale = Projectile.scale * (1f + i * 0.1f);
                 float glowAlpha = (1f - i * 0.3f) * 0.5f;
-                
+
                 Main.spriteBatch.Draw(value, drawPos
                     , rectangle, glowColor * glowAlpha, Projectile.rotation, origin
                     , glowScale, SpriteEffects.None, 0);
             }
-            
+
             //主体
             Main.spriteBatch.Draw(value, drawPos
                 , rectangle, Color.White, Projectile.rotation, origin
                 , Projectile.scale, SpriteEffects.None, 0);
         }
     }
-    
+
     /// <summary>
     /// 命中敌人的十字标记弹幕
     /// </summary>
@@ -899,7 +898,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     }
 
     #region 特效辅助类
-    
+
     /// <summary>
     /// 闪电效果
     /// </summary>
@@ -936,7 +935,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public void Update() => Life++;
-        
+
         public bool IsExpired() => Life >= MaxLife;
 
         public void Draw(SpriteBatch sb) {
@@ -968,7 +967,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
     }
-    
+
     /// <summary>
     /// 爆炸冲击波
     /// </summary>
@@ -993,7 +992,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public void Update() {
             Life++;
             if (Life < StartDelay) return;
-            
+
             float progress = (Life - StartDelay) / (float)MaxLife;
             Radius = MathHelper.Lerp(0f, MaxRadius, CWRUtils.EaseOutQuad(progress));
         }
@@ -1002,7 +1001,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public void Draw(SpriteBatch sb) {
             if (Life < StartDelay) return;
-            
+
             float progress = (Life - StartDelay) / (float)MaxLife;
             float alpha = (1f - progress) * 0.7f;
             if (alpha <= 0.05f) return;
@@ -1039,7 +1038,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
     }
-    
+
     /// <summary>
     /// 冲击火花
     /// </summary>
@@ -1070,7 +1069,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Position += Velocity;
             Velocity *= 0.96f;
             Rotation += 0.1f;
-            
+
             float progress = Life / (float)MaxLife;
             Alpha = (float)Math.Sin((1f - progress) * MathHelper.PiOver2);
             Scale *= 0.98f;
@@ -1096,6 +1095,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             );
         }
     }
-    
+
     #endregion
 }

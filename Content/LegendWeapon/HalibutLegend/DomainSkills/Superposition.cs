@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             Player ghost = new Player();
-            
+
             ghost.CopyVisuals(Owner);
             ghost.ResetEffects();
             ghost.position = clone.Position - Owner.Size * 0.5f;

@@ -668,7 +668,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     potentialTargets.Add(npc);
                 }
             }
-            
+
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count;
                 Vector2 velocity = angle.ToRotationVector2() * 8f;

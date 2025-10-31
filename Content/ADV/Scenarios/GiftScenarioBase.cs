@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
     internal class GiftScenarioNPC : GlobalNPC, IWorldInfo
     {
         void IWorldInfo.OnWorldLoad() {
-            foreach(var giftScenario in GiftScenarioBase.BossIDToInds.Values) {
+            foreach (var giftScenario in GiftScenarioBase.BossIDToInds.Values) {
                 GiftScenarioBase.SpawnedDic[giftScenario] = false;
             }
         }

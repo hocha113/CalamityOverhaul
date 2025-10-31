@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.ADV
         private float panelFade = 0f;
         private float panelScale = 0f;
         private bool justOpened = false;
-        
+
         //海洋风格动画变量
         private float wavePhase = 0f;
         private float abyssPulse = 0f;
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.ADV
                 DefaultGiveDuration = give.Value;
             }
         }
-        
+
         public static void ShowReward(int itemId, int stack = 1, string text = null,
             int? appearDuration = null, int? holdDuration = null, int? giveDuration = null, bool requireClick = false,
             Func<Vector2> anchorProvider = null, Vector2? offset = null, Func<RewardStyle> styleProvider = null) {
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.ADV
         public override void Draw(SpriteBatch spriteBatch) {
             if (panelFade <= 0f) return;
             if (current == null && queue.Count == 0 && panelFade <= 0.01f) return;
-            
+
             Vector2 screenCenter = new(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
             Vector2 anchor = ResolveBasePosition(screenCenter);
             float alpha = panelFade;
@@ -480,18 +480,18 @@ namespace CalamityOverhaul.Content.ADV
                 c *= alpha * (0.92f + hoverGlow);
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
-            
+
             //波浪横线
             DrawOceanWaveLines(spriteBatch, rect, alpha * 0.65f);
-            
+
             //内边微光
-            Rectangle inner = rect; 
+            Rectangle inner = rect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * (0.08f + hoverGlow * 0.5f) * (0.4f + (float)Math.Sin(panelPulse * 1.3f) * 0.6f)));
-            
+
             //描边与角标
             DrawOceanFrame(spriteBatch, rect, alpha, hoverGlow);
-            
+
             //气泡与星光
             foreach (var b in bubbles) b.Draw(spriteBatch, alpha * 0.85f);
             foreach (var s in stars) s.Draw(spriteBatch, alpha * 0.5f);
@@ -707,7 +707,7 @@ namespace CalamityOverhaul.Content.ADV
 
             //根据风格调整文字颜色
             RewardStyle style = GetCurrentStyle();
-            Color nameGlow = style == RewardStyle.Brimstone 
+            Color nameGlow = style == RewardStyle.Brimstone
                 ? new Color(255, 150, 80) * (nameAlpha * 0.6f)
                 : new Color(140, 230, 255) * (nameAlpha * 0.6f);
             Color nameColor = style == RewardStyle.Brimstone
@@ -738,11 +738,11 @@ namespace CalamityOverhaul.Content.ADV
                 float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
                 //悬停时提示文字更亮
                 float hintAlpha = isHovering ? blink * alpha * 1.2f : blink * alpha * 0.7f;
-                
+
                 Color hintColor = style == RewardStyle.Brimstone
                     ? new Color(255, 160, 90) * hintAlpha
                     : new Color(140, 230, 255) * hintAlpha;
-                    
+
                 Utils.DrawBorderString(spriteBatch, hint, hp, hintColor, 0.7f);
             }
         }

@@ -1,4 +1,3 @@
-using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -250,8 +249,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 int y1 = (int)(DrawPosition.Y + t * PanelHeight);
                 int y2 = (int)(DrawPosition.Y + t2 * PanelHeight);
                 Rectangle r = new Rectangle((int)DrawPosition.X, y1, (int)PanelWidth, Math.Max(1, y2 - y1));
-                Color segColor = t < 0.5f 
-                    ? Color.Lerp(bgTop, bgMid, t * 2f) 
+                Color segColor = t < 0.5f
+                    ? Color.Lerp(bgTop, bgMid, t * 2f)
                     : Color.Lerp(bgMid, bgBottom, (t - 0.5f) * 2f);
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), segColor);
             }
@@ -283,7 +282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             //分割线
             Vector2 dividerStart = titlePos + new Vector2(0, 36);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - Padding * 2, 0);
-            DrawGradientLine(spriteBatch, dividerStart, dividerEnd, 
+            DrawGradientLine(spriteBatch, dividerStart, dividerEnd,
                 Color.Gold * alpha * 0.9f, Color.Gold * alpha * 0.1f, 2f);
 
             //描述文本
@@ -298,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
                 for (int i = 0; i < lines.Length; i++) {
                     Vector2 linePos = descPos + new Vector2(0, i * lineHeight);
-                    Utils.DrawBorderString(spriteBatch, lines[i], linePos + new Vector2(1, 1), 
+                    Utils.DrawBorderString(spriteBatch, lines[i], linePos + new Vector2(1, 1),
                         Color.Black * alpha * 0.6f, 0.85f);
                     Utils.DrawBorderString(spriteBatch, lines[i], linePos, textColor, 0.85f);
                 }
@@ -307,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 if (pendingItem.type > ItemID.None) {
                     Vector2 iconPos = new Vector2(DrawPosition.X + PanelWidth / 2, descPos.Y + lineHeight * lines.Length + 24);
                     float iconScale = 1f;
-                    VaultUtils.SimpleDrawItem(spriteBatch, pendingItem.type, iconPos, 
+                    VaultUtils.SimpleDrawItem(spriteBatch, pendingItem.type, iconPos,
                         pendingItem.width, iconScale, 0, Color.White * alpha);
                 }
             }
@@ -317,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             DrawButton(spriteBatch, cancelButtonRect, CancelText.Value, hoveringCancel, alpha, false);
         }
 
-        private static void DrawButton(SpriteBatch spriteBatch, Rectangle buttonRect, string text, 
+        private static void DrawButton(SpriteBatch spriteBatch, Rectangle buttonRect, string text,
             bool hovering, float alpha, bool isConfirm) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -349,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Vector2 textPos = buttonRect.Center.ToVector2() - textSize / 2;
             Color textColor = Color.White * alpha * (hovering ? 1.2f : 1f);
 
-            Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 1), 
+            Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 1),
                 Color.Black * alpha * 0.7f, 0.9f);
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor, 0.9f);
 
@@ -391,13 +390,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float size = 6f;
             Color color = Color.Gold * alpha;
-            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f, 
+            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.9f, MathHelper.PiOver2, 
+            sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.9f, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.3f), SpriteEffects.None, 0f);
         }
 
-        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, 
+        private static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end,
             Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
@@ -413,7 +412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 Vector2 segPos = start + edge * (length * t);
                 float segLength = length / segments;
                 Color color = Color.Lerp(startColor, endColor, t);
-                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation, 
+                spriteBatch.Draw(pixel, segPos, new Rectangle(0, 0, 1, 1), color, rotation,
                     new Vector2(0, 0.5f), new Vector2(segLength, thickness), SpriteEffects.None, 0);
             }
         }

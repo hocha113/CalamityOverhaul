@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Particles;
 using CalamityOverhaul.Content.MeleeModify.Core;
-using InnoVault;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -72,11 +71,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             , Vector2 velocity, int type, int damage, float knockback) {
             //右键冲刺突击
             if (player.altFunctionUse == 2) {
-                Projectile.NewProjectile(source, position, velocity.SafeNormalize(Vector2.Zero), 
+                Projectile.NewProjectile(source, position, velocity.SafeNormalize(Vector2.Zero),
                     ModContent.ProjectileType<HeartcarverDash>(), (int)(damage * 1.5f), knockback * 2f, player.whoAmI);
                 return false;
             }
-            
+
             //普通左键攻击
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
@@ -211,14 +210,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             currentDashSpeed = DashSpeed;
 
             //播放冲刺音效
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { 
-                Volume = 0.7f, 
-                Pitch = -0.3f 
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with {
+                Volume = 0.7f,
+                Pitch = -0.3f
             }, Owner.Center);
 
-            SoundEngine.PlaySound(SoundID.Item71 with { 
-                Volume = 0.5f, 
-                Pitch = 0.2f 
+            SoundEngine.PlaySound(SoundID.Item71 with {
+                Volume = 0.5f,
+                Pitch = 0.2f
             }, Owner.Center);
 
             //生成冲刺起始特效
@@ -326,9 +325,9 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //击中音效
-            SoundEngine.PlaySound(SoundID.NPCHit18 with { 
-                Volume = 0.6f, 
-                Pitch = 0.3f 
+            SoundEngine.PlaySound(SoundID.NPCHit18 with {
+                Volume = 0.6f,
+                Pitch = 0.3f
             }, target.Center);
 
             //流血Buff
