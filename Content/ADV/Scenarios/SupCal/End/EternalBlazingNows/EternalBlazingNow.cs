@@ -32,6 +32,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static LocalizedText Line7 { get; private set; }
         public static LocalizedText Line8 { get; private set; }
         public static LocalizedText Line9 { get; private set; }
+        public static LocalizedText Line10 { get; private set; }
+        public static LocalizedText Line11 { get; private set; }
+        public static LocalizedText Line12 { get; private set; }
+        public static LocalizedText Line13 { get; private set; }
+        public static LocalizedText Line14 { get; private set; }
+        public static LocalizedText Line15 { get; private set; }
 
         //选项文本
         public static LocalizedText QuestionLine { get; private set; }
@@ -56,21 +62,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "比目鱼");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???硫火女巫???");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑？！这些硫火是从那里冒出来的！过去身无法被调动，我们的过去被封锁了！");
-            Line2 = this.GetLocalization(nameof(Line2), () => "那个女巫，她没死，但为什么，为什么明明刚才的战斗中，她一直没有表现出入侵领域封锁过去的能力，现在'死后'却出现了这种情况？！");
-            Line3 = this.GetLocalization(nameof(Line3), () => "我是不会死的，不过也差不多了");
-            Line4 = this.GetLocalization(nameof(Line4), () => "你们很不错，或许真的有能力终结这个绝望的时代，所以我想最后拜托你们一件事");
-            Line5 = this.GetLocalization(nameof(Line5), () => "只要这世间的过去与现今还存在一缕硫磺火，'我'就不会消亡，但我的意识在沉沉浮浮的火海中终将被消磨殆尽。我有预感，如果没有遇到你们，我最多只能再撑30年");
-            Line6 = this.GetLocalization(nameof(Line6), () => "......你希望他代替你的意识，对吗？");
-            Line7 = this.GetLocalization(nameof(Line7), () => "没错，这是必须的，当我意识完全消散后，我身上近乎完整的硫磺火灵异将彻底复苏，这会彻底焚烧掉整个世界，况且，如果你们想终结这个时代，凡人之躯太过弱小，以我的躯体作为踏板，不更好吗？");
-            Line8 = this.GetLocalization(nameof(Line8), () => "不！该死，我绝对不允许，让他变成你这副鬼样子？！先从我的尸体上跨过去吧");
+            Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑？！这些火是从那里冒出来的");
+            Line2 = this.GetLocalization(nameof(Line2), () => "过去身无法调动，过去正在被封锁");
+            Line3 = this.GetLocalization(nameof(Line3), () => "这火是从过去燃烧到现在的，那个女巫，她没死，但为什么......");
+            Line4 = this.GetLocalization(nameof(Line4), () => "明明刚才的战斗中，她一直没有表现出入侵过去的能力，现在'死后'却出现了这种情况");
+            Line5 = this.GetLocalization(nameof(Line5), () => "我是不会死的，不过也差不多了");
+            Line6 = this.GetLocalization(nameof(Line6), () => "你们很不错，或许真的有能力终结这个绝望的时代");
+            Line7 = this.GetLocalization(nameof(Line7), () => "所以我想最后拜托你们一件事");
+            Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现今还存在一缕硫磺火，'我'就不会消亡");
+            Line9 = this.GetLocalization(nameof(Line9), () => "但我的意识在沉沉浮浮的火海中终将被消磨殆尽");
+            Line10 = this.GetLocalization(nameof(Line10), () => "我有预感，如果没有遇到你们，我最多只能再撑30年");
+            Line11 = this.GetLocalization(nameof(Line11), () => "......你希望他代替你的意识？");
+            Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是必须的");
+            Line13 = this.GetLocalization(nameof(Line13), () => "当我意识完全消散后，我身上近乎完整的硫磺火将会复苏，彻底焚烧掉整个世界");
+            Line14 = this.GetLocalization(nameof(Line14), () => "况且，如果你们想终结这个时代，凡人之躯太过弱小，以我的躯体作为踏板，不更好吗？");
+            Line15 = this.GetLocalization(nameof(Line15), () => "我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(阻止比目鱼拼命)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
 
-            Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......为什么？");
-            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "好吧，请记住我真正的名字，我叫海伦，你在这条路上无论走多远，为此要变成什么样子，我都会陪着你");
+            Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "你在这条路上无论走多远，为此要变成什么样子，我都会陪着你");
         }
 
         protected override void OnScenarioStart() {
