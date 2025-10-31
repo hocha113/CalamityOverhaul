@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -15,8 +16,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     {
         public override int Music => -1; // 音乐在 EbnSkyEffect 里控制
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => EbnSkyEffect.IsActive;
+        public override bool IsSceneEffectActive(Player player) => EbnSkyEffect.IsActive || EbnSkyEffect.Sengs > 0f;
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(EbnSky.Name, isActive);
+    }
+
+    internal class EbnRender : RenderHandle//渲染控制
+    {
+        [VaultLoaden(CWRConstant.Effects)]
+        public static MiscShaderData EbnShader;
+        public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
+            if (!EbnSkyEffect.IsActive && EbnSkyEffect.Sengs <= 0) {
+                return;
+            }
+
+            var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
+            var upwardPerlinNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/Perlin");
+            var upwardNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/MeltyNoise");
+
+            var maxOpacity = 1f;
+            var shader = EbnShader.Shader;
+            shader.Parameters["colorMult"].SetValue(7.35f);
+            shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["radius"].SetValue(300 + (1f - EbnSkyEffect.Sengs) * 1200);
+            shader.Parameters["anchorPoint"].SetValue(Main.LocalPlayer.Center);
+            shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
+            shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
+            shader.Parameters["burnIntensity"].SetValue(1f);
+            shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
+            shader.Parameters["maxOpacity"].SetValue(maxOpacity);
+
+            spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+            spriteBatch.GraphicsDevice.Textures[2] = upwardNoise.Value;
+            spriteBatch.GraphicsDevice.Textures[3] = upwardPerlinNoise.Value;
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
+            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, rekt, null, default, 0f, VaultAsset.placeholder2.Value.Size() * 0.5f, 0, 0f);
+            spriteBatch.End();
+        }
     }
 
     /// <summary>
@@ -55,21 +92,32 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
         {
-            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) return;
+            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) 
+                return;
 
-            // 绘制更深的暗红背景
+            float skyIntensity = intensity;
+
+            // 绘制更深的暗红硫磺火背景，带有更强的颗粒感
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
                 new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                new Color(15, 3, 5) * intensity * 0.95f
+                new Color(25, 3, 2) * skyIntensity * 0.98f
             );
 
-            // 添加脉动的火焰光晕效果
-            float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.5f + 0.5f;
+            // 添加脉动的火焰光晕效果，模拟硫磺燃烧的波动
+            float pulse = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 2.5f) * 0.4f + 0.6f;
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
                 new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                new Color(30, 10, 5) * (intensity * 0.3f * pulse)
+                new Color(45, 12, 5) * (skyIntensity * 0.25f * pulse)
+            );
+            
+            // 添加额外的红色闪烁层，模拟硫磺火焰的不稳定性
+            float flicker = (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.15f + 0.85f;
+            spriteBatch.Draw(
+                VaultAsset.placeholder2.Value,
+                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                new Color(35, 5, 3) * (skyIntensity * 0.15f * flicker)
             );
         }
 
@@ -87,17 +135,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override void Update(GameTime gameTime)
         {
             _ = EbnSkyEffect.Cek();
+            
             // 根据场景状态调整强度
             if (EbnSkyEffect.IsActive)
             {
                 if (intensity < 1f)
                 {
-                    intensity += 0.02f; // 稍快的淡入速度
+                    intensity += 0.025f; // 稍快的淡入速度
                 }
             }
             else
             {
-                intensity -= 0.012f;
+                intensity -= 0.015f;
                 if (intensity <= 0)
                 {
                     Deactivate();
@@ -107,12 +156,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override Color OnTileColor(Color inColor)
         {
-            // 应用更强的暗红色调
+            // 应用更强的暗红硫磺火色调
             if (intensity > 0.1f)
             {
-                float darkR = 0.7f;
-                float darkG = 0.3f;
-                float darkB = 0.4f;
+                // 计算淡出效果
+                float currentTime = EbnSkyEffect.CekTimer / 60f;
+                float maxTime = 300f;
+                float fadeOutTime = 10f;
+                
+                float effectIntensity = intensity;
+                if (currentTime > maxTime - fadeOutTime) {
+                    float fadeProgress = (currentTime - (maxTime - fadeOutTime)) / fadeOutTime;
+                    effectIntensity *= (1f - fadeProgress);
+                }
+                
+                // 更强的红色调，更弱的其他颜色
+                float darkR = 0.75f;
+                float darkG = 0.22f;
+                float darkB = 0.28f;
 
                 Color tintedColor = new Color(
                     (int)(inColor.R * darkR),
@@ -121,7 +182,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     inColor.A
                 );
 
-                return Color.Lerp(inColor, tintedColor, intensity * 0.65f);
+                return Color.Lerp(inColor, tintedColor, effectIntensity * 0.75f);
             }
             return inColor;
         }
@@ -134,6 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     {
         public static bool IsActive;
         public static int CekTimer = 0;
+        public static float Sengs;
         private int particleTimer = 0;
 
         public static bool Cek()
@@ -158,6 +220,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         public override void PostUpdateEverything()
         {
+            if (IsActive) {
+                if (Sengs < 1f) {
+                    Sengs += 0.02f;
+                }
+            }
+            else {
+                if (Sengs > 0f) {
+                    Sengs -= 0.02f;
+                }
+            }
+
             if (!Cek())
             {
                 return;

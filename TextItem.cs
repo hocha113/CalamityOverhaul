@@ -94,7 +94,7 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Start<EternalBlazingNow>();
+            EbnSkyEffect.IsActive = !EbnSkyEffect.IsActive;
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
