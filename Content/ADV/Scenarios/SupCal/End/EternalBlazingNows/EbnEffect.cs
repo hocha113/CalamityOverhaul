@@ -24,30 +24,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
     {
         [VaultLoaden(CWRConstant.Effects)]
         public static MiscShaderData EbnShader;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Texture2D Noise2;
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             if (!EbnSkyEffect.IsActive && EbnSkyEffect.Sengs <= 0) {
                 return;
             }
-
-            var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
-            var upwardPerlinNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/Perlin");
-            var upwardNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/MeltyNoise");
 
             var maxOpacity = 1f;
             var shader = EbnShader.Shader;
             shader.Parameters["colorMult"].SetValue(7.35f);
             shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["radius"].SetValue(300 + (1f - EbnSkyEffect.Sengs) * 1200);
-            shader.Parameters["anchorPoint"].SetValue(Main.LocalPlayer.Center);
+            shader.Parameters["setPoint"].SetValue(Main.LocalPlayer.Center);
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
             shader.Parameters["burnIntensity"].SetValue(1f);
-            shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
             shader.Parameters["maxOpacity"].SetValue(maxOpacity);
 
-            spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
-            spriteBatch.GraphicsDevice.Textures[2] = upwardNoise.Value;
-            spriteBatch.GraphicsDevice.Textures[3] = upwardPerlinNoise.Value;
+            spriteBatch.GraphicsDevice.Textures[1] = Noise2;
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
@@ -262,12 +257,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 SpawnMassiveFlameBurst();
             }
 
-            // 偶尔生成火焰漩涡
-            if (particleTimer % 60 == 0)
-            {
-                SpawnFlameVortex();
-            }
-
             // 播放危机音乐
             Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Crisis");
         }
@@ -429,55 +418,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     )
                 );
                 PRTLoader.AddParticle(spark);
-            }
-        }
-
-        /// <summary>
-        /// 生成火焰漩涡
-        /// </summary>
-        private static void SpawnFlameVortex()
-        {
-            Vector2 vortexCenter = new Vector2(
-                Main.screenPosition.X + Main.screenWidth / 2f,
-                Main.screenPosition.Y + Main.screenHeight / 2f
-            );
-
-            // 螺旋状火焰粒子
-            int spiralCount = 24;
-            for (int i = 0; i < spiralCount; i++)
-            {
-                float progress = i / (float)spiralCount;
-                float angle = progress * MathHelper.TwoPi * 3f; // 3圈螺旋
-                float radius = 150f + progress * 250f;
-                
-                Vector2 offset = angle.ToRotationVector2() * radius;
-                Vector2 position = vortexCenter + offset;
-
-                // 检查是否在屏幕范围内
-                if (position.X < Main.screenPosition.X - 100 || position.X > Main.screenPosition.X + Main.screenWidth + 100 ||
-                    position.Y < Main.screenPosition.Y - 100 || position.Y > Main.screenPosition.Y + Main.screenHeight + 100)
-                {
-                    continue;
-                }
-
-                Vector2 velocity = (vortexCenter - position).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f);
-
-                PRT_LavaFire vortexFlame = new PRT_LavaFire
-                {
-                    Position = position,
-                    Velocity = velocity,
-                    Scale = Main.rand.NextFloat(1f, 1.8f),
-                    ai = new float[] { 0, 0 },
-                    colors = new Color[] {
-                        new Color(255, 180, 90),
-                        new Color(255, 120, 60),
-                        new Color(180, 60, 40)
-                    },
-                    minLifeTime = 80,
-                    maxLifeTime = 130
-                };
-
-                PRTLoader.AddParticle(vortexFlame);
             }
         }
 

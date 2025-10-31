@@ -1,111 +1,132 @@
-sampler diagonalNoise : register(s1);
-sampler upwardNoise : register(s2);
-sampler upwardPerlinTex : register(s3);
-float colorMult;
-float time;
-float radius;
-float maxOpacity;
-float burnIntensity;
+sampler noiseTex : register(s1);
+float colorMult;        //颜色倍增器
+float time;             //时间参数，用于动画
+float radius;           //效果半径
+float maxOpacity;       //最大不透明度
+float burnIntensity;    //燃烧强度
+float2 screenPosition;  //屏幕坐标位置
+float2 screenSize;      //屏幕尺寸
+float2 setPoint;        //设定点坐标（效果中心）
 
-float2 screenPosition;
-float2 screenSize;
-float2 anchorPoint;
-float2 playerPosition;
-
-// 反向线性插值函数
 float InverseLerp(float a, float b, float t)
 {
     return saturate((t - a) / (b - a));
 }
 
-// 硫磺火焰调色板 - 暗红色基调
-float3 sulfurFirePalette(float noise)
+//火焰颜色调色板函数
+//基于噪声值生成火焰颜色，模拟黑体辐射
+float3 firePalette(float noise)
 {
-    // 定义硫磺火的颜色梯度 - 从深红到亮橙红
-    float3 deepRedColor = float3(0.35, 0.08, 0.05) * colorMult; // 深暗红色
-    float3 crimsonColor = float3(0.75, 0.15, 0.12) * colorMult; // 猩红色
-    float3 sulfurOrange = float3(0.95, 0.35, 0.18) * colorMult; // 硫磺橙色
-    float3 brightCore = float3(1.0, 0.55, 0.25) * colorMult; // 明亮核心
+    //根据噪声计算温度值（1500-3000K范围）
+    float temperature = 1500. + 1500. * noise;
+
+    //定义火焰颜色渐变的三个关键色
+    float3 darkColor = float3(0.81, 0.45, 0.23) * colorMult;    //暗红色调
+    float3 midColor = float3(1., 0.75, 0.29) * colorMult;        //橙黄色调
+    float3 brightColor = float3(1., 1., 0.95) * colorMult;     //亮白色调
     
+    //根据噪声值在颜色之间插值
     float3 fireColor;
-    // 使用更复杂的渐变来创造硫磺火效果
-    if (noise < 0.3)
-    {
-        // 最暗的区域 - 深红色到猩红色
-        fireColor = lerp(deepRedColor, crimsonColor, noise / 0.3);
-    }
-    else if (noise < 0.65)
-    {
-        // 中间区域 - 猩红色到硫磺橙色
-        fireColor = lerp(crimsonColor, sulfurOrange, (noise - 0.3) / 0.35);
-    }
+    if (noise < 0.5)
+        fireColor = lerp(darkColor, midColor, noise * 2.);
     else
-    {
-        // 最亮的区域 - 硫磺橙色到明亮核心
-        fireColor = lerp(sulfurOrange, brightCore, (noise - 0.65) / 0.35);
-    }
+        fireColor = lerp(midColor, brightColor, (noise - 0.5) * 2.);
     
-    // 增加对比度和饱和度
-    fireColor = pow(fireColor, float3(1.8, 2.2, 2.5));
-    
-    // 添加硫磺火特有的辉光效果
-    float glowFactor = pow(noise, 3.0) * 1.5;
-    fireColor += float3(0.3, 0.1, 0.05) * glowFactor;
-    
-    return saturate(fireColor);
+    //应用物理正确的黑体辐射公式
+    //使用普朗克定律的简化版本
+    fireColor = pow(fireColor, float3(5, 5, 5)) * (exp(1.43876719683e5 / (temperature * fireColor)) - 1.);
+
+    //应用色调映射以获得最终颜色
+    return 1. - exp(-1.3e8 / fireColor);
 }
 
 float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
+    //计算世界空间UV坐标
     float2 worldUV = screenPosition + screenSize * uv;
-    float2 provUV = anchorPoint / screenSize;
-    float worldDistance = distance(worldUV, anchorPoint);
+    
+    //预留变量（用于保持与原始代码的兼容性）
+    float2 provUV = setPoint / screenSize;
+    
+    //计算像素到效果中心的距离
+    float worldDistance = distance(worldUV, setPoint);
+    
+    //时间缩放因子，用于控制动画速度
     float adjustedTime = time * 0.1;
     
-    // 像素化UV坐标 - 创造更粗糙的硫磺火纹理
+    //==================================================
+    //像素化UV坐标处理
+    //创建类似像素风格的火焰效果
+    //==================================================
     float2 pixelatedUV = worldUV / screenSize;
+    
+    //X轴像素化处理
     pixelatedUV.x -= worldUV.x % (1 / screenSize.x);
+    
+    //Y轴像素化处理（使用2倍步长）
     pixelatedUV.y -= worldUV.y % (1 / (screenSize.y / 2) * 2);
     
-    // 采样噪声纹理 - 调整权重以创造更激烈的硫磺火效果
-    float noiseMesh1 = tex2D(upwardNoise, frac(pixelatedUV * 0.68 + float2(0, time * 0.18))).g;
-    float noiseMesh2 = tex2D(upwardPerlinTex, frac(pixelatedUV * 1.35 + float2(0, time * 0.28))).g;
-    float noiseMesh3 = tex2D(diagonalNoise, frac(pixelatedUV * 1.72 + float2(adjustedTime * 0.48, adjustedTime * 1.35))).g;
-    float noiseMesh4 = tex2D(diagonalNoise, frac(pixelatedUV * 1.88 + float2(adjustedTime * -0.62, adjustedTime * 1.45))).g;
+    //==================================================
+    //多层噪声采样
+    //通过叠加不同频率和速度的噪声创建复杂的火焰纹理
+    //==================================================
     
-    // 调整混合权重以增强硫磺火的层次感
-    float textureMesh = noiseMesh1 * 0.15 + noiseMesh2 * 0.25 + noiseMesh3 * 0.3 + noiseMesh4 * 0.3;
+    //第一层：慢速大尺度噪声
+    float noiseMesh1 = tex2D(noiseTex, frac(pixelatedUV * 0.58 + float2(0, time * 0.25))).g;
     
-    // 添加额外的扰动以创造硫磺火的不稳定感
-    float turbulence = pow(abs(sin(worldUV.y * 0.1 + time * 0.5)), 2.0) * 0.15;
-    textureMesh = saturate(textureMesh + turbulence);
+    //第二层：中速中尺度噪声
+    float noiseMesh2 = tex2D(noiseTex, frac(pixelatedUV * 1.57 + float2(0, time * 0.35))).g;
     
-    // 获取像素到玩家的距离
-    float distToPlayer = distance(playerPosition, worldUV);
-    // 根据距离计算正确的不透明度
+    //第三层：快速旋转噪声
+    float noiseMesh3 = tex2D(noiseTex, frac(pixelatedUV * 1.46 + float2(adjustedTime * 0.56, adjustedTime * 1.2))).g;
+    
+    //第四层：反向旋转噪声
+    float noiseMesh4 = tex2D(noiseTex, frac(pixelatedUV * 1.57 + float2(adjustedTime * -0.56, adjustedTime * 1.2))).g;
+    
+    //加权混合所有噪声层
+    //权重分配：12.5% + 20% + 35% + 35% = 102.5% (略微过度混合以增强效果)
+    float textureMesh = noiseMesh1 * 0.125 + noiseMesh2 * 0.2 + noiseMesh3 * 0.35 + noiseMesh4 * 0.35;
+    
+    //==================================================
+    //不透明度计算
+    //基于距离和燃烧强度
+    //==================================================
+    float distToPlayer = distance(setPoint, worldUV);
+    
+    //初始不透明度 = 燃烧强度
     float opacity = burnIntensity;
-    // 玩家接近时快速淡入
+    
+    //根据距离调整不透明度（距离越近，不透明度越高）
+    //在500-800像素范围内进行渐变
     opacity += InverseLerp(800, 500, distToPlayer);
     
-    // 定义边界并混合火焰效果以实现平滑过渡
+    //==================================================
+    //边界处理和颜色衰减
+    //==================================================
+    
+    //判断是否在效果边界内
     bool border = worldDistance < radius && opacity > 0;
+    
+    //计算边缘渐变因子
     float colorMult = 1;
     if (border) 
         colorMult = InverseLerp(radius * 0.94, radius, worldDistance);
+    
+    //限制不透明度在合理范围内
     opacity = clamp(opacity, 0, maxOpacity);
     
-    // 如果颜色倍数未改变（非边界像素）且不透明度为0，或在半径内
+    //==================================================
+    //早期退出优化
+    //如果不需要渲染火焰效果，直接返回原始颜色
+    //==================================================
     if (colorMult == 1 && (opacity == 0 || worldDistance < radius))
         return sampleColor;
     
-    // 应用硫磺火调色板
-    float3 sulfurColor = sulfurFirePalette(textureMesh);
-    
-    // 添加边缘闪烁效果增强硫磺火的视觉冲击
-    float edgeFlicker = sin(time * 5.0 + worldDistance * 0.05) * 0.1 + 0.9;
-    sulfurColor *= edgeFlicker;
-    
-    return float4(sulfurColor, 1) * colorMult * opacity;
+    //==================================================
+    //最终颜色合成
+    //生成火焰颜色并应用边缘渐变和不透明度
+    //==================================================
+    return float4(firePalette(textureMesh), 1) * colorMult * opacity;
 }
 
 technique Technique1
