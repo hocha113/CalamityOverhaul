@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -52,8 +53,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
         //比目鱼表情常量
-        private const string helenShock = " ";
-        private const string helenSolemn = " " + " ";
+        internal const string helenShock = " ";
+        internal const string helenSolemn = " " + " ";
+        internal const string helenWrath = " " + " " + " ";
 
         //至尊灾厄表情常量
         private const string supCalDespise = " ";
@@ -91,11 +93,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             EbnSkyEffect.IsActive = true;
         }
 
-        protected override void OnScenarioComplete() {
-            //停止粒子生成
-            EbnSkyEffect.IsActive = false;
-        }
-
         protected override void Build() {
             //注册比目鱼立绘
             DialogueBoxBase.RegisterPortrait(Rolename1.Value, ADVAsset.HelenADV);
@@ -106,6 +103,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenSolemn, ADVAsset.Helen_solemnADV);
             DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenSolemn, silhouette: false);
+
+            DialogueBoxBase.RegisterPortrait(Rolename1.Value + helenWrath, ADVAsset.Helen_wrathADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename1.Value + helenWrath, silhouette: false);
 
             //注册至尊灾厄立绘（使用剪影效果）
             DialogueBoxBase.RegisterPortrait(Rolename2.Value, ADVAsset.SupCalADV[4]);
@@ -139,17 +139,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 Add(Rolename1.Value + helenShock, Line11.Value);
                 Add(Rolename2.Value + supCalDespise, Line12.Value);
                 Add(Rolename2.Value + supCalDespise, Line13.Value);
-                Add(Rolename2.Value + supCalDespise, Line14.Value);
-                Add(Rolename1.Value + helenShock, Line15.Value);
+                Add(Rolename2.Value + supCalDespise, Line14.Value, Screenjittering);
+                Add(Rolename1.Value + helenWrath, Line15.Value);
 
                 //添加选项
-                AddWithChoices(Rolename1.Value + helenShock, QuestionLine.Value, [
-                    new(Choice1Text.Value, () => {
-                        //选择阻止比目鱼
-                        Add(Rolename2.Value + supCalDespise, Choice1Line1.Value);
-                        Add(Rolename1.Value, Choice1Line2.Value, onComplete: () => Choice1());
-                    }),
-                    new(Choice2Text.Value, Choice2),
+                AddWithChoices(Rolename1.Value + helenWrath, QuestionLine.Value, [
+                    new Choice(Choice1Text.Value, Choice1),
+                    new Choice(Choice2Text.Value, Choice2),
                 ]);
             }
             else {
@@ -160,12 +156,38 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
+        private void Screenjittering() {
+            PunchCameraModifier modifier = new PunchCameraModifier(Main.LocalPlayer.Center
+                , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
+            Main.instance.CameraModifiers.Add(modifier);
+        }
+
         private void Choice1() {
             //选择1：阻止比目鱼拼命
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 halibutPlayer.ADCSave.EternalBlazingNowChoice1 = true;
             }
+            ScenarioManager.Start<EternalBlazingNow_Choice1>();
             Complete();
+        }
+
+        internal class EternalBlazingNow_Choice1 : ADVScenarioBase
+        {
+            public override string Key => nameof(EternalBlazingNow_Choice1);
+            //设置场景默认使用硫磺火风格
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+            protected override void OnScenarioStart() {
+                //开始生成粒子效果
+                EbnSkyEffect.IsActive = true;
+            }
+            protected override void OnScenarioComplete() {
+                EbnSkyEffect.IsActive = false;
+            }
+            protected override void Build() {
+                //选择阻止比目鱼
+                Add(Rolename1.Value + helenShock, Choice1Line1.Value);
+                Add(Rolename1.Value + helenSolemn, Choice1Line2.Value);
+            }
         }
 
         private void Choice2() {
@@ -174,6 +196,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 halibutPlayer.ADCSave.EternalBlazingNowChoice2 = true;
             }
             Complete();
+            //停止粒子生成
+            EbnSkyEffect.IsActive = false;
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

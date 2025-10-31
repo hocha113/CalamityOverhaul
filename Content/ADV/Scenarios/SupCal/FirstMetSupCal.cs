@@ -3,6 +3,7 @@ using CalamityMod.NPCs.CalClone;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using System;
 using System.IO;
@@ -98,11 +99,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             SupCalSkyEffect.IsActive = true;
         }
 
-        protected override void OnScenarioComplete() {
-            //停止粒子生成
-            SupCalSkyEffect.IsActive = false;
-        }
-
         //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现
         //你麻痹的为什么要把角色名字和头像强绑定，现在改又不敢改，妈的被自己的设计坑死了
         private const string expressionCloseEye = " ";
@@ -174,46 +170,52 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
             //统一的选择部分
             AddWithChoices(Rolename2.Value + expressionBeTo, QuestionLine.Value, [
-                new(Choice1Text.Value, () => {
-                    //选择后继续对话
-                    Add(Rolename2.Value, Choice1Response.Value, styleOverride: DefaultDialogueStyle);
-                    //继续推进场景
-                    DialogueUIRegistry.Current?.EnqueueDialogue(
-                        Rolename2.Value,
-                        Choice1Response.Value,
-                        onFinish: () => Choice1()
-                    );
-                }),
-                new(Choice2Text.Value, () => {
-                     //选择后继续对话
-                    Add(Rolename2.Value + expressionDespise, Choice2Response.Value, styleOverride: DefaultDialogueStyle);
-                    //继续推进场景
-                    DialogueUIRegistry.Current?.EnqueueDialogue(
-                        Rolename2.Value + expressionDespise,
-                        Choice2Response.Value,
-                        onFinish: () => Choice2()
-                    );
-                }),
+                new Choice(Choice1Text.Value, Choice1),
+                new Choice(Choice2Text.Value, Choice2),
             ]);
         }
 
         public void Choice1() {
-            Vector2 spawnPos = Main.LocalPlayer.Center;
-            SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
-            Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
-                , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
-
-            //标记玩家选择了战斗
-            if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                halibutPlayer.ADCSave.SupCalChoseToFight = true;
-            }
-
-            ThisIsToFight = true;
+            ScenarioManager.Start<FirstMetSupCal_Choice1>();
             Complete();
         }
 
+        private class FirstMetSupCal_Choice1 : ADVScenarioBase
+        {
+            public override string Key => nameof(FirstMetSupCal_Choice1);
+            //设置场景默认使用硫磺火风格
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+            protected override void Build() => Add(Rolename2.Value, Choice1Response.Value);
+            protected override void OnScenarioComplete() {
+                Vector2 spawnPos = Main.LocalPlayer.Center;
+                SoundEngine.PlaySound(SCalAltar.SummonSound, spawnPos);
+                Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero
+                    , ModContent.ProjectileType<SCalRitualDrama>(), 0, 0f, Main.myPlayer, 0, 0);
+
+                //标记玩家选择了战斗
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    halibutPlayer.ADCSave.SupCalChoseToFight = true;
+                }
+
+                ThisIsToFight = true;
+                //停止粒子生成
+                SupCalSkyEffect.IsActive = false;
+            }
+        }
+
         public void Choice2() {
-            ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+            ScenarioManager.Start<FirstMetSupCal_Choice2>();
+            Complete();
+        }
+
+        private class FirstMetSupCal_Choice2 : ADVScenarioBase
+        {
+            public override string Key => nameof(FirstMetSupCal_Choice2);
+            //设置场景默认使用硫磺火风格
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+            protected override void Build() => Add(Rolename2.Value + expressionDespise, Choice2Response.Value);
+            protected override void OnScenarioStart() {
+                ADVRewardPopup.ShowReward(ModContent.ItemType<AshesofCalamity>(), 999, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                     anchorProvider: () => {
                         var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
                         if (rect == Rectangle.Empty) {
@@ -221,7 +223,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
                         }
                         return new Vector2(rect.Center.X, rect.Y - 70f);
                     }, offset: Vector2.Zero);
-            Complete();
+            }
+            protected override void OnScenarioComplete() {
+                //停止粒子生成
+                SupCalSkyEffect.IsActive = false;
+            }
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {

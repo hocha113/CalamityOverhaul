@@ -68,8 +68,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 baseVelocity;
 
         //七彩颜色方案 - 更加鲜艳的配色
-        private static readonly Color[] PrismColors = new Color[]
-        {
+        private static readonly Color[] PrismColors =
+        [
             new Color(255, 60, 120),   //深玫瑰红
             new Color(255, 150, 50),   //炽橙色
             new Color(255, 230, 60),   //金黄色
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             new Color(60, 180, 255),   //深天蓝
             new Color(160, 80, 255),   //深紫罗兰
             new Color(255, 80, 200)    //亮品红
-        };
+        ];
 
         private Color primaryColor;
         private Color secondaryColor;
@@ -252,6 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             if (++tileCollideCount > 6) {//允许反弹6次
                 Projectile.Kill();//超过反弹次数后消失
+                Projectile.netUpdate = true;
             }
 
             tileCollideCooltimer = 22;
@@ -260,6 +261,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void SplitOnImpact(Vector2 impactPos, Vector2 impactDirection) {
             if (generation > 0 || Projectile.numHits > 0) {
+                return;
+            }
+
+            if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
