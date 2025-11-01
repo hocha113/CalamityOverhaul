@@ -1,33 +1,20 @@
-﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    //internal class TestProj : ModProjectile, IDeductDrawble
+    //internal class TestProj : ModProjectile
     //{
-    //   public override string Texture => "CalamityOverhaul/icon";
-    //   public override void SetDefaults() {
-    //       Projectile.width = Projectile.height = 66;
-    //   }
+    //    public override string Texture => "CalamityOverhaul/icon";
+    //    public override void SetDefaults() {
+    //        Projectile.width = Projectile.height = 66;
+    //    }
 
-    //   public override bool PreDraw(ref Color lightColor) {
-    //       return false;
-    //   }
-
-    //   public void DeductDraw(SpriteBatch spriteBatch) {
-    //       Texture2D value = CWRAsset.Placeholder_150.Value;
-    //       spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.White, 0, value.Size() / 2, 111, SpriteEffects.None, 0);
-    //   }
-
-    //   public void PreDrawTureBody(SpriteBatch spriteBatch) {
-    //       Texture2D value = TextureAssets.Projectile[Type].Value;
-    //       spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.White, 0, value.Size() / 2, 1, SpriteEffects.None, 0);
-    //   }
+    //    public override bool PreDraw(ref Color lightColor) {
+    //        return false;
+    //    }
     //}
 
     internal class TextItem : ModItem
@@ -94,7 +81,7 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Start<EternalBlazingNow>();
+            //ScenarioManager.Start<EternalBlazingNow>();
             //显示成就提示 - 硫磺火风格
             //AchievementToast.ShowAchievement(
             //    ModContent.ItemType<AshesofCalamity>(),
