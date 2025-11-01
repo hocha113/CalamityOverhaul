@@ -79,11 +79,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             Line15 = this.GetLocalization(nameof(Line15), () => "我绝对不允许！让他变成你这副鬼样子？！先从我的尸体上跨过去吧！");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
-            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(阻止比目鱼拼命)");
+            Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(阻止比目鱼)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
 
             Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
-            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边");
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "......既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边");
         }
 
         protected override void OnScenarioStart() {
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
             protected override void Build() {
                 //选择阻止比目鱼
-                Add(Rolename1.Value + helenShock, Choice1Line1.Value);
+                Add(Rolename1.Value + helenSolemn, Choice1Line1.Value);
                 Add(Rolename1.Value, Choice1Line2.Value);
             }
         }

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV
 
         //动画参数
         private const int SlideInDuration = 30;      //滑入时长(帧)
-        private const int HoldDuration = 60;        //停留时长(帧)
+        private const int HoldDuration = 20;        //停留时长(帧)
         private const int CelebrateDuration = 45;    //庆祝动画时长(帧)
         private const int SlideOutDuration = 25;     //滑出时长(帧)
 
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.ADV
         private const float PanelHeight = 100f;
         private const float OffscreenX = -PanelWidth - 50f;  //屏幕外左侧位置
         private const float OnscreenX = 20f;                 //屏幕上显示位置
-        private float ScreenY => Main.screenHeight / 2f - PanelHeight / 2f; //垂直居中
+        private static float ScreenY => Main.screenHeight / 2f - PanelHeight / 2f; //垂直居中
 
         //粒子系统
         private readonly List<CelebrationParticle> particles = new();
