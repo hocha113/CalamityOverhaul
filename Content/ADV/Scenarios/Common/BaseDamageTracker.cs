@@ -1,11 +1,30 @@
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using static CalamityOverhaul.Content.ADV.Scenarios.Common.BaseDamageTracker;
+using static CalamityOverhaul.Content.ADV.Scenarios.Common.DamageTrackerSystem;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 {
-    internal class DamageTrackerSystem : ModSystem
+    internal class DamageTrackerSystem : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "UI.QuestTracker";
+
+        //本地化文本
+        public static LocalizedText QuestFailedPrefix { get; private set; }
+        public static LocalizedText QuestCompletedPrefix { get; private set; }
+        public static LocalizedText FailureReasonWrongWeapon { get; private set; }
+        public static LocalizedText FailureReasonInsufficientDamage { get; private set; }
+        public static LocalizedText SuccessDamageContribution { get; private set; }
+
+        public override void SetStaticDefaults() {
+            QuestFailedPrefix = this.GetLocalization(nameof(QuestFailedPrefix), () => "任务失败");
+            QuestCompletedPrefix = this.GetLocalization(nameof(QuestCompletedPrefix), () => "任务完成!");
+            FailureReasonWrongWeapon = this.GetLocalization(nameof(FailureReasonWrongWeapon), () => "未使用指定武器完成最后一击");
+            FailureReasonInsufficientDamage = this.GetLocalization(nameof(FailureReasonInsufficientDamage), () => "武器伤害占比不足");
+            SuccessDamageContribution = this.GetLocalization(nameof(SuccessDamageContribution), () => "伤害占比");
+        }
+
         public override void PostUpdateNPCs() {
             if (!IsBossFightActive) {
                 return;//没有激活的Boss战斗，直接返回
@@ -114,14 +133,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             //必须最后一击使用目标武器
             Item heldItem = player.GetItem();
             if (!IsTargetWeapon(heldItem.type)) {
-                ShowFailureMessage(player, "未使用指定武器完成最后一击");
+                ShowFailureMessage(player, FailureReasonWrongWeapon.Value);
                 return;
             }
 
             //并且造成足够的伤害贡献
             float contribution = TotalBossDamage > 0 ? TargetWeaponDamageDealt / TotalBossDamage : 0f;
             if (contribution < RequiredContribution) {
-                ShowFailureMessage(player, $"武器伤害占比不足 ({contribution:P0}/{RequiredContribution:P0})");
+                ShowFailureMessage(player, $"{FailureReasonInsufficientDamage.Value} ({contribution:P0}/{RequiredContribution:P0})");
                 return;
             }
 
@@ -139,14 +158,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// 显示任务失败消息
         /// </summary>
         public virtual void ShowFailureMessage(Player player, string reason) {
-            CombatText.NewText(player.Hitbox, Color.Red, $"任务失败: {reason}");
+            CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}");
         }
 
         /// <summary>
         /// 显示任务成功消息
         /// </summary>
         public virtual void ShowSuccessMessage(Player player, float contribution) {
-            CombatText.NewText(player.Hitbox, Color.Gold, $"任务完成! 伤害占比: {contribution:P0}");
+            CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}");
         }
 
         /// <summary>
