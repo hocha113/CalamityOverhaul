@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.ADV;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -93,7 +94,18 @@ namespace CalamityOverhaul
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
-            ScenarioManager.Start<EternalBlazingNow>();
+            //ScenarioManager.Start<EternalBlazingNow>();
+            //显示成就提示 - 硫磺火风格
+            AchievementToast.ShowAchievement(
+                ModContent.ItemType<AshesofCalamity>(),
+                "谨慎的旅者",
+                "避免了一场不必要的战斗",
+                AchievementToast.ToastStyle.Brimstone,
+                onComplete: () => {
+                    //成就完成后的回调
+                    Main.NewText("你选择了更明智的道路...", new Color(255, 180, 100));
+                }
+            );
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}

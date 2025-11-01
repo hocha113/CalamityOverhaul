@@ -2912,6 +2912,8 @@ Legend: {
 				// Choice1Line1: ......这就是你的选择吗？
 				// Choice1Line2: 既然这是你的选择，那我会支持你。无论你在这条路上走多远、要为此变成什么样子，我都会在你身边
 			}
+
+			// AchievementToast.AchievementUnlocked: 成就达成!
 		}
 
 		SeaDialogueBox: {
