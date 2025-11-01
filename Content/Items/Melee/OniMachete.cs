@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTurn = true;
             Item.rare = ItemRarityID.Red;
             Item.UseSound = SoundID.Item1;
+            Item.autoReuse = true;
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
