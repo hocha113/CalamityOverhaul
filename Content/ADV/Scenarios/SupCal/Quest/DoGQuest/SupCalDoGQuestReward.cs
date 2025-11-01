@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
 {
     /// <summary>
     /// 神明吞噬者任务奖励场景

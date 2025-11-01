@@ -9,7 +9,7 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
 {
     /// <summary>
     /// 完成扶柩者任务后的奖励场景
@@ -117,6 +117,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
         }
 
         public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            PallbearerQuestTracker.Update();
+
             if (!save.SupCalQuestReward) {
                 return;
             }
@@ -145,9 +147,84 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
     /// </summary>
     internal class PallbearerQuestTracker : GlobalNPC, IWorldInfo
     {
+        //伤害追踪数据
+        private static float pallbearerDamageDealt = 0f;
+        private static float totalBossDamage = 0f;
+        private const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
+        private static bool isBossFightActive = false;
+        
         void IWorldInfo.OnWorldLoad() {
             PallbearerQuestRewardTrigger.Spawned = false;
             PallbearerQuestRewardTrigger.RandomTimer = 0;
+            ResetDamageTracking();
+        }
+
+        private static void ResetDamageTracking() {
+            pallbearerDamageDealt = 0f;
+            totalBossDamage = 0f;
+            isBossFightActive = false;
+        }
+
+        public static void Update() {
+            if (isBossFightActive) {
+                if (!NPC.AnyNPCs(ModContent.NPCType<Providence>())) {
+                    isBossFightActive = false;
+                    ResetDamageTracking();
+                }
+            }
+        }
+
+        public override void AI(NPC npc) {
+            if (npc.type != ModContent.NPCType<Providence>()) {
+                return;
+            }
+
+            if (Main.LocalPlayer.GetItem().type != ModContent.ItemType<Pallbearer>()) {
+                return;
+            }
+
+            //Boss存在时标记战斗激活
+            isBossFightActive = npc.active;
+            totalBossDamage = npc.lifeMax;
+        }
+
+        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
+            if (npc.type != ModContent.NPCType<Providence>()) {
+                return;
+            }
+
+            //使用回调来追踪实际造成的伤害
+            modifiers.ModifyHitInfo += Modifiers_ModifyHitInfo;
+
+            void Modifiers_ModifyHitInfo(ref NPC.HitInfo info) {
+                totalBossDamage += info.Damage;
+                if (item.type == ModContent.ItemType<Pallbearer>()) {
+                    pallbearerDamageDealt += info.Damage;
+                }
+            }
+        }
+
+        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
+            if (npc.type != ModContent.NPCType<Providence>()) {
+                return;
+            }
+
+            modifiers.ModifyHitInfo += Modifiers_ModifyHitInfo;
+
+            void Modifiers_ModifyHitInfo(ref NPC.HitInfo info) {
+                totalBossDamage += info.Damage;
+                //检测弹幕是否来自扶柩者
+                if (IsFromPallbearer(projectile)) {
+                    pallbearerDamageDealt += info.Damage;
+                }
+            }
+        }
+
+        private static bool IsFromPallbearer(Projectile projectile) {
+            //检测弹幕类型是否属于扶柩者系列
+            return projectile.type == ModContent.ProjectileType<PallbearerHeld>() ||
+                   projectile.type == ModContent.ProjectileType<PallbearerArrow>() ||
+                   projectile.type == ModContent.ProjectileType<PallbearerBoomerang>();
         }
 
         public override void OnKill(NPC npc) {
@@ -161,16 +238,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
             if (VaultUtils.isServer) {
                 ModPacket packet = CWRMod.Instance.GetPacket();
                 packet.Write((byte)CWRMessageType.PallbearerQuestTracker);
+                packet.Write(pallbearerDamageDealt);
+                packet.Write(totalBossDamage);
                 packet.Send();
             }
+
+            //重置追踪数据
+            ResetDamageTracking();
         }
 
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (!VaultUtils.isClient) {
-                return;//仅客户端处理
+                return; //仅客户端处理
             }
             if (type == CWRMessageType.PallbearerQuestTracker) {
+                pallbearerDamageDealt = reader.ReadSingle();
+                totalBossDamage = reader.ReadSingle();
                 Check();
+                ResetDamageTracking();
             }
         }
 
@@ -185,18 +270,37 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
                 return;
             }
 
-            //检查玩家是否手持扶柩者
+            //必须最后一击使用扶柩者
             Item heldItem = player.GetItem();
             if (heldItem.type != ModContent.ItemType<Pallbearer>()) {
+                //显示失败提示
+                CombatText.NewText(player.Hitbox, Color.Red, "任务失败: 未使用扶柩者完成最后一击");
                 return;
             }
 
-            //标记任务完成
+            //并且造成足够的伤害贡献
+            float contribution = totalBossDamage > 0 ? pallbearerDamageDealt / totalBossDamage : 0f;
+            if (contribution < REQUIRED_CONTRIBUTION) {
+                CombatText.NewText(player.Hitbox, Color.Orange,
+                    $"任务失败: 扶柩者伤害占比不足 ({contribution:P0}/{REQUIRED_CONTRIBUTION:P0})");
+                return;
+            }
+
+            //任务完成
             halibutPlayer.ADCSave.SupCalQuestReward = true;
 
             //延迟触发奖励场景
             PallbearerQuestRewardTrigger.Spawned = true;
             PallbearerQuestRewardTrigger.RandomTimer = 60 * Main.rand.Next(3, 5);
+
+            //显示成功提示
+            CombatText.NewText(player.Hitbox, Color.Gold,
+                $"任务完成! 扶柩者伤害占比: {contribution:P0}");
+        }
+
+        //获取当前伤害追踪数据供UI使用
+        public static (float pallbearerDamage, float totalDamage, bool isActive) GetDamageTrackingData() {
+            return (pallbearerDamageDealt, totalBossDamage, isBossFightActive);
         }
     }
 

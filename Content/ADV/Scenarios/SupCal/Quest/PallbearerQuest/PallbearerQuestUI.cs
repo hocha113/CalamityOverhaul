@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.PallbearerQuest
+namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
 {
     /// <summary>
     /// 扶柩者任务UI
