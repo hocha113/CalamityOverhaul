@@ -1,21 +1,38 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod.Items.LoreItems;
+using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    //internal class TestProj : ModProjectile
-    //{
-    //    public override string Texture => "CalamityOverhaul/icon";
-    //    public override void SetDefaults() {
-    //        Projectile.width = Projectile.height = 66;
-    //    }
+    internal class TestProj : ModProjectile
+    {
+        public override string Texture => "CalamityOverhaul/icon";
+        public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<TextItem>()).DisplayName;
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 66;
+            Projectile.timeLeft = 400;
+        }
 
-    //    public override bool PreDraw(ref Color lightColor) {
-    //        return false;
-    //    }
-    //}
+        public override void AI() {
+            Projectile.ai[0]++;
+            if (Projectile.ai[0] == 300) {
+                EbnSkyEffect.IsActive = true;
+            }
+
+            if (Projectile.ai[0] == 360) {
+                ScenarioManager.Start<EternalBlazingNow>();
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            return false;
+        }
+    }
 
     internal class TextItem : ModItem
     {
@@ -80,19 +97,17 @@ namespace CalamityOverhaul
         }
         //int tpIndex = 0;
         public override bool? UseItem(Player player) {
+            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
             //ScenarioManager.Start<EternalBlazingNow>();
+            EbnSkyEffect.IsActive = true;
             //显示成就提示 - 硫磺火风格
-            //AchievementToast.ShowAchievement(
-            //    ModContent.ItemType<AshesofCalamity>(),
-            //    "谨慎的旅者",
-            //    "避免了一场不必要的战斗",
-            //    AchievementToast.ToastStyle.Brimstone,
-            //    onComplete: () => {
-            //        //成就完成后的回调
-            //        Main.NewText("你选择了更明智的道路...", new Color(255, 180, 100));
-            //    }
-            //);
+            AchievementToast.ShowAchievement(
+                ItemID.None,
+                "ED结局：永恒燃烧的现在",
+                "往日被烈火所吞噬，以异类之躯触及永恒",
+                AchievementToast.ToastStyle.Brimstone
+            );
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
