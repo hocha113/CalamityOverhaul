@@ -6544,4 +6544,14 @@ UI: {
 		// CancelText: Cancel
 		// Success: "[ITEM] has been upgraded to level [LEVEL]."
 	}
+
+	QuestTracker: {
+		DamageTrackerSystem: {
+			// QuestFailedPrefix: 任务失败
+			// QuestCompletedPrefix: 任务完成!
+			// FailureReasonWrongWeapon: 未使用指定武器完成最后一击
+			// FailureReasonInsufficientDamage: 武器伤害占比不足
+			// SuccessDamageContribution: 伤害占比
+		}
+	}
 }

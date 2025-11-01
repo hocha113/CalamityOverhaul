@@ -42,6 +42,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         /// </summary>
         protected abstract (float current, float total, bool isActive) GetTrackingData();
 
+        public override bool Active => slideProgress > 0f || CanOpne;
+
+        public abstract bool CanOpne { get; }
+
         /// <summary>
         /// 获取需求的伤害贡献度阈值
         /// </summary>
@@ -55,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
         public override void Update() {
             //展开/收起动画
-            float targetSlide = Active ? 1f : 0f;
+            float targetSlide = CanOpne ? 1f : 0f;
             slideProgress = MathHelper.Lerp(slideProgress, targetSlide, 0.15f);
 
             if (slideProgress < 0.01f) {

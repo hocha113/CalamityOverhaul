@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public override string LocalizationCategory => "Legend.HalibutText.ADV";
         public static PallbearerQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestTrackerUI>();
 
-        public override bool Active {
+        public override bool CanOpne {
             get {
                 if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                     return false;
