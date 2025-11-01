@@ -2,8 +2,6 @@
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest;
 using CalamityOverhaul.Content.Industrials.Modifys;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.NPCs.Modifys;

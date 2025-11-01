@@ -71,8 +71,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 }
 
                 //如果玩家已经接受/拒绝/完成了任务，就不再显示UI
-                if (halibutPlayer.ADCSave.SupCalDoGQuestReward 
-                    || halibutPlayer.ADCSave.SupCalDoGQuestAccepted 
+                if (halibutPlayer.ADCSave.SupCalDoGQuestReward
+                    || halibutPlayer.ADCSave.SupCalDoGQuestAccepted
                     || halibutPlayer.ADCSave.SupCalDoGQuestDeclined) {
                     return false;
                 }

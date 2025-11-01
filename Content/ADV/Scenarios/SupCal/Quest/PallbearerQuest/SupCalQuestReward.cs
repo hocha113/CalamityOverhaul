@@ -5,11 +5,8 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.UIHandles;
-using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

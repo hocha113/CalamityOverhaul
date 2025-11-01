@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -55,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         //需要子类实现的配置
         internal abstract int TargetNPCType { get; }
         internal virtual HashSet<int> OtherNPCType => [];
-        
+
         internal abstract int[] TargetWeaponTypes { get; }
         internal abstract int[] TargetProjectileTypes { get; }
         internal abstract float RequiredContribution { get; }
