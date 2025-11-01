@@ -71,7 +71,6 @@ namespace CalamityOverhaul
             SupCalDefeatNPC.NetHandle(type, reader, whoAmI);
             SupCalPlayerDefeatTracker.NetHandle(type, reader, whoAmI);
             SupCalVictoryNPC.NetHandle(type, reader, whoAmI);
-            DoGQuestTracker.NetHandle(type, reader, whoAmI);
             EternalBlazingNowNPC.NetHandle(type, reader, whoAmI);
             HalibutPlayer.HandleHalibutMouseWorld(type, reader, whoAmI);
         }

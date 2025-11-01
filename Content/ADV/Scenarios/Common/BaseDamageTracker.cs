@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -52,13 +54,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
 
         //需要子类实现的配置
         internal abstract int TargetNPCType { get; }
+        internal virtual HashSet<int> OtherNPCType => [];
+        
         internal abstract int[] TargetWeaponTypes { get; }
         internal abstract int[] TargetProjectileTypes { get; }
         internal abstract float RequiredContribution { get; }
 
         public override bool InstancePerEntity => true;//对应NPC实例创建一个实例
 
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == TargetNPCType;
+        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);
 
         void IWorldInfo.OnWorldLoad() {
             ResetDamageTracking();
@@ -79,12 +84,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
             IsBossFightActive = npc.active;
             //记录Boss总生命值
             TotalBossDamage = npc.lifeMax;
-
+            //标记目标
             HuntingNPCID = TargetNPCType;
         }
 
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers) {
-            if (npc.type != TargetNPCType) {
+            if (!IsTargetByID(npc)) {
                 return;
             }
 
@@ -97,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Common
         }
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
-            if (npc.type != TargetNPCType) {
+            if (!IsTargetByID(npc)) {
                 return;
             }
 

@@ -2914,13 +2914,6 @@ Legend: {
 			}
 
 			// AchievementToast.AchievementUnlocked: 成就达成!
-
-			PallbearerQuestTrackerUI: {
-				// QuestTitle: 委托：亵渎天神
-				// DamageContribution: 扶柩者伤害占比
-				// RequiredContribution: 需求: 30%
-				// TargetBoss: 目标: 亵渎天神
-			}
 		}
 
 		SeaDialogueBox: {
@@ -6545,5 +6538,17 @@ UI: {
 			// FailureReasonInsufficientDamage: 武器伤害占比不足
 			// SuccessDamageContribution: 伤害占比
 		}
+	}
+
+	DoGQuestTrackerUI: {
+		// QuestTitle: 委托：猎杀神明吞噬者
+		// DamageContribution: 刻心者伤害
+		// RequiredContribution: 需求: 85%
+	}
+
+	PallbearerQuestTrackerUI: {
+		// QuestTitle: 委托：猎杀亵渎天神
+		// DamageContribution: 扶柩者伤害
+		// RequiredContribution: 需求: 80%
 	}
 }

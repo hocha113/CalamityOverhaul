@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
     /// </summary>
     internal class PallbearerQuestTrackerUI : BaseQuestTrackerUI
     {
-        public override string LocalizationCategory => "Legend.HalibutText.ADV";
+        public override string LocalizationCategory => "UI";
         public static PallbearerQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestTrackerUI>();
 
         public override bool CanOpne {
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         }
 
         protected override void SetupLocalizedTexts() {
-            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：亵渎天神");
+            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀亵渎天神");
             DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "扶柩者伤害");
             RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 80%");
         }

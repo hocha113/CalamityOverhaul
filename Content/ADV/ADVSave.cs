@@ -40,6 +40,7 @@ namespace CalamityOverhaul.Content.ADV
         public bool SupCalQuestDeclined;//玩家是否拒绝了任务
         public bool SupCalQuestReward;//玩家是否完成了任务（击杀了Providence）
         public bool SupCalQuestRewardSceneComplete;//任务完成后的奖励场景是否已播放
+        public bool SupCalDoGQuestAccepted;//玩家是否接受了神明吞噬者任务
         public bool SupCalDoGQuestReward; //玩家是否完成了神明吞噬者任务
         public bool SupCalDoGQuestRewardSceneComplete; //神明吞噬者奖励场景是否已播放
         public bool SupCalDoGQuestDeclined; //玩家是否拒绝了神明吞噬者任务

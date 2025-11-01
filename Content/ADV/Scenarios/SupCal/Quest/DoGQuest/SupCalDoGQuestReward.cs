@@ -1,8 +1,11 @@
 using CalamityMod.NPCs.DevourerofGods;
+using CalamityOverhaul.Content.ADV.Scenarios.Common;
+using CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using InnoVault.UIHandles;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -18,6 +21,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
         public string LocalizationCategory => "Legend.HalibutText.ADV";
 
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
+
+        public static bool Spawned = false;
+        public static int RandomTimer;
 
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }
@@ -100,15 +106,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             if (save.SupCalDoGQuestRewardSceneComplete) {
                 return;
             }
-            if (!DoGQuestRewardTrigger.Spawned) {
+            if (!Spawned) {
                 return;
             }
-            if (--DoGQuestRewardTrigger.RandomTimer > 0) {
+            if (--RandomTimer > 0) {
                 return;
             }
             if (ScenarioManager.Start<SupCalDoGQuestReward>()) {
                 save.SupCalDoGQuestRewardSceneComplete = true;
-                DoGQuestRewardTrigger.Spawned = false;
+                Spawned = false;
             }
         }
     }
@@ -116,58 +122,84 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
     /// <summary>
     /// 追踪玩家使用Heartcarver击杀神明吞噬者
     /// </summary>
-    internal class DoGQuestTracker : GlobalNPC, IWorldInfo
+    internal class DoGQuestTracker : BaseDamageTracker
     {
-        void IWorldInfo.OnWorldLoad() {
-            DoGQuestRewardTrigger.Spawned = false;
-            DoGQuestRewardTrigger.RandomTimer = 0;
-        }
+        private const float REQUIRED_CONTRIBUTION = 0.8f; //80%伤害贡献度要求
 
-        private static void Check() {
-            Player player = Main.LocalPlayer;
+        internal override int TargetNPCType => ModContent.NPCType<DevourerofGodsHead>();
+
+        internal override HashSet<int> OtherNPCType => [ModContent.NPCType<DevourerofGodsBody>(), ModContent.NPCType<DevourerofGodsTail>()];
+
+        internal override int[] TargetWeaponTypes => new[] { ModContent.ItemType<Heartcarver>() };
+
+        internal override int[] TargetProjectileTypes => [
+            ModContent.ProjectileType<HeartcarverHeld>(),
+            ModContent.ProjectileType<HeartcarverDash>(),
+            ModContent.ProjectileType<HeartcarverDagger>()
+        ];
+
+        internal override float RequiredContribution => REQUIRED_CONTRIBUTION;
+
+        public override void OnQuestCompleted(Player player, float contribution) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
             }
-            if (!halibutPlayer.ADCSave.SupCalQuestReward || halibutPlayer.ADCSave.SupCalDoGQuestDeclined) {
+
+            if (!halibutPlayer.ADCSave.SupCalQuestReward//先完成前置任务
+                || halibutPlayer.ADCSave.SupCalDoGQuestDeclined//且未拒绝当前任务
+                ) {
                 return;
             }
-            Item heldItem = player.GetItem();
-            if (heldItem.type != ModContent.ItemType<Heartcarver>()) {
-                return;
-            }
+
+            //标记任务完成
             halibutPlayer.ADCSave.SupCalDoGQuestReward = true;
-            DoGQuestRewardTrigger.Spawned = true;
-            DoGQuestRewardTrigger.RandomTimer = 60 * Main.rand.Next(3, 5);
-        }
 
-        public override void OnKill(NPC npc) {
-            if (npc.type != ModContent.NPCType<DevourerofGodsHead>()) {
-                return;
-            }
-
-            Check();
-
-            //仅服务器发送
-            if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.DoGQuestTracker);
-                packet.Send();
-            }
-        }
-
-        internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;//仅客户端处理
-            }
-            if (type == CWRMessageType.DoGQuestTracker) {
-                Check();
-            }
+            //延迟触发奖励场景
+            SupCalDoGQuestReward.Spawned = true;
+            SupCalDoGQuestReward.RandomTimer = 60 * Main.rand.Next(3, 5);
         }
     }
 
-    internal static class DoGQuestRewardTrigger
+    internal class DoGQuestTrackerUI : BaseQuestTrackerUI
     {
-        public static bool Spawned = false;
-        public static int RandomTimer;
+        public override string LocalizationCategory => "UI";
+        public static DoGQuestTrackerUI Instance => UIHandleLoader.GetUIHandleOfType<DoGQuestTrackerUI>();
+
+        public override bool CanOpne {
+            get {
+                if (!Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    return false;
+                }
+
+                //检查任务是否激活
+                if (!halibutPlayer.ADCSave.SupCalQuestReward//先完成前置任务
+                || halibutPlayer.ADCSave.SupCalDoGQuestDeclined//且未拒绝当前任务
+                ) {
+                    return false;
+                }
+
+                //检查是否已完成
+                if (halibutPlayer.ADCSave.SupCalDoGQuestReward) {
+                    return false;
+                }
+
+                //获取战斗状态
+                return BaseDamageTracker.GetDamageTrackingData().isActive;
+            }
+        }
+
+        protected override void SetupLocalizedTexts() {
+            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀神明吞噬者");
+            DamageContribution = this.GetLocalization(nameof(DamageContribution), () => "刻心者伤害");
+            RequiredContribution = this.GetLocalization(nameof(RequiredContribution), () => "需求: 85%");
+        }
+
+        protected override (float current, float total, bool isActive) GetTrackingData() {
+            return BaseDamageTracker.GetDamageTrackingData();
+        }
+
+        protected override float GetRequiredContribution() {
+            return 0.85f; //85%
+        }
     }
 }

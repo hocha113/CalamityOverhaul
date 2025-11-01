@@ -71,7 +71,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                 }
 
                 //如果玩家已经接受/拒绝/完成了任务，就不再显示UI
-                if (halibutPlayer.ADCSave.SupCalDoGQuestReward || halibutPlayer.ADCSave.SupCalDoGQuestDeclined) {
+                if (halibutPlayer.ADCSave.SupCalDoGQuestReward 
+                    || halibutPlayer.ADCSave.SupCalDoGQuestAccepted 
+                    || halibutPlayer.ADCSave.SupCalDoGQuestDeclined) {
                     return false;
                 }
 
@@ -104,7 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
                     questAccepted = false;
                     //标记玩家接受了任务
                     if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
-                        halibutPlayer.ADCSave.SupCalDoGQuestReward = true;
+                        halibutPlayer.ADCSave.SupCalDoGQuestAccepted = true;
                     }
                 }
                 if (questDeclined) {
