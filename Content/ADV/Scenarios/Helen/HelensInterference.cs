@@ -13,10 +13,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
     /// <summary>
     /// 海伦在接受神明吞噬者任务后的劝阻场景
     /// </summary>
-    internal class HelensInterference : ADVScenarioBase, ILocalizedModType
+    internal class HelensInterference : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public override string Key => nameof(HelensInterference);
         public string LocalizationCategory => "Legend.HalibutText.ADV";
+
+        public static int DelayTimer;
 
         //角色名称本地化
         public static LocalizedText Rolename { get; private set; }
@@ -39,6 +41,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
         //设置场景默认使用海洋风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+
+        void IWorldInfo.OnWorldLoad() {
+            DelayTimer = 0;
+        }
 
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
@@ -152,11 +158,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 return;
             }
 
-            //仅在夜晚触发
-            if (!Main.dayTime) {
-                if (ScenarioManager.Start<HelensInterference>()) {
-                    save.HelenInterferenceTriggered = true;
-                }
+            if (--DelayTimer > 0) {
+                return;
+            }
+
+            if (ScenarioManager.Start<HelensInterference>()) {
+                save.HelenInterferenceTriggered = true;
             }
         }
 
