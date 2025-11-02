@@ -1,0 +1,387 @@
+﻿using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
+{
+    /// <summary>
+    /// 海伦在接受神明吞噬者任务后的劝阻场景
+    /// </summary>
+    internal class HelensInterference : ADVScenarioBase, ILocalizedModType
+    {
+        public override string Key => nameof(HelensInterference);
+        public string LocalizationCategory => "Legend.HalibutText.ADV";
+
+        //角色名称本地化
+        public static LocalizedText Rolename { get; private set; }
+
+        //对话文本本地化
+        public static LocalizedText Line0 { get; private set; }
+        public static LocalizedText Line1 { get; private set; }
+        public static LocalizedText Line2 { get; private set; }
+
+        //第一层选项文本
+        public static LocalizedText Question1 { get; private set; }
+        public static LocalizedText Choice1_1 { get; private set; }
+        public static LocalizedText Choice1_2 { get; private set; }
+        public static LocalizedText Choice1_3 { get; private set; }
+
+        //第二层对话和最终选择
+        public static LocalizedText FinalQuestion { get; private set; }
+        public static LocalizedText FinalChoice_Continue { get; private set; }
+        public static LocalizedText FinalChoice_Stop { get; private set; }
+
+        //设置场景默认使用海洋风格
+        protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+
+        public override void SetStaticDefaults() {
+            Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
+
+            //开场对话
+            Line0 = this.GetLocalization(nameof(Line0), () => "……喂，你有空吗？");
+            Line1 = this.GetLocalization(nameof(Line1), () => "......今天......天气不错");
+            Line2 = this.GetLocalization(nameof(Line2), () => "(比目鱼似乎将一些东西藏了起来)");
+
+            //第一层选项
+            Question1 = this.GetLocalization(nameof(Question1), () => "......");
+            Choice1_1 = this.GetLocalization(nameof(Choice1_1), () => "你在做什么？");
+            Choice1_2 = this.GetLocalization(nameof(Choice1_2), () => "拿出来！");
+            Choice1_3 = this.GetLocalization(nameof(Choice1_3), () => "(沉默)");
+
+            //最终选择
+            FinalQuestion = this.GetLocalization(nameof(FinalQuestion), () => "我们中止这一切，好吗。不再帮那个女巫收集她需要的东西。剩下的路我们自己走");
+            FinalChoice_Continue = this.GetLocalization(nameof(FinalChoice_Continue), () => "继续委托");
+            FinalChoice_Stop = this.GetLocalization(nameof(FinalChoice_Stop), () => "中止委托");
+        }
+
+        protected override void Build() {
+            //注册海伦立绘
+            DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+            DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+            //开场对话
+            Add(Rolename.Value, Line0.Value);
+            Add(Rolename.Value, Line1.Value);
+            //将刻心者从玩家背包移除
+            Add(" ", Line2.Value, onComplete: RemoveHeartcarverFromPlayer);
+
+            //第一层选项
+            AddWithChoices(Rolename.Value, Question1.Value, new List<Choice> {
+                new Choice(Choice1_1.Value, OnChoice1),
+                new Choice(Choice1_2.Value, OnChoice2),
+                new Choice(Choice1_3.Value, OnChoice3)
+            });
+        }
+
+        //选项1：询问
+        private void OnChoice1() {
+            ScenarioManager.Start<Branch_Inquiry>();
+            Complete();
+        }
+
+        //选项2：愤怒
+        private void OnChoice2() {
+            ScenarioManager.Start<Branch_Anger>();
+            Complete();
+        }
+
+        //选项3：沉默
+        private void OnChoice3() {
+            ScenarioManager.Start<Branch_Silence>();
+            Complete();
+        }
+
+        //移除刻心者的辅助方法
+        private static void RemoveHeartcarverFromPlayer() {
+            Player player = Main.LocalPlayer;
+            int heartcarverType = ModContent.ItemType<Heartcarver>();
+
+            //从背包中移除所有刻心者
+            for (int i = 0; i < player.inventory.Length; i++) {
+                if (player.inventory[i].type == heartcarverType) {
+                    player.inventory[i].TurnToAir();
+                }
+            }
+        }
+
+        //将刻心者归还给玩家
+        private static void ReturnHeartcarverToPlayer() {
+            Player player = Main.LocalPlayer;
+            int heartcarverType = ModContent.ItemType<Heartcarver>();
+
+            //寻找空位并放入刻心者
+            int emptySlot = player.FindItemInInventoryOrOpenVoidBag(ItemID.None, out bool _);
+            if (emptySlot >= 0) {
+                player.inventory[emptySlot].SetDefaults(heartcarverType);
+                player.inventory[emptySlot].stack = 1;
+            }
+            else {
+                //如果背包满了，生成到地上
+                player.QuickSpawnItem(player.GetSource_Misc("HelensInterference"), heartcarverType, 1);
+            }
+        }
+
+        public override void Update(ADVSave save, HalibutPlayer halibutPlayer) {
+            //检查是否接受了神明吞噬者任务
+            if (!save.SupCalDoGQuestAccepted) {
+                return;
+            }
+
+            //已经触发过此场景
+            if (save.HelenInterferenceTriggered) {
+                return;
+            }
+
+            //如果任务已完成或已拒绝，不触发
+            if (save.SupCalDoGQuestReward || save.SupCalDoGQuestDeclined) {
+                return;
+            }
+
+            //避免在不合适的时候触发
+            if (CWRWorld.HasBoss) {
+                return;
+            }
+
+            if (!halibutPlayer.HasHalubut) {
+                return;
+            }
+
+            //仅在夜晚触发
+            if (!Main.dayTime) {
+                if (ScenarioManager.Start<HelensInterference>()) {
+                    save.HelenInterferenceTriggered = true;
+                }
+            }
+        }
+
+        #region 分支场景实现
+
+        //分支1：理性沟通
+        private class Branch_Inquiry : ADVScenarioBase, ILocalizedModType
+        {
+            public override string Key => nameof(Branch_Inquiry);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            //本地化文本
+            public static LocalizedText Line1 { get; private set; }
+            public static LocalizedText Line2 { get; private set; }
+            public static LocalizedText Line3 { get; private set; }
+            public static LocalizedText Line4 { get; private set; }
+            public static LocalizedText Line5 { get; private set; }
+
+            public override void SetStaticDefaults() {
+                Line1 = this.GetLocalization(nameof(Line1), () => "你没感觉到吗？她每次给你的东西，都.......不太正常");
+                Line2 = this.GetLocalization(nameof(Line2), () => "它们都是......'媒介物品'。她让你杀的目标，都是我们本就会讨伐的东西");//TODO
+                Line3 = this.GetLocalization(nameof(Line3), () => "我最近愈发不安");
+                Line4 = this.GetLocalization(nameof(Line4), () => "我不能让你带着它下去。至少，先想清楚，好吗？");
+                Line5 = this.GetLocalization(nameof(Line5), () => FinalQuestion.Value);
+            }
+
+            protected override void Build() {
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+                Add(Rolename.Value, Line1.Value);
+                Add(Rolename.Value, Line2.Value);
+                Add(Rolename.Value, Line3.Value);
+                Add(Rolename.Value, Line4.Value);
+
+                //最终选择
+                AddWithChoices(Rolename.Value, Line5.Value, [
+                    new Choice(FinalChoice_Continue.Value, OnContinue),
+                    new Choice(FinalChoice_Stop.Value, OnStop)
+                ]);
+            }
+
+            private static void OnContinue() {
+                ScenarioManager.Start<FinalBranch_Continue>();
+            }
+
+            private static void OnStop() {
+                ScenarioManager.Start<FinalBranch_Stop>();
+            }
+        }
+
+        //分支2：冲突
+        private class Branch_Anger : ADVScenarioBase, ILocalizedModType
+        {
+            public override string Key => nameof(Branch_Anger);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            //本地化文本
+            public static LocalizedText Line1 { get; private set; }
+            public static LocalizedText Line2 { get; private set; }
+            public static LocalizedText Line3 { get; private set; }
+            public static LocalizedText Line4 { get; private set; }
+            public static LocalizedText Line5 { get; private set; }
+
+            public override void SetStaticDefaults() {
+                Line1 = this.GetLocalization(nameof(Line1), () => "……你真的信她到了这种地步？");
+                Line2 = this.GetLocalization(nameof(Line2), () => "那把刀不对劲。我碰到它的时候，像是……有人在窃笑");
+                Line3 = this.GetLocalization(nameof(Line3), () => "这让我回想起在那时在深渊中碰到的那个东西，阴冷恐怖、无法理喻");
+                Line4 = this.GetLocalization(nameof(Line4), () => "这样下去绝对会出事......");
+                Line5 = this.GetLocalization(nameof(Line5), () => FinalQuestion.Value);
+            }
+
+            protected override void Build() {
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_amazeADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+                Add(Rolename.Value, Line1.Value);
+                Add(Rolename.Value, Line2.Value);
+                Add(Rolename.Value, Line3.Value);
+                Add(Rolename.Value, Line4.Value);
+
+                //最终选择
+                AddWithChoices(Rolename.Value, Line5.Value, new List<Choice> {
+                    new Choice(FinalChoice_Continue.Value, OnContinue),
+                    new Choice(FinalChoice_Stop.Value, OnStop)
+                });
+            }
+
+            private static void OnContinue() {
+                ScenarioManager.Start<FinalBranch_Continue>();
+            }
+
+            private static void OnStop() {
+                ScenarioManager.Start<FinalBranch_Stop>();
+            }
+        }
+
+        //分支3：沉默
+        private class Branch_Silence : ADVScenarioBase, ILocalizedModType
+        {
+            public override string Key => nameof(Branch_Silence);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            //本地化文本
+            public static LocalizedText Line1 { get; private set; }
+            public static LocalizedText Line2 { get; private set; }
+            public static LocalizedText Line3 { get; private set; }
+            public static LocalizedText Line4 { get; private set; }
+
+            public override void SetStaticDefaults() {
+                Line1 = this.GetLocalization(nameof(Line1), () => "......你沉默的时候最可怕");
+                Line2 = this.GetLocalization(nameof(Line2), () => "好吧，我说重点，我把刻心者收起来了，你也别找了");
+                Line3 = this.GetLocalization(nameof(Line3), () => "她要你死，你也会乖乖照做吗？");//TODO
+                Line4 = this.GetLocalization(nameof(Line4), () => FinalQuestion.Value);
+            }
+
+            protected override void Build() {
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+                Add(Rolename.Value, Line1.Value);
+                Add(Rolename.Value, Line2.Value);
+                Add(Rolename.Value, Line3.Value);
+
+                //最终选择
+                AddWithChoices(Rolename.Value, Line4.Value, new List<Choice> {
+                    new Choice(FinalChoice_Continue.Value, OnContinue),
+                    new Choice(FinalChoice_Stop.Value, OnStop)
+                });
+            }
+
+            private static void OnContinue() {
+                ScenarioManager.Start<FinalBranch_Continue>();
+            }
+
+            private static void OnStop() {
+                ScenarioManager.Start<FinalBranch_Stop>();
+            }
+        }
+
+        //最终分支A：继续委托
+        private class FinalBranch_Continue : ADVScenarioBase, ILocalizedModType
+        {
+            public override string Key => nameof(FinalBranch_Continue);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            //本地化文本
+            public static LocalizedText Line1 { get; private set; }
+            public static LocalizedText Line2 { get; private set; }
+            public static LocalizedText Line3 { get; private set; }
+            public static LocalizedText Line4 { get; private set; }
+            public override void SetStaticDefaults() {
+                Line1 = this.GetLocalization(nameof(Line1), () => "......好吧。我知道你会这么选");
+                Line2 = this.GetLocalization(nameof(Line2), () => "......");
+                Line3 = this.GetLocalization(nameof(Line3), () => "东西我会放回去，但我希望你用它的时候......小心一点");
+                Line4 = this.GetLocalization(nameof(Line4), () => "我会陪你下去。不是因为我信她。是因为我怕你一个人回不来");
+            }
+
+            protected override void Build() {
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen_solemnADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+                Add(Rolename.Value, Line1.Value);
+                Add(Rolename.Value, Line2.Value);
+                Add(Rolename.Value, Line3.Value);
+                Add(Rolename.Value, Line4.Value, onComplete: () => {
+                    //归还刻心者
+                    ReturnHeartcarverToPlayer();
+
+                    //播放归还音效
+                    SoundEngine.PlaySound(SoundID.Grab with {
+                        Volume = 0.7f,
+                        Pitch = 0.2f
+                    }, Main.LocalPlayer.Center);
+                });
+            }
+
+            protected override void OnScenarioComplete() {
+                //标记选择了继续
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    halibutPlayer.ADCSave.HelenInterferenceContinue = true;
+                }
+            }
+        }
+
+        //最终分支B：中止委托
+        private class FinalBranch_Stop : ADVScenarioBase, ILocalizedModType
+        {
+            public override string Key => nameof(FinalBranch_Stop);
+            protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
+            public string LocalizationCategory => "Legend.HalibutText.ADV";
+            //本地化文本
+            public static LocalizedText Line1 { get; private set; }
+            public static LocalizedText Line2 { get; private set; }
+            public static LocalizedText Line3 { get; private set; }
+            public override void SetStaticDefaults() {
+                Line1 = this.GetLocalization(nameof(Line1), () => "……真的？你愿意停下来？");
+                Line2 = this.GetLocalization(nameof(Line2), () => "......");
+                Line3 = this.GetLocalization(nameof(Line3), () => "好。我们不去。让她自己下地狱吧");//TODO
+            }
+
+            protected override void Build() {
+                DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.HelenADV);
+                DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
+
+                Add(Rolename.Value, Line1.Value);
+                Add(Rolename.Value, Line2.Value);
+                Add(Rolename.Value, Line3.Value);
+            }
+
+            protected override void OnScenarioComplete() {
+                //标记任务被拒绝
+                if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
+                    halibutPlayer.ADCSave.SupCalDoGQuestDeclined = true;
+                    halibutPlayer.ADCSave.HelenInterferenceStop = true;
+                }
+
+                //播放销毁音效
+                SoundEngine.PlaySound(SoundID.NPCDeath1 with {
+                    Volume = 0.6f,
+                    Pitch = -0.4f
+                }, Main.LocalPlayer.Center);
+            }
+        }
+
+        #endregion
+    }
+}

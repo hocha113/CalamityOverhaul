@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content.ADV
         public bool EternalBlazingNowTriggered;
         public bool EternalBlazingNowChoice1;
         public bool EternalBlazingNowChoice2;
+        public bool HelenInterferenceTriggered;//海伦劝阻场景是否已触发
+        public bool HelenInterferenceContinue;//选择继续委托
+        public bool HelenInterferenceStop;//选择中止委托
+
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
 

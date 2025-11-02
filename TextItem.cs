@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV;
+using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -100,14 +101,15 @@ namespace CalamityOverhaul
             //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             //player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ItemID.Catfish));
             //ScenarioManager.Start<EternalBlazingNow>();
-            EbnSkyEffect.IsActive = true;
+            //EbnSkyEffect.IsActive = true;
             //显示成就提示 - 硫磺火风格
-            AchievementToast.ShowAchievement(
-                ItemID.None,
-                "ED结局：永恒燃烧的现在",
-                "往日被烈火所吞噬，以异类之躯触及永恒",
-                AchievementToast.ToastStyle.Brimstone
-            );
+            //AchievementToast.ShowAchievement(
+            //    ItemID.None,
+            //    "BE结局：永恒燃烧的现在",
+            //    "往日被烈火所吞噬，以异类之躯触及永恒",
+            //    AchievementToast.ToastStyle.Brimstone
+            //);
+            ScenarioManager.Start<HelensInterference>();
             //if (CWRMod.Instance.coralite == null) {
             //   return true;
             //}
