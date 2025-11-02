@@ -2914,6 +2914,25 @@ Legend: {
 			}
 
 			// AchievementToast.AchievementUnlocked: 成就达成!
+
+			SupCalYharonQuestReward: {
+				// Rolename1: 硫火女巫
+				// Rolename2: 比目鱼
+				// Line1: 啊……终于结束了
+				// Line2: 那条龙，对我来说曾经是极少数值得尊敬的生物
+				// Line3: 它知道自己会死，却仍然选择站在那里......即时是'焚烧重启'又如何，下次活过来的也只是复制体
+				// Line4: 可惜，它擅长服从，而你擅长……活下来
+				// Line5: 拿着。金源锭。曾被叫做‘炼狱之金’，是凡人手中能触碰的极限力量
+				// Line6: 接下来，轮到我了
+				// Line7: 你在开什么玩笑……？
+			}
+
+			YharonQuestUI: {
+				// QuestTitle: 委托：焚世龙
+				// QuestDesc: 使用鬼面刀击杀焚世之龙
+				// AcceptText: 接受
+				// DeclineText: 拒绝
+			}
 		}
 
 		SeaDialogueBox: {
@@ -6550,5 +6569,11 @@ UI: {
 		// QuestTitle: 委托：猎杀亵渎天神
 		// DamageContribution: 扶柩者伤害
 		// RequiredContribution: 需求: 80%
+	}
+
+	YharonQuestTrackerUI: {
+		// QuestTitle: 委托：猎杀焚世龙
+		// DamageContribution: 鬼面刀伤害
+		// RequiredContribution: 需求: 90%
 	}
 }
