@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         private const string expressionCloseEye = " " + " ";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "至尊灾厄");
+            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "什么......怎么可能!");

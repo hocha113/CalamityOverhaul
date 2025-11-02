@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "至尊灾厄");
+            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "硫火女巫");
             Rolename3 = this.GetLocalization(nameof(Rolename3), () => "比目鱼");
 
             //有比目鱼版本

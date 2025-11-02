@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "至尊灾厄……她是复仇的化身，是被背叛淬炼出的完美武器");
+            L0 = this.GetLocalization(nameof(L0), () => "硫火女巫……她是复仇的化身，是被背叛淬炼出的完美武器");
             L1 = this.GetLocalization(nameof(L1), () => "我们刚才做的，是终结了一个传说。还是创造了一个新的开始？");
             L2 = this.GetLocalization(nameof(L2), () => "公主鱼，从灾厄余烬中诞生的。它带着一种矛盾的优雅，就像在废墟上盛开的花");
             L3 = this.GetLocalization(nameof(L3), () => "据说它能让人看到自己最想成为的样子，但那个样子往往是最不像自己的");

@@ -44,11 +44,13 @@ namespace CalamityOverhaul.Content.ADV
         public bool SupCalDoGQuestReward; //玩家是否完成了神明吞噬者任务
         public bool SupCalDoGQuestRewardSceneComplete; //神明吞噬者奖励场景是否已播放
         public bool SupCalDoGQuestDeclined; //玩家是否拒绝了神明吞噬者任务
-
+        public bool SupCalYharonQuestReward;
+        public bool SupCalYharonQuestAccepted;
+        public bool SupCalYharonQuestDeclined;
+        public bool SupCalYharonQuestRewardSceneComplete;
         public bool EternalBlazingNowTriggered;
         public bool EternalBlazingNowChoice1;
         public bool EternalBlazingNowChoice2;
-
         public virtual TagCompound SaveData() {
             TagCompound tag = [];
 

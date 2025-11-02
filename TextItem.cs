@@ -64,6 +64,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
+            player.GetDamage(DamageClass.Generic) *= 100;
             //player.velocity.Domp();
             //bool news = player.PressKey();
             //if (news && !old) {
